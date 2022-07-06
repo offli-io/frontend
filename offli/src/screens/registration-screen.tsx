@@ -182,7 +182,7 @@ export const RegistrationScreen: React.FC = () => {
           By signing up, you agree to the terms of the <br />
           Offli <b>Privacy Policy</b> and <b>Cookie Policy</b>.
         </Typography>
-        <OffliButton sx={{ width: '70%', mt: 2 }} type="submit">
+        <OffliButton type="submit" sx={{ width: '70%', mt: 2 }}>
           Next
         </OffliButton>
         <div
