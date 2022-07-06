@@ -2,22 +2,21 @@ import React from 'react'
 import {
   Box,
   Typography,
-  Divider,
   TextField,
   InputAdornment,
   IconButton,
 } from '@mui/material'
 import OffliButton from '../components/offli-button'
 import GoogleIcon from '@mui/icons-material/Google'
-
 import { Controller, useForm } from 'react-hook-form'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
-
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff'
 import VisibilityIcon from '@mui/icons-material/Visibility'
 import CheckCircleIcon from '@mui/icons-material/CheckCircle'
 import RemoveCircleIcon from '@mui/icons-material/RemoveCircle'
+import LabeledDivider from '../components/labeled-divider'
+
 export interface FormValues {
   email: string
   password: string
@@ -85,19 +84,9 @@ export const RegistrationScreen: React.FC = () => {
         >
           Sign in with google
         </OffliButton>
-        <Divider
-          variant="middle"
-          sx={{
-            width: '80%',
-            '&::before, &::after': {
-              borderColor: 'black',
-            },
-            mb: 2,
-            textAlign: 'center',
-          }}
-        >
-          or
-        </Divider>
+        <LabeledDivider>
+          <Typography>or</Typography>
+        </LabeledDivider>
         <Typography
           variant="h6"
           gutterBottom
