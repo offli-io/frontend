@@ -5,16 +5,24 @@ interface IOffliButtonProps extends ButtonProps {
   isLoading?: boolean
   onClick?: () => void
   children: React.ReactElement | string
+  type?: 'submit' | 'button' | 'reset'
 }
 
 const OffliButton: React.FC<IOffliButtonProps> = ({
   children,
   disabled,
   onClick,
+  type = 'button',
   ...rest
 }) => {
   return (
-    <Button disabled={disabled} onClick={onClick} variant="contained" {...rest}>
+    <Button
+      disabled={disabled}
+      onClick={onClick}
+      variant="contained"
+      type={type}
+      {...rest}
+    >
       {children}
     </Button>
   )

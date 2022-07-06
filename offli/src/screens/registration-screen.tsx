@@ -65,12 +65,13 @@ export const RegistrationScreen: React.FC = () => {
           variant="h3"
           gutterBottom
           sx={{
-            mt: 5,
-            fontSize: '36px',
+            mt: 6,
+            fontSize: '38px',
             fontWeight: 'bold',
+            display: 'flex',
           }}
         >
-          Start live offline.
+          Start live <Box sx={{ color: 'primary.main' }}>&nbsp;offline.</Box>
         </Typography>
         <OffliButton
           variant="outlined"
@@ -186,7 +187,9 @@ export const RegistrationScreen: React.FC = () => {
           }}
         >
           <Typography sx={{ color: 'white' }}>Already using Offli?</Typography>
-          <OffliButton sx={{ ml: 1 }}>Login</OffliButton>
+          <OffliButton sx={{ ml: 1 }} type="submit">
+            Login
+          </OffliButton>
         </div>
       </Box>
     </form>
