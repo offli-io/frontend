@@ -50,7 +50,7 @@ export const RegistrationScreen: React.FC = () => {
   )
 
   return (
-    <form onSubmit={handleSubmit(handleFormSubmit)} className="backgroundImage">
+    <form onSubmit={handleSubmit(handleFormSubmit)}>
       <Box
         sx={{
           height: '100vh',
@@ -60,6 +60,7 @@ export const RegistrationScreen: React.FC = () => {
           alignItems: 'center',
           //   justifyContent: 'center',
         }}
+        className="backgroundImage"
       >
         <Typography
           variant="h3"
