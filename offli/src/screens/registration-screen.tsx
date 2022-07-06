@@ -50,7 +50,12 @@ export const RegistrationScreen: React.FC = () => {
   )
 
   return (
-    <form onSubmit={handleSubmit(handleFormSubmit)}>
+    <form
+      onSubmit={handleSubmit(handleFormSubmit, (data, e) =>
+        console.log(data, e)
+      )}
+      className="backgroundImage"
+    >
       <Box
         sx={{
           height: '100vh',
