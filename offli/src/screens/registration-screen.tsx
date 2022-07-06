@@ -177,7 +177,9 @@ export const RegistrationScreen: React.FC = () => {
           By signing up, you agree to the terms of the <br />
           Offli <b>Privacy Policy</b> and <b>Cookie Policy</b>.
         </Typography>
-        <OffliButton sx={{ width: '70%', mt: 2 }}>Next</OffliButton>
+        <OffliButton type="submit" sx={{ width: '70%', mt: 2 }}>
+          Next
+        </OffliButton>
         <div
           style={{
             display: 'flex',
@@ -187,9 +189,7 @@ export const RegistrationScreen: React.FC = () => {
           }}
         >
           <Typography sx={{ color: 'white' }}>Already using Offli?</Typography>
-          <OffliButton sx={{ ml: 1 }} type="submit">
-            Login
-          </OffliButton>
+          <OffliButton sx={{ ml: 1 }}>Login</OffliButton>
         </div>
       </Box>
     </form>

@@ -6,6 +6,10 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  --ReactInputVerificationCode-itemWidth: 2.5rem;
+  --ReactInputVerificationCode-itemHeight: 2.5rem;
+  --ReactInputVerificationCode-itemSpacing: 1rem;
 }
 
 code {
@@ -14,8 +18,9 @@ code {
 }
 
 .backgroundImage {
-  background-image: url(./assets/img/sam-mgrdichian-4Aev9YjxTrU-unsplash\(1\).jpg);
+  background-image: url(./assets/img//loadingImg.jpg);
   background-position: 0px 35vh;
   background-size: contain;
   background-repeat: no-repeat;
+  background-color: #fcfcfc;
 }
