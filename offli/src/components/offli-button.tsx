@@ -12,7 +12,7 @@ const OffliButton: React.FC<IOffliButtonProps> = ({
   children,
   disabled,
   onClick,
-  type = 'button',
+  type,
   ...rest
 }) => {
   return (
