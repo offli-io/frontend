@@ -64,6 +64,7 @@ export const RegistrationScreen: React.FC = () => {
           alignItems: 'center',
           //   justifyContent: 'center',
         }}
+        className="backgroundImage"
       >
         <Typography
           variant="h3"

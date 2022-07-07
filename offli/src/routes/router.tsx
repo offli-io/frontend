@@ -12,7 +12,7 @@ const Router: React.FC = (): ReactElement => {
           <Routes />
           {
             //conditional rendering when token is received
-            false && <BottomNavigator />
+            true && <BottomNavigator />
           }
         </BrowserRouter>
       </Suspense>
