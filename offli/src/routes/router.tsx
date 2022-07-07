@@ -2,6 +2,7 @@ import { ReactElement, Suspense } from 'react'
 import { BrowserRouter } from 'react-router-dom'
 import { CustomizationProvider } from '../assets/theme/customization-provider'
 import BottomNavigator from '../components/bottom-navigator'
+import OffliHeader from '../components/offli-header'
 import Routes from './routes'
 
 const Router: React.FC = (): ReactElement => {
@@ -9,6 +10,7 @@ const Router: React.FC = (): ReactElement => {
     <CustomizationProvider>
       <Suspense fallback={<p>Loading ...</p>}>
         <BrowserRouter>
+          <OffliHeader />
           <Routes />
           {
             //conditional rendering when token is received
