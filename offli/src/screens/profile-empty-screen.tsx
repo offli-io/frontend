@@ -1,11 +1,11 @@
 import React, { useState } from 'react'
 import { Box, Typography, TextField } from '@mui/material'
-import OffliHeader from '../components/offli-header'
 import CreateOutlinedIcon from '@mui/icons-material/CreateOutlined'
 import GppGoodIcon from '@mui/icons-material/GppGood'
 import ThumbUpIcon from '@mui/icons-material/ThumbUp'
 import FavoriteRoundedIcon from '@mui/icons-material/FavoriteRounded'
 import DoneIcon from '@mui/icons-material/Done'
+import { PageWrapper } from '../components/page-wrapper'
 
 const ProfileEmptyScreen: React.FC = () => {
   const [username] = useState<string>('emma.smith')
@@ -33,16 +33,7 @@ const ProfileEmptyScreen: React.FC = () => {
 
   return (
     <>
-      <OffliHeader />
-      <Box
-        sx={{
-          height: '100%',
-          // width: '100vw',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-        }}
-      >
+      <PageWrapper>
         <Box
           sx={{
             height: '15%',
@@ -185,7 +176,7 @@ const ProfileEmptyScreen: React.FC = () => {
             </Typography>
           </Box>
         </Box>
-      </Box>
+      </PageWrapper>
     </>
   )
 }
