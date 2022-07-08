@@ -6,16 +6,15 @@ import OffliHeader from '../components/offli-header'
 import Routes from './routes'
 
 const Router: React.FC = (): ReactElement => {
+  const token = false
   return (
     <CustomizationProvider>
       <Suspense fallback={<p>Loading ...</p>}>
         <BrowserRouter>
-          <OffliHeader />
+          {/* conditional rendering when token is received */}
+          {token && <OffliHeader />}
           <Routes />
-          {
-            //conditional rendering when token is received
-            true && <BottomNavigator />
-          }
+          {token && <BottomNavigator />}
         </BrowserRouter>
       </Suspense>
     </CustomizationProvider>

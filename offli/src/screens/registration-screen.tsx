@@ -11,11 +11,14 @@ import GoogleIcon from '@mui/icons-material/Google'
 import { Controller, useForm } from 'react-hook-form'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
+import { useNavigate } from 'react-router-dom'
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff'
 import VisibilityIcon from '@mui/icons-material/Visibility'
 import CheckCircleIcon from '@mui/icons-material/CheckCircle'
 import RemoveCircleIcon from '@mui/icons-material/RemoveCircle'
 import LabeledDivider from '../components/labeled-divider'
+
+import { ApplicationLocations } from '../types/common/applications-locations.dto'
 
 export interface FormValues {
   email: string
@@ -48,6 +51,8 @@ export const RegistrationScreen: React.FC = () => {
     []
   )
 
+  const navigate = useNavigate()
+
   return (
     <form
       onSubmit={handleSubmit(handleFormSubmit, (data, e) =>
@@ -70,7 +75,7 @@ export const RegistrationScreen: React.FC = () => {
           variant="h3"
           gutterBottom
           sx={{
-            mt: 6,
+            mt: 10,
             fontSize: '38px',
             fontWeight: 'bold',
             display: 'flex',
@@ -184,7 +189,12 @@ export const RegistrationScreen: React.FC = () => {
           }}
         >
           <Typography sx={{ color: 'white' }}>Already using Offli?</Typography>
-          <OffliButton sx={{ ml: 1 }}>Login</OffliButton>
+          <OffliButton
+            sx={{ ml: 1 }}
+            onClick={() => navigate(ApplicationLocations.LOGIN)}
+          >
+            Login
+          </OffliButton>
         </div>
       </Box>
     </form>

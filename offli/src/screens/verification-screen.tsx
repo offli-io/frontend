@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { Box, Typography } from '@mui/material'
 import BackButton from '../components/back-button'
 import ReactInputVerificationCode from 'react-input-verification-code'
+import { ApplicationLocations } from '../types/common/applications-locations.dto'
 
 const VerificationScreen = () => {
   const [emailAddress] = useState('amy@gmail.com')
@@ -18,7 +19,7 @@ const VerificationScreen = () => {
       }}
       className="backgroundImage"
     >
-      <BackButton href="/register" text="Sign Up" />
+      <BackButton href={ApplicationLocations.REGISTER} text="Sign Up" />
       <Typography
         variant="h3"
         sx={{ mt: 20, fontWeight: 'bold', fontSize: '24px' }}

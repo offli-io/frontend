@@ -120,7 +120,7 @@ const ProfileEmptyScreen: React.FC = () => {
               value={aboutMe}
               multiline
               onChange={event => setAboutMe(event.target.value)}
-              sx={{ width: '90%' }}
+              sx={{ width: '90%', height: '60px !important' }}
             />
           ) : (
             <Typography sx={{ width: '90%', mt: 1, owerflow: 'auto' }}>
@@ -158,15 +158,6 @@ const ProfileEmptyScreen: React.FC = () => {
               I am participating in scheduled activities
             </Typography>
           </Box>
-          <Box
-            sx={{ width: '90%', mt: 1, display: 'flex', alignItems: 'center' }}
-          >
-            <FavoriteRoundedIcon color="primary" />
-            <Typography sx={{ ml: 1.5 }}>
-              Enjoyed time together doing planned activities
-            </Typography>
-          </Box>
-          {/* ssssssssssssssss */}
           <Box
             sx={{ width: '90%', mt: 1, display: 'flex', alignItems: 'center' }}
           >

@@ -1,26 +1,38 @@
 import React from 'react'
-import { Box, Typography, TextField } from '@mui/material'
+import {
+  Box,
+  Typography,
+  TextField,
+  InputAdornment,
+  IconButton,
+} from '@mui/material'
 import BackButton from '../components/back-button'
 import { Controller, useForm } from 'react-hook-form'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
 import OffliButton from '../components/offli-button'
-import ErrorIcon from '@mui/icons-material/Error'
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff'
+import VisibilityIcon from '@mui/icons-material/Visibility'
+// import ErrorIcon from '@mui/icons-material/Error'
 import { ApplicationLocations } from '../types/common/applications-locations.dto'
 
 export interface FormValues {
-  username: string
+  password: string
 }
 
 const schema: () => yup.SchemaOf<FormValues> = () =>
   yup.object({
-    username: yup.string().defined().required(),
+    password: yup.string().defined().required(),
   })
 
-const PickUsernameScreen = () => {
+const NewPasswordScreen = () => {
+  const [showPassword, setShowPassword] = React.useState(false)
+
+  const handleClickShowPassword = () => setShowPassword(!showPassword)
+
   const { control, handleSubmit } = useForm<FormValues>({
     defaultValues: {
-      username: '',
+      password: '',
     },
     resolver: yupResolver(schema()),
     mode: 'onChange',
@@ -44,45 +56,57 @@ const PickUsernameScreen = () => {
         }}
         className="backgroundImage"
       >
-        <BackButton href={ApplicationLocations.REGISTER} text="Registration" />
+        <BackButton href={ApplicationLocations.VERIFY} text="Verification" />
         <Typography
           variant="h3"
           sx={{ mt: 20, mb: 4, fontWeight: 'bold', fontSize: '24px' }}
         >
-          Pick your username
+          New password
         </Typography>
         <Controller
-          name="username"
+          name="password"
           control={control}
           render={({ field, fieldState: { error } }) => (
             <TextField
               autoFocus
               {...field}
-              //label="Username"
-              placeholder="Username"
-              // variant="filled"
+              type={showPassword ? 'text' : 'password'}
+              placeholder="New password"
               error={!!error}
               // helperText={
               //   error?.message ||
               //   t(`value.${nextStep?.authenticationType}.placeholder`)
               // }
               //disabled={methodSelectionDisabled}
-              sx={{ mb: 1, width: '70%' }}
+              sx={{ mb: 4, width: '70%' }}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton onClick={handleClickShowPassword}>
+                      {showPassword ? (
+                        <VisibilityIcon />
+                      ) : (
+                        <VisibilityOffIcon />
+                      )}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
             />
           )}
         />
-        <Box sx={{ display: 'flex', alignItems: 'center', mb: 3, ml: -15 }}>
+        {/* <Box sx={{ display: 'flex', alignItems: 'center', mb: 3, ml: -15 }}>
           <ErrorIcon sx={{ color: 'red', height: '18px' }} />
           <Typography variant="subtitle2" sx={{ color: 'red' }}>
             Username is taken!
           </Typography>
-        </Box>
+        </Box> */}
         <OffliButton variant="contained" type="submit" sx={{ width: '70%' }}>
-          Next
+          Reset password
         </OffliButton>
       </Box>
     </form>
   )
 }
 
-export default PickUsernameScreen
+export default NewPasswordScreen

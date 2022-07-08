@@ -9,6 +9,7 @@ import OffliButton from '../components/offli-button'
 import GoogleIcon from '@mui/icons-material/Google'
 import LabeledDivider from '../components/labeled-divider'
 import { useNavigate } from 'react-router-dom'
+import { ApplicationLocations } from '../types/common/applications-locations.dto'
 
 //const logo = require('../assets/img/logoPurple.png')
 
@@ -141,7 +142,7 @@ const LoginScreen: React.FC = () => {
           </Typography>
           <OffliButton
             sx={{ width: '35%' }}
-            onClick={() => navigate('/register')}
+            onClick={() => navigate(ApplicationLocations.REGISTER)}
           >
             Join now
           </OffliButton>
