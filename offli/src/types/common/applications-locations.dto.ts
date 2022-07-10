@@ -7,8 +7,11 @@ export enum ApplicationLocations {
   RESET_PASSWORD = '/reset-password',
   NEW_PASSWORD = '/new-password',
   WELCOME = '/welcome',
-  PROFILE_EMPTY = '/profile-empty',
+  PROFILE = '/profile',
   SETTINGS = '/settings',
   BUDDIES = '/buddies',
   NOTIFICATIONS = '/notifications',
+  ACTIVITES = '/activites',
+  CREATE = '/create',
+  SEARCH = '/search',
 }
