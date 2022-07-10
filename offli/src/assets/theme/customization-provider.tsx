@@ -2,6 +2,23 @@ import { ThemeProvider } from '@mui/material'
 import { createTheme } from '@mui/material/styles'
 import React from 'react'
 
+declare module '@mui/material/styles' {
+  // If we would like to declare something on the theme
+  // https://mui.com/material-ui/customization/palette/ down on the site
+
+  // interface Theme {
+  //   status: {
+  //     danger: React.CSSProperties['color'];
+  //   };
+  // }
+  interface Palette {
+    inactive: Palette['primary']
+  }
+  interface PaletteOptions {
+    inactive: PaletteOptions['primary']
+  }
+}
+
 const theme = createTheme({
   palette: {
     primary: {
@@ -9,6 +26,19 @@ const theme = createTheme({
     },
     secondary: {
       main: '#ffa500',
+    },
+    inactive: {
+      main: '#B8B8B8',
+    },
+  },
+  components: {
+    MuiInputBase: {
+      styleOverrides: {
+        root: {
+          height: 40,
+          borderRadius: 10,
+        },
+      },
     },
   },
 })

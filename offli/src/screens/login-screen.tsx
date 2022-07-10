@@ -1,5 +1,5 @@
 import React from 'react'
-import { Box, Divider, TextField } from '@mui/material'
+import { Box, TextField, Typography } from '@mui/material'
 //import loadingImage from '../assets/img/loadingImg.jpg'
 import Logo from '../components/logo'
 import { Controller, useForm } from 'react-hook-form'
@@ -7,6 +7,9 @@ import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
 import OffliButton from '../components/offli-button'
 import GoogleIcon from '@mui/icons-material/Google'
+import LabeledDivider from '../components/labeled-divider'
+import { useNavigate } from 'react-router-dom'
+import { ApplicationLocations } from '../types/common/applications-locations.dto'
 
 //const logo = require('../assets/img/logoPurple.png')
 
@@ -32,83 +35,118 @@ const LoginScreen: React.FC = () => {
     mode: 'onChange',
   })
 
+  const navigate = useNavigate()
+
   const handleFormSubmit = React.useCallback(
     (values: FormValues) => console.log(values),
     []
   )
 
   return (
-    <form onSubmit={handleSubmit(handleFormSubmit)} style={{ height: '100%' }}>
+    <form
+      onSubmit={handleSubmit(handleFormSubmit)}
+      style={{ height: '100%' }}
+      className="backgroundImage"
+    >
       <Box
         sx={{
           height: '100%',
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
-          justifyContent: 'center',
+          justifyContent: 'space-between',
         }}
       >
-        <Logo />
-        <OffliButton
-          variant="outlined"
-          startIcon={<GoogleIcon />}
-          sx={{ mb: 4 }}
-        >
-          Sign in with google
-        </OffliButton>
-        <Divider
-          variant="middle"
+        <Box sx={{ mt: 10 }}>
+          <Logo />
+        </Box>
+        <Box
           sx={{
-            width: '90%',
-            '&::before, &::after': {
-              borderColor: 'black',
-            },
-            mb: 2,
-            textAlign: 'center',
+            display: 'flex',
+            flexDirection: 'column',
+            width: '100%',
+            alignItems: 'center',
+            mt: -8,
           }}
         >
-          or
-        </Divider>
-        <Controller
-          name="username"
-          control={control}
-          render={({ field, fieldState: { error } }) => (
-            <TextField
-              autoFocus
-              {...field}
-              //label="Username"
-              placeholder="Username"
-              // variant="filled"
-              error={!!error}
-              // helperText={
-              //   error?.message ||
-              //   t(`value.${nextStep?.authenticationType}.placeholder`)
-              // }
-              //disabled={methodSelectionDisabled}
-              sx={{ mb: 4 }}
-            />
-          )}
-        />
-        <Controller
-          name="password"
-          control={control}
-          render={({ field, fieldState: { error } }) => (
-            <TextField
-              autoFocus
-              {...field}
-              //label="Username"
-              placeholder="Password"
-              type="password"
-              // variant="filled"
-              error={!!error}
-              // helperText={
-              //   error?.message ||
-              //   t(`value.${nextStep?.authenticationType}.placeholder`)
-              // }
-              //disabled={methodSelectionDisabled}
-            />
-          )}
-        />
+          <OffliButton
+            variant="outlined"
+            startIcon={<GoogleIcon />}
+            sx={{ mb: 2 }}
+          >
+            Sign in with google
+          </OffliButton>
+          <LabeledDivider>
+            <Typography>or</Typography>
+          </LabeledDivider>
+          <Controller
+            name="username"
+            control={control}
+            render={({ field, fieldState: { error } }) => (
+              <TextField
+                autoFocus
+                {...field}
+                //label="Username"
+                placeholder="Username"
+                // variant="filled"
+                error={!!error}
+                // helperText={
+                //   error?.message ||
+                //   t(`value.${nextStep?.authenticationType}.placeholder`)
+                // }
+                //disabled={methodSelectionDisabled}
+                sx={{ mb: 2, width: '70%' }}
+              />
+            )}
+          />
+          <Controller
+            name="password"
+            control={control}
+            render={({ field, fieldState: { error } }) => (
+              <TextField
+                autoFocus
+                {...field}
+                //label="Username"
+                placeholder="Password"
+                type="password"
+                // variant="filled"
+                error={!!error}
+                // helperText={
+                //   error?.message ||
+                //   t(`value.${nextStep?.authenticationType}.placeholder`)
+                // }
+                //disabled={methodSelectionDisabled}
+                sx={{ mb: 3.5, width: '70%' }}
+              />
+            )}
+          />
+          <OffliButton sx={{ width: '70%' }} type="submit">
+            Login
+          </OffliButton>
+          <OffliButton variant="text" sx={{ mt: 1 }}>
+            <Typography variant="caption">Forgot your password?</Typography>
+          </OffliButton>
+        </Box>
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'row',
+            width: '100%',
+            justifyContent: 'center',
+            alignItems: 'center',
+            mb: 4,
+          }}
+        >
+          <Typography sx={{ color: 'white', mr: 2 }} variant="body1">
+            Are you new?
+          </Typography>
+          <OffliButton
+            sx={{ width: '35%' }}
+            onClick={() => navigate(ApplicationLocations.REGISTER)}
+          >
+            Join now
+          </OffliButton>
+        </Box>
       </Box>
     </form>
   )
