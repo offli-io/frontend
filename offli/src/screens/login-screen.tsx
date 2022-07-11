@@ -106,7 +106,7 @@ const LoginScreen: React.FC = () => {
             buttonText="Sign in with Google"
             onSuccess={handleSuccessfullLogin}
             onFailure={handleFailedLogin}
-            //cookiePolicy="http://localhost:8000/"
+            //cookiePolicy="http://localhost:3000/"
             cookiePolicy={'single_host_origin'}
             isSignedIn={true}
             style={{ width: 500 }}
