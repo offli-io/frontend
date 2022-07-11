@@ -6,10 +6,17 @@ import { Controller, useForm } from 'react-hook-form'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
 import OffliButton from '../components/offli-button'
-import GoogleIcon from '@mui/icons-material/Google'
+//import GoogleIcon from '@mui/icons-material/Google'
 import LabeledDivider from '../components/labeled-divider'
 import { useNavigate } from 'react-router-dom'
 import { ApplicationLocations } from '../types/common/applications-locations.dto'
+import {
+  GoogleLogin,
+  GoogleLoginResponse,
+  GoogleLoginResponseOffline,
+} from 'react-google-login'
+import { refreshTokenSetup } from '../api/auth/requests'
+import { CLIENT_ID } from '../utils/common-constants'
 
 //const logo = require('../assets/img/logoPurple.png')
 
@@ -42,6 +49,24 @@ const LoginScreen: React.FC = () => {
     []
   )
 
+  const handleSuccessfullLogin = React.useCallback(
+    (res: GoogleLoginResponse | GoogleLoginResponseOffline) => {
+      //or if((res as GoogleLoginResponse).profileObj)
+      if ('profileObj' in res) {
+        console.log('[Login Success] current user : ', res.profileObj)
+        refreshTokenSetup(res)
+      } else {
+        return
+        //TODO handle GoogleLoginResponseOffline
+      }
+    },
+    []
+  )
+
+  const handleFailedLogin = React.useCallback((res: GoogleLoginResponse) => {
+    console.log('[Login Failed] res : ', res)
+  }, [])
+
   return (
     <form
       onSubmit={handleSubmit(handleFormSubmit)}
@@ -69,13 +94,23 @@ const LoginScreen: React.FC = () => {
             mt: -8,
           }}
         >
-          <OffliButton
+          {/* <OffliButton
             variant="outlined"
             startIcon={<GoogleIcon />}
             sx={{ mb: 2 }}
           >
             Sign in with google
-          </OffliButton>
+          </OffliButton> */}
+          <GoogleLogin
+            clientId={CLIENT_ID}
+            buttonText="Sign in with Google"
+            onSuccess={handleSuccessfullLogin}
+            onFailure={handleFailedLogin}
+            //cookiePolicy="http://localhost:8000/"
+            cookiePolicy={'single_host_origin'}
+            isSignedIn={true}
+            style={{ width: 500 }}
+          />
           <LabeledDivider>
             <Typography>or</Typography>
           </LabeledDivider>
@@ -123,6 +158,7 @@ const LoginScreen: React.FC = () => {
           <OffliButton sx={{ width: '70%' }} type="submit">
             Login
           </OffliButton>
+
           <OffliButton variant="text" sx={{ mt: 1 }}>
             <Typography variant="caption">Forgot your password?</Typography>
           </OffliButton>
