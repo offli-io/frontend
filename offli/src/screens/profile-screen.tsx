@@ -120,7 +120,7 @@ const ProfileEmptyScreen: React.FC = () => {
               value={aboutMe}
               multiline
               onChange={event => setAboutMe(event.target.value)}
-              sx={{ width: '90%', height: '60px !important' }}
+              sx={{ width: '90%' }}
             />
           ) : (
             <Typography sx={{ width: '90%', mt: 1, owerflow: 'auto' }}>
