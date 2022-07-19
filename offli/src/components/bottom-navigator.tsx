@@ -39,7 +39,7 @@ const BottomNavigator: React.FC = () => {
         }}
       >
         <BottomNavigationAction
-          label="Activites"
+          label="Activities"
           icon={<CalendarTodayIcon />}
           component={Link}
           value={BottomNavigationPaths.MY_ACTIVITES}

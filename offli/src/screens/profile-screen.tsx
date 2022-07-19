@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Box, Typography, TextField } from '@mui/material'
 import CreateOutlinedIcon from '@mui/icons-material/CreateOutlined'
 import GppGoodIcon from '@mui/icons-material/GppGood'
@@ -6,14 +6,54 @@ import ThumbUpIcon from '@mui/icons-material/ThumbUp'
 import FavoriteRoundedIcon from '@mui/icons-material/FavoriteRounded'
 import DoneIcon from '@mui/icons-material/Done'
 import { PageWrapper } from '../components/page-wrapper'
+import { useQuery } from 'react-query'
+import axios from 'axios'
 
 const ProfileEmptyScreen: React.FC = () => {
-  const [username] = useState<string>('emma.smith')
-  const [feedbackNumber] = useState<number>(0)
   const [editAboutMe, setEditAboutMe] = useState<boolean>(false)
-  const [aboutMe, setAboutMe] = useState<string>(
-    'Introduce yourself, edit About you to let others know more about you...'
-  )
+  const [aboutMe, setAboutMe] = useState<string>('')
+
+  // type Params = {
+  //   queryKey: [string, { id: number }]
+  // }
+
+  // const fetchProfile = async ( params: Params ) => {
+  //   const [, { id }] = params.queryKey
+  const fetchProfile = async () => {
+    const response = await axios.get(
+      'https://rickandmortyapi.com/api/character/2'
+    )
+    // console.log(response.data, id)
+    return response.data
+  }
+  const { data, status } = useQuery(['profile', 5], fetchProfile, {
+    keepPreviousData: true,
+  })
+
+  useEffect(() => {
+    if (status === 'success') {
+      setAboutMe(`${data.species} ${data.gender} - ${data.status}`)
+      // console.log(data.species)
+    }
+  }, [data, status])
+
+  if (status === 'loading') {
+    return (
+      <PageWrapper>
+        <div>Loading...</div>
+        <></>
+      </PageWrapper>
+    )
+  }
+
+  if (status === 'error') {
+    return (
+      <PageWrapper>
+        <div>Error..</div>
+        <></>
+      </PageWrapper>
+    )
+  }
 
   const handleEditAboutMe = () => {
     setEditAboutMe(true)
@@ -27,9 +67,9 @@ const ProfileEmptyScreen: React.FC = () => {
     console.log('edit title image')
   }
 
-  const handleEditProfilePhoto = () => {
-    console.log('edit profile image')
-  }
+  // const handleEditProfilePhoto = () => {
+  //   console.log('edit profile image')
+  // }
 
   return (
     <>
@@ -59,26 +99,39 @@ const ProfileEmptyScreen: React.FC = () => {
           />
         </Box>
         <Box
-          sx={{
-            height: '60px',
-            width: '60px',
-            backgroundColor: '#C9C9C9',
-            borderRadius: '50%',
-            mt: -4,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            border: '3px solid white',
-          }}
+        // sx={{
+        //   height: '60px',
+        //   width: '60px',
+        //   backgroundColor: '#C9C9C9',
+        //   borderRadius: '50%',
+        //   mt: -4,
+        //   display: 'flex',
+        //   alignItems: 'center',
+        //   justifyContent: 'center',
+        //   border: '3px solid white',
+        // }}
         >
-          <CreateOutlinedIcon
+          <img
+            src={data.image}
+            alt="profile picture"
+            style={{
+              height: '60px',
+              width: '60px',
+              backgroundColor: '#C9C9C9',
+              borderRadius: '50%',
+              marginTop: '-32px',
+              border: '3px solid white',
+            }}
+          />
+
+          {/* <CreateOutlinedIcon
             color="primary"
             sx={{ fontSize: '20px', p: 1 }}
             onClick={() => handleEditProfilePhoto()}
-          />
+          /> */}
         </Box>
         <Typography sx={{ fontSize: '24px', fontWeight: 'bold', mt: 1 }}>
-          {username}
+          {data.name}
         </Typography>
         <Box
           sx={{
@@ -120,7 +173,7 @@ const ProfileEmptyScreen: React.FC = () => {
               value={aboutMe}
               multiline
               onChange={event => setAboutMe(event.target.value)}
-              sx={{ width: '90%', height: '60px !important' }}
+              sx={{ width: '90%' }}
             />
           ) : (
             <Typography sx={{ width: '90%', mt: 1, owerflow: 'auto' }}>
@@ -147,7 +200,7 @@ const ProfileEmptyScreen: React.FC = () => {
             </Typography>
             <Box sx={{ display: 'flex' }}>
               <GppGoodIcon color="primary" />
-              <Typography>{feedbackNumber}</Typography>
+              <Typography>5</Typography>
             </Box>
           </Box>
           <Box
