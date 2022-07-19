@@ -16,6 +16,7 @@
     "@types/react": "^18.0.14",
     "@types/react-dom": "^18.0.5",
     "axios": "^0.27.2",
+    "rc-swipeout": "^2.0.11",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-google-login": "^5.2.2",
@@ -50,7 +51,6 @@
     "format": "prettier --ignore-path .gitignore --write \"**/*.+(js|ts|json)\""
   },
   "eslintConfig": {
-
     "extends": [
       "react-app",
       "react-app/jest"
