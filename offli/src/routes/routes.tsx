@@ -3,6 +3,7 @@ import ActivitiesScreen from '../screens/activites-screen'
 import CreateActivitiesScreen from '../screens/create-activites-screen'
 import LoadingScreen from '../screens/loading-screen'
 import LoginScreen from '../screens/login-screen'
+import MyBuddiesScreen from '../screens/my-buddies-screen'
 import NewPasswordScreen from '../screens/new-password-screen'
 import PickUsernameScreen from '../screens/pick-username-screen'
 import ProfileScreen from '../screens/profile-screen'
@@ -51,6 +52,10 @@ const Routes = () => {
       <Route
         path={ApplicationLocations.SEARCH}
         element={<SearchActivitesScreen />}
+      />
+      <Route
+        path={ApplicationLocations.MY_BUDDIES}
+        element={<MyBuddiesScreen />}
       />
     </BaseRoutes>
   )

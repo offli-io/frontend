@@ -50,6 +50,7 @@
     "format": "prettier --ignore-path .gitignore --write \"**/*.+(js|ts|json)\""
   },
   "eslintConfig": {
+
     "extends": [
       "react-app",
       "react-app/jest"

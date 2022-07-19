@@ -19,14 +19,14 @@ const ProfileEmptyScreen: React.FC = () => {
 
   // const fetchProfile = async ( params: Params ) => {
   //   const [, { id }] = params.queryKey
-  const fetchProfile = async () => {
+  const fetchProfile = async (id: number) => {
     const response = await axios.get(
-      'https://rickandmortyapi.com/api/character/2'
+      `https://rickandmortyapi.com/api/character/${id}`
     )
     // console.log(response.data, id)
     return response.data
   }
-  const { data, status } = useQuery(['profile', 5], fetchProfile, {
+  const { data, status } = useQuery(['profile', 5], () => fetchProfile(2), {
     keepPreviousData: true,
   })
 
