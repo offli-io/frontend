@@ -1,9 +1,31 @@
 import React from 'react'
-import { Box, IconButton, InputAdornment, TextField } from '@mui/material'
+import {
+  Box,
+  Divider,
+  IconButton,
+  InputAdornment,
+  TextField,
+} from '@mui/material'
 import { PageWrapper } from '../components/page-wrapper'
 import SearchIcon from '@mui/icons-material/Search'
 import PersonAddIcon from '@mui/icons-material/PersonAdd'
 import BuddyItem from '../components/buddy-item'
+import logo from '../assets/img/profilePicture.jpg'
+
+const data = [
+  {
+    name: 'Adam martin',
+    imageSource: logo,
+  },
+  {
+    name: 'lukas laskyplny',
+    imageSource: logo,
+  },
+  {
+    name: 'SkillerSWK',
+    imageSource: logo,
+  },
+]
 
 const MyBuddiesScreen = () => {
   return (
@@ -25,7 +47,18 @@ const MyBuddiesScreen = () => {
           <PersonAddIcon />
         </IconButton>
       </Box>
-      <BuddyItem username="Adam.martin" />
+      {data?.map((buddy: any) => (
+        <>
+          <BuddyItem username={buddy?.name} imageSource={buddy?.imageSource} />
+          <Divider
+            variant="fullWidth"
+            sx={{
+              width: '100%',
+              borderColor: theme => theme.palette.inactive.main,
+            }}
+          />
+        </>
+      ))}
     </PageWrapper>
   )
 }

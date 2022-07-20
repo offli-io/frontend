@@ -2,7 +2,7 @@ import { Box, SxProps } from '@mui/system'
 import { HEADER_HEIGHT } from '../utils/common-constants'
 
 interface IPageWrapperProps {
-  children?: React.ReactElement[] | React.ReactElement
+  children?: React.ReactNode[] | React.ReactNode
   sxOverrides?: SxProps
 }
 
