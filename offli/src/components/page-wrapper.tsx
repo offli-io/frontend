@@ -18,7 +18,7 @@ export const PageWrapper: React.FC<IPageWrapperProps> = ({
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        mt: HEADER_HEIGHT / 8,
+        mt: (HEADER_HEIGHT + 16) / 8,
         ...sxOverrides,
       }}
     >

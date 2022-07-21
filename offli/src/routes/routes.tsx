@@ -1,5 +1,6 @@
 import { Route, Routes as BaseRoutes } from 'react-router-dom'
 import ActivitiesScreen from '../screens/activites-screen'
+import ChatScreen from '../screens/chat-screen'
 import CreateActivitiesScreen from '../screens/create-activites-screen'
 import LoadingScreen from '../screens/loading-screen'
 import LoginScreen from '../screens/login-screen'
@@ -54,9 +55,10 @@ const Routes = () => {
         element={<SearchActivitesScreen />}
       />
       <Route
-        path={ApplicationLocations.MY_BUDDIES}
+        path={ApplicationLocations.BUDDIES}
         element={<MyBuddiesScreen />}
       />
+      <Route path={ApplicationLocations.CHAT} element={<ChatScreen />} />
     </BaseRoutes>
   )
 }
