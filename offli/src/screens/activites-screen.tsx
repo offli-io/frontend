@@ -1,8 +1,11 @@
 import React from 'react'
-import { Box, Typography } from '@mui/material'
+import { Box, Button, Typography } from '@mui/material'
 import MyActivityCard from '../components/my-activity-card'
 import { IActivityProps } from '../types/common/types'
 import { PageWrapper } from '../components/page-wrapper'
+import axios from 'axios'
+import { useQuery } from 'react-query'
+import { getActivities } from '../api/activities/requests'
 
 const datetime = new Date()
 
@@ -40,8 +43,13 @@ const dummyData: IActivityProps[] = [
 ]
 
 const ActivitiesScreen = () => {
+  const activitiesQuery = useQuery(['activities'], props =>
+    getActivities({ queryFunctionContext: props })
+  )
+  console.log(activitiesQuery?.data?.data)
   return (
     <PageWrapper>
+      <Button>Fetch</Button>
       <Typography
         variant="h6"
         sx={{
