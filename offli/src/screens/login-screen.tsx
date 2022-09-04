@@ -71,7 +71,7 @@ const LoginScreen: React.FC = () => {
     <form
       onSubmit={handleSubmit(handleFormSubmit)}
       style={{ height: '100%' }}
-      className="backgroundImage"
+      // className="backgroundImage"
     >
       <Box
         sx={{
@@ -109,7 +109,7 @@ const LoginScreen: React.FC = () => {
             //cookiePolicy="http://localhost:3000/"
             cookiePolicy={'single_host_origin'}
             isSignedIn={true}
-            style={{ width: 500 }}
+            style={{ width: '70%' }}
           />
           <LabeledDivider>
             <Typography>or</Typography>
@@ -129,8 +129,8 @@ const LoginScreen: React.FC = () => {
                 //   error?.message ||
                 //   t(`value.${nextStep?.authenticationType}.placeholder`)
                 // }
-                //disabled={methodSelectionDisabled}
-                sx={{ mb: 2, width: '70%' }}
+                // disabled={methodSelectionDisabled}
+                sx={{ width: '80%' }}
               />
             )}
           />
@@ -151,19 +151,16 @@ const LoginScreen: React.FC = () => {
                 //   t(`value.${nextStep?.authenticationType}.placeholder`)
                 // }
                 //disabled={methodSelectionDisabled}
-                sx={{ mb: 3.5, width: '70%' }}
+                sx={{ width: '80%' }}
               />
             )}
           />
-          <OffliButton sx={{ width: '70%' }} type="submit">
-            Login
-          </OffliButton>
 
           <OffliButton variant="text" sx={{ mt: 1 }}>
             <Typography variant="caption">Forgot your password?</Typography>
           </OffliButton>
         </Box>
-        <Box
+        {/* <Box
           sx={{
             display: 'flex',
             flexDirection: 'row',
@@ -172,17 +169,10 @@ const LoginScreen: React.FC = () => {
             alignItems: 'center',
             mb: 4,
           }}
-        >
-          <Typography sx={{ color: 'white', mr: 2 }} variant="body1">
-            Are you new?
-          </Typography>
-          <OffliButton
-            sx={{ width: '35%' }}
-            onClick={() => navigate(ApplicationLocations.REGISTER)}
-          >
-            Join now
-          </OffliButton>
-        </Box>
+        ></Box> */}
+        <OffliButton sx={{ width: '80%', mb: 5 }} type="submit">
+          Login
+        </OffliButton>
       </Box>
     </form>
   )

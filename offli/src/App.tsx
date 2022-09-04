@@ -4,8 +4,15 @@ import Router from './routes/router'
 
 import { QueryClientProvider, QueryClient } from 'react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
+import { ReactNode } from 'react'
 
 const queryClient = new QueryClient()
+
+declare module 'react-query/types/react/QueryClientProvider' {
+  interface QueryClientProviderProps {
+    children?: ReactNode
+  }
+}
 
 function App() {
   return (

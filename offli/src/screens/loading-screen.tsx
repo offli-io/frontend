@@ -13,7 +13,7 @@ const LoadingScreen = () => {
         alignItems: 'center',
         justifyContent: 'center',
       }}
-      className="backgroundImage"
+      // className="backgroundImage"
     >
       <img
         src={offliLogo}

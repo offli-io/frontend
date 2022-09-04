@@ -6,7 +6,7 @@ interface ILabeledDividerProps {
 
 const LabeledDivider: React.FC<ILabeledDividerProps> = ({ children }) => {
   return (
-    <Box sx={{ display: 'flex', alignItems: 'center', width: '90%' }}>
+    <Box sx={{ display: 'flex', alignItems: 'center', width: '70%' }}>
       <Box
         sx={{
           borderBottom: theme => `1px solid ${theme.palette.inactive.main}`,
