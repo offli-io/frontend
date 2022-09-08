@@ -15,7 +15,6 @@ import { ApplicationLocations } from '../types/common/applications-locations.dto
 //   GoogleLoginResponse,
 //   GoogleLoginResponseOffline,
 // } from 'react-google-login'
-import { refreshTokenSetup } from '../api/auth/requests'
 import { CLIENT_ID } from '../utils/common-constants'
 
 //const logo = require('../assets/img/logoPurple.png')
@@ -94,6 +93,7 @@ const LoginScreen: React.FC = () => {
             mt: -8,
           }}
         >
+          <div id="signIn"></div>
           {/* <OffliButton
             variant="outlined"
             startIcon={<GoogleIcon />}

@@ -1,7 +1,9 @@
 // import { GoogleLoginResponse } from 'react-google-login'
 
-// export const refreshTokenSetup = (res: GoogleLoginResponse) => {
-//   let refreshTiming = (res.tokenObj.expires_in || 3600 - 5 * 60) * 1000
+export const refreshTokenSetup = (res: any) => {
+  let refreshTiming = (res.tokenObj.expires_in || 3600 - 5 * 60) * 1000
+  return refreshTiming
+}
 
 //   const refreshToken = async () => {
 //     const newAuthRes = await res.reloadAuthResponse()
