@@ -10,11 +10,11 @@ import OffliButton from '../components/offli-button'
 import LabeledDivider from '../components/labeled-divider'
 import { useNavigate } from 'react-router-dom'
 import { ApplicationLocations } from '../types/common/applications-locations.dto'
-import {
-  GoogleLogin,
-  GoogleLoginResponse,
-  GoogleLoginResponseOffline,
-} from 'react-google-login'
+// import {
+//   GoogleLogin,
+//   GoogleLoginResponse,
+//   GoogleLoginResponseOffline,
+// } from 'react-google-login'
 import { refreshTokenSetup } from '../api/auth/requests'
 import { CLIENT_ID } from '../utils/common-constants'
 
@@ -49,23 +49,23 @@ const LoginScreen: React.FC = () => {
     []
   )
 
-  const handleSuccessfullLogin = React.useCallback(
-    (res: GoogleLoginResponse | GoogleLoginResponseOffline) => {
-      //or if((res as GoogleLoginResponse).profileObj)
-      if ('profileObj' in res) {
-        console.log('[Login Success] current user : ', res.profileObj)
-        refreshTokenSetup(res)
-      } else {
-        return
-        //TODO handle GoogleLoginResponseOffline
-      }
-    },
-    []
-  )
+  // const handleSuccessfullLogin = React.useCallback(
+  //   (res: GoogleLoginResponse | GoogleLoginResponseOffline) => {
+  //     //or if((res as GoogleLoginResponse).profileObj)
+  //     if ('profileObj' in res) {
+  //       console.log('[Login Success] current user : ', res.profileObj)
+  //       refreshTokenSetup(res)
+  //     } else {
+  //       return
+  //       //TODO handle GoogleLoginResponseOffline
+  //     }
+  //   },
+  //   []
+  // )
 
-  const handleFailedLogin = React.useCallback((res: GoogleLoginResponse) => {
-    console.log('[Login Failed] res : ', res)
-  }, [])
+  // const handleFailedLogin = React.useCallback((res: GoogleLoginResponse) => {
+  //   console.log('[Login Failed] res : ', res)
+  // }, [])
 
   return (
     <form
@@ -101,7 +101,7 @@ const LoginScreen: React.FC = () => {
           >
             Sign in with google
           </OffliButton> */}
-          <GoogleLogin
+          {/* <GoogleLogin
             clientId={CLIENT_ID}
             buttonText="Sign in with Google"
             onSuccess={handleSuccessfullLogin}
@@ -110,7 +110,7 @@ const LoginScreen: React.FC = () => {
             cookiePolicy={'single_host_origin'}
             isSignedIn={true}
             style={{ width: 500 }}
-          />
+          /> */}
           <LabeledDivider>
             <Typography>or</Typography>
           </LabeledDivider>
