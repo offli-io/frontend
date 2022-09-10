@@ -1,12 +1,13 @@
-import { Box } from '@mui/material'
+import { Box, DividerProps, SxProps } from '@mui/material'
 
 interface ILabeledDividerProps {
   children: React.ReactElement
+  sx?: SxProps
 }
 
-const LabeledDivider: React.FC<ILabeledDividerProps> = ({ children }) => {
+const LabeledDivider: React.FC<ILabeledDividerProps> = ({ children, sx }) => {
   return (
-    <Box sx={{ display: 'flex', alignItems: 'center', width: '70%' }}>
+    <Box sx={{ display: 'flex', alignItems: 'center', width: '70%', ...sx }}>
       <Box
         sx={{
           borderBottom: theme => `1px solid ${theme.palette.inactive.main}`,

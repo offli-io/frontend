@@ -93,25 +93,9 @@ const LoginScreen: React.FC = () => {
             mt: -8,
           }}
         >
-          <div id="signIn"></div>
-          {/* <OffliButton
-            variant="outlined"
-            startIcon={<GoogleIcon />}
-            sx={{ mb: 2 }}
-          >
-            Sign in with google
-          </OffliButton> */}
-          {/* <GoogleLogin
-            clientId={CLIENT_ID}
-            buttonText="Sign in with Google"
-            onSuccess={handleSuccessfullLogin}
-            onFailure={handleFailedLogin}
-            //cookiePolicy="http://localhost:3000/"
-            cookiePolicy={'single_host_origin'}
-            isSignedIn={true}
-            style={{ width: 500 }}
-          /> */}
-          <LabeledDivider>
+          <Box id="signIn"></Box>
+
+          <LabeledDivider sx={{ my: 1 }}>
             <Typography>or</Typography>
           </LabeledDivider>
           <Controller
@@ -130,7 +114,7 @@ const LoginScreen: React.FC = () => {
                 //   t(`value.${nextStep?.authenticationType}.placeholder`)
                 // }
                 // disabled={methodSelectionDisabled}
-                sx={{ width: '80%', mb: 2 }}
+                sx={{ width: '80%' }}
               />
             )}
           />
