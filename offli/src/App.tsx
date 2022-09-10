@@ -6,8 +6,15 @@ import React from 'react'
 import { QueryClientProvider, QueryClient } from 'react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { AuthenticationProvider } from './assets/theme/authentication-provider'
+import { ReactNode } from 'react'
 
 const queryClient = new QueryClient()
+
+declare module 'react-query/types/react/QueryClientProvider' {
+  interface QueryClientProviderProps {
+    children?: ReactNode
+  }
+}
 
 function App() {
   const handleCallbackResponse = (res: any) => {

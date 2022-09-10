@@ -32,11 +32,25 @@ const theme = createTheme({
     },
   },
   components: {
-    MuiInputBase: {
+    MuiOutlinedInput: {
       styleOverrides: {
         root: {
-          height: 40,
-          borderRadius: 10,
+          height: 50,
+          // width: '90%',
+          borderRadius: 12,
+          marginBottom: 15,
+        },
+      },
+    },
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          height: 50,
+          // width: '70%',
+          borderRadius: 12,
+          textTransform: 'none',
+          fontSize: '24px',
+          margin: 5,
         },
       },
     },
