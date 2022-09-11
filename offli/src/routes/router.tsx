@@ -12,9 +12,9 @@ const Router: React.FC = (): ReactElement => {
       <Suspense fallback={<p>Loading ...</p>}>
         <BrowserRouter>
           {/* conditional rendering when token is received */}
-          {!token && <OffliHeader />}
+          {token && <OffliHeader />}
           <Routes />
-          {!token && <BottomNavigator />}
+          {token && <BottomNavigator />}
         </BrowserRouter>
       </Suspense>
     </CustomizationProvider>
