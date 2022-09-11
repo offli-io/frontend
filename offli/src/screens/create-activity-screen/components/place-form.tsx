@@ -1,30 +1,37 @@
-import { Box, TextField, Typography } from '@mui/material'
+import {
+  Box,
+  Checkbox,
+  FormControlLabel,
+  TextField,
+  Typography,
+  useTheme,
+} from '@mui/material'
 import React from 'react'
 import { Controller, UseFormReturn } from 'react-hook-form'
 import OffliButton from '../../../components/offli-button'
 
-interface INameFormProps {
+interface IPlaceFormProps {
   onNextClicked: () => void
   methods: UseFormReturn
 }
 
-export const NameForm: React.FC<INameFormProps> = ({
+export const PlaceForm: React.FC<IPlaceFormProps> = ({
   onNextClicked,
   methods,
 }) => {
-  const { control, formState } = methods
+  const { control, handleSubmit, formState } = methods
 
   return (
     <>
       <Box sx={{ display: 'flex' }}>
-        <Typography variant="h4">Create</Typography>
+        <Typography variant="h4">Add</Typography>
         <Typography variant="h4" sx={{ ml: 1, color: 'primary.main' }}>
-          name
+          place
         </Typography>
       </Box>
       <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
         <Controller
-          name="name"
+          name="place"
           control={control}
           render={({ field, fieldState: { error } }) => (
             <TextField
@@ -33,14 +40,22 @@ export const NameForm: React.FC<INameFormProps> = ({
               variant="standard"
               error={!!error}
               sx={{ width: '80%' }}
-              helperText={!!error && 'Activity name is required'}
+              helperText={!!error && 'Activity place is required'}
               //label="Username"
               // disabled={methodSelectionDisabled}
             />
           )}
         />
       </Box>
-      <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
+      <Box
+        sx={{
+          width: '100%',
+          display: 'flex',
+          alignItems: 'center',
+          flexDirection: 'column',
+        }}
+      >
+        <FormControlLabel control={<Checkbox />} label="Private activity" />
         <OffliButton
           onClick={onNextClicked}
           sx={{ width: '80%' }}
