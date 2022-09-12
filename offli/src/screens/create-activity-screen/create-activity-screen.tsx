@@ -7,10 +7,11 @@ import { Controller, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
 import OffliButton from '../../components/offli-button'
+import { ILocation } from '../../types/activities/location.dto'
 
 interface FormValues {
   name?: string
-  place?: string
+  place?: ILocation
 }
 
 const schema: (activeStep: number) => yup.SchemaOf<FormValues> = (
@@ -23,8 +24,33 @@ const schema: (activeStep: number) => yup.SchemaOf<FormValues> = (
         : yup.string().notRequired(),
     place:
       activeStep === 1
-        ? yup.string().defined().required()
-        : yup.string().notRequired(),
+        ? yup
+            .object({
+              type: yup.string().defined().required(),
+              id: yup.number().defined().required(),
+              lat: yup.number().defined().required(),
+              lon: yup.number().defined().required(),
+              tags: yup.object({
+                city_limit: yup.string().defined().required(),
+                name: yup.string().defined().required(),
+                traffic_sign: yup.string().defined().required(),
+              }),
+            })
+            .defined()
+            .required()
+        : yup
+            .object({
+              type: yup.string().notRequired(),
+              id: yup.number().notRequired(),
+              lat: yup.number().notRequired(),
+              lon: yup.number().notRequired(),
+              tags: yup.object({
+                city_limit: yup.string().notRequired(),
+                name: yup.string().notRequired(),
+                traffic_sign: yup.string().notRequired(),
+              }),
+            })
+            .notRequired(),
   })
 
 const CreateActivityScreen = () => {
@@ -34,7 +60,6 @@ const CreateActivityScreen = () => {
   const methods = useForm<FormValues>({
     defaultValues: {
       name: '',
-      place: '',
     },
     resolver: yupResolver(schema(activeStep)),
     mode: 'onChange',
