@@ -99,12 +99,12 @@ const CreateActivityScreen = () => {
         style={{
           display: 'flex',
           alignItems: 'center',
-          justifyContent: 'space-around',
+          justifyContent: 'space-between',
           flexDirection: 'column',
           height: '100vh',
           width: '100%',
           //TODO in the future maybe include navigation height in the PageWrapper component for now pb: 12 is enough
-          paddingBottom: theme.spacing(12),
+          paddingBottom: theme.spacing(20),
           marginTop: theme.spacing(2),
         }}
         onSubmit={handleSubmit(handleFormSubmit)}

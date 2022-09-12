@@ -84,21 +84,6 @@ export const PlaceForm: React.FC<IPlaceFormProps> = ({
           )}
         />
       </Box>
-      {/* <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
-        <Controller
-          name="place"
-          control={control}
-          render={({ field, fieldState: { error } }) => (
-            <Autocomplete
-              options={top100Films}
-              sx={{ width: '90%' }}
-              renderInput={params => (
-                <TextField {...params} {...field} label="Search place" />
-              )}
-            />
-          )}
-        />
-      </Box> */}
       <Box
         sx={{
           width: '100%',
