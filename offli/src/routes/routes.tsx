@@ -3,6 +3,7 @@ import ActivitiesScreen from '../screens/activites-screen'
 import ChatScreen from '../screens/chat-screen'
 import CreateActivityScreen from '../screens/create-activity-screen/create-activity-screen'
 import LoadingScreen from '../screens/loading-screen'
+import LoginOrRegister from '../screens/login-or-register'
 import LoginScreen from '../screens/login-screen'
 import MyBuddiesScreen from '../screens/my-buddies-screen'
 import NewPasswordScreen from '../screens/new-password-screen'
@@ -20,6 +21,10 @@ const Routes = () => {
     <BaseRoutes>
       <Route path={ApplicationLocations.LOADING} element={<LoadingScreen />} />
       <Route path={ApplicationLocations.LOGIN} element={<LoginScreen />} />
+      <Route
+        path={ApplicationLocations.LOGINREGISTER}
+        element={<LoginOrRegister />}
+      />
       <Route
         path={ApplicationLocations.REGISTER}
         element={<RegistrationScreen />}

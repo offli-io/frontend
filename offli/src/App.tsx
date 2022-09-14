@@ -34,7 +34,7 @@ function App() {
         type: 'standard',
         theme: 'outline',
         size: 'large',
-        width: '250px',
+        width: '270px',
       }
     )
   }, [])

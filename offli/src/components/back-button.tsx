@@ -14,7 +14,7 @@ const BackButton: React.FC<IBackButtonProps> = ({ href, text }) => {
       href={href}
     >
       <ArrowBackIosNewIcon sx={{ height: '20px' }} />
-      <Typography variant="subtitle2" sx={{ color: 'black' }}>
+      <Typography variant="subtitle2" sx={{ color: 'black', fontSize: 16 }}>
         {text}
       </Typography>
     </Button>

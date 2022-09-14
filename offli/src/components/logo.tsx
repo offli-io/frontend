@@ -9,8 +9,8 @@ const Logo: React.FC = () => {
       sx={{
         //   height: 233,
         //   width: 350,
-        maxHeight: { xs: 100, md: 200 },
-        maxWidth: { xs: 150, md: 350 },
+        maxHeight: { xs: 120, md: 220 },
+        maxWidth: { xs: 170, md: 360 },
       }}
       alt="The house from the offer."
       src={logo}

@@ -42,15 +42,12 @@ const PickUsernameScreen = () => {
           alignItems: 'center',
           //   justifyContent: 'center',
         }}
-        className="backgroundImage"
       >
         <BackButton href={ApplicationLocations.REGISTER} text="Registration" />
-        <Typography
-          variant="h3"
-          sx={{ mt: 20, mb: 4, fontWeight: 'bold', fontSize: '24px' }}
-        >
-          Pick your username
+        <Typography variant="h2" sx={{ mt: 15, display: 'flex', flex: 1 }}>
+          Pick your<Box sx={{ color: 'primary.main' }}>&nbsp;username</Box>
         </Typography>
+
         <Controller
           name="username"
           control={control}
@@ -67,17 +64,28 @@ const PickUsernameScreen = () => {
               //   t(`value.${nextStep?.authenticationType}.placeholder`)
               // }
               //disabled={methodSelectionDisabled}
-              sx={{ mb: 1, width: '70%' }}
+              sx={{ width: '80%', flex: 3 }}
             />
           )}
         />
-        <Box sx={{ display: 'flex', alignItems: 'center', mb: 3, ml: -15 }}>
+        {/* <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            mb: 3,
+            ml: -15,
+          }}
+        >
           <ErrorIcon sx={{ color: 'red', height: '18px' }} />
           <Typography variant="subtitle2" sx={{ color: 'red' }}>
             Username is taken!
           </Typography>
-        </Box>
-        <OffliButton variant="contained" type="submit" sx={{ width: '70%' }}>
+        </Box> */}
+        <OffliButton
+          variant="contained"
+          type="submit"
+          sx={{ width: '80%', mb: 5 }}
+        >
           Next
         </OffliButton>
       </Box>

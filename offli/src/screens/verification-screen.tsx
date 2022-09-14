@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { Box, Typography } from '@mui/material'
 import BackButton from '../components/back-button'
+import OffliButton from '../components/offli-button'
 import ReactInputVerificationCode from 'react-input-verification-code'
 import { ApplicationLocations } from '../types/common/applications-locations.dto'
 
@@ -17,13 +18,9 @@ const VerificationScreen = () => {
         alignItems: 'center',
         //   justifyContent: 'center',
       }}
-      className="backgroundImage"
     >
       <BackButton href={ApplicationLocations.REGISTER} text="Sign Up" />
-      <Typography
-        variant="h3"
-        sx={{ mt: 20, fontWeight: 'bold', fontSize: '24px' }}
-      >
+      <Typography variant="h2" sx={{ mt: 20 }}>
         Confirm verification code
       </Typography>
       <Typography
@@ -34,18 +31,20 @@ const VerificationScreen = () => {
         Take a look for the verification code we just sent you to{' '}
         <b>{emailAddress}</b>.
       </Typography>
-      <Typography
-        variant="subtitle2"
-        sx={{ color: 'lightgrey', ml: -22, mb: 1 }}
-      >
+      <Typography variant="subtitle2" sx={{ ml: -20, mb: 1 }}>
         Confirmation code
       </Typography>
       <ReactInputVerificationCode autoFocus placeholder="" length={5} />
-      <Box sx={{ mt: 1, display: 'flex', mr: -15 }}>
+      <Box sx={{ display: 'flex', mr: -15, alignItems: 'center' }}>
         <Typography variant="subtitle2">No email?</Typography>
-        <Typography variant="subtitle2" sx={{ color: 'lightgrey' }}>
-          &nbsp;<b>Resend code</b>
-        </Typography>
+        <OffliButton variant="text">
+          <Typography
+            variant="subtitle2"
+            sx={{ color: 'primary.main', ml: -1 }}
+          >
+            &nbsp;<b>Resend code</b>
+          </Typography>
+        </OffliButton>
       </Box>
     </Box>
   )

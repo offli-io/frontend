@@ -1,6 +1,7 @@
 export enum ApplicationLocations {
   LOADING = '/',
   LOGIN = '/login',
+  LOGINREGISTER = '/loginregister',
   REGISTER = '/register',
   VERIFY = '/verify',
   PICK_USERNAME = '/pick-username',
