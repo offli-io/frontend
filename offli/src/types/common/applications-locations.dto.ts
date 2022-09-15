@@ -5,6 +5,7 @@ export enum ApplicationLocations {
   REGISTER = '/register',
   VERIFY = '/verify',
   PICK_USERNAME = '/pick-username',
+  SELECT_PROFILE_PICTURE = '/select-picture',
   RESET_PASSWORD = '/reset-password',
   NEW_PASSWORD = '/new-password',
   WELCOME = '/welcome',

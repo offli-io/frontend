@@ -7,9 +7,10 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import Logo from '../components/logo'
 import OffliButton from '../components/offli-button'
 
-import backgroundImage from '../assets/img/undraw_realLife.svg'
+import backgroundImage from '../assets/img/undraw_real_life_blue.svg'
+import { PageWrapper } from '../components/page-wrapper'
 
-const LoginOrRegister = () => {
+const LoginOrRegisterScreen = () => {
   return (
     <Box
       sx={{
@@ -32,11 +33,11 @@ const LoginOrRegister = () => {
       <OffliButton to="/login" sx={{ width: '80%', mb: 1 }}>
         Login
       </OffliButton>
-      <OffliButton to="/register" variant="text" sx={{ width: '80%', mb: 5 }}>
+      <OffliButton to="/register" variant="text" sx={{ width: '80%', mb: 3 }}>
         Register
       </OffliButton>
     </Box>
   )
 }
 
-export default LoginOrRegister
+export default LoginOrRegisterScreen
