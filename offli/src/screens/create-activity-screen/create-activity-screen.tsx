@@ -8,6 +8,7 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
 import OffliButton from '../../components/offli-button'
 import { ILocation } from '../../types/activities/location.dto'
+import { ActivityTypeForm } from './components/activity-type-form'
 
 interface FormValues {
   name?: string
@@ -79,7 +80,7 @@ const CreateActivityScreen = () => {
         )
       case 1:
         return (
-          <PlaceForm
+          <ActivityTypeForm
             onNextClicked={() => setActiveStep(activeStep => activeStep + 1)}
             methods={methods}
           />
