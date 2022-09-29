@@ -8,14 +8,14 @@ import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
 
 interface ILabeledTileProps {
-  label?: string
+  title: string
   imageUrl?: string
   sx?: SxProps
-  onClick: (id: number) => void
+  onClick: (title: string) => void
 }
 
 const LabeledTile: React.FC<ILabeledTileProps> = ({
-  label,
+  title,
   imageUrl,
   sx,
   onClick,
@@ -24,7 +24,7 @@ const LabeledTile: React.FC<ILabeledTileProps> = ({
 
   const handleCardClick = React.useCallback(() => {
     setSelected(selected => !selected)
-    onClick(22)
+    onClick(title)
   }, [onClick])
 
   return (
@@ -66,7 +66,7 @@ const LabeledTile: React.FC<ILabeledTileProps> = ({
               fontWeight: 'bold',
             }}
           >
-            {label}
+            {title}
           </Typography>
         </Box>
       </Button>

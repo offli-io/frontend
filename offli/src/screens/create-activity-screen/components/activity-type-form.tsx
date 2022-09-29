@@ -13,7 +13,22 @@ export const ActivityTypeForm: React.FC<IActivityTypeFormProps> = ({
   onNextClicked,
   methods,
 }) => {
-  const { control, formState } = methods
+  const { control, setValue, watch } = methods
+
+  const tags: string[] = watch('tags') ?? []
+
+  const handleTileClick = React.useCallback(
+    (title: string) => {
+      if (tags?.includes(title)) {
+        const updatedTags = tags.filter((tag: string) => tag !== title)
+        setValue('tags', updatedTags)
+      } else {
+        const updatedTags = [...tags, title]
+        setValue('tags', updatedTags)
+      }
+    },
+    [tags, setValue]
+  )
 
   return (
     <>
@@ -24,25 +39,18 @@ export const ActivityTypeForm: React.FC<IActivityTypeFormProps> = ({
         </Typography>
       </Box>
       <Box sx={{ display: 'flex' }}>
-        <LabeledTile
-          label="Sports and drinks"
-          onClick={(id: number) => console.log(id)}
-        />
-        <LabeledTile
-          label="Relax"
-          sx={{ ml: 3 }}
-          onClick={(id: number) => console.log(id)}
-        />
+        <LabeledTile title="Sports and drinks" onClick={handleTileClick} />
+        <LabeledTile title="Relax" sx={{ ml: 3 }} onClick={handleTileClick} />
       </Box>
 
       <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
-        {/* <OffliButton
+        <OffliButton
           onClick={onNextClicked}
           sx={{ width: '80%' }}
-          disabled={!formState.isValid}
+          //disabled={!formState.isValid}
         >
           Next
-        </OffliButton> */}
+        </OffliButton>
       </Box>
     </>
   )

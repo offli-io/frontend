@@ -9,10 +9,12 @@ import * as yup from 'yup'
 import OffliButton from '../../components/offli-button'
 import { ILocation } from '../../types/activities/location.dto'
 import { ActivityTypeForm } from './components/activity-type-form'
+import { DateTimeForm } from './components/date-time-form'
 
 interface FormValues {
   name?: string
   place?: ILocation
+  tags?: string[]
 }
 
 const schema: (activeStep: number) => yup.SchemaOf<FormValues> = (
@@ -52,6 +54,10 @@ const schema: (activeStep: number) => yup.SchemaOf<FormValues> = (
               }),
             })
             .notRequired(),
+    tags:
+      activeStep === 2
+        ? yup.array().of(yup.string()).defined().required()
+        : yup.array().of(yup.string()).notRequired(),
   })
 
 const CreateActivityScreen = () => {
@@ -76,9 +82,19 @@ const CreateActivityScreen = () => {
     switch (activeStep) {
       case 0:
         return (
-          <NameForm onNextClicked={() => setActiveStep(1)} methods={methods} />
+          <DateTimeForm
+            onNextClicked={() => setActiveStep(1)}
+            methods={methods}
+          />
         )
       case 1:
+        return (
+          <PlaceForm
+            onNextClicked={() => setActiveStep(activeStep => activeStep + 1)}
+            methods={methods}
+          />
+        )
+      case 2:
         return (
           <ActivityTypeForm
             onNextClicked={() => setActiveStep(activeStep => activeStep + 1)}
