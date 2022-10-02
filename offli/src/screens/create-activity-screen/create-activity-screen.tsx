@@ -88,14 +88,16 @@ const CreateActivityScreen = () => {
     console.log(data)
   }, [])
 
+  const handleFormError = React.useCallback(
+    (error: any) => console.log(error),
+    []
+  )
+
   const renderProperContent = React.useCallback(() => {
     switch (activeStep) {
       case 0:
         return (
-          <DateTimeForm
-            onNextClicked={() => setActiveStep(1)}
-            methods={methods}
-          />
+          <NameForm onNextClicked={() => setActiveStep(1)} methods={methods} />
         )
       case 1:
         return (
@@ -107,6 +109,13 @@ const CreateActivityScreen = () => {
       case 2:
         return (
           <ActivityTypeForm
+            onNextClicked={() => setActiveStep(activeStep => activeStep + 1)}
+            methods={methods}
+          />
+        )
+      case 3:
+        return (
+          <DateTimeForm
             onNextClicked={() => setActiveStep(activeStep => activeStep + 1)}
             methods={methods}
           />
@@ -134,7 +143,7 @@ const CreateActivityScreen = () => {
           paddingBottom: theme.spacing(20),
           marginTop: theme.spacing(2),
         }}
-        onSubmit={handleSubmit(handleFormSubmit)}
+        onSubmit={handleSubmit(handleFormSubmit, handleFormError)}
       >
         {renderProperContent()}
       </form>

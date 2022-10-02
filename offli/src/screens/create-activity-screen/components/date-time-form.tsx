@@ -15,7 +15,24 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
   onNextClicked,
   methods,
 }) => {
-  const { control, formState } = methods
+  const { control, formState, watch, setValue } = methods
+
+  const handleTimeChange = React.useCallback(
+    (type: 'start_datetime' | 'end_datetime', value: string | null) => {
+      if (value) {
+        const timeSplit = value.split(':')
+        const currentStartDate = watch('start_datetime')
+        const date = new Date(currentStartDate)
+        date.setHours(Number(timeSplit[0]), Number(timeSplit[1]), 0)
+
+        console.log(date)
+        setValue(type, date)
+      }
+    },
+    [setValue, watch]
+  )
+
+  const isFormValid = !!watch('start_datetime') && !!watch('end_datetime')
 
   return (
     <>
@@ -64,17 +81,30 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
           alignItems: 'center',
         }}
       >
-        <TimePicker label="From" sx={{ width: '40%', mr: 2 }} />
+        <TimePicker
+          label="From"
+          sx={{ width: '40%', mr: 2 }}
+          onChange={(value: string | null) =>
+            handleTimeChange('start_datetime', value)
+          }
+        />
         <Typography sx={{ fontWeight: 200, fontSize: '2rem', pb: 1.5 }}>
           -
         </Typography>
-        <TimePicker label="To" sx={{ width: '40%', ml: 2 }} />
+
+        <TimePicker
+          label="To"
+          sx={{ width: '40%', ml: 2 }}
+          onChange={(value: string | null) =>
+            handleTimeChange('end_datetime', value)
+          }
+        />
       </Box>
       <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
         <OffliButton
           onClick={onNextClicked}
           sx={{ width: '80%' }}
-          disabled={!formState.isValid}
+          disabled={!isFormValid}
         >
           Next
         </OffliButton>
