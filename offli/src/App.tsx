@@ -7,6 +7,8 @@ import { QueryClientProvider, QueryClient } from 'react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { AuthenticationProvider } from './assets/theme/authentication-provider'
 import { ReactNode } from 'react'
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
+import { LocalizationProvider } from '@mui/x-date-pickers'
 
 const queryClient = new QueryClient()
 
@@ -41,9 +43,11 @@ function App() {
   return (
     <AuthenticationProvider>
       <QueryClientProvider client={queryClient} contextSharing={true}>
-        <Box sx={{ height: '100vh' }}>
-          <Router />
-        </Box>
+        <LocalizationProvider dateAdapter={AdapterDateFns}>
+          <Box sx={{ height: '100vh' }}>
+            <Router />
+          </Box>
+        </LocalizationProvider>
 
         {/* 
       Nemozme pouzit query devtooly lebo to pada s tym ze sa na pozadi vytvaraju 2 instancie query client providera

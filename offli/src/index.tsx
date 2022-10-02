@@ -6,8 +6,12 @@ import * as serviceWorkerRegistration from './serviceWorkerRegistration'
 import reportWebVitals from './reportWebVitals'
 import axios from 'axios'
 
+// if using docker
 axios.defaults.baseURL =
   'https://virtserver.swaggerhub.com/semjacko/Activities/1.0.0'
+
+//'http://localhost:5000'
+//  'https://virtserver.swaggerhub.com/semjacko/Activities/1.0.0'
 
 axios.interceptors.request.use(
   config => {

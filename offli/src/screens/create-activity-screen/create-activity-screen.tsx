@@ -15,6 +15,8 @@ interface FormValues {
   name?: string
   place?: ILocation
   tags?: string[]
+  start_datetime?: Date
+  end_datetime?: Date
 }
 
 const schema: (activeStep: number) => yup.SchemaOf<FormValues> = (
@@ -58,6 +60,14 @@ const schema: (activeStep: number) => yup.SchemaOf<FormValues> = (
       activeStep === 2
         ? yup.array().of(yup.string()).defined().required()
         : yup.array().of(yup.string()).notRequired(),
+    start_datetime:
+      activeStep === 3
+        ? yup.date().defined().required()
+        : yup.date().notRequired(),
+    end_datetime:
+      activeStep === 3
+        ? yup.date().defined().required()
+        : yup.date().notRequired(),
   })
 
 const CreateActivityScreen = () => {

@@ -3,6 +3,8 @@ import React from 'react'
 import { Controller, UseFormReturn } from 'react-hook-form'
 import OffliButton from '../../../components/offli-button'
 import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker'
+import { format } from 'date-fns'
+import TimePicker from '../../../components/time-picker'
 
 interface IDateTimeForm {
   onNextClicked: () => void
@@ -31,7 +33,7 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
       </Box>
       <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
         <Controller
-          name="startD"
+          name="start_datetime"
           control={control}
           render={({ field, fieldState: { error } }) => (
             // <TextField
@@ -46,12 +48,27 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
             // />
             <MobileDatePicker
               {...field}
-              label="Date mobile"
-              inputFormat="MM/DD/YYYY"
+              minDate={new Date()}
+              label="Date"
+              inputFormat="dd.MM.yyyy"
               renderInput={(params: any) => <TextField {...params} />}
             />
           )}
         />
+      </Box>
+      <Box
+        sx={{
+          display: 'flex',
+          width: '100%',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+      >
+        <TimePicker label="From" sx={{ width: '40%', mr: 2 }} />
+        <Typography sx={{ fontWeight: 200, fontSize: '2rem', pb: 1.5 }}>
+          -
+        </Typography>
+        <TimePicker label="To" sx={{ width: '40%', ml: 2 }} />
       </Box>
       <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
         <OffliButton
