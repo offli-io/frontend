@@ -8,3 +8,11 @@ export interface IActivityProps {
   accepted: number
   capacity: number
 }
+
+export enum ActivityRepetitionOptionsEnum {
+  never = 'never',
+  weekly = 'weekly',
+  bi_weekly = 'bi_weekly',
+  monthly = 'monthly',
+  yearly = 'yearly',
+}

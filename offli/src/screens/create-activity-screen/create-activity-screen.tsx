@@ -10,6 +10,7 @@ import OffliButton from '../../components/offli-button'
 import { ILocation } from '../../types/activities/location.dto'
 import { ActivityTypeForm } from './components/activity-type-form'
 import { DateTimeForm } from './components/date-time-form'
+import { ActivityRepetitionOptionsEnum } from '../../types/common/types'
 
 interface FormValues {
   name?: string
@@ -17,6 +18,7 @@ interface FormValues {
   tags?: string[]
   start_datetime?: Date
   end_datetime?: Date
+  repeated?: ActivityRepetitionOptionsEnum
 }
 
 const schema: (activeStep: number) => yup.SchemaOf<FormValues> = (
@@ -62,12 +64,28 @@ const schema: (activeStep: number) => yup.SchemaOf<FormValues> = (
         : yup.array().of(yup.string()).notRequired(),
     start_datetime:
       activeStep === 3
-        ? yup.date().defined().required()
+        ? yup
+            .date()
+            .defined()
+            .required()
+            .default(() => new Date())
         : yup.date().notRequired(),
     end_datetime:
       activeStep === 3
         ? yup.date().defined().required()
         : yup.date().notRequired(),
+    repeated:
+      activeStep === 3
+        ? yup
+            .mixed<ActivityRepetitionOptionsEnum>()
+            .oneOf(Object.values(ActivityRepetitionOptionsEnum))
+            .defined()
+            .required()
+            .default(ActivityRepetitionOptionsEnum.never)
+        : yup
+            .mixed<ActivityRepetitionOptionsEnum>()
+            .oneOf(Object.values(ActivityRepetitionOptionsEnum))
+            .notRequired(),
   })
 
 const CreateActivityScreen = () => {
@@ -77,6 +95,7 @@ const CreateActivityScreen = () => {
   const methods = useForm<FormValues>({
     defaultValues: {
       name: '',
+      repeated: ActivityRepetitionOptionsEnum.never,
     },
     resolver: yupResolver(schema(activeStep)),
     mode: 'onChange',
@@ -137,7 +156,7 @@ const CreateActivityScreen = () => {
           alignItems: 'center',
           justifyContent: 'space-between',
           flexDirection: 'column',
-          height: '100vh',
+          height: '72vh',
           width: '100%',
           //TODO in the future maybe include navigation height in the PageWrapper component for now pb: 12 is enough
           paddingBottom: theme.spacing(20),

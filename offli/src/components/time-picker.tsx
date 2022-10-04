@@ -1,27 +1,30 @@
 import * as React from 'react'
 import TextField from '@mui/material/TextField'
-import Autocomplete from '@mui/material/Autocomplete'
+import Autocomplete, { AutocompleteProps } from '@mui/material/Autocomplete'
 import { SxProps } from '@mui/material'
-
-const timeSlots = Array.from(new Array(24 * 2)).map(
-  (_, index) =>
-    `${index < 20 ? '0' : ''}${Math.floor(index / 2)}:${
-      index % 2 === 0 ? '00' : '30'
-    }`
-)
 
 interface ITimePickerProps {
   label: string
   sx?: SxProps
+  options: string[]
   onChange: (value: string | null) => void
+  getOptionDisabled?: (option: string) => boolean
 }
 
-const TimePicker: React.FC<ITimePickerProps> = ({ label, sx, onChange }) => {
+const TimePicker: React.FC<ITimePickerProps> = ({
+  label,
+  sx,
+  options,
+  onChange,
+  getOptionDisabled,
+}) => {
   return (
     <Autocomplete
+      disableClearable
       id="disabled-options-demo"
-      options={timeSlots}
+      options={options}
       sx={sx}
+      getOptionDisabled={getOptionDisabled}
       onChange={(event: React.SyntheticEvent, value: string | null) =>
         onChange(value)
       }
