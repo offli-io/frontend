@@ -50,6 +50,7 @@ const ActivitiesScreen = () => {
   return (
     <PageWrapper>
       <Button>Fetch</Button>
+
       <Typography
         variant="h6"
         sx={{
@@ -62,6 +63,7 @@ const ActivitiesScreen = () => {
       >
         Today
       </Typography>
+
       <Box
         sx={{
           height: '100vh',

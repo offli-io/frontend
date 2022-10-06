@@ -1,11 +1,12 @@
 import React from 'react'
-import { Box, Typography, TextField } from '@mui/material'
+import { Box, Typography, TextField, IconButton } from '@mui/material'
 import BackButton from '../components/back-button'
 import { Controller, useForm } from 'react-hook-form'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
 import OffliButton from '../components/offli-button'
-import ErrorIcon from '@mui/icons-material/Error'
+import AddAPhotoIcon from '@mui/icons-material/AddAPhoto'
+
 import { ApplicationLocations } from '../types/common/applications-locations.dto'
 
 export interface FormValues {
@@ -17,7 +18,7 @@ const schema: () => yup.SchemaOf<FormValues> = () =>
     username: yup.string().defined().required(),
   })
 
-const PickUsernameScreen = () => {
+const SelectProfilePictureScreen = () => {
   const { control, handleSubmit } = useForm<FormValues>({
     defaultValues: {
       username: '',
@@ -43,54 +44,33 @@ const PickUsernameScreen = () => {
           //   justifyContent: 'center',
         }}
       >
-        <BackButton href={ApplicationLocations.REGISTER} text="Registration" />
+        {/* <BackButton href={ApplicationLocations.REGISTER} text="Registration" /> */}
         <Typography variant="h2" sx={{ mt: 15, display: 'flex', flex: 1 }}>
-          Pick your<Box sx={{ color: 'primary.main' }}>&nbsp;username</Box>
+          Select your
+          <Box sx={{ color: 'primary.main' }}>&nbsp;profile picture</Box>
         </Typography>
-
-        <Controller
-          name="username"
-          control={control}
-          render={({ field, fieldState: { error } }) => (
-            <TextField
-              autoFocus
-              {...field}
-              //label="Username"
-              placeholder="Username"
-              // variant="filled"
-              error={!!error}
-              // helperText={
-              //   error?.message ||
-              //   t(`value.${nextStep?.authenticationType}.placeholder`)
-              // }
-              //disabled={methodSelectionDisabled}
-              sx={{ width: '80%', flex: 3 }}
-            />
-          )}
-        />
-        {/* <Box
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            mb: 3,
-            ml: -15,
-          }}
+        <IconButton
+          color="primary"
+          aria-label="upload picture"
+          component="label"
+          sx={{ fontSize: '50px', mb: 25 }}
         >
-          <ErrorIcon sx={{ color: 'red', height: '18px' }} />
-          <Typography variant="subtitle2" sx={{ color: 'red' }}>
-            Username is taken!
-          </Typography>
-        </Box> */}
+          <input hidden accept="image/*" type="file" />
+          <AddAPhotoIcon sx={{ fontSize: '50px', color: 'lightgrey' }} />
+        </IconButton>
         <OffliButton
           variant="contained"
           type="submit"
-          sx={{ width: '80%', mb: 5 }}
+          sx={{ width: '80%', mb: 1 }}
         >
           Next
+        </OffliButton>
+        <OffliButton variant="text" sx={{ width: '80%', mb: 5 }}>
+          Skip
         </OffliButton>
       </Box>
     </form>
   )
 }
 
-export default PickUsernameScreen
+export default SelectProfilePictureScreen
