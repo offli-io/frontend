@@ -10,7 +10,10 @@ import OffliButton from '../../components/offli-button'
 import { ILocation } from '../../types/activities/location.dto'
 import { ActivityTypeForm } from './components/activity-type-form'
 import { DateTimeForm } from './components/date-time-form'
-import { ActivityRepetitionOptionsEnum } from '../../types/common/types'
+import {
+  ActivityFeesOptionsEnum,
+  ActivityRepetitionOptionsEnum,
+} from '../../types/common/types'
 
 interface FormValues {
   name?: string
@@ -18,6 +21,8 @@ interface FormValues {
   tags?: string[]
   start_datetime?: Date
   end_datetime?: Date
+  fee?: string
+  // public?: boolean
   repeated?: ActivityRepetitionOptionsEnum
 }
 
@@ -58,6 +63,17 @@ const schema: (activeStep: number) => yup.SchemaOf<FormValues> = (
               }),
             })
             .notRequired(),
+    fee:
+      activeStep === 1
+        ? yup
+            .mixed<ActivityFeesOptionsEnum>()
+            .oneOf(Object.values(ActivityFeesOptionsEnum))
+            .defined()
+            .required()
+        : yup
+            .mixed<ActivityFeesOptionsEnum>()
+            .oneOf(Object.values(ActivityFeesOptionsEnum))
+            .notRequired(),
     tags:
       activeStep === 2
         ? yup.array().of(yup.string()).defined().required()
@@ -96,6 +112,7 @@ const CreateActivityScreen = () => {
     defaultValues: {
       name: '',
       repeated: ActivityRepetitionOptionsEnum.never,
+      fee: 'free',
     },
     resolver: yupResolver(schema(activeStep)),
     mode: 'onChange',

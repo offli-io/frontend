@@ -2,7 +2,11 @@ import {
   Autocomplete,
   Box,
   Checkbox,
+  FormControl,
   FormControlLabel,
+  FormLabel,
+  MenuItem,
+  Switch,
   TextField,
   Typography,
   useTheme,
@@ -10,6 +14,7 @@ import {
 import React from 'react'
 import { Controller, UseFormReturn } from 'react-hook-form'
 import OffliButton from '../../../components/offli-button'
+import { ActivityFeesOptionsEnum } from '../../../types/common/types'
 
 interface IPlaceFormProps {
   onNextClicked: () => void
@@ -58,29 +63,80 @@ export const PlaceForm: React.FC<IPlaceFormProps> = ({
           display: 'flex',
           flexDirection: 'column',
           width: '100%',
-          alignItems: 'center',
+          alignItems: 'flex-start',
         }}
       >
-        <Box sx={{ display: 'flex', mb: 4 }}>
-          <Typography variant="h4">Add</Typography>
-          <Typography variant="h4" sx={{ ml: 1, color: 'primary.main' }}>
-            place
-          </Typography>
-        </Box>
         <Controller
           name="place"
           control={control}
           render={({ field, fieldState: { error } }) => (
             <Autocomplete
               options={top100Films}
-              sx={{ width: '90%' }}
+              sx={{
+                width: '100%',
+                display: 'flex',
+                justifyContent: 'center',
+                mb: 5,
+              }}
               isOptionEqualToValue={(option, value) => option.id === value.id}
               onChange={(e, newvalue) => field.onChange(newvalue)}
               getOptionLabel={option => option?.tags?.name}
               renderInput={params => (
-                <TextField {...params} label="Search place" />
+                <TextField {...params} label="Add place" />
               )}
             />
+          )}
+        />
+        <Controller
+          name="fee"
+          control={control}
+          render={({ field, fieldState: { error } }) => (
+            <TextField
+              {...field}
+              id="outlined-select-currency"
+              select
+              sx={{ width: '100%', mb: 5 }}
+              label="Any fees?"
+              // helperText="Please select your currency"
+            >
+              {Object.values(ActivityFeesOptionsEnum).map(option => (
+                <MenuItem key={option} value={option}>
+                  {option}
+                </MenuItem>
+              ))}
+            </TextField>
+          )}
+        />
+
+        <Controller
+          name="accessibility"
+          control={control}
+          render={({ field, fieldState: { error } }) => (
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+              }}
+            >
+              {/* TODO add only boolean to hook form for example public, which will be either false or true */}
+              <Typography>Accessibility</Typography>
+              <Box
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                <FormLabel sx={!field.value ? { color: 'black' } : {}}>
+                  public
+                </FormLabel>
+                <Switch sx={{ mx: 1 }} {...field} color="primary" />
+                <FormLabel sx={field.value ? { color: 'black' } : {}}>
+                  private
+                </FormLabel>
+              </Box>
+            </Box>
           )}
         />
       </Box>

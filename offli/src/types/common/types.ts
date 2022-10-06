@@ -16,3 +16,13 @@ export enum ActivityRepetitionOptionsEnum {
   monthly = 'monthly',
   yearly = 'yearly',
 }
+
+export enum ActivityFeesOptionsEnum {
+  free = 'free',
+  from1to15 = '1-15',
+  from16to30 = '16-30',
+  from31to45 = '31-45',
+  from46to60 = '46-60',
+  from61to75 = '61-75',
+  more = 'more than 100',
+}
