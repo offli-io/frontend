@@ -9,6 +9,17 @@ interface IActivityTypeFormProps {
   methods: UseFormReturn
 }
 
+const activityTypes = [
+  'Sports and drinks',
+  'Relax',
+  'Cinema',
+  'Food',
+  'Music',
+  'Nature',
+  'Adrenaline',
+  'Charitable',
+]
+
 export const ActivityTypeForm: React.FC<IActivityTypeFormProps> = ({
   onNextClicked,
   methods,
@@ -32,21 +43,37 @@ export const ActivityTypeForm: React.FC<IActivityTypeFormProps> = ({
 
   return (
     <>
-      <Box sx={{ display: 'flex' }}>
+      <Box sx={{ display: 'flex', mb: 2 }}>
         <Typography variant="h4">Select</Typography>
         <Typography variant="h4" sx={{ ml: 1, color: 'primary.main' }}>
           type
         </Typography>
       </Box>
-      <Box sx={{ display: 'flex' }}>
-        <LabeledTile title="Sports and drinks" onClick={handleTileClick} />
-        <LabeledTile title="Relax" sx={{ ml: 3 }} onClick={handleTileClick} />
+      <Box
+        sx={{
+          display: 'flex',
+          flexWrap: 'wrap',
+          justifyContent: 'space-between',
+        }}
+      >
+        {activityTypes.map((type, index) => (
+          <LabeledTile
+            title={type}
+            onClick={handleTileClick}
+            sx={{
+              width: '42%',
+              mb: 2,
+            }}
+          />
+        ))}
+        {/* <LabeledTile title="Sports and drinks" onClick={handleTileClick} />
+        <LabeledTile title="Relax" sx={{ ml: 3 }} onClick={handleTileClick} /> */}
       </Box>
 
-      <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
+      <Box sx={{ width: '100%', display: 'flex', justifyContent: 'flex-end' }}>
         <OffliButton
           onClick={onNextClicked}
-          sx={{ width: '80%' }}
+          sx={{ width: '40%' }}
           //disabled={!formState.isValid}
         >
           Next

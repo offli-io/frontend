@@ -6,7 +6,7 @@ import OffliHeader from '../components/offli-header'
 import Routes from './routes'
 
 const Router: React.FC = (): ReactElement => {
-  const token = true
+  const token = false
   return (
     <CustomizationProvider>
       <Suspense fallback={<p>Loading ...</p>}>

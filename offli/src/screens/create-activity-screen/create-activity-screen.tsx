@@ -165,13 +165,23 @@ const CreateActivityScreen = () => {
     }
   }, [activeStep, methods])
 
+  const centerContent = [0, 1].includes(activeStep)
+
+  React.useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      //behavior: '',
+    })
+  }, [activeStep])
+
   return (
     <PageWrapper sxOverrides={{ alignItems: 'center', px: 3 }}>
       <form
         style={{
           display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
+          alignItems: 'flex-start',
+          justifyContent: centerContent ? 'center' : 'flex-start',
           flexDirection: 'column',
           height: '72vh',
           width: '100%',

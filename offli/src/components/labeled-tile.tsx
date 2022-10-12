@@ -37,7 +37,7 @@ const LabeledTile: React.FC<ILabeledTileProps> = ({
         borderRadius: 2,
         ...(selected
           ? { border: theme => `2px solid ${theme.palette.primary.main}` }
-          : {}),
+          : { border: '2px solid transparent' }),
         ...sx,
       }}
     >

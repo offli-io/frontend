@@ -63,8 +63,16 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
   }
 
   return (
-    <>
-      <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        height: '100%',
+        width: '100%',
+        justifyContent: 'space-between',
+      }}
+    >
+      <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
         <Box sx={{ display: 'flex' }}>
           <Typography variant="h4">Select</Typography>
           <Typography variant="h4" sx={{ ml: 1, color: 'primary.main' }}>
@@ -83,6 +91,7 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'center',
+            alignItems: 'center',
             mt: 4,
           }}
         >
@@ -117,7 +126,7 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
               options={timeSlots}
               getOptionDisabled={getFromDisabledOptions}
             />
-            <Typography sx={{ fontWeight: 200, fontSize: '2rem', pb: 1.5 }}>
+            <Typography sx={{ fontWeight: 200, fontSize: '2rem' }}>
               -
             </Typography>
 
@@ -132,7 +141,7 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
             />
           </Box>
         </Box>
-        <Box
+        {/* <Box
           sx={{
             mt: 4,
             display: 'flex',
@@ -163,18 +172,18 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
               </TextField>
             )}
           />
-        </Box>
+        </Box> */}
       </Box>
 
-      <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
+      <Box sx={{ width: '100%', display: 'flex', justifyContent: 'flex-end' }}>
         <OffliButton
           onClick={onNextClicked}
-          sx={{ width: '80%' }}
+          sx={{ width: '40%' }}
           disabled={!isFormValid}
         >
           Next
         </OffliButton>
       </Box>
-    </>
+    </Box>
   )
 }

@@ -68,6 +68,10 @@ const theme = createTheme({
           fontSize: 20,
           fontWeight: 'bold',
         },
+        h4: {
+          fontSize: 22,
+          fontWeight: 'bold',
+        },
         subtitle1: {
           fontSize: 12,
           // fontWeight: 'bold',

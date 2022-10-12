@@ -15,7 +15,6 @@ import React from 'react'
 import { Controller, UseFormReturn } from 'react-hook-form'
 import OffliButton from '../../../components/offli-button'
 import { ActivityFeesOptionsEnum } from '../../../types/common/types'
-import activityLocation from '../../../assets/img/activity-location.svg'
 
 interface IPlaceFormProps {
   onNextClicked: () => void
@@ -47,7 +46,7 @@ const top100Films = [
   },
 ]
 
-export const PlaceForm: React.FC<IPlaceFormProps> = ({
+export const ActivityDetailsForm: React.FC<IPlaceFormProps> = ({
   onNextClicked,
   methods,
 }) => {
@@ -60,29 +59,11 @@ export const PlaceForm: React.FC<IPlaceFormProps> = ({
   return (
     <>
       <Box
-        sx={{ display: 'flex', width: '100%', alignItems: 'flex-end', mt: -8 }}
-      >
-        <Box
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            width: '50%',
-          }}
-        >
-          <Typography variant="h4">Add place</Typography>
-        </Box>
-        <Box sx={{ width: '50%', display: 'flex', justifyContent: 'center' }}>
-          <img src={activityLocation} style={{ height: 80 }} />
-        </Box>
-      </Box>
-      <Box
         sx={{
           display: 'flex',
           flexDirection: 'column',
           width: '100%',
           alignItems: 'flex-start',
-          mt: 4,
         }}
       >
         <Controller
@@ -95,15 +76,67 @@ export const PlaceForm: React.FC<IPlaceFormProps> = ({
                 width: '100%',
                 display: 'flex',
                 justifyContent: 'center',
-                mb: 2,
+                mb: 5,
               }}
               isOptionEqualToValue={(option, value) => option.id === value.id}
               onChange={(e, newvalue) => field.onChange(newvalue)}
               getOptionLabel={option => option?.tags?.name}
               renderInput={params => (
-                <TextField {...params} label="Search place" />
+                <TextField {...params} label="Add place" />
               )}
             />
+          )}
+        />
+        <Controller
+          name="fee"
+          control={control}
+          render={({ field, fieldState: { error } }) => (
+            <TextField
+              {...field}
+              id="outlined-select-currency"
+              select
+              sx={{ width: '100%', mb: 5 }}
+              label="Any fees?"
+              // helperText="Please select your currency"
+            >
+              {Object.values(ActivityFeesOptionsEnum).map(option => (
+                <MenuItem key={option} value={option}>
+                  {option}
+                </MenuItem>
+              ))}
+            </TextField>
+          )}
+        />
+
+        <Controller
+          name="accessibility"
+          control={control}
+          render={({ field, fieldState: { error } }) => (
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+              }}
+            >
+              {/* TODO add only boolean to hook form for example public, which will be either false or true */}
+              <Typography>Accessibility</Typography>
+              <Box
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                <FormLabel sx={!field.value ? { color: 'black' } : {}}>
+                  public
+                </FormLabel>
+                <Switch sx={{ mx: 1 }} {...field} color="primary" />
+                <FormLabel sx={field.value ? { color: 'black' } : {}}>
+                  private
+                </FormLabel>
+              </Box>
+            </Box>
           )}
         />
       </Box>
@@ -111,13 +144,14 @@ export const PlaceForm: React.FC<IPlaceFormProps> = ({
         sx={{
           width: '100%',
           display: 'flex',
-          alignItems: 'flex-end',
+          alignItems: 'center',
           flexDirection: 'column',
         }}
       >
+        <FormControlLabel control={<Checkbox />} label="Private activity" />
         <OffliButton
           onClick={onNextClicked}
-          sx={{ width: '40%' }}
+          sx={{ width: '80%' }}
           disabled={!formState.isValid}
         >
           Next

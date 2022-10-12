@@ -2,6 +2,7 @@ import { Box, TextField, Typography } from '@mui/material'
 import React from 'react'
 import { Controller, UseFormReturn } from 'react-hook-form'
 import OffliButton from '../../../components/offli-button'
+import createActivityImg from '../../../assets/img/create-activity.svg'
 
 interface INameFormProps {
   onNextClicked: () => void
@@ -16,13 +17,29 @@ export const NameForm: React.FC<INameFormProps> = ({
 
   return (
     <>
-      <Box sx={{ display: 'flex' }}>
-        <Typography variant="h4">Create</Typography>
-        <Typography variant="h4" sx={{ ml: 1, color: 'primary.main' }}>
-          name
-        </Typography>
+      <Box
+        sx={{ display: 'flex', width: '100%', alignItems: 'flex-end', mt: -8 }}
+      >
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            width: '50%',
+          }}
+        >
+          <Typography variant="h4" sx={{ color: 'primary.main' }}>
+            Create
+          </Typography>
+          <Typography variant="h4">new activity</Typography>
+        </Box>
+        <Box sx={{ width: '50%', display: 'flex', justifyContent: 'center' }}>
+          <img src={createActivityImg} style={{ height: 80 }} />
+        </Box>
       </Box>
-      <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
+      <Box
+        sx={{ width: '100%', display: 'flex', justifyContent: 'center', mt: 8 }}
+      >
         <Controller
           name="name"
           control={control}
@@ -30,9 +47,10 @@ export const NameForm: React.FC<INameFormProps> = ({
             <TextField
               autoFocus
               {...field}
-              variant="standard"
               error={!!error}
-              sx={{ width: '80%' }}
+              sx={{ width: '100%' }}
+              label="Name"
+              placeholder="Type activity name"
               helperText={!!error && 'Activity name is required'}
               //label="Username"
               // disabled={methodSelectionDisabled}
@@ -40,10 +58,17 @@ export const NameForm: React.FC<INameFormProps> = ({
           )}
         />
       </Box>
-      <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
+      <Box
+        sx={{
+          width: '100%',
+          display: 'flex',
+          justifyContent: 'flex-end',
+          mt: 2,
+        }}
+      >
         <OffliButton
           onClick={onNextClicked}
-          sx={{ width: '80%' }}
+          sx={{ width: '40%' }}
           disabled={!formState.isValid}
         >
           Next
