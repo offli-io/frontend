@@ -45,7 +45,8 @@ export const NameForm: React.FC<INameFormProps> = ({
           control={control}
           render={({ field, fieldState: { error } }) => (
             <TextField
-              autoFocus
+              // TODO idk if this is really needed and not anti-pattern
+              //autoFocus
               {...field}
               error={!!error}
               sx={{ width: '100%' }}
