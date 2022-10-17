@@ -47,9 +47,13 @@ const MyBuddiesScreen = () => {
           <PersonAddIcon />
         </IconButton>
       </Box>
-      {data?.map((buddy: any) => (
+      {data?.map((buddy: any, index) => (
         <>
-          <BuddyItem username={buddy?.name} imageSource={buddy?.imageSource} />
+          <BuddyItem
+            username={buddy?.name}
+            imageSource={buddy?.imageSource}
+            id={index}
+          />
           <Divider
             variant="fullWidth"
             sx={{

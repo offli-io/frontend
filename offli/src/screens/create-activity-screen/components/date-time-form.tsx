@@ -101,6 +101,10 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
             render={({ field, fieldState: { error } }) => (
               <MobileDatePicker
                 {...field}
+                closeOnSelect
+                // componentProps={{
+                //   actionBar: undefined,
+                // }}
                 minDate={new Date()}
                 label="Date"
                 inputFormat="dd.MM.yyyy"

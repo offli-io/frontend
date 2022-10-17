@@ -66,27 +66,53 @@ export const ActivityDetailsForm: React.FC<IPlaceFormProps> = ({
           alignItems: 'flex-start',
         }}
       >
+        <Box sx={{ display: 'flex', mb: 4 }}>
+          <Typography variant="h4">Activity details</Typography>
+        </Box>
         <Controller
-          name="place"
+          name="accessibility"
           control={control}
           render={({ field, fieldState: { error } }) => (
-            <Autocomplete
-              options={top100Films}
+            <Box
               sx={{
-                width: '100%',
                 display: 'flex',
-                justifyContent: 'center',
-                mb: 5,
+                flexDirection: 'column',
+                alignItems: 'center',
+                width: '100%',
               }}
-              isOptionEqualToValue={(option, value) => option.id === value.id}
-              onChange={(e, newvalue) => field.onChange(newvalue)}
-              getOptionLabel={option => option?.tags?.name}
-              renderInput={params => (
-                <TextField {...params} label="Add place" />
-              )}
-            />
+            >
+              {/* TODO add only boolean to hook form for example public, which will be either false or true */}
+              {/* <Typography>Accessibility</Typography> */}
+              <Box
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  width: '100%',
+                  justifyContent: 'space-around',
+                  mb: 4,
+                }}
+              >
+                {/* <FormLabel
+                //sx={!field.value ? { color: 'black' } : {}}
+                >
+                  Accessibility
+                </FormLabel> */}
+                <Typography sx={{ fontWeight: 'bold' }}>
+                  Accessibility
+                </Typography>
+                <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                  <Switch sx={{ mx: 1 }} {...field} color="primary" />
+                  <FormLabel
+                  //sx={field.value ? { color: 'black' } : {}}
+                  >
+                    public
+                  </FormLabel>
+                </Box>
+              </Box>
+            </Box>
           )}
         />
+
         <Controller
           name="fee"
           control={control}
@@ -107,38 +133,6 @@ export const ActivityDetailsForm: React.FC<IPlaceFormProps> = ({
             </TextField>
           )}
         />
-
-        <Controller
-          name="accessibility"
-          control={control}
-          render={({ field, fieldState: { error } }) => (
-            <Box
-              sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-              }}
-            >
-              {/* TODO add only boolean to hook form for example public, which will be either false or true */}
-              <Typography>Accessibility</Typography>
-              <Box
-                sx={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-              >
-                <FormLabel sx={!field.value ? { color: 'black' } : {}}>
-                  public
-                </FormLabel>
-                <Switch sx={{ mx: 1 }} {...field} color="primary" />
-                <FormLabel sx={field.value ? { color: 'black' } : {}}>
-                  private
-                </FormLabel>
-              </Box>
-            </Box>
-          )}
-        />
       </Box>
       <Box
         sx={{
@@ -148,7 +142,6 @@ export const ActivityDetailsForm: React.FC<IPlaceFormProps> = ({
           flexDirection: 'column',
         }}
       >
-        <FormControlLabel control={<Checkbox />} label="Private activity" />
         <OffliButton
           onClick={onNextClicked}
           sx={{ width: '80%' }}

@@ -14,6 +14,8 @@ import {
   ActivityFeesOptionsEnum,
   ActivityRepetitionOptionsEnum,
 } from '../../types/common/types'
+import { ActivityInviteForm } from './components/activity-invite-form'
+import { ActivityDetailsForm } from './components/activity-details-form'
 
 interface FormValues {
   name?: string
@@ -22,6 +24,7 @@ interface FormValues {
   start_datetime?: Date
   end_datetime?: Date
   fee?: string
+  capacity?: number | null
   // public?: boolean
   repeated?: ActivityRepetitionOptionsEnum
 }
@@ -102,6 +105,7 @@ const schema: (activeStep: number) => yup.SchemaOf<FormValues> = (
             .mixed<ActivityRepetitionOptionsEnum>()
             .oneOf(Object.values(ActivityRepetitionOptionsEnum))
             .notRequired(),
+    capacity: yup.number().nullable().notRequired().default(null),
   })
 
 const CreateActivityScreen = () => {
@@ -133,7 +137,10 @@ const CreateActivityScreen = () => {
     switch (activeStep) {
       case 0:
         return (
-          <NameForm onNextClicked={() => setActiveStep(1)} methods={methods} />
+          <ActivityDetailsForm
+            onNextClicked={() => setActiveStep(1)}
+            methods={methods}
+          />
         )
       case 1:
         return (
@@ -165,7 +172,7 @@ const CreateActivityScreen = () => {
     }
   }, [activeStep, methods])
 
-  const centerContent = [0, 1].includes(activeStep)
+  const centerContent = [1].includes(activeStep)
 
   React.useEffect(() => {
     window.scrollTo({
