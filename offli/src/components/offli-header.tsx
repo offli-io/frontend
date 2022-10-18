@@ -7,6 +7,7 @@ import PeopleAltIcon from '@mui/icons-material/PeopleAlt'
 import PeopleAltOutlinedIcon from '@mui/icons-material/PeopleAltOutlined'
 import NotificationsNoneOutlinedIcon from '@mui/icons-material/NotificationsNoneOutlined'
 import NotificationsIcon from '@mui/icons-material/Notifications'
+import MenuIcon from '@mui/icons-material/Menu'
 
 import { ApplicationLocations } from '../types/common/applications-locations.dto'
 import offliLogo from '../assets/img/logoPurple.png'
@@ -31,7 +32,7 @@ const OffliHeader: React.FC = () => {
       <Box
         sx={{
           width: '100%',
-          borderBottom: '1px solid lightgrey',
+          // borderBottom: '1px solid lightgrey',
           mt: 3,
         }}
       >
@@ -50,7 +51,7 @@ const OffliHeader: React.FC = () => {
               display: 'flex',
             }}
           >
-            <IconButton component={Link} to={ApplicationLocations.SETTINGS}>
+            {/* <IconButton component={Link} to={ApplicationLocations.SETTINGS}>
               {location === ApplicationLocations.SETTINGS ? (
                 <SettingsIcon sx={iconStyle} />
               ) : (
@@ -63,7 +64,7 @@ const OffliHeader: React.FC = () => {
               ) : (
                 <PeopleAltOutlinedIcon sx={iconStyle} />
               )}
-            </IconButton>
+            </IconButton> */}
 
             <IconButton
               component={Link}
@@ -77,9 +78,21 @@ const OffliHeader: React.FC = () => {
                 {location === ApplicationLocations.NOTIFICATIONS ? (
                   <NotificationsIcon sx={iconStyle} />
                 ) : (
-                  <NotificationsNoneOutlinedIcon sx={iconStyle} />
+                  <NotificationsNoneOutlinedIcon
+                    sx={iconStyle}
+                    // sx={{ color: 'primary.main' }}
+                  />
                 )}
               </Badge>
+            </IconButton>
+            <IconButton
+              component={Link}
+              to={ApplicationLocations.NOTIFICATIONS}
+            >
+              <MenuIcon
+                sx={{ iconStyle, ml: 0.5 }}
+                // sx={{ color: 'primary.main' }}
+              />
             </IconButton>
           </Box>
         </Box>
