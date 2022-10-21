@@ -2,6 +2,7 @@ import { Route, Routes as BaseRoutes } from 'react-router-dom'
 import ActivitiesScreen from '../screens/activites-screen'
 import ChatScreen from '../screens/chat-screen'
 import CreateActivityScreen from '../screens/create-activity-screen/create-activity-screen'
+import EditProfileScreen from '../screens/edit-profile-screen'
 import LoadingScreen from '../screens/loading-screen'
 import LoginOrRegisterScreen from '../screens/login-or-register'
 import LoginScreen from '../screens/login-screen'
@@ -44,6 +45,10 @@ const Routes = () => {
       />
       <Route path={ApplicationLocations.WELCOME} element={<WelcomeScreen />} />
       <Route path={ApplicationLocations.PROFILE} element={<ProfileScreen />} />
+      <Route
+        path={ApplicationLocations.EDIT_PROFILE}
+        element={<EditProfileScreen />}
+      />
       <Route
         path={ApplicationLocations.RESET_PASSWORD}
         element={<ResetPasswordScreen />}

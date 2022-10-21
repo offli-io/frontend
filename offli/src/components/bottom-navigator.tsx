@@ -40,7 +40,7 @@ const BottomNavigator: React.FC = () => {
         }}
         sx={{
           '& .Mui-selected': {
-            fontSize: 12,
+            fontSize: '12px !important',
           },
         }}
       >

@@ -28,7 +28,7 @@ const OffliHeader: React.FC = () => {
   }
 
   return (
-    <AppBar color="inherit" sx={{ height: HEADER_HEIGHT }}>
+    <AppBar color="inherit" sx={{ height: HEADER_HEIGHT, boxShadow: 'none' }}>
       <Box
         sx={{
           width: '100%',
@@ -45,7 +45,7 @@ const OffliHeader: React.FC = () => {
             justifyContent: 'space-between',
           }}
         >
-          <img src={offliLogo} alt="Offli logo" style={{ height: '50px' }} />
+          <img src={offliLogo} alt="Offli logo" style={{ height: '40px' }} />
           <Box
             sx={{
               display: 'flex',
