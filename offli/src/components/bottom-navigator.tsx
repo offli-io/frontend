@@ -1,11 +1,19 @@
 import * as React from 'react'
 import BottomNavigation from '@mui/material/BottomNavigation'
 import BottomNavigationAction from '@mui/material/BottomNavigationAction'
-import RestoreIcon from '@mui/icons-material/Restore'
-import FavoriteIcon from '@mui/icons-material/Favorite'
-import LocationOnIcon from '@mui/icons-material/LocationOn'
+import AddIcon from '@mui/icons-material/Add'
+import PersonIcon from '@mui/icons-material/Person'
+import SearchIcon from '@mui/icons-material/Search'
 import { Paper } from '@mui/material'
 import { Link } from 'react-router-dom'
+import CalendarTodayIcon from '@mui/icons-material/CalendarToday'
+
+export const BottomNavigationPaths = {
+  MY_ACTIVITES: 'myactivites',
+  SEARCH: 'search',
+  CREATE: 'create',
+  PROFILE: 'profile',
+}
 
 const BottomNavigator: React.FC = () => {
   const [value, setValue] = React.useState('recents')
@@ -20,32 +28,43 @@ const BottomNavigator: React.FC = () => {
       elevation={3}
     >
       <BottomNavigation
-        showLabels
         value={value}
         onChange={(event, newValue) => {
           setValue(newValue)
         }}
+        sx={{
+          '& .Mui-selected': {
+            fontSize: 12,
+          },
+        }}
       >
         <BottomNavigationAction
-          label="Recents"
-          icon={<RestoreIcon />}
+          label="Activities"
+          icon={<CalendarTodayIcon />}
           component={Link}
-          value=""
-          to="recents"
+          value={BottomNavigationPaths.MY_ACTIVITES}
+          to="activites"
         />
         <BottomNavigationAction
-          label="Favorites"
-          icon={<FavoriteIcon />}
+          label="Search"
+          icon={<SearchIcon />}
           component={Link}
-          value=""
-          to="recents"
+          value={BottomNavigationPaths.SEARCH}
+          to="search"
+        />
+        <BottomNavigationAction
+          label="Create"
+          icon={<AddIcon />}
+          component={Link}
+          value={BottomNavigationPaths.CREATE}
+          to="create"
         />
         <BottomNavigationAction
           label="Profile"
-          icon={<LocationOnIcon />}
+          icon={<PersonIcon />}
           component={Link}
-          value=""
-          to="recents"
+          value={BottomNavigationPaths.PROFILE}
+          to="profile"
         />
       </BottomNavigation>
     </Paper>

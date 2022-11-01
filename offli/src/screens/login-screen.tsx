@@ -1,19 +1,21 @@
 import React from 'react'
-import { Box, TextField, Typography } from '@mui/material'
-//import loadingImage from '../assets/img/loadingImg.jpg'
+import {
+  Box,
+  TextField,
+  Typography,
+  InputAdornment,
+  IconButton,
+} from '@mui/material'
 import Logo from '../components/logo'
 import { Controller, useForm } from 'react-hook-form'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
 import OffliButton from '../components/offli-button'
-import GoogleIcon from '@mui/icons-material/Google'
 import LabeledDivider from '../components/labeled-divider'
 import { useNavigate } from 'react-router-dom'
-import { ApplicationLocations } from '../types/common/applications-locations.dto'
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff'
+import VisibilityIcon from '@mui/icons-material/Visibility'
 
-//const logo = require('../assets/img/logoPurple.png')
-
-// interface ILoginScreenProps {}
 export interface FormValues {
   username: string
   password: string
@@ -26,6 +28,10 @@ const schema: () => yup.SchemaOf<FormValues> = () =>
   })
 
 const LoginScreen: React.FC = () => {
+  const [showPassword, setShowPassword] = React.useState(false)
+
+  const handleClickShowPassword = () => setShowPassword(!showPassword)
+
   const { control, handleSubmit } = useForm<FormValues>({
     defaultValues: {
       username: '',
@@ -42,11 +48,29 @@ const LoginScreen: React.FC = () => {
     []
   )
 
+  // const handleSuccessfullLogin = React.useCallback(
+  //   (res: GoogleLoginResponse | GoogleLoginResponseOffline) => {
+  //     //or if((res as GoogleLoginResponse).profileObj)
+  //     if ('profileObj' in res) {
+  //       console.log('[Login Success] current user : ', res.profileObj)
+  //       refreshTokenSetup(res)
+  //     } else {
+  //       return
+  //       //TODO handle GoogleLoginResponseOffline
+  //     }
+  //   },
+  //   []
+  // )
+
+  // const handleFailedLogin = React.useCallback((res: GoogleLoginResponse) => {
+  //   console.log('[Login Failed] res : ', res)
+  // }, [])
+
   return (
     <form
       onSubmit={handleSubmit(handleFormSubmit)}
       style={{ height: '100%' }}
-      className="backgroundImage"
+      // className="backgroundImage"
     >
       <Box
         sx={{
@@ -69,15 +93,10 @@ const LoginScreen: React.FC = () => {
             mt: -8,
           }}
         >
-          <OffliButton
-            variant="outlined"
-            startIcon={<GoogleIcon />}
-            sx={{ mb: 2 }}
-          >
-            Sign in with google
-          </OffliButton>
-          <LabeledDivider>
-            <Typography>or</Typography>
+          <Box id="signIn"></Box>
+
+          <LabeledDivider sx={{ my: 1 }}>
+            <Typography variant="subtitle1">alebo</Typography>
           </LabeledDivider>
           <Controller
             name="username"
@@ -87,15 +106,15 @@ const LoginScreen: React.FC = () => {
                 autoFocus
                 {...field}
                 //label="Username"
-                placeholder="Username"
+                placeholder="Meno, email alebo mobil"
                 // variant="filled"
                 error={!!error}
                 // helperText={
                 //   error?.message ||
                 //   t(`value.${nextStep?.authenticationType}.placeholder`)
                 // }
-                //disabled={methodSelectionDisabled}
-                sx={{ mb: 2, width: '70%' }}
+                // disabled={methodSelectionDisabled}
+                sx={{ width: '80%', mb: 2 }}
               />
             )}
           />
@@ -107,8 +126,8 @@ const LoginScreen: React.FC = () => {
                 autoFocus
                 {...field}
                 //label="Username"
-                placeholder="Password"
-                type="password"
+                placeholder="Heslo"
+                type={showPassword ? 'text' : 'password'}
                 // variant="filled"
                 error={!!error}
                 // helperText={
@@ -116,37 +135,36 @@ const LoginScreen: React.FC = () => {
                 //   t(`value.${nextStep?.authenticationType}.placeholder`)
                 // }
                 //disabled={methodSelectionDisabled}
-                sx={{ mb: 3.5, width: '70%' }}
+                sx={{ width: '80%' }}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton onClick={handleClickShowPassword}>
+                        {showPassword ? (
+                          <VisibilityIcon />
+                        ) : (
+                          <VisibilityOffIcon />
+                        )}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
               />
             )}
           />
-          <OffliButton sx={{ width: '70%' }} type="submit">
-            Login
-          </OffliButton>
-          <OffliButton variant="text" sx={{ mt: 1 }}>
-            <Typography variant="caption">Forgot your password?</Typography>
-          </OffliButton>
-        </Box>
-        <Box
-          sx={{
-            display: 'flex',
-            flexDirection: 'row',
-            width: '100%',
-            justifyContent: 'center',
-            alignItems: 'center',
-            mb: 4,
-          }}
-        >
-          <Typography sx={{ color: 'white', mr: 2 }} variant="body1">
-            Are you new?
-          </Typography>
-          <OffliButton
-            sx={{ width: '35%' }}
-            onClick={() => navigate(ApplicationLocations.REGISTER)}
-          >
-            Join now
+
+          <OffliButton variant="text">
+            <Typography
+              variant="subtitle2"
+              sx={{ fontWeight: 'bold', ml: '-70%' }}
+            >
+              Forgot your password?
+            </Typography>
           </OffliButton>
         </Box>
+        <OffliButton sx={{ width: '80%', mb: 5 }} type="submit">
+          Login
+        </OffliButton>
       </Box>
     </form>
   )

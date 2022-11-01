@@ -2,7 +2,7 @@ import { Box, SxProps } from '@mui/system'
 import { HEADER_HEIGHT } from '../utils/common-constants'
 
 interface IPageWrapperProps {
-  children: React.ReactElement[]
+  children?: React.ReactNode[] | React.ReactNode
   sxOverrides?: SxProps
 }
 
@@ -18,7 +18,7 @@ export const PageWrapper: React.FC<IPageWrapperProps> = ({
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        mt: HEADER_HEIGHT / 8,
+        mt: (HEADER_HEIGHT + 16) / 8,
         ...sxOverrides,
       }}
     >

@@ -32,11 +32,49 @@ const theme = createTheme({
     },
   },
   components: {
-    MuiInputBase: {
+    MuiOutlinedInput: {
       styleOverrides: {
         root: {
-          height: 40,
-          borderRadius: 10,
+          height: 50,
+          // width: '90%',
+          borderRadius: 12,
+        },
+      },
+    },
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          // height: 40,
+          // width: '70%',
+          borderRadius: 12,
+          textTransform: 'none',
+          fontSize: '20px',
+          // fontWeight: 'bold',
+          margin: 2,
+        },
+      },
+    },
+    MuiTypography: {
+      styleOverrides: {
+        h1: {
+          fontSize: 36,
+          fontWeight: 'bold',
+        },
+        h2: {
+          fontSize: 26,
+          fontWeight: 'bold',
+        },
+        h3: {
+          fontSize: 20,
+          fontWeight: 'bold',
+        },
+        h4: {
+          fontSize: 22,
+          fontWeight: 'bold',
+        },
+        subtitle1: {
+          fontSize: 12,
+          // fontWeight: 'bold',
         },
       },
     },

@@ -54,14 +54,19 @@ const NewPasswordScreen = () => {
           alignItems: 'center',
           //   justifyContent: 'center',
         }}
-        className="backgroundImage"
       >
         <BackButton href={ApplicationLocations.VERIFY} text="Verification" />
         <Typography
-          variant="h3"
-          sx={{ mt: 20, mb: 4, fontWeight: 'bold', fontSize: '24px' }}
+          variant="h2"
+          sx={{
+            mt: 20,
+            mb: 4,
+
+            display: 'flex',
+            flex: 1,
+          }}
         >
-          New password
+          New <Box sx={{ color: 'primary.main' }}>&nbsp;password</Box>
         </Typography>
         <Controller
           name="password"
@@ -78,7 +83,7 @@ const NewPasswordScreen = () => {
               //   t(`value.${nextStep?.authenticationType}.placeholder`)
               // }
               //disabled={methodSelectionDisabled}
-              sx={{ mb: 4, width: '70%' }}
+              sx={{ mb: 4, width: '70%', flex: 3 }}
               InputProps={{
                 endAdornment: (
                   <InputAdornment position="end">
@@ -101,7 +106,11 @@ const NewPasswordScreen = () => {
             Username is taken!
           </Typography>
         </Box> */}
-        <OffliButton variant="contained" type="submit" sx={{ width: '70%' }}>
+        <OffliButton
+          variant="contained"
+          type="submit"
+          sx={{ width: '80%', mb: 5 }}
+        >
           Reset password
         </OffliButton>
       </Box>

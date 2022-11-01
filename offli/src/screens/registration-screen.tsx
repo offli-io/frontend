@@ -58,7 +58,6 @@ export const RegistrationScreen: React.FC = () => {
       onSubmit={handleSubmit(handleFormSubmit, (data, e) =>
         console.log(data, e)
       )}
-      className="backgroundImage"
     >
       <Box
         sx={{
@@ -69,133 +68,132 @@ export const RegistrationScreen: React.FC = () => {
           alignItems: 'center',
           //   justifyContent: 'center',
         }}
-        className="backgroundImage"
       >
         <Typography
-          variant="h3"
+          variant="h1"
           gutterBottom
           sx={{
             mt: 10,
-            fontSize: '38px',
-            fontWeight: 'bold',
             display: 'flex',
+            flex: 1,
           }}
         >
-          Start live <Box sx={{ color: 'primary.main' }}>&nbsp;offline.</Box>
+          Start live
+          <Box sx={{ color: 'primary.main', fontSize: 'bold' }}>
+            &nbsp;offline.
+          </Box>
         </Typography>
-        <OffliButton
-          variant="outlined"
-          startIcon={<GoogleIcon />}
-          sx={{ mt: 3, mb: 2, width: '70%' }}
-        >
-          Sign in with google
-        </OffliButton>
+        <Box
+          sx={{
+            mb: 1,
+          }}
+          id="signIn"
+        ></Box>
+
         <LabeledDivider>
-          <Typography>or</Typography>
+          <Typography variant="subtitle1">alebo</Typography>
         </LabeledDivider>
         <Typography
-          variant="h6"
-          gutterBottom
+          variant="h2"
           sx={{
-            fontWeight: 'bold',
             mb: 2,
+            fontSize: 18,
           }}
         >
           Sign up & enjoy life together
         </Typography>
-        <Controller
-          name="email"
-          control={control}
-          render={({ field, fieldState: { error } }) => (
-            <TextField
-              autoFocus
-              {...field}
-              //   label="Username"
-              placeholder="Email"
-              error={!!error}
-              // helperText={
-              //   error?.message ||
-              //   t(`value.${nextStep?.authenticationType}.placeholder`)
-              // }
-              //disabled={methodSelectionDisabled}
-              sx={{ mb: 2, width: '70%' }}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton>
-                      {usernameValid ? (
-                        <CheckCircleIcon />
-                      ) : (
-                        <RemoveCircleIcon />
-                      )}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-            />
-          )}
-        />
-        <Controller
-          name="password"
-          control={control}
-          render={({ field, fieldState: { error } }) => (
-            <TextField
-              autoFocus
-              {...field}
-              //label="Username"
-              placeholder="Password"
-              type={showPassword ? 'text' : 'password'}
-              // variant="filled"
-              error={!!error}
-              // helperText={
-              //   error?.message ||
-              //   t(`value.${nextStep?.authenticationType}.placeholder`)
-              // }
-              //disabled={methodSelectionDisabled}
-              sx={{ width: '70%' }}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton onClick={handleClickShowPassword}>
-                      {showPassword ? (
-                        <VisibilityIcon />
-                      ) : (
-                        <VisibilityOffIcon />
-                      )}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-            />
-          )}
-        />
-        <Typography
-          variant="subtitle2"
-          align="center"
-          sx={{ color: 'lightgrey', fontSize: '12px', width: '70%', mt: 2 }}
-        >
-          By signing up, you agree to the terms of the <br />
-          Offli <b>Privacy Policy</b> and <b>Cookie Policy</b>.
-        </Typography>
-        <OffliButton type="submit" sx={{ width: '70%', mt: 2 }}>
-          Next
-        </OffliButton>
-        <div
-          style={{
+        <Box
+          sx={{
             display: 'flex',
+            flexDirection: 'column',
+            width: '100%',
             alignItems: 'center',
-            position: 'absolute',
-            bottom: 10,
+            flex: 3,
           }}
         >
-          <Typography sx={{ color: 'white' }}>Already using Offli?</Typography>
-          <OffliButton
-            sx={{ ml: 1 }}
-            onClick={() => navigate(ApplicationLocations.LOGIN)}
+          <Controller
+            name="email"
+            control={control}
+            render={({ field, fieldState: { error } }) => (
+              <TextField
+                autoFocus
+                {...field}
+                //   label="Username"
+                placeholder="Email"
+                error={!!error}
+                // helperText={
+                //   error?.message ||
+                //   t(`value.${nextStep?.authenticationType}.placeholder`)
+                // }
+                //disabled={methodSelectionDisabled}
+                sx={{ width: '80%', mb: 2 }}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton>
+                        {usernameValid ? (
+                          <CheckCircleIcon sx={{ color: 'lightgrey' }} />
+                        ) : (
+                          <RemoveCircleIcon sx={{ color: 'lightgrey' }} />
+                        )}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+              />
+            )}
+          />
+          <Controller
+            name="password"
+            control={control}
+            render={({ field, fieldState: { error } }) => (
+              <TextField
+                autoFocus
+                {...field}
+                //label="Username"
+                placeholder="Password"
+                type={showPassword ? 'text' : 'password'}
+                // variant="filled"
+                error={!!error}
+                // helperText={
+                //   error?.message ||
+                //   t(`value.${nextStep?.authenticationType}.placeholder`)
+                // }
+                //disabled={methodSelectionDisabled}
+                sx={{ width: '80%' }}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton onClick={handleClickShowPassword}>
+                        {showPassword ? (
+                          <VisibilityIcon sx={{ color: 'lightgrey' }} />
+                        ) : (
+                          <VisibilityOffIcon sx={{ color: 'lightgrey' }} />
+                        )}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+              />
+            )}
+          />
+          <Typography
+            variant="subtitle1"
+            align="center"
+            sx={{
+              color: 'lightgrey',
+              mt: 2,
+              lineHeight: 1.2,
+            }}
           >
-            Login
-          </OffliButton>
-        </div>
+            By signing up, you agree to the terms of the <br />
+            Offli <b>Privacy Policy</b> and <b>Cookie Policy</b>.
+          </Typography>
+        </Box>
+
+        <OffliButton type="submit" sx={{ width: '70%', mb: 5 }}>
+          Next
+        </OffliButton>
       </Box>
     </form>
   )

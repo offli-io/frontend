@@ -42,22 +42,17 @@ const ResetPasswordScreen = () => {
           alignItems: 'center',
           //   justifyContent: 'center',
         }}
-        className="backgroundImage"
       >
         <BackButton href={ApplicationLocations.LOGIN} text="Login" />
         <Typography
-          variant="h3"
-          sx={{ mt: 20, fontWeight: 'bold', fontSize: '24px' }}
+          variant="h2"
+          sx={{
+            mt: 15,
+            display: 'flex',
+            flex: 1,
+          }}
         >
-          Reset password
-        </Typography>
-        <Typography
-          align="center"
-          variant="h6"
-          sx={{ mt: 2, fontSize: '16px', width: '70%', lineHeight: 1.2, mb: 2 }}
-        >
-          Enter the email associated with your account and we will send an email
-          with verification code.
+          Reset your<Box sx={{ color: 'primary.main' }}>&nbsp;password</Box>
         </Typography>
         <Controller
           name="email"
@@ -67,7 +62,7 @@ const ResetPasswordScreen = () => {
               autoFocus
               {...field}
               //label="Username"
-              placeholder="Email address"
+              placeholder="Email alebo mobil"
               // variant="filled"
               error={!!error}
               // helperText={
@@ -75,7 +70,7 @@ const ResetPasswordScreen = () => {
               //   t(`value.${nextStep?.authenticationType}.placeholder`)
               // }
               //disabled={methodSelectionDisabled}
-              sx={{ mb: 4, width: '70%' }}
+              sx={{ mb: 4, width: '80%', flex: 3 }}
             />
           )}
         />
@@ -85,7 +80,11 @@ const ResetPasswordScreen = () => {
             Username is taken!
           </Typography>
         </Box> */}
-        <OffliButton variant="contained" type="submit" sx={{ width: '70%' }}>
+        <OffliButton
+          variant="contained"
+          type="submit"
+          sx={{ width: '80%', mb: 5 }}
+        >
           Send verification code
         </OffliButton>
       </Box>
