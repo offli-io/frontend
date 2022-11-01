@@ -145,38 +145,6 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
             />
           </Box>
         </Box>
-        {/* <Box
-          sx={{
-            mt: 4,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-          }}
-        >
-          <Typography variant="h4" sx={{ mb: 2 }}>
-            Does activity repeat?
-          </Typography>
-          <Controller
-            name="repeated"
-            control={control}
-            render={({ field, fieldState: { error } }) => (
-              <TextField
-                {...field}
-                id="outlined-select-currency"
-                select
-                label="Select"
-                sx={{ width: '60%' }}
-                // helperText="Please select your currency"
-              >
-                {Object.values(ActivityRepetitionOptionsEnum).map(option => (
-                  <MenuItem key={option} value={option}>
-                    {option}
-                  </MenuItem>
-                ))}
-              </TextField>
-            )}
-          />
-        </Box> */}
       </Box>
 
       <Box sx={{ width: '100%', display: 'flex', justifyContent: 'flex-end' }}>

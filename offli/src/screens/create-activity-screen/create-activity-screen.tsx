@@ -16,17 +16,20 @@ import {
 } from '../../types/common/types'
 import { ActivityInviteForm } from './components/activity-invite-form'
 import { ActivityDetailsForm } from './components/activity-details-form'
+import { ActivityPhotoForm } from './components/activity-photo-form'
 
 interface FormValues {
   name?: string
   place?: ILocation
   tags?: string[]
+  //todo alter keys
   start_datetime?: Date
   end_datetime?: Date
   fee?: string
   capacity?: number | null
   // public?: boolean
   repeated?: ActivityRepetitionOptionsEnum
+  title_picture?: string
 }
 
 const schema: (activeStep: number) => yup.SchemaOf<FormValues> = (
@@ -106,6 +109,7 @@ const schema: (activeStep: number) => yup.SchemaOf<FormValues> = (
             .oneOf(Object.values(ActivityRepetitionOptionsEnum))
             .notRequired(),
     capacity: yup.number().nullable().notRequired().default(null),
+    title_picture: yup.string().notRequired(),
   })
 
 const CreateActivityScreen = () => {
@@ -137,7 +141,7 @@ const CreateActivityScreen = () => {
     switch (activeStep) {
       case 0:
         return (
-          <ActivityDetailsForm
+          <ActivityPhotoForm
             onNextClicked={() => setActiveStep(1)}
             methods={methods}
           />
@@ -160,6 +164,20 @@ const CreateActivityScreen = () => {
         return (
           <DateTimeForm
             onNextClicked={() => setActiveStep(activeStep => activeStep + 1)}
+            methods={methods}
+          />
+        )
+      case 4:
+        return (
+          <ActivityInviteForm
+            onNextClicked={() => setActiveStep(1)}
+            methods={methods}
+          />
+        )
+      case 5:
+        return (
+          <ActivityDetailsForm
+            onNextClicked={() => setActiveStep(1)}
             methods={methods}
           />
         )
