@@ -7,6 +7,7 @@ import {
   IconButton,
 } from '@mui/material'
 import Logo from '../components/logo'
+import { useQuery } from 'react-query'
 import { Controller, useForm } from 'react-hook-form'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
@@ -15,6 +16,10 @@ import LabeledDivider from '../components/labeled-divider'
 import { useNavigate } from 'react-router-dom'
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff'
 import VisibilityIcon from '@mui/icons-material/Visibility'
+import { loginRetrieveToken } from '../api/users/requests'
+
+import axios from 'axios'
+import { IEmailPassword } from '../types/users/user.dto'
 
 export interface FormValues {
   username: string
@@ -41,12 +46,30 @@ const LoginScreen: React.FC = () => {
     mode: 'onChange',
   })
 
-  const navigate = useNavigate()
+  const retrieveToken = ({ email, password }: IEmailPassword) =>
+    useQuery(['token'], () =>
+      axios.post('/login', { email, password }).then(res => res.data)
+    )
 
-  const handleFormSubmit = React.useCallback(
-    (values: FormValues) => console.log(values),
-    []
-  )
+  // const { data, status } = useQuery<IEmailPassword>(
+  //   ['token'],
+  //   retrieveToken(email, password)
+  // )
+
+  const handleFormSubmit = React.useCallback((values: FormValues) => {
+    // const retrieveToken = useQuery(['token'], props => {
+    //   loginRetrieveToken({
+    //     // queryFunctionContext: props,
+    //     postValues: { email: values.username, password: values.password }, ///FE ma username, BE ma email
+    //   })
+    // })
+    // console.log(retrieveToken.status)
+    const aaa = retrieveToken({
+      email: values.username,
+      password: values.password,
+    })
+    console.log(aaa?.data)
+  }, [])
 
   // const handleSuccessfullLogin = React.useCallback(
   //   (res: GoogleLoginResponse | GoogleLoginResponseOffline) => {
