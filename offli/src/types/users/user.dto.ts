@@ -1,4 +1,4 @@
-export interface IEmailPassword{
-    email:string
-    password:string
+export interface IEmailPassword {
+  email?: string
+  password?: string
 }

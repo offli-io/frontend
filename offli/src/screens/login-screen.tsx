@@ -7,7 +7,7 @@ import {
   IconButton,
 } from '@mui/material'
 import Logo from '../components/logo'
-import { useQuery } from 'react-query'
+import { useMutation, useQuery } from 'react-query'
 import { Controller, useForm } from 'react-hook-form'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
@@ -22,24 +22,36 @@ import axios from 'axios'
 import { IEmailPassword } from '../types/users/user.dto'
 
 export interface FormValues {
-  username: string
+  email: string
+  password: string
+}
+
+interface iXD {
+  email: string
   password: string
 }
 
 const schema: () => yup.SchemaOf<FormValues> = () =>
   yup.object({
-    username: yup.string().defined().required(),
+    email: yup.string().defined().required(),
     password: yup.string().defined().required(),
   })
 
 const LoginScreen: React.FC = () => {
   const [showPassword, setShowPassword] = React.useState(false)
 
+  const { data, isLoading, mutate } = useMutation(
+    ['token'],
+    (values: FormValues) => loginRetrieveToken(values)
+  )
+
+  console.log(data?.data)
+
   const handleClickShowPassword = () => setShowPassword(!showPassword)
 
   const { control, handleSubmit } = useForm<FormValues>({
     defaultValues: {
-      username: '',
+      email: '',
       password: '',
     },
     resolver: yupResolver(schema()),
@@ -64,11 +76,7 @@ const LoginScreen: React.FC = () => {
     //   })
     // })
     // console.log(retrieveToken.status)
-    const aaa = retrieveToken({
-      email: values.username,
-      password: values.password,
-    })
-    console.log(aaa?.data)
+    mutate(values)
   }, [])
 
   // const handleSuccessfullLogin = React.useCallback(
@@ -122,7 +130,7 @@ const LoginScreen: React.FC = () => {
             <Typography variant="subtitle1">alebo</Typography>
           </LabeledDivider>
           <Controller
-            name="username"
+            name="email"
             control={control}
             render={({ field, fieldState: { error } }) => (
               <TextField
