@@ -14,7 +14,10 @@ import {
 import React from 'react'
 import { Controller, UseFormReturn } from 'react-hook-form'
 import OffliButton from '../../../components/offli-button'
-import { ActivityFeesOptionsEnum } from '../../../types/common/types'
+import {
+  ActivityFeesOptionsEnum,
+  ActivityRepetitionOptionsEnum,
+} from '../../../types/common/types'
 
 interface IPlaceFormProps {
   onNextClicked: () => void
@@ -89,7 +92,7 @@ export const ActivityDetailsForm: React.FC<IPlaceFormProps> = ({
                   alignItems: 'center',
                   width: '100%',
                   justifyContent: 'space-around',
-                  mb: 4,
+                  mb: 5,
                 }}
               >
                 {/* <FormLabel
@@ -109,6 +112,28 @@ export const ActivityDetailsForm: React.FC<IPlaceFormProps> = ({
                   </FormLabel>
                 </Box>
               </Box>
+              <Controller
+                name="repeated"
+                control={control}
+                render={({ field, fieldState: { error } }) => (
+                  <TextField
+                    {...field}
+                    id="outlined-select-currency"
+                    select
+                    label="Does activity repeat?"
+                    sx={{ width: '100%', mb: 5 }}
+                    // helperText="Please select your currency"
+                  >
+                    {Object.values(ActivityRepetitionOptionsEnum).map(
+                      option => (
+                        <MenuItem key={option} value={option}>
+                          {option}
+                        </MenuItem>
+                      )
+                    )}
+                  </TextField>
+                )}
+              />
             </Box>
           )}
         />
@@ -133,18 +158,37 @@ export const ActivityDetailsForm: React.FC<IPlaceFormProps> = ({
             </TextField>
           )}
         />
+
+        <Controller
+          name="name"
+          control={control}
+          render={({ field, fieldState: { error } }) => (
+            <TextField
+              // TODO idk if this is really needed and not anti-pattern
+              //autoFocus
+              {...field}
+              error={!!error}
+              label="Additional description"
+              placeholder="Type more info about the activity"
+              sx={{ mb: 5, width: '100%' }}
+              //helperText={!!error && 'Activity name is required'}
+              //label="Username"
+              // disabled={methodSelectionDisabled}
+            />
+          )}
+        />
       </Box>
       <Box
         sx={{
           width: '100%',
           display: 'flex',
-          alignItems: 'center',
-          flexDirection: 'column',
+          justifyContent: 'flex-end',
+          mt: 2,
         }}
       >
         <OffliButton
           onClick={onNextClicked}
-          sx={{ width: '80%' }}
+          sx={{ width: '40%' }}
           disabled={!formState.isValid}
         >
           Next
