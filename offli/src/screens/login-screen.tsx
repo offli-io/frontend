@@ -40,12 +40,9 @@ const schema: () => yup.SchemaOf<FormValues> = () =>
 const LoginScreen: React.FC = () => {
   const [showPassword, setShowPassword] = React.useState(false)
 
-  const { data, isLoading, mutate } = useMutation(
-    ['token'],
-    (values: FormValues) => loginRetrieveToken(values)
+  const { data, mutate } = useMutation(['token'], (values: FormValues) =>
+    loginRetrieveToken(values)
   )
-
-  console.log(data?.data)
 
   const handleClickShowPassword = () => setShowPassword(!showPassword)
 
@@ -58,25 +55,9 @@ const LoginScreen: React.FC = () => {
     mode: 'onChange',
   })
 
-  const retrieveToken = ({ email, password }: IEmailPassword) =>
-    useQuery(['token'], () =>
-      axios.post('/login', { email, password }).then(res => res.data)
-    )
-
-  // const { data, status } = useQuery<IEmailPassword>(
-  //   ['token'],
-  //   retrieveToken(email, password)
-  // )
-
   const handleFormSubmit = React.useCallback((values: FormValues) => {
-    // const retrieveToken = useQuery(['token'], props => {
-    //   loginRetrieveToken({
-    //     // queryFunctionContext: props,
-    //     postValues: { email: values.username, password: values.password }, ///FE ma username, BE ma email
-    //   })
-    // })
-    // console.log(retrieveToken.status)
     mutate(values)
+    console.log(data?.status)
   }, [])
 
   // const handleSuccessfullLogin = React.useCallback(
