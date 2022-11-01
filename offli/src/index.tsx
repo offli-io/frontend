@@ -8,10 +8,8 @@ import axios from 'axios'
 
 // if using docker
 axios.defaults.baseURL =
-  'https://app.swaggerhub.com/apis/JURAJPASKA8_1/UserManagementApi/1.0.0'
-// 'https://virtserver.swaggerhub.com/semjacko/Activities/1.0.0'
-
-//'http://localhost:5000'
+  // 'https://virtserver.swaggerhub.com/semjacko/Activities/1.0.0'
+  'http://localhost:5000'
 //  'https://virtserver.swaggerhub.com/semjacko/Activities/1.0.0'
 
 axios.interceptors.request.use(
