@@ -65,14 +65,25 @@ const theme = createTheme({
           fontWeight: 'bold',
         },
         h3: {
-          fontSize: 20,
-          fontWeight: 'bold',
-        },
-        h4: {
           fontSize: 22,
           fontWeight: 'bold',
         },
+        h4: {
+          fontSize: 20,
+          fontWeight: 'bold',
+        },
+        h5: {
+          fontSize: 18,
+          fontWeight: 'bold',
+        },
+        h6: {
+          fontSize: 16,
+        },
         subtitle1: {
+          fontSize: 14,
+          // fontWeight: 'bold',
+        },
+        subtitle2: {
           fontSize: 12,
           // fontWeight: 'bold',
         },

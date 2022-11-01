@@ -7,6 +7,7 @@ import {
   IconButton,
 } from '@mui/material'
 import Logo from '../components/logo'
+import { useMutation, useQuery } from 'react-query'
 import { Controller, useForm } from 'react-hook-form'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
@@ -15,38 +16,68 @@ import LabeledDivider from '../components/labeled-divider'
 import { useNavigate } from 'react-router-dom'
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff'
 import VisibilityIcon from '@mui/icons-material/Visibility'
+import { loginRetrieveToken } from '../api/users/requests'
+
+import axios from 'axios'
+import { IEmailPassword } from '../types/users/user.dto'
 
 export interface FormValues {
-  username: string
+  email: string
+  password: string
+}
+
+interface iXD {
+  email: string
   password: string
 }
 
 const schema: () => yup.SchemaOf<FormValues> = () =>
   yup.object({
-    username: yup.string().defined().required(),
+    email: yup.string().defined().required(),
     password: yup.string().defined().required(),
   })
 
 const LoginScreen: React.FC = () => {
   const [showPassword, setShowPassword] = React.useState(false)
 
+  const { data, isLoading, mutate } = useMutation(
+    ['token'],
+    (values: FormValues) => loginRetrieveToken(values)
+  )
+
+  console.log(data?.data)
+
   const handleClickShowPassword = () => setShowPassword(!showPassword)
 
   const { control, handleSubmit } = useForm<FormValues>({
     defaultValues: {
-      username: '',
+      email: '',
       password: '',
     },
     resolver: yupResolver(schema()),
     mode: 'onChange',
   })
 
-  const navigate = useNavigate()
+  const retrieveToken = ({ email, password }: IEmailPassword) =>
+    useQuery(['token'], () =>
+      axios.post('/login', { email, password }).then(res => res.data)
+    )
 
-  const handleFormSubmit = React.useCallback(
-    (values: FormValues) => console.log(values),
-    []
-  )
+  // const { data, status } = useQuery<IEmailPassword>(
+  //   ['token'],
+  //   retrieveToken(email, password)
+  // )
+
+  const handleFormSubmit = React.useCallback((values: FormValues) => {
+    // const retrieveToken = useQuery(['token'], props => {
+    //   loginRetrieveToken({
+    //     // queryFunctionContext: props,
+    //     postValues: { email: values.username, password: values.password }, ///FE ma username, BE ma email
+    //   })
+    // })
+    // console.log(retrieveToken.status)
+    mutate(values)
+  }, [])
 
   // const handleSuccessfullLogin = React.useCallback(
   //   (res: GoogleLoginResponse | GoogleLoginResponseOffline) => {
@@ -99,7 +130,7 @@ const LoginScreen: React.FC = () => {
             <Typography variant="subtitle1">alebo</Typography>
           </LabeledDivider>
           <Controller
-            name="username"
+            name="email"
             control={control}
             render={({ field, fieldState: { error } }) => (
               <TextField

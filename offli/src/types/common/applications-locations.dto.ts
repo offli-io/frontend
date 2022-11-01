@@ -10,6 +10,7 @@ export enum ApplicationLocations {
   NEW_PASSWORD = '/new-password',
   WELCOME = '/welcome',
   PROFILE = '/profile',
+  EDIT_PROFILE = '/edit-profile',
   SETTINGS = '/settings',
   BUDDIES = '/buddies',
   NOTIFICATIONS = '/notifications',
