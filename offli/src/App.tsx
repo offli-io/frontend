@@ -3,7 +3,7 @@ import './App.css'
 import Router from './routes/router'
 import React from 'react'
 
-import { QueryClientProvider, QueryClient } from 'react-query'
+import { QueryClientProvider, QueryClient } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { AuthenticationProvider } from './assets/theme/authentication-provider'
 import { ReactNode } from 'react'

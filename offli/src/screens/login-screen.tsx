@@ -7,7 +7,7 @@ import {
   IconButton,
 } from '@mui/material'
 import Logo from '../components/logo'
-import { useMutation, useQuery } from 'react-query'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import { Controller, useForm } from 'react-hook-form'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'

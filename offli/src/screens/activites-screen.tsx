@@ -4,7 +4,7 @@ import MyActivityCard from '../components/my-activity-card'
 import { IActivityProps } from '../types/common/types'
 import { PageWrapper } from '../components/page-wrapper'
 import axios from 'axios'
-import { useQuery } from 'react-query'
+import { useQuery } from '@tanstack/react-query'
 import { getActivities } from '../api/activities/requests'
 
 const datetime = new Date()

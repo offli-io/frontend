@@ -30,6 +30,7 @@ interface FormValues {
   // public?: boolean
   repeated?: ActivityRepetitionOptionsEnum
   title_picture?: string
+  placeQuery?: string
 }
 
 const schema: (activeStep: number) => yup.SchemaOf<FormValues> = (
@@ -110,6 +111,7 @@ const schema: (activeStep: number) => yup.SchemaOf<FormValues> = (
             .notRequired(),
     capacity: yup.number().nullable().notRequired().default(null),
     title_picture: yup.string().notRequired(),
+    placeQuery: yup.string().notRequired(),
   })
 
 const CreateActivityScreen = () => {
@@ -141,10 +143,7 @@ const CreateActivityScreen = () => {
     switch (activeStep) {
       case 0:
         return (
-          <ActivityPhotoForm
-            onNextClicked={() => setActiveStep(1)}
-            methods={methods}
-          />
+          <NameForm onNextClicked={() => setActiveStep(1)} methods={methods} />
         )
       case 1:
         return (
@@ -190,7 +189,7 @@ const CreateActivityScreen = () => {
     }
   }, [activeStep, methods])
 
-  const centerContent = [1].includes(activeStep)
+  const centerContent = [0, 1].includes(activeStep)
 
   React.useEffect(() => {
     window.scrollTo({
