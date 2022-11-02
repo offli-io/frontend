@@ -6,7 +6,7 @@ export const loginRetrieveToken = async (values: IEmailPassword) => {
   const CancelToken = axios.CancelToken
   const source = CancelToken.source()
 
-  const promise = axios.post(`/login`, values, {
+  const promise = axios.post(`/registration/pre-signup`, values, {
     // params: searchParams,
     cancelToken: source?.token,
   })

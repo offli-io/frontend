@@ -7,9 +7,8 @@ import reportWebVitals from './reportWebVitals'
 import axios from 'axios'
 
 // if using docker
-axios.defaults.baseURL =
-  'https://app.swaggerhub.com/apis/JURAJPASKA8_1/UserManagementApi/1.0.0'
-// 'https://virtserver.swaggerhub.com/semjacko/Activities/1.0.0'
+axios.defaults.baseURL = 'http://192.168.1.101:8082'
+// 'https://app.swaggerhub.com/apis/JURAJPASKA8_1/UserManagementApi/1.0.0'
 
 //'http://localhost:5000'
 //  'https://virtserver.swaggerhub.com/semjacko/Activities/1.0.0'
