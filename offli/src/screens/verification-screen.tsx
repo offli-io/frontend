@@ -1,12 +1,25 @@
 import React, { useState } from 'react'
 import { Box, Typography } from '@mui/material'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import BackButton from '../components/back-button'
 import OffliButton from '../components/offli-button'
 import ReactInputVerificationCode from 'react-input-verification-code'
 import { ApplicationLocations } from '../types/common/applications-locations.dto'
+import { verifyCode } from '../api/users/requests'
 
 const VerificationScreen = () => {
   const [emailAddress] = useState('amy@gmail.com')
+
+  const { data, mutate, context } = useMutation(
+    ['verificationCode'],
+    (code: string) =>
+      verifyCode({ email: 'martinzof1@gmail.com', verificationCode: code })
+  )
+
+  const handleOnCompleted = (code: string) => {
+    mutate(code)
+    console.log(data?.data.response)
+  }
 
   return (
     <Box
@@ -34,7 +47,12 @@ const VerificationScreen = () => {
       <Typography variant="subtitle2" sx={{ ml: -20, mb: 1 }}>
         Confirmation code
       </Typography>
-      <ReactInputVerificationCode autoFocus placeholder="" length={5} />
+      <ReactInputVerificationCode
+        autoFocus
+        placeholder=""
+        length={6}
+        onCompleted={value => handleOnCompleted(value)}
+      />
       <Box sx={{ display: 'flex', mr: -15, alignItems: 'center' }}>
         <Typography variant="subtitle2">No email?</Typography>
         <OffliButton variant="text">

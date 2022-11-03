@@ -7,7 +7,7 @@ import {
   IconButton,
 } from '@mui/material'
 import Logo from '../components/logo'
-import { useMutation, useQuery } from 'react-query'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import { Controller, useForm } from 'react-hook-form'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
@@ -16,17 +16,8 @@ import LabeledDivider from '../components/labeled-divider'
 import { useNavigate } from 'react-router-dom'
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff'
 import VisibilityIcon from '@mui/icons-material/Visibility'
-import { loginRetrieveToken } from '../api/users/requests'
-
-import axios from 'axios'
-import { IEmailPassword } from '../types/users/user.dto'
 
 export interface FormValues {
-  email: string
-  password: string
-}
-
-interface iXD {
   email: string
   password: string
 }
@@ -40,9 +31,9 @@ const schema: () => yup.SchemaOf<FormValues> = () =>
 const LoginScreen: React.FC = () => {
   const [showPassword, setShowPassword] = React.useState(false)
 
-  const { data, mutate } = useMutation(['token'], (values: FormValues) =>
-    loginRetrieveToken(values)
-  )
+  // const { data, mutate } = useMutation(['token'], (values: FormValues) =>
+  //   loginRetrieveToken(values)
+  // )
 
   const handleClickShowPassword = () => setShowPassword(!showPassword)
 
@@ -56,8 +47,8 @@ const LoginScreen: React.FC = () => {
   })
 
   const handleFormSubmit = React.useCallback((values: FormValues) => {
-    mutate(values)
-    console.log(data?.status)
+    // mutate(values)
+    console.log('cumis?')
   }, [])
 
   // const handleSuccessfullLogin = React.useCallback(
