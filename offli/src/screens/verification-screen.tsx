@@ -10,10 +10,8 @@ import { verifyCode } from '../api/users/requests'
 const VerificationScreen = () => {
   const [emailAddress] = useState('amy@gmail.com')
 
-  const { data, mutate, context } = useMutation(
-    ['verificationCode'],
-    (code: string) =>
-      verifyCode({ email: 'martinzof1@gmail.com', verificationCode: code })
+  const { data, mutate } = useMutation(['verificationCode'], (code: string) =>
+    verifyCode({ email: 'martinzof1@gmail.com', verificationCode: code })
   )
 
   const handleOnCompleted = (code: string) => {
