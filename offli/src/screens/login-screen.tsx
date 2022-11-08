@@ -7,26 +7,17 @@ import {
   IconButton,
 } from '@mui/material'
 import Logo from '../components/logo'
-import { useMutation, useQuery } from 'react-query'
+import { useMutation } from 'react-query'
 import { Controller, useForm } from 'react-hook-form'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
 import OffliButton from '../components/offli-button'
 import LabeledDivider from '../components/labeled-divider'
-import { useNavigate } from 'react-router-dom'
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff'
 import VisibilityIcon from '@mui/icons-material/Visibility'
 import { loginRetrieveToken } from '../api/users/requests'
 
-import axios from 'axios'
-import { IEmailPassword } from '../types/users/user.dto'
-
 export interface FormValues {
-  email: string
-  password: string
-}
-
-interface iXD {
   email: string
   password: string
 }

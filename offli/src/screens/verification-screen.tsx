@@ -4,6 +4,7 @@ import BackButton from '../components/back-button'
 import OffliButton from '../components/offli-button'
 import ReactInputVerificationCode from 'react-input-verification-code'
 import { ApplicationLocations } from '../types/common/applications-locations.dto'
+import { Link } from 'react-router-dom'
 
 const VerificationScreen = () => {
   const [emailAddress] = useState('amy@gmail.com')
@@ -31,11 +32,16 @@ const VerificationScreen = () => {
         Take a look for the verification code we just sent you to{' '}
         <b>{emailAddress}</b>.
       </Typography>
-      <Typography variant="subtitle2" sx={{ ml: -20, mb: 1 }}>
+      <Typography variant="subtitle2" sx={{ ml: -25, mb: 1 }}>
         Confirmation code
       </Typography>
-      <ReactInputVerificationCode autoFocus placeholder="" length={5} />
-      <Box sx={{ display: 'flex', mr: -15, alignItems: 'center' }}>
+      <ReactInputVerificationCode
+        autoFocus
+        placeholder=""
+        length={6}
+        onCompleted={() => console.log('code completed')}
+      />
+      <Box sx={{ display: 'flex', mr: -20, alignItems: 'center' }}>
         <Typography variant="subtitle2">No email?</Typography>
         <OffliButton variant="text">
           <Typography
