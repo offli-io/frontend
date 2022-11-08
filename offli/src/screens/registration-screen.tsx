@@ -17,6 +17,8 @@ import VisibilityIcon from '@mui/icons-material/Visibility'
 import CheckCircleIcon from '@mui/icons-material/CheckCircle'
 import RemoveCircleIcon from '@mui/icons-material/RemoveCircle'
 import LabeledDivider from '../components/labeled-divider'
+import { useMutation, useQuery } from '@tanstack/react-query'
+import { loginRetrieveToken } from '../api/users/requests'
 
 import { ApplicationLocations } from '../types/common/applications-locations.dto'
 
@@ -28,12 +30,23 @@ export interface FormValues {
 const schema: () => yup.SchemaOf<FormValues> = () =>
   yup.object({
     email: yup.string().email().defined().required(),
-    password: yup.string().defined().required(),
+    password: yup
+      .string()
+      .defined()
+      .required('Please enter your password TY MONGOL'),
+    //   .matches(
+    //   /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/,
+    //   "Must Contain 8 Characters, One Uppercase, One Lowercase, One Number and One Special Case Character"
+    // ),
   })
 
 export const RegistrationScreen: React.FC = () => {
   const [showPassword, setShowPassword] = React.useState(false)
   const [usernameValid] = React.useState(true)
+
+  const { data, mutate } = useMutation(['token'], (values: FormValues) =>
+    loginRetrieveToken(values)
+  )
 
   const handleClickShowPassword = () => setShowPassword(!showPassword)
 
@@ -46,12 +59,10 @@ export const RegistrationScreen: React.FC = () => {
     mode: 'onChange',
   })
 
-  const handleFormSubmit = React.useCallback(
-    (values: FormValues) => console.log(values),
-    []
-  )
-
-  const navigate = useNavigate()
+  const handleFormSubmit = React.useCallback((values: FormValues) => {
+    mutate(values)
+    console.log(data?.data)
+  }, [])
 
   return (
     <form
