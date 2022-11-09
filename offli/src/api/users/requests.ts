@@ -36,3 +36,20 @@ export const verifyCode = async (values: IEmailVerificationCode) => {
 
   return promise
 }
+
+export const checkIfEmailAvailable = async (queryKey: any) => {
+  const [_key, { email }] = queryKey;
+  const CancelToken = axios.CancelToken
+  const source = CancelToken.source()
+
+  const promise = axios.get<boolean>(`/registration/emails/${email}`, {
+    // params: searchParams,
+    cancelToken: source?.token,
+  })
+
+  //   queryFunctionContext?.signal?.addEventListener('abort', () => {
+  //     source.cancel('Query was cancelled by React Query')
+  //   })
+
+  return promise
+}

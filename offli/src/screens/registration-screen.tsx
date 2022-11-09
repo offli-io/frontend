@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import {
   Box,
   Typography,
@@ -18,7 +18,10 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle'
 import RemoveCircleIcon from '@mui/icons-material/RemoveCircle'
 import LabeledDivider from '../components/labeled-divider'
 import { useMutation, useQuery } from '@tanstack/react-query'
-import { loginRetrieveToken } from '../api/users/requests'
+import {
+  checkIfEmailAvailable,
+  loginRetrieveToken,
+} from '../api/users/requests'
 
 import { ApplicationLocations } from '../types/common/applications-locations.dto'
 
@@ -41,12 +44,22 @@ const schema: () => yup.SchemaOf<FormValues> = () =>
   })
 
 export const RegistrationScreen: React.FC = () => {
-  const [showPassword, setShowPassword] = React.useState(false)
-  const [usernameValid] = React.useState(true)
+  const [showPassword, setShowPassword] = useState(false)
+  const [usernameValid] = useState(true)
 
   const { data, mutate } = useMutation(['token'], (values: FormValues) =>
     loginRetrieveToken(values)
   )
+
+  const { status, error, refetch } = useQuery(
+    ['user', { email: 'aa' }],
+    email => checkIfEmailAvailable(email)
+  )
+  // {
+  //   refetchOnWindowFocus: false,
+  //   enabled: false, // (!) handle refetchs manually
+  // }
+  // )
 
   const handleClickShowPassword = () => setShowPassword(!showPassword)
 
@@ -63,6 +76,10 @@ export const RegistrationScreen: React.FC = () => {
     mutate(values)
     console.log(data?.data)
   }, [])
+
+  const checkEmailAvailablity = (email: string) => {
+    refetch()
+  }
 
   return (
     <form
@@ -138,6 +155,7 @@ export const RegistrationScreen: React.FC = () => {
                 // }
                 //disabled={methodSelectionDisabled}
                 sx={{ width: '80%', mb: 2 }}
+                onBlur={event => checkEmailAvailablity(event.target.value)}
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">
