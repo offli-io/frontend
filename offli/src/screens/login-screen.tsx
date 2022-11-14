@@ -19,6 +19,11 @@ import VisibilityOffIcon from '@mui/icons-material/VisibilityOff'
 import VisibilityIcon from '@mui/icons-material/Visibility'
 import { useKeycloak } from '@react-keycloak/web'
 import axios from 'axios'
+import {
+  getAuthToken,
+  setAuthToken,
+  setRefreshToken,
+} from '../utils/token.util'
 
 export interface FormValues {
   email: string
@@ -32,17 +37,12 @@ const schema: () => yup.SchemaOf<FormValues> = () =>
   })
 
 const LoginScreen: React.FC = () => {
-  const idk = useKeycloak()
+  const { keycloak, initialized } = useKeycloak()
   const [showPassword, setShowPassword] = React.useState(false)
 
-
-  idk?.keycloak?.
-  React.useEffect(() => {
-    console.log(keycloak, initialized)
-  }, [keycloak, initialized])
-  console.log(keycloak, initialized)
-  console.log(keycloak?.token)
-
+  const query = useQuery(['users'], () => axios.get('/users'), {
+    enabled: false,
+  })
   // const { data, mutate } = useMutation(['token'], (values: FormValues) =>
   //   loginRetrieveToken(values)
   // )
@@ -62,8 +62,7 @@ const LoginScreen: React.FC = () => {
     // mutate(values)
     //keycloak.login()
     mut.mutate()
-    console.log('cumis?')
-    keycloak.login()
+    console.log(getAuthToken())
   }, [])
 
   const keycloakinfo = useQuery(['keycloak-data'], () =>
@@ -72,35 +71,46 @@ const LoginScreen: React.FC = () => {
     )
   )
 
-  const mut = useMutation(['keycloak-login'], () => {
-    const data = {
-      username: 'fme',
-      password: 'test',
-      grant_type: 'password',
-      client_id: 'UserManagement',
+  const mut = useMutation(
+    ['keycloak-login'],
+    () => {
+      const data = {
+        username: 'fme',
+        password: 'test',
+        grant_type: 'password',
+        client_id: 'UserManagement',
+      }
+      const options = {
+        method: 'POST',
+        headers: { 'content-type': 'application/x-www-form-urlencoded' },
+        data: qs.stringify(data),
+        url: 'http://localhost:8082/realms/Offli/protocol/openid-connect/token',
+      }
+      return axios(options)
+      // const params = new URLSearchParams()
+      // params.append('username', 'fme')
+      // params.append('password', 'test')
+      // params.append('grant_type', 'password')
+      // params.append('client_id', 'UserManagement')
+      // return axios.post(
+      //   'http://localhost:8082/realms/Offli/protocol/openid-connect/token',
+      //   params,
+      //   {
+      //     headers: {
+      //       'Content-Type': 'application/x-www-form-urlencoded',
+      //     },
+      //   }
+      // )
+    },
+    {
+      onSuccess: data => {
+        console.log(data?.data)
+        setAuthToken(data?.data?.access_token)
+        setRefreshToken(data?.data?.refresh_token)
+        query?.refetch()
+      },
     }
-    const options = {
-      method: 'POST',
-      headers: { 'content-type': 'application/x-www-form-urlencoded' },
-      data: qs.stringify(data),
-      url: 'http://localhost:8082/realms/Offli/protocol/openid-connect/token',
-    }
-    return axios(options)
-    // const params = new URLSearchParams()
-    // params.append('username', 'fme')
-    // params.append('password', 'test')
-    // params.append('grant_type', 'password')
-    // params.append('client_id', 'UserManagement')
-    // return axios.post(
-    //   'http://localhost:8082/realms/Offli/protocol/openid-connect/token',
-    //   params,
-    //   {
-    //     headers: {
-    //       'Content-Type': 'application/x-www-form-urlencoded',
-    //     },
-    //   }
-    // )
-  })
+  )
 
   return (
     <form

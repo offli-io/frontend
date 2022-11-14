@@ -8,8 +8,26 @@ import { ReactNode } from 'react'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
 import { LocalizationProvider } from '@mui/x-date-pickers'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
+import { useServiceInterceptors } from './hooks/use-service-interceptors'
 
-const queryClient = new QueryClient()
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: 1,
+      refetchOnMount: 'always',
+      refetchOnWindowFocus: 'always',
+      refetchOnReconnect: 'always',
+      cacheTime: 1000 * 30, //30 seconds
+      refetchInterval: 1000 * 30, //30 seconds
+      refetchIntervalInBackground: false,
+      suspense: false,
+      staleTime: 1000 * 30,
+    },
+    mutations: {
+      retry: 0,
+    },
+  },
+})
 
 declare module 'react-query/types/react/QueryClientProvider' {
   interface QueryClientProviderProps {
@@ -40,8 +58,8 @@ function App() {
     )
   }, [])
   return (
-    <AuthenticationProvider>
-      <QueryClientProvider client={queryClient} contextSharing={true}>
+    <QueryClientProvider client={queryClient} contextSharing={true}>
+      <AuthenticationProvider>
         <LocalizationProvider dateAdapter={AdapterDateFns}>
           <Box sx={{ height: '100vh' }}>
             <Router />
@@ -52,8 +70,8 @@ function App() {
       Nemozme pouzit query devtooly lebo to pada s tym ze sa na pozadi vytvaraju 2 instancie query client providera
       vid - https://github.com/TanStack/query/issues/1936
       <ReactQueryDevtools initialIsOpen={false} /> */}
-      </QueryClientProvider>
-    </AuthenticationProvider>
+      </AuthenticationProvider>
+    </QueryClientProvider>
   )
 }
 
