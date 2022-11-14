@@ -37,8 +37,7 @@ export const verifyCode = async (values: IEmailVerificationCode) => {
   return promise
 }
 
-export const checkIfEmailAvailable = async (queryKey: any) => {
-  const [_key, { email }] = queryKey;
+export const checkIfEmailAvailable = async (email?: string) => {
   const CancelToken = axios.CancelToken
   const source = CancelToken.source()
 

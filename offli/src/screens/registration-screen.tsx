@@ -46,15 +46,22 @@ const schema: () => yup.SchemaOf<FormValues> = () =>
 export const RegistrationScreen: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false)
   const [usernameValid] = useState(true)
+  const [email, setEmail] = React.useState<string | undefined>()
 
-  const { data, mutate } = useMutation(['token'], (values: FormValues) =>
-    loginRetrieveToken(values)
+  const { data: tokenData, mutate } = useMutation(
+    ['token'],
+    (values: FormValues) => loginRetrieveToken(values)
   )
 
-  const { status, error, refetch } = useQuery(
-    ['user', { email: 'aa' }],
-    email => checkIfEmailAvailable(email)
-  )
+  const {
+    status,
+    error,
+    data: isEmailAvailable,
+  } = useQuery(['user', email], () => checkIfEmailAvailable(email), {
+    enabled: !!email,
+  })
+
+  console.log(isEmailAvailable?.data)
   // {
   //   refetchOnWindowFocus: false,
   //   enabled: false, // (!) handle refetchs manually
@@ -63,7 +70,7 @@ export const RegistrationScreen: React.FC = () => {
 
   const handleClickShowPassword = () => setShowPassword(!showPassword)
 
-  const { control, handleSubmit } = useForm<FormValues>({
+  const { control, handleSubmit, watch, setError } = useForm<FormValues>({
     defaultValues: {
       email: '',
       password: '',
@@ -74,12 +81,14 @@ export const RegistrationScreen: React.FC = () => {
 
   const handleFormSubmit = React.useCallback((values: FormValues) => {
     mutate(values)
-    console.log(data?.data)
+    // console.log(data?.data)
   }, [])
 
-  const checkEmailAvailablity = (email: string) => {
-    refetch()
-  }
+  React.useEffect(() => {
+    if (isEmailAvailable?.data) {
+      setError('email', { message: 'email already in use' })
+    }
+  }, [isEmailAvailable])
 
   return (
     <form
@@ -149,13 +158,10 @@ export const RegistrationScreen: React.FC = () => {
                 //   label="Username"
                 placeholder="Email"
                 error={!!error}
-                // helperText={
-                //   error?.message ||
-                //   t(`value.${nextStep?.authenticationType}.placeholder`)
-                // }
+                helperText={error?.message}
                 //disabled={methodSelectionDisabled}
                 sx={{ width: '80%', mb: 2 }}
-                onBlur={event => checkEmailAvailablity(event.target.value)}
+                onBlur={event => setEmail(event.target.value)}
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">
