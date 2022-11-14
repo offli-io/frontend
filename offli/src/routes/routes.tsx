@@ -1,3 +1,4 @@
+import { useKeycloak } from '@react-keycloak/web'
 import { Route, Routes as BaseRoutes } from 'react-router-dom'
 import ActivitiesScreen from '../screens/activites-screen'
 import ChatScreen from '../screens/chat-screen'
@@ -19,6 +20,10 @@ import WelcomeScreen from '../screens/welcome-screen'
 import { ApplicationLocations } from '../types/common/applications-locations.dto'
 
 const Routes = () => {
+  const { keycloak } = useKeycloak()
+
+  const isLoggedIn = keycloak.authenticated
+  console.log(isLoggedIn)
   return (
     <BaseRoutes>
       <Route path={ApplicationLocations.LOADING} element={<LoadingScreen />} />

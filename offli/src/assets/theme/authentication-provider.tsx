@@ -1,4 +1,6 @@
 import React from 'react'
+import { ReactKeycloakProvider } from '@react-keycloak/web'
+import Keycloak from 'keycloak-js'
 
 interface IAuthenticationContext {
   token: string | null
@@ -8,6 +10,13 @@ interface IAuthenticationContext {
 const AuthenticationContext = React.createContext<IAuthenticationContext>(
   {} as IAuthenticationContext
 )
+
+const keycloakConfig = new Keycloak({
+  url: 'http://localhost:8082/auth',
+  realm: 'Offli',
+  clientId: 'Offli-realm',
+  
+})
 
 export const AuthenticationProvider = ({
   children,
@@ -21,8 +30,19 @@ export const AuthenticationProvider = ({
   //another way just to inform with boolean,
   const [authenticated, setIsAuthenticated] = React.useState<boolean>(false)
   return (
-    <AuthenticationContext.Provider value={{ token, setToken }}>
-      {children}
-    </AuthenticationContext.Provider>
+    <ReactKeycloakProvider
+      authClient={keycloakConfig}
+      onTokens={() => console.log('jesssss')}
+      initOptions={{
+        onLoad: 'login-required',
+        scope: 'openid profile roles',
+        response: 'code',
+        profile: 'openid-connect',
+      }}
+    >
+      <AuthenticationContext.Provider value={{ token, setToken }}>
+        {children}
+      </AuthenticationContext.Provider>
+    </ReactKeycloakProvider>
   )
 }

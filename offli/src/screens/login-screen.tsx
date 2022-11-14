@@ -6,6 +6,7 @@ import {
   InputAdornment,
   IconButton,
 } from '@mui/material'
+import qs from 'qs'
 import Logo from '../components/logo'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { Controller, useForm } from 'react-hook-form'
@@ -16,6 +17,8 @@ import LabeledDivider from '../components/labeled-divider'
 import { useNavigate } from 'react-router-dom'
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff'
 import VisibilityIcon from '@mui/icons-material/Visibility'
+import { useKeycloak } from '@react-keycloak/web'
+import axios from 'axios'
 
 export interface FormValues {
   email: string
@@ -29,7 +32,16 @@ const schema: () => yup.SchemaOf<FormValues> = () =>
   })
 
 const LoginScreen: React.FC = () => {
+  const idk = useKeycloak()
   const [showPassword, setShowPassword] = React.useState(false)
+
+
+  idk?.keycloak?.
+  React.useEffect(() => {
+    console.log(keycloak, initialized)
+  }, [keycloak, initialized])
+  console.log(keycloak, initialized)
+  console.log(keycloak?.token)
 
   // const { data, mutate } = useMutation(['token'], (values: FormValues) =>
   //   loginRetrieveToken(values)
@@ -48,26 +60,47 @@ const LoginScreen: React.FC = () => {
 
   const handleFormSubmit = React.useCallback((values: FormValues) => {
     // mutate(values)
+    //keycloak.login()
+    mut.mutate()
     console.log('cumis?')
+    keycloak.login()
   }, [])
 
-  // const handleSuccessfullLogin = React.useCallback(
-  //   (res: GoogleLoginResponse | GoogleLoginResponseOffline) => {
-  //     //or if((res as GoogleLoginResponse).profileObj)
-  //     if ('profileObj' in res) {
-  //       console.log('[Login Success] current user : ', res.profileObj)
-  //       refreshTokenSetup(res)
-  //     } else {
-  //       return
-  //       //TODO handle GoogleLoginResponseOffline
-  //     }
-  //   },
-  //   []
-  // )
+  const keycloakinfo = useQuery(['keycloak-data'], () =>
+    axios.get(
+      'http://localhost:8082/realms/Offli/.well-known/openid-configuration'
+    )
+  )
 
-  // const handleFailedLogin = React.useCallback((res: GoogleLoginResponse) => {
-  //   console.log('[Login Failed] res : ', res)
-  // }, [])
+  const mut = useMutation(['keycloak-login'], () => {
+    const data = {
+      username: 'fme',
+      password: 'test',
+      grant_type: 'password',
+      client_id: 'UserManagement',
+    }
+    const options = {
+      method: 'POST',
+      headers: { 'content-type': 'application/x-www-form-urlencoded' },
+      data: qs.stringify(data),
+      url: 'http://localhost:8082/realms/Offli/protocol/openid-connect/token',
+    }
+    return axios(options)
+    // const params = new URLSearchParams()
+    // params.append('username', 'fme')
+    // params.append('password', 'test')
+    // params.append('grant_type', 'password')
+    // params.append('client_id', 'UserManagement')
+    // return axios.post(
+    //   'http://localhost:8082/realms/Offli/protocol/openid-connect/token',
+    //   params,
+    //   {
+    //     headers: {
+    //       'Content-Type': 'application/x-www-form-urlencoded',
+    //     },
+    //   }
+    // )
+  })
 
   return (
     <form
