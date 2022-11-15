@@ -3,10 +3,11 @@ import { BrowserRouter } from 'react-router-dom'
 import { CustomizationProvider } from '../assets/theme/customization-provider'
 import BottomNavigator from '../components/bottom-navigator'
 import OffliHeader from '../components/offli-header'
+import { getAuthToken } from '../utils/token.util'
 import Routes from './routes'
 
 const Router: React.FC = (): ReactElement => {
-  const token = true
+  const token = getAuthToken()
   return (
     <CustomizationProvider>
       <Suspense fallback={<p>Loading ...</p>}>

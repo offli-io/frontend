@@ -19,6 +19,7 @@ import VisibilityOffIcon from '@mui/icons-material/VisibilityOff'
 import VisibilityIcon from '@mui/icons-material/Visibility'
 import { useKeycloak } from '@react-keycloak/web'
 import axios from 'axios'
+import { useSnackbar } from 'notistack'
 import {
   getAuthToken,
   setAuthToken,
@@ -26,57 +27,53 @@ import {
 } from '../utils/token.util'
 
 export interface FormValues {
-  email: string
+  username: string
   password: string
 }
 
 const schema: () => yup.SchemaOf<FormValues> = () =>
   yup.object({
-    email: yup.string().defined().required(),
+    username: yup.string().defined().required(),
     password: yup.string().defined().required(),
   })
 
 const LoginScreen: React.FC = () => {
   const { keycloak, initialized } = useKeycloak()
   const [showPassword, setShowPassword] = React.useState(false)
-
-  const query = useQuery(['users'], () => axios.get('/users'), {
-    enabled: false,
-  })
-  // const { data, mutate } = useMutation(['token'], (values: FormValues) =>
-  //   loginRetrieveToken(values)
-  // )
+  const { enqueueSnackbar } = useSnackbar()
 
   const handleClickShowPassword = () => setShowPassword(!showPassword)
 
-  const { control, handleSubmit } = useForm<FormValues>({
+  const { control, handleSubmit, watch } = useForm<FormValues>({
     defaultValues: {
-      email: '',
+      username: '',
       password: '',
     },
     resolver: yupResolver(schema()),
     mode: 'onChange',
   })
 
-  const handleFormSubmit = React.useCallback((values: FormValues) => {
-    // mutate(values)
-    //keycloak.login()
-    mut.mutate()
-    console.log(getAuthToken())
-  }, [])
+  const handleFormSubmit = React.useCallback(
+    (values: FormValues) => loginMutation.mutate(values),
+    []
+  )
 
-  const keycloakinfo = useQuery(['keycloak-data'], () =>
+  const keycloakDataQuery = useQuery(['keycloak-data'], () =>
     axios.get(
       'http://localhost:8082/realms/Offli/.well-known/openid-configuration'
     )
   )
 
-  const mut = useMutation(
+  React.useEffect(() => {
+    //for testing purposes to not manually remove token from localstorage
+    setAuthToken(undefined)
+  }, [])
+
+  const loginMutation = useMutation(
     ['keycloak-login'],
-    () => {
+    (formValues: FormValues) => {
       const data = {
-        username: 'fme',
-        password: 'test',
+        ...formValues,
         grant_type: 'password',
         client_id: 'UserManagement',
       }
@@ -87,30 +84,20 @@ const LoginScreen: React.FC = () => {
         url: 'http://localhost:8082/realms/Offli/protocol/openid-connect/token',
       }
       return axios(options)
-      // const params = new URLSearchParams()
-      // params.append('username', 'fme')
-      // params.append('password', 'test')
-      // params.append('grant_type', 'password')
-      // params.append('client_id', 'UserManagement')
-      // return axios.post(
-      //   'http://localhost:8082/realms/Offli/protocol/openid-connect/token',
-      //   params,
-      //   {
-      //     headers: {
-      //       'Content-Type': 'application/x-www-form-urlencoded',
-      //     },
-      //   }
-      // )
     },
     {
       onSuccess: data => {
         console.log(data?.data)
         setAuthToken(data?.data?.access_token)
         setRefreshToken(data?.data?.refresh_token)
-        query?.refetch()
+      },
+      onError: error => {
+        enqueueSnackbar('Failed to log in', { variant: 'error' })
       },
     }
   )
+
+  const isLoading = loginMutation?.isLoading || keycloakDataQuery?.isLoading
 
   return (
     <form
@@ -145,7 +132,7 @@ const LoginScreen: React.FC = () => {
             <Typography variant="subtitle1">alebo</Typography>
           </LabeledDivider>
           <Controller
-            name="email"
+            name="username"
             control={control}
             render={({ field, fieldState: { error } }) => (
               <TextField
@@ -199,7 +186,7 @@ const LoginScreen: React.FC = () => {
             )}
           />
 
-          <OffliButton variant="text">
+          <OffliButton variant="text" disabled={isLoading}>
             <Typography
               variant="subtitle2"
               sx={{ fontWeight: 'bold', ml: '-70%' }}
@@ -208,7 +195,11 @@ const LoginScreen: React.FC = () => {
             </Typography>
           </OffliButton>
         </Box>
-        <OffliButton sx={{ width: '80%', mb: 5 }} type="submit">
+        <OffliButton
+          sx={{ width: '80%', mb: 5 }}
+          type="submit"
+          isLoading={isLoading}
+        >
           Login
         </OffliButton>
       </Box>

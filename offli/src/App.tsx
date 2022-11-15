@@ -1,4 +1,4 @@
-import { Box } from '@mui/material'
+import { Box, Button } from '@mui/material'
 import './App.css'
 import Router from './routes/router'
 import React from 'react'
@@ -9,6 +9,7 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
 import { LocalizationProvider } from '@mui/x-date-pickers'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { useServiceInterceptors } from './hooks/use-service-interceptors'
+import { SnackbarKey, SnackbarProvider } from 'notistack'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -57,20 +58,44 @@ function App() {
       }
     )
   }, [])
+
+  const notificationsRef = React.createRef<any>()
+
+  const handleDismiss = React.useCallback(
+    (key: SnackbarKey) => {
+      notificationsRef.current.closeSnackbar(key)
+    },
+    [notificationsRef]
+  )
   return (
     <QueryClientProvider client={queryClient} contextSharing={true}>
-      <AuthenticationProvider>
-        <LocalizationProvider dateAdapter={AdapterDateFns}>
-          <Box sx={{ height: '100vh' }}>
-            <Router />
-          </Box>
-        </LocalizationProvider>
-        <ReactQueryDevtools initialIsOpen={false} />
-        {/* 
+      <SnackbarProvider
+        ref={notificationsRef}
+        maxSnack={1}
+        autoHideDuration={3000}
+        anchorOrigin={{
+          horizontal: 'left',
+          vertical: 'bottom',
+        }}
+        action={key => (
+          <Button onClick={() => handleDismiss(key)} sx={{ color: 'white' }}>
+            Dismiss
+          </Button>
+        )}
+      >
+        <AuthenticationProvider>
+          <LocalizationProvider dateAdapter={AdapterDateFns}>
+            <Box sx={{ height: '100vh' }}>
+              <Router />
+            </Box>
+          </LocalizationProvider>
+          <ReactQueryDevtools initialIsOpen={false} />
+          {/* 
       Nemozme pouzit query devtooly lebo to pada s tym ze sa na pozadi vytvaraju 2 instancie query client providera
       vid - https://github.com/TanStack/query/issues/1936
       <ReactQueryDevtools initialIsOpen={false} /> */}
-      </AuthenticationProvider>
+        </AuthenticationProvider>
+      </SnackbarProvider>
     </QueryClientProvider>
   )
 }
