@@ -25,6 +25,8 @@ import {
   setAuthToken,
   setRefreshToken,
 } from '../utils/token.util'
+import { AuthenticationContext } from '../assets/theme/authentication-provider'
+import { ApplicationLocations } from '../types/common/applications-locations.dto'
 
 export interface FormValues {
   username: string
@@ -40,7 +42,9 @@ const schema: () => yup.SchemaOf<FormValues> = () =>
 const LoginScreen: React.FC = () => {
   const { keycloak, initialized } = useKeycloak()
   const [showPassword, setShowPassword] = React.useState(false)
+  const { stateToken, setStateToken } = React.useContext(AuthenticationContext)
   const { enqueueSnackbar } = useSnackbar()
+  const navigate = useNavigate()
 
   const handleClickShowPassword = () => setShowPassword(!showPassword)
 
@@ -88,8 +92,10 @@ const LoginScreen: React.FC = () => {
     {
       onSuccess: data => {
         console.log(data?.data)
-        setAuthToken(data?.data?.access_token)
-        setRefreshToken(data?.data?.refresh_token)
+        // setAuthToken(data?.data?.access_token)
+        // setRefreshToken(data?.data?.refresh_token)
+        setStateToken(data?.data?.access_token)
+        navigate(ApplicationLocations.ACTIVITES)
       },
       onError: error => {
         enqueueSnackbar('Failed to log in', { variant: 'error' })
@@ -156,7 +162,6 @@ const LoginScreen: React.FC = () => {
             control={control}
             render={({ field, fieldState: { error } }) => (
               <TextField
-                autoFocus
                 {...field}
                 //label="Username"
                 placeholder="Heslo"

@@ -1,5 +1,6 @@
 import { useKeycloak } from '@react-keycloak/web'
 import { Route, Routes as BaseRoutes } from 'react-router-dom'
+import { PrivateRoutes } from '../components/private-routes'
 import ActivitiesScreen from '../screens/activites-screen'
 import ChatScreen from '../screens/chat-screen'
 import CreateActivityScreen from '../screens/create-activity-screen/create-activity-screen'
@@ -25,7 +26,6 @@ const Routes = () => {
 
   const token = getAuthToken()
 
-  console.log(token)
   return (
     <BaseRoutes>
       <Route path={ApplicationLocations.LOADING} element={<LoadingScreen />} />
@@ -50,47 +50,45 @@ const Routes = () => {
         path={ApplicationLocations.SELECT_PROFILE_PICTURE}
         element={<SelectProfilePictureScreen />}
       />
-      {token && (
-        <>
-          <Route
-            path={ApplicationLocations.WELCOME}
-            element={<WelcomeScreen />}
-          />
-          <Route
-            path={ApplicationLocations.PROFILE}
-            element={<ProfileScreen />}
-          />
-          <Route
-            path={ApplicationLocations.EDIT_PROFILE}
-            element={<EditProfileScreen />}
-          />
-          <Route
-            path={ApplicationLocations.RESET_PASSWORD}
-            element={<ResetPasswordScreen />}
-          />
-          <Route
-            path={ApplicationLocations.NEW_PASSWORD}
-            element={<NewPasswordScreen />}
-          />
-          <Route
-            path={ApplicationLocations.ACTIVITES}
-            element={<ActivitiesScreen />}
-          />
-          <Route
-            path={ApplicationLocations.CREATE}
-            element={<CreateActivityScreen />}
-          />
-          <Route
-            path={ApplicationLocations.SEARCH}
-            element={<SearchActivitesScreen />}
-          />
-          <Route
-            path={ApplicationLocations.BUDDIES}
-            element={<MyBuddiesScreen />}
-          />
-          <Route path={ApplicationLocations.CHAT} element={<ChatScreen />} />
-        </>
-      )}
+      <Route element={<PrivateRoutes />}>
+        <Route
+          path={ApplicationLocations.WELCOME}
+          element={<WelcomeScreen />}
+        />
+        <Route
+          path={ApplicationLocations.PROFILE}
+          element={<ProfileScreen />}
+        />
+        <Route
+          path={ApplicationLocations.EDIT_PROFILE}
+          element={<EditProfileScreen />}
+        />
+        <Route
+          path={ApplicationLocations.RESET_PASSWORD}
+          element={<ResetPasswordScreen />}
+        />
+        <Route
+          path={ApplicationLocations.NEW_PASSWORD}
+          element={<NewPasswordScreen />}
+        />
+        <Route
+          path={ApplicationLocations.ACTIVITES}
+          element={<ActivitiesScreen />}
+        />
+        <Route
+          path={ApplicationLocations.CREATE}
+          element={<CreateActivityScreen />}
+        />
+        <Route
+          path={ApplicationLocations.SEARCH}
+          element={<SearchActivitesScreen />}
+        />
+        <Route
+          path={ApplicationLocations.BUDDIES}
+          element={<MyBuddiesScreen />}
+        />
+        <Route path={ApplicationLocations.CHAT} element={<ChatScreen />} />
+      </Route>
     </BaseRoutes>
   )
 }
