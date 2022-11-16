@@ -1,20 +1,23 @@
 import { ReactElement, Suspense } from 'react'
 import { BrowserRouter } from 'react-router-dom'
+import { AuthenticationContext } from '../assets/theme/authentication-provider'
 import { CustomizationProvider } from '../assets/theme/customization-provider'
 import BottomNavigator from '../components/bottom-navigator'
 import OffliHeader from '../components/offli-header'
+import { getAuthToken } from '../utils/token.util'
 import Routes from './routes'
+import React from 'react'
 
 const Router: React.FC = (): ReactElement => {
-  const token = false
+  const { stateToken } = React.useContext(AuthenticationContext)
   return (
     <CustomizationProvider>
       <Suspense fallback={<p>Loading ...</p>}>
         <BrowserRouter>
           {/* conditional rendering when token is received */}
-          {token && <OffliHeader />}
+          {stateToken && <OffliHeader />}
           <Routes />
-          {token && <BottomNavigator />}
+          {stateToken && <BottomNavigator />}
         </BrowserRouter>
       </Suspense>
     </CustomizationProvider>

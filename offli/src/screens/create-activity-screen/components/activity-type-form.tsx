@@ -58,6 +58,7 @@ export const ActivityTypeForm: React.FC<IActivityTypeFormProps> = ({
       >
         {activityTypes.map((type, index) => (
           <LabeledTile
+            key={index}
             title={type}
             onClick={handleTileClick}
             sx={{

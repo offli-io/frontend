@@ -6,8 +6,9 @@ import {
   InputAdornment,
   IconButton,
 } from '@mui/material'
+import qs from 'qs'
 import Logo from '../components/logo'
-import { useMutation, useQuery } from 'react-query'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import { Controller, useForm } from 'react-hook-form'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
@@ -16,86 +17,93 @@ import LabeledDivider from '../components/labeled-divider'
 import { useNavigate } from 'react-router-dom'
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff'
 import VisibilityIcon from '@mui/icons-material/Visibility'
-import { loginRetrieveToken } from '../api/users/requests'
-
+import { useKeycloak } from '@react-keycloak/web'
 import axios from 'axios'
-import { IEmailPassword } from '../types/users/user.dto'
+import { useSnackbar } from 'notistack'
+import {
+  getAuthToken,
+  setAuthToken,
+  setRefreshToken,
+} from '../utils/token.util'
+import { AuthenticationContext } from '../assets/theme/authentication-provider'
+import { ApplicationLocations } from '../types/common/applications-locations.dto'
 
 export interface FormValues {
-  email: string
-  password: string
-}
-
-interface iXD {
-  email: string
+  username: string
   password: string
 }
 
 const schema: () => yup.SchemaOf<FormValues> = () =>
   yup.object({
-    email: yup.string().defined().required(),
+    username: yup.string().defined().required(),
     password: yup.string().defined().required(),
   })
 
 const LoginScreen: React.FC = () => {
+  const { keycloak, initialized } = useKeycloak()
   const [showPassword, setShowPassword] = React.useState(false)
-
-  const { data, isLoading, mutate } = useMutation(
-    ['token'],
-    (values: FormValues) => loginRetrieveToken(values)
-  )
-
-  console.log(data?.data)
+  const { stateToken, setStateToken } = React.useContext(AuthenticationContext)
+  const { enqueueSnackbar } = useSnackbar()
+  const navigate = useNavigate()
 
   const handleClickShowPassword = () => setShowPassword(!showPassword)
 
-  const { control, handleSubmit } = useForm<FormValues>({
+  const { control, handleSubmit, watch } = useForm<FormValues>({
     defaultValues: {
-      email: '',
+      username: '',
       password: '',
     },
     resolver: yupResolver(schema()),
     mode: 'onChange',
   })
 
-  const retrieveToken = ({ email, password }: IEmailPassword) =>
-    useQuery(['token'], () =>
-      axios.post('/login', { email, password }).then(res => res.data)
+  const handleFormSubmit = React.useCallback(
+    (values: FormValues) => loginMutation.mutate(values),
+    []
+  )
+
+  const keycloakDataQuery = useQuery(['keycloak-data'], () =>
+    axios.get(
+      'http://localhost:8082/realms/Offli/.well-known/openid-configuration'
     )
+  )
 
-  // const { data, status } = useQuery<IEmailPassword>(
-  //   ['token'],
-  //   retrieveToken(email, password)
-  // )
-
-  const handleFormSubmit = React.useCallback((values: FormValues) => {
-    // const retrieveToken = useQuery(['token'], props => {
-    //   loginRetrieveToken({
-    //     // queryFunctionContext: props,
-    //     postValues: { email: values.username, password: values.password }, ///FE ma username, BE ma email
-    //   })
-    // })
-    // console.log(retrieveToken.status)
-    mutate(values)
+  React.useEffect(() => {
+    //for testing purposes to not manually remove token from localstorage
+    setAuthToken(undefined)
   }, [])
 
-  // const handleSuccessfullLogin = React.useCallback(
-  //   (res: GoogleLoginResponse | GoogleLoginResponseOffline) => {
-  //     //or if((res as GoogleLoginResponse).profileObj)
-  //     if ('profileObj' in res) {
-  //       console.log('[Login Success] current user : ', res.profileObj)
-  //       refreshTokenSetup(res)
-  //     } else {
-  //       return
-  //       //TODO handle GoogleLoginResponseOffline
-  //     }
-  //   },
-  //   []
-  // )
+  const loginMutation = useMutation(
+    ['keycloak-login'],
+    (formValues: FormValues) => {
+      const data = {
+        ...formValues,
+        grant_type: 'password',
+        client_id: 'UserManagement',
+      }
+      const options = {
+        method: 'POST',
+        headers: { 'content-type': 'application/x-www-form-urlencoded' },
+        data: qs.stringify(data),
+        url: 'http://localhost:8082/realms/Offli/protocol/openid-connect/token',
+      }
+      return axios(options)
+    },
+    {
+      onSuccess: data => {
+        console.log(data?.data)
+        // setAuthToken(data?.data?.access_token)
+        // setRefreshToken(data?.data?.refresh_token)
+        setStateToken(data?.data?.access_token)
+        navigate(ApplicationLocations.ACTIVITES)
+      },
+      onError: error => {
+        enqueueSnackbar('Failed to log in', { variant: 'error' })
+      },
+    }
+  )
 
-  // const handleFailedLogin = React.useCallback((res: GoogleLoginResponse) => {
-  //   console.log('[Login Failed] res : ', res)
-  // }, [])
+  const isLoading = loginMutation?.isLoading || keycloakDataQuery?.isLoading
 
   return (
     <form
@@ -130,7 +138,7 @@ const LoginScreen: React.FC = () => {
             <Typography variant="subtitle1">alebo</Typography>
           </LabeledDivider>
           <Controller
-            name="email"
+            name="username"
             control={control}
             render={({ field, fieldState: { error } }) => (
               <TextField
@@ -154,7 +162,6 @@ const LoginScreen: React.FC = () => {
             control={control}
             render={({ field, fieldState: { error } }) => (
               <TextField
-                autoFocus
                 {...field}
                 //label="Username"
                 placeholder="Heslo"
@@ -184,7 +191,7 @@ const LoginScreen: React.FC = () => {
             )}
           />
 
-          <OffliButton variant="text">
+          <OffliButton variant="text" disabled={isLoading}>
             <Typography
               variant="subtitle2"
               sx={{ fontWeight: 'bold', ml: '-70%' }}
@@ -193,7 +200,11 @@ const LoginScreen: React.FC = () => {
             </Typography>
           </OffliButton>
         </Box>
-        <OffliButton sx={{ width: '80%', mb: 5 }} type="submit">
+        <OffliButton
+          sx={{ width: '80%', mb: 5 }}
+          type="submit"
+          isLoading={isLoading}
+        >
           Login
         </OffliButton>
       </Box>

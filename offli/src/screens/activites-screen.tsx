@@ -4,7 +4,7 @@ import MyActivityCard from '../components/my-activity-card'
 import { IActivityProps } from '../types/common/types'
 import { PageWrapper } from '../components/page-wrapper'
 import axios from 'axios'
-import { useQuery } from 'react-query'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import { getActivities } from '../api/activities/requests'
 
 const datetime = new Date()
@@ -47,9 +47,16 @@ const ActivitiesScreen = () => {
     getActivities({ queryFunctionContext: props })
   )
   console.log(activitiesQuery?.data?.data)
+
+  const mut = useMutation(['presignup'], () =>
+    axios.post('/registration/pre-signup', {
+      email: 'fafa@gmail.com',
+      password: 'Adamko123.',
+    })
+  )
   return (
     <PageWrapper>
-      <Button>Fetch</Button>
+      <Button onClick={() => mut.mutate()}>Fetch</Button>
 
       <Typography
         variant="h6"

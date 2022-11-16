@@ -14,8 +14,10 @@ import {
 import React from 'react'
 import { Controller, UseFormReturn } from 'react-hook-form'
 import OffliButton from '../../../components/offli-button'
-import { ActivityFeesOptionsEnum } from '../../../types/common/types'
 import activityLocation from '../../../assets/img/activity-location.svg'
+import { useQuery } from '@tanstack/react-query'
+import { getLocationFromQuery } from '../../../api/activities/requests'
+import { useDebounce } from 'use-debounce'
 
 interface IPlaceFormProps {
   onNextClicked: () => void
@@ -51,11 +53,21 @@ export const PlaceForm: React.FC<IPlaceFormProps> = ({
   onNextClicked,
   methods,
 }) => {
-  const { control, handleSubmit, formState, watch } = methods
+  const { control, setValue, formState, watch } = methods
 
   // filter backend results based on query string
-  const queryString = watch('place')
-  console.log(queryString)
+  const [queryString] = useDebounce(watch('placeQuery'), 1000)
+
+  const placeQuery = useQuery(
+    ['locations', queryString],
+    props => getLocationFromQuery(queryString),
+    {
+      enabled: !!queryString,
+    }
+  )
+
+  const place = watch('place')
+  console.log(place)
 
   return (
     <>
@@ -90,18 +102,23 @@ export const PlaceForm: React.FC<IPlaceFormProps> = ({
           control={control}
           render={({ field, fieldState: { error } }) => (
             <Autocomplete
-              options={top100Films}
+              options={placeQuery?.data?.data ?? []}
               sx={{
                 width: '100%',
                 display: 'flex',
                 justifyContent: 'center',
                 mb: 2,
               }}
-              isOptionEqualToValue={(option, value) => option.id === value.id}
+              loading={placeQuery?.isLoading}
+              // isOptionEqualToValue={(option, value) => option.id === value.id}
               onChange={(e, newvalue) => field.onChange(newvalue)}
-              getOptionLabel={option => option?.tags?.name}
+              getOptionLabel={option => option?.display_name}
               renderInput={params => (
-                <TextField {...params} label="Search place" />
+                <TextField
+                  {...params}
+                  label="Search place"
+                  onChange={e => setValue('placeQuery', e.target.value)}
+                />
               )}
             />
           )}

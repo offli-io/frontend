@@ -11,7 +11,7 @@ import { ILocation } from '../../types/activities/location.dto'
 import { ActivityTypeForm } from './components/activity-type-form'
 import { DateTimeForm } from './components/date-time-form'
 import {
-  ActivityFeesOptionsEnum,
+  ActivityPriceOptionsEnum,
   ActivityRepetitionOptionsEnum,
 } from '../../types/common/types'
 import { ActivityInviteForm } from './components/activity-invite-form'
@@ -20,16 +20,19 @@ import { ActivityPhotoForm } from './components/activity-photo-form'
 
 interface FormValues {
   name?: string
+  description?: string
   place?: ILocation
   tags?: string[]
   //todo alter keys
   start_datetime?: Date
   end_datetime?: Date
-  fee?: string
+
   capacity?: number | null
   // public?: boolean
-  repeated?: ActivityRepetitionOptionsEnum
+  repeated?: ActivityRepetitionOptionsEnum | string
+  price?: ActivityPriceOptionsEnum | string
   title_picture?: string
+  placeQuery?: string
 }
 
 const schema: (activeStep: number) => yup.SchemaOf<FormValues> = (
@@ -44,15 +47,16 @@ const schema: (activeStep: number) => yup.SchemaOf<FormValues> = (
       activeStep === 1
         ? yup
             .object({
-              type: yup.string().defined().required(),
-              id: yup.number().defined().required(),
+              // type: yup.string().defined().required(),
+              // id: yup.number().defined().required(),
+              display_name: yup.string().defined().required(),
               lat: yup.number().defined().required(),
               lon: yup.number().defined().required(),
-              tags: yup.object({
-                city_limit: yup.string().defined().required(),
-                name: yup.string().defined().required(),
-                traffic_sign: yup.string().defined().required(),
-              }),
+              // tags: yup.object({
+              //   city_limit: yup.string().defined().required(),
+              //   name: yup.string().defined().required(),
+              //   traffic_sign: yup.string().defined().required(),
+              // }),
             })
             .defined()
             .required()
@@ -69,17 +73,7 @@ const schema: (activeStep: number) => yup.SchemaOf<FormValues> = (
               }),
             })
             .notRequired(),
-    fee:
-      activeStep === 1
-        ? yup
-            .mixed<ActivityFeesOptionsEnum>()
-            .oneOf(Object.values(ActivityFeesOptionsEnum))
-            .defined()
-            .required()
-        : yup
-            .mixed<ActivityFeesOptionsEnum>()
-            .oneOf(Object.values(ActivityFeesOptionsEnum))
-            .notRequired(),
+
     tags:
       activeStep === 2
         ? yup.array().of(yup.string()).defined().required()
@@ -96,8 +90,20 @@ const schema: (activeStep: number) => yup.SchemaOf<FormValues> = (
       activeStep === 3
         ? yup.date().defined().required()
         : yup.date().notRequired(),
+    price:
+      activeStep === 4
+        ? yup
+            .mixed<ActivityPriceOptionsEnum>()
+            .oneOf(Object.values(ActivityPriceOptionsEnum))
+            .defined()
+            .required()
+            .default(ActivityPriceOptionsEnum.free)
+        : yup
+            .mixed<ActivityPriceOptionsEnum>()
+            .oneOf(Object.values(ActivityPriceOptionsEnum))
+            .notRequired(),
     repeated:
-      activeStep === 3
+      activeStep === 4
         ? yup
             .mixed<ActivityRepetitionOptionsEnum>()
             .oneOf(Object.values(ActivityRepetitionOptionsEnum))
@@ -110,6 +116,8 @@ const schema: (activeStep: number) => yup.SchemaOf<FormValues> = (
             .notRequired(),
     capacity: yup.number().nullable().notRequired().default(null),
     title_picture: yup.string().notRequired(),
+    placeQuery: yup.string().notRequired(),
+    description: yup.string().notRequired(),
   })
 
 const CreateActivityScreen = () => {
@@ -119,8 +127,9 @@ const CreateActivityScreen = () => {
   const methods = useForm<FormValues>({
     defaultValues: {
       name: '',
+      description: '',
       repeated: ActivityRepetitionOptionsEnum.never,
-      fee: 'free',
+      price: ActivityPriceOptionsEnum.free,
     },
     resolver: yupResolver(schema(activeStep)),
     mode: 'onChange',
@@ -141,10 +150,7 @@ const CreateActivityScreen = () => {
     switch (activeStep) {
       case 0:
         return (
-          <ActivityPhotoForm
-            onNextClicked={() => setActiveStep(1)}
-            methods={methods}
-          />
+          <NameForm onNextClicked={() => setActiveStep(1)} methods={methods} />
         )
       case 1:
         return (
@@ -169,14 +175,18 @@ const CreateActivityScreen = () => {
         )
       case 4:
         return (
-          <ActivityInviteForm
-            onNextClicked={() => setActiveStep(1)}
+          // <ActivityInviteForm
+          //   onNextClicked={() => setActiveStep(1)}
+          //   methods={methods}
+          // />
+          <ActivityDetailsForm
+            onNextClicked={() => setActiveStep(activeStep => activeStep + 1)}
             methods={methods}
           />
         )
       case 5:
         return (
-          <ActivityDetailsForm
+          <ActivityPhotoForm
             onNextClicked={() => setActiveStep(1)}
             methods={methods}
           />
@@ -190,7 +200,7 @@ const CreateActivityScreen = () => {
     }
   }, [activeStep, methods])
 
-  const centerContent = [1].includes(activeStep)
+  const centerContent = [0, 1].includes(activeStep)
 
   React.useEffect(() => {
     window.scrollTo({
