@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import {
   Box,
   Typography,
@@ -19,7 +19,7 @@ import RemoveCircleIcon from '@mui/icons-material/RemoveCircle'
 import LabeledDivider from '../components/labeled-divider'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import {
-  checkIfEmailAvailable,
+  checkIfEmailAlreadyTaken,
   loginRetrieveToken,
 } from '../api/users/requests'
 
@@ -44,8 +44,8 @@ const schema: () => yup.SchemaOf<FormValues> = () =>
   })
 
 export const RegistrationScreen: React.FC = () => {
-  const [showPassword, setShowPassword] = useState(false)
-  const [usernameValid] = useState(true)
+  const [showPassword, setShowPassword] = React.useState(false)
+  const [usernameValid] = React.useState(true)
   const [email, setEmail] = React.useState<string | undefined>()
 
   const { data: tokenData, mutate } = useMutation(
@@ -56,12 +56,11 @@ export const RegistrationScreen: React.FC = () => {
   const {
     status,
     error,
-    data: isEmailAvailable,
-  } = useQuery(['user', email], () => checkIfEmailAvailable(email), {
+    data: emailAlreadyTaken,
+  } = useQuery(['user', email], () => checkIfEmailAlreadyTaken(email), {
     enabled: !!email,
   })
 
-  console.log(isEmailAvailable?.data)
   // {
   //   refetchOnWindowFocus: false,
   //   enabled: false, // (!) handle refetchs manually
@@ -85,10 +84,10 @@ export const RegistrationScreen: React.FC = () => {
   }, [])
 
   React.useEffect(() => {
-    if (isEmailAvailable?.data) {
-      setError('email', { message: 'email already in use' })
+    if (emailAlreadyTaken?.data) {
+      setError('email', { message: 'Email already in use' })
     }
-  }, [isEmailAvailable])
+  }, [emailAlreadyTaken])
 
   return (
     <form
@@ -190,10 +189,7 @@ export const RegistrationScreen: React.FC = () => {
                 type={showPassword ? 'text' : 'password'}
                 // variant="filled"
                 error={!!error}
-                // helperText={
-                //   error?.message ||
-                //   t(`value.${nextStep?.authenticationType}.placeholder`)
-                // }
+                helperText={error?.message}
                 //disabled={methodSelectionDisabled}
                 sx={{ width: '80%' }}
                 InputProps={{
