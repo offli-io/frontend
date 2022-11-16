@@ -7,7 +7,7 @@ import reportWebVitals from './reportWebVitals'
 import axios from 'axios'
 
 // if using docker
-axios.defaults.baseURL = 'http://192.168.1.105:8081'
+axios.defaults.baseURL = 'http://192.168.1.44:8081'
 // 'https://app.swaggerhub.com/apis/JURAJPASKA8_1/UserManagementApi/1.0.0'
 
 //'http://localhost:5000'

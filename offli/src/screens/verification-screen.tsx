@@ -1,17 +1,32 @@
 import React, { useState } from 'react'
 import { Box, Typography } from '@mui/material'
-import { useMutation, useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import BackButton from '../components/back-button'
 import OffliButton from '../components/offli-button'
 import ReactInputVerificationCode from 'react-input-verification-code'
 import { ApplicationLocations } from '../types/common/applications-locations.dto'
-import { verifyCode } from '../api/users/requests'
+import { verifyCodeAndRetrieveUserId } from '../api/users/requests'
+import { useNavigate } from 'react-router-dom'
 
 const VerificationScreen = () => {
-  const [emailAddress] = useState('amy@gmail.com')
+  const queryClient = useQueryClient()
+  const navigate = useNavigate()
 
-  const { data, mutate } = useMutation(['verificationCode'], (code: string) =>
-    verifyCode({ email: 'martinzof1@gmail.com', verificationCode: code })
+  const userEmail = queryClient.getQueryData<string>(['pre-created-user-email'])
+
+  const { data, mutate } = useMutation(
+    ['user-id'],
+    (code: string) =>
+      verifyCodeAndRetrieveUserId({ email: userEmail, verificationCode: code }),
+    {
+      onSuccess: data => {
+        console.log(data?.data)
+        navigate(ApplicationLocations.PICK_USERNAME)
+      },
+      onError: error => {
+        console.log(error)
+      },
+    }
   )
 
   const handleOnCompleted = (code: string) => {
@@ -40,7 +55,7 @@ const VerificationScreen = () => {
         sx={{ width: '75%', mt: 2, mb: 3 }}
       >
         Take a look for the verification code we just sent you to{' '}
-        <b>{emailAddress}</b>.
+        <b>{userEmail}</b>.
       </Typography>
       <Typography variant="subtitle2" sx={{ ml: -25, mb: 1 }}>
         Confirmation code

@@ -5,7 +5,7 @@ import {
   IEmailVerificationCode,
 } from '../../types/users/user.dto'
 
-export const loginRetrieveToken = async (values: IEmailPassword) => {
+export const preCreateUser = async (values: IEmailPassword) => {
   const CancelToken = axios.CancelToken
   const source = CancelToken.source()
 
@@ -21,7 +21,7 @@ export const loginRetrieveToken = async (values: IEmailPassword) => {
   return promise
 }
 
-export const verifyCode = async (values: IEmailVerificationCode) => {
+export const verifyCodeAndRetrieveUserId = async (values: IEmailVerificationCode) => {
   const CancelToken = axios.CancelToken
   const source = CancelToken.source()
 

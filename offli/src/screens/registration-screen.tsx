@@ -17,13 +17,11 @@ import VisibilityIcon from '@mui/icons-material/Visibility'
 import CheckCircleIcon from '@mui/icons-material/CheckCircle'
 import RemoveCircleIcon from '@mui/icons-material/RemoveCircle'
 import LabeledDivider from '../components/labeled-divider'
-import { useMutation, useQuery } from '@tanstack/react-query'
-import {
-  checkIfEmailAlreadyTaken,
-  loginRetrieveToken,
-} from '../api/users/requests'
+import { useQueryClient, useMutation, useQuery } from '@tanstack/react-query'
+import { checkIfEmailAlreadyTaken, preCreateUser } from '../api/users/requests'
 
 import { ApplicationLocations } from '../types/common/applications-locations.dto'
+import { setPreCreatedUserEmail } from '../utils/user.util'
 
 export interface FormValues {
   email: string
@@ -48,16 +46,31 @@ export const RegistrationScreen: React.FC = () => {
   const [usernameValid] = React.useState(true)
   const [email, setEmail] = React.useState<string | undefined>()
 
-  const { data: tokenData, mutate } = useMutation(
-    ['token'],
-    (values: FormValues) => loginRetrieveToken(values)
+  const queryClient = useQueryClient()
+
+  const navigate = useNavigate()
+
+  const { data, mutate } = useMutation(
+    ['pre-created-user'],
+    (values: FormValues) => preCreateUser(values),
+    {
+      onSuccess: data => {
+        console.log(data?.data)
+        // setPreCreatedUserEmail(email)
+        queryClient.setQueryData(['pre-created-user-email'], email)
+        navigate(ApplicationLocations.VERIFY)
+      },
+      onError: error => {
+        console.log(error)
+      },
+    }
   )
 
   const {
     status,
     error,
     data: emailAlreadyTaken,
-  } = useQuery(['user', email], () => checkIfEmailAlreadyTaken(email), {
+  } = useQuery(['email-taken', email], () => checkIfEmailAlreadyTaken(email), {
     enabled: !!email,
   })
 
@@ -69,14 +82,15 @@ export const RegistrationScreen: React.FC = () => {
 
   const handleClickShowPassword = () => setShowPassword(!showPassword)
 
-  const { control, handleSubmit, watch, setError } = useForm<FormValues>({
-    defaultValues: {
-      email: '',
-      password: '',
-    },
-    resolver: yupResolver(schema()),
-    mode: 'onChange',
-  })
+  const { control, handleSubmit, watch, setError, getFieldState } =
+    useForm<FormValues>({
+      defaultValues: {
+        email: '',
+        password: '',
+      },
+      resolver: yupResolver(schema()),
+      mode: 'onChange',
+    })
 
   const handleFormSubmit = React.useCallback((values: FormValues) => {
     mutate(values)
@@ -90,11 +104,7 @@ export const RegistrationScreen: React.FC = () => {
   }, [emailAlreadyTaken])
 
   return (
-    <form
-      onSubmit={handleSubmit(handleFormSubmit, (data, e) =>
-        console.log(data, e)
-      )}
-    >
+    <form onSubmit={handleSubmit(handleFormSubmit)}>
       <Box
         sx={{
           height: '100vh',

@@ -11,7 +11,7 @@ import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlin
 import InstagramIcon from '@mui/icons-material/Instagram'
 
 import { PageWrapper } from '../components/page-wrapper'
-import { useQuery } from 'react-query'
+import { useQuery } from '@tanstack/react-query'
 import axios from 'axios'
 import ProfileGallery from '../components/profile-gallery'
 import { Link } from 'react-router-dom'
