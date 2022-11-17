@@ -14,6 +14,7 @@ import {
 import React from 'react'
 import { Controller, UseFormReturn } from 'react-hook-form'
 import OffliButton from '../../../components/offli-button'
+import { ActivityVisibilityEnum } from '../../../types/activities/activity-visibility-enum.dto'
 import {
   ActivityPriceOptionsEnum,
   ActivityRepetitionOptionsEnum,
@@ -73,7 +74,7 @@ export const ActivityDetailsForm: React.FC<IPlaceFormProps> = ({
           <Typography variant="h4">Activity details</Typography>
         </Box>
         <Controller
-          name="accessibility"
+          name="visibility"
           control={control}
           render={({ field, fieldState: { error } }) => (
             <Box
@@ -104,7 +105,23 @@ export const ActivityDetailsForm: React.FC<IPlaceFormProps> = ({
                   Accessibility
                 </Typography>
                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                  <Switch sx={{ mx: 1 }} {...field} color="primary" />
+                  <Switch
+                    sx={{ mx: 1 }}
+                    {...field}
+                    value={
+                      field?.value === ActivityVisibilityEnum.private
+                        ? false
+                        : true
+                    }
+                    onChange={e => {
+                      field.onChange(
+                        e.target.checked
+                          ? ActivityVisibilityEnum.public
+                          : ActivityVisibilityEnum.private
+                      )
+                    }}
+                    color="primary"
+                  />
                   <FormLabel
                   //sx={field.value ? { color: 'black' } : {}}
                   >

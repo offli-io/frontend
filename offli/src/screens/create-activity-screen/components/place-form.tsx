@@ -98,7 +98,7 @@ export const PlaceForm: React.FC<IPlaceFormProps> = ({
         }}
       >
         <Controller
-          name="place"
+          name="location"
           control={control}
           render={({ field, fieldState: { error } }) => (
             <Autocomplete
@@ -111,7 +111,15 @@ export const PlaceForm: React.FC<IPlaceFormProps> = ({
               }}
               loading={placeQuery?.isLoading}
               // isOptionEqualToValue={(option, value) => option.id === value.id}
-              onChange={(e, newvalue) => field.onChange(newvalue)}
+              onChange={(e, locationObject) =>
+                field.onChange({
+                  name: locationObject?.display_name,
+                  coordinates: {
+                    lat: locationObject?.lat,
+                    lon: locationObject?.lon,
+                  },
+                })
+              }
               getOptionLabel={option => option?.display_name}
               renderInput={params => (
                 <TextField

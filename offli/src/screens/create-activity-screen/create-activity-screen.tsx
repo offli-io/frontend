@@ -17,11 +17,12 @@ import {
 import { ActivityInviteForm } from './components/activity-invite-form'
 import { ActivityDetailsForm } from './components/activity-details-form'
 import { ActivityPhotoForm } from './components/activity-photo-form'
+import { ActivityVisibilityEnum } from '../../types/activities/activity-visibility-enum.dto'
 
 interface FormValues {
   name?: string
   description?: string
-  place?: ILocation
+  location?: ILocation
   tags?: string[]
   //todo alter keys
   start_datetime?: Date
@@ -33,6 +34,7 @@ interface FormValues {
   price?: ActivityPriceOptionsEnum | string
   title_picture?: string
   placeQuery?: string
+  visibility?: ActivityVisibilityEnum
 }
 
 const schema: (activeStep: number) => yup.SchemaOf<FormValues> = (
@@ -43,33 +45,23 @@ const schema: (activeStep: number) => yup.SchemaOf<FormValues> = (
       activeStep === 0
         ? yup.string().defined().required()
         : yup.string().notRequired(),
-    place:
+    location:
       activeStep === 1
         ? yup
             .object({
-              // type: yup.string().defined().required(),
-              // id: yup.number().defined().required(),
-              display_name: yup.string().defined().required(),
-              lat: yup.number().defined().required(),
-              lon: yup.number().defined().required(),
-              // tags: yup.object({
-              //   city_limit: yup.string().defined().required(),
-              //   name: yup.string().defined().required(),
-              //   traffic_sign: yup.string().defined().required(),
-              // }),
+              name: yup.string().defined().required(),
+              coordinates: yup.object({
+                lat: yup.number().defined().required(),
+                lon: yup.number().defined().required(),
+              }),
             })
-            .defined()
-            .required()
+            .notRequired()
         : yup
             .object({
-              type: yup.string().notRequired(),
-              id: yup.number().notRequired(),
-              lat: yup.number().notRequired(),
-              lon: yup.number().notRequired(),
-              tags: yup.object({
-                city_limit: yup.string().notRequired(),
-                name: yup.string().notRequired(),
-                traffic_sign: yup.string().notRequired(),
+              name: yup.string().defined().required(),
+              coordinates: yup.object({
+                lat: yup.number().defined().required(),
+                lon: yup.number().defined().required(),
               }),
             })
             .notRequired(),
@@ -118,6 +110,10 @@ const schema: (activeStep: number) => yup.SchemaOf<FormValues> = (
     title_picture: yup.string().notRequired(),
     placeQuery: yup.string().notRequired(),
     description: yup.string().notRequired(),
+    visibility: yup
+      .mixed<ActivityVisibilityEnum>()
+      .oneOf(Object.values(ActivityVisibilityEnum))
+      .notRequired(),
   })
 
 const CreateActivityScreen = () => {
@@ -130,15 +126,18 @@ const CreateActivityScreen = () => {
       description: '',
       repeated: ActivityRepetitionOptionsEnum.never,
       price: ActivityPriceOptionsEnum.free,
+      title_picture:
+        'https://img.freepik.com/premium-vector/logo-emblem-person-playing-paintball-holds-two-guns-team-game-ammunition-shooting-range-war-vector-illustration_608021-991.jpg?w=2000',
     },
     resolver: yupResolver(schema(activeStep)),
     mode: 'onChange',
   })
 
-  const { control, handleSubmit, formState } = methods
+  const { control, handleSubmit, formState, watch } = methods
 
   const handleFormSubmit = React.useCallback((data: FormValues) => {
-    console.log(data)
+    const { placeQuery, ...restValues } = data
+    console.log(restValues)
   }, [])
 
   const handleFormError = React.useCallback(
@@ -185,12 +184,7 @@ const CreateActivityScreen = () => {
           />
         )
       case 5:
-        return (
-          <ActivityPhotoForm
-            onNextClicked={() => setActiveStep(1)}
-            methods={methods}
-          />
-        )
+        return <ActivityPhotoForm methods={methods} />
       default:
         return (
           <Box>
@@ -200,6 +194,18 @@ const CreateActivityScreen = () => {
     }
   }, [activeStep, methods])
 
+  const getFormLayout = React.useCallback(() => {
+    switch (activeStep) {
+      case 0:
+        return 'center'
+      case 1:
+        return 'center'
+      case 5:
+        return 'space-evenly'
+      default:
+        return 'flex-start'
+    }
+  }, [activeStep])
   const centerContent = [0, 1].includes(activeStep)
 
   React.useEffect(() => {
@@ -216,7 +222,7 @@ const CreateActivityScreen = () => {
         style={{
           display: 'flex',
           alignItems: 'flex-start',
-          justifyContent: centerContent ? 'center' : 'flex-start',
+          justifyContent: getFormLayout(),
           flexDirection: 'column',
           height: '72vh',
           width: '100%',
