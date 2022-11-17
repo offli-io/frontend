@@ -18,17 +18,20 @@ import { ActivityInviteForm } from './components/activity-invite-form'
 import { ActivityDetailsForm } from './components/activity-details-form'
 import { ActivityPhotoForm } from './components/activity-photo-form'
 import { ActivityVisibilityEnum } from '../../types/activities/activity-visibility-enum.dto'
+import { useMutation } from '@tanstack/react-query'
+import { createActivity } from '../../api/activities/requests'
+import { useSnackbar } from 'notistack'
+import { IPerson } from '../../types/activities/activity.dto'
 
 interface FormValues {
-  name?: string
+  title?: string
   description?: string
   location?: ILocation
   tags?: string[]
   //todo alter keys
-  start_datetime?: Date
-  end_datetime?: Date
+  datetime_from?: Date
+  datetime_until?: Date
 
-  capacity?: number | null
   // public?: boolean
   repeated?: ActivityRepetitionOptionsEnum | string
   price?: ActivityPriceOptionsEnum | string
@@ -41,7 +44,7 @@ const schema: (activeStep: number) => yup.SchemaOf<FormValues> = (
   activeStep: number
 ) =>
   yup.object({
-    name:
+    title:
       activeStep === 0
         ? yup.string().defined().required()
         : yup.string().notRequired(),
@@ -70,7 +73,7 @@ const schema: (activeStep: number) => yup.SchemaOf<FormValues> = (
       activeStep === 2
         ? yup.array().of(yup.string()).defined().required()
         : yup.array().of(yup.string()).notRequired(),
-    start_datetime:
+    datetime_from:
       activeStep === 3
         ? yup
             .date()
@@ -78,7 +81,7 @@ const schema: (activeStep: number) => yup.SchemaOf<FormValues> = (
             .required()
             .default(() => new Date())
         : yup.date().notRequired(),
-    end_datetime:
+    datetime_until:
       activeStep === 3
         ? yup.date().defined().required()
         : yup.date().notRequired(),
@@ -106,7 +109,6 @@ const schema: (activeStep: number) => yup.SchemaOf<FormValues> = (
             .mixed<ActivityRepetitionOptionsEnum>()
             .oneOf(Object.values(ActivityRepetitionOptionsEnum))
             .notRequired(),
-    capacity: yup.number().nullable().notRequired().default(null),
     title_picture: yup.string().notRequired(),
     placeQuery: yup.string().notRequired(),
     description: yup.string().notRequired(),
@@ -118,11 +120,12 @@ const schema: (activeStep: number) => yup.SchemaOf<FormValues> = (
 
 const CreateActivityScreen = () => {
   const theme = useTheme()
+  const { enqueueSnackbar } = useSnackbar()
   const [activeStep, setActiveStep] = React.useState<number>(0)
 
   const methods = useForm<FormValues>({
     defaultValues: {
-      name: '',
+      title: '',
       description: '',
       repeated: ActivityRepetitionOptionsEnum.never,
       price: ActivityPriceOptionsEnum.free,
@@ -135,9 +138,33 @@ const CreateActivityScreen = () => {
 
   const { control, handleSubmit, formState, watch } = methods
 
+  const { data, mutate, isLoading } = useMutation(
+    ['create-activity'],
+    (formValues: FormValues & { creator?: IPerson }) =>
+      createActivity(formValues),
+    {
+      // onSuccess: data => {
+
+      // },
+      onError: error => {
+        enqueueSnackbar('Failed to create new activity', { variant: 'error' })
+      },
+    }
+  )
+
   const handleFormSubmit = React.useCallback((data: FormValues) => {
     const { placeQuery, ...restValues } = data
-    console.log(restValues)
+    //TODO fill with real user data
+    mutate({
+      ...restValues,
+      creator: {
+        id: '123',
+        name: 'adamko',
+        username: 'papricka',
+        profile_photo:
+          'https://img.freepik.com/premium-vector/logo-emblem-person-playing-paintball-holds-two-guns-team-game-ammunition-shooting-range-war-vector-illustration_608021-991.jpg?w=2000',
+      },
+    })
   }, [])
 
   const handleFormError = React.useCallback(

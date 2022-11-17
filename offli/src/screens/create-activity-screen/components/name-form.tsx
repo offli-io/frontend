@@ -41,7 +41,7 @@ export const NameForm: React.FC<INameFormProps> = ({
         sx={{ width: '100%', display: 'flex', justifyContent: 'center', mt: 8 }}
       >
         <Controller
-          name="name"
+          name="title"
           control={control}
           render={({ field, fieldState: { error } }) => (
             <TextField

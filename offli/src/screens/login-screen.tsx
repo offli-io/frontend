@@ -71,6 +71,7 @@ const LoginScreen: React.FC = () => {
   React.useEffect(() => {
     //for testing purposes to not manually remove token from localstorage
     setAuthToken(undefined)
+    setStateToken('dsadas')
   }, [])
 
   const loginMutation = useMutation(

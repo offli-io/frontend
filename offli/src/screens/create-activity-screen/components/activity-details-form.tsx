@@ -164,11 +164,16 @@ export const ActivityDetailsForm: React.FC<IPlaceFormProps> = ({
               //autoFocus
               {...field}
               multiline
-              rows={4}
+              rows={3}
               error={!!error}
               label="Additional description"
               placeholder="Type more info about the activity"
-              sx={{ width: '100%' }}
+              sx={{
+                width: '100%',
+                '& .MuiOutlinedInput-root': {
+                  height: 'unset',
+                },
+              }}
               //helperText={!!error && 'Activity name is required'}
               //label="Username"
               // disabled={methodSelectionDisabled}

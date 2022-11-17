@@ -3,8 +3,10 @@ import qs from 'qs'
 import React from 'react'
 import axios, { AxiosError } from 'axios'
 import { getAuthToken, getRefreshToken } from '../utils/token.util'
+import { AuthenticationContext } from '../assets/theme/authentication-provider'
 
 export const useServiceInterceptors = () => {
+  const { stateToken } = React.useContext(AuthenticationContext)
   const abortControllerRef = React.useRef<AbortController | null>(null)
 
   const mut = useMutation(['keycloak-login'], () => {
@@ -72,8 +74,8 @@ export const useServiceInterceptors = () => {
       if (config) {
         console.log(config)
         config.baseURL = _token
-          ? 'http://localhost:8081'
-          : 'http://localhost:8082'
+          ? 'http://localhost:5000'
+          : 'http://localhost:5000'
         if (config?.headers) {
           //const newConfig = { ...config }
           config.headers['Content-Type'] = 'application/json'
