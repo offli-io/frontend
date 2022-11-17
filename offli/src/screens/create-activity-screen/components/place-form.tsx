@@ -21,6 +21,7 @@ import { useDebounce } from 'use-debounce'
 
 interface IPlaceFormProps {
   onNextClicked: () => void
+  onBackClicked: () => void
   methods: UseFormReturn
 }
 
@@ -51,6 +52,7 @@ const top100Films = [
 
 export const PlaceForm: React.FC<IPlaceFormProps> = ({
   onNextClicked,
+  onBackClicked,
   methods,
 }) => {
   const { control, setValue, formState, watch } = methods
@@ -136,10 +138,16 @@ export const PlaceForm: React.FC<IPlaceFormProps> = ({
         sx={{
           width: '100%',
           display: 'flex',
-          alignItems: 'flex-end',
-          flexDirection: 'column',
+          justifyContent: 'space-between',
         }}
       >
+        <OffliButton
+          onClick={onBackClicked}
+          sx={{ width: '40%' }}
+          variant="text"
+        >
+          Back
+        </OffliButton>
         <OffliButton
           onClick={onNextClicked}
           sx={{ width: '40%' }}

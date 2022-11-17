@@ -6,6 +6,7 @@ import OffliButton from '../../../components/offli-button'
 
 interface IActivityTypeFormProps {
   onNextClicked: () => void
+  onBackClicked: () => void
   methods: UseFormReturn
 }
 
@@ -22,6 +23,7 @@ const activityTypes = [
 
 export const ActivityTypeForm: React.FC<IActivityTypeFormProps> = ({
   onNextClicked,
+  onBackClicked,
   methods,
 }) => {
   const { control, setValue, watch } = methods
@@ -71,7 +73,16 @@ export const ActivityTypeForm: React.FC<IActivityTypeFormProps> = ({
         <LabeledTile title="Relax" sx={{ ml: 3 }} onClick={handleTileClick} /> */}
       </Box>
 
-      <Box sx={{ width: '100%', display: 'flex', justifyContent: 'flex-end' }}>
+      <Box
+        sx={{ width: '100%', display: 'flex', justifyContent: 'space-between' }}
+      >
+        <OffliButton
+          onClick={onBackClicked}
+          sx={{ width: '40%' }}
+          variant="text"
+        >
+          Back
+        </OffliButton>
         <OffliButton
           onClick={onNextClicked}
           sx={{ width: '40%' }}

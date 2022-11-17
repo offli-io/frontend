@@ -70,7 +70,7 @@ export const NameForm: React.FC<INameFormProps> = ({
         <OffliButton
           onClick={onNextClicked}
           sx={{ width: '40%' }}
-          //TODO some bug isValid returning false when name is entered
+          //TODO some bug isValid returning false when name is
           //disabled={!formState.isValid}
         >
           Next

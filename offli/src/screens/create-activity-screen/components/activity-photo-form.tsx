@@ -10,10 +10,12 @@ import { grey } from '@mui/material/colors'
 
 interface IActivityPhotoFormProps {
   methods: UseFormReturn
+  onBackClicked: () => void
 }
 
 export const ActivityPhotoForm: React.FC<IActivityPhotoFormProps> = ({
   methods,
+  onBackClicked,
 }) => {
   const { control, formState } = methods
 
@@ -128,11 +130,18 @@ export const ActivityPhotoForm: React.FC<IActivityPhotoFormProps> = ({
         sx={{
           width: '100%',
           display: 'flex',
-          justifyContent: 'center',
+          justifyContent: 'space-between',
         }}
       >
         <OffliButton
-          sx={{ width: '80%' }}
+          onClick={onBackClicked}
+          sx={{ width: '40%' }}
+          variant="text"
+        >
+          Back
+        </OffliButton>
+        <OffliButton
+          sx={{ width: '60%' }}
           disabled={!formState.isValid}
           type="submit"
         >

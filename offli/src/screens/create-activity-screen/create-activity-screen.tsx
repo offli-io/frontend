@@ -145,6 +145,11 @@ const CreateActivityScreen = () => {
     []
   )
 
+  const handleBackClicked = React.useCallback(
+    () => setActiveStep(activeStep => activeStep - 1),
+    [setActiveStep]
+  )
+
   const renderProperContent = React.useCallback(() => {
     switch (activeStep) {
       case 0:
@@ -155,6 +160,7 @@ const CreateActivityScreen = () => {
         return (
           <PlaceForm
             onNextClicked={() => setActiveStep(activeStep => activeStep + 1)}
+            onBackClicked={handleBackClicked}
             methods={methods}
           />
         )
@@ -162,6 +168,7 @@ const CreateActivityScreen = () => {
         return (
           <ActivityTypeForm
             onNextClicked={() => setActiveStep(activeStep => activeStep + 1)}
+            onBackClicked={handleBackClicked}
             methods={methods}
           />
         )
@@ -169,6 +176,7 @@ const CreateActivityScreen = () => {
         return (
           <DateTimeForm
             onNextClicked={() => setActiveStep(activeStep => activeStep + 1)}
+            onBackClicked={handleBackClicked}
             methods={methods}
           />
         )
@@ -180,11 +188,17 @@ const CreateActivityScreen = () => {
           // />
           <ActivityDetailsForm
             onNextClicked={() => setActiveStep(activeStep => activeStep + 1)}
+            onBackClicked={handleBackClicked}
             methods={methods}
           />
         )
       case 5:
-        return <ActivityPhotoForm methods={methods} />
+        return (
+          <ActivityPhotoForm
+            methods={methods}
+            onBackClicked={handleBackClicked}
+          />
+        )
       default:
         return (
           <Box>

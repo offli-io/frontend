@@ -22,36 +22,14 @@ import {
 
 interface IPlaceFormProps {
   onNextClicked: () => void
+
+  onBackClicked: () => void
   methods: UseFormReturn
 }
 
-const top100Films = [
-  {
-    type: 'idk',
-    id: 225,
-    lat: 22.5,
-    lon: 32.8,
-    tags: {
-      city_limit: 'ahoj',
-      name: 'Bratislava',
-      traffic_sign: 'auta',
-    },
-  },
-  {
-    type: 'neviem',
-    id: 226,
-    lat: 22.9,
-    lon: 12.05,
-    tags: {
-      city_limit: 'cauko',
-      name: 'Praha',
-      traffic_sign: 'tramvaj',
-    },
-  },
-]
-
 export const ActivityDetailsForm: React.FC<IPlaceFormProps> = ({
   onNextClicked,
+  onBackClicked,
   methods,
 }) => {
   const { control, handleSubmit, formState, watch } = methods
@@ -202,10 +180,17 @@ export const ActivityDetailsForm: React.FC<IPlaceFormProps> = ({
         sx={{
           width: '100%',
           display: 'flex',
-          justifyContent: 'flex-end',
+          justifyContent: 'space-between',
           mt: 2,
         }}
       >
+        <OffliButton
+          onClick={onBackClicked}
+          sx={{ width: '40%' }}
+          variant="text"
+        >
+          Back
+        </OffliButton>
         <OffliButton
           onClick={onNextClicked}
           sx={{ width: '40%' }}

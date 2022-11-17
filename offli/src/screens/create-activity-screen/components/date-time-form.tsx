@@ -9,6 +9,8 @@ import { ActivityRepetitionOptionsEnum } from '../../../types/common/types'
 
 interface IDateTimeForm {
   onNextClicked: () => void
+
+  onBackClicked: () => void
   methods: UseFormReturn
 }
 
@@ -21,6 +23,7 @@ const timeSlots = Array.from(new Array(24 * 2)).map(
 
 export const DateTimeForm: React.FC<IDateTimeForm> = ({
   onNextClicked,
+  onBackClicked,
   methods,
 }) => {
   const { control, formState, watch, setValue } = methods
@@ -147,7 +150,16 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
         </Box>
       </Box>
 
-      <Box sx={{ width: '100%', display: 'flex', justifyContent: 'flex-end' }}>
+      <Box
+        sx={{ width: '100%', display: 'flex', justifyContent: 'space-between' }}
+      >
+        <OffliButton
+          onClick={onBackClicked}
+          sx={{ width: '40%' }}
+          variant="text"
+        >
+          Back
+        </OffliButton>
         <OffliButton
           onClick={onNextClicked}
           sx={{ width: '40%' }}
