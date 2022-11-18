@@ -4,6 +4,7 @@ import {
   IActivity,
   IActivitySearchParams,
 } from '../../types/activities/activity.dto'
+import { IPlaceExternalApiDto } from '../../types/activities/place-external-api.dto'
 
 export const getActivities = async ({
   queryFunctionContext,
@@ -23,6 +24,24 @@ export const getActivities = async ({
   queryFunctionContext?.signal?.addEventListener('abort', () => {
     source.cancel('Query was cancelled by React Query')
   })
+
+  return promise
+}
+
+export const getLocationFromQuery = (queryString: string) => {
+  const CancelToken = axios.CancelToken
+  const source = CancelToken.source()
+
+  const promise = axios.get<IPlaceExternalApiDto[]>(
+    `https://nominatim.openstreetmap.org/search?q=${queryString}&format=jsonv2`,
+    {
+      cancelToken: source?.token,
+    }
+  )
+
+  // queryFunctionContext?.signal?.addEventListener('abort', () => {
+  //   source.cancel('Query was cancelled by React Query')
+  // })
 
   return promise
 }
