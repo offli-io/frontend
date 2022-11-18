@@ -14,14 +14,14 @@ const VerificationScreen = () => {
 
   const userEmail = queryClient.getQueryData<string>(['pre-created-user-email'])
 
-  const { data, mutate } = useMutation(
+  const { data: userId, mutate } = useMutation(
     ['user-id'],
     (code: string) =>
       verifyCodeAndRetrieveUserId({ email: userEmail, verificationCode: code }),
     {
-      onSuccess: data => {
-        console.log(data?.data)
-        navigate(ApplicationLocations.PICK_USERNAME)
+      onSuccess: userId => {
+        console.log(userId?.data)
+        navigate(ApplicationLocations.WELCOME)
       },
       onError: error => {
         console.log(error)
@@ -31,7 +31,6 @@ const VerificationScreen = () => {
 
   const handleOnCompleted = (code: string) => {
     mutate(code)
-    console.log(data?.data.response)
   }
 
   return (
