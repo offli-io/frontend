@@ -8,7 +8,7 @@ import LoginOrRegisterScreen from '../screens/login-or-register'
 import LoginScreen from '../screens/login-screen'
 import MyBuddiesScreen from '../screens/my-buddies-screen'
 import NewPasswordScreen from '../screens/new-password-screen'
-import PickUsernameScreen from '../screens/pick-username-screen'
+import PickUsernamePhotoScreen from '../screens/pick-username-photo-screen'
 import ProfileScreen from '../screens/profile-screen'
 import RegistrationScreen from '../screens/registration-screen'
 import ResetPasswordScreen from '../screens/reset-password-screen'
@@ -37,7 +37,7 @@ const Routes = () => {
       />
       <Route
         path={ApplicationLocations.PICK_USERNAME}
-        element={<PickUsernameScreen />}
+        element={<PickUsernamePhotoScreen />}
       />
       <Route
         path={ApplicationLocations.SELECT_PROFILE_PICTURE}

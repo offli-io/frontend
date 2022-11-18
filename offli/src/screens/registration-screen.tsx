@@ -58,7 +58,7 @@ export const RegistrationScreen: React.FC = () => {
         console.log(data?.data)
         // setPreCreatedUserEmail(email)
         queryClient.setQueryData(['pre-created-user-email'], email)
-        navigate(ApplicationLocations.VERIFY)
+        navigate(ApplicationLocations.PICK_USERNAME)
       },
       onError: error => {
         console.log(error)

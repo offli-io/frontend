@@ -46,8 +46,8 @@ const VerificationScreen = () => {
       }}
     >
       <BackButton href={ApplicationLocations.REGISTER} text="Sign Up" />
-      <Typography variant="h2" sx={{ mt: 20 }}>
-        Confirm verification code
+      <Typography variant="h2" sx={{ mt: 20, width: '75%' }} align="left">
+        <Box sx={{ color: 'primary.main' }}>Confirm</Box>verification code
       </Typography>
       <Typography
         align="center"

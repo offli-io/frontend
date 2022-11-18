@@ -50,8 +50,8 @@ function App() {
 
         {/* 
       Nemozme pouzit query devtooly lebo to pada s tym ze sa na pozadi vytvaraju 2 instancie query client providera
-      vid - https://github.com/TanStack/query/issues/1936
-      <ReactQueryDevtools initialIsOpen={false} /> */}
+      vid - https://github.com/TanStack/query/issues/1936 */}
+        <ReactQueryDevtools initialIsOpen={false} />
       </QueryClientProvider>
     </AuthenticationProvider>
   )

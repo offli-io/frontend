@@ -1,11 +1,15 @@
 import React from 'react'
-import { Box, Typography, TextField } from '@mui/material'
+import { Box, Typography, TextField, IconButton, Icon } from '@mui/material'
 import BackButton from '../components/back-button'
 import { Controller, useForm } from 'react-hook-form'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
+import { useQueryClient, useMutation, useQuery } from '@tanstack/react-query'
+import { useNavigate } from 'react-router-dom'
 import OffliButton from '../components/offli-button'
-import ErrorIcon from '@mui/icons-material/Error'
+import AddIcon from '@mui/icons-material/Add'
+import AddAPhotoIcon from '@mui/icons-material/AddAPhoto'
+
 import { ApplicationLocations } from '../types/common/applications-locations.dto'
 
 export interface FormValues {
@@ -17,7 +21,7 @@ const schema: () => yup.SchemaOf<FormValues> = () =>
     username: yup.string().defined().required(),
   })
 
-const PickUsernameScreen = () => {
+const PickUsernamePhotoScreen = () => {
   const { control, handleSubmit } = useForm<FormValues>({
     defaultValues: {
       username: '',
@@ -26,10 +30,17 @@ const PickUsernameScreen = () => {
     mode: 'onChange',
   })
 
-  const handleFormSubmit = React.useCallback(
-    (values: FormValues) => console.log(values),
-    []
-  )
+  const queryClient = useQueryClient()
+
+  const navigate = useNavigate()
+
+  const handleFormSubmit = React.useCallback((values: FormValues) => {
+    queryClient.setQueryData(['username-profile-picture'], {
+      username: values.username,
+      profilePictureUrl: 'aa.com/bb',
+    })
+    navigate(ApplicationLocations.VERIFY)
+  }, [])
 
   return (
     <form onSubmit={handleSubmit(handleFormSubmit)} style={{ height: '100%' }}>
@@ -44,9 +55,38 @@ const PickUsernameScreen = () => {
         }}
       >
         <BackButton href={ApplicationLocations.REGISTER} text="Registration" />
-        <Typography variant="h2" sx={{ mt: 15, display: 'flex', flex: 1 }}>
-          Pick your<Box sx={{ color: 'primary.main' }}>&nbsp;username</Box>
+        <Typography variant="h2" align="left" sx={{ mt: 15, width: '75%' }}>
+          <Box sx={{ color: 'primary.main', width: '85%' }}>Choose&nbsp;</Box>
+          your username and profile picture
         </Typography>
+        {/* <Box
+          sx={{
+            width: '100px',
+            height: '100px',
+            backgroundColor: 'lightgrey',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            borderRadius: '50%',
+            mt: 7,
+            mb: 7,
+          }}
+        > */}
+        {/* <IconButton>
+            <input accept="image/*" type="file" style={{ display: 'none' }} />
+
+            <AddIcon sx={{ fontSize: 30, color: 'primary.main' }}></AddIcon>
+          </IconButton> */}
+        <IconButton
+          color="primary"
+          aria-label="upload picture"
+          component="label"
+          sx={{ fontSize: '50px', mb: 9, mt: 7 }}
+        >
+          <AddAPhotoIcon sx={{ fontSize: '50px', color: 'lightgrey' }} />
+          <input hidden accept="image/*" type="file" />
+        </IconButton>
+        {/* </Box> */}
 
         <Controller
           name="username"
@@ -93,4 +133,4 @@ const PickUsernameScreen = () => {
   )
 }
 
-export default PickUsernameScreen
+export default PickUsernamePhotoScreen
