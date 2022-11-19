@@ -45,3 +45,18 @@ export const getLocationFromQuery = (queryString: string) => {
 
   return promise
 }
+
+export const createActivity = async (values: IActivity) => {
+  const CancelToken = axios.CancelToken
+  const source = CancelToken.source()
+
+  const promise = axios.post('/activity', values, {
+    cancelToken: source?.token,
+  })
+
+  //   queryFunctionContext?.signal?.addEventListener('abort', () => {
+  //     source.cancel('Query was cancelled by React Query')
+  //   })
+
+  return promise
+}

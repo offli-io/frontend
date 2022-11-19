@@ -41,7 +41,7 @@ export const NameForm: React.FC<INameFormProps> = ({
         sx={{ width: '100%', display: 'flex', justifyContent: 'center', mt: 8 }}
       >
         <Controller
-          name="name"
+          name="title"
           control={control}
           render={({ field, fieldState: { error } }) => (
             <TextField
@@ -70,7 +70,8 @@ export const NameForm: React.FC<INameFormProps> = ({
         <OffliButton
           onClick={onNextClicked}
           sx={{ width: '40%' }}
-          disabled={!formState.isValid}
+          //TODO some bug isValid returning false when name is
+          //disabled={!formState.isValid}
         >
           Next
         </OffliButton>

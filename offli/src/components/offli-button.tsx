@@ -1,4 +1,5 @@
 import { Button, ButtonProps } from '@mui/material'
+import LoadingButton from '@mui/lab/LoadingButton'
 
 interface IOffliButtonProps extends ButtonProps {
   disabled?: boolean
@@ -15,11 +16,13 @@ const OffliButton: React.FC<IOffliButtonProps> = ({
   onClick,
   type,
   to,
+  isLoading,
   ...rest
 }) => {
   return (
-    <Button
+    <LoadingButton
       disabled={disabled}
+      loading={isLoading}
       onClick={onClick}
       variant="contained"
       type={type}
@@ -27,7 +30,7 @@ const OffliButton: React.FC<IOffliButtonProps> = ({
       {...rest}
     >
       {children}
-    </Button>
+    </LoadingButton>
   )
 }
 

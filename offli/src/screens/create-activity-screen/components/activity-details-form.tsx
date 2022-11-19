@@ -14,43 +14,22 @@ import {
 import React from 'react'
 import { Controller, UseFormReturn } from 'react-hook-form'
 import OffliButton from '../../../components/offli-button'
+import { ActivityVisibilityEnum } from '../../../types/activities/activity-visibility-enum.dto'
 import {
-  ActivityFeesOptionsEnum,
+  ActivityPriceOptionsEnum,
   ActivityRepetitionOptionsEnum,
 } from '../../../types/common/types'
 
 interface IPlaceFormProps {
   onNextClicked: () => void
+
+  onBackClicked: () => void
   methods: UseFormReturn
 }
 
-const top100Films = [
-  {
-    type: 'idk',
-    id: 225,
-    lat: 22.5,
-    lon: 32.8,
-    tags: {
-      city_limit: 'ahoj',
-      name: 'Bratislava',
-      traffic_sign: 'auta',
-    },
-  },
-  {
-    type: 'neviem',
-    id: 226,
-    lat: 22.9,
-    lon: 12.05,
-    tags: {
-      city_limit: 'cauko',
-      name: 'Praha',
-      traffic_sign: 'tramvaj',
-    },
-  },
-]
-
 export const ActivityDetailsForm: React.FC<IPlaceFormProps> = ({
   onNextClicked,
+  onBackClicked,
   methods,
 }) => {
   const { control, handleSubmit, formState, watch } = methods
@@ -73,7 +52,7 @@ export const ActivityDetailsForm: React.FC<IPlaceFormProps> = ({
           <Typography variant="h4">Activity details</Typography>
         </Box>
         <Controller
-          name="accessibility"
+          name="visibility"
           control={control}
           render={({ field, fieldState: { error } }) => (
             <Box
@@ -104,7 +83,23 @@ export const ActivityDetailsForm: React.FC<IPlaceFormProps> = ({
                   Accessibility
                 </Typography>
                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                  <Switch sx={{ mx: 1 }} {...field} color="primary" />
+                  <Switch
+                    sx={{ mx: 1 }}
+                    {...field}
+                    value={
+                      field?.value === ActivityVisibilityEnum.private
+                        ? false
+                        : true
+                    }
+                    onChange={e => {
+                      field.onChange(
+                        e.target.checked
+                          ? ActivityVisibilityEnum.public
+                          : ActivityVisibilityEnum.private
+                      )
+                    }}
+                    color="primary"
+                  />
                   <FormLabel
                   //sx={field.value ? { color: 'black' } : {}}
                   >
@@ -112,6 +107,28 @@ export const ActivityDetailsForm: React.FC<IPlaceFormProps> = ({
                   </FormLabel>
                 </Box>
               </Box>
+
+              <Controller
+                name="price"
+                control={control}
+                render={({ field, fieldState: { error } }) => (
+                  <TextField
+                    {...field}
+                    id="outlined-select-currency"
+                    select
+                    sx={{ width: '100%', mb: 5 }}
+                    label="Any fees?"
+                    // helperText="Please select your currency"
+                  >
+                    {Object.values(ActivityPriceOptionsEnum).map(option => (
+                      <MenuItem key={option} value={option}>
+                        {option}
+                      </MenuItem>
+                    ))}
+                  </TextField>
+                )}
+              />
+
               <Controller
                 name="repeated"
                 control={control}
@@ -139,38 +156,24 @@ export const ActivityDetailsForm: React.FC<IPlaceFormProps> = ({
         />
 
         <Controller
-          name="fee"
-          control={control}
-          render={({ field, fieldState: { error } }) => (
-            <TextField
-              {...field}
-              id="outlined-select-currency"
-              select
-              sx={{ width: '100%', mb: 5 }}
-              label="Any fees?"
-              // helperText="Please select your currency"
-            >
-              {Object.values(ActivityFeesOptionsEnum).map(option => (
-                <MenuItem key={option} value={option}>
-                  {option}
-                </MenuItem>
-              ))}
-            </TextField>
-          )}
-        />
-
-        <Controller
-          name="name"
+          name="description"
           control={control}
           render={({ field, fieldState: { error } }) => (
             <TextField
               // TODO idk if this is really needed and not anti-pattern
               //autoFocus
               {...field}
+              multiline
+              rows={3}
               error={!!error}
               label="Additional description"
               placeholder="Type more info about the activity"
-              sx={{ mb: 5, width: '100%' }}
+              sx={{
+                width: '100%',
+                '& .MuiOutlinedInput-root': {
+                  height: 'unset',
+                },
+              }}
               //helperText={!!error && 'Activity name is required'}
               //label="Username"
               // disabled={methodSelectionDisabled}
@@ -182,10 +185,17 @@ export const ActivityDetailsForm: React.FC<IPlaceFormProps> = ({
         sx={{
           width: '100%',
           display: 'flex',
-          justifyContent: 'flex-end',
+          justifyContent: 'space-between',
           mt: 2,
         }}
       >
+        <OffliButton
+          onClick={onBackClicked}
+          sx={{ width: '40%' }}
+          variant="text"
+        >
+          Back
+        </OffliButton>
         <OffliButton
           onClick={onNextClicked}
           sx={{ width: '40%' }}

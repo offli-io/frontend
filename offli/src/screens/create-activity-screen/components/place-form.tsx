@@ -14,13 +14,14 @@ import {
 import React from 'react'
 import { Controller, UseFormReturn } from 'react-hook-form'
 import OffliButton from '../../../components/offli-button'
-import { ActivityFeesOptionsEnum } from '../../../types/common/types'
 import activityLocation from '../../../assets/img/activity-location.svg'
 import { useQuery } from '@tanstack/react-query'
 import { getLocationFromQuery } from '../../../api/activities/requests'
+import { useDebounce } from 'use-debounce'
 
 interface IPlaceFormProps {
   onNextClicked: () => void
+  onBackClicked: () => void
   methods: UseFormReturn
 }
 
@@ -51,14 +52,13 @@ const top100Films = [
 
 export const PlaceForm: React.FC<IPlaceFormProps> = ({
   onNextClicked,
+  onBackClicked,
   methods,
 }) => {
   const { control, setValue, formState, watch } = methods
 
   // filter backend results based on query string
-  const queryString = watch('placeQuery')
-
-  console.log(queryString)
+  const [queryString] = useDebounce(watch('placeQuery'), 1000)
 
   const placeQuery = useQuery(
     ['locations', queryString],
@@ -67,7 +67,9 @@ export const PlaceForm: React.FC<IPlaceFormProps> = ({
       enabled: !!queryString,
     }
   )
-  console.log(placeQuery?.data?.data)
+
+  const place = watch('place')
+  console.log(place)
 
   return (
     <>
@@ -98,7 +100,7 @@ export const PlaceForm: React.FC<IPlaceFormProps> = ({
         }}
       >
         <Controller
-          name="place"
+          name="location"
           control={control}
           render={({ field, fieldState: { error } }) => (
             <Autocomplete
@@ -111,7 +113,15 @@ export const PlaceForm: React.FC<IPlaceFormProps> = ({
               }}
               loading={placeQuery?.isLoading}
               // isOptionEqualToValue={(option, value) => option.id === value.id}
-              onChange={(e, newvalue) => field.onChange(newvalue)}
+              onChange={(e, locationObject) =>
+                field.onChange({
+                  name: locationObject?.display_name,
+                  coordinates: {
+                    lat: locationObject?.lat,
+                    lon: locationObject?.lon,
+                  },
+                })
+              }
               getOptionLabel={option => option?.display_name}
               renderInput={params => (
                 <TextField
@@ -128,10 +138,16 @@ export const PlaceForm: React.FC<IPlaceFormProps> = ({
         sx={{
           width: '100%',
           display: 'flex',
-          alignItems: 'flex-end',
-          flexDirection: 'column',
+          justifyContent: 'space-between',
         }}
       >
+        <OffliButton
+          onClick={onBackClicked}
+          sx={{ width: '40%' }}
+          variant="text"
+        >
+          Back
+        </OffliButton>
         <OffliButton
           onClick={onNextClicked}
           sx={{ width: '40%' }}
