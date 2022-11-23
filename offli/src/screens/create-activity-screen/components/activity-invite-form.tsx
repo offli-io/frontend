@@ -4,7 +4,15 @@ import { Controller, UseFormReturn } from 'react-hook-form'
 import LabeledTile from '../../../components/labeled-tile'
 import OffliButton from '../../../components/offli-button'
 import SearchIcon from '@mui/icons-material/Search'
-import BuddyItem from '../../../components/buddy-item'
+import BuddyItemCheckbox from '../../../components/buddy-item-checkbox'
+import BuddyItemInvite from '../../../components/buddy-item-invite'
+import { useMutation, useQuery } from '@tanstack/react-query'
+import {
+  getBuddies,
+  inviteBuddy,
+  uninviteBuddy,
+} from '../../../api/activities/requests'
+import { IPerson } from '../../../types/activities/activity.dto'
 
 interface IActivityTypeFormProps {
   onNextClicked: () => void
@@ -27,40 +35,51 @@ export const ActivityInviteForm: React.FC<IActivityTypeFormProps> = ({
   methods,
 }) => {
   const { control, setValue, watch } = methods
-  const [pendingInviteBuddies, setPendingInviteBuddies] = React.useState<
-    number[]
-  >([])
+  const [invitedBuddies, setInvitedBuddies] = React.useState<string[]>([])
 
-  const tags: string[] = watch('tags') ?? []
-
-  const handleTileClick = React.useCallback(
-    (title: string) => {
-      if (tags?.includes(title)) {
-        const updatedTags = tags.filter((tag: string) => tag !== title)
-        setValue('tags', updatedTags)
-      } else {
-        const updatedTags = [...tags, title]
-        setValue('tags', updatedTags)
-      }
-    },
-    [tags, setValue]
+  const { data: buddies, status } = useQuery(
+    ['profile', 5],
+    // TODO Fetch with current user id
+    () => getBuddies(7)
   )
 
-  const handleBuddyClick = React.useCallback(
-    (id: number, checked?: boolean) => {
-      if (checked) {
-        setPendingInviteBuddies([...pendingInviteBuddies, id])
-      } else {
-        const filteredBuddies = pendingInviteBuddies.filter(
-          (buddyId: number) => buddyId !== id
+  const { mutate: sendInviteBuddy } = useMutation(
+    ['invite-person'],
+    (values: IPerson) => inviteBuddy(2, values),
+    {
+      onSuccess: (data, variables) => {
+        setInvitedBuddies([...invitedBuddies, variables?.id])
+      },
+      // onError: error => {
+      //   enqueueSnackbar('Failed to create new activity', { variant: 'error' })
+      // },
+    }
+  )
+
+  const { mutate: sendUninviteBuddy } = useMutation(
+    ['uninvite-person'],
+    (values: IPerson) => uninviteBuddy(2, Number(values?.id)),
+    {
+      onSuccess: (data, variables) => {
+        const _buddies = invitedBuddies?.filter(
+          buddy => buddy !== variables?.id
         )
-        setPendingInviteBuddies(filteredBuddies)
-      }
-    },
-    [pendingInviteBuddies]
+        setInvitedBuddies(_buddies)
+      },
+      // onError: error => {
+      //   enqueueSnackbar('Failed to create new activity', { variant: 'error' })
+      // },
+    }
   )
 
-  console.log(pendingInviteBuddies)
+  const handleBuddyInviteClick = React.useCallback((buddy: IPerson) => {
+    //fire request for invite
+    if (invitedBuddies?.includes(buddy?.id)) {
+      sendUninviteBuddy(buddy)
+    } else {
+      sendInviteBuddy(buddy)
+    }
+  }, [])
 
   return (
     <>
@@ -136,36 +155,50 @@ export const ActivityInviteForm: React.FC<IActivityTypeFormProps> = ({
             my: 3,
           }}
         >
-          <BuddyItem
+          <BuddyItemInvite
             username="Milada Jankovicova"
             checkbox
-            onClick={handleBuddyClick}
-            id={1}
+            onInviteClick={handleBuddyInviteClick}
+            buddy={{
+              id: '2312',
+              name: 'Milada Jankovic',
+              username: 'milhaus',
+              profile_photo:
+                'https://w7.pngwing.com/pngs/569/273/png-transparent-silhouette-human-head-head-face-animals-head-thumbnail.png',
+            }}
+            invited={invitedBuddies?.includes('2312')}
           />
-          <BuddyItem
+          <BuddyItemInvite
             username="Milada Jankovicova"
+            buddy={{
+              id: '2313',
+              name: 'Milada Jankovic',
+              username: 'milhaus',
+              profile_photo:
+                'https://w7.pngwing.com/pngs/569/273/png-transparent-silhouette-human-head-head-face-animals-head-thumbnail.png',
+            }}
             checkbox
-            onClick={handleBuddyClick}
-            id={2}
+            onInviteClick={handleBuddyInviteClick}
+            invited={invitedBuddies?.includes('2313')}
           />
-          <BuddyItem
+          {/* <BuddyItemCheckbox
             username="Milada Jankovicova"
             checkbox
             onClick={handleBuddyClick}
             id={3}
           />
-          <BuddyItem
+          <BuddyItemCheckbox
             username="Milada Jankovicova"
             checkbox
             onClick={handleBuddyClick}
             id={4}
           />
-          <BuddyItem
+          <BuddyItemCheckbox
             username="Milada Jankovicova"
             checkbox
             onClick={handleBuddyClick}
             id={5}
-          />
+          /> */}
         </Box>
       </Box>
 

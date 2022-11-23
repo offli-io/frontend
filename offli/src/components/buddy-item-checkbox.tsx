@@ -18,7 +18,7 @@ const StyledImage = styled((props: any) => <img {...props} />)`
   border-radius: 50%;
 `
 
-const BuddyItem: React.FC<ILabeledDividerProps> = ({
+const BuddyItemCheckbox: React.FC<ILabeledDividerProps> = ({
   imageSource,
   children,
   username,
@@ -59,4 +59,4 @@ const BuddyItem: React.FC<ILabeledDividerProps> = ({
     </Button>
   )
 }
-export default BuddyItem
+export default BuddyItemCheckbox

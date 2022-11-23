@@ -31,7 +31,7 @@ export interface IActivity {
   tags?: string[]
   //TODO mozne nejake enumy na "public/private"
   visibility?: ActivityVisibilityEnum | string
-  limit?: IActivityLimit
+  limit?: number
 }
 
 export interface IActivitySearchParams {

@@ -38,6 +38,7 @@ interface FormValues {
   title_picture?: string
   placeQuery?: string
   visibility?: ActivityVisibilityEnum
+  limit?: number
 }
 
 const schema: (activeStep: number) => yup.SchemaOf<FormValues> = (
@@ -109,6 +110,10 @@ const schema: (activeStep: number) => yup.SchemaOf<FormValues> = (
             .mixed<ActivityRepetitionOptionsEnum>()
             .oneOf(Object.values(ActivityRepetitionOptionsEnum))
             .notRequired(),
+    limit:
+      activeStep === 4
+        ? yup.number().required().defined()
+        : yup.number().notRequired(),
     title_picture: yup.string().notRequired(),
     placeQuery: yup.string().notRequired(),
     description: yup.string().notRequired(),
@@ -129,6 +134,7 @@ const CreateActivityScreen = () => {
       description: '',
       repeated: ActivityRepetitionOptionsEnum.never,
       price: ActivityPriceOptionsEnum.free,
+      limit: 10,
       title_picture:
         'https://img.freepik.com/premium-vector/logo-emblem-person-playing-paintball-holds-two-guns-team-game-ammunition-shooting-range-war-vector-illustration_608021-991.jpg?w=2000',
     },
@@ -181,7 +187,10 @@ const CreateActivityScreen = () => {
     switch (activeStep) {
       case 0:
         return (
-          <NameForm onNextClicked={() => setActiveStep(1)} methods={methods} />
+          <ActivityInviteForm
+            onNextClicked={() => setActiveStep(1)}
+            methods={methods}
+          />
         )
       case 1:
         return (

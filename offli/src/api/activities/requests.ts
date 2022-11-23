@@ -3,6 +3,7 @@ import { QueryFunctionContext } from 'react-query'
 import {
   IActivity,
   IActivitySearchParams,
+  IPerson,
 } from '../../types/activities/activity.dto'
 import { IPlaceExternalApiDto } from '../../types/activities/place-external-api.dto'
 
@@ -53,6 +54,54 @@ export const createActivity = async (values: IActivity) => {
   const promise = axios.post('/activity', values, {
     cancelToken: source?.token,
   })
+
+  //   queryFunctionContext?.signal?.addEventListener('abort', () => {
+  //     source.cancel('Query was cancelled by React Query')
+  //   })
+
+  return promise
+}
+
+export const getBuddies = (userId: number) => {
+  const CancelToken = axios.CancelToken
+  const source = CancelToken.source()
+
+  const promise = axios.get<IPerson[]>(`/users/${userId}/buddies`, {
+    cancelToken: source?.token,
+  })
+
+  // queryFunctionContext?.signal?.addEventListener('abort', () => {
+  //   source.cancel('Query was cancelled by React Query')
+  // })
+
+  return promise
+}
+
+export const inviteBuddy = (activityId: number, values: IPerson) => {
+  const CancelToken = axios.CancelToken
+  const source = CancelToken.source()
+
+  const promise = axios.post(`/activity/${activityId}/participant`, values, {
+    cancelToken: source?.token,
+  })
+
+  //   queryFunctionContext?.signal?.addEventListener('abort', () => {
+  //     source.cancel('Query was cancelled by React Query')
+  //   })
+
+  return promise
+}
+
+export const uninviteBuddy = (activityId: number, personId: number) => {
+  const CancelToken = axios.CancelToken
+  const source = CancelToken.source()
+
+  const promise = axios.delete(
+    `/activity/${activityId}/invitation/${personId}`,
+    {
+      cancelToken: source?.token,
+    }
+  )
 
   //   queryFunctionContext?.signal?.addEventListener('abort', () => {
   //     source.cancel('Query was cancelled by React Query')
