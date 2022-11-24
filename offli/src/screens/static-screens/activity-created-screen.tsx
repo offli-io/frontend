@@ -3,7 +3,7 @@ import { Box } from '@mui/material'
 
 import offliLogo from '../assets/img/logoPurple.png'
 
-const LoadingScreen = () => {
+const ActivityCreatedScreen = () => {
   return (
     <Box
       sx={{
@@ -25,4 +25,4 @@ const LoadingScreen = () => {
   )
 }
 
-export default LoadingScreen
+export default ActivityCreatedScreen

@@ -4,5 +4,5 @@ import React from 'react'
 
 export const PrivateRoutes = () => {
   const { stateToken } = React.useContext(AuthenticationContext)
-  return stateToken ? <Outlet /> : <Navigate to="/login" />
+  return stateToken ? <Outlet /> : <Navigate to="/" />
 }

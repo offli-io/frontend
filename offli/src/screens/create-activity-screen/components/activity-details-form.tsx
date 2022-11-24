@@ -130,6 +130,29 @@ export const ActivityDetailsForm: React.FC<IPlaceFormProps> = ({
               />
 
               <Controller
+                name="limit"
+                control={control}
+                render={({ field, fieldState: { error } }) => (
+                  <TextField
+                    // TODO idk if this is really needed and not anti-pattern
+                    //autoFocus
+                    {...field}
+                    error={!!error}
+                    sx={{ width: '100%', mb: 5 }}
+                    label="Capacity"
+                    // InputProps={{
+                    //   startAdornment: <SearchIcon />,
+                    // }}
+                    placeholder="Type activity capacity"
+                    //label="Username"
+                    // disabled={methodSelectionDisabled}
+                  />
+                )}
+              />
+
+              {/* 
+              TODO FOR v2 maybe
+              <Controller
                 name="repeated"
                 control={control}
                 render={({ field, fieldState: { error } }) => (
@@ -150,7 +173,7 @@ export const ActivityDetailsForm: React.FC<IPlaceFormProps> = ({
                     )}
                   </TextField>
                 )}
-              />
+              /> */}
             </Box>
           )}
         />
