@@ -1,26 +1,56 @@
 import React, { useState } from 'react'
+import axios from 'axios'
 import { Box, Typography } from '@mui/material'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import BackButton from '../components/back-button'
 import OffliButton from '../components/offli-button'
 import ReactInputVerificationCode from 'react-input-verification-code'
 import { ApplicationLocations } from '../types/common/applications-locations.dto'
-import { verifyCodeAndRetrieveUserId } from '../api/users/requests'
+import {
+  preCreateUser,
+  verifyCodeAndRetrieveUserId,
+} from '../api/users/requests'
 import { useNavigate } from 'react-router-dom'
 
+import qs from 'qs'
+import { useSnackbar } from 'notistack'
+import { AuthenticationContext } from '../assets/theme/authentication-provider'
+import { IEmailPassword } from '../types/users/user.dto'
+
 const VerificationScreen = () => {
+  const [verificationCode, setVerificationCode] = React.useState<string>('')
+  const [userId, setUserId] = React.useState<string>('')
   const queryClient = useQueryClient()
   const navigate = useNavigate()
+  const { enqueueSnackbar } = useSnackbar()
+  const { stateToken, setStateToken } = React.useContext(AuthenticationContext)
 
-  const userEmail = queryClient.getQueryData<string>(['pre-created-user-email'])
+  const precreatedEmailPassword = queryClient.getQueryData<IEmailPassword>([
+    'registration-email-password',
+  ])
 
-  const { data: userId, mutate } = useMutation(
+  // 1.preCreateUser /registration/presignup 200
+  // 2.verifyCodeAndRetrieveUserId /registation/verify-email => 200 + userId
+  // 3. keycloak registracia email username password --picovina, riesi BE
+
+  const keycloakDataQuery = useQuery(['keycloak-data', userId], () =>
+    axios.get(
+      'http://localhost:8082/realms/Offli/.well-known/openid-configuration'
+    )
+  )
+
+  const { data, mutate: verifyCodeMutate } = useMutation(
     ['user-id'],
     (code: string) =>
-      verifyCodeAndRetrieveUserId({ email: userEmail, verificationCode: code }),
+      verifyCodeAndRetrieveUserId({
+        email: precreatedEmailPassword?.email,
+        verificationCode: code,
+      }),
     {
-      onSuccess: userId => {
-        console.log(userId?.data)
+      onSuccess: data => {
+        console.log(data?.data)
+        setUserId(data?.data)
+        // keycloak useQuery
         navigate(ApplicationLocations.WELCOME)
       },
       onError: error => {
@@ -30,7 +60,8 @@ const VerificationScreen = () => {
   )
 
   const handleOnCompleted = (code: string) => {
-    mutate(code)
+    setVerificationCode(code)
+    verifyCodeMutate(code)
   }
 
   return (
@@ -54,7 +85,7 @@ const VerificationScreen = () => {
         sx={{ width: '75%', mt: 2, mb: 3 }}
       >
         Take a look for the verification code we just sent you to{' '}
-        <b>{userEmail}</b>.
+        <b>{precreatedEmailPassword?.email}</b>.
       </Typography>
       <Typography variant="subtitle2" sx={{ ml: -25, mb: 1 }}>
         Confirmation code

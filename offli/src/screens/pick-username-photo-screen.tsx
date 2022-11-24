@@ -11,18 +11,20 @@ import AddIcon from '@mui/icons-material/Add'
 import AddAPhotoIcon from '@mui/icons-material/AddAPhoto'
 
 import { ApplicationLocations } from '../types/common/applications-locations.dto'
+import { IEmailPassword } from '../types/users/user.dto'
+import { preCreateUser } from '../api/users/requests'
 
-export interface FormValues {
+export interface IUsername {
   username: string
 }
 
-const schema: () => yup.SchemaOf<FormValues> = () =>
+const schema: () => yup.SchemaOf<IUsername> = () =>
   yup.object({
     username: yup.string().defined().required(),
   })
 
 const PickUsernamePhotoScreen = () => {
-  const { control, handleSubmit } = useForm<FormValues>({
+  const { control, handleSubmit } = useForm<IUsername>({
     defaultValues: {
       username: '',
     },
@@ -34,12 +36,29 @@ const PickUsernamePhotoScreen = () => {
 
   const navigate = useNavigate()
 
-  const handleFormSubmit = React.useCallback((values: FormValues) => {
-    queryClient.setQueryData(['username-profile-picture'], {
-      username: values.username,
-      profilePictureUrl: 'aa.com/bb',
-    })
-    navigate(ApplicationLocations.VERIFY)
+  const { data, mutate: precreateUserMutate } = useMutation(
+    ['pre-created-user'],
+    (values: IEmailPassword) => preCreateUser(values),
+    {
+      onSuccess: data => {
+        console.log(data)
+        navigate(ApplicationLocations.VERIFY)
+      },
+      onError: error => {
+        console.log(error)
+      },
+    }
+  )
+
+  const handleFormSubmit = React.useCallback((values: IUsername) => {
+    // queryClient.setQueryData(['registration-username-picture'], {
+    //   username: values.username,
+    //   profilePictureUrl: 'aa.com/bb',
+    // })
+    const precreatedEmailPassword = queryClient.getQueryData<IEmailPassword>([
+      'registration-email-password',
+    ])
+    precreateUserMutate(precreatedEmailPassword!)
   }, [])
 
   return (

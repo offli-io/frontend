@@ -21,20 +21,12 @@ import { useQueryClient, useMutation, useQuery } from '@tanstack/react-query'
 import { checkIfEmailAlreadyTaken, preCreateUser } from '../api/users/requests'
 
 import { ApplicationLocations } from '../types/common/applications-locations.dto'
-import { setPreCreatedUserEmail } from '../utils/user.util'
+import { IEmailPassword } from '../types/users/user.dto'
 
-export interface FormValues {
-  email: string
-  password: string
-}
-
-const schema: () => yup.SchemaOf<FormValues> = () =>
+const schema: () => yup.SchemaOf<IEmailPassword> = () =>
   yup.object({
     email: yup.string().email().defined().required(),
-    password: yup
-      .string()
-      .defined()
-      .required('Please enter your password TY MONGOL'),
+    password: yup.string().defined().required('Please enter your password'),
     //   .matches(
     //   /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/,
     //   "Must Contain 8 Characters, One Uppercase, One Lowercase, One Number and One Special Case Character"
@@ -50,22 +42,6 @@ export const RegistrationScreen: React.FC = () => {
 
   const navigate = useNavigate()
 
-  const { data, mutate } = useMutation(
-    ['pre-created-user'],
-    (values: FormValues) => preCreateUser(values),
-    {
-      onSuccess: data => {
-        console.log(data?.data)
-        // setPreCreatedUserEmail(email)
-        queryClient.setQueryData(['pre-created-user-email'], email)
-        navigate(ApplicationLocations.PICK_USERNAME)
-      },
-      onError: error => {
-        console.log(error)
-      },
-    }
-  )
-
   const {
     status,
     error,
@@ -74,16 +50,10 @@ export const RegistrationScreen: React.FC = () => {
     enabled: !!email,
   })
 
-  // {
-  //   refetchOnWindowFocus: false,
-  //   enabled: false, // (!) handle refetchs manually
-  // }
-  // )
-
   const handleClickShowPassword = () => setShowPassword(!showPassword)
 
   const { control, handleSubmit, watch, setError, getFieldState } =
-    useForm<FormValues>({
+    useForm<IEmailPassword>({
       defaultValues: {
         email: '',
         password: '',
@@ -92,8 +62,9 @@ export const RegistrationScreen: React.FC = () => {
       mode: 'onChange',
     })
 
-  const handleFormSubmit = React.useCallback((values: FormValues) => {
-    mutate(values)
+  const handleFormSubmit = React.useCallback((values: IEmailPassword) => {
+    queryClient.setQueryData(['registration-email-password'], values)
+    navigate(ApplicationLocations.PICK_USERNAME)
     // console.log(data?.data)
   }, [])
 
