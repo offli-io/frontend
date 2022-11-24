@@ -9,7 +9,15 @@ import Routes from './routes'
 import React from 'react'
 
 const Router: React.FC = (): ReactElement => {
-  const { stateToken } = React.useContext(AuthenticationContext)
+  const { stateToken, setStateToken } = React.useContext(AuthenticationContext)
+  const token = getAuthToken()
+
+  React.useEffect(() => {
+    if (!stateToken && !!token) {
+      setStateToken(token)
+    }
+  }, [stateToken, token])
+
   return (
     <CustomizationProvider>
       <Suspense fallback={<p>Loading ...</p>}>
