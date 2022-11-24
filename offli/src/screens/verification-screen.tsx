@@ -33,12 +33,6 @@ const VerificationScreen = () => {
   // 2.verifyCodeAndRetrieveUserId /registation/verify-email => 200 + userId
   // 3. keycloak registracia email username password --picovina, riesi BE
 
-  const keycloakDataQuery = useQuery(['keycloak-data', userId], () =>
-    axios.get(
-      'http://localhost:8082/realms/Offli/.well-known/openid-configuration'
-    )
-  )
-
   const { data, mutate: verifyCodeMutate } = useMutation(
     ['user-id'],
     (code: string) =>
@@ -49,8 +43,9 @@ const VerificationScreen = () => {
     {
       onSuccess: data => {
         console.log(data?.data)
-        setUserId(data?.data)
-        // keycloak useQuery
+        //setUserId(data?.data?.userId)
+        //setStateToken(data?.data?.)
+        //setRefreshToken
         navigate(ApplicationLocations.WELCOME)
       },
       onError: error => {

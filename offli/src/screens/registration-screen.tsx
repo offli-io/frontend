@@ -52,7 +52,7 @@ export const RegistrationScreen: React.FC = () => {
 
   const handleClickShowPassword = () => setShowPassword(!showPassword)
 
-  const { control, handleSubmit, watch, setError, getFieldState } =
+  const { control, handleSubmit, watch, setError, formState } =
     useForm<IEmailPassword>({
       defaultValues: {
         email: '',
@@ -61,6 +61,10 @@ export const RegistrationScreen: React.FC = () => {
       resolver: yupResolver(schema()),
       mode: 'onChange',
     })
+
+  console.log(formState?.errors)
+
+  const isEmailInUse = Object.keys(formState?.errors)?.length !== 0
 
   const handleFormSubmit = React.useCallback((values: IEmailPassword) => {
     queryClient.setQueryData(['registration-email-password'], values)
@@ -203,7 +207,11 @@ export const RegistrationScreen: React.FC = () => {
           </Typography>
         </Box>
 
-        <OffliButton type="submit" sx={{ width: '70%', mb: 5 }}>
+        <OffliButton
+          type="submit"
+          sx={{ width: '70%', mb: 5 }}
+          disabled={!formState?.isValid || isEmailInUse}
+        >
           Next
         </OffliButton>
       </Box>
