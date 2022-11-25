@@ -51,7 +51,7 @@ export const createActivity = async (values: IActivity) => {
   const CancelToken = axios.CancelToken
   const source = CancelToken.source()
 
-  const promise = axios.post('/activity', values, {
+  const promise = axios.post('http://localhost:8080/activities', values, {
     cancelToken: source?.token,
   })
 

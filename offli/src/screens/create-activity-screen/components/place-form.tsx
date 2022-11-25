@@ -5,6 +5,7 @@ import {
   FormControl,
   FormControlLabel,
   FormLabel,
+  IconButton,
   MenuItem,
   Switch,
   TextField,
@@ -18,6 +19,7 @@ import activityLocation from '../../../assets/img/activity-location.svg'
 import { useQuery } from '@tanstack/react-query'
 import { getLocationFromQuery } from '../../../api/activities/requests'
 import { useDebounce } from 'use-debounce'
+import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew'
 
 interface IPlaceFormProps {
   onNextClicked: () => void
@@ -141,13 +143,16 @@ export const PlaceForm: React.FC<IPlaceFormProps> = ({
           justifyContent: 'space-between',
         }}
       >
-        <OffliButton
+        <IconButton onClick={onBackClicked} color="primary">
+          <ArrowBackIosNewIcon />
+        </IconButton>
+        {/* <OffliButton
           onClick={onBackClicked}
           sx={{ width: '40%' }}
           variant="text"
         >
           Back
-        </OffliButton>
+        </OffliButton> */}
         <OffliButton
           onClick={onNextClicked}
           sx={{ width: '40%' }}

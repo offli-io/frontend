@@ -157,7 +157,6 @@ export const ActivityInviteForm: React.FC<IActivityTypeFormProps> = ({
         >
           <BuddyItemInvite
             username="Milada Jankovicova"
-            checkbox
             onInviteClick={handleBuddyInviteClick}
             buddy={{
               id: '2312',
@@ -177,7 +176,6 @@ export const ActivityInviteForm: React.FC<IActivityTypeFormProps> = ({
               profile_photo:
                 'https://w7.pngwing.com/pngs/569/273/png-transparent-silhouette-human-head-head-face-animals-head-thumbnail.png',
             }}
-            checkbox
             onInviteClick={handleBuddyInviteClick}
             invited={invitedBuddies?.includes('2313')}
           />

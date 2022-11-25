@@ -1,8 +1,9 @@
-import { Box, TextField, Typography } from '@mui/material'
+import { Box, IconButton, TextField, Typography } from '@mui/material'
 import React from 'react'
 import { Controller, UseFormReturn } from 'react-hook-form'
 import LabeledTile from '../../../components/labeled-tile'
 import OffliButton from '../../../components/offli-button'
+import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew'
 
 interface IActivityTypeFormProps {
   onNextClicked: () => void
@@ -76,13 +77,16 @@ export const ActivityTypeForm: React.FC<IActivityTypeFormProps> = ({
       <Box
         sx={{ width: '100%', display: 'flex', justifyContent: 'space-between' }}
       >
-        <OffliButton
+        <IconButton onClick={onBackClicked} color="primary">
+          <ArrowBackIosNewIcon />
+        </IconButton>
+        {/* <OffliButton
           onClick={onBackClicked}
           sx={{ width: '40%' }}
           variant="text"
         >
           Back
-        </OffliButton>
+        </OffliButton> */}
         <OffliButton
           onClick={onNextClicked}
           sx={{ width: '40%' }}

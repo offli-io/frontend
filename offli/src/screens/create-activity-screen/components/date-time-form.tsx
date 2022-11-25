@@ -1,4 +1,4 @@
-import { Box, MenuItem, TextField, Typography } from '@mui/material'
+import { Box, IconButton, MenuItem, TextField, Typography } from '@mui/material'
 import React from 'react'
 import { Controller, UseFormReturn } from 'react-hook-form'
 import OffliButton from '../../../components/offli-button'
@@ -6,6 +6,7 @@ import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker'
 import { format } from 'date-fns'
 import TimePicker from '../../../components/time-picker'
 import { ActivityRepetitionOptionsEnum } from '../../../types/common/types'
+import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew'
 
 interface IDateTimeForm {
   onNextClicked: () => void
@@ -27,11 +28,11 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
   methods,
 }) => {
   const { control, formState, watch, setValue } = methods
-  const currentStartDate = watch('start_datetime')
-  const currentEndDate = watch('end_datetime')
+  const currentStartDate = watch('datetime_from')
+  const currentEndDate = watch('datetime_until')
 
   const handleTimeChange = React.useCallback(
-    (type: 'start_datetime' | 'end_datetime', value: string | null) => {
+    (type: 'datetime_from' | 'datetime_until', value: string | null) => {
       if (value) {
         const timeSplit = value.split(':')
         const date = currentStartDate ? new Date(currentStartDate) : new Date()
@@ -43,7 +44,7 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
     [setValue, watch]
   )
 
-  const isFormValid = !!watch('start_datetime') && !!watch('end_datetime')
+  const isFormValid = !!watch('datetime_from') && !!watch('datetime_until')
 
   const getFromDisabledOptions = (option: string) => {
     const toTime = !!currentEndDate && format(currentEndDate, 'hh:mm')
@@ -99,7 +100,7 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
           }}
         >
           <Controller
-            name="start_datetime"
+            name="datetime_from"
             control={control}
             render={({ field, fieldState: { error } }) => (
               <MobileDatePicker
@@ -128,7 +129,7 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
               label="From"
               sx={{ width: '40%', mr: 2 }}
               onChange={(value: string | null) =>
-                handleTimeChange('start_datetime', value)
+                handleTimeChange('datetime_from', value)
               }
               options={timeSlots}
               getOptionDisabled={getFromDisabledOptions}
@@ -141,7 +142,7 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
               label="To"
               sx={{ width: '40%', ml: 2 }}
               onChange={(value: string | null) =>
-                handleTimeChange('end_datetime', value)
+                handleTimeChange('datetime_until', value)
               }
               options={timeSlots}
               getOptionDisabled={getToDisabledOptions}
@@ -153,13 +154,16 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
       <Box
         sx={{ width: '100%', display: 'flex', justifyContent: 'space-between' }}
       >
-        <OffliButton
+        <IconButton onClick={onBackClicked} color="primary">
+          <ArrowBackIosNewIcon />
+        </IconButton>
+        {/* <OffliButton
           onClick={onBackClicked}
           sx={{ width: '40%' }}
           variant="text"
         >
           Back
-        </OffliButton>
+        </OffliButton> */}
         <OffliButton
           onClick={onNextClicked}
           sx={{ width: '40%' }}
