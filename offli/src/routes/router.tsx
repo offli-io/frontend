@@ -7,10 +7,25 @@ import OffliHeader from '../components/offli-header'
 import { getAuthToken } from '../utils/token.util'
 import Routes from './routes'
 import React from 'react'
+import { useQuery } from '@tanstack/react-query'
+import { getBuddies, getUsers } from '../api/activities/requests'
 
 const Router: React.FC = (): ReactElement => {
-  const { stateToken, setStateToken } = React.useContext(AuthenticationContext)
+  const { stateToken, userInfo, setUserInfo } = React.useContext(
+    AuthenticationContext
+  )
   const token = getAuthToken()
+
+  const userInfoQuery = useQuery(
+    ['user-info', userInfo?.username],
+    () => getUsers(userInfo?.username),
+    {
+      enabled: !!userInfo?.username,
+      onSuccess: data => {
+        setUserInfo && setUserInfo(data?.data)
+      },
+    }
+  )
 
   return (
     <CustomizationProvider>

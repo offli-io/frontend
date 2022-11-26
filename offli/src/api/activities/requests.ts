@@ -4,6 +4,7 @@ import {
   IActivity,
   IActivitySearchParams,
   IPerson,
+  IPersonExtended,
 } from '../../types/activities/activity.dto'
 import { IPlaceExternalApiDto } from '../../types/activities/place-external-api.dto'
 
@@ -58,6 +59,24 @@ export const createActivity = async (values: IActivity) => {
   //   queryFunctionContext?.signal?.addEventListener('abort', () => {
   //     source.cancel('Query was cancelled by React Query')
   //   })
+
+  return promise
+}
+
+export const getUsers = (username?: string) => {
+  const CancelToken = axios.CancelToken
+  const source = CancelToken.source()
+
+  const promise = axios.get<IPersonExtended>('http://localhost:8080/users', {
+    params: {
+      username,
+    },
+    cancelToken: source?.token,
+  })
+
+  // queryFunctionContext?.signal?.addEventListener('abort', () => {
+  //   source.cancel('Query was cancelled by React Query')
+  // })
 
   return promise
 }

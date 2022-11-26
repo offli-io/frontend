@@ -13,27 +13,15 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle'
 import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined'
 import { ApplicationLocations } from '../types/common/applications-locations.dto'
 
-export const BottomNavigationPaths = {
-  MY_ACTIVITES: 'activities',
-  SEARCH: 'search',
-  CREATE: 'create',
-  PROFILE: 'profile',
-}
-
 const BottomNavigator: React.FC = () => {
   const [value, setValue] = React.useState<ApplicationLocations>(
     ApplicationLocations.ACTIVITES
   )
   const location = useLocation()
-  // const location = useLocation().pathname
 
   React.useEffect(() => {
     setValue(location?.pathname as ApplicationLocations)
   }, [location])
-
-  //   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
-  //     setValue(newValue)
-  //   }
 
   return (
     <Paper

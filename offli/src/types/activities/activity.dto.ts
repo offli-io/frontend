@@ -8,6 +8,15 @@ export interface IPerson {
   profile_photo: string
 }
 
+export interface IPersonExtended {
+  id?: string
+  username?: string
+  name?: string
+  profilePhotoUrl?: string
+  buddies?: IPerson[] | null
+  activities?: string[] | null
+}
+
 export interface IActivityLocation {
   name: string
   coordinates: number[]
