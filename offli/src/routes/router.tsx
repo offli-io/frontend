@@ -1,5 +1,5 @@
 import { ReactElement, Suspense } from 'react'
-import { BrowserRouter } from 'react-router-dom'
+import { BrowserRouter, useLocation } from 'react-router-dom'
 import { AuthenticationContext } from '../assets/theme/authentication-provider'
 import { CustomizationProvider } from '../assets/theme/customization-provider'
 import BottomNavigator from '../components/bottom-navigator'
@@ -9,11 +9,13 @@ import Routes from './routes'
 import React from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { getBuddies, getUsers } from '../api/activities/requests'
+import { Layout } from '../app/layout'
 
 const Router: React.FC = (): ReactElement => {
-  const { stateToken, userInfo, setUserInfo } = React.useContext(
+  const {  userInfo, setUserInfo } = React.useContext(
     AuthenticationContext
   )
+
   const token = getAuthToken()
 
   const userInfoQuery = useQuery(
@@ -31,10 +33,7 @@ const Router: React.FC = (): ReactElement => {
     <CustomizationProvider>
       <Suspense fallback={<p>Loading ...</p>}>
         <BrowserRouter>
-          {/* conditional rendering when token is received */}
-          {stateToken && <OffliHeader />}
-          <Routes />
-          {stateToken && <BottomNavigator />}
+          <Layout />
         </BrowserRouter>
       </Suspense>
     </CustomizationProvider>

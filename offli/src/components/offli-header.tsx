@@ -85,11 +85,8 @@ const OffliHeader: React.FC = () => {
                 )}
               </Badge>
             </IconButton>
-            <IconButton
-              component={Link}
-              to={ApplicationLocations.NOTIFICATIONS}
-            >
-              <MenuIcon
+            <IconButton component={Link} to={ApplicationLocations.SETTINGS}>
+              <SettingsIcon
                 sx={{ iconStyle, ml: 0.5 }}
                 // sx={{ color: 'primary.main' }}
               />
