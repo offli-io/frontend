@@ -15,7 +15,11 @@ import { useNavigate } from 'react-router-dom'
 import qs from 'qs'
 import { useSnackbar } from 'notistack'
 import { AuthenticationContext } from '../assets/theme/authentication-provider'
-import { IEmailPassword } from '../types/users/user.dto'
+import {
+  IEmailPassword,
+  IUsername,
+  IUsernamePassword,
+} from '../types/users/user.dto'
 
 const VerificationScreen = () => {
   const [verificationCode, setVerificationCode] = React.useState<string>('')
@@ -29,11 +33,40 @@ const VerificationScreen = () => {
     'registration-email-password',
   ])
 
-  // 1.preCreateUser /registration/presignup 200
-  // 2.verifyCodeAndRetrieveUserId /registation/verify-email => 200 + userId
-  // 3. keycloak registracia email username password --picovina, riesi BE
+  const precreatedUsername = queryClient.getQueryData<IUsername>([
+    'registration-username',
+  ])
 
-  const { data, mutate: verifyCodeMutate } = useMutation(
+  const loginMutation = useMutation(
+    ['keycloak-login'],
+    (formValues: IUsernamePassword) => {
+      const data = {
+        ...formValues,
+        grant_type: 'password',
+        client_id: 'UserManagement',
+      }
+      const options = {
+        method: 'POST',
+        headers: { 'content-type': 'application/x-www-form-urlencoded' },
+        data: qs.stringify(data),
+        url: 'http://localhost:8082/realms/Offli/protocol/openid-connect/token',
+      }
+      return axios(options)
+    },
+    {
+      onSuccess: data => {
+        console.log(data?.data)
+        // setAuthToken(data?.data?.access_token)
+        // setRefreshToken(data?.data?.refresh_token)
+        setStateToken(data?.data?.access_token)
+        navigate(ApplicationLocations.WELCOME)
+      },
+      onError: error => {
+        enqueueSnackbar('Failed to log in', { variant: 'error' })
+      },
+    }
+  )
+  const verifyCodeMutation = useMutation(
     ['user-id'],
     (code: string) =>
       verifyCodeAndRetrieveUserId({
@@ -43,10 +76,10 @@ const VerificationScreen = () => {
     {
       onSuccess: data => {
         console.log(data?.data)
-        //setUserId(data?.data?.userId)
-        //setStateToken(data?.data?.)
-        //setRefreshToken
-        navigate(ApplicationLocations.WELCOME)
+        loginMutation.mutate({
+          username: precreatedUsername?.username,
+          password: precreatedEmailPassword?.password,
+        })
       },
       onError: error => {
         console.log(error)
@@ -56,7 +89,11 @@ const VerificationScreen = () => {
 
   const handleOnCompleted = (code: string) => {
     setVerificationCode(code)
-    verifyCodeMutate(code)
+    verifyCodeMutation.mutate(code)
+    // loginMutation.mutate({
+    //   username: 'anal',
+    //   password: 'test',
+    // })
   }
 
   return (
@@ -70,7 +107,7 @@ const VerificationScreen = () => {
         //   justifyContent: 'center',
       }}
     >
-      <BackButton href={ApplicationLocations.REGISTER} text="Sign Up" />
+      <BackButton href={ApplicationLocations.REGISTER} text="Register" />
       <Typography variant="h2" sx={{ mt: 20, width: '75%' }} align="left">
         <Box sx={{ color: 'primary.main' }}>Confirm</Box>verification code
       </Typography>

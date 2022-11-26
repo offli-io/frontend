@@ -7,24 +7,26 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { useQueryClient, useMutation, useQuery } from '@tanstack/react-query'
 import { useNavigate } from 'react-router-dom'
 import OffliButton from '../components/offli-button'
-import AddIcon from '@mui/icons-material/Add'
-import AddAPhotoIcon from '@mui/icons-material/AddAPhoto'
-
 import { ApplicationLocations } from '../types/common/applications-locations.dto'
-import { IEmailPassword } from '../types/users/user.dto'
-import { preCreateUser } from '../api/users/requests'
-
-export interface IUsername {
-  username: string
-}
+import {
+  IEmailPassword,
+  IEmailUsernamePassword,
+  IUsername,
+} from '../types/users/user.dto'
+import {
+  checkIfUsernameAlreadyTaken,
+  preCreateUser,
+} from '../api/users/requests'
 
 const schema: () => yup.SchemaOf<IUsername> = () =>
   yup.object({
-    username: yup.string().defined().required(),
+    username: yup.string().defined().required('Please enter your username'),
   })
 
 const PickUsernamePhotoScreen = () => {
-  const { control, handleSubmit } = useForm<IUsername>({
+  const [username, setUsername] = React.useState<string>('')
+
+  const { control, handleSubmit, setError, formState } = useForm<IUsername>({
     defaultValues: {
       username: '',
     },
@@ -36,9 +38,19 @@ const PickUsernamePhotoScreen = () => {
 
   const navigate = useNavigate()
 
-  const { data, mutate: precreateUserMutate } = useMutation(
+  const { data: usernameAlreadyTaken } = useQuery<any>(
+    ['username-taken', username],
+    () => checkIfUsernameAlreadyTaken(username),
+    {
+      enabled: !!username,
+    }
+  )
+
+  const isUsernameInUse = Object.keys(formState?.errors)?.length !== 0
+
+  const precreateUserMutation = useMutation(
     ['pre-created-user'],
-    (values: IEmailPassword) => preCreateUser(values),
+    (values: IEmailUsernamePassword) => preCreateUser(values),
     {
       onSuccess: data => {
         console.log(data)
@@ -51,15 +63,29 @@ const PickUsernamePhotoScreen = () => {
   )
 
   const handleFormSubmit = React.useCallback((values: IUsername) => {
-    // queryClient.setQueryData(['registration-username-picture'], {
-    //   username: values.username,
-    //   profilePictureUrl: 'aa.com/bb',
-    // })
-    const precreatedEmailPassword = queryClient.getQueryData<IEmailPassword>([
+    // if (usernameAlreadyTaken?.data) {
+    //   setError('username', { message: 'Username already in use' })
+    //   console.log(usernameAlreadyTaken?.data)
+    //   return
+    // }
+    queryClient.setQueryData(['registration-username'], values)
+
+    const registrationEmailPassword = queryClient.getQueryData<IEmailPassword>([
       'registration-email-password',
     ])
-    precreateUserMutate(precreatedEmailPassword!)
+
+    precreateUserMutation.mutate({
+      email: registrationEmailPassword?.email,
+      username: values?.username,
+      password: registrationEmailPassword?.password,
+    })
   }, [])
+
+  React.useEffect(() => {
+    if (usernameAlreadyTaken?.data) {
+      setError('username', { message: 'Username already in use' })
+    }
+  }, [usernameAlreadyTaken])
 
   return (
     <form onSubmit={handleSubmit(handleFormSubmit)} style={{ height: '100%' }}>
@@ -74,39 +100,14 @@ const PickUsernamePhotoScreen = () => {
         }}
       >
         <BackButton href={ApplicationLocations.REGISTER} text="Registration" />
-        <Typography variant="h2" align="left" sx={{ mt: 15, width: '75%' }}>
-          <Box sx={{ color: 'primary.main', width: '85%' }}>Choose&nbsp;</Box>
-          your username and profile picture
-        </Typography>
-        {/* <Box
-          sx={{
-            width: '100px',
-            height: '100px',
-            backgroundColor: 'lightgrey',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            borderRadius: '50%',
-            mt: 7,
-            mb: 7,
-          }}
-        > */}
-        {/* <IconButton>
-            <input accept="image/*" type="file" style={{ display: 'none' }} />
-
-            <AddIcon sx={{ fontSize: 30, color: 'primary.main' }}></AddIcon>
-          </IconButton> */}
-        <IconButton
-          color="primary"
-          aria-label="upload picture"
-          component="label"
-          sx={{ fontSize: '50px', mb: 9, mt: 7 }}
+        <Typography
+          variant="h2"
+          align="left"
+          sx={{ mt: 15, width: '75%', flex: 2 }}
         >
-          <AddAPhotoIcon sx={{ fontSize: '50px', color: 'lightgrey' }} />
-          <input hidden accept="image/*" type="file" />
-        </IconButton>
-        {/* </Box> */}
-
+          <Box sx={{ color: 'primary.main', width: '85%' }}>Choose&nbsp;</Box>
+          your username
+        </Typography>
         <Controller
           name="username"
           control={control}
@@ -116,13 +117,11 @@ const PickUsernamePhotoScreen = () => {
               {...field}
               //label="Username"
               placeholder="Username"
-              // variant="filled"
               error={!!error}
-              // helperText={
-              //   error?.message ||
-              //   t(`value.${nextStep?.authenticationType}.placeholder`)
-              // }
-              //disabled={methodSelectionDisabled}
+              helperText={error?.message}
+              onBlur={event => {
+                setUsername(event.target.value)
+              }}
               sx={{ width: '80%', flex: 3 }}
             />
           )}
@@ -144,6 +143,7 @@ const PickUsernamePhotoScreen = () => {
           variant="contained"
           type="submit"
           sx={{ width: '80%', mb: 5 }}
+          // disabled={usernameAlreadyTaken?.data}
         >
           Next
         </OffliButton>
