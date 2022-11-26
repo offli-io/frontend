@@ -1,0 +1,9 @@
+export enum SettingsTypeEnumDto {
+  ACCOUNT,
+  NOTIFICATIONS,
+  TERM_PRIVACY,
+  HELP_SUPPORT,
+  DARK_THEME,
+  ABOUT,
+  LOGOUT,
+}

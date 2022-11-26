@@ -1,5 +1,12 @@
 import React, { useState } from 'react'
-import { Box, IconButton, Badge, AppBar, Typography } from '@mui/material'
+import {
+  Box,
+  IconButton,
+  Badge,
+  AppBar,
+  Typography,
+  SxProps,
+} from '@mui/material'
 import { Link, useLocation } from 'react-router-dom'
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined'
 import SettingsIcon from '@mui/icons-material/Settings'
@@ -16,14 +23,15 @@ import { HEADER_HEIGHT } from '../utils/common-constants'
 
 interface IBackHeaderProps {
   title?: string
+  sx?: SxProps
 }
 
-const BackHeader: React.FC<IBackHeaderProps> = ({ title }) => {
+const BackHeader: React.FC<IBackHeaderProps> = ({ title, sx }) => {
   const location = useLocation().pathname
   const [notificationNumber] = useState(5)
 
   return (
-    <AppBar color="inherit" sx={{ height: HEADER_HEIGHT, boxShadow: 'none' }}>
+    <Box sx={{ height: HEADER_HEIGHT, boxShadow: 'none', ...sx }}>
       <Box
         sx={{
           width: '100%',
@@ -64,7 +72,7 @@ const BackHeader: React.FC<IBackHeaderProps> = ({ title }) => {
           <Typography variant="h4">Settings</Typography>
         </Box>
       </Box>
-    </AppBar>
+    </Box>
   )
 }
 

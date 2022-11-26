@@ -3,11 +3,15 @@ import logo from '../assets/img/profilePicture.jpg'
 import React from 'react'
 import OffliButton from './offli-button'
 import { IPerson } from '../types/activities/activity.dto'
+import NavigateNextIcon from '@mui/icons-material/NavigateNext'
+import { SettingsTypeEnumDto } from '../types/common/settings-type-enum.dto'
 
 interface ILabeledDividerProps {
   label?: string
-  onMenuItemClick?: (person: IPerson) => void
+  onMenuItemClick?: (type?: SettingsTypeEnumDto) => void
+  type?: SettingsTypeEnumDto
   icon?: React.ReactElement
+  headerRight?: React.ReactElement
 }
 
 const StyledImage = styled((props: any) => <img {...props} />)`
@@ -19,37 +23,32 @@ const StyledImage = styled((props: any) => <img {...props} />)`
 
 const MenuItem: React.FC<ILabeledDividerProps> = ({
   label,
+  type,
   onMenuItemClick,
   icon,
+  headerRight,
   ...rest
 }) => {
   return (
     <Box
-      // onClick={() => onMenuItemClick()}
+      onClick={() => onMenuItemClick && onMenuItemClick(type)}
       sx={{
         display: 'flex',
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
-        py: 2,
+        p: 1.5,
         textTransform: 'none',
         width: '100%',
+        boxSizing: 'border-box',
       }}
       {...rest}
     >
-      {/* <Box sx={{ display: 'flex', alignItems: 'center' }}>
-        <StyledImage src={buddy?.profile_photo ?? logo} alt="profile picture" />
-        <Typography sx={{ ml: 2, color: 'black' }}>
-          {buddy?.username}
-        </Typography>
+      <Box sx={{ display: 'flex', alignItems: 'center' }}>
+        {icon}
+        <Typography sx={{ ml: 2, color: 'black' }}>{label}</Typography>
       </Box>
-      <OffliButton
-        sx={{ height: 30, fontSize: 16 }}
-        onClick={() => onInviteClick && onInviteClick(buddy)}
-        variant={invited ? 'outlined' : 'contained'}
-      >
-        {invited ? 'Cancel' : 'Invite'}
-      </OffliButton> */}
+      {headerRight ?? <NavigateNextIcon />}
     </Box>
   )
 }
