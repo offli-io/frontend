@@ -17,7 +17,7 @@ export const getActivities = async ({
   const CancelToken = axios.CancelToken
   const source = CancelToken.source()
 
-  const promise = axios.get<IActivity>(`/activity`, {
+  const promise = axios.get<IActivity>(`http://localhost:8080/activities`, {
     params: searchParams,
     cancelToken: source?.token,
   })
@@ -62,7 +62,7 @@ export const createActivity = async (values: IActivity) => {
   return promise
 }
 
-export const getBuddies = (userId: number) => {
+export const getBuddies = (userId: number, queryString?: string) => {
   const CancelToken = axios.CancelToken
   const source = CancelToken.source()
 
@@ -81,7 +81,7 @@ export const inviteBuddy = (activityId: number, values: IPerson) => {
   const CancelToken = axios.CancelToken
   const source = CancelToken.source()
 
-  const promise = axios.post(`/activity/${activityId}/participant`, values, {
+  const promise = axios.post(`/activity/${activityId}/invitations`, values, {
     cancelToken: source?.token,
   })
 

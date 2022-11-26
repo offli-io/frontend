@@ -13,21 +13,57 @@ import {
   uninviteBuddy,
 } from '../../../api/activities/requests'
 import { IPerson } from '../../../types/activities/activity.dto'
+import { useDebounce } from 'use-debounce'
+import { useSnackbar } from 'notistack'
 
 interface IActivityTypeFormProps {
   onNextClicked: () => void
   methods: UseFormReturn
 }
 
-const activityTypes = [
-  'Sports and drinks',
-  'Relax',
-  'Cinema',
-  'Food',
-  'Music',
-  'Nature',
-  'Adrenaline',
-  'Charitable',
+const budky = [
+  {
+    id: '2312',
+    name: 'Milada Jankovic',
+    username: 'milhaus',
+    profile_photo:
+      'https://w7.pngwing.com/pngs/569/273/png-transparent-silhouette-human-head-head-face-animals-head-thumbnail.png',
+  },
+  {
+    id: '2312',
+    name: 'Milada Jankovic',
+    username: 'milhaus',
+    profile_photo:
+      'https://w7.pngwing.com/pngs/569/273/png-transparent-silhouette-human-head-head-face-animals-head-thumbnail.png',
+  },
+  {
+    id: '2312',
+    name: 'Milada Jankovic',
+    username: 'milhaus',
+    profile_photo:
+      'https://w7.pngwing.com/pngs/569/273/png-transparent-silhouette-human-head-head-face-animals-head-thumbnail.png',
+  },
+  {
+    id: '2312',
+    name: 'Milada Jankovic',
+    username: 'milhaus',
+    profile_photo:
+      'https://w7.pngwing.com/pngs/569/273/png-transparent-silhouette-human-head-head-face-animals-head-thumbnail.png',
+  },
+  {
+    id: '2312',
+    name: 'Milada Jankovic',
+    username: 'milhaus',
+    profile_photo:
+      'https://w7.pngwing.com/pngs/569/273/png-transparent-silhouette-human-head-head-face-animals-head-thumbnail.png',
+  },
+  {
+    id: '2312',
+    name: 'Milada Jankovic',
+    username: 'milhaus',
+    profile_photo:
+      'https://w7.pngwing.com/pngs/569/273/png-transparent-silhouette-human-head-head-face-animals-head-thumbnail.png',
+  },
 ]
 
 export const ActivityInviteForm: React.FC<IActivityTypeFormProps> = ({
@@ -36,11 +72,18 @@ export const ActivityInviteForm: React.FC<IActivityTypeFormProps> = ({
 }) => {
   const { control, setValue, watch } = methods
   const [invitedBuddies, setInvitedBuddies] = React.useState<string[]>([])
+  const { enqueueSnackbar } = useSnackbar()
+
+  const [queryString, setQueryString] = React.useState<string | undefined>()
+  const [queryStringDebounced] = useDebounce(queryString, 1000)
 
   const { data: buddies, status } = useQuery(
-    ['profile', 5],
+    ['buddies', 7, queryStringDebounced],
     // TODO Fetch with current user id
-    () => getBuddies(7)
+    () => getBuddies(7, queryStringDebounced),
+    {
+      enabled: !!queryStringDebounced,
+    }
   )
 
   const { mutate: sendInviteBuddy } = useMutation(
@@ -50,9 +93,9 @@ export const ActivityInviteForm: React.FC<IActivityTypeFormProps> = ({
       onSuccess: (data, variables) => {
         setInvitedBuddies([...invitedBuddies, variables?.id])
       },
-      // onError: error => {
-      //   enqueueSnackbar('Failed to create new activity', { variant: 'error' })
-      // },
+      onError: error => {
+        enqueueSnackbar('Failed to invite user', { variant: 'error' })
+      },
     }
   )
 
@@ -83,38 +126,8 @@ export const ActivityInviteForm: React.FC<IActivityTypeFormProps> = ({
 
   return (
     <>
-      <Box sx={{ display: 'flex', mb: 4 }}>
-        <Typography variant="h4">Activity details</Typography>
-      </Box>
-      <Box
-        sx={{
-          display: 'flex',
-          flexWrap: 'wrap',
-          justifyContent: 'space-between',
-          width: '100%',
-        }}
-      >
-        <Controller
-          name="capacity"
-          control={control}
-          render={({ field, fieldState: { error } }) => (
-            <TextField
-              // TODO idk if this is really needed and not anti-pattern
-              //autoFocus
-              {...field}
-              error={!!error}
-              sx={{ width: '100%', mb: 2 }}
-              label="How many people can attend?"
-              //placeholder="Type activity name"
-              helperText={'Leave empty for unlimited'}
-              //label="Username"
-              // disabled={methodSelectionDisabled}
-            />
-          )}
-        />
-      </Box>
-      <Box sx={{ display: 'flex', mb: 1 }}>
-        <Typography sx={{ fontWeight: 'bold' }} variant="h6">
+      <Box sx={{ display: 'flex', mb: 3, mt: 2 }}>
+        <Typography sx={{ fontWeight: 'bold' }} variant="h4">
           Send invites to your buddies
         </Typography>
       </Box>
@@ -126,26 +139,19 @@ export const ActivityInviteForm: React.FC<IActivityTypeFormProps> = ({
           width: '100%',
         }}
       >
-        <Controller
-          name="capacity"
-          control={control}
-          render={({ field, fieldState: { error } }) => (
-            <TextField
-              // TODO idk if this is really needed and not anti-pattern
-              //autoFocus
-              {...field}
-              error={!!error}
-              sx={{ width: '100%' }}
-              label="Search within your buddies"
-              // InputProps={{
-              //   startAdornment: <SearchIcon />,
-              // }}
-              placeholder="Type buddy username"
-              //label="Username"
-              // disabled={methodSelectionDisabled}
-            />
-          )}
+        <TextField
+          // TODO idk if this is really needed and not anti-pattern
+          //autoFocus
+          value={queryString}
+          onChange={e => setQueryString(e.target.value)}
+          sx={{ width: '100%' }}
+          label="Search within your buddies"
+          // InputProps={{
+          //   startAdornment: <SearchIcon />,
+          // }}
+          placeholder="Type buddy username"
         />
+
         <Box
           sx={{
             height: 300,
@@ -153,32 +159,18 @@ export const ActivityInviteForm: React.FC<IActivityTypeFormProps> = ({
             overflowY: 'auto',
             overflowX: 'hidden',
             my: 3,
+            borderTop: '1px solid lightgrey',
+            borderBottom: '1px solid lightgrey',
           }}
         >
-          <BuddyItemInvite
-            username="Milada Jankovicova"
-            onInviteClick={handleBuddyInviteClick}
-            buddy={{
-              id: '2312',
-              name: 'Milada Jankovic',
-              username: 'milhaus',
-              profile_photo:
-                'https://w7.pngwing.com/pngs/569/273/png-transparent-silhouette-human-head-head-face-animals-head-thumbnail.png',
-            }}
-            invited={invitedBuddies?.includes('2312')}
-          />
-          <BuddyItemInvite
-            username="Milada Jankovicova"
-            buddy={{
-              id: '2313',
-              name: 'Milada Jankovic',
-              username: 'milhaus',
-              profile_photo:
-                'https://w7.pngwing.com/pngs/569/273/png-transparent-silhouette-human-head-head-face-animals-head-thumbnail.png',
-            }}
-            onInviteClick={handleBuddyInviteClick}
-            invited={invitedBuddies?.includes('2313')}
-          />
+          {budky?.map(buddy => (
+            <BuddyItemInvite
+              onInviteClick={handleBuddyInviteClick}
+              buddy={buddy}
+              invited={invitedBuddies?.includes('2312')}
+            />
+          ))}
+
           {/* <BuddyItemCheckbox
             username="Milada Jankovicova"
             checkbox
@@ -206,7 +198,7 @@ export const ActivityInviteForm: React.FC<IActivityTypeFormProps> = ({
           sx={{ width: '40%' }}
           //disabled={!formState.isValid}
         >
-          Next
+          Skip
         </OffliButton>
       </Box>
     </>

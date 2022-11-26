@@ -7,8 +7,6 @@ import { IPerson } from '../types/activities/activity.dto'
 interface ILabeledDividerProps {
   imageSource?: string
   onInviteClick?: (person: IPerson) => void
-  username?: string
-  checkbox?: boolean
   buddy: IPerson
   children?: React.ReactElement
   invited?: boolean

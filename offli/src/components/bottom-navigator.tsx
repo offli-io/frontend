@@ -27,6 +27,9 @@ const BottomNavigator: React.FC = () => {
   //     setValue(newValue)
   //   }
 
+  
+  //TODO listen for outside route change and change highliting accordingly
+
   return (
     <Paper
       sx={{ position: 'fixed', bottom: 0, left: 0, right: 0 }}
@@ -52,7 +55,7 @@ const BottomNavigator: React.FC = () => {
           icon={<OfflineBoltOutlinedIcon sx={{ transform: 'rotate(30deg)' }} />}
           component={Link}
           value={BottomNavigationPaths.MY_ACTIVITES}
-          to="activites"
+          to="activities"
         />
         <BottomNavigationAction
           label="Explore"
