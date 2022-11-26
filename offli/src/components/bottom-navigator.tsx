@@ -11,24 +11,29 @@ import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'
 import AddCircleIcon from '@mui/icons-material/AddCircleOutline'
 import AccountCircleIcon from '@mui/icons-material/AccountCircle'
 import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined'
+import { ApplicationLocations } from '../types/common/applications-locations.dto'
 
 export const BottomNavigationPaths = {
-  MY_ACTIVITES: 'myactivites',
+  MY_ACTIVITES: 'activities',
   SEARCH: 'search',
   CREATE: 'create',
   PROFILE: 'profile',
 }
 
 const BottomNavigator: React.FC = () => {
-  const [value, setValue] = React.useState('recents')
+  const [value, setValue] = React.useState<ApplicationLocations>(
+    ApplicationLocations.ACTIVITES
+  )
+  const location = useLocation()
   // const location = useLocation().pathname
+
+  React.useEffect(() => {
+    setValue(location?.pathname as ApplicationLocations)
+  }, [location])
 
   //   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
   //     setValue(newValue)
   //   }
-
-  
-  //TODO listen for outside route change and change highliting accordingly
 
   return (
     <Paper
@@ -54,29 +59,29 @@ const BottomNavigator: React.FC = () => {
           //   : (<OfflineBoltOutlinedIcon sx={{ transform: 'rotate(30deg)' }})/>}
           icon={<OfflineBoltOutlinedIcon sx={{ transform: 'rotate(30deg)' }} />}
           component={Link}
-          value={BottomNavigationPaths.MY_ACTIVITES}
-          to="activities"
+          value={ApplicationLocations.ACTIVITES}
+          to={ApplicationLocations.ACTIVITES}
         />
         <BottomNavigationAction
           label="Explore"
           icon={<TravelExploreIcon />}
           component={Link}
-          value={BottomNavigationPaths.SEARCH}
-          to="search"
+          value={ApplicationLocations.SEARCH}
+          to={ApplicationLocations.SEARCH}
         />
         <BottomNavigationAction
           label="Create"
           icon={<AddCircleOutlineIcon />}
           component={Link}
-          value={BottomNavigationPaths.CREATE}
-          to="create"
+          value={ApplicationLocations.CREATE}
+          to={ApplicationLocations.CREATE}
         />
         <BottomNavigationAction
           label="Profile"
           icon={<AccountCircleOutlinedIcon />}
           component={Link}
-          value={BottomNavigationPaths.PROFILE}
-          to="profile"
+          value={ApplicationLocations.PROFILE}
+          to={ApplicationLocations.PROFILE}
         />
       </BottomNavigation>
     </Paper>
