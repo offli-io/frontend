@@ -34,7 +34,7 @@ export const getActivity = async (activityId?: string) => {
   const CancelToken = axios.CancelToken
   const source = CancelToken.source()
 
-  const promise = axios.get<IActivity>(
+  const promise = axios.get<{ activity: IActivity; success: boolean }>(
     `http://localhost:8080/activities/${activityId}`
     // {
     //   params: searchParams,

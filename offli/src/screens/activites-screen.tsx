@@ -50,31 +50,30 @@ const dummyData: IActivityProps[] = [
 
 const ActivitiesScreen = () => {
   const { userInfo, setUserInfo } = React.useContext(AuthenticationContext)
-  const queryClient = useQueryClient()
-  const _activityIds = queryClient?.getQueryData<IPersonExtended>(['user-info'])
-  console.log(_activityIds)
+  // const queryClient = useQueryClient()
+  // const _activityIds = queryClient?.getQueryData<IPersonExtended>(['user-info'])
+  // console.log(_activityIds)
 
-  // const userInfoQuery = useQuery(
-  //   ['user-info', userInfo?.username],
-  //   () => getUsers(userInfo?.username),
-  //   {
-  //     onSuccess: data =>
-  //       data?.data?.activities && setActivityIds(data?.data?.activities),
-  //   }
-  // )
+  const { data } = useQuery(
+    ['user-info', userInfo?.username],
+    () => getUsers(userInfo?.username)
+    // {
+    //   onSuccess: data =>
+    //     data?.data?.activities && setActivityIds(data?.data?.activities),
+    //   enabled: !!userInfo,
+    // }
+  )
   const [currentActivityId, setCurrentActivityId] = React.useState<
     string | undefined
   >()
-  const [activityIds, setActivityIds] = React.useState<string[]>(
-    _activityIds?.activities ?? []
-  )
+  const [activityIds, setActivityIds] = React.useState<string[]>([])
   const [activites, setActivites] = React.useState<IActivity[]>([])
   const activitiesQuery = useQuery(
     ['activities', currentActivityId],
     props => getActivity(currentActivityId),
     {
       onSuccess: data => {
-        setActivites(activites => [...activites, data?.data])
+        setActivites(activites => [...activites, data?.data?.activity])
       },
       enabled: !!currentActivityId,
     }
@@ -89,6 +88,12 @@ const ActivitiesScreen = () => {
   )
 
   //[('213123', '43412')]
+
+  React.useEffect(() => {
+    if (data?.data?.activities) {
+      setActivityIds(data?.data?.activities)
+    }
+  }, [data])
 
   React.useEffect(() => {
     const [first, ...rest] = activityIds
@@ -107,6 +112,9 @@ const ActivitiesScreen = () => {
   return (
     <PageWrapper>
       <Button onClick={() => mut.mutate()}>Fetch</Button>
+      {activites?.map(activity => (
+        <Typography>{activity?.title}</Typography>
+      ))}
 
       <Typography
         variant="h6"

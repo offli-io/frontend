@@ -12,9 +12,7 @@ import { getBuddies, getUsers } from '../api/activities/requests'
 import { Layout } from '../app/layout'
 
 const Router: React.FC = (): ReactElement => {
-  const {  userInfo, setUserInfo } = React.useContext(
-    AuthenticationContext
-  )
+  const { userInfo, setUserInfo } = React.useContext(AuthenticationContext)
 
   const token = getAuthToken()
 
@@ -26,6 +24,7 @@ const Router: React.FC = (): ReactElement => {
       onSuccess: data => {
         setUserInfo && setUserInfo(data?.data)
       },
+      cacheTime: Infinity,
     }
   )
 
