@@ -18,9 +18,10 @@ export const PageWrapper: React.FC<IPageWrapperProps> = ({
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        mt: (HEADER_HEIGHT + 16) / 8,
+        mt: 1,
+        //mt: (HEADER_HEIGHT + 16) / 8,
         // aby borderNvigation neprekryval spodok screenu profile
-        pb: (HEADER_HEIGHT + 16) / 8,
+        //pb: (HEADER_HEIGHT + 16) / 8,
         ...sxOverrides,
       }}
     >

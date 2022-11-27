@@ -7,8 +7,8 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
-  --ReactInputVerificationCode-itemWidth: 2.5rem;
-  --ReactInputVerificationCode-itemHeight: 2.5rem;
+  --ReactInputVerificationCode-itemWidth: 2.2rem;
+  --ReactInputVerificationCode-itemHeight: 2.2rem;
   --ReactInputVerificationCode-itemSpacing: 1rem;
 }
 

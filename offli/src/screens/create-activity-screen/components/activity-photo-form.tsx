@@ -2,20 +2,21 @@ import { Box, Button, IconButton, TextField, Typography } from '@mui/material'
 import React, { BaseSyntheticEvent } from 'react'
 import { Controller, UseFormReturn } from 'react-hook-form'
 import OffliButton from '../../../components/offli-button'
-import createActivityImg from '../../../assets/img/create-activity.svg'
+import activityPhotoImg from '../../../assets/img/activity-photo.svg'
 import Upload from 'rc-upload'
 import { RcFile } from 'rc-upload/lib/interface'
 import FileUploadIcon from '@mui/icons-material/FileUpload'
 import { grey } from '@mui/material/colors'
+import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew'
 
 interface IActivityPhotoFormProps {
-  onNextClicked: () => void
   methods: UseFormReturn
+  onBackClicked: () => void
 }
 
 export const ActivityPhotoForm: React.FC<IActivityPhotoFormProps> = ({
-  onNextClicked,
   methods,
+  onBackClicked,
 }) => {
   const { control, formState } = methods
 
@@ -26,10 +27,28 @@ export const ActivityPhotoForm: React.FC<IActivityPhotoFormProps> = ({
   return (
     <>
       <Box
-        sx={{ display: 'flex', width: '100%', alignItems: 'flex-end', mt: -8 }}
+        sx={{
+          display: 'flex',
+          width: '100%',
+          alignItems: 'flex-end',
+          justifyContent: 'space-around',
+        }}
       >
-        <Box sx={{ display: 'flex', mb: 4 }}>
-          <Typography variant="h4">Activity details</Typography>
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            width: '50%',
+          }}
+        >
+          <Typography variant="h4" sx={{ color: 'primary.main' }}>
+            Add
+          </Typography>
+          <Typography variant="h4">activity photo</Typography>
+        </Box>
+        <Box sx={{ width: '50%', display: 'flex', justifyContent: 'center' }}>
+          <img src={activityPhotoImg} style={{ height: 80 }} />
         </Box>
       </Box>
       <Box
@@ -39,6 +58,7 @@ export const ActivityPhotoForm: React.FC<IActivityPhotoFormProps> = ({
           flexDirection: 'column',
           justifyContent: 'center',
           alignItem: 'center',
+          mb: 10,
         }}
       >
         <Controller
@@ -49,6 +69,7 @@ export const ActivityPhotoForm: React.FC<IActivityPhotoFormProps> = ({
               <Upload
                 name="file"
                 value={field.value?.[0]}
+                style={{ display: 'flex', justifyContent: 'center' }}
                 // beforeUpload={(file: RcFile) => {
                 //   // check file size
                 //   if (file?.size > fileLimit) {w
@@ -83,13 +104,13 @@ export const ActivityPhotoForm: React.FC<IActivityPhotoFormProps> = ({
               >
                 <Box
                   sx={{
-                    width: '20%',
+                    width: 100,
+                    height: 100,
                     display: 'flex',
                     justifyContent: 'center',
-                    alignItems: 'center',
-                    flexDirection: 'column',
+                    position: 'relative',
                     bgcolor: grey[200],
-                    p: 2,
+                    borderRadius: 3,
                   }}
                 >
                   <IconButton
@@ -110,16 +131,25 @@ export const ActivityPhotoForm: React.FC<IActivityPhotoFormProps> = ({
         sx={{
           width: '100%',
           display: 'flex',
-          justifyContent: 'flex-end',
-          mt: 2,
+          justifyContent: 'space-between',
         }}
       >
-        <OffliButton
-          onClick={onNextClicked}
+        <IconButton onClick={onBackClicked} color="primary">
+          <ArrowBackIosNewIcon />
+        </IconButton>
+        {/* <OffliButton
+          onClick={onBackClicked}
           sx={{ width: '40%' }}
-          disabled={!formState.isValid}
+          variant="text"
         >
-          Next
+          Back
+        </OffliButton> */}
+        <OffliButton
+          sx={{ width: '60%' }}
+          disabled={!formState.isValid}
+          type="submit"
+        >
+          Create
         </OffliButton>
       </Box>
     </>

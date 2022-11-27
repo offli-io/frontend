@@ -14,7 +14,6 @@ import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
 import OffliButton from '../components/offli-button'
 import LabeledDivider from '../components/labeled-divider'
-import { useNavigate } from 'react-router-dom'
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff'
 import VisibilityIcon from '@mui/icons-material/Visibility'
 import { useKeycloak } from '@react-keycloak/web'
@@ -27,6 +26,7 @@ import {
 } from '../utils/token.util'
 import { AuthenticationContext } from '../assets/theme/authentication-provider'
 import { ApplicationLocations } from '../types/common/applications-locations.dto'
+import { useNavigate } from 'react-router-dom'
 
 export interface FormValues {
   username: string
@@ -42,7 +42,7 @@ const schema: () => yup.SchemaOf<FormValues> = () =>
 const LoginScreen: React.FC = () => {
   const { keycloak, initialized } = useKeycloak()
   const [showPassword, setShowPassword] = React.useState(false)
-  const { stateToken, setStateToken } = React.useContext(AuthenticationContext)
+  const { setUserInfo, setStateToken } = React.useContext(AuthenticationContext)
   const { enqueueSnackbar } = useSnackbar()
   const navigate = useNavigate()
 
@@ -68,14 +68,17 @@ const LoginScreen: React.FC = () => {
     )
   )
 
-  React.useEffect(() => {
-    //for testing purposes to not manually remove token from localstorage
-    setAuthToken(undefined)
-  }, [])
+  // React.useEffect(() => {
+  //   //for testing purposes to not manually remove token from localstorage
+  //   setAuthToken(undefined)
+  //   setStateToken('dsadas')
+  // }, [])
 
   const loginMutation = useMutation(
     ['keycloak-login'],
     (formValues: FormValues) => {
+      !!setUserInfo && setUserInfo({ username: formValues?.username })
+      localStorage.setItem('username', formValues?.username)
       const data = {
         ...formValues,
         grant_type: 'password',

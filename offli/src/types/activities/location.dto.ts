@@ -5,10 +5,9 @@ export interface ILocationTag {
 }
 
 export interface ILocation {
-  type?: string
-  display_name?: string
-  id?: number
-  lat?: number
-  lon?: number
-  tags?: ILocationTag
+  name?: string
+  coordinates?: {
+    lat?: number
+    lon?: number
+  }
 }

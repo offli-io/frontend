@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
-import { Box, IconButton, Badge, AppBar } from '@mui/material'
-import { Link, useLocation } from 'react-router-dom'
+import { Box, IconButton, Badge, AppBar, SxProps } from '@mui/material'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined'
 import SettingsIcon from '@mui/icons-material/Settings'
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt'
@@ -13,8 +13,13 @@ import { ApplicationLocations } from '../types/common/applications-locations.dto
 import offliLogo from '../assets/img/logoPurple.png'
 import { HEADER_HEIGHT } from '../utils/common-constants'
 
-const OffliHeader: React.FC = () => {
-  const location = useLocation().pathname
+interface IProps {
+  sx?: SxProps
+}
+
+const OffliHeader: React.FC<IProps> = ({ sx }) => {
+  const location = useLocation()
+  const navigate = useNavigate()
   const [notificationNumber] = useState(5)
 
   //TODO add component non-depending logic like styles outside the components
@@ -28,7 +33,10 @@ const OffliHeader: React.FC = () => {
   }
 
   return (
-    <AppBar color="inherit" sx={{ height: HEADER_HEIGHT, boxShadow: 'none' }}>
+    <Box
+    // color="inherit"
+    // sx={{ height: HEADER_HEIGHT, boxShadow: 'none', ...sx }}
+    >
       <Box
         sx={{
           width: '100%',
@@ -75,7 +83,7 @@ const OffliHeader: React.FC = () => {
                 color="primary"
                 sx={badgeStyle}
               >
-                {location === ApplicationLocations.NOTIFICATIONS ? (
+                {location?.pathname === ApplicationLocations.NOTIFICATIONS ? (
                   <NotificationsIcon sx={iconStyle} />
                 ) : (
                   <NotificationsNoneOutlinedIcon
@@ -86,10 +94,17 @@ const OffliHeader: React.FC = () => {
               </Badge>
             </IconButton>
             <IconButton
-              component={Link}
-              to={ApplicationLocations.NOTIFICATIONS}
+              onClick={() => {
+                navigate(ApplicationLocations.SETTINGS, {
+                  state: {
+                    from: window.location.href,
+                  },
+                })
+              }}
+              // component={Link}
+              // to={ApplicationLocations.SETTINGS}
             >
-              <MenuIcon
+              <SettingsIcon
                 sx={{ iconStyle, ml: 0.5 }}
                 // sx={{ color: 'primary.main' }}
               />
@@ -97,7 +112,7 @@ const OffliHeader: React.FC = () => {
           </Box>
         </Box>
       </Box>
-    </AppBar>
+    </Box>
   )
 }
 
