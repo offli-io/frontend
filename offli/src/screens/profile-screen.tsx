@@ -16,10 +16,24 @@ import axios from 'axios'
 import ProfileGallery from '../components/profile-gallery'
 import { Link } from 'react-router-dom'
 import { ApplicationLocations } from '../types/common/applications-locations.dto'
+import { AuthenticationContext } from '../assets/theme/authentication-provider'
+import { getUsers } from '../api/activities/requests'
 
 const ProfileEmpty: React.FC = () => {
   const [editAboutMe, setEditAboutMe] = useState<boolean>(false)
   const [aboutMe, setAboutMe] = useState<string>('')
+  const { userInfo, setUserInfo } = React.useContext(AuthenticationContext)
+
+  const { data, isLoading } = useQuery(
+    ['user-info', userInfo?.username],
+    () => getUsers(userInfo?.username),
+    {
+      enabled: !!userInfo?.username,
+      onSuccess: data => {
+        setUserInfo && setUserInfo(data?.data)
+      },
+    }
+  )
 
   // type Params = {
   //   queryKey: [string, { id: number }]
@@ -34,16 +48,16 @@ const ProfileEmpty: React.FC = () => {
     // console.log(response.data, id)
     return response.data
   }
-  const { data, status } = useQuery(['profile', 5], () => fetchProfile(7), {
-    keepPreviousData: true,
-  })
+  // const { data, status } = useQuery(['profile', 5], () => fetchProfile(7), {
+  //   keepPreviousData: true,
+  // })
 
-  useEffect(() => {
-    if (status === 'success') {
-      setAboutMe(`${data.species} ${data.gender} - ${data.status}`)
-      // console.log(data.species)
-    }
-  }, [data, status])
+  // useEffect(() => {
+  //   if (status === 'success') {
+  //     setAboutMe(`${data.species} ${data.gender} - ${data.status}`)
+  //     // console.log(data.species)
+  //   }
+  // }, [data, status])
 
   if (status === 'loading') {
     return (
@@ -99,7 +113,8 @@ const ProfileEmpty: React.FC = () => {
           }}
         >
           <img
-            src={data.image}
+            // todo add default picture in case of missing photo
+            src={data?.data?.profilePhotoUrl}
             alt="profile picture"
             style={{
               height: '70px',
@@ -123,7 +138,7 @@ const ProfileEmpty: React.FC = () => {
               color="primary"
               sx={{ fontWeight: 'bold', mt: 0.5 }}
             >
-              120
+              {data?.data?.buddies?.length}
             </Typography>
           </Box>
         </Box>
@@ -144,7 +159,7 @@ const ProfileEmpty: React.FC = () => {
               justifyContent: 'space-between',
             }}
           >
-            <Typography variant="h3">{data.name}</Typography>
+            <Typography variant="h3">{data?.data?.username}</Typography>
             <Link
               to={ApplicationLocations.EDIT_PROFILE}
               style={{ textDecoration: 'none' }}

@@ -7,6 +7,7 @@ import Upload from 'rc-upload'
 import { RcFile } from 'rc-upload/lib/interface'
 import FileUploadIcon from '@mui/icons-material/FileUpload'
 import { grey } from '@mui/material/colors'
+import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew'
 
 interface IActivityPhotoFormProps {
   methods: UseFormReturn
@@ -133,13 +134,16 @@ export const ActivityPhotoForm: React.FC<IActivityPhotoFormProps> = ({
           justifyContent: 'space-between',
         }}
       >
-        <OffliButton
+        <IconButton onClick={onBackClicked} color="primary">
+          <ArrowBackIosNewIcon />
+        </IconButton>
+        {/* <OffliButton
           onClick={onBackClicked}
           sx={{ width: '40%' }}
           variant="text"
         >
           Back
-        </OffliButton>
+        </OffliButton> */}
         <OffliButton
           sx={{ width: '60%' }}
           disabled={!formState.isValid}

@@ -16,6 +16,7 @@ import RegistrationScreen from '../screens/registration-screen'
 import ResetPasswordScreen from '../screens/reset-password-screen'
 import SearchActivitesScreen from '../screens/search-activities-screen'
 import SelectProfilePictureScreen from '../screens/select-picture-screen'
+import SettingsScreen from '../screens/settings-screen/settings-screen'
 import VerificationScreen from '../screens/verification-screen'
 import WelcomeScreen from '../screens/welcome-screen'
 import { ApplicationLocations } from '../types/common/applications-locations.dto'
@@ -82,6 +83,10 @@ const Routes = () => {
         <Route
           path={ApplicationLocations.SEARCH}
           element={<SearchActivitesScreen />}
+        />
+        <Route
+          path={ApplicationLocations.SETTINGS}
+          element={<SettingsScreen />}
         />
         <Route
           path={ApplicationLocations.BUDDIES}

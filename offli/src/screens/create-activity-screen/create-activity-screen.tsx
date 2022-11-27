@@ -22,6 +22,9 @@ import { useMutation } from '@tanstack/react-query'
 import { createActivity } from '../../api/activities/requests'
 import { useSnackbar } from 'notistack'
 import { IPerson } from '../../types/activities/activity.dto'
+import ActivityCreatedScreen from '../static-screens/activity-created-screen'
+import { useNavigate } from 'react-router-dom'
+import { ApplicationLocations } from '../../types/common/applications-locations.dto'
 
 interface FormValues {
   title?: string
@@ -33,7 +36,7 @@ interface FormValues {
   datetime_until?: Date
 
   // public?: boolean
-  repeated?: ActivityRepetitionOptionsEnum | string
+  //repeated?: ActivityRepetitionOptionsEnum | string
   price?: ActivityPriceOptionsEnum | string
   title_picture?: string
   placeQuery?: string
@@ -98,18 +101,7 @@ const schema: (activeStep: number) => yup.SchemaOf<FormValues> = (
             .mixed<ActivityPriceOptionsEnum>()
             .oneOf(Object.values(ActivityPriceOptionsEnum))
             .notRequired(),
-    repeated:
-      activeStep === 4
-        ? yup
-            .mixed<ActivityRepetitionOptionsEnum>()
-            .oneOf(Object.values(ActivityRepetitionOptionsEnum))
-            .defined()
-            .required()
-            .default(ActivityRepetitionOptionsEnum.never)
-        : yup
-            .mixed<ActivityRepetitionOptionsEnum>()
-            .oneOf(Object.values(ActivityRepetitionOptionsEnum))
-            .notRequired(),
+
     limit:
       activeStep === 4
         ? yup.number().required().defined()
@@ -127,16 +119,17 @@ const CreateActivityScreen = () => {
   const theme = useTheme()
   const { enqueueSnackbar } = useSnackbar()
   const [activeStep, setActiveStep] = React.useState<number>(0)
+  const navigate = useNavigate()
 
   const methods = useForm<FormValues>({
     defaultValues: {
       title: '',
       description: '',
-      repeated: ActivityRepetitionOptionsEnum.never,
+      visibility: ActivityVisibilityEnum.private,
       price: ActivityPriceOptionsEnum.free,
       limit: 10,
       title_picture:
-        'https://img.freepik.com/premium-vector/logo-emblem-person-playing-paintball-holds-two-guns-team-game-ammunition-shooting-range-war-vector-illustration_608021-991.jpg?w=2000',
+        'https://www.pngfind.com/pngs/m/676-6764065_default-profile-picture-transparent-hd-png-download.png',
     },
     resolver: yupResolver(schema(activeStep)),
     mode: 'onChange',
@@ -149,9 +142,9 @@ const CreateActivityScreen = () => {
     (formValues: FormValues & { creator?: IPerson }) =>
       createActivity(formValues),
     {
-      // onSuccess: data => {
-
-      // },
+      onSuccess: () => {
+        setActiveStep(activeStep => activeStep + 1)
+      },
       onError: error => {
         enqueueSnackbar('Failed to create new activity', { variant: 'error' })
       },
@@ -164,11 +157,11 @@ const CreateActivityScreen = () => {
     mutate({
       ...restValues,
       creator: {
-        id: '123',
+        id: '507f1f77bcf86cd799439011',
         name: 'adamko',
         username: 'papricka',
         profile_photo:
-          'https://img.freepik.com/premium-vector/logo-emblem-person-playing-paintball-holds-two-guns-team-game-ammunition-shooting-range-war-vector-illustration_608021-991.jpg?w=2000',
+          'https://www.pngfind.com/pngs/m/676-6764065_default-profile-picture-transparent-hd-png-download.png',
       },
     })
   }, [])
@@ -218,10 +211,6 @@ const CreateActivityScreen = () => {
         )
       case 4:
         return (
-          // <ActivityInviteForm
-          //   onNextClicked={() => setActiveStep(1)}
-          //   methods={methods}
-          // />
           <ActivityDetailsForm
             onNextClicked={() => setActiveStep(activeStep => activeStep + 1)}
             onBackClicked={handleBackClicked}
@@ -233,6 +222,22 @@ const CreateActivityScreen = () => {
           <ActivityPhotoForm
             methods={methods}
             onBackClicked={handleBackClicked}
+          />
+        )
+      case 6:
+        return (
+          <ActivityCreatedScreen
+            onDismiss={() => setActiveStep(activeStep => activeStep + 1)}
+          />
+        )
+      case 7:
+        return (
+          <ActivityInviteForm
+            methods={methods}
+            onNextClicked={() => {
+              navigate(ApplicationLocations.ACTIVITES)
+              setActiveStep(activeStep => activeStep + 1)
+            }}
           />
         )
       default:
@@ -265,6 +270,10 @@ const CreateActivityScreen = () => {
       //behavior: '',
     })
   }, [activeStep])
+
+  // React.useEffect(() => {
+  //   return () => setActiveStep(0)
+  // }, [])
 
   return (
     <PageWrapper sxOverrides={{ alignItems: 'center', px: 3 }}>

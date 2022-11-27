@@ -5,6 +5,7 @@ import {
   FormControl,
   FormControlLabel,
   FormLabel,
+  IconButton,
   MenuItem,
   Switch,
   TextField,
@@ -19,6 +20,7 @@ import {
   ActivityPriceOptionsEnum,
   ActivityRepetitionOptionsEnum,
 } from '../../../types/common/types'
+import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew'
 
 interface IPlaceFormProps {
   onNextClicked: () => void
@@ -212,13 +214,16 @@ export const ActivityDetailsForm: React.FC<IPlaceFormProps> = ({
           mt: 2,
         }}
       >
-        <OffliButton
+        <IconButton onClick={onBackClicked} color="primary">
+          <ArrowBackIosNewIcon />
+        </IconButton>
+        {/* <OffliButton
           onClick={onBackClicked}
           sx={{ width: '40%' }}
           variant="text"
         >
           Back
-        </OffliButton>
+        </OffliButton> */}
         <OffliButton
           onClick={onNextClicked}
           sx={{ width: '40%' }}
