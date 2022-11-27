@@ -18,11 +18,11 @@ const queryClient = new QueryClient({
       refetchOnMount: false,
       refetchOnWindowFocus: false,
       refetchOnReconnect: false,
-      cacheTime: 1000 * 30, //30 seconds
-      refetchInterval: 1000 * 30, //30 seconds
+      cacheTime: 1000 * 300, //5 minutes
+      refetchInterval: 1000 * 300, //5 minutes
       refetchIntervalInBackground: false,
       suspense: false,
-      staleTime: 1000 * 30,
+      staleTime: 1000 * 300,
     },
     mutations: {
       retry: 0,
