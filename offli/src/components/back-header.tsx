@@ -24,11 +24,15 @@ import { HEADER_HEIGHT } from '../utils/common-constants'
 interface IBackHeaderProps {
   title?: string
   sx?: SxProps
+  to?: string
 }
 
-const BackHeader: React.FC<IBackHeaderProps> = ({ title, sx }) => {
+const BackHeader: React.FC<IBackHeaderProps> = ({ title, sx, to }) => {
   const location = useLocation().pathname
   const [notificationNumber] = useState(5)
+
+  const toParsed = to?.split('/')
+  const fromLocation = toParsed && `/${toParsed[toParsed?.length - 1]}`
 
   return (
     <Box sx={{ height: HEADER_HEIGHT, boxShadow: 'none', ...sx }}>
@@ -42,24 +46,27 @@ const BackHeader: React.FC<IBackHeaderProps> = ({ title, sx }) => {
           position: 'relative',
           p: 2,
           mt: 2,
+          boxSizing: 'border-box',
         }}
       >
-        <IconButton
-          component={Link}
-          to={ApplicationLocations.SETTINGS}
-          sx={{
-            flex: 1,
-            // position: 'absolute',
-            // top: 10,
-            // left: 5,
-            // textTransform: 'none',
-          }}
-        >
-          <ArrowBackIosNewIcon
+        {fromLocation && (
+          <IconButton
+            component={Link}
+            to={fromLocation}
+            sx={{
+              flex: 1,
+              // position: 'absolute',
+              // top: 10,
+              // left: 5,
+              // textTransform: 'none',
+            }}
+          >
+            <ArrowBackIosNewIcon
 
-          // sx={{ color: 'primary.main' }}
-          />
-        </IconButton>
+            // sx={{ color: 'primary.main' }}
+            />
+          </IconButton>
+        )}
         <Box
           sx={{
             flex: 10,
@@ -69,7 +76,7 @@ const BackHeader: React.FC<IBackHeaderProps> = ({ title, sx }) => {
             mr: 6,
           }}
         >
-          <Typography variant="h4">Settings</Typography>
+          <Typography variant="h4">{title}</Typography>
         </Box>
       </Box>
     </Box>
