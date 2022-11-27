@@ -1,6 +1,5 @@
 import React from 'react'
 import { Box, Typography, IconButton, styled } from '@mui/material'
-import { IActivityProps } from '../types/common/types'
 // import AttachMoneyIcon from '@mui/icons-material/AttachMoney'
 import PaidIcon from '@mui/icons-material/Paid'
 import PlaceIcon from '@mui/icons-material/Place'

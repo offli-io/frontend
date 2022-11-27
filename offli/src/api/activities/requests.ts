@@ -18,7 +18,7 @@ export const getActivities = async ({
   const CancelToken = axios.CancelToken
   const source = CancelToken.source()
 
-  const promise = axios.get<IActivity>(`http://localhost:8080/activities`, {
+  const promise = axios.get<any>(`http://localhost:8080/activities`, {
     params: searchParams,
     cancelToken: source?.token,
   })
