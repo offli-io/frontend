@@ -180,10 +180,7 @@ const CreateActivityScreen = () => {
     switch (activeStep) {
       case 0:
         return (
-          <ActivityInviteForm
-            onNextClicked={() => setActiveStep(1)}
-            methods={methods}
-          />
+          <NameForm onNextClicked={() => setActiveStep(1)} methods={methods} />
         )
       case 1:
         return (
@@ -286,7 +283,7 @@ const CreateActivityScreen = () => {
           height: '72vh',
           width: '100%',
           //TODO in the future maybe include navigation height in the PageWrapper component for now pb: 12 is enough
-          paddingBottom: theme.spacing(20),
+          // paddingBottom: theme.spacing(20),
           marginTop: theme.spacing(2),
         }}
         onSubmit={handleSubmit(handleFormSubmit, handleFormError)}

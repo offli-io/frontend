@@ -17,28 +17,30 @@ export const Layout: React.FC<ILayoutProps> = ({ children }) => {
 
   const [displayHeader, setDisplayHeader] = React.useState(true)
 
-  React.useEffect(() => {
-    if (location?.pathname === ApplicationLocations.SETTINGS) {
-      setDisplayHeader(false)
-    } else {
-      setDisplayHeader(true)
-    }
-  }, [location])
+  // React.useEffect(() => {
+  //   if (location?.pathname === ApplicationLocations.SETTINGS) {
+  //     setDisplayHeader(false)
+  //   } else {
+  //     setDisplayHeader(true)
+  //   }
+  // }, [location])
   return (
     <Box
       sx={{
         width: '100%',
         height: '100vh',
-        display: 'grid',
-        gridTemplateRows: '10% 80% 10%',
+        display: stateToken ? 'grid' : 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gridTemplateRows: '10% 82% 8%',
       }}
     >
       {/* conditional rendering when token is received */}
-      {stateToken && displayHeader && <OffliHeader sx={{ flex: 1 }} />}
-      <Box sx={{ overflow: 'scroll' }}>
+      {stateToken && displayHeader && <OffliHeader sx={{ height: '100%' }} />}
+      <Box sx={{ overflow: 'scroll', width: '100%', height: '100%' }}>
         <Routes />
       </Box>
-      {stateToken && <BottomNavigator sx={{ flex: 1 }} />}
+      {stateToken && <BottomNavigator sx={{ height: '100%' }} />}
     </Box>
   )
 }
