@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Box, IconButton, Badge, AppBar } from '@mui/material'
+import { Box, IconButton, Badge, AppBar, SxProps } from '@mui/material'
 import { Link, useLocation } from 'react-router-dom'
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined'
 import SettingsIcon from '@mui/icons-material/Settings'
@@ -13,7 +13,11 @@ import { ApplicationLocations } from '../types/common/applications-locations.dto
 import offliLogo from '../assets/img/logoPurple.png'
 import { HEADER_HEIGHT } from '../utils/common-constants'
 
-const OffliHeader: React.FC = () => {
+interface IProps {
+  sx?: SxProps
+}
+
+const OffliHeader: React.FC<IProps> = ({ sx }) => {
   const location = useLocation().pathname
   const [notificationNumber] = useState(5)
 
@@ -28,7 +32,10 @@ const OffliHeader: React.FC = () => {
   }
 
   return (
-    <AppBar color="inherit" sx={{ height: HEADER_HEIGHT, boxShadow: 'none' }}>
+    <Box
+    // color="inherit"
+    // sx={{ height: HEADER_HEIGHT, boxShadow: 'none', ...sx }}
+    >
       <Box
         sx={{
           width: '100%',
@@ -97,7 +104,7 @@ const OffliHeader: React.FC = () => {
           </Box>
         </Box>
       </Box>
-    </AppBar>
+    </Box>
   )
 }
 

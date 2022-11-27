@@ -2,7 +2,7 @@ import * as React from 'react'
 import { useLocation } from 'react-router-dom'
 import BottomNavigation from '@mui/material/BottomNavigation'
 import BottomNavigationAction from '@mui/material/BottomNavigationAction'
-import { Paper } from '@mui/material'
+import { Paper, SxProps } from '@mui/material'
 import { Link } from 'react-router-dom'
 import OfflineBoltIcon from '@mui/icons-material/OfflineBolt'
 import OfflineBoltOutlinedIcon from '@mui/icons-material/OfflineBoltOutlined'
@@ -19,9 +19,15 @@ export const BottomNavigationPaths = {
   PROFILE: 'profile',
 }
 
-const BottomNavigator: React.FC = () => {
-  const [value, setValue] = React.useState('recents')
-  // const location = useLocation().pathname
+interface IBottomNavigatorProps {
+  sx?: SxProps
+}
+
+const BottomNavigator: React.FC<IBottomNavigatorProps> = ({ sx }) => {
+  const [value, setValue] = React.useState<ApplicationLocations>(
+    ApplicationLocations.ACTIVITES
+  )
+  const location = useLocation()
 
   //   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
   //     setValue(newValue)
@@ -29,7 +35,8 @@ const BottomNavigator: React.FC = () => {
 
   return (
     <Paper
-      sx={{ position: 'fixed', bottom: 0, left: 0, right: 0 }}
+      //sx={{ position: 'fixed', bottom: 0, left: 0, right: 0 }}
+      // sx={sx}
       elevation={3}
     >
       <BottomNavigation
