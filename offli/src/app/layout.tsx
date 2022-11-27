@@ -17,13 +17,13 @@ export const Layout: React.FC<ILayoutProps> = ({ children }) => {
 
   const [displayHeader, setDisplayHeader] = React.useState(true)
 
-  // React.useEffect(() => {
-  //   if (location?.pathname === ApplicationLocations.SETTINGS) {
-  //     setDisplayHeader(false)
-  //   } else {
-  //     setDisplayHeader(true)
-  //   }
-  // }, [location])
+  React.useEffect(() => {
+    if (location?.pathname === ApplicationLocations.SETTINGS) {
+      setDisplayHeader(false)
+    } else {
+      setDisplayHeader(true)
+    }
+  }, [location])
   return (
     <Box
       sx={{
@@ -31,7 +31,7 @@ export const Layout: React.FC<ILayoutProps> = ({ children }) => {
         height: '100vh',
         display: stateToken ? 'grid' : 'flex',
         alignItems: 'center',
-        justifyContent: 'center',
+        justifyContent: 'stretch',
         gridTemplateRows: '10% 82% 8%',
       }}
     >
