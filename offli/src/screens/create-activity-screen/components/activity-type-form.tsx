@@ -1,11 +1,13 @@
-import { Box, TextField, Typography } from '@mui/material'
+import { Box, IconButton, TextField, Typography } from '@mui/material'
 import React from 'react'
 import { Controller, UseFormReturn } from 'react-hook-form'
 import LabeledTile from '../../../components/labeled-tile'
 import OffliButton from '../../../components/offli-button'
+import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew'
 
 interface IActivityTypeFormProps {
   onNextClicked: () => void
+  onBackClicked: () => void
   methods: UseFormReturn
 }
 
@@ -22,6 +24,7 @@ const activityTypes = [
 
 export const ActivityTypeForm: React.FC<IActivityTypeFormProps> = ({
   onNextClicked,
+  onBackClicked,
   methods,
 }) => {
   const { control, setValue, watch } = methods
@@ -71,7 +74,19 @@ export const ActivityTypeForm: React.FC<IActivityTypeFormProps> = ({
         <LabeledTile title="Relax" sx={{ ml: 3 }} onClick={handleTileClick} /> */}
       </Box>
 
-      <Box sx={{ width: '100%', display: 'flex', justifyContent: 'flex-end' }}>
+      <Box
+        sx={{ width: '100%', display: 'flex', justifyContent: 'space-between' }}
+      >
+        <IconButton onClick={onBackClicked} color="primary">
+          <ArrowBackIosNewIcon />
+        </IconButton>
+        {/* <OffliButton
+          onClick={onBackClicked}
+          sx={{ width: '40%' }}
+          variant="text"
+        >
+          Back
+        </OffliButton> */}
         <OffliButton
           onClick={onNextClicked}
           sx={{ width: '40%' }}

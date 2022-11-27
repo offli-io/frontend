@@ -14,6 +14,7 @@ const LoadingScreen = () => {
         justifyContent: 'center',
       }}
       // className="backgroundImage"
+      onTouchStart={e => console.log(e)}
     >
       <img
         src={offliLogo}

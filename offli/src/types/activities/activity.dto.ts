@@ -1,8 +1,20 @@
+import { ActivityVisibilityEnum } from './activity-visibility-enum.dto'
+import { ILocation } from './location.dto'
+
 export interface IPerson {
   id: string
   name: string
   username: string
   profile_photo: string
+}
+
+export interface IPersonExtended {
+  id?: string
+  username?: string
+  name?: string
+  profilePhotoUrl?: string
+  buddies?: IPerson[] | null
+  activities?: string[] | null
 }
 
 export interface IActivityLocation {
@@ -16,18 +28,19 @@ export interface IActivityLimit {
 }
 
 export interface IActivity {
-  id: string
-  participants: IPerson[]
-  title: string
-  description: string
-  title_picture: string
-  creator: IPerson[]
-  datetime: Date | string
-  location: IActivityLocation
-  tags: string[]
+  id?: string
+  participants?: IPerson[]
+  title?: string
+  description?: string
+  title_picture?: string
+  creator?: IPerson
+  datetime_from?: Date | string
+  datetime_until?: Date | string
+  location?: ILocation
+  tags?: string[]
   //TODO mozne nejake enumy na "public/private"
-  visibility: string
-  limit: IActivityLimit
+  visibility?: ActivityVisibilityEnum | string
+  limit?: number
 }
 
 export interface IActivitySearchParams {

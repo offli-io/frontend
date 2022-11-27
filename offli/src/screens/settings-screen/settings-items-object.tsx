@@ -31,16 +31,6 @@ export const SettingsItemsObject: ISettingsItemsObject[] = [
     label: 'Help and support',
     icon: <HelpIcon color="primary" />,
   },
-  {
-    type: SettingsTypeEnumDto.ABOUT,
-    label: 'Help and support',
-    icon: <HelpIcon color="primary" />,
-  },
-  {
-    type: SettingsTypeEnumDto.HELP_SUPPORT,
-    label: 'Help and support',
-    icon: <HelpIcon color="primary" />,
-  },
   //   {
   //     type: SettingsTypeEnumDto.DARK_THEME,
   //     icon: VerifiedUserIcon,

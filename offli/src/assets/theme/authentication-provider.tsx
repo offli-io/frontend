@@ -3,10 +3,15 @@ import { ReactKeycloakProvider } from '@react-keycloak/web'
 import Keycloak from 'keycloak-js'
 import { useServiceInterceptors } from '../../hooks/use-service-interceptors'
 import { setAuthToken } from '../../utils/token.util'
+import { IPerson, IPersonExtended } from '../../types/activities/activity.dto'
 
 interface IAuthenticationContext {
   stateToken: string | null
   setStateToken: React.Dispatch<React.SetStateAction<string | null>>
+  userInfo?: IPersonExtended | undefined
+  setUserInfo?: React.Dispatch<
+    React.SetStateAction<IPersonExtended | undefined>
+  >
 }
 
 export const AuthenticationContext =
@@ -27,6 +32,7 @@ export const AuthenticationProvider = ({
   //one way to authenticate but I think token refresh and handling will be done by keycloak
 
   const [stateToken, setStateToken] = React.useState<null | string>(null)
+  const [userInfo, setUserInfo] = React.useState<IPersonExtended | undefined>()
 
   //another way just to inform with boolean,
   const [authenticated, setIsAuthenticated] = React.useState<boolean>(false)
@@ -45,7 +51,9 @@ export const AuthenticationProvider = ({
         profile: 'openid-connect',
       }}
     >
-      <AuthenticationContext.Provider value={{ stateToken, setStateToken }}>
+      <AuthenticationContext.Provider
+        value={{ stateToken, setStateToken, userInfo, setUserInfo }}
+      >
         {children}
       </AuthenticationContext.Provider>
     </ReactKeycloakProvider>

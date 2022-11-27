@@ -17,59 +17,58 @@ import {
 import { ActivityInviteForm } from './components/activity-invite-form'
 import { ActivityDetailsForm } from './components/activity-details-form'
 import { ActivityPhotoForm } from './components/activity-photo-form'
+import { ActivityVisibilityEnum } from '../../types/activities/activity-visibility-enum.dto'
+import { useMutation } from '@tanstack/react-query'
+import { createActivity } from '../../api/activities/requests'
+import { useSnackbar } from 'notistack'
+import { IPerson } from '../../types/activities/activity.dto'
+import ActivityCreatedScreen from '../static-screens/activity-created-screen'
+import { useNavigate } from 'react-router-dom'
+import { ApplicationLocations } from '../../types/common/applications-locations.dto'
 
 interface FormValues {
-  name?: string
+  title?: string
   description?: string
-  place?: ILocation
+  location?: ILocation
   tags?: string[]
   //todo alter keys
-  start_datetime?: Date
-  end_datetime?: Date
+  datetime_from?: Date
+  datetime_until?: Date
 
-  capacity?: number | null
   // public?: boolean
-  repeated?: ActivityRepetitionOptionsEnum | string
+  //repeated?: ActivityRepetitionOptionsEnum | string
   price?: ActivityPriceOptionsEnum | string
   title_picture?: string
   placeQuery?: string
+  visibility?: ActivityVisibilityEnum
+  limit?: number
 }
 
 const schema: (activeStep: number) => yup.SchemaOf<FormValues> = (
   activeStep: number
 ) =>
   yup.object({
-    name:
+    title:
       activeStep === 0
         ? yup.string().defined().required()
         : yup.string().notRequired(),
-    place:
+    location:
       activeStep === 1
         ? yup
             .object({
-              // type: yup.string().defined().required(),
-              // id: yup.number().defined().required(),
-              display_name: yup.string().defined().required(),
-              lat: yup.number().defined().required(),
-              lon: yup.number().defined().required(),
-              // tags: yup.object({
-              //   city_limit: yup.string().defined().required(),
-              //   name: yup.string().defined().required(),
-              //   traffic_sign: yup.string().defined().required(),
-              // }),
+              name: yup.string().defined().required(),
+              coordinates: yup.object({
+                lat: yup.number().defined().required(),
+                lon: yup.number().defined().required(),
+              }),
             })
-            .defined()
-            .required()
+            .notRequired()
         : yup
             .object({
-              type: yup.string().notRequired(),
-              id: yup.number().notRequired(),
-              lat: yup.number().notRequired(),
-              lon: yup.number().notRequired(),
-              tags: yup.object({
-                city_limit: yup.string().notRequired(),
-                name: yup.string().notRequired(),
-                traffic_sign: yup.string().notRequired(),
+              name: yup.string().defined().required(),
+              coordinates: yup.object({
+                lat: yup.number().defined().required(),
+                lon: yup.number().defined().required(),
               }),
             })
             .notRequired(),
@@ -78,7 +77,7 @@ const schema: (activeStep: number) => yup.SchemaOf<FormValues> = (
       activeStep === 2
         ? yup.array().of(yup.string()).defined().required()
         : yup.array().of(yup.string()).notRequired(),
-    start_datetime:
+    datetime_from:
       activeStep === 3
         ? yup
             .date()
@@ -86,7 +85,7 @@ const schema: (activeStep: number) => yup.SchemaOf<FormValues> = (
             .required()
             .default(() => new Date())
         : yup.date().notRequired(),
-    end_datetime:
+    datetime_until:
       activeStep === 3
         ? yup.date().defined().required()
         : yup.date().notRequired(),
@@ -102,43 +101,69 @@ const schema: (activeStep: number) => yup.SchemaOf<FormValues> = (
             .mixed<ActivityPriceOptionsEnum>()
             .oneOf(Object.values(ActivityPriceOptionsEnum))
             .notRequired(),
-    repeated:
+
+    limit:
       activeStep === 4
-        ? yup
-            .mixed<ActivityRepetitionOptionsEnum>()
-            .oneOf(Object.values(ActivityRepetitionOptionsEnum))
-            .defined()
-            .required()
-            .default(ActivityRepetitionOptionsEnum.never)
-        : yup
-            .mixed<ActivityRepetitionOptionsEnum>()
-            .oneOf(Object.values(ActivityRepetitionOptionsEnum))
-            .notRequired(),
-    capacity: yup.number().nullable().notRequired().default(null),
+        ? yup.number().required().defined()
+        : yup.number().notRequired(),
     title_picture: yup.string().notRequired(),
     placeQuery: yup.string().notRequired(),
     description: yup.string().notRequired(),
+    visibility: yup
+      .mixed<ActivityVisibilityEnum>()
+      .oneOf(Object.values(ActivityVisibilityEnum))
+      .notRequired(),
   })
 
 const CreateActivityScreen = () => {
   const theme = useTheme()
+  const { enqueueSnackbar } = useSnackbar()
   const [activeStep, setActiveStep] = React.useState<number>(0)
+  const navigate = useNavigate()
 
   const methods = useForm<FormValues>({
     defaultValues: {
-      name: '',
+      title: '',
       description: '',
-      repeated: ActivityRepetitionOptionsEnum.never,
+      visibility: ActivityVisibilityEnum.private,
       price: ActivityPriceOptionsEnum.free,
+      limit: 10,
+      title_picture:
+        'https://www.pngfind.com/pngs/m/676-6764065_default-profile-picture-transparent-hd-png-download.png',
     },
     resolver: yupResolver(schema(activeStep)),
     mode: 'onChange',
   })
 
-  const { control, handleSubmit, formState } = methods
+  const { control, handleSubmit, formState, watch } = methods
+
+  const { data, mutate, isLoading } = useMutation(
+    ['create-activity'],
+    (formValues: FormValues & { creator?: IPerson }) =>
+      createActivity(formValues),
+    {
+      onSuccess: () => {
+        setActiveStep(activeStep => activeStep + 1)
+      },
+      onError: error => {
+        enqueueSnackbar('Failed to create new activity', { variant: 'error' })
+      },
+    }
+  )
 
   const handleFormSubmit = React.useCallback((data: FormValues) => {
-    console.log(data)
+    const { placeQuery, ...restValues } = data
+    //TODO fill with real user data
+    mutate({
+      ...restValues,
+      creator: {
+        id: '507f1f77bcf86cd799439011',
+        name: 'adamko',
+        username: 'papricka',
+        profile_photo:
+          'https://www.pngfind.com/pngs/m/676-6764065_default-profile-picture-transparent-hd-png-download.png',
+      },
+    })
   }, [])
 
   const handleFormError = React.useCallback(
@@ -146,16 +171,25 @@ const CreateActivityScreen = () => {
     []
   )
 
+  const handleBackClicked = React.useCallback(
+    () => setActiveStep(activeStep => activeStep - 1),
+    [setActiveStep]
+  )
+
   const renderProperContent = React.useCallback(() => {
     switch (activeStep) {
       case 0:
         return (
-          <NameForm onNextClicked={() => setActiveStep(1)} methods={methods} />
+          <ActivityInviteForm
+            onNextClicked={() => setActiveStep(1)}
+            methods={methods}
+          />
         )
       case 1:
         return (
           <PlaceForm
             onNextClicked={() => setActiveStep(activeStep => activeStep + 1)}
+            onBackClicked={handleBackClicked}
             methods={methods}
           />
         )
@@ -163,6 +197,7 @@ const CreateActivityScreen = () => {
         return (
           <ActivityTypeForm
             onNextClicked={() => setActiveStep(activeStep => activeStep + 1)}
+            onBackClicked={handleBackClicked}
             methods={methods}
           />
         )
@@ -170,25 +205,39 @@ const CreateActivityScreen = () => {
         return (
           <DateTimeForm
             onNextClicked={() => setActiveStep(activeStep => activeStep + 1)}
+            onBackClicked={handleBackClicked}
             methods={methods}
           />
         )
       case 4:
         return (
-          // <ActivityInviteForm
-          //   onNextClicked={() => setActiveStep(1)}
-          //   methods={methods}
-          // />
           <ActivityDetailsForm
             onNextClicked={() => setActiveStep(activeStep => activeStep + 1)}
+            onBackClicked={handleBackClicked}
             methods={methods}
           />
         )
       case 5:
         return (
           <ActivityPhotoForm
-            onNextClicked={() => setActiveStep(1)}
             methods={methods}
+            onBackClicked={handleBackClicked}
+          />
+        )
+      case 6:
+        return (
+          <ActivityCreatedScreen
+            onDismiss={() => setActiveStep(activeStep => activeStep + 1)}
+          />
+        )
+      case 7:
+        return (
+          <ActivityInviteForm
+            methods={methods}
+            onNextClicked={() => {
+              navigate(ApplicationLocations.ACTIVITES)
+              setActiveStep(activeStep => activeStep + 1)
+            }}
           />
         )
       default:
@@ -200,6 +249,18 @@ const CreateActivityScreen = () => {
     }
   }, [activeStep, methods])
 
+  const getFormLayout = React.useCallback(() => {
+    switch (activeStep) {
+      case 0:
+        return 'center'
+      case 1:
+        return 'center'
+      case 5:
+        return 'space-evenly'
+      default:
+        return 'flex-start'
+    }
+  }, [activeStep])
   const centerContent = [0, 1].includes(activeStep)
 
   React.useEffect(() => {
@@ -210,13 +271,17 @@ const CreateActivityScreen = () => {
     })
   }, [activeStep])
 
+  // React.useEffect(() => {
+  //   return () => setActiveStep(0)
+  // }, [])
+
   return (
     <PageWrapper sxOverrides={{ alignItems: 'center', px: 3 }}>
       <form
         style={{
           display: 'flex',
           alignItems: 'flex-start',
-          justifyContent: centerContent ? 'center' : 'flex-start',
+          justifyContent: getFormLayout(),
           flexDirection: 'column',
           height: '72vh',
           width: '100%',
