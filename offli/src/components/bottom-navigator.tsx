@@ -19,7 +19,7 @@ interface IBottomNavigatorProps {
 
 const BottomNavigator: React.FC<IBottomNavigatorProps> = ({ sx }) => {
   const [value, setValue] = React.useState<ApplicationLocations>(
-    ApplicationLocations.ACTIVITES
+    ApplicationLocations.ACTIVITIES
   )
   const location = useLocation()
 
@@ -52,8 +52,8 @@ const BottomNavigator: React.FC<IBottomNavigatorProps> = ({ sx }) => {
           //   : (<OfflineBoltOutlinedIcon sx={{ transform: 'rotate(30deg)' }})/>}
           icon={<OfflineBoltOutlinedIcon sx={{ transform: 'rotate(30deg)' }} />}
           component={Link}
-          value={ApplicationLocations.ACTIVITES}
-          to={ApplicationLocations.ACTIVITES}
+          value={ApplicationLocations.ACTIVITIES}
+          to={ApplicationLocations.ACTIVITIES}
         />
         <BottomNavigationAction
           label="Explore"

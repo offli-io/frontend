@@ -97,7 +97,7 @@ const LoginScreen: React.FC = () => {
         // setAuthToken(data?.data?.access_token)
         // setRefreshToken(data?.data?.refresh_token)
         setStateToken(data?.data?.access_token)
-        navigate(ApplicationLocations.ACTIVITES)
+        navigate(ApplicationLocations.ACTIVITIES)
       },
       onError: error => {
         enqueueSnackbar('Failed to log in', { variant: 'error' })

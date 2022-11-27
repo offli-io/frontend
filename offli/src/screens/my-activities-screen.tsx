@@ -11,14 +11,13 @@ import {
 } from '../api/activities/requests'
 import { IActivity, IPersonExtended } from '../types/activities/activity.dto'
 import { AuthenticationContext } from '../assets/theme/authentication-provider'
+import { ApplicationLocations } from '../types/common/applications-locations.dto'
+import { Link, Navigate, useNavigate } from 'react-router-dom'
 
 const datetime = new Date()
 
 const ActivitiesScreen = () => {
   const { userInfo, setUserInfo } = React.useContext(AuthenticationContext)
-  // const queryClient = useQueryClient()
-  // const _activityIds = queryClient?.getQueryData<IPersonExtended>(['user-info'])
-  // console.log(_activityIds)
 
   const { data } = useQuery(
     ['user-info', userInfo?.username],
@@ -29,40 +28,6 @@ const ActivitiesScreen = () => {
     //   enabled: !!userInfo,
     // }
   )
-  const [currentActivityId, setCurrentActivityId] = React.useState<
-    string | undefined
-  >()
-  const [activityIds, setActivityIds] = React.useState<string[]>([])
-  const [activites, setActivites] = React.useState<IActivity[]>([])
-
-  const mut = useMutation(['presignup'], () =>
-    axios.post('/registration/pre-signup', {
-      email: 'fafa@gmail.com',
-      password: 'Adamko123.',
-    })
-  )
-
-  //[('213123', '43412')]
-
-  // React.useEffect(() => {
-  //   if (data?.data?.activities) {
-  //     setActivityIds(data?.data?.activities)
-  //   }
-  // }, [data])
-
-  // React.useEffect(() => {
-  //   const [first, ...rest] = activityIds
-  //   if (first) {
-  //     setCurrentActivityId(first)
-  //     setActivityIds(rest)
-  //   }
-  // }, [activityIds])
-
-  // React.useEffect(() => {
-  //   userInfoQuery?.data?.data?.activities?.forEach(activity =>
-  //     setCurrentActivityId(activity)
-  //   )
-  // }, [userInfoQuery?.data?.data?.activities])
 
   return (
     <PageWrapper>
