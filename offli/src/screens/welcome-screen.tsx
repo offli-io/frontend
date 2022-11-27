@@ -8,6 +8,7 @@ import image from '../assets/img/undraw_super_thank_you_blue.svg'
 
 const WelcomeScreen = () => {
   const [username] = useState('emma.smith')
+
   return (
     <Box
       sx={{

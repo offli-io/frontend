@@ -14,7 +14,6 @@ import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
 import OffliButton from '../components/offli-button'
 import LabeledDivider from '../components/labeled-divider'
-import { useNavigate } from 'react-router-dom'
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff'
 import VisibilityIcon from '@mui/icons-material/Visibility'
 import { useKeycloak } from '@react-keycloak/web'
@@ -27,6 +26,7 @@ import {
 } from '../utils/token.util'
 import { AuthenticationContext } from '../assets/theme/authentication-provider'
 import { ApplicationLocations } from '../types/common/applications-locations.dto'
+import { useNavigate } from 'react-router-dom'
 
 export interface FormValues {
   username: string

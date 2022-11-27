@@ -55,8 +55,8 @@ const SelectProfilePictureScreen = () => {
           component="label"
           sx={{ fontSize: '50px', mb: 25 }}
         >
-          <input hidden accept="image/*" type="file" />
           <AddAPhotoIcon sx={{ fontSize: '50px', color: 'lightgrey' }} />
+          <input hidden accept="image/*" type="file" />
         </IconButton>
         <OffliButton
           variant="contained"

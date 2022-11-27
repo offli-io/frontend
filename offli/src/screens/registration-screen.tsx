@@ -17,59 +17,74 @@ import VisibilityIcon from '@mui/icons-material/Visibility'
 import CheckCircleIcon from '@mui/icons-material/CheckCircle'
 import RemoveCircleIcon from '@mui/icons-material/RemoveCircle'
 import LabeledDivider from '../components/labeled-divider'
-import { useMutation, useQuery } from '@tanstack/react-query'
-import { loginRetrieveToken } from '../api/users/requests'
+import { useQueryClient, useMutation, useQuery } from '@tanstack/react-query'
+import { checkIfEmailAlreadyTaken, preCreateUser } from '../api/users/requests'
 
 import { ApplicationLocations } from '../types/common/applications-locations.dto'
+import { IEmailPassword } from '../types/users/user.dto'
 
-export interface FormValues {
-  email: string
-  password: string
-}
-
-const schema: () => yup.SchemaOf<FormValues> = () =>
+const schema: () => yup.SchemaOf<IEmailPassword> = () =>
   yup.object({
-    email: yup.string().email().defined().required(),
+    email: yup
+      .string()
+      .email('Email must be a valid email')
+      .defined()
+      .required('Please enter your email'),
     password: yup
       .string()
       .defined()
-      .required('Please enter your password TY MONGOL'),
-    //   .matches(
-    //   /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/,
-    //   "Must Contain 8 Characters, One Uppercase, One Lowercase, One Number and One Special Case Character"
-    // ),
+      .required('Please enter your password')
+      .min(8, 'Password must be at least 8 characters long')
+      .max(16, 'Password must be less than 16 characters long')
+      .matches(/^(?=.*[A-Z])/, 'Password must contain at least one uppercase')
+      .matches(/^(?=.*[0-9])/, 'Password must contain at least one number'),
   })
 
 export const RegistrationScreen: React.FC = () => {
   const [showPassword, setShowPassword] = React.useState(false)
-  const [usernameValid] = React.useState(true)
+  const [email, setEmail] = React.useState<string | undefined>()
 
-  const { data, mutate } = useMutation(['token'], (values: FormValues) =>
-    loginRetrieveToken(values)
+  const queryClient = useQueryClient()
+  const navigate = useNavigate()
+
+  const { data: emailAlreadyTaken } = useQuery<any>(
+    ['email-taken', email],
+    () => checkIfEmailAlreadyTaken(email),
+    {
+      enabled: !!email,
+    }
   )
 
   const handleClickShowPassword = () => setShowPassword(!showPassword)
 
-  const { control, handleSubmit } = useForm<FormValues>({
-    defaultValues: {
-      email: '',
-      password: '',
-    },
-    resolver: yupResolver(schema()),
-    mode: 'onChange',
-  })
+  const { control, handleSubmit, watch, setError, formState } =
+    useForm<IEmailPassword>({
+      defaultValues: {
+        email: '',
+        password: '',
+      },
+      resolver: yupResolver(schema()),
+      mode: 'onChange',
+    })
 
-  const handleFormSubmit = React.useCallback((values: FormValues) => {
-    mutate(values)
-    console.log(data?.data)
+  // console.log(formState?.errors)
+
+  const isEmailInUse = Object.keys(formState?.errors)?.length !== 0
+
+  const handleFormSubmit = React.useCallback((values: IEmailPassword) => {
+    queryClient.setQueryData(['registration-email-password'], values)
+    navigate(ApplicationLocations.PICK_USERNAME)
+    // console.log(data?.data)
   }, [])
 
+  React.useEffect(() => {
+    if (emailAlreadyTaken?.data) {
+      setError('email', { message: 'Email already in use' })
+    }
+  }, [emailAlreadyTaken])
+
   return (
-    <form
-      onSubmit={handleSubmit(handleFormSubmit, (data, e) =>
-        console.log(data, e)
-      )}
-    >
+    <form onSubmit={handleSubmit(handleFormSubmit)}>
       <Box
         sx={{
           height: '100vh',
@@ -102,7 +117,7 @@ export const RegistrationScreen: React.FC = () => {
         ></Box>
 
         <LabeledDivider>
-          <Typography variant="subtitle1">alebo</Typography>
+          <Typography variant="subtitle1">or</Typography>
         </LabeledDivider>
         <Typography
           variant="h2"
@@ -132,25 +147,24 @@ export const RegistrationScreen: React.FC = () => {
                 //   label="Username"
                 placeholder="Email"
                 error={!!error}
-                // helperText={
-                //   error?.message ||
-                //   t(`value.${nextStep?.authenticationType}.placeholder`)
-                // }
+                helperText={error?.message}
                 //disabled={methodSelectionDisabled}
                 sx={{ width: '80%', mb: 2 }}
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton>
-                        {usernameValid ? (
-                          <CheckCircleIcon sx={{ color: 'lightgrey' }} />
-                        ) : (
-                          <RemoveCircleIcon sx={{ color: 'lightgrey' }} />
-                        )}
-                      </IconButton>
-                    </InputAdornment>
-                  ),
-                }}
+                onBlur={event => setEmail(event.target.value)}
+                // InputProps={{
+                //   endAdornment: (
+                //     <InputAdornment position="end">
+                //       <IconButton>
+                //         {renderEmailIcon()}
+                //         {/* {emailValidity ? (
+                //           <CheckCircleIcon sx={{ color: 'green' }} />
+                //         ) : (
+                //           <RemoveCircleIcon sx={{ color: 'red' }} />
+                //         )} */}
+                //       </IconButton>
+                //     </InputAdornment>
+                //   ),
+                // }}
               />
             )}
           />
@@ -166,10 +180,7 @@ export const RegistrationScreen: React.FC = () => {
                 type={showPassword ? 'text' : 'password'}
                 // variant="filled"
                 error={!!error}
-                // helperText={
-                //   error?.message ||
-                //   t(`value.${nextStep?.authenticationType}.placeholder`)
-                // }
+                helperText={error?.message}
                 //disabled={methodSelectionDisabled}
                 sx={{ width: '80%' }}
                 InputProps={{
@@ -202,7 +213,11 @@ export const RegistrationScreen: React.FC = () => {
           </Typography>
         </Box>
 
-        <OffliButton type="submit" sx={{ width: '70%', mb: 5 }}>
+        <OffliButton
+          type="submit"
+          sx={{ width: '70%', mb: 5 }}
+          disabled={!formState?.isValid || isEmailInUse}
+        >
           Next
         </OffliButton>
       </Box>
