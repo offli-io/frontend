@@ -268,9 +268,9 @@ const CreateActivityScreen = () => {
     })
   }, [activeStep])
 
-  // React.useEffect(() => {
-  //   return () => setActiveStep(0)
-  // }, [])
+  React.useEffect(() => {
+    return () => setActiveStep(0)
+  }, [])
 
   return (
     <PageWrapper sxOverrides={{ alignItems: 'center', px: 3 }}>

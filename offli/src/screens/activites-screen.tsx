@@ -4,8 +4,14 @@ import MyActivityCard from '../components/my-activity-card'
 import { IActivityProps } from '../types/common/types'
 import { PageWrapper } from '../components/page-wrapper'
 import axios from 'axios'
-import { useMutation, useQuery } from '@tanstack/react-query'
-import { getActivities } from '../api/activities/requests'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import {
+  getActivities,
+  getActivity,
+  getUsers,
+} from '../api/activities/requests'
+import { IActivity, IPersonExtended } from '../types/activities/activity.dto'
+import { AuthenticationContext } from '../assets/theme/authentication-provider'
 
 const datetime = new Date()
 
@@ -43,8 +49,35 @@ const dummyData: IActivityProps[] = [
 ]
 
 const ActivitiesScreen = () => {
-  const activitiesQuery = useQuery(['activities'], props =>
-    getActivities({ queryFunctionContext: props })
+  const { userInfo, setUserInfo } = React.useContext(AuthenticationContext)
+  const queryClient = useQueryClient()
+  const _activityIds = queryClient?.getQueryData<IPersonExtended>(['user-info'])
+  console.log(_activityIds)
+
+  // const userInfoQuery = useQuery(
+  //   ['user-info', userInfo?.username],
+  //   () => getUsers(userInfo?.username),
+  //   {
+  //     onSuccess: data =>
+  //       data?.data?.activities && setActivityIds(data?.data?.activities),
+  //   }
+  // )
+  const [currentActivityId, setCurrentActivityId] = React.useState<
+    string | undefined
+  >()
+  const [activityIds, setActivityIds] = React.useState<string[]>(
+    _activityIds?.activities ?? []
+  )
+  const [activites, setActivites] = React.useState<IActivity[]>([])
+  const activitiesQuery = useQuery(
+    ['activities', currentActivityId],
+    props => getActivity(currentActivityId),
+    {
+      onSuccess: data => {
+        setActivites(activites => [...activites, data?.data])
+      },
+      enabled: !!currentActivityId,
+    }
   )
   console.log(activitiesQuery?.data?.data)
 
@@ -54,6 +87,23 @@ const ActivitiesScreen = () => {
       password: 'Adamko123.',
     })
   )
+
+  //[('213123', '43412')]
+
+  React.useEffect(() => {
+    const [first, ...rest] = activityIds
+    if (first) {
+      setCurrentActivityId(first)
+      setActivityIds(rest)
+    }
+  }, [activityIds])
+
+  // React.useEffect(() => {
+  //   userInfoQuery?.data?.data?.activities?.forEach(activity =>
+  //     setCurrentActivityId(activity)
+  //   )
+  // }, [userInfoQuery?.data?.data?.activities])
+
   return (
     <PageWrapper>
       <Button onClick={() => mut.mutate()}>Fetch</Button>

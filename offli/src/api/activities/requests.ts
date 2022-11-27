@@ -30,6 +30,25 @@ export const getActivities = async ({
   return promise
 }
 
+export const getActivity = async (activityId?: string) => {
+  const CancelToken = axios.CancelToken
+  const source = CancelToken.source()
+
+  const promise = axios.get<IActivity>(
+    `http://localhost:8080/activities/${activityId}`
+    // {
+    //   params: searchParams,
+    //   cancelToken: source?.token,
+    // }
+  )
+
+  // queryFunctionContext?.signal?.addEventListener('abort', () => {
+  //   source.cancel('Query was cancelled by React Query')
+  // })
+
+  return promise
+}
+
 export const getLocationFromQuery = (queryString: string) => {
   const CancelToken = axios.CancelToken
   const source = CancelToken.source()
