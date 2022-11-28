@@ -9,19 +9,28 @@ import InfoIcon from '@mui/icons-material/Info'
 import LogoutIcon from '@mui/icons-material/Logout'
 import { AuthenticationContext } from '../../assets/theme/authentication-provider'
 import { setAuthToken } from '../../utils/token.util'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { ApplicationLocations } from '../../types/common/applications-locations.dto'
+
+export interface ICustomizedLocationState {
+  from?: string
+}
 
 const SettingsScreen = () => {
   const [darkMode, setDarkMode] = React.useState(false)
   const { setStateToken } = React.useContext(AuthenticationContext)
   const navigate = useNavigate()
+  const location = useLocation()
+  const state = location?.state as ICustomizedLocationState
+  const { from } = state
+  console.log(from)
 
   const handleLogout = React.useCallback(() => {
     //TODO double check if any security issues aren't here I am not sure about using tokens from 2 places
     console.log('lol')
     setAuthToken(undefined)
     setStateToken(null)
+    localStorage.removeItem('username')
     navigate(ApplicationLocations.LOGIN)
   }, [setStateToken])
 
@@ -34,7 +43,7 @@ const SettingsScreen = () => {
         height: '100vh',
       }}
     >
-      <BackHeader title="Settings" sx={{ mb: 2 }} />
+      <BackHeader title="Settings" sx={{ mb: 2 }} to={from} />
       <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
         {SettingsItemsObject.map(item => (
           <MenuItem label={item?.label} type={item?.type} icon={item.icon} />

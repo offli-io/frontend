@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Box, IconButton, Badge, AppBar, SxProps } from '@mui/material'
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined'
 import SettingsIcon from '@mui/icons-material/Settings'
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt'
@@ -18,7 +18,8 @@ interface IProps {
 }
 
 const OffliHeader: React.FC<IProps> = ({ sx }) => {
-  const location = useLocation().pathname
+  const location = useLocation()
+  const navigate = useNavigate()
   const [notificationNumber] = useState(5)
 
   //TODO add component non-depending logic like styles outside the components
@@ -45,7 +46,7 @@ const OffliHeader: React.FC<IProps> = ({ sx }) => {
       >
         <Box
           sx={{
-            width: '96%',
+            width: '90%',
             margin: 'auto',
             display: 'flex',
             alignItems: 'end',
@@ -77,23 +78,33 @@ const OffliHeader: React.FC<IProps> = ({ sx }) => {
               component={Link}
               to={ApplicationLocations.NOTIFICATIONS}
             >
-              {/* <Badge
+              <Badge
                 badgeContent={notificationNumber}
                 color="primary"
                 sx={badgeStyle}
-              > */}
-              {location === ApplicationLocations.NOTIFICATIONS ? (
-                <NotificationsIcon sx={iconStyle} />
-              ) : (
-                <NotificationsNoneOutlinedIcon
-                  sx={iconStyle}
-                  // sx={{ color: 'primary.main' }}
-                />
-              )}
-              {/* </Badge> */}
+              >
+                {location?.pathname === ApplicationLocations.NOTIFICATIONS ? (
+                  <NotificationsIcon sx={iconStyle} />
+                ) : (
+                  <NotificationsNoneOutlinedIcon
+                    sx={iconStyle}
+                    // sx={{ color: 'primary.main' }}
+                  />
+                )}
+              </Badge>
             </IconButton>
-            <IconButton component={Link} to={ApplicationLocations.SETTINGS}>
-              <MenuIcon
+            <IconButton
+              onClick={() => {
+                navigate(ApplicationLocations.SETTINGS, {
+                  state: {
+                    from: window.location.href,
+                  },
+                })
+              }}
+              // component={Link}
+              // to={ApplicationLocations.SETTINGS}
+            >
+              <SettingsIcon
                 sx={{ iconStyle, ml: 0.5 }}
                 // sx={{ color: 'primary.main' }}
               />

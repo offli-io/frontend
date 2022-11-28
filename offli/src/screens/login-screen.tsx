@@ -78,6 +78,7 @@ const LoginScreen: React.FC = () => {
     ['keycloak-login'],
     (formValues: FormValues) => {
       !!setUserInfo && setUserInfo({ username: formValues?.username })
+      localStorage.setItem('username', formValues?.username)
       const data = {
         ...formValues,
         grant_type: 'password',

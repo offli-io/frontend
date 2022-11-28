@@ -37,6 +37,7 @@ export const getActivity = async (activityId?: string) => {
   const promise = axios.get<{ activity: IActivity; success: boolean }>(
     `http://localhost:8080/activities/${activityId}`
     // {
+
     //   params: searchParams,
     //   cancelToken: source?.token,
     // }
@@ -85,6 +86,7 @@ export const createActivity = async (values: IActivity) => {
 export const getUsers = (username?: string) => {
   const CancelToken = axios.CancelToken
   const source = CancelToken.source()
+  const validUsername = username ?? localStorage.getItem('username')
 
   const promise = axios.get<IPersonExtended>('http://localhost:8080/users', {
     params: {
