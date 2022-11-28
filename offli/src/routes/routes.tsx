@@ -21,6 +21,7 @@ import VerificationScreen from '../screens/verification-screen'
 import WelcomeScreen from '../screens/welcome-screen'
 import { ApplicationLocations } from '../types/common/applications-locations.dto'
 import { getAuthToken } from '../utils/token.util'
+import ActivityDetailsScreen from '../screens/activity-details-screen'
 
 const Routes = () => {
   const { keycloak } = useKeycloak()
@@ -75,6 +76,10 @@ const Routes = () => {
         <Route
           path={ApplicationLocations.ACTIVITIES}
           element={<ActivitiesScreen />}
+        />
+        <Route
+          path={ApplicationLocations.ACTIVITY_ID}
+          element={<ActivityDetailsScreen />}
         />
         <Route
           path={ApplicationLocations.CREATE}

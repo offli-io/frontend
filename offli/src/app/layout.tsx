@@ -32,7 +32,7 @@ export const Layout: React.FC<ILayoutProps> = ({ children }) => {
         display: stateToken ? 'grid' : 'flex',
         alignItems: 'center',
         justifyContent: 'stretch',
-        gridTemplateRows: '10% 82% 8%',
+        gridTemplateRows: '8% 84% 8%',
       }}
     >
       {/* conditional rendering when token is received */}

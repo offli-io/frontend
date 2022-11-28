@@ -45,7 +45,7 @@ const OffliHeader: React.FC<IProps> = ({ sx }) => {
       >
         <Box
           sx={{
-            width: '90%',
+            width: '96%',
             margin: 'auto',
             display: 'flex',
             alignItems: 'end',
@@ -77,23 +77,23 @@ const OffliHeader: React.FC<IProps> = ({ sx }) => {
               component={Link}
               to={ApplicationLocations.NOTIFICATIONS}
             >
-              <Badge
+              {/* <Badge
                 badgeContent={notificationNumber}
                 color="primary"
                 sx={badgeStyle}
-              >
-                {location === ApplicationLocations.NOTIFICATIONS ? (
-                  <NotificationsIcon sx={iconStyle} />
-                ) : (
-                  <NotificationsNoneOutlinedIcon
-                    sx={iconStyle}
-                    // sx={{ color: 'primary.main' }}
-                  />
-                )}
-              </Badge>
+              > */}
+              {location === ApplicationLocations.NOTIFICATIONS ? (
+                <NotificationsIcon sx={iconStyle} />
+              ) : (
+                <NotificationsNoneOutlinedIcon
+                  sx={iconStyle}
+                  // sx={{ color: 'primary.main' }}
+                />
+              )}
+              {/* </Badge> */}
             </IconButton>
             <IconButton component={Link} to={ApplicationLocations.SETTINGS}>
-              <SettingsIcon
+              <MenuIcon
                 sx={{ iconStyle, ml: 0.5 }}
                 // sx={{ color: 'primary.main' }}
               />
