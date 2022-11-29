@@ -10,6 +10,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { useServiceInterceptors } from './hooks/use-service-interceptors'
 import { SnackbarKey, SnackbarProvider } from 'notistack'
+import { DrawerProvider } from './assets/theme/drawer-provider'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -18,11 +19,11 @@ const queryClient = new QueryClient({
       refetchOnMount: false,
       refetchOnWindowFocus: false,
       refetchOnReconnect: false,
-      cacheTime: 1000 * 30, //30 seconds
-      refetchInterval: 1000 * 30, //30 seconds
+      cacheTime: 1000 * 300, //5 minutes
+      refetchInterval: 1000 * 300, //5 minutes
       refetchIntervalInBackground: false,
       suspense: false,
-      staleTime: 1000 * 30,
+      staleTime: 1000 * 300,
     },
     mutations: {
       retry: 0,
@@ -86,7 +87,9 @@ function App() {
         <AuthenticationProvider>
           <LocalizationProvider dateAdapter={AdapterDateFns}>
             <Box sx={{ height: '100vh' }}>
-              <Router />
+              <DrawerProvider>
+                <Router />
+              </DrawerProvider>
             </Box>
           </LocalizationProvider>
           <ReactQueryDevtools initialIsOpen={false} />

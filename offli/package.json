@@ -26,6 +26,7 @@
     "axios": "^0.27.2",
     "date-fns": "^2.29.3",
     "keycloak-js": "^20.0.1",
+    "lottie-web": "^5.10.0",
     "moment": "^2.29.4",
     "notistack": "^2.0.8",
     "rc-upload": "^4.3.4",

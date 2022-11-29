@@ -90,7 +90,7 @@ export const getUsers = (username?: string) => {
 
   const promise = axios.get<IPersonExtended>('http://localhost:8080/users', {
     params: {
-      username,
+      username: validUsername,
     },
     cancelToken: source?.token,
   })
