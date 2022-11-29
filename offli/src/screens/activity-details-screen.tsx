@@ -13,6 +13,8 @@ const ActivityDetailsScreen = () => {
   })
   const activity = data?.data?.activity
 
+  console.log(activity)
+
   return (
     <PageWrapper>
       {activity ? <ActivityDetailsCard activity={activity} /> : null}
