@@ -15,7 +15,7 @@ export enum ApplicationLocations {
   BUDDIES = '/buddies',
   NOTIFICATIONS = '/notifications',
   ACTIVITIES = '/activities',
-  ACTIVITY_ID = '/activity/:id"',
+  ACTIVITY_ID = '/activity',
   CREATE = '/create',
   SEARCH = '/search',
   CHAT = '/chat',

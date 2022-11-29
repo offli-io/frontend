@@ -78,7 +78,7 @@ const Routes = () => {
           element={<ActivitiesScreen />}
         />
         <Route
-          path={ApplicationLocations.ACTIVITY_ID}
+          path={`${ApplicationLocations.ACTIVITY_ID}/:id`}
           element={<ActivityDetailsScreen />}
         />
         <Route
