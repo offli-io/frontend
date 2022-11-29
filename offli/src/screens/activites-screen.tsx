@@ -11,14 +11,13 @@ import {
 } from '../api/activities/requests'
 import { IActivity, IPersonExtended } from '../types/activities/activity.dto'
 import { AuthenticationContext } from '../assets/theme/authentication-provider'
+import { DrawerContext } from '../assets/theme/drawer-provider'
 
 const datetime = new Date()
 
 const ActivitiesScreen = () => {
   const { userInfo, setUserInfo } = React.useContext(AuthenticationContext)
-  // const queryClient = useQueryClient()
-  // const _activityIds = queryClient?.getQueryData<IPersonExtended>(['user-info'])
-  // console.log(_activityIds)
+  const { toggleDrawer } = React.useContext(DrawerContext)
 
   const { data } = useQuery(
     ['user-info', userInfo?.username],
@@ -43,12 +42,13 @@ const ActivitiesScreen = () => {
   )
 
   //[('213123', '43412')]
-
+  // TODO to open drawer
   // React.useEffect(() => {
-  //   if (data?.data?.activities) {
-  //     setActivityIds(data?.data?.activities)
-  //   }
-  // }, [data])
+  //   toggleDrawer({
+  //     open: true,
+  //     content: <div>Ghetto maradona</div>,
+  //   })
+  // }, [])
 
   // React.useEffect(() => {
   //   const [first, ...rest] = activityIds
