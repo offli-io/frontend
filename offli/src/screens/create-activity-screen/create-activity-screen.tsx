@@ -237,7 +237,7 @@ const CreateActivityScreen = () => {
           <ActivityInviteForm
             methods={methods}
             onNextClicked={() => {
-              navigate(ApplicationLocations.ACTIVITES)
+              navigate(ApplicationLocations.ACTIVITIES)
               setActiveStep(activeStep => activeStep + 1)
             }}
           />

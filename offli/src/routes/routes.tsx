@@ -1,7 +1,7 @@
 import { useKeycloak } from '@react-keycloak/web'
 import { Route, Routes as BaseRoutes } from 'react-router-dom'
 import { PrivateRoutes } from '../components/private-routes'
-import ActivitiesScreen from '../screens/activites-screen'
+import ActivitiesScreen from '../screens/my-activities-screen'
 import ChatScreen from '../screens/chat-screen'
 import CreateActivityScreen from '../screens/create-activity-screen/create-activity-screen'
 import EditProfileScreen from '../screens/edit-profile-screen'
@@ -22,6 +22,7 @@ import VerificationScreen from '../screens/verification-screen'
 import WelcomeScreen from '../screens/welcome-screen'
 import { ApplicationLocations } from '../types/common/applications-locations.dto'
 import { getAuthToken } from '../utils/token.util'
+import ActivityDetailsScreen from '../screens/activity-details-screen'
 
 const Routes = () => {
   const { keycloak } = useKeycloak()
@@ -75,8 +76,12 @@ const Routes = () => {
           element={<NewPasswordScreen />}
         />
         <Route
-          path={ApplicationLocations.ACTIVITES}
+          path={ApplicationLocations.ACTIVITIES}
           element={<ActivitiesScreen />}
+        />
+        <Route
+          path={`${ApplicationLocations.ACTIVITY_ID}/:id`}
+          element={<ActivityDetailsScreen />}
         />
         <Route
           path={ApplicationLocations.CREATE}
