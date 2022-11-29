@@ -17,6 +17,7 @@ import ResetPasswordScreen from '../screens/reset-password-screen'
 import SearchActivitesScreen from '../screens/search-activities-screen'
 import SelectProfilePictureScreen from '../screens/select-picture-screen'
 import SettingsScreen from '../screens/settings-screen/settings-screen'
+import TestScreen from '../screens/test-screen'
 import VerificationScreen from '../screens/verification-screen'
 import WelcomeScreen from '../screens/welcome-screen'
 import { ApplicationLocations } from '../types/common/applications-locations.dto'
@@ -36,6 +37,7 @@ const Routes = () => {
         path={ApplicationLocations.LOGINREGISTER}
         element={<LoginOrRegisterScreen />}
       />
+      <Route path={'/test'} element={<TestScreen />} />
       <Route
         path={ApplicationLocations.REGISTER}
         element={<RegistrationScreen />}

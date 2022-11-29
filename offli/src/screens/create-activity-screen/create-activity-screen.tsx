@@ -18,13 +18,14 @@ import { ActivityInviteForm } from './components/activity-invite-form'
 import { ActivityDetailsForm } from './components/activity-details-form'
 import { ActivityPhotoForm } from './components/activity-photo-form'
 import { ActivityVisibilityEnum } from '../../types/activities/activity-visibility-enum.dto'
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { createActivity } from '../../api/activities/requests'
 import { useSnackbar } from 'notistack'
 import { IPerson } from '../../types/activities/activity.dto'
 import ActivityCreatedScreen from '../static-screens/activity-created-screen'
 import { useNavigate } from 'react-router-dom'
 import { ApplicationLocations } from '../../types/common/applications-locations.dto'
+import { AuthenticationContext } from '../../assets/theme/authentication-provider'
 
 interface FormValues {
   title?: string
@@ -117,9 +118,11 @@ const schema: (activeStep: number) => yup.SchemaOf<FormValues> = (
 
 const CreateActivityScreen = () => {
   const theme = useTheme()
+  const queryClient = useQueryClient()
   const { enqueueSnackbar } = useSnackbar()
   const [activeStep, setActiveStep] = React.useState<number>(0)
   const navigate = useNavigate()
+  const { userInfo } = React.useContext(AuthenticationContext)
 
   const methods = useForm<FormValues>({
     defaultValues: {
@@ -143,6 +146,8 @@ const CreateActivityScreen = () => {
       createActivity(formValues),
     {
       onSuccess: () => {
+        //invalidate user activites
+        queryClient.invalidateQueries(['user-info'])
         setActiveStep(activeStep => activeStep + 1)
       },
       onError: error => {
@@ -157,9 +162,9 @@ const CreateActivityScreen = () => {
     mutate({
       ...restValues,
       creator: {
-        id: '507f1f77bcf86cd799439011',
-        name: 'adamko',
-        username: 'papricka',
+        id: '635e5530b9c8eae920a7a976',
+        name: 'Frank Marigold',
+        username: 'FMe',
         profile_photo:
           'https://www.pngfind.com/pngs/m/676-6764065_default-profile-picture-transparent-hd-png-download.png',
       },
