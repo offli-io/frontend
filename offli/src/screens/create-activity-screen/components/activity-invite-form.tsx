@@ -15,6 +15,7 @@ import {
 import { IPerson } from '../../../types/activities/activity.dto'
 import { useDebounce } from 'use-debounce'
 import { useSnackbar } from 'notistack'
+import { AuthenticationContext } from '../../../assets/theme/authentication-provider'
 
 interface IActivityTypeFormProps {
   onNextClicked: () => void
@@ -70,6 +71,7 @@ export const ActivityInviteForm: React.FC<IActivityTypeFormProps> = ({
   onNextClicked,
   methods,
 }) => {
+  const { userInfo } = React.useContext(AuthenticationContext)
   const { control, setValue, watch } = methods
   const [invitedBuddies, setInvitedBuddies] = React.useState<string[]>([])
   const { enqueueSnackbar } = useSnackbar()
@@ -78,11 +80,12 @@ export const ActivityInviteForm: React.FC<IActivityTypeFormProps> = ({
   const [queryStringDebounced] = useDebounce(queryString, 1000)
 
   const { data: buddies, status } = useQuery(
-    ['buddies', 7, queryStringDebounced],
+    ['buddies', userInfo?.id, queryStringDebounced],
     // TODO Fetch with current user id
-    () => getBuddies(7, queryStringDebounced),
+    () => getBuddies(String(userInfo?.id), queryStringDebounced),
     {
-      enabled: !!queryStringDebounced,
+      // enabled: !!queryStringDebounced,
+      enabled: !!userInfo?.id,
     }
   )
 
@@ -151,46 +154,45 @@ export const ActivityInviteForm: React.FC<IActivityTypeFormProps> = ({
           // }}
           placeholder="Type buddy username"
         />
-
-        <Box
-          sx={{
-            height: 300,
-            width: '100%',
-            overflowY: 'auto',
-            overflowX: 'hidden',
-            my: 3,
-            borderTop: '1px solid lightgrey',
-            borderBottom: '1px solid lightgrey',
-          }}
-        >
-          {budky?.map(buddy => (
-            <BuddyItemInvite
-              key={buddy?.id}
-              onInviteClick={handleBuddyInviteClick}
-              buddy={buddy}
-              invited={invitedBuddies?.includes('2312')}
-            />
-          ))}
-
-          {/* <BuddyItemCheckbox
-            username="Milada Jankovicova"
-            checkbox
-            onClick={handleBuddyClick}
-            id={3}
-          />
-          <BuddyItemCheckbox
-            username="Milada Jankovicova"
-            checkbox
-            onClick={handleBuddyClick}
-            id={4}
-          />
-          <BuddyItemCheckbox
-            username="Milada Jankovicova"
-            checkbox
-            onClick={handleBuddyClick}
-            id={5}
-          /> */}
-        </Box>
+        {buddies?.data && buddies?.data?.length < 1 ? (
+          <Box
+            sx={{
+              height: 100,
+              width: '100%',
+              my: 3,
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              borderTop: '1px solid lightgrey',
+              borderBottom: '1px solid lightgrey',
+            }}
+          >
+            <Typography sx={{ color: theme => theme.palette.inactive.main }}>
+              No buddies to invite
+            </Typography>
+          </Box>
+        ) : (
+          <Box
+            sx={{
+              height: 300,
+              width: '100%',
+              overflowY: 'auto',
+              overflowX: 'hidden',
+              my: 3,
+              borderTop: '1px solid lightgrey',
+              borderBottom: '1px solid lightgrey',
+            }}
+          >
+            {budky?.map(buddy => (
+              <BuddyItemInvite
+                key={buddy?.id}
+                onInviteClick={handleBuddyInviteClick}
+                buddy={buddy}
+                invited={invitedBuddies?.includes('2312')}
+              />
+            ))}
+          </Box>
+        )}
       </Box>
 
       <Box sx={{ width: '100%', display: 'flex', justifyContent: 'flex-end' }}>

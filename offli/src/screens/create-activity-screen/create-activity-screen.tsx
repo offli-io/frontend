@@ -185,7 +185,10 @@ const CreateActivityScreen = () => {
     switch (activeStep) {
       case 0:
         return (
-          <NameForm onNextClicked={() => setActiveStep(1)} methods={methods} />
+          <ActivityInviteForm
+            onNextClicked={() => setActiveStep(1)}
+            methods={methods}
+          />
           // <ActivityCreatedScreen
           //   onDismiss={() => setActiveStep(activeStep => activeStep + 1)}
           // />
