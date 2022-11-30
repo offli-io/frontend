@@ -9,6 +9,7 @@ interface ITimePickerProps {
   options: string[]
   onChange: (value: string | null) => void
   getOptionDisabled?: (option: string) => boolean
+  defaultValue?: string
 }
 
 const TimePicker: React.FC<ITimePickerProps> = ({
@@ -17,9 +18,11 @@ const TimePicker: React.FC<ITimePickerProps> = ({
   options,
   onChange,
   getOptionDisabled,
+  defaultValue,
 }) => {
   return (
     <Autocomplete
+      defaultValue={defaultValue}
       disableClearable
       id="disabled-options-demo"
       options={options}

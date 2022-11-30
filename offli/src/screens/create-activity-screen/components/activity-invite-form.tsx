@@ -165,6 +165,7 @@ export const ActivityInviteForm: React.FC<IActivityTypeFormProps> = ({
         >
           {budky?.map(buddy => (
             <BuddyItemInvite
+              key={buddy?.id}
               onInviteClick={handleBuddyInviteClick}
               buddy={buddy}
               invited={invitedBuddies?.includes('2312')}
