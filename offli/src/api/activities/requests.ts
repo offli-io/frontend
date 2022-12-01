@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { QueryFunctionContext } from 'react-query'
+import { DEFAULT_DEV_URL } from '../../assets/config'
 import {
   IActivity,
   IActivitySearchParams,
@@ -18,7 +19,7 @@ export const getActivities = async ({
   const CancelToken = axios.CancelToken
   const source = CancelToken.source()
 
-  const promise = axios.get<any>(`http://localhost:8080/activities`, {
+  const promise = axios.get<any>(`${DEFAULT_DEV_URL}/activities`, {
     params: searchParams,
     cancelToken: source?.token,
   })
@@ -35,7 +36,7 @@ export const getActivity = async (activityId?: string) => {
   const source = CancelToken.source()
 
   const promise = axios.get<{ activity: IActivity; success: boolean }>(
-    `http://localhost:8080/activities/${activityId}`
+    `${DEFAULT_DEV_URL}/activities/${activityId}`
     // {
 
     //   params: searchParams,
@@ -72,7 +73,7 @@ export const createActivity = async (values: IActivity) => {
   const CancelToken = axios.CancelToken
   const source = CancelToken.source()
 
-  const promise = axios.post('http://localhost:8080/activities', values, {
+  const promise = axios.post(`${DEFAULT_DEV_URL}/activities`, values, {
     cancelToken: source?.token,
   })
 
@@ -88,7 +89,7 @@ export const getUsers = (username?: string) => {
   const source = CancelToken.source()
   const validUsername = username ?? localStorage.getItem('username')
 
-  const promise = axios.get<IPersonExtended>('http://localhost:8080/users', {
+  const promise = axios.get<IPersonExtended>(`${DEFAULT_DEV_URL}/users`, {
     params: {
       username: validUsername,
     },
@@ -107,7 +108,7 @@ export const getBuddies = (userId: string, queryString?: string) => {
   const source = CancelToken.source()
 
   const promise = axios.get<IPerson[]>(
-    `http://localhost:8080/users/${userId}/buddies`,
+    `${DEFAULT_DEV_URL}/users/${userId}/buddies`,
     {
       cancelToken: source?.token,
     }

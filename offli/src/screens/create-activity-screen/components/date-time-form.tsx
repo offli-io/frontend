@@ -85,7 +85,9 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
   // }, [])
 
   const generateOptionsOrder = React.useCallback((type: 'from' | 'until') => {
-    const time = `${new Date().getHours() + type === 'from' ? 1 : 2}:00`
+    const currentHour = new Date().getHours()
+    //new Date().getHours() + type === 'from' ? 1 : 2
+    const time = `${currentHour}:00`
     const index = timeSlots?.indexOf(time)
     return timeSlots.slice(index).concat(timeSlots.slice(0, index))
   }, [])

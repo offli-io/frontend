@@ -13,12 +13,15 @@ import { getActivity } from '../api/activities/requests'
 import { useQuery } from '@tanstack/react-query'
 import { useNavigate } from 'react-router-dom'
 import { ApplicationLocations } from '../types/common/applications-locations.dto'
+import useLongPress from '../hooks/use-long-press'
 
 interface IProps {
   activityId: string
+  onLongPress: () => void
 }
 
-const MyActivityCard: React.FC<IProps> = ({ activityId }) => {
+const MyActivityCard: React.FC<IProps> = ({ activityId, onLongPress }) => {
+  const { action, handlers } = useLongPress()
   const { data } = useQuery(
     ['activity', activityId],
     () => getActivity(activityId),
@@ -30,6 +33,7 @@ const MyActivityCard: React.FC<IProps> = ({ activityId }) => {
   const activity = data?.data?.activity
 
   const navigate = useNavigate()
+  console.log(action)
 
   return (
     <Box
@@ -47,9 +51,13 @@ const MyActivityCard: React.FC<IProps> = ({ activityId }) => {
         alignItems: 'flex-end',
         color: 'white',
       }}
-      onClick={() =>
-        navigate(`${ApplicationLocations.ACTIVITY_ID}/${activity?.id}`)
-      }
+      // onClick={() =>
+      //   navigate(`${ApplicationLocations.ACTIVITY_ID}/${activity?.id}`)
+      // }
+      // {...handlers}
+      onTouchStart={() => {
+        const timer = setTimeout(() => onLongPress(), 500)
+      }}
     >
       <Box
         sx={{

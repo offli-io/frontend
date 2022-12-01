@@ -27,6 +27,7 @@ import {
 import { AuthenticationContext } from '../assets/theme/authentication-provider'
 import { ApplicationLocations } from '../types/common/applications-locations.dto'
 import { useNavigate } from 'react-router-dom'
+import { DEFAULT_KEYCLOAK_URL } from '../assets/config'
 
 export interface FormValues {
   username: string
@@ -64,7 +65,7 @@ const LoginScreen: React.FC = () => {
 
   const keycloakDataQuery = useQuery(['keycloak-data'], () =>
     axios.get(
-      'http://localhost:8082/realms/Offli/.well-known/openid-configuration'
+      `${DEFAULT_KEYCLOAK_URL}/realms/Offli/.well-known/openid-configuration`
     )
   )
 
@@ -88,7 +89,7 @@ const LoginScreen: React.FC = () => {
         method: 'POST',
         headers: { 'content-type': 'application/x-www-form-urlencoded' },
         data: qs.stringify(data),
-        url: 'http://localhost:8082/realms/Offli/protocol/openid-connect/token',
+        url: `${DEFAULT_KEYCLOAK_URL}/realms/Offli/protocol/openid-connect/token`,
       }
       return axios(options)
     },

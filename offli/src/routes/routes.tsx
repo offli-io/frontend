@@ -1,7 +1,7 @@
 import { useKeycloak } from '@react-keycloak/web'
 import { Route, Routes as BaseRoutes } from 'react-router-dom'
 import { PrivateRoutes } from '../components/private-routes'
-import ActivitiesScreen from '../screens/my-activities-screen'
+import ActivitiesScreen from '../screens/my-activities-screen/my-activities-screen'
 import ChatScreen from '../screens/chat-screen'
 import CreateActivityScreen from '../screens/create-activity-screen/create-activity-screen'
 import EditProfileScreen from '../screens/edit-profile-screen'

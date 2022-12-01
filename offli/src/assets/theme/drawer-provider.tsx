@@ -47,7 +47,8 @@ export const DrawerProvider = ({ children }: { children: React.ReactNode }) => {
           '& .MuiPaper-root': {
             borderTopLeftRadius: 8,
             borderTopRightRadius: 8,
-            pt: 2,
+            pt: 3,
+            pb: 2,
             px: 1,
           },
         }}

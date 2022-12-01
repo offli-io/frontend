@@ -4,6 +4,7 @@ import Keycloak from 'keycloak-js'
 import { useServiceInterceptors } from '../../hooks/use-service-interceptors'
 import { setAuthToken } from '../../utils/token.util'
 import { IPerson, IPersonExtended } from '../../types/activities/activity.dto'
+import { DEFAULT_KEYCLOAK_URL } from '../config'
 
 interface IAuthenticationContext {
   stateToken: string | null
@@ -18,7 +19,7 @@ export const AuthenticationContext =
   React.createContext<IAuthenticationContext>({} as IAuthenticationContext)
 
 const keycloakConfig = new Keycloak({
-  url: 'http://localhost:8082/auth',
+  url: `${DEFAULT_KEYCLOAK_URL}/auth`,
   realm: 'Offli',
   clientId: 'Offli-realm',
 })

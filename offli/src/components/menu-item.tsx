@@ -5,11 +5,14 @@ import OffliButton from './offli-button'
 import { IPerson } from '../types/activities/activity.dto'
 import NavigateNextIcon from '@mui/icons-material/NavigateNext'
 import { SettingsTypeEnumDto } from '../types/common/settings-type-enum.dto'
+import { ActivityActionsTypeEnumDto } from '../types/common/activity-actions-type-enum.dto'
 
 interface ILabeledDividerProps {
   label?: string
-  onMenuItemClick?: (type?: SettingsTypeEnumDto) => void
-  type?: SettingsTypeEnumDto
+  onMenuItemClick?: (
+    type?: SettingsTypeEnumDto | ActivityActionsTypeEnumDto
+  ) => void
+  type?: SettingsTypeEnumDto | ActivityActionsTypeEnumDto
   icon?: React.ReactElement
   headerRight?: React.ReactElement
 }

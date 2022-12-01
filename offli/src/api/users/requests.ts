@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { QueryFunctionContext } from 'react-query'
+import { DEFAULT_DEV_URL } from '../../assets/config'
 import {
   IEmailPassword,
   IEmailUsernamePassword,
@@ -11,7 +12,7 @@ export const preCreateUser = async (values: IEmailUsernamePassword) => {
   const source = CancelToken.source()
 
   const promise = axios.post(
-    'http://localhost:8080/registration/pre-signup',
+    `${DEFAULT_DEV_URL}/registration/pre-signup`,
     values,
     {
       cancelToken: source?.token,
@@ -27,7 +28,7 @@ export const verifyCodeAndRetrieveUserId = async (
   const source = CancelToken.source()
 
   const promise = axios.post<{ userId?: string }>(
-    'http://localhost:8080/registration/verify-email',
+    `${DEFAULT_DEV_URL}/registration/verify-email`,
     values,
     {
       // params: searchParams,
@@ -42,7 +43,7 @@ export const checkIfEmailAlreadyTaken = async (email?: string) => {
   const source = CancelToken.source()
 
   const promise = axios.get<boolean>(
-    `http://localhost:8080/registration/emails/${email}`,
+    `${DEFAULT_DEV_URL}/registration/emails/${email}`,
     {
       // params: searchParams,
       cancelToken: source?.token,
@@ -56,7 +57,7 @@ export const checkIfUsernameAlreadyTaken = async (username?: string) => {
   const source = CancelToken.source()
 
   const promise = axios.get<boolean>(
-    `http://localhost:8080/registration/users/${username}`,
+    `${DEFAULT_DEV_URL}/registration/users/${username}`,
     {
       // params: searchParams,
       cancelToken: source?.token,

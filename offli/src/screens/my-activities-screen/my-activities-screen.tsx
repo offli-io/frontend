@@ -1,17 +1,19 @@
 import React from 'react'
 import { Box, Button, Typography } from '@mui/material'
-import MyActivityCard from '../components/my-activity-card'
-import { PageWrapper } from '../components/page-wrapper'
+import MyActivityCard from '../../components/my-activity-card'
+import { PageWrapper } from '../../components/page-wrapper'
 import axios from 'axios'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import {
   getActivities,
   getActivity,
   getUsers,
-} from '../api/activities/requests'
-import { IActivity, IPersonExtended } from '../types/activities/activity.dto'
-import { AuthenticationContext } from '../assets/theme/authentication-provider'
-import { DrawerContext } from '../assets/theme/drawer-provider'
+} from '../../api/activities/requests'
+import { IActivity, IPersonExtended } from '../../types/activities/activity.dto'
+import { AuthenticationContext } from '../../assets/theme/authentication-provider'
+import { DrawerContext } from '../../assets/theme/drawer-provider'
+import ActivityActions from './components/activity-actions'
+import { ActivityActionsTypeEnumDto } from '../../types/common/activity-actions-type-enum.dto'
 
 const datetime = new Date()
 
@@ -64,6 +66,20 @@ const ActivitiesScreen = () => {
   //   )
   // }, [userInfoQuery?.data?.data?.activities])
 
+  const handleActionClick = React.useCallback(
+    (action?: ActivityActionsTypeEnumDto) => console.log(action),
+    []
+  )
+
+  const openActivityActions = React.useCallback(
+    () =>
+      toggleDrawer({
+        open: true,
+        content: <ActivityActions onActionClick={handleActionClick} />,
+      }),
+    [toggleDrawer]
+  )
+
   return (
     <PageWrapper>
       <Typography
@@ -74,7 +90,7 @@ const ActivitiesScreen = () => {
           fontWeight: 'bold',
         }}
       >
-        My Actititties
+        My Actititties{data?.data?.name}
       </Typography>
 
       <Box
@@ -88,7 +104,13 @@ const ActivitiesScreen = () => {
         }}
       >
         {data?.data?.activities?.map(activity => {
-          return <MyActivityCard key={activity} activityId={activity} />
+          return (
+            <MyActivityCard
+              key={activity}
+              activityId={activity}
+              onLongPress={openActivityActions}
+            />
+          )
         })}
       </Box>
     </PageWrapper>
