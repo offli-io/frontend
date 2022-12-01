@@ -185,7 +185,13 @@ const CreateActivityScreen = () => {
     switch (activeStep) {
       case 0:
         return (
-          <NameForm onNextClicked={() => setActiveStep(1)} methods={methods} />
+          <ActivityInviteForm
+            onNextClicked={() => setActiveStep(1)}
+            methods={methods}
+          />
+          // <ActivityCreatedScreen
+          //   onDismiss={() => setActiveStep(activeStep => activeStep + 1)}
+          // />
         )
       case 1:
         return (
@@ -278,24 +284,27 @@ const CreateActivityScreen = () => {
   }, [])
 
   return (
-    <PageWrapper sxOverrides={{ alignItems: 'center', px: 3 }}>
-      <form
-        style={{
-          display: 'flex',
-          alignItems: 'flex-start',
-          justifyContent: getFormLayout(),
-          flexDirection: 'column',
-          height: '72vh',
-          width: '100%',
-          //TODO in the future maybe include navigation height in the PageWrapper component for now pb: 12 is enough
-          // paddingBottom: theme.spacing(20),
-          marginTop: theme.spacing(2),
-        }}
-        onSubmit={handleSubmit(handleFormSubmit, handleFormError)}
-      >
-        {renderProperContent()}
-      </form>
-    </PageWrapper>
+    // <PageWrapper sxOverrides={{ alignItems: 'center', px: 3 }}>
+    <form
+      style={{
+        display: 'flex',
+        alignItems: 'flex-start',
+        justifyContent: getFormLayout(),
+        flexDirection: 'column',
+        width: '100%',
+        height: '75vh',
+        paddingLeft: activeStep === 6 ? 0 : 24,
+        paddingRight: activeStep === 6 ? 0 : 24,
+        boxSizing: 'border-box',
+        //TODO in the future maybe include navigation height in the PageWrapper component for now pb: 12 is enough
+        // paddingBottom: theme.spacing(20),
+        marginTop: theme.spacing(2),
+      }}
+      onSubmit={handleSubmit(handleFormSubmit, handleFormError)}
+    >
+      {renderProperContent()}
+    </form>
+    // </PageWrapper>
   )
 }
 

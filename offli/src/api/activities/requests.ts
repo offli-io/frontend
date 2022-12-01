@@ -102,13 +102,16 @@ export const getUsers = (username?: string) => {
   return promise
 }
 
-export const getBuddies = (userId: number, queryString?: string) => {
+export const getBuddies = (userId: string, queryString?: string) => {
   const CancelToken = axios.CancelToken
   const source = CancelToken.source()
 
-  const promise = axios.get<IPerson[]>(`/users/${userId}/buddies`, {
-    cancelToken: source?.token,
-  })
+  const promise = axios.get<IPerson[]>(
+    `http://localhost:8080/users/${userId}/buddies`,
+    {
+      cancelToken: source?.token,
+    }
+  )
 
   // queryFunctionContext?.signal?.addEventListener('abort', () => {
   //   source.cancel('Query was cancelled by React Query')

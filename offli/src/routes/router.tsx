@@ -29,13 +29,11 @@ const Router: React.FC = (): ReactElement => {
   )
 
   return (
-    <CustomizationProvider>
-      <Suspense fallback={<p>Loading ...</p>}>
-        <BrowserRouter>
-          <Layout />
-        </BrowserRouter>
-      </Suspense>
-    </CustomizationProvider>
+    <Suspense fallback={<p>Loading ...</p>}>
+      <BrowserRouter>
+        <Layout />
+      </BrowserRouter>
+    </Suspense>
   )
 }
 
