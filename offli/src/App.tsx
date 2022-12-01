@@ -11,6 +11,7 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { useServiceInterceptors } from './hooks/use-service-interceptors'
 import { SnackbarKey, SnackbarProvider } from 'notistack'
 import { DrawerProvider } from './assets/theme/drawer-provider'
+import { CustomizationProvider } from './assets/theme/customization-provider'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -86,11 +87,13 @@ function App() {
       >
         <AuthenticationProvider>
           <LocalizationProvider dateAdapter={AdapterDateFns}>
-            <Box sx={{ height: '100vh' }}>
-              <DrawerProvider>
-                <Router />
-              </DrawerProvider>
-            </Box>
+            <CustomizationProvider>
+              <Box sx={{ height: '100vh' }}>
+                <DrawerProvider>
+                  <Router />
+                </DrawerProvider>
+              </Box>
+            </CustomizationProvider>
           </LocalizationProvider>
           <ReactQueryDevtools initialIsOpen={false} />
           {/* 
