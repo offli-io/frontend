@@ -8,6 +8,9 @@ import { RcFile } from 'rc-upload/lib/interface'
 import FileUploadIcon from '@mui/icons-material/FileUpload'
 import { grey } from '@mui/material/colors'
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew'
+import AddAPhotoIcon from '@mui/icons-material/AddAPhoto'
+import LabeledDivider from '../../../components/labeled-divider'
+import { DrawerContext } from '../../../assets/theme/drawer-provider'
 
 interface IActivityPhotoFormProps {
   methods: UseFormReturn
@@ -19,7 +22,7 @@ export const ActivityPhotoForm: React.FC<IActivityPhotoFormProps> = ({
   onBackClicked,
 }) => {
   const { control, formState } = methods
-
+  const { toggleDrawer } = React.useContext(DrawerContext)
   const onImageSelect = (e: BaseSyntheticEvent) => {
     console.log(e.target.files)
   }
@@ -31,14 +34,13 @@ export const ActivityPhotoForm: React.FC<IActivityPhotoFormProps> = ({
           display: 'flex',
           width: '100%',
           alignItems: 'flex-end',
-          justifyContent: 'space-around',
+          my: 4,
         }}
       >
         <Box
           sx={{
             display: 'flex',
             flexDirection: 'column',
-            alignItems: 'center',
             width: '50%',
           }}
         >
@@ -46,9 +48,12 @@ export const ActivityPhotoForm: React.FC<IActivityPhotoFormProps> = ({
             Add
           </Typography>
           <Typography variant="h4">activity photo</Typography>
-        </Box>
-        <Box sx={{ width: '50%', display: 'flex', justifyContent: 'center' }}>
-          <img src={activityPhotoImg} style={{ height: 80 }} />
+          <Typography
+            variant="subtitle2"
+            sx={{ color: theme => theme.palette.inactiveFont.main, mt: 0.5 }}
+          >
+            Later you can add two more photos
+          </Typography>
         </Box>
       </Box>
       <Box
@@ -58,7 +63,7 @@ export const ActivityPhotoForm: React.FC<IActivityPhotoFormProps> = ({
           flexDirection: 'column',
           justifyContent: 'center',
           alignItem: 'center',
-          mb: 10,
+          mb: 6,
         }}
       >
         <Controller
@@ -102,30 +107,77 @@ export const ActivityPhotoForm: React.FC<IActivityPhotoFormProps> = ({
                 // }}
                 multiple
               >
+                {/* TODO outsource this component */}
                 <Box
                   sx={{
-                    width: 100,
+                    width: 200,
                     height: 100,
                     display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
                     justifyContent: 'center',
                     position: 'relative',
                     bgcolor: grey[200],
-                    borderRadius: 3,
+                    borderRadius: 5,
+                    border: theme => `1px dashed ${theme.palette.primary.main}`,
                   }}
                 >
+                  {/* <Box></Box> */}
                   <IconButton
                     //component="label"
                     //variant="text"
                     // sx={{ textTransform: 'none', pb: 0.5 }}
                     size="large"
                   >
-                    <FileUploadIcon />
+                    <AddAPhotoIcon color="primary" />
                   </IconButton>
+                  <Typography sx={{ fontSize: 14 }}>
+                    Upload from your phone
+                  </Typography>
                 </Box>
               </Upload>
             )
           }}
         />
+        <LabeledDivider sx={{ my: 3, width: '100%' }}>
+          <Typography variant="subtitle1">or</Typography>
+        </LabeledDivider>
+        <Box
+          sx={{
+            width: '100%',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <Box
+            onClick={() =>
+              toggleDrawer({
+                open: true,
+                content: <div>Photo gallery</div>,
+              })
+            }
+            sx={{
+              width: 200,
+              height: 100,
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              position: 'relative',
+              bgcolor: grey[200],
+              borderRadius: 5,
+              border: theme => `1px dashed ${theme.palette.primary.main}`,
+            }}
+          >
+            <img
+              src={activityPhotoImg}
+              style={{ height: 50, marginBottom: 12 }}
+            />
+            <Typography sx={{ fontSize: 14 }}>Select from Offli</Typography>
+          </Box>
+        </Box>
       </Box>
       <Box
         sx={{

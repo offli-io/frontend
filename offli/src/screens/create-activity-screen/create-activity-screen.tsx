@@ -185,7 +185,10 @@ const CreateActivityScreen = () => {
     switch (activeStep) {
       case 0:
         return (
-          <NameForm onNextClicked={() => setActiveStep(1)} methods={methods} />
+          <ActivityPhotoForm
+            onBackClicked={handleBackClicked}
+            methods={methods}
+          />
         )
       case 1:
         return (

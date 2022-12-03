@@ -1,19 +1,17 @@
 import React from 'react'
 import { Box, Button, Typography } from '@mui/material'
-import MyActivityCard from '../../components/my-activity-card'
-import { PageWrapper } from '../../components/page-wrapper'
+import MyActivityCard from '../components/my-activity-card'
+import { PageWrapper } from '../components/page-wrapper'
 import axios from 'axios'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import {
   getActivities,
   getActivity,
   getUsers,
-} from '../../api/activities/requests'
-import { IActivity, IPersonExtended } from '../../types/activities/activity.dto'
-import { AuthenticationContext } from '../../assets/theme/authentication-provider'
-import { DrawerContext } from '../../assets/theme/drawer-provider'
-import ActivityActions from './components/activity-actions'
-import { ActivityActionsTypeEnumDto } from '../../types/common/activity-actions-type-enum.dto'
+} from '../api/activities/requests'
+import { IActivity, IPersonExtended } from '../types/activities/activity.dto'
+import { AuthenticationContext } from '../assets/theme/authentication-provider'
+import { DrawerContext } from '../assets/theme/drawer-provider'
 
 const datetime = new Date()
 
@@ -43,7 +41,6 @@ const ActivitiesScreen = () => {
     })
   )
 
-  //[('213123', '43412')]
   // TODO to open drawer
   // React.useEffect(() => {
   //   toggleDrawer({
@@ -65,20 +62,6 @@ const ActivitiesScreen = () => {
   //     setCurrentActivityId(activity)
   //   )
   // }, [userInfoQuery?.data?.data?.activities])
-
-  const handleActionClick = React.useCallback(
-    (action?: ActivityActionsTypeEnumDto) => console.log(action),
-    []
-  )
-
-  const openActivityActions = React.useCallback(
-    () =>
-      toggleDrawer({
-        open: true,
-        content: <ActivityActions onActionClick={handleActionClick} />,
-      }),
-    [toggleDrawer]
-  )
 
   return (
     <PageWrapper>
@@ -108,8 +91,8 @@ const ActivitiesScreen = () => {
             <MyActivityCard
               key={activity}
               activityId={activity}
-              onLongPress={openActivityActions}
-              onPress={openActivityActions}
+              onPress={id => console.log(id)}
+              onLongPress={id => console.log(id)}
             />
           )
         })}

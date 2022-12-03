@@ -17,10 +17,15 @@ import useLongPress from '../hooks/use-long-press'
 
 interface IProps {
   activityId: string
-  onLongPress: () => void
+  onLongPress: (activityId: string) => void
+  onPress: (activityId: string) => void
 }
 
-const MyActivityCard: React.FC<IProps> = ({ activityId, onLongPress }) => {
+const MyActivityCard: React.FC<IProps> = ({
+  activityId,
+  onLongPress,
+  onPress,
+}) => {
   const { action, handlers } = useLongPress()
   const { data } = useQuery(
     ['activity', activityId],
@@ -51,13 +56,12 @@ const MyActivityCard: React.FC<IProps> = ({ activityId, onLongPress }) => {
         alignItems: 'flex-end',
         color: 'white',
       }}
-      // onClick={() =>
-      //   navigate(`${ApplicationLocations.ACTIVITY_ID}/${activity?.id}`)
-      // }
+      onClick={() => onPress(activityId)}
       // {...handlers}
-      onTouchStart={() => {
-        const timer = setTimeout(() => onLongPress(), 500)
-      }}
+      // onTouchStart={() => {
+      //   const timer = setTimeout(() => onLongPress(), 500)
+      // }}
+      //onTouchEnd={() => clearTimeout(timer)}
     >
       <Box
         sx={{
@@ -95,7 +99,7 @@ const MyActivityCard: React.FC<IProps> = ({ activityId, onLongPress }) => {
             </Typography>
           ) : (
             <Typography
-              variant="subtitle2"
+              variant="subtitle1"
               sx={{ fontSize: 11, visibility: 'hidden', lineHeight: 2 }}
             >
               pica

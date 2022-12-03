@@ -13,9 +13,11 @@ declare module '@mui/material/styles' {
   // }
   interface Palette {
     inactive: Palette['primary']
+    inactiveFont: Palette['primary']
   }
   interface PaletteOptions {
     inactive: PaletteOptions['primary']
+    inactiveFont: PaletteOptions['primary']
   }
 }
 
@@ -31,6 +33,9 @@ const theme = createTheme({
     },
     inactive: {
       main: '#B8B8B8',
+    },
+    inactiveFont: {
+      main: '#757575',
     },
   },
   components: {
