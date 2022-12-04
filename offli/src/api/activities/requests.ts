@@ -8,6 +8,8 @@ import {
   IPersonExtended,
 } from '../../types/activities/activity.dto'
 import { IPlaceExternalApiDto } from '../../types/activities/place-external-api.dto'
+import qs from 'qs'
+import { IPredefinedPictureDto } from '../../types/activities/predefined-picture.dto'
 
 export const getActivities = async ({
   queryFunctionContext,
@@ -150,6 +152,30 @@ export const uninviteBuddy = (activityId: number, personId: number) => {
   //   queryFunctionContext?.signal?.addEventListener('abort', () => {
   //     source.cancel('Query was cancelled by React Query')
   //   })
+
+  return promise
+}
+
+export const getPredefinedPhotos = (tag?: string[]) => {
+  const CancelToken = axios.CancelToken
+  const source = CancelToken.source()
+
+  const promise = axios.get<{ pictures: IPredefinedPictureDto[] }>(
+    `${DEFAULT_DEV_URL}/predefined/pictures`,
+    {
+      cancelToken: source?.token,
+      params: {
+        tag,
+      },
+      paramsSerializer: params => {
+        return qs.stringify(params)
+      },
+    }
+  )
+
+  // queryFunctionContext?.signal?.addEventListener('abort', () => {
+  //   source.cancel('Query was cancelled by React Query')
+  // })
 
   return promise
 }

@@ -11,6 +11,7 @@ import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew'
 import AddAPhotoIcon from '@mui/icons-material/AddAPhoto'
 import LabeledDivider from '../../../components/labeled-divider'
 import { DrawerContext } from '../../../assets/theme/drawer-provider'
+import OffliGallery from './offli-gallery'
 
 interface IActivityPhotoFormProps {
   methods: UseFormReturn
@@ -21,11 +22,13 @@ export const ActivityPhotoForm: React.FC<IActivityPhotoFormProps> = ({
   methods,
   onBackClicked,
 }) => {
-  const { control, formState } = methods
+  const { control, formState, watch, setValue } = methods
   const { toggleDrawer } = React.useContext(DrawerContext)
   const onImageSelect = (e: BaseSyntheticEvent) => {
     console.log(e.target.files)
   }
+
+  const tags = watch('tags')
 
   return (
     <>
@@ -155,7 +158,15 @@ export const ActivityPhotoForm: React.FC<IActivityPhotoFormProps> = ({
             onClick={() =>
               toggleDrawer({
                 open: true,
-                content: <div>Photo gallery</div>,
+                content: (
+                  <OffliGallery
+                    tags={tags}
+                    onPictureSelect={url => {
+                      setValue('title_picture', url)
+                      toggleDrawer({ open: false, content: undefined })
+                    }}
+                  />
+                ),
               })
             }
             sx={{
