@@ -60,9 +60,10 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
   }
 
   const getToDisabledOptions = (option: string) => {
-    const fromTime = !!currentStartDate && format(currentStartDate, 'hh:mm')
-    if (fromTime) {
-      if (option <= fromTime) {
+    if (currentStartDate) {
+      const [hours, minutes] = option.split(':')
+      const _option = new Date().setHours(Number(hours), Number(minutes))
+      if (_option <= currentStartDate) {
         return true
       }
     }
