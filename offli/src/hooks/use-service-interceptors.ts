@@ -103,16 +103,17 @@ export const useServiceInterceptors = () => {
     },
     async (err: AxiosError) => {
       console.log(err)
+      //TODO uncomment
       const originalConfig = err.config
-      if (err?.response?.status === 401) {
-        console.error('Token expired')
-        // call refresh token
-        try {
-          mut.mutate()
-        } catch (error: any) {
-          console.log(error)
-        }
-      }
+      // if (err?.response?.status === 401) {
+      //   console.error('Token expired')
+      //   // call refresh token
+      //   try {
+      //     mut.mutate()
+      //   } catch (error: any) {
+      //     console.log(error)
+      //   }
+      // }
 
       return Promise.reject(err)
     }

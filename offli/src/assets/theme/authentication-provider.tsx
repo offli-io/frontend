@@ -39,7 +39,9 @@ export const AuthenticationProvider = ({
   const [authenticated, setIsAuthenticated] = React.useState<boolean>(false)
 
   React.useEffect(() => {
-    stateToken && setAuthToken(stateToken)
+    if (stateToken) {
+      setAuthToken(stateToken)
+    }
   }, [stateToken])
   return (
     <ReactKeycloakProvider

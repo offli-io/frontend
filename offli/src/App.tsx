@@ -42,6 +42,13 @@ function App() {
   const handleCallbackResponse = (res: any) => {
     console.log(res)
   }
+
+  window.addEventListener('load', function () {
+    setTimeout(function () {
+      // This hides the address bar:
+      window.scrollTo(0, 1)
+    }, 0)
+  })
   React.useEffect(() => {
     /* global google */
     google.accounts.id.initialize({
@@ -88,7 +95,7 @@ function App() {
         <AuthenticationProvider>
           <LocalizationProvider dateAdapter={AdapterDateFns}>
             <CustomizationProvider>
-              <Box sx={{ height: '100vh' }}>
+              <Box sx={{ height: '100vh', overflow: 'hidden' }}>
                 <DrawerProvider>
                   <Router />
                 </DrawerProvider>

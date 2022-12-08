@@ -26,8 +26,9 @@ const SettingsScreen = () => {
 
   const handleLogout = React.useCallback(() => {
     //TODO double check if any security issues aren't here I am not sure about using tokens from 2 places
-    setAuthToken(undefined)
     setStateToken(null)
+    setAuthToken(undefined)
+    localStorage.removeItem('token')
     localStorage.removeItem('username')
     navigate(ApplicationLocations.LOGIN)
   }, [setStateToken])
