@@ -43,6 +43,7 @@ const OffliHeader: React.FC<IProps> = ({ sx }) => {
         backgroundColor: 'white',
         boxSizing: 'border-box',
         pt: 2,
+        zIndex: 500,
         ...sx,
       }}
     >
