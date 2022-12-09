@@ -112,106 +112,99 @@ const LoginScreen: React.FC = () => {
   return (
     <form
       onSubmit={handleSubmit(handleFormSubmit)}
-      style={{ height: '100%' }}
+      style={{
+        height: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'space-evenly',
+      }}
       // className="backgroundImage"
     >
+      <Logo />
       <Box
         sx={{
-          height: '100%',
           display: 'flex',
           flexDirection: 'column',
+          width: '100%',
           alignItems: 'center',
-          justifyContent: 'space-between',
         }}
       >
-        <Box sx={{ mt: 10 }}>
-          <Logo />
-        </Box>
-        <Box
-          sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            width: '100%',
-            alignItems: 'center',
-            mt: -8,
-          }}
-        >
-          <Box id="signIn"></Box>
+        <Box id="signIn"></Box>
 
-          <LabeledDivider sx={{ my: 1 }}>
-            <Typography variant="subtitle1">alebo</Typography>
-          </LabeledDivider>
-          <Controller
-            name="username"
-            control={control}
-            render={({ field, fieldState: { error } }) => (
-              <TextField
-                autoFocus
-                {...field}
-                //label="Username"
-                placeholder="Meno, email alebo mobil"
-                // variant="filled"
-                error={!!error}
-                // helperText={
-                //   error?.message ||
-                //   t(`value.${nextStep?.authenticationType}.placeholder`)
-                // }
-                // disabled={methodSelectionDisabled}
-                sx={{ width: '80%', mb: 2 }}
-              />
-            )}
-          />
-          <Controller
-            name="password"
-            control={control}
-            render={({ field, fieldState: { error } }) => (
-              <TextField
-                {...field}
-                //label="Username"
-                placeholder="Heslo"
-                type={showPassword ? 'text' : 'password'}
-                // variant="filled"
-                error={!!error}
-                // helperText={
-                //   error?.message ||
-                //   t(`value.${nextStep?.authenticationType}.placeholder`)
-                // }
-                //disabled={methodSelectionDisabled}
-                sx={{ width: '80%' }}
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton onClick={handleClickShowPassword}>
-                        {showPassword ? (
-                          <VisibilityIcon />
-                        ) : (
-                          <VisibilityOffIcon />
-                        )}
-                      </IconButton>
-                    </InputAdornment>
-                  ),
-                }}
-              />
-            )}
-          />
+        <LabeledDivider sx={{ my: 1 }}>
+          <Typography variant="subtitle1">alebo</Typography>
+        </LabeledDivider>
+        <Controller
+          name="username"
+          control={control}
+          render={({ field, fieldState: { error } }) => (
+            <TextField
+              autoFocus
+              {...field}
+              //label="Username"
+              placeholder="Meno, email alebo mobil"
+              // variant="filled"
+              error={!!error}
+              // helperText={
+              //   error?.message ||
+              //   t(`value.${nextStep?.authenticationType}.placeholder`)
+              // }
+              // disabled={methodSelectionDisabled}
+              sx={{ width: '80%', mb: 2 }}
+            />
+          )}
+        />
+        <Controller
+          name="password"
+          control={control}
+          render={({ field, fieldState: { error } }) => (
+            <TextField
+              {...field}
+              //label="Username"
+              placeholder="Heslo"
+              type={showPassword ? 'text' : 'password'}
+              // variant="filled"
+              error={!!error}
+              // helperText={
+              //   error?.message ||
+              //   t(`value.${nextStep?.authenticationType}.placeholder`)
+              // }
+              //disabled={methodSelectionDisabled}
+              sx={{ width: '80%' }}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton onClick={handleClickShowPassword}>
+                      {showPassword ? (
+                        <VisibilityIcon />
+                      ) : (
+                        <VisibilityOffIcon />
+                      )}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+            />
+          )}
+        />
 
-          <OffliButton variant="text" disabled={isLoading}>
-            <Typography
-              variant="subtitle2"
-              sx={{ fontWeight: 'bold', ml: '-70%' }}
-            >
-              Forgot your password?
-            </Typography>
-          </OffliButton>
-        </Box>
-        <OffliButton
-          sx={{ width: '80%', mb: 5 }}
-          type="submit"
-          isLoading={isLoading}
-        >
-          Login
+        <OffliButton variant="text" disabled={isLoading}>
+          <Typography
+            variant="subtitle2"
+            sx={{ fontWeight: 'bold', ml: '-70%' }}
+          >
+            Forgot your password?
+          </Typography>
         </OffliButton>
       </Box>
+      <OffliButton
+        sx={{ width: '80%', mb: 5 }}
+        type="submit"
+        isLoading={isLoading}
+      >
+        Login
+      </OffliButton>
     </form>
   )
 }

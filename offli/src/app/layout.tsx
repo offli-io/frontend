@@ -42,14 +42,16 @@ export const Layout: React.FC<ILayoutProps> = ({ children }) => {
       {stateToken && displayHeader && <OffliHeader sx={{ width: '100%' }} />}
       <Box
         sx={{
-          overflow: 'scroll',
+          // overflow: 'scroll',
           width: '100%',
           height: '100%',
           // pt: HEADER_HEIGHT / 8,
           // pb: HEADER_HEIGHT / 8,
         }}
       >
-        <Box sx={{ mt: HEADER_HEIGHT / 8 }}>
+        <Box
+          sx={{ height: '100%', ...(stateToken && { mt: HEADER_HEIGHT / 8 }) }}
+        >
           <Routes />
         </Box>
       </Box>
