@@ -1,13 +1,7 @@
 import React, { useState, useEffect } from 'react'
-import { Box, Typography, IconButton } from '@mui/material'
+import { Box, Typography, IconButton, Grid } from '@mui/material'
 import LocationOnIcon from '@mui/icons-material/LocationOn'
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt'
-import OfflineBoltIcon from '@mui/icons-material/OfflineBolt'
-import FavoriteIcon from '@mui/icons-material/Favorite'
-import PeopleOutlinedIcon from '@mui/icons-material/PeopleOutlined'
-import SportsBarIcon from '@mui/icons-material/SportsBar'
-import AddOutlinedIcon from '@mui/icons-material/AddOutlined'
-import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined'
 import InstagramIcon from '@mui/icons-material/Instagram'
 
 import { PageWrapper } from '../components/page-wrapper'
@@ -18,6 +12,8 @@ import { Link } from 'react-router-dom'
 import { ApplicationLocations } from '../types/common/applications-locations.dto'
 import { AuthenticationContext } from '../assets/theme/authentication-provider'
 import { getUsers } from '../api/activities/requests'
+import ProfilePicture from '../assets/img/profilePicture.jpg'
+import ProfileStatistics from '../components/profile-statistics'
 
 const ProfileEmpty: React.FC = () => {
   const [editAboutMe, setEditAboutMe] = useState<boolean>(false)
@@ -97,7 +93,7 @@ const ProfileEmpty: React.FC = () => {
     <PageWrapper>
       <Box
         sx={{
-          height: '15%',
+          height: '20%',
           width: '90%',
           display: 'flex',
           // flexDirection: 'column',
@@ -114,11 +110,12 @@ const ProfileEmpty: React.FC = () => {
         >
           <img
             // todo add default picture in case of missing photo
-            src={data?.data?.profilePhotoUrl}
+            // src={data?.data?.profilePhotoUrl}
+            src={ProfilePicture}
             alt="profile picture"
             style={{
               height: '70px',
-              // width: '60px',
+              width: '7 0px',
               borderRadius: '50%',
             }}
           />
@@ -160,20 +157,6 @@ const ProfileEmpty: React.FC = () => {
             }}
           >
             <Typography variant="h3">{data?.data?.username}</Typography>
-            <Link
-              to={ApplicationLocations.EDIT_PROFILE}
-              style={{ textDecoration: 'none' }}
-            >
-              <Typography
-                variant="subtitle1"
-                sx={{
-                  color: 'primary.main',
-                  fontWeight: 'bold',
-                }}
-              >
-                Edit
-              </Typography>
-            </Link>
           </Box>
           <Box
             sx={{
@@ -183,19 +166,46 @@ const ProfileEmpty: React.FC = () => {
               // justifyContent: 'flex-start',
             }}
           >
-            <IconButton color="primary" sx={{ paddingRight: 0 }}>
-              <LocationOnIcon sx={{ fontSize: 20 }} />
+            <IconButton sx={{ paddingRight: 0, color: 'black' }}>
+              <LocationOnIcon sx={{ fontSize: 18 }} />
             </IconButton>
             <Typography variant="subtitle2">Slovakia, Bratislava</Typography>
           </Box>
 
-          <Typography variant="subtitle1" sx={{ lineHeight: 1.2 }}>
+          <Typography variant="subtitle2" sx={{ lineHeight: 1.2 }}>
             I am student at FIIT STU. I like adventures and meditation. There is
             always time for a beer. Cheers.
           </Typography>
         </Box>
       </Box>
       <Box
+        style={{
+          width: '60%',
+          borderRadius: '15px',
+          backgroundColor: '#E4E3FF',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: '2%',
+          marginTop: '5%',
+        }}
+      >
+        <Link
+          to={ApplicationLocations.EDIT_PROFILE}
+          style={{ textDecoration: 'none' }}
+        >
+          <Typography
+            variant="subtitle2"
+            sx={{
+              color: 'primary.main',
+              fontWeight: 'bold',
+            }}
+          >
+            Edit profile
+          </Typography>
+        </Link>
+      </Box>
+      {/* <Box
         sx={{
           width: '100%',
           mt: 5,
@@ -254,7 +264,7 @@ const ProfileEmpty: React.FC = () => {
             with others
           </Typography>
         </Box>
-      </Box>
+      </Box> */}
       <Box
         sx={{
           width: '90%',
@@ -263,40 +273,12 @@ const ProfileEmpty: React.FC = () => {
         <Typography align="left" variant="h4" sx={{ mt: 3 }}>
           This month
         </Typography>
-        <Box sx={{ ml: 2 }}>
-          <Box sx={{ display: 'flex', alignItems: 'end' }}>
-            <IconButton color="primary" sx={{ padding: 0 }}>
-              <PeopleOutlinedIcon />
-            </IconButton>
-            <Typography align="left" variant="h6" sx={{ mt: 2, ml: 2 }}>
-              You've met <b>12 new buddies!</b>
-            </Typography>
-          </Box>
-          <Box sx={{ display: 'flex', alignItems: 'end' }}>
-            <IconButton color="primary" sx={{ padding: 0 }}>
-              <SportsBarIcon />
-            </IconButton>
-            <Typography align="left" variant="h6" sx={{ mt: 2, ml: 2 }}>
-              You participated in <b>10 activities!</b>
-            </Typography>
-          </Box>
-          <Box sx={{ display: 'flex', alignItems: 'end' }}>
-            <IconButton color="primary" sx={{ padding: 0 }}>
-              <AddOutlinedIcon sx={{ fontSize: 25 }} />
-            </IconButton>
-            <Typography align="left" variant="h6" sx={{ mt: 2, ml: 2 }}>
-              You created <b>5 activities!</b>
-            </Typography>
-          </Box>
-          <Box sx={{ display: 'flex', alignItems: 'end' }}>
-            <IconButton color="primary" sx={{ padding: 0 }}>
-              <FavoriteBorderOutlinedIcon />
-            </IconButton>
-            <Typography align="left" variant="h6" sx={{ mt: 2, ml: 2 }}>
-              <b>9 times </b>enjoyed good time together!
-            </Typography>
-          </Box>
-        </Box>
+        <ProfileStatistics
+          participatedNum={10}
+          enjoyedNum={9}
+          createdNum={5}
+          metNum={12}
+        />
       </Box>
       <Box
         sx={{

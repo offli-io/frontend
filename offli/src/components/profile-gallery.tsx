@@ -2,7 +2,7 @@ import React from 'react'
 import { Box, Grid } from '@mui/material'
 import ProfilePicture from '../assets/img/profilePicture.jpg'
 
-const ProfileGallery = () => {
+const ProfileGallery: React.FC = () => {
   const arr = [0, 1, 2, 3]
   return (
     <Box>
@@ -14,12 +14,12 @@ const ProfileGallery = () => {
       >
         {arr.map(a => {
           return (
-            <Grid item xs={4} key={a}>
+            <Grid item xs={6} key={a}>
               <img
                 src={ProfilePicture}
                 alt="profile picture"
                 style={{
-                  height: '26vw',
+                  height: '38vw',
                   borderRadius: 12,
                 }}
               />
