@@ -199,6 +199,8 @@ export const ActivityDetailsForm: React.FC<IPlaceFormProps> = ({
                   height: 'unset',
                 },
               }}
+              inputProps={{ maxLength: 200 }}
+              helperText={`${field?.value?.length ?? 0}/200`}
               //helperText={!!error && 'Activity name is required'}
               //label="Username"
               // disabled={methodSelectionDisabled}

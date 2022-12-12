@@ -23,13 +23,12 @@ const SettingsScreen = () => {
   const location = useLocation()
   const state = location?.state as ICustomizedLocationState
   const { from } = state
-  console.log(from)
 
   const handleLogout = React.useCallback(() => {
     //TODO double check if any security issues aren't here I am not sure about using tokens from 2 places
-    console.log('lol')
-    setAuthToken(undefined)
     setStateToken(null)
+    setAuthToken(undefined)
+    localStorage.removeItem('token')
     localStorage.removeItem('username')
     navigate(ApplicationLocations.LOGIN)
   }, [setStateToken])
@@ -46,7 +45,12 @@ const SettingsScreen = () => {
       <BackHeader title="Settings" sx={{ mb: 2 }} to={from} />
       <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
         {SettingsItemsObject.map(item => (
-          <MenuItem label={item?.label} type={item?.type} icon={item.icon} />
+          <MenuItem
+            label={item?.label}
+            type={item?.type}
+            icon={item.icon}
+            key={`settings_${item?.type}`}
+          />
         ))}
         <MenuItem
           label="Dark theme"

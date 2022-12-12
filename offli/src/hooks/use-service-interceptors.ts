@@ -4,6 +4,7 @@ import React from 'react'
 import axios, { AxiosError } from 'axios'
 import { getAuthToken, getRefreshToken } from '../utils/token.util'
 import { AuthenticationContext } from '../assets/theme/authentication-provider'
+import { DEFAULT_KEYCLOAK_URL } from '../assets/config'
 
 export const useServiceInterceptors = () => {
   const { stateToken } = React.useContext(AuthenticationContext)
@@ -27,7 +28,7 @@ export const useServiceInterceptors = () => {
     //   url: 'http://localhost:8082/realms/Offli/protocol/openid-connect/token',
     // }
     const promise = axios.post(
-      'http://localhost:8082/realms/Offli/protocol/openid-connect/token',
+      `${DEFAULT_KEYCLOAK_URL}/realms/Offli/protocol/openid-connect/token`,
       qs.stringify(data),
       {
         headers: { 'content-type': 'application/x-www-form-urlencoded' },
@@ -102,16 +103,17 @@ export const useServiceInterceptors = () => {
     },
     async (err: AxiosError) => {
       console.log(err)
+      //TODO uncomment
       const originalConfig = err.config
-      if (err?.response?.status === 401) {
-        console.error('Token expired')
-        // call refresh token
-        try {
-          mut.mutate()
-        } catch (error: any) {
-          console.log(error)
-        }
-      }
+      // if (err?.response?.status === 401) {
+      //   console.error('Token expired')
+      //   // call refresh token
+      //   try {
+      //     mut.mutate()
+      //   } catch (error: any) {
+      //     console.log(error)
+      //   }
+      // }
 
       return Promise.reject(err)
     }

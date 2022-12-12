@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { QueryFunctionContext } from 'react-query'
+import { DEFAULT_DEV_URL } from '../../assets/config'
 import {
   IActivity,
   IActivitySearchParams,
@@ -7,6 +8,8 @@ import {
   IPersonExtended,
 } from '../../types/activities/activity.dto'
 import { IPlaceExternalApiDto } from '../../types/activities/place-external-api.dto'
+import qs from 'qs'
+import { IPredefinedPictureDto } from '../../types/activities/predefined-picture.dto'
 
 export const getActivities = async ({
   queryFunctionContext,
@@ -18,7 +21,7 @@ export const getActivities = async ({
   const CancelToken = axios.CancelToken
   const source = CancelToken.source()
 
-  const promise = axios.get<any>(`http://localhost:8080/activities`, {
+  const promise = axios.get<any>(`${DEFAULT_DEV_URL}/activities`, {
     params: searchParams,
     cancelToken: source?.token,
   })
@@ -35,7 +38,7 @@ export const getActivity = async (activityId?: string) => {
   const source = CancelToken.source()
 
   const promise = axios.get<{ activity: IActivity; success: boolean }>(
-    `http://localhost:8080/activities/${activityId}`
+    `${DEFAULT_DEV_URL}/activities/${activityId}`
     // {
 
     //   params: searchParams,
@@ -72,7 +75,7 @@ export const createActivity = async (values: IActivity) => {
   const CancelToken = axios.CancelToken
   const source = CancelToken.source()
 
-  const promise = axios.post('http://localhost:8080/activities', values, {
+  const promise = axios.post(`${DEFAULT_DEV_URL}/activities`, values, {
     cancelToken: source?.token,
   })
 
@@ -88,7 +91,7 @@ export const getUsers = (username?: string) => {
   const source = CancelToken.source()
   const validUsername = username ?? localStorage.getItem('username')
 
-  const promise = axios.get<IPersonExtended>('http://localhost:8080/users', {
+  const promise = axios.get<IPersonExtended>(`${DEFAULT_DEV_URL}/users`, {
     params: {
       username: validUsername,
     },
@@ -102,13 +105,16 @@ export const getUsers = (username?: string) => {
   return promise
 }
 
-export const getBuddies = (userId: number, queryString?: string) => {
+export const getBuddies = (userId: string, queryString?: string) => {
   const CancelToken = axios.CancelToken
   const source = CancelToken.source()
 
-  const promise = axios.get<IPerson[]>(`/users/${userId}/buddies`, {
-    cancelToken: source?.token,
-  })
+  const promise = axios.get<IPerson[]>(
+    `${DEFAULT_DEV_URL}/users/${userId}/buddies`,
+    {
+      cancelToken: source?.token,
+    }
+  )
 
   // queryFunctionContext?.signal?.addEventListener('abort', () => {
   //   source.cancel('Query was cancelled by React Query')
@@ -146,6 +152,30 @@ export const uninviteBuddy = (activityId: number, personId: number) => {
   //   queryFunctionContext?.signal?.addEventListener('abort', () => {
   //     source.cancel('Query was cancelled by React Query')
   //   })
+
+  return promise
+}
+
+export const getPredefinedPhotos = (tag?: string[]) => {
+  const CancelToken = axios.CancelToken
+  const source = CancelToken.source()
+
+  const promise = axios.get<{ pictures: IPredefinedPictureDto[] }>(
+    `${DEFAULT_DEV_URL}/predefined/pictures`,
+    {
+      cancelToken: source?.token,
+      params: {
+        tag,
+      },
+      paramsSerializer: params => {
+        return qs.stringify(params)
+      },
+    }
+  )
+
+  // queryFunctionContext?.signal?.addEventListener('abort', () => {
+  //   source.cancel('Query was cancelled by React Query')
+  // })
 
   return promise
 }

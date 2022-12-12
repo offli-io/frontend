@@ -13,7 +13,11 @@ export const NameForm: React.FC<INameFormProps> = ({
   onNextClicked,
   methods,
 }) => {
-  const { control, formState } = methods
+  const { control, formState, watch } = methods
+
+  const errors = React.useMemo(() => formState.errors, [formState])
+  const isFormValid =
+    Object.keys(errors)?.length === 0 && watch('title')?.length > 0
 
   return (
     <>
@@ -71,7 +75,7 @@ export const NameForm: React.FC<INameFormProps> = ({
           onClick={onNextClicked}
           sx={{ width: '40%' }}
           //TODO some bug isValid returning false when name is
-          //disabled={!formState.isValid}
+          disabled={!isFormValid}
         >
           Next
         </OffliButton>

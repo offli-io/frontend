@@ -7,6 +7,7 @@ import { format } from 'date-fns'
 import TimePicker from '../../../components/time-picker'
 import { ActivityRepetitionOptionsEnum } from '../../../types/common/types'
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew'
+import { getNearestTime } from '../../../utils/nearest-tine.util'
 
 interface IDateTimeForm {
   onNextClicked: () => void
@@ -46,10 +47,12 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
 
   const isFormValid = !!watch('datetime_from') && !!watch('datetime_until')
 
+  console.log(getNearestTime())
+
   const getFromDisabledOptions = (option: string) => {
     const toTime = !!currentEndDate && format(currentEndDate, 'hh:mm')
     if (toTime) {
-      if (option > toTime) {
+      if (option >= toTime) {
         return true
       }
     }
@@ -57,14 +60,38 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
   }
 
   const getToDisabledOptions = (option: string) => {
-    const fromTime = !!currentStartDate && format(currentStartDate, 'hh:mm')
-    if (fromTime) {
-      if (option < fromTime) {
+    if (currentStartDate) {
+      const [hours, minutes] = option.split(':')
+      const _option = new Date().setHours(Number(hours), Number(minutes))
+      if (_option <= currentStartDate) {
         return true
       }
     }
     return false
   }
+
+  // const defaultValueFrom = React.useMemo(
+  //   () => `${new Date().getHours() + 1}:00`,
+  //   []
+  // )
+
+  // const defaultValueTo = React.useMemo(
+  //   () => `${new Date().getHours() + 2}:00`,
+  //   []
+  // )
+
+  // React.useEffect(() => {
+  //   setValue('datetime_from', defaultValueFrom)
+  //   setValue('datetime_until', defaultValueTo)
+  // }, [])
+
+  const generateOptionsOrder = React.useCallback((type: 'from' | 'until') => {
+    const currentHour = new Date().getHours()
+    //new Date().getHours() + type === 'from' ? 1 : 2
+    const time = `${currentHour}:00`
+    const index = timeSlots?.indexOf(time)
+    return timeSlots.slice(index).concat(timeSlots.slice(0, index))
+  }, [])
 
   return (
     <Box
@@ -131,8 +158,10 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
               onChange={(value: string | null) =>
                 handleTimeChange('datetime_from', value)
               }
-              options={timeSlots}
-              getOptionDisabled={getFromDisabledOptions}
+              options={generateOptionsOrder('from')}
+              //defaultValue={defaultValueFrom}
+              //IDK if we should use from disabled options
+              //getOptionDisabled={getFromDisabledOptions}
             />
             <Typography sx={{ fontWeight: 200, fontSize: '2rem' }}>
               -
@@ -144,8 +173,9 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
               onChange={(value: string | null) =>
                 handleTimeChange('datetime_until', value)
               }
-              options={timeSlots}
+              options={generateOptionsOrder('until')}
               getOptionDisabled={getToDisabledOptions}
+              //defaultValue={defaultValueTo}
             />
           </Box>
         </Box>

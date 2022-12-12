@@ -34,14 +34,23 @@ const OffliHeader: React.FC<IProps> = ({ sx }) => {
 
   return (
     <Box
-    // color="inherit"
-    // sx={{ height: HEADER_HEIGHT, boxShadow: 'none', ...sx }}
+      // color="inherit"
+      sx={{
+        height: HEADER_HEIGHT,
+        boxShadow: 'none',
+        position: 'fixed',
+        top: 0,
+        backgroundColor: 'white',
+        boxSizing: 'border-box',
+        pt: 2,
+        zIndex: 500,
+        ...sx,
+      }}
     >
       <Box
         sx={{
           width: '100%',
           // borderBottom: '1px solid lightgrey',
-          mt: 3,
         }}
       >
         <Box

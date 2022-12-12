@@ -21,7 +21,7 @@ const ActivityCreatedScreen: React.FC<IActivityCreatedScreenProps> = ({
   const element = React.useRef<HTMLDivElement>(null)
   const lottieInstance = React.useRef<any>()
   React.useEffect(() => {
-    // const timer = setTimeout(() => onDismiss(), 2500)
+    const timer = setTimeout(() => onDismiss(), 2500)
     if (element.current) {
       lottieInstance.current = lottie.loadAnimation({
         animationData,
@@ -31,7 +31,7 @@ const ActivityCreatedScreen: React.FC<IActivityCreatedScreenProps> = ({
 
     return () => {
       lottieInstance.current?.destroy()
-      // clearTimeout(timer)
+      clearTimeout(timer)
     }
   }, [])
   return (
@@ -42,10 +42,10 @@ const ActivityCreatedScreen: React.FC<IActivityCreatedScreenProps> = ({
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-        mt: 8,
+        padding: '0px !important;',
       }}
     >
-      <Box sx={{ position: 'absolute', top: 20, left: 20, zIndex: 500 }}>
+      <Box sx={{ position: 'absolute', zIndex: 500 }}>
         <Typography variant="h4" sx={{ mb: 4 }}>
           Activity created !
         </Typography>

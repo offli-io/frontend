@@ -11,6 +11,7 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { useServiceInterceptors } from './hooks/use-service-interceptors'
 import { SnackbarKey, SnackbarProvider } from 'notistack'
 import { DrawerProvider } from './assets/theme/drawer-provider'
+import { CustomizationProvider } from './assets/theme/customization-provider'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -41,6 +42,13 @@ function App() {
   const handleCallbackResponse = (res: any) => {
     console.log(res)
   }
+
+  window.addEventListener('load', function () {
+    setTimeout(function () {
+      // This hides the address bar:
+      window.scrollTo(0, 1)
+    }, 0)
+  })
   React.useEffect(() => {
     /* global google */
     google.accounts.id.initialize({
@@ -86,11 +94,13 @@ function App() {
       >
         <AuthenticationProvider>
           <LocalizationProvider dateAdapter={AdapterDateFns}>
-            <Box sx={{ height: '100vh' }}>
-              <DrawerProvider>
-                <Router />
-              </DrawerProvider>
-            </Box>
+            <CustomizationProvider>
+              <Box sx={{ height: '100vh', overflow: 'hidden' }}>
+                <DrawerProvider>
+                  <Router />
+                </DrawerProvider>
+              </Box>
+            </CustomizationProvider>
           </LocalizationProvider>
           <ReactQueryDevtools initialIsOpen={false} />
           {/* 

@@ -13,12 +13,20 @@ import { getActivity } from '../api/activities/requests'
 import { useQuery } from '@tanstack/react-query'
 import { useNavigate } from 'react-router-dom'
 import { ApplicationLocations } from '../types/common/applications-locations.dto'
+import useLongPress from '../hooks/use-long-press'
 
 interface IProps {
   activityId: string
+  onLongPress: (activityId: string) => void
+  onPress: (activityId: string) => void
 }
 
-const MyActivityCard: React.FC<IProps> = ({ activityId }) => {
+const MyActivityCard: React.FC<IProps> = ({
+  activityId,
+  onLongPress,
+  onPress,
+}) => {
+  const { action, handlers } = useLongPress()
   const { data } = useQuery(
     ['activity', activityId],
     () => getActivity(activityId),
@@ -30,6 +38,7 @@ const MyActivityCard: React.FC<IProps> = ({ activityId }) => {
   const activity = data?.data?.activity
 
   const navigate = useNavigate()
+  console.log(action)
 
   return (
     <Box
@@ -47,9 +56,12 @@ const MyActivityCard: React.FC<IProps> = ({ activityId }) => {
         alignItems: 'flex-end',
         color: 'white',
       }}
-      onClick={() =>
-        navigate(`${ApplicationLocations.ACTIVITY_ID}/${activity?.id}`)
-      }
+      onClick={() => onPress(activityId)}
+      // {...handlers}
+      // onTouchStart={() => {
+      //   const timer = setTimeout(() => onLongPress(), 500)
+      // }}
+      //onTouchEnd={() => clearTimeout(timer)}
     >
       <Box
         sx={{
@@ -87,7 +99,7 @@ const MyActivityCard: React.FC<IProps> = ({ activityId }) => {
             </Typography>
           ) : (
             <Typography
-              variant="subtitle2"
+              variant="subtitle1"
               sx={{ fontSize: 11, visibility: 'hidden', lineHeight: 2 }}
             >
               pica

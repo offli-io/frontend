@@ -20,6 +20,7 @@ import {
   IUsername,
   IUsernamePassword,
 } from '../types/users/user.dto'
+import { DEFAULT_KEYCLOAK_URL } from '../assets/config'
 
 const VerificationScreen = () => {
   const [verificationCode, setVerificationCode] = React.useState<string>('')
@@ -49,7 +50,7 @@ const VerificationScreen = () => {
         method: 'POST',
         headers: { 'content-type': 'application/x-www-form-urlencoded' },
         data: qs.stringify(data),
-        url: 'http://localhost:8082/realms/Offli/protocol/openid-connect/token',
+        url: `${DEFAULT_KEYCLOAK_URL}/realms/Offli/protocol/openid-connect/token`,
       }
       return axios(options)
     },
