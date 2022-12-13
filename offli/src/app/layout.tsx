@@ -31,6 +31,7 @@ export const Layout: React.FC<ILayoutProps> = ({ children }) => {
         width: '100%',
         height: '100vh',
         display: 'flex',
+        flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'stretch',
         // gridTemplateRows: !displayHeader ? '92% 8%' : '10% 82% 8%',
@@ -40,20 +41,15 @@ export const Layout: React.FC<ILayoutProps> = ({ children }) => {
       {/* conditional rendering when token is received */}
 
       {stateToken && displayHeader && <OffliHeader sx={{ width: '100%' }} />}
+
       <Box
         sx={{
-          // overflow: 'scroll',
           width: '100%',
           height: '100%',
-          // pt: HEADER_HEIGHT / 8,
-          // pb: HEADER_HEIGHT / 8,
+          overflow: 'scroll',
         }}
       >
-        <Box
-          sx={{ height: '100%', ...(stateToken && { mt: HEADER_HEIGHT / 8 }) }}
-        >
-          <Routes />
-        </Box>
+        <Routes />
       </Box>
       {stateToken && <BottomNavigator sx={{ height: '100%' }} />}
     </Box>

@@ -21,6 +21,7 @@ const OffliHeader: React.FC<IProps> = ({ sx }) => {
   const location = useLocation()
   const navigate = useNavigate()
   const [notificationNumber] = useState(5)
+  const headerRef = React.useRef<HTMLElement | null>(null)
 
   //TODO add component non-depending logic like styles outside the components
   const iconStyle = { height: '20px', mr: -1 }
@@ -32,13 +33,16 @@ const OffliHeader: React.FC<IProps> = ({ sx }) => {
     },
   }
 
+  console.log(headerRef?.current?.clientHeight)
+
   return (
     <Box
       // color="inherit"
+      ref={headerRef}
       sx={{
         height: HEADER_HEIGHT,
         boxShadow: 'none',
-        position: 'fixed',
+        position: 'sticky',
         top: 0,
         backgroundColor: 'white',
         boxSizing: 'border-box',

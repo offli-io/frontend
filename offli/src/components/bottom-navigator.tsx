@@ -29,7 +29,7 @@ const BottomNavigator: React.FC<IBottomNavigatorProps> = ({ sx }) => {
 
   return (
     <Paper
-      sx={{ position: 'fixed', bottom: 0, left: 0, right: 0 }}
+      sx={{ position: 'sticky', bottom: 0, left: 0, right: 0, width: '100%' }}
       // sx={sx}
       elevation={3}
     >
