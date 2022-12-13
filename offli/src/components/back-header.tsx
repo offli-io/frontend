@@ -45,7 +45,6 @@ const BackHeader: React.FC<IBackHeaderProps> = ({ title, sx, to }) => {
           alignItems: 'center',
           position: 'relative',
           p: 2,
-          mt: 2,
           boxSizing: 'border-box',
         }}
       >
