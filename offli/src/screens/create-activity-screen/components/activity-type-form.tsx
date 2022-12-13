@@ -1,9 +1,17 @@
-import { Box, IconButton, TextField, Typography } from '@mui/material'
+import {
+  Box,
+  CircularProgress,
+  IconButton,
+  TextField,
+  Typography,
+} from '@mui/material'
 import React from 'react'
 import { Controller, UseFormReturn } from 'react-hook-form'
 import LabeledTile from '../../../components/labeled-tile'
 import OffliButton from '../../../components/offli-button'
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew'
+import { getPredefinedTags } from '../../../api/activities/requests'
+import { useQuery } from '@tanstack/react-query'
 
 interface IActivityTypeFormProps {
   onNextClicked: () => void
@@ -31,6 +39,9 @@ export const ActivityTypeForm: React.FC<IActivityTypeFormProps> = ({
 
   const tags: string[] = watch('tags') ?? []
 
+  const { data: { data: { tags: tiles = [] } = {} } = {}, isLoading } =
+    useQuery(['predefined-tags'], () => getPredefinedTags(), {})
+
   const handleTileClick = React.useCallback(
     (title: string) => {
       if (tags?.includes(title)) {
@@ -57,19 +68,35 @@ export const ActivityTypeForm: React.FC<IActivityTypeFormProps> = ({
           display: 'flex',
           flexWrap: 'wrap',
           justifyContent: 'space-between',
+          width: '100%',
         }}
       >
-        {activityTypes.map((type, index) => (
-          <LabeledTile
-            key={index}
-            title={type}
-            onClick={handleTileClick}
+        {isLoading ? (
+          <Box
             sx={{
-              width: '42%',
-              mb: 2,
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              width: '100%',
+              my: 4,
             }}
-          />
-        ))}
+          >
+            <CircularProgress color="primary" />
+          </Box>
+        ) : (
+          tiles?.map(({ title, picture }, index) => (
+            <LabeledTile
+              key={index}
+              title={title}
+              onClick={handleTileClick}
+              sx={{
+                width: '42%',
+                mb: 2,
+              }}
+              imageUrl={picture}
+            />
+          ))
+        )}
         {/* <LabeledTile title="Sports and drinks" onClick={handleTileClick} />
         <LabeledTile title="Relax" sx={{ ml: 3 }} onClick={handleTileClick} /> */}
       </Box>

@@ -1,4 +1,4 @@
-import { Box, TextField, Typography } from '@mui/material'
+import { Box, CircularProgress, TextField, Typography } from '@mui/material'
 import React from 'react'
 import { Controller, UseFormReturn } from 'react-hook-form'
 import LabeledTile from '../../../components/labeled-tile'
@@ -79,7 +79,7 @@ export const ActivityInviteForm: React.FC<IActivityTypeFormProps> = ({
   const [queryString, setQueryString] = React.useState<string | undefined>()
   const [queryStringDebounced] = useDebounce(queryString, 1000)
 
-  const { data: buddies, status } = useQuery(
+  const { data: buddies, isLoading } = useQuery(
     ['buddies', userInfo?.id, queryStringDebounced],
     // TODO Fetch with current user id
     () => getBuddies(String(userInfo?.id), queryStringDebounced),
@@ -183,14 +183,20 @@ export const ActivityInviteForm: React.FC<IActivityTypeFormProps> = ({
               borderBottom: '1px solid lightgrey',
             }}
           >
-            {budky?.map(buddy => (
-              <BuddyItemInvite
-                key={buddy?.id}
-                onInviteClick={handleBuddyInviteClick}
-                buddy={buddy}
-                invited={invitedBuddies?.includes('2312')}
-              />
-            ))}
+            {isLoading ? (
+              <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
+                <CircularProgress color="primary" />
+              </Box>
+            ) : (
+              buddies?.data?.map(buddy => (
+                <BuddyItemInvite
+                  key={buddy?.id}
+                  onInviteClick={handleBuddyInviteClick}
+                  buddy={buddy}
+                  invited={invitedBuddies?.includes(buddy?.id)}
+                />
+              ))
+            )}
           </Box>
         )}
       </Box>
