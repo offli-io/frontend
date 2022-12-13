@@ -112,6 +112,9 @@ export const getBuddies = (userId: string, queryString?: string) => {
   const promise = axios.get<IPerson[]>(
     `${DEFAULT_DEV_URL}/users/${userId}/buddies`,
     {
+      params: {
+        buddyName: queryString,
+      },
       cancelToken: source?.token,
     }
   )
