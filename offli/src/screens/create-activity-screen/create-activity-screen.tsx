@@ -131,8 +131,8 @@ const CreateActivityScreen = () => {
       visibility: ActivityVisibilityEnum.private,
       price: ActivityPriceOptionsEnum.free,
       limit: 10,
-      title_picture:
-        'https://www.pngfind.com/pngs/m/676-6764065_default-profile-picture-transparent-hd-png-download.png',
+      // title_picture:
+      //   'https://www.pngfind.com/pngs/m/676-6764065_default-profile-picture-transparent-hd-png-download.png',
     },
     resolver: yupResolver(schema(activeStep)),
     mode: 'onChange',

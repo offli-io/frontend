@@ -21,9 +21,10 @@ const OffliHeader: React.FC<IProps> = ({ sx }) => {
   const location = useLocation()
   const navigate = useNavigate()
   const [notificationNumber] = useState(5)
+  const headerRef = React.useRef<HTMLElement | null>(null)
 
   //TODO add component non-depending logic like styles outside the components
-  const iconStyle = { height: '20px', mr: -1 }
+  const iconStyle = { height: '24px', mr: -1 }
   const badgeStyle = {
     '& .MuiBadge-badge': {
       transform: 'scale(0.8)',
@@ -35,10 +36,11 @@ const OffliHeader: React.FC<IProps> = ({ sx }) => {
   return (
     <Box
       // color="inherit"
+      ref={headerRef}
       sx={{
         height: HEADER_HEIGHT,
         boxShadow: 'none',
-        position: 'fixed',
+        position: 'sticky',
         top: 0,
         backgroundColor: 'white',
         boxSizing: 'border-box',
@@ -84,8 +86,13 @@ const OffliHeader: React.FC<IProps> = ({ sx }) => {
             </IconButton> */}
 
             <IconButton
-              component={Link}
-              to={ApplicationLocations.NOTIFICATIONS}
+              onClick={() => {
+                navigate(ApplicationLocations.NOTIFICATIONS, {
+                  state: {
+                    from: window.location.href,
+                  },
+                })
+              }}
             >
               <Badge
                 badgeContent={notificationNumber}

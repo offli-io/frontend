@@ -14,12 +14,15 @@ import { AuthenticationContext } from '../../assets/theme/authentication-provide
 import { DrawerContext } from '../../assets/theme/drawer-provider'
 import ActivityActions from './components/activity-actions'
 import { ActivityActionsTypeEnumDto } from '../../types/common/activity-actions-type-enum.dto'
+import { useNavigate } from 'react-router-dom'
+import { ApplicationLocations } from '../../types/common/applications-locations.dto'
 
 const datetime = new Date()
 
 const ActivitiesScreen = () => {
   const { userInfo, setUserInfo } = React.useContext(AuthenticationContext)
   const { toggleDrawer } = React.useContext(DrawerContext)
+  const navigate = useNavigate()
 
   const { data } = useQuery(
     ['user-info', userInfo?.username],
@@ -67,18 +70,40 @@ const ActivitiesScreen = () => {
   // }, [userInfoQuery?.data?.data?.activities])
 
   const handleActionClick = React.useCallback(
-    (action?: ActivityActionsTypeEnumDto) => console.log(action),
+    (action?: ActivityActionsTypeEnumDto, activityId?: string) => {
+      switch (action) {
+        case ActivityActionsTypeEnumDto.ACTIVITY_MEMBERS:
+          return navigate(
+            `${ApplicationLocations.ACTIVITY_ID}/${activityId}/members`
+          )
+        default:
+          return console.log(action)
+      }
+    },
     []
   )
 
   const openActivityActions = React.useCallback(
-    () =>
+    (activityId?: string) =>
       toggleDrawer({
         open: true,
-        content: <ActivityActions onActionClick={handleActionClick} />,
+        content: (
+          <ActivityActions
+            onActionClick={handleActionClick}
+            activityId={activityId}
+          />
+        ),
       }),
     [toggleDrawer]
   )
+
+  React.useEffect(() => {
+    //TODO is this fast enough isn't it flickering? Should I hide drawer before redirecting?
+    return () =>
+      toggleDrawer({
+        open: false,
+      })
+  }, [toggleDrawer])
 
   return (
     <PageWrapper>

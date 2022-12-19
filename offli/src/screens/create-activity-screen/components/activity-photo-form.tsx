@@ -1,4 +1,11 @@
-import { Box, Button, IconButton, TextField, Typography } from '@mui/material'
+import {
+  Box,
+  Button,
+  IconButton,
+  TextField,
+  Typography,
+  useTheme,
+} from '@mui/material'
 import React, { BaseSyntheticEvent } from 'react'
 import { Controller, UseFormReturn } from 'react-hook-form'
 import OffliButton from '../../../components/offli-button'
@@ -27,8 +34,27 @@ export const ActivityPhotoForm: React.FC<IActivityPhotoFormProps> = ({
   const onImageSelect = (e: BaseSyntheticEvent) => {
     console.log(e.target.files)
   }
-
+  const theme = useTheme()
   const tags = watch('tags')
+
+  const selectedPhoto = watch('title_picture')
+
+  const openGallery = React.useCallback(
+    () =>
+      toggleDrawer({
+        open: true,
+        content: (
+          <OffliGallery
+            tags={tags}
+            onPictureSelect={url => {
+              setValue('title_picture', url)
+              toggleDrawer({ open: false, content: undefined })
+            }}
+          />
+        ),
+      }),
+    [toggleDrawer, setValue]
+  )
 
   return (
     <>
@@ -59,6 +85,7 @@ export const ActivityPhotoForm: React.FC<IActivityPhotoFormProps> = ({
           </Typography>
         </Box>
       </Box>
+
       <Box
         sx={{
           width: '100%',
@@ -69,126 +96,146 @@ export const ActivityPhotoForm: React.FC<IActivityPhotoFormProps> = ({
           mb: 6,
         }}
       >
-        <Controller
-          name="title_picture"
-          control={control}
-          render={({ field: { ref, ...field }, fieldState: { error } }) => {
-            return (
-              <Upload
-                name="file"
-                value={field.value?.[0]}
-                style={{ display: 'flex', justifyContent: 'center' }}
-                // beforeUpload={(file: RcFile) => {
-                //   // check file size
-                //   if (file?.size > fileLimit) {w
-                //     showNotification(t('file-too-large'), 'error');
-                //     return false;
-                //   }
-
-                //   // check file format
-                //   const fileExtension = file?.name?.split('.').pop();
-                //   if (
-                //     !allowedExtensions.includes(
-                //       `.${fileExtension?.toLowerCase()}`
-                //     )
-                //   ) {
-                //     showNotification(t('unsupported-file-format'), 'error');
-                //     return false;
-                //   }
-                //   return true;
-                // }}
-                // onSuccess={(result, file) => {
-                //   onSuccessfullUpload();
-                //   field.onChange(file);
-                //   showNotification(t('file-successfully-uploaded'));
-                // }}
-                // action={() =>
-                //   `${endpointMap[application]}/user-file/fields/${id}/import`
-                // }
-                // headers={{
-                //   authorization: `Bearer ${token}`,
-                // }}
-                multiple
-              >
-                {/* TODO outsource this component */}
-                <Box
-                  sx={{
-                    width: 200,
-                    height: 100,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    position: 'relative',
-                    bgcolor: grey[200],
-                    borderRadius: 5,
-                    border: theme => `1px dashed ${theme.palette.primary.main}`,
-                  }}
-                >
-                  {/* <Box></Box> */}
-                  <IconButton
-                    //component="label"
-                    //variant="text"
-                    // sx={{ textTransform: 'none', pb: 0.5 }}
-                    size="large"
-                  >
-                    <AddAPhotoIcon color="primary" />
-                  </IconButton>
-                  <Typography sx={{ fontSize: 14 }}>
-                    Upload from your phone
-                  </Typography>
-                </Box>
-              </Upload>
-            )
-          }}
-        />
-        <LabeledDivider sx={{ my: 3, width: '100%' }}>
-          <Typography variant="subtitle1">or</Typography>
-        </LabeledDivider>
-        <Box
-          sx={{
-            width: '100%',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-        >
+        {selectedPhoto ? (
           <Box
-            onClick={() =>
-              toggleDrawer({
-                open: true,
-                content: (
-                  <OffliGallery
-                    tags={tags}
-                    onPictureSelect={url => {
-                      setValue('title_picture', url)
-                      toggleDrawer({ open: false, content: undefined })
-                    }}
-                  />
-                ),
-              })
-            }
             sx={{
-              width: 200,
-              height: 100,
+              width: '100%',
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',
-              justifyContent: 'center',
-              position: 'relative',
-              bgcolor: grey[200],
-              borderRadius: 5,
-              border: theme => `1px dashed ${theme.palette.primary.main}`,
             }}
           >
             <img
-              src={activityPhotoImg}
-              style={{ height: 50, marginBottom: 12 }}
+              src={selectedPhoto}
+              style={{
+                width: 250,
+                height: 200,
+                border: `1px solid ${theme.palette.primary.main}`,
+                borderRadius: 5,
+                boxShadow: '2px 3px 3px #ccc',
+              }}
             />
-            <Typography sx={{ fontSize: 14 }}>Select from Offli</Typography>
+            <OffliButton
+              variant="text"
+              sx={{ mt: 2, fontSize: 16 }}
+              size="small"
+              onClick={openGallery}
+            >
+              Choose different picture
+            </OffliButton>
           </Box>
-        </Box>
+        ) : (
+          <>
+            <Controller
+              name="title_picture"
+              control={control}
+              render={({ field: { ref, ...field }, fieldState: { error } }) => {
+                return (
+                  <Upload
+                    name="file"
+                    value={field.value?.[0]}
+                    style={{ display: 'flex', justifyContent: 'center' }}
+                    // beforeUpload={(file: RcFile) => {
+                    //   // check file size
+                    //   if (file?.size > fileLimit) {w
+                    //     showNotification(t('file-too-large'), 'error');
+                    //     return false;
+                    //   }
+
+                    //   // check file format
+                    //   const fileExtension = file?.name?.split('.').pop();
+                    //   if (
+                    //     !allowedExtensions.includes(
+                    //       `.${fileExtension?.toLowerCase()}`
+                    //     )
+                    //   ) {
+                    //     showNotification(t('unsupported-file-format'), 'error');
+                    //     return false;
+                    //   }
+                    //   return true;
+                    // }}
+                    // onSuccess={(result, file) => {
+                    //   onSuccessfullUpload();
+                    //   field.onChange(file);
+                    //   showNotification(t('file-successfully-uploaded'));
+                    // }}
+                    // action={() =>
+                    //   `${endpointMap[application]}/user-file/fields/${id}/import`
+                    // }
+                    // headers={{
+                    //   authorization: `Bearer ${token}`,
+                    // }}
+                    multiple
+                  >
+                    {/* TODO outsource this component */}
+                    <Box
+                      sx={{
+                        width: 200,
+                        height: 100,
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        position: 'relative',
+                        bgcolor: grey[200],
+                        borderRadius: 5,
+                        border: theme =>
+                          `1px dashed ${theme.palette.primary.main}`,
+                      }}
+                    >
+                      {/* <Box></Box> */}
+                      <IconButton
+                        //component="label"
+                        //variant="text"
+                        // sx={{ textTransform: 'none', pb: 0.5 }}
+                        size="large"
+                      >
+                        <AddAPhotoIcon color="primary" />
+                      </IconButton>
+                      <Typography sx={{ fontSize: 14 }}>
+                        Upload from your phone
+                      </Typography>
+                    </Box>
+                  </Upload>
+                )
+              }}
+            />
+            <LabeledDivider sx={{ my: 3, width: '100%' }}>
+              <Typography variant="subtitle1">or</Typography>
+            </LabeledDivider>
+            <Box
+              sx={{
+                width: '100%',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <Box
+                onClick={openGallery}
+                sx={{
+                  width: 200,
+                  height: 100,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  position: 'relative',
+                  bgcolor: grey[200],
+                  borderRadius: 5,
+                  border: theme => `1px dashed ${theme.palette.primary.main}`,
+                }}
+              >
+                <img
+                  src={activityPhotoImg}
+                  style={{ height: 50, marginBottom: 12 }}
+                />
+                <Typography sx={{ fontSize: 14 }}>Select from Offli</Typography>
+              </Box>
+            </Box>
+          </>
+        )}
       </Box>
       <Box
         sx={{

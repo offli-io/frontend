@@ -10,6 +10,7 @@ import {
 import { IPlaceExternalApiDto } from '../../types/activities/place-external-api.dto'
 import qs from 'qs'
 import { IPredefinedPictureDto } from '../../types/activities/predefined-picture.dto'
+import { IPredefinedTagDto } from '../../types/activities/predefined-tag.dto'
 
 export const getActivities = async ({
   queryFunctionContext,
@@ -115,6 +116,24 @@ export const getBuddies = (userId: string, queryString?: string) => {
       params: {
         buddyName: queryString,
       },
+      cancelToken: source?.token,
+    }
+  )
+
+  // queryFunctionContext?.signal?.addEventListener('abort', () => {
+  //   source.cancel('Query was cancelled by React Query')
+  // })
+
+  return promise
+}
+
+export const getPredefinedTags = () => {
+  const CancelToken = axios.CancelToken
+  const source = CancelToken.source()
+
+  const promise = axios.get<{ tags: IPredefinedTagDto[] }>(
+    `${DEFAULT_DEV_URL}/predefined/tags`,
+    {
       cancelToken: source?.token,
     }
   )
