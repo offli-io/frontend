@@ -9,7 +9,7 @@ import {
 import { PageWrapper } from '../components/page-wrapper'
 import SearchIcon from '@mui/icons-material/Search'
 import PersonAddIcon from '@mui/icons-material/PersonAdd'
-import BuddyItem from '../components/buddy-item-checkbox'
+import BuddyItem from '../api/activities/buddy-item-checkbox'
 import logo from '../assets/img/profilePicture.jpg'
 
 const data = [

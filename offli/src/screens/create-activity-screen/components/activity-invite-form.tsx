@@ -1,10 +1,16 @@
-import { Box, CircularProgress, TextField, Typography } from '@mui/material'
+import {
+  Box,
+  Button,
+  CircularProgress,
+  TextField,
+  Typography,
+} from '@mui/material'
 import React from 'react'
 import { Controller, UseFormReturn } from 'react-hook-form'
 import LabeledTile from '../../../components/labeled-tile'
 import OffliButton from '../../../components/offli-button'
 import SearchIcon from '@mui/icons-material/Search'
-import BuddyItemCheckbox from '../../../components/buddy-item-checkbox'
+import BuddyItemCheckbox from '../../../api/activities/buddy-item-checkbox'
 import BuddyItemInvite from '../../../components/buddy-item-invite'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import {
@@ -71,7 +77,9 @@ export const ActivityInviteForm: React.FC<IActivityTypeFormProps> = ({
   onNextClicked,
   methods,
 }) => {
-  const { userInfo } = React.useContext(AuthenticationContext)
+  const { userInfo, googleTokenClient } = React.useContext(
+    AuthenticationContext
+  )
   const { control, setValue, watch } = methods
   const [invitedBuddies, setInvitedBuddies] = React.useState<string[]>([])
   const { enqueueSnackbar } = useSnackbar()
@@ -142,6 +150,9 @@ export const ActivityInviteForm: React.FC<IActivityTypeFormProps> = ({
           width: '100%',
         }}
       >
+        <Button onClick={() => googleTokenClient?.requestAccessToken()}>
+          Create calendar Event
+        </Button>
         <TextField
           // TODO idk if this is really needed and not anti-pattern
           //autoFocus

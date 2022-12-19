@@ -1,9 +1,5 @@
 import React from 'react'
-import { ReactKeycloakProvider } from '@react-keycloak/web'
-import Keycloak from 'keycloak-js'
-import { useServiceInterceptors } from '../../hooks/use-service-interceptors'
-import { setAuthToken } from '../../utils/token.util'
-import { IPerson, IPersonExtended } from '../../types/activities/activity.dto'
+
 import { SwipeableDrawer, Box } from '@mui/material'
 import { styled } from '@mui/material/styles'
 

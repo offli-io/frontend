@@ -38,7 +38,6 @@ const MyActivityCard: React.FC<IProps> = ({
   const activity = data?.data?.activity
 
   const navigate = useNavigate()
-  console.log(action)
 
   return (
     <Box

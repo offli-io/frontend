@@ -12,6 +12,32 @@ import { useServiceInterceptors } from './hooks/use-service-interceptors'
 import { SnackbarKey, SnackbarProvider } from 'notistack'
 import { DrawerProvider } from './assets/theme/drawer-provider'
 import { CustomizationProvider } from './assets/theme/customization-provider'
+import { gapi } from 'gapi-script'
+import { useGoogleCalendar } from './hooks/use-google-calendar'
+import axios from 'axios'
+import jwt_decode from 'jwt-decode'
+
+const event = {
+  summary: 'Hello World',
+  location: '',
+  start: {
+    dateTime: '2022-08-28T09:00:00-07:00',
+    timeZone: 'America/Los_Angeles',
+  },
+  end: {
+    dateTime: '2022-08-28T17:00:00-07:00',
+    timeZone: 'America/Los_Angeles',
+  },
+  recurrence: ['RRULE:FREQ=DAILY;COUNT=2'],
+  attendees: [],
+  reminders: {
+    useDefault: false,
+    overrides: [
+      { method: 'email', minutes: 24 * 60 },
+      { method: 'popup', minutes: 10 },
+    ],
+  },
+}
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -39,35 +65,12 @@ declare module 'react-query/types/react/QueryClientProvider' {
 }
 
 function App() {
-  const handleCallbackResponse = (res: any) => {
-    console.log(res)
-  }
-
   window.addEventListener('load', function () {
     setTimeout(function () {
       // This hides the address bar:
       window.scrollTo(0, 1)
     }, 0)
   })
-  React.useEffect(() => {
-    /* global google */
-    google.accounts.id.initialize({
-      client_id:
-        '1080578312208-8vm5lbg7kctt890d0lagj46sphae7odu.apps.googleusercontent.com',
-      callback: handleCallbackResponse,
-    })
-
-    google.accounts.id.renderButton(
-      document.getElementById('signIn') as HTMLElement,
-      {
-        type: 'standard',
-        theme: 'outline',
-        size: 'large',
-        width: '270px',
-      }
-    )
-  }, [])
-
   const notificationsRef = React.createRef<any>()
 
   const handleDismiss = React.useCallback(

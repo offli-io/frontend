@@ -1,5 +1,5 @@
 import { Box, Button, Checkbox, styled, Typography } from '@mui/material'
-import logo from '../assets/img/profilePicture.jpg'
+// import logo from '../assets/img/profilePicture.jpg'
 import React from 'react'
 
 interface ILabeledDividerProps {
@@ -52,7 +52,7 @@ const BuddyItemCheckbox: React.FC<ILabeledDividerProps> = ({
       {...rest}
     >
       <Box sx={{ display: 'flex', alignItems: 'center' }}>
-        <StyledImage src={imageSource ?? logo} alt="profile picture" />
+        {/* <StyledImage src={imageSource ?? logo} alt="profile picture" /> */}
         <Typography sx={{ ml: 4, color: 'black' }}>{username}</Typography>
       </Box>
       {checkbox && <Checkbox checked={checked} />}

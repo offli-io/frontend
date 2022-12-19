@@ -1,4 +1,3 @@
-import { useKeycloak } from '@react-keycloak/web'
 import { Route, Routes as BaseRoutes } from 'react-router-dom'
 import { PrivateRoutes } from '../components/private-routes'
 import ActivitiesScreen from '../screens/my-activities-screen/my-activities-screen'
@@ -23,10 +22,9 @@ import WelcomeScreen from '../screens/welcome-screen'
 import { ApplicationLocations } from '../types/common/applications-locations.dto'
 import { getAuthToken } from '../utils/token.util'
 import ActivityDetailsScreen from '../screens/activity-details-screen'
+import NotificationsScreen from '../screens/notifications-screen/notifications-screen'
 
 const Routes = () => {
-  const { keycloak } = useKeycloak()
-
   const token = getAuthToken()
 
   return (
@@ -94,6 +92,10 @@ const Routes = () => {
         <Route
           path={ApplicationLocations.SETTINGS}
           element={<SettingsScreen />}
+        />
+        <Route
+          path={ApplicationLocations.NOTIFICATIONS}
+          element={<NotificationsScreen />}
         />
         <Route
           path={ApplicationLocations.BUDDIES}

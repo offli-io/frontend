@@ -17,7 +17,12 @@ export const Layout: React.FC<ILayoutProps> = ({ children }) => {
   const [displayHeader, setDisplayHeader] = React.useState(true)
 
   React.useEffect(() => {
-    if (location?.pathname === ApplicationLocations.SETTINGS) {
+    if (
+      [
+        ApplicationLocations.SETTINGS,
+        ApplicationLocations.NOTIFICATIONS,
+      ].includes(location?.pathname as ApplicationLocations)
+    ) {
       setDisplayHeader(false)
     } else {
       setDisplayHeader(true)

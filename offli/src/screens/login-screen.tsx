@@ -16,7 +16,6 @@ import OffliButton from '../components/offli-button'
 import LabeledDivider from '../components/labeled-divider'
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff'
 import VisibilityIcon from '@mui/icons-material/Visibility'
-import { useKeycloak } from '@react-keycloak/web'
 import axios from 'axios'
 import { useSnackbar } from 'notistack'
 import {
@@ -41,7 +40,6 @@ const schema: () => yup.SchemaOf<FormValues> = () =>
   })
 
 const LoginScreen: React.FC = () => {
-  const { keycloak, initialized } = useKeycloak()
   const [showPassword, setShowPassword] = React.useState(false)
   const { setUserInfo, setStateToken } = React.useContext(AuthenticationContext)
   const { enqueueSnackbar } = useSnackbar()
@@ -131,6 +129,7 @@ const LoginScreen: React.FC = () => {
         }}
       >
         <Box id="signIn"></Box>
+        {/* <button id="authorize-button">Authorize</button> */}
 
         <LabeledDivider sx={{ my: 1 }}>
           <Typography variant="subtitle1">alebo</Typography>
@@ -140,7 +139,6 @@ const LoginScreen: React.FC = () => {
           control={control}
           render={({ field, fieldState: { error } }) => (
             <TextField
-              autoFocus
               {...field}
               //label="Username"
               placeholder="Meno, email alebo mobil"

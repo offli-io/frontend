@@ -10,55 +10,6 @@ export const useServiceInterceptors = () => {
   const { stateToken } = React.useContext(AuthenticationContext)
   const abortControllerRef = React.useRef<AbortController | null>(null)
 
-  const mut = useMutation(['keycloak-login'], () => {
-    abortControllerRef.current = new AbortController()
-    const CancelToken = axios.CancelToken
-    const source = CancelToken.source()
-
-    const refreshToken = getRefreshToken()
-    const data = {
-      refresh_token: refreshToken,
-      grant_type: 'refresh_token',
-      client_id: 'UserManagement',
-    }
-    // const options = {
-    //   method: 'POST',
-    //   headers: { 'content-type': 'application/x-www-form-urlencoded' },
-    //   data: qs.stringify(data),
-    //   url: 'http://localhost:8082/realms/Offli/protocol/openid-connect/token',
-    // }
-    const promise = axios.post(
-      `${DEFAULT_KEYCLOAK_URL}/realms/Offli/protocol/openid-connect/token`,
-      qs.stringify(data),
-      {
-        headers: { 'content-type': 'application/x-www-form-urlencoded' },
-        cancelToken: source.token,
-      }
-    )
-
-    abortControllerRef.current.signal?.addEventListener('abort', () => {
-      source.cancel('Query was cancelled by React Query')
-    })
-
-    return promise
-
-    // const params = new URLSearchParams()
-    // params.append('username', 'fme')
-    // params.append('password', 'test')
-    // params.append('grant_type', 'password')
-    // params.append('client_id', 'UserManagement')
-    // return axios.post(
-    //   'http://localhost:8082/realms/Offli/protocol/openid-connect/token',
-    //   params,
-    //   {
-    //     headers: {
-    //       'Content-Type': 'application/x-www-form-urlencoded',
-    //     },
-    //   }
-    // )
-  })
-  console.log('using service interceptors')
-
   // if using docker
   const token = getAuthToken()
   // axios.defaults.baseURL = token
@@ -73,8 +24,6 @@ export const useServiceInterceptors = () => {
     config => {
       const _token = getAuthToken()
       if (config) {
-        console.log(config)
-
         // if you have token -> all requests same port
         // if you dont have token 2 subcases
         // keycloak - e.g. :8082
@@ -85,7 +34,8 @@ export const useServiceInterceptors = () => {
         if (config?.headers) {
           //const newConfig = { ...config }
           config.headers['Content-Type'] = 'application/json'
-          if (_token) {
+          const explicitToken = config.headers['Authorization']
+          if (_token && !explicitToken) {
             config.headers['Authorization'] = 'Bearer ' + _token
           }
           return config
@@ -102,7 +52,6 @@ export const useServiceInterceptors = () => {
       return res
     },
     async (err: AxiosError) => {
-      console.log(err)
       //TODO uncomment
       const originalConfig = err.config
       // if (err?.response?.status === 401) {
