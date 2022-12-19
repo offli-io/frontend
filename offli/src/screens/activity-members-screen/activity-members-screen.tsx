@@ -14,6 +14,7 @@ import { useSnackbar } from 'notistack'
 import { AuthenticationContext } from '../../assets/theme/authentication-provider'
 import { useParams } from 'react-router-dom'
 import { BuddyActionContent } from './components/buddy-action-content'
+import { ActivityMembersActionTypeDto } from '../../types/common/activity-members-action-type.dto'
 
 // interface IActivityTypeFormProps {
 //   //   onNextClicked: () => void
@@ -87,6 +88,20 @@ export const ActivityMembersScreen: React.FC = () => {
     return data?.data?.activity?.participants ?? []
   }, [queryStringDebounced, data?.data])
 
+  const handleActionClick = React.useCallback(
+    (type?: ActivityMembersActionTypeDto, userId?: string) => {
+      switch (type) {
+        case ActivityMembersActionTypeDto.KICK:
+          return console.log('call kick with id')
+        case ActivityMembersActionTypeDto.PROMOTE:
+          return console.log('call promote with id')
+        default:
+          return
+      }
+    },
+    []
+  )
+
   return (
     <Box sx={{ px: 2 }}>
       <Box sx={{ display: 'flex', mb: 3, mt: 2 }}>
@@ -152,7 +167,12 @@ export const ActivityMembersScreen: React.FC = () => {
                 <BuddyItem
                   key={member?.id}
                   buddy={member}
-                  actionContent={<BuddyActionContent />}
+                  actionContent={
+                    <BuddyActionContent
+                      userId={member?.id}
+                      onActionClick={handleActionClick}
+                    />
+                  }
                 />
               ))
             )}
