@@ -1,4 +1,6 @@
 export const HEADER_HEIGHT = 65
 
 export const CLIENT_ID =
-  '1080578312208-2d398imh54l59g5kq7icjdso0ae4mb3k.apps.googleusercontent.com'
+  '1080578312208-8vm5lbg7kctt890d0lagj46sphae7odu.apps.googleusercontent.com'
+
+export const SCOPE = 'https://www.googleapis.com/auth/calendar'

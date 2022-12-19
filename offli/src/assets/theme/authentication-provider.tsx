@@ -17,7 +17,7 @@ const event = {
     dateTime: '2022-12-28T17:00:00-07:00',
     timeZone: 'America/Los_Angeles',
   },
-  recurrence: ['RRULE:FREQ=DAILY;COUNT=2'],
+  // recurrence: ['RRULE:FREQ=DAILY;COUNT=2'],
   attendees: [],
   reminders: {
     useDefault: false,
@@ -38,10 +38,10 @@ interface IAuthenticationContext {
   googleTokenClient: any
 }
 
-const CLIENT_ID =
+export const CLIENT_ID =
   '1080578312208-8vm5lbg7kctt890d0lagj46sphae7odu.apps.googleusercontent.com'
 
-const SCOPE = 'https://www.googleapis.com/auth/calendar'
+export const SCOPE = 'https://www.googleapis.com/auth/calendar'
 
 export const AuthenticationContext =
   React.createContext<IAuthenticationContext>({} as IAuthenticationContext)
