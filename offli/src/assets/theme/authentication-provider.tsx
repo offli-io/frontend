@@ -90,24 +90,25 @@ export const AuthenticationProvider = ({
       }
     )
 
-    setGoogleTokenClient(
-      google.accounts.oauth2.initTokenClient({
-        client_id: CLIENT_ID,
-        scope: SCOPE,
-        callback: async tokenResponse => {
-          console.log(tokenResponse)
-          if (tokenResponse && tokenResponse.access_token) {
-            //TODO calendarId is logged in user mail,
-            const promise = addEventToCalendar(
-              'thefaston@gmail.com',
-              tokenResponse?.access_token,
-              event
-            )
-            console.log(promise)
-          }
-        },
-      })
-    )
+    // TODO old way maybe if I can call this with params I can use it later
+    // setGoogleTokenClient(
+    //   google.accounts.oauth2.initTokenClient({
+    //     client_id: CLIENT_ID,
+    //     scope: SCOPE,
+    //     callback: async tokenResponse => {
+    //       console.log(tokenResponse)
+    //       if (tokenResponse && tokenResponse.access_token) {
+    //         //TODO calendarId is logged in user mail,
+    //         const promise = addEventToCalendar(
+    //           'thefaston@gmail.com',
+    //           tokenResponse?.access_token,
+    //           event
+    //         )
+    //         console.log(promise)
+    //       }
+    //     },
+    //   })
+    // )
   }, [])
   return (
     <AuthenticationContext.Provider

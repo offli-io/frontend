@@ -5,11 +5,16 @@ import { ActivityActionsDefinitions } from './activity-actions-definitions'
 import MenuItem from '../../../components/menu-item'
 
 export interface IActivityActionsProps {
-  onActionClick?: (type?: ActivityActionsTypeEnumDto) => void
+  onActionClick?: (
+    type?: ActivityActionsTypeEnumDto,
+    activityId?: string
+  ) => void
+  activityId?: string
 }
 
 const ActivityActions: React.FC<IActivityActionsProps> = ({
   onActionClick,
+  activityId,
 }) => {
   return (
     <Box
@@ -28,6 +33,9 @@ const ActivityActions: React.FC<IActivityActionsProps> = ({
           key={`activity_action_${actionDefinition?.type}`}
           //temporary solution just add bolean if next icon should be displayed
           headerRight={<></>}
+          onMenuItemClick={() =>
+            onActionClick?.(actionDefinition.type, activityId)
+          }
         />
       ))}
     </Box>

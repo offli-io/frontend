@@ -23,6 +23,7 @@ import { ApplicationLocations } from '../types/common/applications-locations.dto
 import { getAuthToken } from '../utils/token.util'
 import ActivityDetailsScreen from '../screens/activity-details-screen'
 import NotificationsScreen from '../screens/notifications-screen/notifications-screen'
+import { ActivityMembersScreen } from '../screens/activity-members-screen/activity-members-screen'
 
 const Routes = () => {
   const token = getAuthToken()
@@ -80,6 +81,10 @@ const Routes = () => {
         <Route
           path={`${ApplicationLocations.ACTIVITY_ID}/:id`}
           element={<ActivityDetailsScreen />}
+        />
+        <Route
+          path={`${ApplicationLocations.ACTIVITY_ID}/:id/members`}
+          element={<ActivityMembersScreen />}
         />
         <Route
           path={ApplicationLocations.CREATE}
