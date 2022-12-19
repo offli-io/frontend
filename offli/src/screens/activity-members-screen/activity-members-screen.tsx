@@ -1,9 +1,9 @@
 import { Box, CircularProgress, TextField, Typography } from '@mui/material'
 import React from 'react'
-import { UseFormReturn } from 'react-hook-form'
-import BuddyItemInvite from '../../components/buddy-item-invite'
+import BuddyItem from '../../components/buddy-item'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import {
+  getActivity,
   getBuddies,
   inviteBuddy,
   uninviteBuddy,
@@ -13,56 +13,12 @@ import { useDebounce } from 'use-debounce'
 import { useSnackbar } from 'notistack'
 import { AuthenticationContext } from '../../assets/theme/authentication-provider'
 import { useParams } from 'react-router-dom'
+import { BuddyActionContent } from './components/buddy-action-content'
 
 // interface IActivityTypeFormProps {
 //   //   onNextClicked: () => void
 //   //   methods: UseFormReturn
 // }
-
-const budky = [
-  {
-    id: '2312',
-    name: 'Milada Jankovic',
-    username: 'milhaus',
-    profile_photo:
-      'https://w7.pngwing.com/pngs/569/273/png-transparent-silhouette-human-head-head-face-animals-head-thumbnail.png',
-  },
-  {
-    id: '2312',
-    name: 'Milada Jankovic',
-    username: 'milhaus',
-    profile_photo:
-      'https://w7.pngwing.com/pngs/569/273/png-transparent-silhouette-human-head-head-face-animals-head-thumbnail.png',
-  },
-  {
-    id: '2312',
-    name: 'Milada Jankovic',
-    username: 'milhaus',
-    profile_photo:
-      'https://w7.pngwing.com/pngs/569/273/png-transparent-silhouette-human-head-head-face-animals-head-thumbnail.png',
-  },
-  {
-    id: '2312',
-    name: 'Milada Jankovic',
-    username: 'milhaus',
-    profile_photo:
-      'https://w7.pngwing.com/pngs/569/273/png-transparent-silhouette-human-head-head-face-animals-head-thumbnail.png',
-  },
-  {
-    id: '2312',
-    name: 'Milada Jankovic',
-    username: 'milhaus',
-    profile_photo:
-      'https://w7.pngwing.com/pngs/569/273/png-transparent-silhouette-human-head-head-face-animals-head-thumbnail.png',
-  },
-  {
-    id: '2312',
-    name: 'Milada Jankovic',
-    username: 'milhaus',
-    profile_photo:
-      'https://w7.pngwing.com/pngs/569/273/png-transparent-silhouette-human-head-head-face-animals-head-thumbnail.png',
-  },
-]
 
 export const ActivityMembersScreen: React.FC = () => {
   const { userInfo } = React.useContext(AuthenticationContext)
@@ -70,20 +26,16 @@ export const ActivityMembersScreen: React.FC = () => {
   const { enqueueSnackbar } = useSnackbar()
   const { id } = useParams()
 
-  console.log(id)
-
-  const [queryString, setQueryString] = React.useState<string | undefined>()
-  const [queryStringDebounced] = useDebounce(queryString, 1000)
-
-  const { data: buddies, isLoading } = useQuery(
-    ['buddies', userInfo?.id, queryStringDebounced],
-    // TODO Fetch with current user id
-    () => getBuddies(String(userInfo?.id), queryStringDebounced),
+  const { data, isLoading } = useQuery(
+    ['activity', id],
+    () => getActivity(id),
     {
-      // enabled: !!queryStringDebounced,
-      enabled: !!userInfo?.id,
+      enabled: !!id,
     }
   )
+
+  const [queryString, setQueryString] = React.useState<string | undefined>()
+  const [queryStringDebounced] = useDebounce(queryString, 100)
 
   const { mutate: sendInviteBuddy } = useMutation(
     ['invite-person'],
@@ -123,11 +75,23 @@ export const ActivityMembersScreen: React.FC = () => {
     }
   }, [])
 
+  //TODO now filtering is done on FE -> move to BE when capacity is available
+  const activityMembers = React.useMemo(() => {
+    if (queryStringDebounced) {
+      return (data?.data?.activity?.participants ?? [])?.filter(participant =>
+        participant?.username
+          ?.toLowerCase()
+          .includes(queryStringDebounced.toLowerCase())
+      )
+    }
+    return data?.data?.activity?.participants ?? []
+  }, [queryStringDebounced, data?.data])
+
   return (
-    <>
+    <Box sx={{ px: 2 }}>
       <Box sx={{ display: 'flex', mb: 3, mt: 2 }}>
         <Typography sx={{ fontWeight: 'bold' }} variant="h4">
-          Send invites to your buddies
+          Activity members
         </Typography>
       </Box>
       <Box
@@ -144,13 +108,13 @@ export const ActivityMembersScreen: React.FC = () => {
           value={queryString}
           onChange={e => setQueryString(e.target.value)}
           sx={{ width: '100%' }}
-          label="Search within your buddies"
+          label="Search within activity members"
           // InputProps={{
           //   startAdornment: <SearchIcon />,
           // }}
-          placeholder="Type buddy username"
+          placeholder="Type username"
         />
-        {buddies?.data && buddies?.data?.length < 1 ? (
+        {(data?.data?.activity?.participants ?? [])?.length < 1 ? (
           <Box
             sx={{
               height: 100,
@@ -164,7 +128,7 @@ export const ActivityMembersScreen: React.FC = () => {
             }}
           >
             <Typography sx={{ color: theme => theme.palette.inactive.main }}>
-              No buddies to invite
+              No activity members
             </Typography>
           </Box>
         ) : (
@@ -184,18 +148,17 @@ export const ActivityMembersScreen: React.FC = () => {
                 <CircularProgress color="primary" />
               </Box>
             ) : (
-              budky.map(buddy => (
-                <BuddyItemInvite
-                  key={buddy?.id}
-                  onInviteClick={handleBuddyInviteClick}
-                  buddy={buddy}
-                  invited={invitedBuddies?.includes(buddy?.id)}
+              activityMembers.map(member => (
+                <BuddyItem
+                  key={member?.id}
+                  buddy={member}
+                  actionContent={<BuddyActionContent />}
                 />
               ))
             )}
           </Box>
         )}
       </Box>
-    </>
+    </Box>
   )
 }
