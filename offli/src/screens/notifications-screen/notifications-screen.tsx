@@ -47,7 +47,9 @@ const NotificationsScreen = () => {
   const navigateBasedOnType = React.useCallback(
     (type?: NotificationTypeEnum) => {
       if (type === NotificationTypeEnum.ACTIVITY_INV) {
-        return navigate('/activity/invitation/url')
+        return navigate(
+          `${ApplicationLocations.ACTIVITIES}/tumusibytidactivity/request`
+        )
       }
       if (type === NotificationTypeEnum.BUDDY_INV) {
         return navigate(`${ApplicationLocations.PROFILE}/request`)
