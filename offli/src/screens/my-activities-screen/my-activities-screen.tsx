@@ -26,7 +26,7 @@ const ActivitiesScreen = () => {
 
   const { data } = useQuery(
     ['user-info', userInfo?.username],
-    () => getUsers(userInfo?.username)
+    () => getUsers({ username: userInfo?.username })
     // {
     //   onSuccess: data =>
     //     data?.data?.activities && setActivityIds(data?.data?.activities),

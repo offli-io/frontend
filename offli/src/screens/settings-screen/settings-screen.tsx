@@ -11,17 +11,14 @@ import { AuthenticationContext } from '../../assets/theme/authentication-provide
 import { setAuthToken } from '../../utils/token.util'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { ApplicationLocations } from '../../types/common/applications-locations.dto'
-
-export interface ICustomizedLocationState {
-  from?: string
-}
+import { ICustomizedLocationStateDto } from '../../types/common/customized-location-state.dto'
 
 const SettingsScreen = () => {
   const [darkMode, setDarkMode] = React.useState(false)
   const { setStateToken } = React.useContext(AuthenticationContext)
   const navigate = useNavigate()
   const location = useLocation()
-  const state = location?.state as ICustomizedLocationState
+  const state = location?.state as ICustomizedLocationStateDto
   const { from } = state
 
   const handleLogout = React.useCallback(() => {

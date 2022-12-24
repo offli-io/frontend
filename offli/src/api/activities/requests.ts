@@ -87,17 +87,26 @@ export const createActivity = async (values: IActivity) => {
   return promise
 }
 
-export const getUsers = (username?: string) => {
+export const getUsers = ({
+  username,
+  id,
+}: {
+  username?: string
+  id?: string
+}) => {
   const CancelToken = axios.CancelToken
   const source = CancelToken.source()
   const validUsername = username ?? localStorage.getItem('username')
 
-  const promise = axios.get<IPersonExtended>(`${DEFAULT_DEV_URL}/users`, {
-    params: {
-      username: validUsername,
-    },
-    cancelToken: source?.token,
-  })
+  const promise = axios.get<IPersonExtended>(
+    `${DEFAULT_DEV_URL}/users${id ? `/${id}` : ''}`,
+    {
+      params: {
+        username: username ? validUsername : undefined,
+      },
+      cancelToken: source?.token,
+    }
+  )
 
   // queryFunctionContext?.signal?.addEventListener('abort', () => {
   //   source.cancel('Query was cancelled by React Query')
