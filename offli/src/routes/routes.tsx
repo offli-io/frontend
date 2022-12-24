@@ -63,7 +63,7 @@ const Routes = () => {
           element={<ProfileScreen type="profile" />}
         />
         <Route
-          path={`${ApplicationLocations.PROFILE}/request`}
+          path={`${ApplicationLocations.PROFILE}/request/:id`}
           element={<ProfileScreen type="request" />}
         />
         <Route
@@ -87,7 +87,7 @@ const Routes = () => {
           element={<ActivityDetailsScreen type="detail" />}
         />
         <Route
-          path={`${ApplicationLocations.ACTIVITY_ID}/:id/request`}
+          path={`${ApplicationLocations.ACTIVITIES}/request/:id`}
           element={<ActivityDetailsScreen type="request" />}
         />
         <Route

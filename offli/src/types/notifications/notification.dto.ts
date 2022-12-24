@@ -1,3 +1,4 @@
+import { IActivity, IPerson } from '../activities/activity.dto'
 import { NotificationTypeEnum } from './notification-type-enum'
 
 export interface INotificationDto {
@@ -7,5 +8,8 @@ export interface INotificationDto {
   type: NotificationTypeEnum
   timestamp: number
   message: string
-  properties: any
+  properties: {
+    activity?: IActivity
+    user?: IPerson
+  }
 }

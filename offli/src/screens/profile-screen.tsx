@@ -8,13 +8,14 @@ import { PageWrapper } from '../components/page-wrapper'
 import { useQuery } from '@tanstack/react-query'
 import axios from 'axios'
 import ProfileGallery from '../components/profile-gallery'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { ApplicationLocations } from '../types/common/applications-locations.dto'
 import { AuthenticationContext } from '../assets/theme/authentication-provider'
 import { getUsers } from '../api/activities/requests'
 import ProfilePicture from '../assets/img/profilePicture.jpg'
 import ProfileStatistics from '../components/profile-statistics'
 import BackHeader from '../components/back-header'
+import { ICustomizedLocationStateDto } from '../types/common/customized-location-state.dto'
 
 interface IProfileScreenProps {
   type: 'profile' | 'request'
@@ -24,6 +25,9 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
   const [editAboutMe, setEditAboutMe] = useState<boolean>(false)
   const [aboutMe, setAboutMe] = useState<string>('')
   const { userInfo, setUserInfo } = React.useContext(AuthenticationContext)
+  const location = useLocation()
+  const state = location?.state as ICustomizedLocationStateDto
+  const { from } = state
 
   const { data, isLoading } = useQuery(
     ['user-info', userInfo?.username],
@@ -43,7 +47,7 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
   return (
     <>
       {type === 'request' && (
-        <BackHeader title="Buddie request" sx={{ mb: 2 }} to={'idk'} />
+        <BackHeader title="Buddie request" sx={{ mb: 2 }} to={from} />
       )}
       <PageWrapper>
         <Box

@@ -20,9 +20,11 @@ export const Layout: React.FC<ILayoutProps> = ({ children }) => {
     if (
       [
         ApplicationLocations.SETTINGS,
-        ApplicationLocations.NOTIFICATIONS,
-        `${ApplicationLocations.PROFILE}/request`,
-      ].includes(location?.pathname as ApplicationLocations)
+        //ApplicationLocations.NOTIFICATIONS,
+        // `${ApplicationLocations.PROFILE}/request`,
+        // `${ApplicationLocations.ACTIVITIES}/request`,
+      ].includes(location?.pathname as ApplicationLocations) ||
+      location?.pathname.includes('/request')
     ) {
       setDisplayHeader(false)
     } else {
