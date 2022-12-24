@@ -21,6 +21,7 @@ export const Layout: React.FC<ILayoutProps> = ({ children }) => {
       [
         ApplicationLocations.SETTINGS,
         ApplicationLocations.NOTIFICATIONS,
+        `${ApplicationLocations.PROFILE}/request`,
       ].includes(location?.pathname as ApplicationLocations)
     ) {
       setDisplayHeader(false)

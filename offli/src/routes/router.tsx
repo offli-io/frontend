@@ -18,7 +18,7 @@ const Router: React.FC = (): ReactElement => {
 
   const userInfoQuery = useQuery(
     ['user-info', userInfo?.username],
-    () => getUsers(userInfo?.username),
+    () => getUsers({ username: userInfo?.username }),
     {
       enabled: !!userInfo?.username,
       onSuccess: data => {

@@ -12,6 +12,10 @@ import MenuIcon from '@mui/icons-material/Menu'
 import { ApplicationLocations } from '../types/common/applications-locations.dto'
 import offliLogo from '../assets/img/logoPurple.png'
 import { HEADER_HEIGHT } from '../utils/common-constants'
+import { useQuery } from '@tanstack/react-query'
+import { getNotifications } from '../api/notifications/requests'
+import { AuthenticationContext } from '../assets/theme/authentication-provider'
+import { useNotifications } from '../hooks/use-notifications'
 
 interface IProps {
   sx?: SxProps
@@ -22,6 +26,9 @@ const OffliHeader: React.FC<IProps> = ({ sx }) => {
   const navigate = useNavigate()
   const [notificationNumber] = useState(5)
   const headerRef = React.useRef<HTMLElement | null>(null)
+  const { userInfo } = React.useContext(AuthenticationContext)
+
+  const { data: notificationsData } = useNotifications(userInfo?.id)
 
   //TODO add component non-depending logic like styles outside the components
   const iconStyle = { height: '24px', mr: -1 }
@@ -95,7 +102,7 @@ const OffliHeader: React.FC<IProps> = ({ sx }) => {
               }}
             >
               <Badge
-                badgeContent={notificationNumber}
+                badgeContent={notificationsData?.data?.unseen}
                 color="primary"
                 sx={badgeStyle}
               >

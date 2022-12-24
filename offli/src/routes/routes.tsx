@@ -60,7 +60,11 @@ const Routes = () => {
         />
         <Route
           path={ApplicationLocations.PROFILE}
-          element={<ProfileScreen />}
+          element={<ProfileScreen type="profile" />}
+        />
+        <Route
+          path={`${ApplicationLocations.PROFILE}/request`}
+          element={<ProfileScreen type="request" />}
         />
         <Route
           path={ApplicationLocations.EDIT_PROFILE}
