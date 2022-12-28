@@ -16,6 +16,7 @@ import ActivityActions from './components/activity-actions'
 import { ActivityActionsTypeEnumDto } from '../../types/common/activity-actions-type-enum.dto'
 import { useNavigate } from 'react-router-dom'
 import { ApplicationLocations } from '../../types/common/applications-locations.dto'
+import ActivityLeaveConfirmation from './components/activity-leave-confirmation'
 
 const datetime = new Date()
 
@@ -76,6 +77,16 @@ const ActivitiesScreen = () => {
           return navigate(
             `${ApplicationLocations.ACTIVITY_ID}/${activityId}/members`
           )
+        case ActivityActionsTypeEnumDto.LEAVE:
+          return toggleDrawer({
+            open: true,
+            content: (
+              <ActivityLeaveConfirmation
+                onLeaveCancel={id => console.log(id)}
+                onLeaveConfirm={id => console.log(id)}
+              />
+            ),
+          })
         default:
           return console.log(action)
       }

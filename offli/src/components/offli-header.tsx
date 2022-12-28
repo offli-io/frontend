@@ -46,7 +46,7 @@ const OffliHeader: React.FC<IProps> = ({ sx }) => {
       ref={headerRef}
       sx={{
         height: HEADER_HEIGHT,
-        boxShadow: 'none',
+        boxShadow: '1px 2px 2px #ccc',
         position: 'sticky',
         top: 0,
         backgroundColor: 'white',

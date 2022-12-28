@@ -17,6 +17,7 @@ import { acceptBuddyInvitation } from '../api/users/requests'
 import { AuthenticationContext } from '../assets/theme/authentication-provider'
 import { useMutation } from '@tanstack/react-query'
 import { useSnackbar } from 'notistack'
+import { HEADER_HEIGHT } from '../utils/common-constants'
 
 interface IBottomNavigatorProps {
   sx?: SxProps
@@ -90,7 +91,19 @@ const BottomNavigator: React.FC<IBottomNavigatorProps> = ({ sx }) => {
 
   return (
     <Paper
-      sx={{ position: 'sticky', bottom: 0, left: 0, right: 0, width: '100%' }}
+      sx={{
+        position: 'sticky',
+        bottom: 0,
+        left: 0,
+        right: 0,
+        width: '100%',
+        height: HEADER_HEIGHT,
+        ...(isActionRequired && {
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }),
+      }}
       // sx={sx}
       elevation={3}
     >
@@ -103,13 +116,16 @@ const BottomNavigator: React.FC<IBottomNavigatorProps> = ({ sx }) => {
           }}
         >
           <OffliButton
-            sx={{ width: '30%' }}
+            sx={{ width: '30%', fontSize: 16 }}
             variant="outlined"
             onClick={declineInvitation}
           >
             Reject
           </OffliButton>
-          <OffliButton sx={{ width: '50%' }} onClick={acceptInvitation}>
+          <OffliButton
+            sx={{ width: '50%', fontSize: 16 }}
+            onClick={acceptInvitation}
+          >
             Accept
           </OffliButton>
         </Box>
