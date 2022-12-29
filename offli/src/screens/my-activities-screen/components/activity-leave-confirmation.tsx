@@ -1,24 +1,34 @@
 import React from 'react'
-import { Box, Switch, Typography } from '@mui/material'
+import { Box, CircularProgress, Switch, Typography } from '@mui/material'
 import { ActivityActionsTypeEnumDto } from '../../../types/common/activity-actions-type-enum.dto'
 import { ActivityActionsDefinitions } from './activity-actions-definitions'
 import MenuItem from '../../../components/menu-item'
 import { IActivity } from '../../../types/activities/activity.dto'
 import OffliButton from '../../../components/offli-button'
+import { useActivities } from '../../../hooks/use-activities'
+import { IActivityRestDto } from '../../../types/activities/activity-rest.dto'
 
 export interface IActivityActionsProps {
   onLeaveConfirm?: (activityId?: string) => void
   onLeaveCancel?: (activityId?: string) => void
-  activity?: IActivity
+  activityId?: string
 }
 
 const ActivityLeaveConfirmation: React.FC<IActivityActionsProps> = ({
   onLeaveConfirm,
   onLeaveCancel,
-  activity,
+  activityId,
 }) => {
   //TODO if no activity display nothing
-  return (
+
+  const { data, isLoading } = useActivities<IActivityRestDto>({
+    id: activityId,
+  })
+  return isLoading ? (
+    <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
+      <CircularProgress color="primary" />
+    </Box>
+  ) : (
     <Box
       sx={{
         display: 'flex',
@@ -32,12 +42,20 @@ const ActivityLeaveConfirmation: React.FC<IActivityActionsProps> = ({
       </Typography>
 
       <img
-        style={{ height: 70, width: 70, borderRadius: 50 }}
-        src={activity?.title_picture}
+        style={{
+          height: 70,
+          width: 70,
+          borderRadius: 35,
+          boxShadow: '2px 3px 4px #ccc',
+        }}
+        src={data?.data?.activity?.title_picture}
       />
-      <Typography
-        sx={{ my: 2 }}
-      >{`Do you really want to leave ${activity?.title}`}</Typography>
+      <Box display="flex" sx={{ my: 2 }}>
+        <Typography>Do you really want to leave</Typography>
+        <Typography sx={{ fontWeight: 'bold', ml: 1 }}>
+          {data?.data?.activity?.title}
+        </Typography>
+      </Box>
       <Box
         sx={{
           width: '100%',
@@ -47,15 +65,15 @@ const ActivityLeaveConfirmation: React.FC<IActivityActionsProps> = ({
         }}
       >
         <OffliButton
-          sx={{ width: '50%', fontSize: 16 }}
+          sx={{ width: '40%', fontSize: 16 }}
           variant="outlined"
-          onClick={() => onLeaveCancel?.(activity?.id)}
+          onClick={() => onLeaveCancel?.(data?.data?.activity?.id)}
         >
           Cancel
         </OffliButton>
         <OffliButton
-          sx={{ width: '50%', fontSize: 16 }}
-          onClick={() => onLeaveConfirm?.(activity?.id)}
+          sx={{ width: '40%', fontSize: 16 }}
+          onClick={() => onLeaveConfirm?.(data?.data?.activity?.id)}
         >
           Leave
         </OffliButton>

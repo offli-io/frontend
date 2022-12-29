@@ -8,6 +8,7 @@ import {
   getActivities,
   getActivity,
   getUsers,
+  removePersonFromActivity,
 } from '../../api/activities/requests'
 import { IActivity, IPersonExtended } from '../../types/activities/activity.dto'
 import { AuthenticationContext } from '../../assets/theme/authentication-provider'
@@ -17,6 +18,9 @@ import { ActivityActionsTypeEnumDto } from '../../types/common/activity-actions-
 import { useNavigate } from 'react-router-dom'
 import { ApplicationLocations } from '../../types/common/applications-locations.dto'
 import ActivityLeaveConfirmation from './components/activity-leave-confirmation'
+import { useSnackbar } from 'notistack'
+import { useActivities } from '../../hooks/use-activities'
+import { IActivityListRestDto } from '../../types/activities/activity-list-rest.dto'
 
 const datetime = new Date()
 
@@ -24,27 +28,40 @@ const ActivitiesScreen = () => {
   const { userInfo, setUserInfo } = React.useContext(AuthenticationContext)
   const { toggleDrawer } = React.useContext(DrawerContext)
   const navigate = useNavigate()
+  const { enqueueSnackbar } = useSnackbar()
+  const queryClient = useQueryClient()
 
-  const { data } = useQuery(
-    ['user-info', userInfo?.username],
-    () => getUsers({ username: userInfo?.username })
-    // {
-    //   onSuccess: data =>
-    //     data?.data?.activities && setActivityIds(data?.data?.activities),
-    //   enabled: !!userInfo,
-    // }
-  )
+  const { data: { data: { activities = [] } = {} } = {} } =
+    useActivities<IActivityListRestDto>()
   const [currentActivityId, setCurrentActivityId] = React.useState<
     string | undefined
   >()
   const [activityIds, setActivityIds] = React.useState<string[]>([])
-  const [activites, setActivites] = React.useState<IActivity[]>([])
 
-  const mut = useMutation(['presignup'], () =>
-    axios.post('/registration/pre-signup', {
-      email: 'fafa@gmail.com',
-      password: 'Adamko123.',
+  const hideDrawer = React.useCallback(() => {
+    return toggleDrawer({
+      open: false,
+      content: undefined,
     })
+  }, [toggleDrawer])
+
+  const { mutate: sendLeaveActivity } = useMutation(
+    ['leave-activity'],
+    (activityId?: string) =>
+      removePersonFromActivity({ activityId, personId: userInfo?.id }),
+    {
+      onSuccess: () => {
+        hideDrawer()
+        //TODO add generic jnaming for activites / activity
+        queryClient.invalidateQueries(['activity'])
+        queryClient.invalidateQueries(['activities'])
+        //invalidate queries
+        //TODO display success notification?
+      },
+      onError: () => {
+        enqueueSnackbar('Failed to leave activity', { variant: 'error' })
+      },
+    }
   )
 
   //[('213123', '43412')]
@@ -82,8 +99,9 @@ const ActivitiesScreen = () => {
             open: true,
             content: (
               <ActivityLeaveConfirmation
-                onLeaveCancel={id => console.log(id)}
-                onLeaveConfirm={id => console.log(id)}
+                activityId={activityId}
+                onLeaveCancel={hideDrawer}
+                onLeaveConfirm={sendLeaveActivity}
               />
             ),
           })
@@ -139,11 +157,11 @@ const ActivitiesScreen = () => {
           justifyContent: 'flex-start',
         }}
       >
-        {data?.data?.activities?.map(activity => {
+        {activities?.map(activity => {
           return (
             <MyActivityCard
-              key={activity}
-              activityId={activity}
+              key={activity?.id}
+              activity={activity}
               onLongPress={openActivityActions}
               onPress={openActivityActions}
             />

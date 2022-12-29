@@ -11,6 +11,7 @@ import { IPlaceExternalApiDto } from '../../types/activities/place-external-api.
 import qs from 'qs'
 import { IPredefinedPictureDto } from '../../types/activities/predefined-picture.dto'
 import { IPredefinedTagDto } from '../../types/activities/predefined-tag.dto'
+import { IActivityListRestDto } from '../../types/activities/activity-list-rest.dto'
 
 export const getActivities = async ({
   queryFunctionContext,
@@ -34,17 +35,38 @@ export const getActivities = async ({
   return promise
 }
 
-export const getActivity = async (activityId?: string) => {
+export const getActivity = <T>({ id }: { id?: string }) => {
   const CancelToken = axios.CancelToken
   const source = CancelToken.source()
 
-  const promise = axios.get<{ activity: IActivity; success: boolean }>(
-    `${DEFAULT_DEV_URL}/activities/${activityId}`
+  const promise = axios.get<T>(
+    `${DEFAULT_DEV_URL}/activities${id ? `/${id}` : ''}`
     // {
 
     //   params: searchParams,
     //   cancelToken: source?.token,
     // }
+  )
+
+  // queryFunctionContext?.signal?.addEventListener('abort', () => {
+  //   source.cancel('Query was cancelled by React Query')
+  // })
+
+  return promise
+}
+
+export const removePersonFromActivity = ({
+  personId,
+  activityId,
+}: {
+  personId?: string
+  activityId?: string
+}) => {
+  const CancelToken = axios.CancelToken
+  const source = CancelToken.source()
+
+  const promise = axios.delete<void>(
+    `${DEFAULT_DEV_URL}/activities/${activityId}/participants/${personId}`
   )
 
   // queryFunctionContext?.signal?.addEventListener('abort', () => {

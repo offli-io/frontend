@@ -16,26 +16,17 @@ import { ApplicationLocations } from '../types/common/applications-locations.dto
 import useLongPress from '../hooks/use-long-press'
 
 interface IProps {
-  activityId: string
+  activity?: IActivity
   onLongPress: (activityId: string) => void
-  onPress: (activityId: string) => void
+  onPress: (activityId?: string) => void
 }
 
 const MyActivityCard: React.FC<IProps> = ({
-  activityId,
+  activity,
   onLongPress,
   onPress,
 }) => {
   const { action, handlers } = useLongPress()
-  const { data } = useQuery(
-    ['activity', activityId],
-    () => getActivity(activityId),
-    {
-      enabled: !!activityId,
-    }
-  )
-
-  const activity = data?.data?.activity
 
   const navigate = useNavigate()
 
@@ -55,7 +46,7 @@ const MyActivityCard: React.FC<IProps> = ({
         alignItems: 'flex-end',
         color: 'white',
       }}
-      onClick={() => onPress(activityId)}
+      onClick={() => onPress(activity?.id)}
       // {...handlers}
       // onTouchStart={() => {
       //   const timer = setTimeout(() => onLongPress(), 500)
