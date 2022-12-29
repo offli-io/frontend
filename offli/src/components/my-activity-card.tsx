@@ -1,18 +1,8 @@
 import React from 'react'
-import { Box, Typography, IconButton } from '@mui/material'
+import { Box, Typography } from '@mui/material'
 import { IActivity } from '../types/activities/activity.dto'
-// import AttachMoneyIcon from '@mui/icons-material/AttachMoney'
-import PaidIcon from '@mui/icons-material/Paid'
-import PlaceIcon from '@mui/icons-material/Place'
-import TimerIcon from '@mui/icons-material/Timer'
-import MoreHorizIcon from '@mui/icons-material/MoreHoriz'
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt'
 import LockIcon from '@mui/icons-material/Lock'
-import LockOpenIcon from '@mui/icons-material/LockOpen'
-import { getActivity } from '../api/activities/requests'
-import { useQuery } from '@tanstack/react-query'
-import { useNavigate } from 'react-router-dom'
-import { ApplicationLocations } from '../types/common/applications-locations.dto'
 import useLongPress from '../hooks/use-long-press'
 
 interface IProps {
@@ -26,9 +16,8 @@ const MyActivityCard: React.FC<IProps> = ({
   onLongPress,
   onPress,
 }) => {
+  //TODO maybe in later use also need some refactoring
   const { action, handlers } = useLongPress()
-
-  const navigate = useNavigate()
 
   return (
     <Box

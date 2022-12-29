@@ -1,16 +1,9 @@
 import React from 'react'
-import { Box, Button, Typography } from '@mui/material'
+import { Box, Typography } from '@mui/material'
 import MyActivityCard from '../../components/my-activity-card'
 import { PageWrapper } from '../../components/page-wrapper'
-import axios from 'axios'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import {
-  getActivities,
-  getActivity,
-  getUsers,
-  removePersonFromActivity,
-} from '../../api/activities/requests'
-import { IActivity, IPersonExtended } from '../../types/activities/activity.dto'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { removePersonFromActivity } from '../../api/activities/requests'
 import { AuthenticationContext } from '../../assets/theme/authentication-provider'
 import { DrawerContext } from '../../assets/theme/drawer-provider'
 import ActivityActions from './components/activity-actions'
@@ -22,10 +15,8 @@ import { useSnackbar } from 'notistack'
 import { useActivities } from '../../hooks/use-activities'
 import { IActivityListRestDto } from '../../types/activities/activity-list-rest.dto'
 
-const datetime = new Date()
-
 const ActivitiesScreen = () => {
-  const { userInfo, setUserInfo } = React.useContext(AuthenticationContext)
+  const { userInfo } = React.useContext(AuthenticationContext)
   const { toggleDrawer } = React.useContext(DrawerContext)
   const navigate = useNavigate()
   const { enqueueSnackbar } = useSnackbar()
@@ -33,10 +24,6 @@ const ActivitiesScreen = () => {
 
   const { data: { data: { activities = [] } = {} } = {} } =
     useActivities<IActivityListRestDto>()
-  const [currentActivityId, setCurrentActivityId] = React.useState<
-    string | undefined
-  >()
-  const [activityIds, setActivityIds] = React.useState<string[]>([])
 
   const hideDrawer = React.useCallback(() => {
     return toggleDrawer({
@@ -63,29 +50,6 @@ const ActivitiesScreen = () => {
       },
     }
   )
-
-  //[('213123', '43412')]
-  // TODO to open drawer
-  // React.useEffect(() => {
-  //   toggleDrawer({
-  //     open: true,
-  //     content: <div>Ghetto maradona</div>,
-  //   })
-  // }, [])
-
-  // React.useEffect(() => {
-  //   const [first, ...rest] = activityIds
-  //   if (first) {
-  //     setCurrentActivityId(first)
-  //     setActivityIds(rest)
-  //   }
-  // }, [activityIds])
-
-  // React.useEffect(() => {
-  //   userInfoQuery?.data?.data?.activities?.forEach(activity =>
-  //     setCurrentActivityId(activity)
-  //   )
-  // }, [userInfoQuery?.data?.data?.activities])
 
   const handleActionClick = React.useCallback(
     (action?: ActivityActionsTypeEnumDto, activityId?: string) => {
