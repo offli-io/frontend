@@ -35,7 +35,7 @@ const BackHeader: React.FC<IBackHeaderProps> = ({ title, sx, to }) => {
   const fromLocation = toParsed && `/${toParsed[toParsed?.length - 1]}`
 
   return (
-    <Box sx={{ height: HEADER_HEIGHT, boxShadow: 'none', ...sx }}>
+    <Box sx={{ height: HEADER_HEIGHT, boxShadow: '1px 2px 2px #ccc', ...sx }}>
       <Box
         sx={{
           width: '100%',
@@ -52,13 +52,15 @@ const BackHeader: React.FC<IBackHeaderProps> = ({ title, sx, to }) => {
           <IconButton
             component={Link}
             to={fromLocation}
-            sx={{
-              flex: 1,
-              // position: 'absolute',
-              // top: 10,
-              // left: 5,
-              // textTransform: 'none',
-            }}
+            sx={
+              {
+                // flex: 1,
+                // position: 'absolute',
+                // top: 10,
+                // left: 5,
+                // textTransform: 'none',
+              }
+            }
           >
             <ArrowBackIosNewIcon
 

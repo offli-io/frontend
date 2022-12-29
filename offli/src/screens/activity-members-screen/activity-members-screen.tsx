@@ -15,6 +15,7 @@ import { AuthenticationContext } from '../../assets/theme/authentication-provide
 import { useParams } from 'react-router-dom'
 import { BuddyActionContent } from './components/buddy-action-content'
 import { ActivityMembersActionTypeDto } from '../../types/common/activity-members-action-type.dto'
+import { IActivityRestDto } from '../../types/activities/activity-rest.dto'
 
 // interface IActivityTypeFormProps {
 //   //   onNextClicked: () => void
@@ -27,9 +28,10 @@ export const ActivityMembersScreen: React.FC = () => {
   const { enqueueSnackbar } = useSnackbar()
   const { id } = useParams()
 
+  //TODO change for activity hook
   const { data, isLoading } = useQuery(
     ['activity', id],
-    () => getActivity(id),
+    () => getActivity<IActivityRestDto>({ id }),
     {
       enabled: !!id,
     }

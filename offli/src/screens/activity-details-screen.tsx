@@ -5,6 +5,7 @@ import { getActivity } from '../api/activities/requests'
 import ActivityDetailsCard from '../components/activity-details-card'
 import BackHeader from '../components/back-header'
 import { PageWrapper } from '../components/page-wrapper'
+import { IActivityRestDto } from '../types/activities/activity-rest.dto'
 import { ICustomizedLocationStateDto } from '../types/common/customized-location-state.dto'
 
 interface IActivityDetailsScreenProps {
@@ -18,9 +19,13 @@ const ActivityDetailsScreen: React.FC<IActivityDetailsScreenProps> = ({
   const location = useLocation()
   const from = (location?.state as ICustomizedLocationStateDto)?.from
 
-  const { data } = useQuery(['activity', id], () => getActivity(id), {
-    enabled: !!id,
-  })
+  const { data } = useQuery(
+    ['activity', id],
+    () => getActivity<IActivityRestDto>({ id }),
+    {
+      enabled: !!id,
+    }
+  )
   const activity = data?.data?.activity
 
   console.log(activity)

@@ -5,10 +5,10 @@ import PeopleAltIcon from '@mui/icons-material/PeopleAlt'
 import InstagramIcon from '@mui/icons-material/Instagram'
 
 import { PageWrapper } from '../components/page-wrapper'
-import { useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import axios from 'axios'
 import ProfileGallery from '../components/profile-gallery'
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocation, useParams } from 'react-router-dom'
 import { ApplicationLocations } from '../types/common/applications-locations.dto'
 import { AuthenticationContext } from '../assets/theme/authentication-provider'
 import { getUsers } from '../api/activities/requests'
@@ -16,33 +16,54 @@ import ProfilePicture from '../assets/img/profilePicture.jpg'
 import ProfileStatistics from '../components/profile-statistics'
 import BackHeader from '../components/back-header'
 import { ICustomizedLocationStateDto } from '../types/common/customized-location-state.dto'
+import OffliButton from '../components/offli-button'
+import { useSnackbar } from 'notistack'
+import { acceptBuddyInvitation } from '../api/users/requests'
 
 interface IProfileScreenProps {
   type: 'profile' | 'request'
 }
 
 const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
-  const [editAboutMe, setEditAboutMe] = useState<boolean>(false)
-  const [aboutMe, setAboutMe] = useState<string>('')
   const { userInfo, setUserInfo } = React.useContext(AuthenticationContext)
   const location = useLocation()
-  const state = location?.state as ICustomizedLocationStateDto
-  const { from } = state
+  const from = (location?.state as ICustomizedLocationStateDto)?.from
+  const { id } = useParams()
+  const { enqueueSnackbar } = useSnackbar()
 
   const { data, isLoading } = useQuery(
-    ['user-info', userInfo?.username],
-    () => getUsers({ username: userInfo?.username }),
+    ['user-info', userInfo?.username, id],
+    () => getUsers({ username: id ? undefined : userInfo?.username, id }),
     {
       enabled: !!userInfo?.username,
       onSuccess: data => {
-        setUserInfo && setUserInfo(data?.data)
+        setUserInfo && !id && setUserInfo(data?.data)
       },
     }
   )
 
-  // const { data, status } = useQuery(['profile', 5], () => fetchProfile(7), {
-  //   keepPreviousData: true,
-  // })
+  const { mutate: sendAcceptBuddyRequest } = useMutation(
+    ['accept-buddy-request'],
+    () => acceptBuddyInvitation(userInfo?.id, id),
+    {
+      onSuccess: (data, variables) => {
+        //TODO what to invalidate, and where to navigate after success
+        // queryClient.invalidateQueries(['notifications'])
+        // navigateBasedOnType(
+        //   variables?.type,
+        //   variables?.properties?.user?.id ?? variables?.properties?.activity?.id
+        // )
+        enqueueSnackbar('User was successfully confirmed as your buddy', {
+          variant: 'success',
+        })
+      },
+      onError: () => {
+        enqueueSnackbar('Failed to accept buddy request', {
+          variant: 'error',
+        })
+      },
+    }
+  )
 
   return (
     <>
@@ -178,6 +199,14 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
             metNum={type === 'profile' ? 12 : undefined}
           />
         </Box>
+        {type === 'request' && (
+          <OffliButton
+            sx={{ fontSize: 16, px: 2.5, mt: 2 }}
+            onClick={sendAcceptBuddyRequest}
+          >
+            Accept buddie request
+          </OffliButton>
+        )}
         <Box
           sx={{
             width: '90%',

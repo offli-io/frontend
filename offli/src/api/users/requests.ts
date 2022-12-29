@@ -65,3 +65,25 @@ export const checkIfUsernameAlreadyTaken = async (username?: string) => {
   )
   return promise
 }
+
+export const acceptBuddyInvitation = (
+  userId?: string,
+  buddyToBeId?: string
+) => {
+  const CancelToken = axios.CancelToken
+  const source = CancelToken.source()
+
+  const promise = axios.post(
+    `${DEFAULT_DEV_URL}/users/${userId}/buddies`,
+    { buddyToBeId },
+    {
+      cancelToken: source?.token,
+    }
+  )
+
+  //   queryFunctionContext?.signal?.addEventListener('abort', () => {
+  //     source.cancel('Query was cancelled by React Query')
+  //   })
+
+  return promise
+}

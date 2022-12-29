@@ -1,73 +1,55 @@
 import React from 'react'
-import { Box, Button, Typography } from '@mui/material'
+import { Box, Typography } from '@mui/material'
 import MyActivityCard from '../../components/my-activity-card'
 import { PageWrapper } from '../../components/page-wrapper'
-import axios from 'axios'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import {
-  getActivities,
-  getActivity,
-  getUsers,
-} from '../../api/activities/requests'
-import { IActivity, IPersonExtended } from '../../types/activities/activity.dto'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { removePersonFromActivity } from '../../api/activities/requests'
 import { AuthenticationContext } from '../../assets/theme/authentication-provider'
 import { DrawerContext } from '../../assets/theme/drawer-provider'
 import ActivityActions from './components/activity-actions'
 import { ActivityActionsTypeEnumDto } from '../../types/common/activity-actions-type-enum.dto'
 import { useNavigate } from 'react-router-dom'
 import { ApplicationLocations } from '../../types/common/applications-locations.dto'
-
-const datetime = new Date()
+import ActivityLeaveConfirmation from './components/activity-leave-confirmation'
+import { useSnackbar } from 'notistack'
+import { useActivities } from '../../hooks/use-activities'
+import { IActivityListRestDto } from '../../types/activities/activity-list-rest.dto'
 
 const ActivitiesScreen = () => {
-  const { userInfo, setUserInfo } = React.useContext(AuthenticationContext)
+  const { userInfo } = React.useContext(AuthenticationContext)
   const { toggleDrawer } = React.useContext(DrawerContext)
   const navigate = useNavigate()
+  const { enqueueSnackbar } = useSnackbar()
+  const queryClient = useQueryClient()
 
-  const { data } = useQuery(
-    ['user-info', userInfo?.username],
-    () => getUsers({ username: userInfo?.username })
-    // {
-    //   onSuccess: data =>
-    //     data?.data?.activities && setActivityIds(data?.data?.activities),
-    //   enabled: !!userInfo,
-    // }
-  )
-  const [currentActivityId, setCurrentActivityId] = React.useState<
-    string | undefined
-  >()
-  const [activityIds, setActivityIds] = React.useState<string[]>([])
-  const [activites, setActivites] = React.useState<IActivity[]>([])
+  const { data: { data: { activities = [] } = {} } = {} } =
+    useActivities<IActivityListRestDto>()
 
-  const mut = useMutation(['presignup'], () =>
-    axios.post('/registration/pre-signup', {
-      email: 'fafa@gmail.com',
-      password: 'Adamko123.',
+  const hideDrawer = React.useCallback(() => {
+    return toggleDrawer({
+      open: false,
+      content: undefined,
     })
+  }, [toggleDrawer])
+
+  const { mutate: sendLeaveActivity } = useMutation(
+    ['leave-activity'],
+    (activityId?: string) =>
+      removePersonFromActivity({ activityId, personId: userInfo?.id }),
+    {
+      onSuccess: () => {
+        hideDrawer()
+        //TODO add generic jnaming for activites / activity
+        queryClient.invalidateQueries(['activity'])
+        queryClient.invalidateQueries(['activities'])
+        //invalidate queries
+        //TODO display success notification?
+      },
+      onError: () => {
+        enqueueSnackbar('Failed to leave activity', { variant: 'error' })
+      },
+    }
   )
-
-  //[('213123', '43412')]
-  // TODO to open drawer
-  // React.useEffect(() => {
-  //   toggleDrawer({
-  //     open: true,
-  //     content: <div>Ghetto maradona</div>,
-  //   })
-  // }, [])
-
-  // React.useEffect(() => {
-  //   const [first, ...rest] = activityIds
-  //   if (first) {
-  //     setCurrentActivityId(first)
-  //     setActivityIds(rest)
-  //   }
-  // }, [activityIds])
-
-  // React.useEffect(() => {
-  //   userInfoQuery?.data?.data?.activities?.forEach(activity =>
-  //     setCurrentActivityId(activity)
-  //   )
-  // }, [userInfoQuery?.data?.data?.activities])
 
   const handleActionClick = React.useCallback(
     (action?: ActivityActionsTypeEnumDto, activityId?: string) => {
@@ -76,6 +58,17 @@ const ActivitiesScreen = () => {
           return navigate(
             `${ApplicationLocations.ACTIVITY_ID}/${activityId}/members`
           )
+        case ActivityActionsTypeEnumDto.LEAVE:
+          return toggleDrawer({
+            open: true,
+            content: (
+              <ActivityLeaveConfirmation
+                activityId={activityId}
+                onLeaveCancel={hideDrawer}
+                onLeaveConfirm={sendLeaveActivity}
+              />
+            ),
+          })
         default:
           return console.log(action)
       }
@@ -128,11 +121,11 @@ const ActivitiesScreen = () => {
           justifyContent: 'flex-start',
         }}
       >
-        {data?.data?.activities?.map(activity => {
+        {activities?.map(activity => {
           return (
             <MyActivityCard
-              key={activity}
-              activityId={activity}
+              key={activity?.id}
+              activity={activity}
               onLongPress={openActivityActions}
               onPress={openActivityActions}
             />

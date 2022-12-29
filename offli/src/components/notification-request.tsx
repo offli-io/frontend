@@ -15,6 +15,7 @@ const StyledImage = styled((props: any) => <img {...props} />)`
   width: 40px;
   backgroundcolor: #c9c9c9;
   border-radius: 50%;
+  box-shadow: 1px 3px 2px #ccc;
 `
 
 const NotificationRequest: React.FC<INotificationRequestProps> = ({

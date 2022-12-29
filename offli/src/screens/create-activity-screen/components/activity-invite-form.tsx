@@ -77,9 +77,7 @@ export const ActivityInviteForm: React.FC<IActivityTypeFormProps> = ({
   onNextClicked,
   methods,
 }) => {
-  const { userInfo, googleTokenClient } = React.useContext(
-    AuthenticationContext
-  )
+  const { userInfo } = React.useContext(AuthenticationContext)
   const { control, setValue, watch } = methods
   const [invitedBuddies, setInvitedBuddies] = React.useState<string[]>([])
   const { enqueueSnackbar } = useSnackbar()
@@ -150,9 +148,6 @@ export const ActivityInviteForm: React.FC<IActivityTypeFormProps> = ({
           width: '100%',
         }}
       >
-        <Button onClick={() => googleTokenClient?.requestAccessToken()}>
-          Create calendar Event
-        </Button>
         <TextField
           // TODO idk if this is really needed and not anti-pattern
           //autoFocus

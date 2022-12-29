@@ -1,43 +1,23 @@
 import React from 'react'
-import { Box, Typography, IconButton } from '@mui/material'
+import { Box, Typography } from '@mui/material'
 import { IActivity } from '../types/activities/activity.dto'
-// import AttachMoneyIcon from '@mui/icons-material/AttachMoney'
-import PaidIcon from '@mui/icons-material/Paid'
-import PlaceIcon from '@mui/icons-material/Place'
-import TimerIcon from '@mui/icons-material/Timer'
-import MoreHorizIcon from '@mui/icons-material/MoreHoriz'
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt'
 import LockIcon from '@mui/icons-material/Lock'
-import LockOpenIcon from '@mui/icons-material/LockOpen'
-import { getActivity } from '../api/activities/requests'
-import { useQuery } from '@tanstack/react-query'
-import { useNavigate } from 'react-router-dom'
-import { ApplicationLocations } from '../types/common/applications-locations.dto'
 import useLongPress from '../hooks/use-long-press'
 
 interface IProps {
-  activityId: string
+  activity?: IActivity
   onLongPress: (activityId: string) => void
-  onPress: (activityId: string) => void
+  onPress: (activityId?: string) => void
 }
 
 const MyActivityCard: React.FC<IProps> = ({
-  activityId,
+  activity,
   onLongPress,
   onPress,
 }) => {
+  //TODO maybe in later use also need some refactoring
   const { action, handlers } = useLongPress()
-  const { data } = useQuery(
-    ['activity', activityId],
-    () => getActivity(activityId),
-    {
-      enabled: !!activityId,
-    }
-  )
-
-  const activity = data?.data?.activity
-
-  const navigate = useNavigate()
 
   return (
     <Box
@@ -55,7 +35,7 @@ const MyActivityCard: React.FC<IProps> = ({
         alignItems: 'flex-end',
         color: 'white',
       }}
-      onClick={() => onPress(activityId)}
+      onClick={() => onPress(activity?.id)}
       // {...handlers}
       // onTouchStart={() => {
       //   const timer = setTimeout(() => onLongPress(), 500)
