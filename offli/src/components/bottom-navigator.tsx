@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { useLocation, useParams } from 'react-router-dom'
+import { Navigate, useLocation, useNavigate, useParams } from 'react-router-dom'
 import BottomNavigation from '@mui/material/BottomNavigation'
 import BottomNavigationAction from '@mui/material/BottomNavigationAction'
 import { Box, Paper, SxProps } from '@mui/material'
@@ -15,7 +15,7 @@ import { ApplicationLocations } from '../types/common/applications-locations.dto
 import OffliButton from './offli-button'
 import { acceptBuddyInvitation } from '../api/users/requests'
 import { AuthenticationContext } from '../assets/theme/authentication-provider'
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useSnackbar } from 'notistack'
 import { HEADER_HEIGHT } from '../utils/common-constants'
 
@@ -32,7 +32,9 @@ const BottomNavigator: React.FC<IBottomNavigatorProps> = ({ sx }) => {
   const location = useLocation()
   const paramsArray = location?.pathname.split('/')
   const id = paramsArray[paramsArray.length - 1]
+  const navigate = useNavigate()
   const { enqueueSnackbar } = useSnackbar()
+  const queryClient = useQueryClient()
 
   const isBuddyRequest = location?.pathname?.includes('/profile/request')
   const isActivityRequest = location?.pathname?.includes('/activity/request')
@@ -57,9 +59,11 @@ const BottomNavigator: React.FC<IBottomNavigatorProps> = ({ sx }) => {
         //   variables?.type,
         //   variables?.properties?.user?.id ?? variables?.properties?.activity?.id
         // )
+        queryClient.invalidateQueries(['notifications'])
         enqueueSnackbar('User was successfully confirmed as your buddy', {
           variant: 'success',
         })
+        navigate(ApplicationLocations.NOTIFICATIONS)
       },
       onError: () => {
         enqueueSnackbar('Failed to accept buddy request', {
