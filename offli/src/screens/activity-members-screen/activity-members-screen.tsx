@@ -1,11 +1,17 @@
 import { Box, CircularProgress, TextField, Typography } from '@mui/material'
 import React from 'react'
 import BuddyItem from '../../components/buddy-item'
-import { useMutation, useQuery } from '@tanstack/react-query'
+import {
+  QueryClient,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from '@tanstack/react-query'
 import {
   getActivity,
   getBuddies,
   inviteBuddy,
+  kickUserFromActivity,
   uninviteBuddy,
 } from '../../api/activities/requests'
 import { IPerson } from '../../types/activities/activity.dto'
@@ -40,15 +46,31 @@ export const ActivityMembersScreen: React.FC = () => {
   const [queryString, setQueryString] = React.useState<string | undefined>()
   const [queryStringDebounced] = useDebounce(queryString, 100)
 
+  const queryClient = useQueryClient()
+
   const { mutate: sendInviteBuddy } = useMutation(
     ['invite-person'],
-    (values: IPerson) => inviteBuddy(2, values),
+    (values: IPerson) => inviteBuddy(String(2), values),
     {
       onSuccess: (data, variables) => {
         setInvitedBuddies([...invitedBuddies, variables?.id])
       },
       onError: error => {
         enqueueSnackbar('Failed to invite user', { variant: 'error' })
+      },
+    }
+  )
+
+  const { mutate: sendKickPersonFromActivity } = useMutation(
+    ['kick-person'],
+    (personId?: string) => kickUserFromActivity(String(id), String(personId)),
+    {
+      onSuccess: (data, variables) => {
+        // setInvitedBuddies([...invitedBuddies, variables?.id])
+        queryClient.invalidateQueries(['activity', id])
+      },
+      onError: error => {
+        enqueueSnackbar('Failed to kick user', { variant: 'error' })
       },
     }
   )
@@ -94,7 +116,7 @@ export const ActivityMembersScreen: React.FC = () => {
     (type?: ActivityMembersActionTypeDto, userId?: string) => {
       switch (type) {
         case ActivityMembersActionTypeDto.KICK:
-          return console.log('call kick with id')
+          return sendKickPersonFromActivity(userId)
         case ActivityMembersActionTypeDto.PROMOTE:
           return console.log('call promote with id')
         default:

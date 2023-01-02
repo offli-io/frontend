@@ -12,6 +12,7 @@ import qs from 'qs'
 import { IPredefinedPictureDto } from '../../types/activities/predefined-picture.dto'
 import { IPredefinedTagDto } from '../../types/activities/predefined-tag.dto'
 import { IActivityListRestDto } from '../../types/activities/activity-list-rest.dto'
+import { ICreateActivityRequestDto } from '../../types/activities/create-activity-request.dto'
 
 export const getActivities = async ({
   queryFunctionContext,
@@ -98,9 +99,13 @@ export const createActivity = async (values: IActivity) => {
   const CancelToken = axios.CancelToken
   const source = CancelToken.source()
 
-  const promise = axios.post(`${DEFAULT_DEV_URL}/activities`, values, {
-    cancelToken: source?.token,
-  })
+  const promise = axios.post<ICreateActivityRequestDto>(
+    `${DEFAULT_DEV_URL}/activities`,
+    values,
+    {
+      cancelToken: source?.token,
+    }
+  )
 
   //   queryFunctionContext?.signal?.addEventListener('abort', () => {
   //     source.cancel('Query was cancelled by React Query')
@@ -176,13 +181,17 @@ export const getPredefinedTags = () => {
   return promise
 }
 
-export const inviteBuddy = (activityId: number, values: IPerson) => {
+export const inviteBuddy = (activityId: string, values: any) => {
   const CancelToken = axios.CancelToken
   const source = CancelToken.source()
 
-  const promise = axios.post(`/activity/${activityId}/invitations`, values, {
-    cancelToken: source?.token,
-  })
+  const promise = axios.post(
+    `${DEFAULT_DEV_URL}/activities/${activityId}/invitations`,
+    { ...values, profile_photo: values?.profile_photo_url },
+    {
+      cancelToken: source?.token,
+    }
+  )
 
   //   queryFunctionContext?.signal?.addEventListener('abort', () => {
   //     source.cancel('Query was cancelled by React Query')
@@ -229,6 +238,24 @@ export const getPredefinedPhotos = (tag?: string[]) => {
   // queryFunctionContext?.signal?.addEventListener('abort', () => {
   //   source.cancel('Query was cancelled by React Query')
   // })
+
+  return promise
+}
+
+export const kickUserFromActivity = (activityId: string, personId: string) => {
+  const CancelToken = axios.CancelToken
+  const source = CancelToken.source()
+
+  const promise = axios.delete<void>(
+    `${DEFAULT_DEV_URL}/activities/${activityId}/participants/${personId}`,
+    {
+      cancelToken: source?.token,
+    }
+  )
+
+  //   queryFunctionContext?.signal?.addEventListener('abort', () => {
+  //     source.cancel('Query was cancelled by React Query')
+  //   })
 
   return promise
 }

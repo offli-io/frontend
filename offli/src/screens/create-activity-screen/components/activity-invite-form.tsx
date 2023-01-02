@@ -12,7 +12,7 @@ import OffliButton from '../../../components/offli-button'
 import SearchIcon from '@mui/icons-material/Search'
 import BuddyItemCheckbox from '../../../api/activities/buddy-item-checkbox'
 import BuddyItemInvite from '../../../components/buddy-item-invite'
-import { useMutation, useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import {
   getBuddies,
   inviteBuddy,
@@ -22,6 +22,7 @@ import { IPerson } from '../../../types/activities/activity.dto'
 import { useDebounce } from 'use-debounce'
 import { useSnackbar } from 'notistack'
 import { AuthenticationContext } from '../../../assets/theme/authentication-provider'
+import { ICreateActivityRequestDto } from '../../../types/activities/create-activity-request.dto'
 
 interface IActivityTypeFormProps {
   onNextClicked: () => void
@@ -81,7 +82,11 @@ export const ActivityInviteForm: React.FC<IActivityTypeFormProps> = ({
   const { control, setValue, watch } = methods
   const [invitedBuddies, setInvitedBuddies] = React.useState<string[]>([])
   const { enqueueSnackbar } = useSnackbar()
+  const queryClient = useQueryClient()
 
+  const activityId = queryClient.getQueryData<ICreateActivityRequestDto>([
+    'created-activity-data',
+  ])
   const [queryString, setQueryString] = React.useState<string | undefined>()
   const [queryStringDebounced] = useDebounce(queryString, 1000)
 
@@ -97,7 +102,7 @@ export const ActivityInviteForm: React.FC<IActivityTypeFormProps> = ({
 
   const { mutate: sendInviteBuddy } = useMutation(
     ['invite-person'],
-    (values: IPerson) => inviteBuddy(2, values),
+    (values: IPerson) => inviteBuddy(String(activityId?.id), values),
     {
       onSuccess: (data, variables) => {
         setInvitedBuddies([...invitedBuddies, variables?.id])

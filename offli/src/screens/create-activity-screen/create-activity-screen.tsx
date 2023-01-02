@@ -145,8 +145,10 @@ const CreateActivityScreen = () => {
     (formValues: FormValues & { creator?: IPerson }) =>
       createActivity(formValues),
     {
-      onSuccess: () => {
+      onSuccess: data => {
         //invalidate user activites
+        queryClient.setQueryData(['created-activity-data'], data?.data)
+        queryClient.invalidateQueries(['activities'])
         queryClient.invalidateQueries(['user-info'])
         setActiveStep(activeStep => activeStep + 1)
       },
