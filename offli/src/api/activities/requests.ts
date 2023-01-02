@@ -181,13 +181,17 @@ export const getPredefinedTags = () => {
   return promise
 }
 
-export const inviteBuddy = (activityId: string, values: IPerson) => {
+export const inviteBuddy = (activityId: string, values: any) => {
   const CancelToken = axios.CancelToken
   const source = CancelToken.source()
 
-  const promise = axios.post(`/activities/${activityId}/invitations`, values, {
-    cancelToken: source?.token,
-  })
+  const promise = axios.post(
+    `${DEFAULT_DEV_URL}/activities/${activityId}/invitations`,
+    { ...values, profile_photo: values?.profile_photo_url },
+    {
+      cancelToken: source?.token,
+    }
+  )
 
   //   queryFunctionContext?.signal?.addEventListener('abort', () => {
   //     source.cancel('Query was cancelled by React Query')
