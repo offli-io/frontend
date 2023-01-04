@@ -73,87 +73,71 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
       <PageWrapper>
         <Box
           sx={{
-            height: '20%',
+            // height: '20%',
             width: '90%',
             display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            flexDirection: 'column',
           }}
         >
+          <Typography variant="h4" sx={{ mb: 0.5 }}>
+            {data?.data?.username}
+          </Typography>
+          <img
+            // todo add default picture in case of missing photo
+            // src={data?.data?.profilePhotoUrl}
+            src={data?.data?.profile_photo_url}
+            alt="profile picture"
+            style={{
+              height: '70px',
+              width: '70px',
+              borderRadius: '50%',
+              // border: '2px solid primary.main', //nejde pica
+              border: '2px solid black',
+            }}
+          />
           <Box
             sx={{
               display: 'flex',
-              flexDirection: 'column',
               alignItems: 'center',
+              justifyContent: 'center',
+              // mt: 0.2,
             }}
           >
-            <img
-              // todo add default picture in case of missing photo
-              // src={data?.data?.profilePhotoUrl}
-              src={ProfilePicture}
-              alt="profile picture"
-              style={{
-                height: '70px',
-                width: '7 0px',
-                borderRadius: '50%',
-              }}
-            />
-            <Box
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                mt: 0.5,
-              }}
+            <IconButton color="primary" sx={{ paddingRight: 0 }}>
+              <PeopleAltIcon sx={{ fontSize: 18, padding: 0 }} />
+            </IconButton>
+            <Typography
+              variant="subtitle1"
+              color="primary"
+              sx={{ fontWeight: 'bold', mt: 0.5, ml: 0.5 }}
             >
-              <IconButton color="primary" sx={{ paddingRight: 0 }}>
-                <PeopleAltIcon sx={{ fontSize: 20 }} />
-              </IconButton>
-              <Typography
-                variant="subtitle1"
-                color="primary"
-                sx={{ fontWeight: 'bold', mt: 0.5 }}
-              >
-                {data?.data?.buddies?.length}
-              </Typography>
-            </Box>
-          </Box>
-          <Box
-            sx={{
-              ml: 2,
-              width: '70%',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'left',
-              justifyContent: 'flex-start',
-            }}
-          >
-            <Box
-              sx={{
-                display: 'flex',
-                alignItems: 'left',
-                justifyContent: 'space-between',
-              }}
-            >
-              <Typography variant="h3">{data?.data?.username}</Typography>
-            </Box>
-            <Box
-              sx={{
-                ml: -1.5,
-                display: 'flex',
-                alignItems: 'center',
-                // justifyContent: 'flex-start',
-              }}
-            >
-              <IconButton sx={{ paddingRight: 0, color: 'black' }}>
-                <LocationOnIcon sx={{ fontSize: 18 }} />
-              </IconButton>
-              <Typography variant="subtitle2">Slovakia, Bratislava</Typography>
-            </Box>
-
-            <Typography variant="subtitle2" sx={{ lineHeight: 1.2 }}>
-              I am student at FIIT STU. I like adventures and meditation. There
-              is always time for a beer. Cheers.
+              {data?.data?.buddies?.length}
             </Typography>
           </Box>
+          <Box
+            sx={{
+              ml: -1.5,
+              display: 'flex',
+              alignItems: 'center',
+              mt: -1,
+              // justifyContent: 'flex-start',
+            }}
+          >
+            <IconButton sx={{ paddingRight: 0, color: 'black' }}>
+              <LocationOnIcon sx={{ fontSize: 20 }} />
+            </IconButton>
+            <Typography variant="subtitle2">Bratislava, Slovakia</Typography>
+          </Box>
+          <Typography
+            variant="subtitle2"
+            // align="center"
+            sx={{ lineHeight: 1.2, width: '80%' }}
+          >
+            I am student at FIIT STU. I like adventures and meditation. There is
+            always time for a beer. Cheers.
+          </Typography>
         </Box>
         {type === 'profile' && (
           <Box
@@ -173,7 +157,7 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
               style={{ textDecoration: 'none' }}
             >
               <Typography
-                variant="subtitle2"
+                variant="subtitle1"
                 sx={{
                   color: 'primary.main',
                   fontWeight: 'bold',
@@ -189,14 +173,18 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
             width: '90%',
           }}
         >
-          <Typography align="left" variant="h4" sx={{ mt: 3 }}>
+          <Typography align="left" variant="h5" sx={{ mt: 3 }}>
             This month
           </Typography>
           <ProfileStatistics
             participatedNum={10}
-            enjoyedNum={9}
-            createdNum={type === 'profile' ? 5 : undefined}
-            metNum={type === 'profile' ? 12 : undefined}
+            enjoyedNum={data?.data.enjoyed_together_last_month_count}
+            createdNum={type === 'profile' ? 9 : undefined}
+            metNum={
+              type === 'profile'
+                ? data?.data.new_buddies_last_month_count
+                : undefined
+            }
           />
         </Box>
         {type === 'request' && (
@@ -217,7 +205,7 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
           }}
         >
           <Box sx={{ mt: 3 }}>
-            <Typography align="left" variant="h4">
+            <Typography align="left" variant="h5">
               Photos
             </Typography>
           </Box>
@@ -236,7 +224,7 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
               variant="subtitle1"
               sx={{ ml: 0.5, mt: 3, color: 'primary.main', fontWeight: 'bold' }}
             >
-              emma.smith
+              {data?.data.username}
             </Typography>
           </Box>
         </Box>
