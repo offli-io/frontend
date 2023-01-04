@@ -159,13 +159,6 @@ const BottomNavigator: React.FC<IBottomNavigatorProps> = ({ sx }) => {
             to={ApplicationLocations.ACTIVITIES}
           />
           <BottomNavigationAction
-            label="Explore"
-            icon={<TravelExploreIcon />}
-            component={Link}
-            value={ApplicationLocations.SEARCH}
-            to={ApplicationLocations.SEARCH}
-          />
-          <BottomNavigationAction
             label="Create"
             icon={<AddCircleOutlineIcon />}
             component={Link}
