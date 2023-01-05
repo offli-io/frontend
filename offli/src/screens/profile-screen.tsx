@@ -19,6 +19,7 @@ import { ICustomizedLocationStateDto } from '../types/common/customized-location
 import OffliButton from '../components/offli-button'
 import { useSnackbar } from 'notistack'
 import { acceptBuddyInvitation } from '../api/users/requests'
+import ActionButton from '../components/action-button'
 
 interface IProfileScreenProps {
   type: 'profile' | 'request'
@@ -140,33 +141,12 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
           </Typography>
         </Box>
         {type === 'profile' && (
-          <Box
-            style={{
-              width: '60%',
-              borderRadius: '15px',
-              backgroundColor: '#E4E3FF',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              padding: '2%',
-              marginTop: '5%',
-            }}
-          >
-            <Link
-              to={ApplicationLocations.EDIT_PROFILE}
-              style={{ textDecoration: 'none' }}
-            >
-              <Typography
-                variant="subtitle1"
-                sx={{
-                  color: 'primary.main',
-                  fontWeight: 'bold',
-                }}
-              >
-                Edit profile
-              </Typography>
-            </Link>
-          </Box>
+          <ActionButton
+            text="Edit profile"
+            sx={{ mt: 2 }}
+            href={ApplicationLocations.EDIT_PROFILE}
+            // onClick={() => console.log('aaa')}
+          />
         )}
         <Box
           sx={{
