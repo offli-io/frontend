@@ -9,6 +9,7 @@ import {
   FormGroup,
   FormControlLabel,
   Checkbox,
+  useTheme,
 } from '@mui/material'
 import { PageWrapper } from '../components/page-wrapper'
 import { useQueryClient } from '@tanstack/react-query'
@@ -21,6 +22,10 @@ import { Controller, useForm } from 'react-hook-form'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useNavigate } from 'react-router-dom'
+import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
+import { Dayjs } from 'dayjs'
+import moment from 'moment'
 
 interface IEditProfile {
   name: string
@@ -35,7 +40,7 @@ const schema: () => yup.SchemaOf<IEditProfile> = () =>
     name: yup.string().defined().required('Please enter your name'),
     aboutMe: yup.string().defined().required('Please enter your aboutMe'),
     location: yup.string().defined().required('Please enter your location'),
-    birthDate: yup.string().defined().required('Please enter your birthDate'),
+    birthDate: yup.string().nullable().required('Please enter your birthDate'),
     instagramUsername: yup
       .string()
       .defined()
@@ -43,6 +48,7 @@ const schema: () => yup.SchemaOf<IEditProfile> = () =>
   })
 
 const EditProfileScreen: React.FC = () => {
+  const theme = useTheme()
   const { userInfo } = React.useContext(AuthenticationContext)
   const queryClient = useQueryClient()
 
@@ -73,7 +79,7 @@ const EditProfileScreen: React.FC = () => {
       // aboutMe: data?.data?.name, // TODO: doplnit udaje na BE a pripojit FE
       aboutMe: 'Type something about you',
       location: 'Neporadza',
-      birthDate: '1.1.1999',
+      // birthDate: '',
       instagramUsername: 'staryjanotvojtatko',
     })
   }, [data])
@@ -81,9 +87,10 @@ const EditProfileScreen: React.FC = () => {
   // console.log(formState?.errors)
 
   const handleFormSubmit = React.useCallback((values: IEditProfile) => {
-    // queryClient.setQueryData(['registration-email-password'], values)
+    //OnSuccess
+    // queryClient.invalidateQueries(['user-info'])
     // navigate(ApplicationLocations.PROFILE)
-    console.log('Pakuj sa ty tlsta kacica')
+    console.log(values)
   }, [])
 
   return (
@@ -113,8 +120,8 @@ const EditProfileScreen: React.FC = () => {
               height: '70px',
               width: '70px',
               borderRadius: '50%',
-              // border: '2px solid primary.main', //nejde pica
-              border: '2px solid black',
+              border: `3px solid ${theme.palette.primary.main}`, //nejde pica
+              // border: '2px solid black',
             }}
           />
           <FormGroup sx={{ ml: 2, mt: 1 }}>
@@ -202,7 +209,33 @@ const EditProfileScreen: React.FC = () => {
                 <Typography variant="h5">Birthdate</Typography>
               </Grid>
               <Grid item xs={7}>
-                <Controller
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <Controller
+                    name="birthDate"
+                    control={control}
+                    render={({
+                      field: { onChange, value },
+                      fieldState: { error },
+                    }) => (
+                      <DatePicker
+                        openTo="year"
+                        inputFormat="DD/MM/YYYY"
+                        value={value}
+                        disableFuture
+                        onChange={onChange}
+                        renderInput={params => (
+                          <TextField
+                            variant="standard"
+                            {...params}
+                            error={!!error}
+                            helperText={error?.message}
+                          />
+                        )}
+                      />
+                    )}
+                  />
+                </LocalizationProvider>
+                {/* <Controller
                   name="birthDate"
                   control={control}
                   render={({ field, fieldState: { error } }) => (
@@ -216,7 +249,7 @@ const EditProfileScreen: React.FC = () => {
                       sx={{ width: '100%' }}
                     />
                   )}
-                />
+                /> */}
               </Grid>
               <Grid item xs={5} sx={{ mt: 1 }}>
                 <Typography variant="h5">Instagram Username</Typography>

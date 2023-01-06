@@ -42,8 +42,8 @@ const MyActivityCard: React.FC<IProps> = ({
         sx={{
           width: '100%',
           height: '80%',
-          backgroundImage: `url(${require('../assets/img/dune_small.png')})`,
-          // backgroundImage: `url(${activity?.title_picture})`,
+          // backgroundImage: `url(${require('../assets/img/dune_small.png')})`,
+          backgroundImage: `url(${activity?.title_picture})`,
           backgroundPosition: 'center',
           backgroundRepeat: 'no-repeat',
           backgroundSize: 'cover',
