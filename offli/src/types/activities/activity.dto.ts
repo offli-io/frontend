@@ -34,6 +34,7 @@ export interface IActivity {
   participants?: IPerson[]
   title?: string
   description?: string
+  price?: string
   title_picture?: string
   creator?: IPerson
   datetime_from?: Date | string

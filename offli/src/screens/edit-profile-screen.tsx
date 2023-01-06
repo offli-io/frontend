@@ -67,6 +67,7 @@ const EditProfileScreen: React.FC = () => {
     })
 
   useEffect(() => {
+    // alebo setValue ak bude resetu kurovat
     reset({
       name: data?.data?.name,
       // aboutMe: data?.data?.name, // TODO: doplnit udaje na BE a pripojit FE
