@@ -31,7 +31,7 @@ interface IEditProfile {
   name: string
   aboutMe: string
   location: string
-  birthDate: string
+  birthDate: Date | null
   instagramUsername: string
 }
 
@@ -40,7 +40,7 @@ const schema: () => yup.SchemaOf<IEditProfile> = () =>
     name: yup.string().defined().required('Please enter your name'),
     aboutMe: yup.string().defined().required('Please enter your aboutMe'),
     location: yup.string().defined().required('Please enter your location'),
-    birthDate: yup.string().nullable().required('Please enter your birthDate'),
+    birthDate: yup.date().nullable().required('Please enter your birthDate'),
     instagramUsername: yup
       .string()
       .defined()
@@ -65,7 +65,7 @@ const EditProfileScreen: React.FC = () => {
         name: '',
         aboutMe: '',
         location: '',
-        birthDate: '',
+        birthDate: null,
         instagramUsername: '',
       },
       resolver: yupResolver(schema()),
@@ -90,7 +90,7 @@ const EditProfileScreen: React.FC = () => {
     //OnSuccess
     // queryClient.invalidateQueries(['user-info'])
     // navigate(ApplicationLocations.PROFILE)
-    console.log(values)
+    console.log(values?.birthDate?.toISOString())
   }, [])
 
   return (
@@ -222,6 +222,7 @@ const EditProfileScreen: React.FC = () => {
                         inputFormat="DD/MM/YYYY"
                         value={value}
                         disableFuture
+                        // closeOnSelect
                         onChange={onChange}
                         renderInput={params => (
                           <TextField
