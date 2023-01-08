@@ -69,6 +69,8 @@ const ActivitiesScreen = () => {
               />
             ),
           })
+        case ActivityActionsTypeEnumDto.MORE_INFORMATION:
+          return navigate(`${ApplicationLocations.ACTIVITY_ID}/${activityId}`)
         default:
           return console.log(action)
       }

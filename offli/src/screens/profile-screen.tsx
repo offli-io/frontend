@@ -19,6 +19,7 @@ import { ICustomizedLocationStateDto } from '../types/common/customized-location
 import OffliButton from '../components/offli-button'
 import { useSnackbar } from 'notistack'
 import { acceptBuddyInvitation } from '../api/users/requests'
+import ActionButton from '../components/action-button'
 
 interface IProfileScreenProps {
   type: 'profile' | 'request'
@@ -73,130 +74,97 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
       <PageWrapper>
         <Box
           sx={{
-            height: '20%',
+            // height: '20%',
             width: '90%',
             display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            flexDirection: 'column',
           }}
         >
-          <Box
-            sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-            }}
-          >
-            <img
-              // todo add default picture in case of missing photo
-              // src={data?.data?.profilePhotoUrl}
-              src={ProfilePicture}
-              alt="profile picture"
-              style={{
-                height: '70px',
-                width: '7 0px',
-                borderRadius: '50%',
-              }}
-            />
-            <Box
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                mt: 0.5,
-              }}
-            >
-              <IconButton color="primary" sx={{ paddingRight: 0 }}>
-                <PeopleAltIcon sx={{ fontSize: 20 }} />
-              </IconButton>
-              <Typography
-                variant="subtitle1"
-                color="primary"
-                sx={{ fontWeight: 'bold', mt: 0.5 }}
-              >
-                {data?.data?.buddies?.length}
-              </Typography>
-            </Box>
-          </Box>
-          <Box
-            sx={{
-              ml: 2,
-              width: '70%',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'left',
-              justifyContent: 'flex-start',
-            }}
-          >
-            <Box
-              sx={{
-                display: 'flex',
-                alignItems: 'left',
-                justifyContent: 'space-between',
-              }}
-            >
-              <Typography variant="h3">{data?.data?.username}</Typography>
-            </Box>
-            <Box
-              sx={{
-                ml: -1.5,
-                display: 'flex',
-                alignItems: 'center',
-                // justifyContent: 'flex-start',
-              }}
-            >
-              <IconButton sx={{ paddingRight: 0, color: 'black' }}>
-                <LocationOnIcon sx={{ fontSize: 18 }} />
-              </IconButton>
-              <Typography variant="subtitle2">Slovakia, Bratislava</Typography>
-            </Box>
-
-            <Typography variant="subtitle2" sx={{ lineHeight: 1.2 }}>
-              I am student at FIIT STU. I like adventures and meditation. There
-              is always time for a beer. Cheers.
-            </Typography>
-          </Box>
-        </Box>
-        {type === 'profile' && (
-          <Box
+          <Typography variant="h4" sx={{ mb: 0.5 }}>
+            {data?.data?.username}
+          </Typography>
+          <img
+            // todo add default picture in case of missing photo
+            // src={data?.data?.profilePhotoUrl}
+            src={data?.data?.profile_photo_url}
+            alt="profile picture"
             style={{
-              width: '60%',
-              borderRadius: '15px',
-              backgroundColor: '#E4E3FF',
+              height: '70px',
+              width: '70px',
+              borderRadius: '50%',
+              // border: '2px solid primary.main', //nejde pica
+              border: '2px solid black',
+            }}
+          />
+          <Box
+            sx={{
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              padding: '2%',
-              marginTop: '5%',
+              // mt: 0.2,
             }}
           >
-            <Link
-              to={ApplicationLocations.EDIT_PROFILE}
-              style={{ textDecoration: 'none' }}
+            <IconButton color="primary" sx={{ paddingRight: 0 }}>
+              <PeopleAltIcon sx={{ fontSize: 18, padding: 0 }} />
+            </IconButton>
+            <Typography
+              variant="subtitle1"
+              color="primary"
+              sx={{ fontWeight: 'bold', mt: 0.5, ml: 0.5 }}
             >
-              <Typography
-                variant="subtitle2"
-                sx={{
-                  color: 'primary.main',
-                  fontWeight: 'bold',
-                }}
-              >
-                Edit profile
-              </Typography>
-            </Link>
+              {data?.data?.buddies?.length}
+            </Typography>
           </Box>
+          <Box
+            sx={{
+              ml: -1.5,
+              display: 'flex',
+              alignItems: 'center',
+              mt: -1,
+              // justifyContent: 'flex-start',
+            }}
+          >
+            <IconButton sx={{ paddingRight: 0, color: 'black' }}>
+              <LocationOnIcon sx={{ fontSize: 20 }} />
+            </IconButton>
+            <Typography variant="subtitle2">Bratislava, Slovakia</Typography>
+          </Box>
+          <Typography
+            variant="subtitle2"
+            // align="center"
+            sx={{ lineHeight: 1.2, width: '80%' }}
+          >
+            I am student at FIIT STU. I like adventures and meditation. There is
+            always time for a beer. Cheers.
+          </Typography>
+        </Box>
+        {type === 'profile' && (
+          <ActionButton
+            text="Edit profile"
+            sx={{ mt: 2 }}
+            href={ApplicationLocations.EDIT_PROFILE}
+            // onClick={() => console.log('aaa')}
+          />
         )}
         <Box
           sx={{
             width: '90%',
           }}
         >
-          <Typography align="left" variant="h4" sx={{ mt: 3 }}>
+          <Typography align="left" variant="h5" sx={{ mt: 3 }}>
             This month
           </Typography>
           <ProfileStatistics
             participatedNum={10}
-            enjoyedNum={9}
-            createdNum={type === 'profile' ? 5 : undefined}
-            metNum={type === 'profile' ? 12 : undefined}
+            enjoyedNum={data?.data.enjoyed_together_last_month_count}
+            createdNum={type === 'profile' ? 9 : undefined}
+            metNum={
+              type === 'profile'
+                ? data?.data.new_buddies_last_month_count
+                : undefined
+            }
           />
         </Box>
         {type === 'request' && (
@@ -217,7 +185,7 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
           }}
         >
           <Box sx={{ mt: 3 }}>
-            <Typography align="left" variant="h4">
+            <Typography align="left" variant="h5">
               Photos
             </Typography>
           </Box>
@@ -236,7 +204,7 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
               variant="subtitle1"
               sx={{ ml: 0.5, mt: 3, color: 'primary.main', fontWeight: 'bold' }}
             >
-              emma.smith
+              {data?.data.username}
             </Typography>
           </Box>
         </Box>

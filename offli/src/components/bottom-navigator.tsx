@@ -141,29 +141,19 @@ const BottomNavigator: React.FC<IBottomNavigatorProps> = ({ sx }) => {
             setValue(newValue)
           }}
           sx={{
+            width: '85%',
+            margin: 'auto',
             '& .Mui-selected': {
               fontSize: '12px !important',
             },
           }}
         >
           <BottomNavigationAction
-            label="My Activities"
-            // icon={location === BottomNavigationPaths.MY_ACTIVITES
-            //   ? (<OfflineBoltIcon sx={{ transform: 'rotate(30deg)' }})
-            //   : (<OfflineBoltOutlinedIcon sx={{ transform: 'rotate(30deg)' }})/>}
-            icon={
-              <OfflineBoltOutlinedIcon sx={{ transform: 'rotate(30deg)' }} />
-            }
-            component={Link}
-            value={ApplicationLocations.ACTIVITIES}
-            to={ApplicationLocations.ACTIVITIES}
-          />
-          <BottomNavigationAction
             label="Explore"
             icon={<TravelExploreIcon />}
             component={Link}
-            value={ApplicationLocations.SEARCH}
-            to={ApplicationLocations.SEARCH}
+            value={ApplicationLocations.ACTIVITIES}
+            to={ApplicationLocations.ACTIVITIES}
           />
           <BottomNavigationAction
             label="Create"

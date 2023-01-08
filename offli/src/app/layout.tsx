@@ -20,6 +20,7 @@ export const Layout: React.FC<ILayoutProps> = ({ children }) => {
     if (
       [
         ApplicationLocations.SETTINGS,
+        ApplicationLocations.EDIT_PROFILE,
         //ApplicationLocations.NOTIFICATIONS,
         // `${ApplicationLocations.PROFILE}/request`,
         // `${ApplicationLocations.ACTIVITIES}/request`,
