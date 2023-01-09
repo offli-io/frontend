@@ -27,6 +27,7 @@ import { AuthenticationContext } from '../assets/theme/authentication-provider'
 import { ApplicationLocations } from '../types/common/applications-locations.dto'
 import { useNavigate } from 'react-router-dom'
 import { DEFAULT_KEYCLOAK_URL } from '../assets/config'
+import { loginUser } from '../api/auth/requests'
 
 export interface FormValues {
   username: string
@@ -56,47 +57,31 @@ const LoginScreen: React.FC = () => {
     mode: 'onChange',
   })
 
-  const handleFormSubmit = React.useCallback(
-    (values: FormValues) => loginMutation.mutate(values),
-    []
-  )
-
-  const keycloakDataQuery = useQuery(['keycloak-data'], () =>
-    axios.get(
-      `${DEFAULT_KEYCLOAK_URL}/realms/Offli/.well-known/openid-configuration`
-    )
-  )
-
-  // React.useEffect(() => {
-  //   //for testing purposes to not manually remove token from localstorage
-  //   setAuthToken(undefined)
-  //   setStateToken('dsadas')
-  // }, [])
-
-  const loginMutation = useMutation(
-    ['keycloak-login'],
+  const { isLoading, mutate } = useMutation(
+    ['login'],
     (formValues: FormValues) => {
       !!setUserInfo && setUserInfo({ username: formValues?.username })
       localStorage.setItem('username', formValues?.username)
-      const data = {
-        ...formValues,
-        grant_type: 'password',
-        client_id: 'UserManagement',
-      }
-      const options = {
-        method: 'POST',
-        headers: { 'content-type': 'application/x-www-form-urlencoded' },
-        data: qs.stringify(data),
-        url: `${DEFAULT_KEYCLOAK_URL}/realms/Offli/protocol/openid-connect/token`,
-      }
-      return axios(options)
+      //keycloak login that we are using no more
+      // const data = {
+      //   ...formValues,
+      //   grant_type: 'password',
+      //   client_id: 'UserManagement',
+      // }
+      // const options = {
+      //   method: 'POST',
+      //   headers: { 'content-type': 'application/x-www-form-urlencoded' },
+      //   data: qs.stringify(data),
+      //   url: `${DEFAULT_KEYCLOAK_URL}/realms/Offli/protocol/openid-connect/token`,
+      // }
+      return loginUser(formValues)
     },
     {
       onSuccess: data => {
         console.log(data?.data)
         // setAuthToken(data?.data?.access_token)
         // setRefreshToken(data?.data?.refresh_token)
-        setStateToken(data?.data?.access_token)
+        setStateToken(data?.data?.token?.access_token ?? null)
         navigate(ApplicationLocations.ACTIVITIES)
       },
       onError: error => {
@@ -105,7 +90,10 @@ const LoginScreen: React.FC = () => {
     }
   )
 
-  const isLoading = loginMutation?.isLoading || keycloakDataQuery?.isLoading
+  const handleFormSubmit = React.useCallback(
+    (values: FormValues) => mutate(values),
+    [mutate]
+  )
 
   return (
     <form
