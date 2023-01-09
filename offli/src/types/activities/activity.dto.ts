@@ -12,9 +12,11 @@ export interface IPersonExtended {
   id?: string
   username?: string
   name?: string
-  profilePhotoUrl?: string
+  profile_photo_url?: string
   buddies?: IPerson[] | null
   activities?: string[] | null
+  enjoyed_together_last_month_count?: number
+  new_buddies_last_month_count?: number
 }
 
 export interface IActivityLocation {
@@ -32,6 +34,7 @@ export interface IActivity {
   participants?: IPerson[]
   title?: string
   description?: string
+  price?: string
   title_picture?: string
   creator?: IPerson
   datetime_from?: Date | string

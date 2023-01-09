@@ -13,7 +13,7 @@ interface INotificationRequestProps {
 const StyledImage = styled((props: any) => <img {...props} />)`
   height: 40px;
   width: 40px;
-  backgroundcolor: #c9c9c9;
+  background-color: #c9c9c9;
   border-radius: 50%;
   box-shadow: 1px 3px 2px #ccc;
 `
@@ -57,7 +57,7 @@ const NotificationRequest: React.FC<INotificationRequestProps> = ({
           }}
         />
         <StyledImage
-          src={data?.data?.profilePhotoUrl ?? logo}
+          src={data?.data?.profile_photo_url ?? logo}
           alt="profile picture"
         />
         <Box sx={{ display: 'flex', flexDirection: 'column' }}>
