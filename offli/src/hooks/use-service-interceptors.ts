@@ -33,7 +33,7 @@ export const useServiceInterceptors = () => {
         //   : 'http://localhost:5000'
         if (config?.headers) {
           //const newConfig = { ...config }
-          config.headers['Content-Type'] = 'application/json'
+          //config.headers['Content-Type'] = 'application/json'
           const explicitToken = config.headers['Authorization']
           if (_token && !explicitToken) {
             config.headers['Authorization'] = 'Bearer ' + _token
