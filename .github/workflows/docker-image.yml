@@ -22,7 +22,7 @@ jobs:
           git config user.email "<>"
       
       - name: Dependecies
-        run: npm ci --legacy-peer-deps
+        run: npm ci --force
       
       - name: Build
         run: npm run build
