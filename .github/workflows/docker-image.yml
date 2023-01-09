@@ -29,7 +29,7 @@ jobs:
         
       - name: Save version
         id: version
-        run: echo ::set-output name=tag::$(echo $(node -p -e "require('./offli/package.json').version"))
+        run: echo ::set-output name=tag::$(echo $(node -p -e "require('./package.json').version"))
         
       - name: Increase version
         run: npm version patch
@@ -41,7 +41,7 @@ jobs:
         run: echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
         
       - name: Build Docker image
-        run: docker build . --file ./offli/Dockerfile --tag adammartiska/offli-frontend:${{steps.version.outputs.tag}}
+        run: docker build . --file Dockerfile --tag adammartiska/offli-frontend:${{steps.version.outputs.tag}}
         
       - name: Push to Docker Hub
         run: docker push adammartiska/offli-frontend:${{steps.version.outputs.tag}}
