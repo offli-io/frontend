@@ -14,6 +14,7 @@ import ActivityLeaveConfirmation from './components/activity-leave-confirmation'
 import { useSnackbar } from 'notistack'
 import { useActivities } from '../../hooks/use-activities'
 import { IActivityListRestDto } from '../../types/activities/activity-list-rest.dto'
+import Map from '../../components/map'
 
 const ActivitiesScreen = () => {
   const { userInfo } = React.useContext(AuthenticationContext)
@@ -123,7 +124,7 @@ const ActivitiesScreen = () => {
           justifyContent: 'flex-start',
         }}
       >
-        {activities?.map(activity => {
+        {/* {activities?.map(activity => {
           return (
             <MyActivityCard
               key={activity?.id}
@@ -132,7 +133,8 @@ const ActivitiesScreen = () => {
               onPress={openActivityActions}
             />
           )
-        })}
+        })} */}
+        <Map />
       </Box>
     </PageWrapper>
   )

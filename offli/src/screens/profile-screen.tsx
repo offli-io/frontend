@@ -26,11 +26,16 @@ interface IProfileScreenProps {
 }
 
 const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
-  const { userInfo, setUserInfo } = React.useContext(AuthenticationContext)
+  const { userInfo, setUserInfo, setInstagramCode } = React.useContext(
+    AuthenticationContext
+  )
   const location = useLocation()
   const from = (location?.state as ICustomizedLocationStateDto)?.from
   const { id } = useParams()
   const { enqueueSnackbar } = useSnackbar()
+  const queryParameters = new URLSearchParams(window.location.search)
+  const instagramCode = queryParameters.get('code')
+  console.log(instagramCode)
 
   const { data, isLoading } = useQuery(
     ['user-info', userInfo?.username, id],
@@ -65,6 +70,24 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
       },
     }
   )
+
+  React.useEffect(() => {
+    if (instagramCode) {
+      setInstagramCode(instagramCode)
+    }
+  }, [instagramCode, setInstagramCode])
+
+  const handleIGAuthorize = () => {
+    window.location.href =
+      'https://api.instagram.com/oauth/authorize?client_id=738841197888411&redirect_uri=https://localhost:3000/profile/&scope=user_profile,user_media&response_type=code'
+  }
+
+  // redirect URI should be proper offli address that should read instagram code
+  // https://api.instagram.com/oauth/authorize
+  // ?client_id=738841197888411
+  // &redirect_uri=https://terapartners.sk/
+  // &scope=user_profile,user_media
+  // &response_type=code
 
   return (
     <>
@@ -209,6 +232,7 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
           </Box>
         </Box>
         <ProfileGallery />
+        <OffliButton onClick={handleIGAuthorize}>Authorize ig</OffliButton>
       </PageWrapper>
     </>
   )

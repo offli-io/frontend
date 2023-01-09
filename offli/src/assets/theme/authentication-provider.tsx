@@ -5,6 +5,7 @@ import { IPerson, IPersonExtended } from '../../types/activities/activity.dto'
 import jwt_decode from 'jwt-decode'
 import axios from 'axios'
 import { addEventToCalendar } from '../../api/google/requests'
+import qs from 'qs'
 
 const event = {
   summary: 'Hello World',
@@ -36,6 +37,18 @@ interface IAuthenticationContext {
     React.SetStateAction<IPersonExtended | undefined>
   >
   googleTokenClient: any
+  instagramCode: string | null
+  setInstagramCode: React.Dispatch<React.SetStateAction<string | null>>
+}
+
+declare global {
+  interface FormData {
+    getHeaders: () => { [key: string]: string }
+  }
+}
+
+FormData.prototype.getHeaders = () => {
+  return { 'Content-Type': 'multipart/form-data' }
 }
 
 export const CLIENT_ID =
@@ -57,6 +70,7 @@ export const AuthenticationProvider = ({
   const [stateToken, setStateToken] = React.useState<null | string>(null)
   const [userInfo, setUserInfo] = React.useState<IPersonExtended | undefined>()
   const [googleTokenClient, setGoogleTokenClient] = React.useState<any>()
+  const [instagramCode, setInstagramCode] = React.useState<string | null>(null)
 
   //another way just to inform with boolean,
   const [authenticated, setIsAuthenticated] = React.useState<boolean>(false)
@@ -72,6 +86,58 @@ export const AuthenticationProvider = ({
     const decoded: any = jwt_decode(response.credential)
     console.log(decoded)
   }
+
+  React.useEffect(() => {
+    // if I get instagram code, exchange it for access token
+    if (instagramCode) {
+      const form = new FormData()
+      form.append('client_id', '738841197888411')
+      form.append('client_secret', 'a6f0b1f9dc0a180df400e4205addf792')
+      form.append('grant_type', 'authorization_code')
+      form.append('redirect_uri', 'https://localhost:3000/profile/')
+      form.append('code', instagramCode)
+
+      axios.post('https://api.instagram.com/oauth/access_token', form, {
+        headers: {
+          ...form.getHeaders(),
+        },
+      })
+      // axios.post(
+      //   'https://api.instagram.com/oauth/access_token',
+      //   qs.stringify({
+      //     client_id: '738841197888411',
+      //     client_secret: 'a6f0b1f9dc0a180df400e4205addf792',
+      //     grant_type: 'authorization_code',
+      //     redirect_uri: 'https://terapartners.sk/',
+      //     code: instagramCode,
+      //   }),
+      //   {
+      //     headers: {
+      //       'Content-Type': 'application/x-www-form-urlencoded',
+      //     },
+      //   }
+      // )
+      // 'content-type': 'multipart/form-data',
+      //host: 'api.instagram.com',
+      // {
+      //   params: {
+      //     client_id: '738841197888411',
+      //     client_secret: 'a6f0b1f9dc0a180df400e4205addf792',
+      //     grant_type: 'authorization_code',
+      //     redirect_uri: 'https://localhost:3000/profile/',
+      //     code: instagramCode,
+      //   },
+      // }
+      //       curl -X POST \
+      // https://api.instagram.com/oauth/access_token \
+      // -F client_id=738841197888411 \
+      // -F client_secret=a6f0b1f9dc0a180df400e4205addf792 \
+      // -F grant_type=authorization_code \
+      // -F redirect_uri=https://localhost:3000/profile/ \
+      // -F code=AQB1R3iYzvqysmfF6T2h-rUM-9wP3gUvD7hSsno6ZlKHCh44A508g1N7bQiNbZAte_02sA0rMaCWwqyE1cgB3TiYjrm-0RLUcsJEbCUfpt80hSzDwHwl27LN9cUt6yirUj2xpXXB8TOxWmb0dCQid_ybmPdFOwgNn56_Jya-gn7IAcSKvn1U6WrM9yDhB0MdiozQXyEpY1oCKBA0VfSW_-qo9Ei0kq8bETEdo3cbY5xpkA
+      // )
+    }
+  }, [instagramCode])
 
   React.useEffect(() => {
     /* global google */
@@ -118,6 +184,8 @@ export const AuthenticationProvider = ({
         userInfo,
         setUserInfo,
         googleTokenClient,
+        instagramCode,
+        setInstagramCode,
       }}
     >
       {children}
