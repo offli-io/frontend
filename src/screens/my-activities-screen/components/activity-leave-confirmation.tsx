@@ -45,7 +45,7 @@ const ActivityLeaveConfirmation: React.FC<IActivityActionsProps> = ({
           boxShadow: "2px 3px 4px #ccc",
         }}
         src={data?.data?.activity?.title_picture}
-        alt="activity-photo"
+        alt="Activity leave"
       />
       <Box display="flex" sx={{ my: 2 }}>
         <Typography>Do you really want to leave</Typography>
