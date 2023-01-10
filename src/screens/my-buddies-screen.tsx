@@ -1,36 +1,36 @@
-import React from 'react'
+import React from "react";
 import {
   Box,
   Divider,
   IconButton,
   InputAdornment,
   TextField,
-} from '@mui/material'
-import { PageWrapper } from '../components/page-wrapper'
-import SearchIcon from '@mui/icons-material/Search'
-import PersonAddIcon from '@mui/icons-material/PersonAdd'
-import BuddyItem from '../api/activities/buddy-item-checkbox'
-import logo from '../assets/img/profilePicture.jpg'
+} from "@mui/material";
+import { PageWrapper } from "../components/page-wrapper";
+import SearchIcon from "@mui/icons-material/Search";
+import PersonAddIcon from "@mui/icons-material/PersonAdd";
+import BuddyItemCheckbox from "../components/buddy-item-checkbox";
+import logo from "../assets/img/profilePicture.jpg";
 
 const data = [
   {
-    name: 'Adam martin',
+    name: "Adam martin",
     imageSource: logo,
   },
   {
-    name: 'lukas laskyplny',
+    name: "lukas laskyplny",
     imageSource: logo,
   },
   {
-    name: 'SkillerSWK',
+    name: "SkillerSWK",
     imageSource: logo,
   },
-]
+];
 
 const MyBuddiesScreen = () => {
   return (
     <PageWrapper sxOverrides={{ px: 2 }}>
-      <Box sx={{ mb: 2, width: '100%' }}>
+      <Box sx={{ mb: 2, width: "100%" }}>
         <TextField
           id="input-with-icon-textfield"
           placeholder="Search within my buddies"
@@ -49,7 +49,7 @@ const MyBuddiesScreen = () => {
       </Box>
       {data?.map((buddy: any, index) => (
         <>
-          <BuddyItem
+          <BuddyItemCheckbox
             username={buddy?.name}
             imageSource={buddy?.imageSource}
             id={index}
@@ -57,14 +57,14 @@ const MyBuddiesScreen = () => {
           <Divider
             variant="fullWidth"
             sx={{
-              width: '100%',
-              borderColor: theme => theme.palette.inactive.main,
+              width: "100%",
+              borderColor: (theme) => theme.palette.inactive.main,
             }}
           />
         </>
       ))}
     </PageWrapper>
-  )
-}
+  );
+};
 
-export default MyBuddiesScreen
+export default MyBuddiesScreen;
