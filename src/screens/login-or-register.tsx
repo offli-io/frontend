@@ -1,24 +1,24 @@
-import React from 'react'
-import { Box, Typography, TextField } from '@mui/material'
-import BackButton from '../components/back-button'
-import { Controller, useForm } from 'react-hook-form'
-import * as yup from 'yup'
-import { yupResolver } from '@hookform/resolvers/yup'
-import Logo from '../components/logo'
-import OffliButton from '../components/offli-button'
+import React from "react";
+import { Box, Typography, TextField } from "@mui/material";
+import BackButton from "../components/back-button";
+import { Controller, useForm } from "react-hook-form";
+import * as yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
+import Logo from "../components/logo";
+import OffliButton from "../components/offli-button";
 
-import backgroundImage from '../assets/img/undraw_real_life_blue.svg'
-import { PageWrapper } from '../components/page-wrapper'
+import backgroundImage from "../assets/img/undraw_real_life_blue.svg";
+import { PageWrapper } from "../components/page-wrapper";
 
 const LoginOrRegisterScreen = () => {
   return (
     <Box
       sx={{
-        height: '100vh',
-        width: '100vw',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
+        height: "100vh",
+        width: "100vw",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
         //   justifyContent: 'center',
       }}
     >
@@ -27,17 +27,17 @@ const LoginOrRegisterScreen = () => {
       </Box>
       <img
         src={backgroundImage}
-        alt="Background Image"
-        style={{ height: '25%', marginBottom: '30%' }}
+        alt="Background"
+        style={{ height: "25%", marginBottom: "30%" }}
       />
-      <OffliButton to="/login" sx={{ width: '80%', mb: 1 }}>
+      <OffliButton to="/login" sx={{ width: "80%", mb: 1 }}>
         Login
       </OffliButton>
-      <OffliButton to="/register" variant="text" sx={{ width: '80%', mb: 3 }}>
+      <OffliButton to="/register" variant="text" sx={{ width: "80%", mb: 3 }}>
         Register
       </OffliButton>
     </Box>
-  )
-}
+  );
+};
 
-export default LoginOrRegisterScreen
+export default LoginOrRegisterScreen;

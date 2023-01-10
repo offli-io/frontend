@@ -11,93 +11,93 @@ import {
   TextField,
   Typography,
   useTheme,
-} from '@mui/material'
-import React from 'react'
-import { Controller, UseFormReturn } from 'react-hook-form'
-import OffliButton from '../../../components/offli-button'
-import activityLocation from '../../../assets/img/activity-location.svg'
-import { useQuery } from '@tanstack/react-query'
-import { getLocationFromQuery } from '../../../api/activities/requests'
-import { useDebounce } from 'use-debounce'
-import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew'
+} from "@mui/material";
+import React from "react";
+import { Controller, UseFormReturn } from "react-hook-form";
+import OffliButton from "../../../components/offli-button";
+import activityLocation from "../../../assets/img/activity-location.svg";
+import { useQuery } from "@tanstack/react-query";
+import { getLocationFromQuery } from "../../../api/activities/requests";
+import { useDebounce } from "use-debounce";
+import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 
 interface IPlaceFormProps {
-  onNextClicked: () => void
-  onBackClicked: () => void
-  methods: UseFormReturn
+  onNextClicked: () => void;
+  onBackClicked: () => void;
+  methods: UseFormReturn;
 }
 
 const top100Films = [
   {
-    type: 'idk',
+    type: "idk",
     id: 225,
     lat: 22.5,
     lon: 32.8,
     tags: {
-      city_limit: 'ahoj',
-      name: 'Bratislava',
-      traffic_sign: 'auta',
+      city_limit: "ahoj",
+      name: "Bratislava",
+      traffic_sign: "auta",
     },
   },
   {
-    type: 'neviem',
+    type: "neviem",
     id: 226,
     lat: 22.9,
     lon: 12.05,
     tags: {
-      city_limit: 'cauko',
-      name: 'Praha',
-      traffic_sign: 'tramvaj',
+      city_limit: "cauko",
+      name: "Praha",
+      traffic_sign: "tramvaj",
     },
   },
-]
+];
 
 export const PlaceForm: React.FC<IPlaceFormProps> = ({
   onNextClicked,
   onBackClicked,
   methods,
 }) => {
-  const { control, setValue, formState, watch } = methods
+  const { control, setValue, formState, watch } = methods;
 
   // filter backend results based on query string
-  const [queryString] = useDebounce(watch('placeQuery'), 1000)
+  const [queryString] = useDebounce(watch("placeQuery"), 1000);
 
   const placeQuery = useQuery(
-    ['locations', queryString],
-    props => getLocationFromQuery(queryString),
+    ["locations", queryString],
+    (props) => getLocationFromQuery(queryString),
     {
       enabled: !!queryString,
     }
-  )
+  );
 
-  const place = watch('place')
-  console.log(place)
+  const place = watch("place");
+  console.log(place);
 
   return (
     <>
       <Box
-        sx={{ display: 'flex', width: '100%', alignItems: 'flex-end', mt: -8 }}
+        sx={{ display: "flex", width: "100%", alignItems: "flex-end", mt: -8 }}
       >
         <Box
           sx={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            width: '50%',
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            width: "50%",
           }}
         >
           <Typography variant="h4">Add place</Typography>
         </Box>
-        <Box sx={{ width: '50%', display: 'flex', justifyContent: 'center' }}>
-          <img src={activityLocation} style={{ height: 80 }} />
+        <Box sx={{ width: "50%", display: "flex", justifyContent: "center" }}>
+          <img src={activityLocation} style={{ height: 80 }} alt="place-form" />
         </Box>
       </Box>
       <Box
         sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          width: '100%',
-          alignItems: 'flex-start',
+          display: "flex",
+          flexDirection: "column",
+          width: "100%",
+          alignItems: "flex-start",
           mt: 4,
         }}
       >
@@ -108,9 +108,9 @@ export const PlaceForm: React.FC<IPlaceFormProps> = ({
             <Autocomplete
               options={placeQuery?.data?.data ?? []}
               sx={{
-                width: '100%',
-                display: 'flex',
-                justifyContent: 'center',
+                width: "100%",
+                display: "flex",
+                justifyContent: "center",
                 mb: 2,
               }}
               loading={placeQuery?.isLoading}
@@ -124,12 +124,12 @@ export const PlaceForm: React.FC<IPlaceFormProps> = ({
                   },
                 })
               }
-              getOptionLabel={option => option?.display_name}
-              renderInput={params => (
+              getOptionLabel={(option) => option?.display_name}
+              renderInput={(params) => (
                 <TextField
                   {...params}
                   label="Search place"
-                  onChange={e => setValue('placeQuery', e.target.value)}
+                  onChange={(e) => setValue("placeQuery", e.target.value)}
                 />
               )}
             />
@@ -138,9 +138,9 @@ export const PlaceForm: React.FC<IPlaceFormProps> = ({
       </Box>
       <Box
         sx={{
-          width: '100%',
-          display: 'flex',
-          justifyContent: 'space-between',
+          width: "100%",
+          display: "flex",
+          justifyContent: "space-between",
         }}
       >
         <IconButton onClick={onBackClicked} color="primary">
@@ -155,12 +155,12 @@ export const PlaceForm: React.FC<IPlaceFormProps> = ({
         </OffliButton> */}
         <OffliButton
           onClick={onNextClicked}
-          sx={{ width: '40%' }}
+          sx={{ width: "40%" }}
           disabled={!formState.isValid}
         >
           Next
         </OffliButton>
       </Box>
     </>
-  )
-}
+  );
+};

@@ -5,39 +5,39 @@ import {
   TextField,
   Typography,
   useTheme,
-} from '@mui/material'
-import React, { BaseSyntheticEvent } from 'react'
-import { Controller, UseFormReturn } from 'react-hook-form'
-import OffliButton from '../../../components/offli-button'
-import activityPhotoImg from '../../../assets/img/activity-photo.svg'
-import Upload from 'rc-upload'
-import { RcFile } from 'rc-upload/lib/interface'
-import FileUploadIcon from '@mui/icons-material/FileUpload'
-import { grey } from '@mui/material/colors'
-import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew'
-import AddAPhotoIcon from '@mui/icons-material/AddAPhoto'
-import LabeledDivider from '../../../components/labeled-divider'
-import { DrawerContext } from '../../../assets/theme/drawer-provider'
-import OffliGallery from './offli-gallery'
+} from "@mui/material";
+import React, { BaseSyntheticEvent } from "react";
+import { Controller, UseFormReturn } from "react-hook-form";
+import OffliButton from "../../../components/offli-button";
+import activityPhotoImg from "../../../assets/img/activity-photo.svg";
+import Upload from "rc-upload";
+import { RcFile } from "rc-upload/lib/interface";
+import FileUploadIcon from "@mui/icons-material/FileUpload";
+import { grey } from "@mui/material/colors";
+import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
+import AddAPhotoIcon from "@mui/icons-material/AddAPhoto";
+import LabeledDivider from "../../../components/labeled-divider";
+import { DrawerContext } from "../../../assets/theme/drawer-provider";
+import OffliGallery from "./offli-gallery";
 
 interface IActivityPhotoFormProps {
-  methods: UseFormReturn
-  onBackClicked: () => void
+  methods: UseFormReturn;
+  onBackClicked: () => void;
 }
 
 export const ActivityPhotoForm: React.FC<IActivityPhotoFormProps> = ({
   methods,
   onBackClicked,
 }) => {
-  const { control, formState, watch, setValue } = methods
-  const { toggleDrawer } = React.useContext(DrawerContext)
+  const { control, formState, watch, setValue } = methods;
+  const { toggleDrawer } = React.useContext(DrawerContext);
   const onImageSelect = (e: BaseSyntheticEvent) => {
-    console.log(e.target.files)
-  }
-  const theme = useTheme()
-  const tags = watch('tags')
+    console.log(e.target.files);
+  };
+  const theme = useTheme();
+  const tags = watch("tags");
 
-  const selectedPhoto = watch('title_picture')
+  const selectedPhoto = watch("title_picture");
 
   const openGallery = React.useCallback(
     () =>
@@ -46,40 +46,40 @@ export const ActivityPhotoForm: React.FC<IActivityPhotoFormProps> = ({
         content: (
           <OffliGallery
             tags={tags}
-            onPictureSelect={url => {
-              setValue('title_picture', url)
-              toggleDrawer({ open: false, content: undefined })
+            onPictureSelect={(url) => {
+              setValue("title_picture", url);
+              toggleDrawer({ open: false, content: undefined });
             }}
           />
         ),
       }),
     [toggleDrawer, setValue]
-  )
+  );
 
   return (
     <>
       <Box
         sx={{
-          display: 'flex',
-          width: '100%',
-          alignItems: 'flex-end',
+          display: "flex",
+          width: "100%",
+          alignItems: "flex-end",
           my: 4,
         }}
       >
         <Box
           sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            width: '50%',
+            display: "flex",
+            flexDirection: "column",
+            width: "50%",
           }}
         >
-          <Typography variant="h4" sx={{ color: 'primary.main' }}>
+          <Typography variant="h4" sx={{ color: "primary.main" }}>
             Add
           </Typography>
           <Typography variant="h4">activity photo</Typography>
           <Typography
             variant="subtitle2"
-            sx={{ color: theme => theme.palette.inactiveFont.main, mt: 0.5 }}
+            sx={{ color: (theme) => theme.palette.inactiveFont.main, mt: 0.5 }}
           >
             Later you can add two more photos
           </Typography>
@@ -88,21 +88,21 @@ export const ActivityPhotoForm: React.FC<IActivityPhotoFormProps> = ({
 
       <Box
         sx={{
-          width: '100%',
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          alignItem: 'center',
+          width: "100%",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItem: "center",
           mb: 6,
         }}
       >
         {selectedPhoto ? (
           <Box
             sx={{
-              width: '100%',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
+              width: "100%",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
             }}
           >
             <img
@@ -112,8 +112,9 @@ export const ActivityPhotoForm: React.FC<IActivityPhotoFormProps> = ({
                 height: 200,
                 border: `1px solid ${theme.palette.primary.main}`,
                 borderRadius: 5,
-                boxShadow: '2px 3px 3px #ccc',
+                boxShadow: "2px 3px 3px #ccc",
               }}
+              alt="Selected img"
             />
             <OffliButton
               variant="text"
@@ -134,7 +135,7 @@ export const ActivityPhotoForm: React.FC<IActivityPhotoFormProps> = ({
                   <Upload
                     name="file"
                     value={field.value?.[0]}
-                    style={{ display: 'flex', justifyContent: 'center' }}
+                    style={{ display: "flex", justifyContent: "center" }}
                     // beforeUpload={(file: RcFile) => {
                     //   // check file size
                     //   if (file?.size > fileLimit) {w
@@ -172,14 +173,14 @@ export const ActivityPhotoForm: React.FC<IActivityPhotoFormProps> = ({
                       sx={{
                         width: 200,
                         height: 100,
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        position: 'relative',
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        position: "relative",
                         bgcolor: grey[200],
                         borderRadius: 5,
-                        border: theme =>
+                        border: (theme) =>
                           `1px dashed ${theme.palette.primary.main}`,
                       }}
                     >
@@ -197,19 +198,19 @@ export const ActivityPhotoForm: React.FC<IActivityPhotoFormProps> = ({
                       </Typography>
                     </Box>
                   </Upload>
-                )
+                );
               }}
             />
-            <LabeledDivider sx={{ my: 3, width: '100%' }}>
+            <LabeledDivider sx={{ my: 3, width: "100%" }}>
               <Typography variant="subtitle1">or</Typography>
             </LabeledDivider>
             <Box
               sx={{
-                width: '100%',
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'center',
+                width: "100%",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
               }}
             >
               <Box
@@ -217,19 +218,20 @@ export const ActivityPhotoForm: React.FC<IActivityPhotoFormProps> = ({
                 sx={{
                   width: 200,
                   height: 100,
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  position: 'relative',
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  position: "relative",
                   bgcolor: grey[200],
                   borderRadius: 5,
-                  border: theme => `1px dashed ${theme.palette.primary.main}`,
+                  border: (theme) => `1px dashed ${theme.palette.primary.main}`,
                 }}
               >
                 <img
                   src={activityPhotoImg}
                   style={{ height: 50, marginBottom: 12 }}
+                  alt="Activity img"
                 />
                 <Typography sx={{ fontSize: 14 }}>Select from Offli</Typography>
               </Box>
@@ -239,9 +241,9 @@ export const ActivityPhotoForm: React.FC<IActivityPhotoFormProps> = ({
       </Box>
       <Box
         sx={{
-          width: '100%',
-          display: 'flex',
-          justifyContent: 'space-between',
+          width: "100%",
+          display: "flex",
+          justifyContent: "space-between",
         }}
       >
         <IconButton onClick={onBackClicked} color="primary">
@@ -255,7 +257,7 @@ export const ActivityPhotoForm: React.FC<IActivityPhotoFormProps> = ({
           Back
         </OffliButton> */}
         <OffliButton
-          sx={{ width: '60%' }}
+          sx={{ width: "60%" }}
           disabled={!formState.isValid}
           type="submit"
         >
@@ -263,5 +265,5 @@ export const ActivityPhotoForm: React.FC<IActivityPhotoFormProps> = ({
         </OffliButton>
       </Box>
     </>
-  )
-}
+  );
+};

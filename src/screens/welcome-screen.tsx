@@ -40,7 +40,7 @@ const WelcomeScreen = () => {
           Welcome,
           <Box sx={{ fontSize: "28px", color: "black" }}>{username}!</Box>
         </Typography>
-        <img src={image} alt="Background Image" style={{ height: "80px" }} />
+        <img src={image} style={{ height: "80px" }} alt="Background" />
       </Box>
       <Typography
         align="center"

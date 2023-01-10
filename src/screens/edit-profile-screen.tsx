@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect } from "react";
 import {
   Box,
   IconButton,
@@ -10,79 +10,79 @@ import {
   FormControlLabel,
   Checkbox,
   useTheme,
-} from '@mui/material'
-import { PageWrapper } from '../components/page-wrapper'
-import { useQueryClient } from '@tanstack/react-query'
-import BackHeader from '../components/back-header'
-import { IPersonExtended } from '../types/activities/activity.dto'
-import { ApplicationLocations } from '../types/common/applications-locations.dto'
-import { AuthenticationContext } from '../assets/theme/authentication-provider'
-import ActionButton from '../components/action-button'
-import { Controller, useForm } from 'react-hook-form'
-import * as yup from 'yup'
-import { yupResolver } from '@hookform/resolvers/yup'
-import { useNavigate } from 'react-router-dom'
-import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
-import { Dayjs } from 'dayjs'
-import moment from 'moment'
+} from "@mui/material";
+import { PageWrapper } from "../components/page-wrapper";
+import { useQueryClient } from "@tanstack/react-query";
+import BackHeader from "../components/back-header";
+import { IPersonExtended } from "../types/activities/activity.dto";
+import { ApplicationLocations } from "../types/common/applications-locations.dto";
+import { AuthenticationContext } from "../assets/theme/authentication-provider";
+import ActionButton from "../components/action-button";
+import { Controller, useForm } from "react-hook-form";
+import * as yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { useNavigate } from "react-router-dom";
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { Dayjs } from "dayjs";
+import moment from "moment";
 
 interface IEditProfile {
-  name: string
-  aboutMe: string
-  location: string
-  birthDate: Date | null
-  instagramUsername: string
+  name: string;
+  aboutMe: string;
+  location: string;
+  birthDate: Date | null;
+  instagramUsername: string;
 }
 
 const schema: () => yup.SchemaOf<IEditProfile> = () =>
   yup.object({
-    name: yup.string().defined().required('Please enter your name'),
-    aboutMe: yup.string().defined().required('Please enter your aboutMe'),
-    location: yup.string().defined().required('Please enter your location'),
-    birthDate: yup.date().nullable().required('Please enter your birthDate'),
+    name: yup.string().defined().required("Please enter your name"),
+    aboutMe: yup.string().defined().required("Please enter your aboutMe"),
+    location: yup.string().defined().required("Please enter your location"),
+    birthDate: yup.date().nullable().required("Please enter your birthDate"),
     instagramUsername: yup
       .string()
       .defined()
-      .required('Please enter your instagramUsername'),
-  })
+      .required("Please enter your instagramUsername"),
+  });
 
 const EditProfileScreen: React.FC = () => {
-  const theme = useTheme()
-  const { userInfo } = React.useContext(AuthenticationContext)
-  const queryClient = useQueryClient()
+  const theme = useTheme();
+  const { userInfo } = React.useContext(AuthenticationContext);
+  const queryClient = useQueryClient();
 
   const data = queryClient.getQueryData<{ data: IPersonExtended }>([
-    'user-info',
+    "user-info",
     userInfo?.username,
-  ])
+  ]);
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const { control, handleSubmit, watch, setError, formState, reset } =
     useForm<IEditProfile>({
       defaultValues: {
-        name: '',
-        aboutMe: '',
-        location: '',
+        name: "",
+        aboutMe: "",
+        location: "",
         birthDate: null,
-        instagramUsername: '',
+        instagramUsername: "",
       },
       resolver: yupResolver(schema()),
-      mode: 'onChange',
-    })
+      mode: "onChange",
+    });
 
   useEffect(() => {
     // alebo setValue ak bude resetu kurovat
     reset({
       name: data?.data?.name,
       // aboutMe: data?.data?.name, // TODO: doplnit udaje na BE a pripojit FE
-      aboutMe: 'Type something about you',
-      location: 'Neporadza',
+      aboutMe: "Type something about you",
+      location: "Neporadza",
       // birthDate: '',
-      instagramUsername: 'staryjanotvojtatko',
-    })
-  }, [data])
+      instagramUsername: "staryjanotvojtatko",
+    });
+  }, [data]);
 
   // console.log(formState?.errors)
 
@@ -90,8 +90,8 @@ const EditProfileScreen: React.FC = () => {
     //OnSuccess
     // queryClient.invalidateQueries(['user-info'])
     // navigate(ApplicationLocations.PROFILE)
-    console.log(values?.birthDate?.toISOString())
-  }, [])
+    console.log(values?.birthDate?.toISOString());
+  }, []);
 
   return (
     <>
@@ -104,22 +104,22 @@ const EditProfileScreen: React.FC = () => {
         <Box
           sx={{
             // mt: (HEADER_HEIGHT + 16) / 12,
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'center',
-            alignItems: 'center',
-            width: '100%',
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            width: "100%",
           }}
         >
           <img
-            onClick={() => console.log('asas')}
+            onClick={() => console.log("asas")}
             // todo add default picture in case of missing photo
             src={data?.data?.profile_photo_url}
-            alt="profile picture"
+            alt="profile"
             style={{
-              height: '70px',
-              width: '70px',
-              borderRadius: '50%',
+              height: "70px",
+              width: "70px",
+              borderRadius: "50%",
               border: `3px solid ${theme.palette.primary.main}`, //nejde pica
               // border: '2px solid black',
             }}
@@ -129,18 +129,18 @@ const EditProfileScreen: React.FC = () => {
           </FormGroup>
           <form
             style={{
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'center',
-              alignItems: 'center',
-              width: '100%',
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+              width: "100%",
             }}
             onSubmit={handleSubmit(handleFormSubmit)}
           >
             <Grid
               container
               rowSpacing={1.5}
-              sx={{ width: '80%', mt: 1, fontSize: 5, alignItems: 'center' }}
+              sx={{ width: "80%", mt: 1, fontSize: 5, alignItems: "center" }}
             >
               <Grid item xs={5}>
                 <Typography variant="h5">Name</Typography>
@@ -158,7 +158,7 @@ const EditProfileScreen: React.FC = () => {
                       error={!!error}
                       helperText={error?.message}
                       //disabled={methodSelectionDisabled}
-                      sx={{ width: '100%' }}
+                      sx={{ width: "100%" }}
                     />
                   )}
                 />
@@ -180,7 +180,7 @@ const EditProfileScreen: React.FC = () => {
                       error={!!error}
                       helperText={error?.message}
                       //disabled={methodSelectionDisabled}
-                      sx={{ width: '100%' }}
+                      sx={{ width: "100%" }}
                     />
                   )}
                 />
@@ -200,7 +200,7 @@ const EditProfileScreen: React.FC = () => {
                       error={!!error}
                       helperText={error?.message}
                       //disabled={methodSelectionDisabled}
-                      sx={{ width: '100%' }}
+                      sx={{ width: "100%" }}
                     />
                   )}
                 />
@@ -224,7 +224,7 @@ const EditProfileScreen: React.FC = () => {
                         disableFuture
                         // closeOnSelect
                         onChange={onChange}
-                        renderInput={params => (
+                        renderInput={(params) => (
                           <TextField
                             variant="standard"
                             {...params}
@@ -266,7 +266,7 @@ const EditProfileScreen: React.FC = () => {
                       variant="standard"
                       error={!!error}
                       helperText={error?.message}
-                      sx={{ width: '100%' }}
+                      sx={{ width: "100%" }}
                     />
                   )}
                 />
@@ -300,7 +300,7 @@ const EditProfileScreen: React.FC = () => {
         </Box>
       </PageWrapper>
     </>
-  )
-}
+  );
+};
 
-export default EditProfileScreen
+export default EditProfileScreen;
