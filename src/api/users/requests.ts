@@ -1,15 +1,13 @@
-import axios from 'axios'
-import { QueryFunctionContext } from 'react-query'
-import { DEFAULT_DEV_URL } from '../../assets/config'
+import axios from "axios";
+import { DEFAULT_DEV_URL } from "../../assets/config";
 import {
-  IEmailPassword,
   IEmailUsernamePassword,
   IEmailVerificationCode,
-} from '../../types/users/user.dto'
+} from "../../types/users/user.dto";
 
 export const preCreateUser = async (values: IEmailUsernamePassword) => {
-  const CancelToken = axios.CancelToken
-  const source = CancelToken.source()
+  const CancelToken = axios.CancelToken;
+  const source = CancelToken.source();
 
   const promise = axios.post(
     `${DEFAULT_DEV_URL}/registration/pre-signup`,
@@ -17,15 +15,15 @@ export const preCreateUser = async (values: IEmailUsernamePassword) => {
     {
       cancelToken: source?.token,
     }
-  )
-  return promise
-}
+  );
+  return promise;
+};
 
 export const verifyCodeAndRetrieveUserId = async (
   values: IEmailVerificationCode
 ) => {
-  const CancelToken = axios.CancelToken
-  const source = CancelToken.source()
+  const CancelToken = axios.CancelToken;
+  const source = CancelToken.source();
 
   const promise = axios.post<{ userId?: string }>(
     `${DEFAULT_DEV_URL}/registration/verify-email`,
@@ -34,13 +32,13 @@ export const verifyCodeAndRetrieveUserId = async (
       // params: searchParams,
       cancelToken: source?.token,
     }
-  )
-  return promise
-}
+  );
+  return promise;
+};
 
 export const checkIfEmailAlreadyTaken = async (email?: string) => {
-  const CancelToken = axios.CancelToken
-  const source = CancelToken.source()
+  const CancelToken = axios.CancelToken;
+  const source = CancelToken.source();
 
   const promise = axios.get<boolean>(
     `${DEFAULT_DEV_URL}/registration/emails/${email}`,
@@ -48,13 +46,13 @@ export const checkIfEmailAlreadyTaken = async (email?: string) => {
       // params: searchParams,
       cancelToken: source?.token,
     }
-  )
-  return promise
-}
+  );
+  return promise;
+};
 
 export const checkIfUsernameAlreadyTaken = async (username?: string) => {
-  const CancelToken = axios.CancelToken
-  const source = CancelToken.source()
+  const CancelToken = axios.CancelToken;
+  const source = CancelToken.source();
 
   const promise = axios.get<boolean>(
     `${DEFAULT_DEV_URL}/registration/users/${username}`,
@@ -62,16 +60,16 @@ export const checkIfUsernameAlreadyTaken = async (username?: string) => {
       // params: searchParams,
       cancelToken: source?.token,
     }
-  )
-  return promise
-}
+  );
+  return promise;
+};
 
 export const acceptBuddyInvitation = (
   userId?: string,
   buddyToBeId?: string
 ) => {
-  const CancelToken = axios.CancelToken
-  const source = CancelToken.source()
+  const CancelToken = axios.CancelToken;
+  const source = CancelToken.source();
 
   const promise = axios.post(
     `${DEFAULT_DEV_URL}/users/${userId}/buddies`,
@@ -79,21 +77,21 @@ export const acceptBuddyInvitation = (
     {
       cancelToken: source?.token,
     }
-  )
+  );
 
   //   queryFunctionContext?.signal?.addEventListener('abort', () => {
   //     source.cancel('Query was cancelled by React Query')
   //   })
 
-  return promise
-}
+  return promise;
+};
 
 export const rejectBuddyInvitation = (
   userId?: string,
   buddyToBeId?: string
 ) => {
-  const CancelToken = axios.CancelToken
-  const source = CancelToken.source()
+  const CancelToken = axios.CancelToken;
+  const source = CancelToken.source();
 
   const promise = axios.post(
     `${DEFAULT_DEV_URL}/users/${userId}/buddies`,
@@ -101,11 +99,11 @@ export const rejectBuddyInvitation = (
     {
       cancelToken: source?.token,
     }
-  )
+  );
 
   //   queryFunctionContext?.signal?.addEventListener('abort', () => {
   //     source.cancel('Query was cancelled by React Query')
   //   })
 
-  return promise
-}
+  return promise;
+};

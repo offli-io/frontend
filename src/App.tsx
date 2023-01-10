@@ -1,21 +1,21 @@
-import { Box, Button } from '@mui/material'
-import './App.css'
-import Router from './routes/router'
-import React from 'react'
-import { QueryClientProvider, QueryClient } from '@tanstack/react-query'
-import { AuthenticationProvider } from './assets/theme/authentication-provider'
-import { ReactNode } from 'react'
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
-import { LocalizationProvider } from '@mui/x-date-pickers'
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
-import { useServiceInterceptors } from './hooks/use-service-interceptors'
-import { SnackbarKey, SnackbarProvider } from 'notistack'
-import { DrawerProvider } from './assets/theme/drawer-provider'
-import { CustomizationProvider } from './assets/theme/customization-provider'
-import { gapi } from 'gapi-script'
-import { useGoogleCalendar } from './hooks/use-google-calendar'
-import axios from 'axios'
-import jwt_decode from 'jwt-decode'
+import { Box, Button } from "@mui/material";
+import "./App.css";
+import Router from "./routes/router";
+import React from "react";
+import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
+import { AuthenticationProvider } from "./assets/theme/authentication-provider";
+import { ReactNode } from "react";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { useServiceInterceptors } from "./hooks/use-service-interceptors";
+import { SnackbarKey, SnackbarProvider } from "notistack";
+import { DrawerProvider } from "./assets/theme/drawer-provider";
+import { CustomizationProvider } from "./assets/theme/customization-provider";
+import { gapi } from "gapi-script";
+import { useGoogleCalendar } from "./hooks/use-google-calendar";
+import axios from "axios";
+import jwt_decode from "jwt-decode";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -34,29 +34,29 @@ const queryClient = new QueryClient({
       retry: 0,
     },
   },
-})
+});
 
-declare module 'react-query/types/react/QueryClientProvider' {
+declare module "react-query/types/react/QueryClientProvider" {
   interface QueryClientProviderProps {
-    children?: ReactNode
+    children?: ReactNode;
   }
 }
 
 function App() {
-  window.addEventListener('load', function () {
+  window.addEventListener("load", function () {
     setTimeout(function () {
       // This hides the address bar:
-      window.scrollTo(0, 1)
-    }, 0)
-  })
-  const notificationsRef = React.createRef<any>()
+      window.scrollTo(0, 1);
+    }, 0);
+  });
+  const notificationsRef = React.createRef<any>();
 
   const handleDismiss = React.useCallback(
     (key: SnackbarKey) => {
-      notificationsRef.current.closeSnackbar(key)
+      notificationsRef.current.closeSnackbar(key);
     },
     [notificationsRef]
-  )
+  );
   return (
     <QueryClientProvider client={queryClient} contextSharing={true}>
       <SnackbarProvider
@@ -64,11 +64,11 @@ function App() {
         maxSnack={1}
         autoHideDuration={3000}
         anchorOrigin={{
-          horizontal: 'left',
-          vertical: 'bottom',
+          horizontal: "left",
+          vertical: "bottom",
         }}
-        action={key => (
-          <Button onClick={() => handleDismiss(key)} sx={{ color: 'white' }}>
+        action={(key) => (
+          <Button onClick={() => handleDismiss(key)} sx={{ color: "white" }}>
             Dismiss
           </Button>
         )}
@@ -76,7 +76,7 @@ function App() {
         <AuthenticationProvider>
           <LocalizationProvider dateAdapter={AdapterDateFns}>
             <CustomizationProvider>
-              <Box sx={{ height: '100vh', overflow: 'hidden' }}>
+              <Box sx={{ height: "100vh", overflow: "hidden" }}>
                 <DrawerProvider>
                   <Router />
                 </DrawerProvider>
@@ -91,7 +91,7 @@ function App() {
         </AuthenticationProvider>
       </SnackbarProvider>
     </QueryClientProvider>
-  )
+  );
 }
 
-export default App
+export default App;
