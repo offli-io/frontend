@@ -22,7 +22,7 @@ export const MobileCarousel: React.FC<IMobileCarouselProps> = ({
   return (
     <>
       {title && (
-        <Typography variant="h4" sx={{ mb: 2 }}>
+        <Typography variant="h4" sx={{ mb: 1.5 }}>
           {title}
         </Typography>
       )}
