@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Card, Typography, Box } from "@mui/material";
 
-interface ICarouselItem {
+export interface ICarouselItem {
   title?: string;
   description?: string;
   id?: string;
@@ -22,7 +22,7 @@ export const MobileCarousel: React.FC<IMobileCarouselProps> = ({
   return (
     <>
       {title && (
-        <Typography variant="h4" sx={{ mb: 1.5 }}>
+        <Typography variant="h4" sx={{ my: 1.5 }}>
           {title}
         </Typography>
       )}
@@ -35,6 +35,7 @@ export const MobileCarousel: React.FC<IMobileCarouselProps> = ({
             scrollSnapAlign: "center",
           },
           "::-webkit-scrollbar": { display: "none" },
+          my: 2,
         }}
       >
         {items?.map((item) => (
