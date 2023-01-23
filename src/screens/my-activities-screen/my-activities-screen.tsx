@@ -1,6 +1,6 @@
 import React from "react";
 import { Box, Typography } from "@mui/material";
-import MyActivityCard from "../../components/activity-card";
+import MyActivityCard from "../../components/my-activity-card";
 import { PageWrapper } from "../../components/page-wrapper";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { removePersonFromActivity } from "../../api/activities/requests";
@@ -127,7 +127,7 @@ const ActivitiesScreen = () => {
       >
         {activities?.map((activity) => {
           return (
-            <ActivityCard
+            <MyActivityCard
               key={activity?.id}
               activity={activity}
               onLongPress={openActivityActions}

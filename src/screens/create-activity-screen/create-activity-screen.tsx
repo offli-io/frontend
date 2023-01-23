@@ -187,8 +187,7 @@ const CreateActivityScreen = () => {
     switch (activeStep) {
       case 0:
         return (
-          <DateTimeForm
-            onBackClicked={handleBackClicked}
+          <NameForm
             onNextClicked={() => setActiveStep((activeStep) => activeStep + 1)}
             methods={methods}
           />

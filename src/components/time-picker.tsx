@@ -1,15 +1,16 @@
-import * as React from 'react'
-import TextField from '@mui/material/TextField'
-import Autocomplete, { AutocompleteProps } from '@mui/material/Autocomplete'
-import { SxProps } from '@mui/material'
+import * as React from "react";
+import TextField from "@mui/material/TextField";
+import Autocomplete, { AutocompleteProps } from "@mui/material/Autocomplete";
+import { SxProps } from "@mui/material";
 
 interface ITimePickerProps {
-  label: string
-  sx?: SxProps
-  options: string[]
-  onChange: (value: string | null) => void
-  getOptionDisabled?: (option: string) => boolean
-  defaultValue?: string
+  label: string;
+  sx?: SxProps;
+  options: string[];
+  onChange: (value: string | null) => void;
+  getOptionDisabled?: (option: string) => boolean;
+  defaultValue?: string;
+  value?: string;
 }
 
 const TimePicker: React.FC<ITimePickerProps> = ({
@@ -19,6 +20,7 @@ const TimePicker: React.FC<ITimePickerProps> = ({
   onChange,
   getOptionDisabled,
   defaultValue,
+  value,
 }) => {
   return (
     <Autocomplete
@@ -31,9 +33,10 @@ const TimePicker: React.FC<ITimePickerProps> = ({
       onChange={(event: React.SyntheticEvent, value: string | null) =>
         onChange(value)
       }
-      renderInput={params => <TextField {...params} label={label} />}
+      renderInput={(params) => <TextField {...params} label={label} />}
+      value={value}
     />
-  )
-}
+  );
+};
 
-export default TimePicker
+export default TimePicker;

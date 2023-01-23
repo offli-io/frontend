@@ -46,13 +46,12 @@ const generateOptionsOrder = (type: "from" | "until") => {
 
 const generateDateSlots: () => ICarouselItem[] = () => {
   const dateSlots = [];
-  const today = new Date();
   for (let i = 0; i < 5; i++) {
     const date = add(new Date(), {
       days: i,
     });
     dateSlots.push({
-      dateValue: date,
+      value: date,
       title: format(date, "EEEE").slice(0, 3),
       description: format(date, "dd.MM.yyyy"),
       disabled: false,
@@ -62,6 +61,18 @@ const generateDateSlots: () => ICarouselItem[] = () => {
   }
   return dateSlots;
 };
+
+function roundMinutes(date: Date) {
+  date.setHours(date.getHours() + Math.round(date.getMinutes() / 60));
+  date.setMinutes(0, 0, 0); // Resets also seconds and milliseconds
+
+  return date;
+}
+interface ITimeValues {
+  from?: string;
+  until?: string;
+}
+
 export const DateTimeForm: React.FC<IDateTimeForm> = ({
   onNextClicked,
   onBackClicked,
@@ -69,6 +80,7 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
 }) => {
   const { control, formState, watch, setValue } = methods;
   const currentStartDate = watch("datetime_from");
+  console.log(currentStartDate);
   const currentEndDate = watch("datetime_until");
   const [date, setDate] = React.useState({
     fromOptions: generateDateSlots(),
@@ -78,6 +90,13 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
     fromOptions: generateOptionsOrder("from"),
     untilOptions: generateOptionsOrder("until"),
   });
+
+  const [timeValues, setTimeValues] = React.useState<ITimeValues>({
+    from: "",
+    until: "",
+  });
+
+  console.log(roundMinutes(new Date()));
 
   const [sameEndDate, setSameEndDate] = React.useState(true);
 
@@ -117,6 +136,14 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
     return false;
   };
 
+  React.useEffect(() => {
+    const selectedDate = date?.fromOptions?.find((item) => item.selected);
+    setValue("datetime_from", selectedDate?.value);
+    if (sameEndDate) {
+      setValue("datetime_until", selectedDate?.value);
+    }
+  }, [date?.fromOptions]);
+
   // const defaultValueFrom = React.useMemo(
   //   () => `${new Date().getHours() + 1}:00`,
   //   []
@@ -133,22 +160,63 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
   // }, [])
 
   const handleItemSelect = React.useCallback(
-    (id?: string) => {
-      const itemIndex: any = date.fromOptions?.findIndex(
-        (_item) => _item.id === id
-      );
-      const _fromOptions = date.fromOptions.map((item) => ({
-        ...item,
-        selected: false,
-      }));
-      _fromOptions[itemIndex] = { ..._fromOptions[itemIndex], selected: true };
-      setDate((_dates) => ({
-        ..._dates,
-        fromOptions: _fromOptions,
-      }));
+    (type: "from" | "until", id?: string) => {
+      if (type === "from") {
+        const itemIndex: any = date.fromOptions?.findIndex(
+          (_item) => _item.id === id
+        );
+        const _fromOptions = date.fromOptions.map((item) => ({
+          ...item,
+          selected: false,
+        }));
+        _fromOptions[itemIndex] = {
+          ..._fromOptions[itemIndex],
+          selected: true,
+        };
+        setDate((_dates) => ({
+          ..._dates,
+          fromOptions: _fromOptions,
+        }));
+      }
+      if (type === "until") {
+        const itemIndex: any = date.untilOptions?.findIndex(
+          (_item) => _item.id === id
+        );
+        // deselect everything
+        const _untilOptions = date.untilOptions.map((item) => ({
+          ...item,
+          selected: false,
+        }));
+        _untilOptions[itemIndex] = {
+          ..._untilOptions[itemIndex],
+          selected: true,
+        };
+        setDate((_dates) => ({
+          ..._dates,
+          untilOptions: _untilOptions,
+        }));
+      }
     },
     [date]
   );
+
+  const handleDateAdd = React.useCallback(
+    (item: any) => {
+      const fromOptions = date.fromOptions.map((item) => ({
+        ...item,
+        selected: false,
+      }));
+      const _fromOptions = [...fromOptions, item];
+      setDate((prevDate) => ({ ...prevDate, fromOptions: _fromOptions }));
+    },
+    [date]
+  );
+
+  const isTimeSelected =
+    timeValues?.from &&
+    timeValues?.from !== "" &&
+    timeValues?.until &&
+    timeValues?.until !== "";
 
   return (
     <Box
@@ -161,105 +229,39 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
       }}
     >
       <Box sx={{ display: "flex", flexDirection: "column", width: "100%" }}>
-        <Box sx={{ display: "flex", mb: 2 }}>
+        <Box sx={{ display: "flex", mb: 1 }}>
           <Typography variant="h4">Select</Typography>
           <Typography variant="h4" sx={{ ml: 1, color: "primary.main" }}>
             date
           </Typography>
         </Box>
-        {/* <Box
-          sx={{
-            width: "100%",
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            alignItems: "center",
-            mt: 4,
-          }}
-        >
-          <Controller
-            name="datetime_from"
-            control={control}
-            render={({ field, fieldState: { error } }) => (
-              <MobileDatePicker
-                {...field}
-                closeOnSelect
-                // componentProps={{
-                //   actionBar: undefined,
-                // }}
-                minDate={new Date()}
-                label="Date"
-                inputFormat="dd.MM.yyyy"
-                renderInput={(params: any) => <TextField {...params} />}
-              />
-            )}
-          />
-          <Box
-            sx={{
-              display: "flex",
-              width: "100%",
-              justifyContent: "center",
-              alignItems: "center",
-              mt: 2,
-            }}
-          >
-            <TimePicker
-              label="From"
-              sx={{ width: "40%", mr: 2 }}
-              onChange={(value: string | null) =>
-                handleTimeChange("datetime_from", value)
-              }
-              options={generateOptionsOrder("from")}
-              //defaultValue={defaultValueFrom}
-              //IDK if we should use from disabled options
-              //getOptionDisabled={getFromDisabledOptions}
-            />
-            <Typography sx={{ fontWeight: 200, fontSize: "2rem" }}>
-              -
-            </Typography>
-
-            <TimePicker
-              label="To"
-              sx={{ width: "40%", ml: 2 }}
-              onChange={(value: string | null) =>
-                handleTimeChange("datetime_until", value)
-              }
-              options={generateOptionsOrder("until")}
-              getOptionDisabled={getToDisabledOptions}
-              //defaultValue={defaultValueTo}
-            />
-          </Box>
-        </Box> */}
         <MobileCarousel
           items={date.fromOptions}
-          // title="Select start date"
-          onItemSelect={handleItemSelect}
+          onItemSelect={(item) => handleItemSelect("from", item)}
+          onSlotAdd={handleDateAdd}
         />
         <FormControlLabel
           control={
             <Checkbox
               checked={sameEndDate}
-              onChange={() => setSameEndDate((previousValue) => !previousValue)}
-              defaultChecked
+              onChange={() => {
+                setValue("datetime_until", watch("datetime_from"));
+                setSameEndDate((previousValue) => !previousValue);
+              }}
             />
           }
           label="End date same as start"
         />
-        {/* <MobileCarousel
-          title="... and time"
-          items={time.fromOptions}
-          onItemSelect={(item) => console.log(item)}
-        />
-        <Divider sx={{ my: 2 }} /> */}
+
         {!sameEndDate && (
           <MobileCarousel
             items={date.untilOptions}
             // title="Select end date"
-            onItemSelect={(item) => console.log(item)}
+            onItemSelect={(item) => handleItemSelect("until", item)}
           />
         )}
 
-        <Box sx={{ display: "flex", my: 2 }}>
+        <Box sx={{ display: "flex", mt: 2, mb: 3 }}>
           <Typography variant="h4" sx={{ ml: 1 }}>
             ... and
           </Typography>
@@ -279,11 +281,16 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
           <TimePicker
             label="From"
             sx={{ width: "40%", mr: 2 }}
-            onChange={(value: string | null) =>
-              handleTimeChange("datetime_from", value)
-            }
+            onChange={(value: string | null) => {
+              setTimeValues((previousValues) => ({
+                ...previousValues,
+                from: value ?? undefined,
+              }));
+              handleTimeChange("datetime_from", value);
+            }}
             options={generateOptionsOrder("from")}
-            //defaultValue={defaultValueFrom}
+            value={timeValues?.from}
+            //defaultValue={"18:00"}
             //IDK if we should use from disabled options
             //getOptionDisabled={getFromDisabledOptions}
           />
@@ -292,9 +299,13 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
           <TimePicker
             label="To"
             sx={{ width: "40%", ml: 2 }}
-            onChange={(value: string | null) =>
-              handleTimeChange("datetime_until", value)
-            }
+            onChange={(value: string | null) => {
+              setTimeValues((previousValues) => ({
+                ...previousValues,
+                until: value ?? undefined,
+              }));
+              handleTimeChange("datetime_until", value);
+            }}
             options={generateOptionsOrder("until")}
             getOptionDisabled={getToDisabledOptions}
             //defaultValue={defaultValueTo}
@@ -318,7 +329,7 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
         <OffliButton
           onClick={onNextClicked}
           sx={{ width: "40%" }}
-          disabled={!isFormValid}
+          disabled={!isFormValid || !isTimeSelected}
         >
           Next
         </OffliButton>
