@@ -1,32 +1,34 @@
-import { Route, Routes as BaseRoutes } from 'react-router-dom'
-import { PrivateRoutes } from '../components/private-routes'
-import ActivitiesScreen from '../screens/my-activities-screen/my-activities-screen'
-import ChatScreen from '../screens/chat-screen'
-import CreateActivityScreen from '../screens/create-activity-screen/create-activity-screen'
-import EditProfileScreen from '../screens/edit-profile-screen'
-import LoadingScreen from '../screens/loading-screen'
-import LoginOrRegisterScreen from '../screens/login-or-register'
-import LoginScreen from '../screens/login-screen'
-import MyBuddiesScreen from '../screens/my-buddies-screen'
-import NewPasswordScreen from '../screens/new-password-screen'
-import PickUsernamePhotoScreen from '../screens/pick-username-photo-screen'
-import ProfileScreen from '../screens/profile-screen'
-import RegistrationScreen from '../screens/registration-screen'
-import ResetPasswordScreen from '../screens/reset-password-screen'
-import SearchActivitesScreen from '../screens/search-activities-screen'
-import SelectProfilePictureScreen from '../screens/select-picture-screen'
-import SettingsScreen from '../screens/settings-screen/settings-screen'
-import TestScreen from '../screens/test-screen'
-import VerificationScreen from '../screens/verification-screen'
-import WelcomeScreen from '../screens/welcome-screen'
-import { ApplicationLocations } from '../types/common/applications-locations.dto'
-import { getAuthToken } from '../utils/token.util'
-import ActivityDetailsScreen from '../screens/activity-details-screen'
-import NotificationsScreen from '../screens/notifications-screen/notifications-screen'
-import { ActivityMembersScreen } from '../screens/activity-members-screen/activity-members-screen'
+import { Route, Routes as BaseRoutes } from "react-router-dom";
+import { PrivateRoutes } from "../components/private-routes";
+import ActivitiesScreen from "../screens/my-activities-screen/my-activities-screen";
+import ChatScreen from "../screens/chat-screen";
+import CreateActivityScreen from "../screens/create-activity-screen/create-activity-screen";
+import EditProfileScreen from "../screens/edit-profile-screen";
+import LoadingScreen from "../screens/loading-screen";
+import LoginOrRegisterScreen from "../screens/login-or-register";
+import LoginScreen from "../screens/login-screen";
+import MyBuddiesScreen from "../screens/my-buddies-screen";
+import NewPasswordScreen from "../screens/new-password-screen";
+import PickUsernamePhotoScreen from "../screens/pick-username-photo-screen";
+import ProfileScreen from "../screens/profile-screen";
+import RegistrationScreen from "../screens/registration-screen";
+import ResetPasswordScreen from "../screens/reset-password-screen";
+import SearchScreen from "../screens/search-screen";
+import SelectProfilePictureScreen from "../screens/select-picture-screen";
+import SettingsScreen from "../screens/settings-screen/settings-screen";
+import TestScreen from "../screens/test-screen";
+import VerificationScreen from "../screens/verification-screen";
+import WelcomeScreen from "../screens/welcome-screen";
+import { ApplicationLocations } from "../types/common/applications-locations.dto";
+import { getAuthToken } from "../utils/token.util";
+import ActivityDetailsScreen from "../screens/activity-details-screen";
+import NotificationsScreen from "../screens/notifications-screen/notifications-screen";
+import SearchIcon from "@mui/icons-material/Search";
+
+import { ActivityMembersScreen } from "../screens/activity-members-screen/activity-members-screen";
 
 const Routes = () => {
-  const token = getAuthToken()
+  const token = getAuthToken();
 
   return (
     <BaseRoutes>
@@ -36,7 +38,7 @@ const Routes = () => {
         path={ApplicationLocations.LOGINREGISTER}
         element={<LoginOrRegisterScreen />}
       />
-      <Route path={'/test'} element={<TestScreen />} />
+      <Route path={"/test"} element={<TestScreen />} />
       <Route
         path={ApplicationLocations.REGISTER}
         element={<RegistrationScreen />}
@@ -98,10 +100,7 @@ const Routes = () => {
           path={ApplicationLocations.CREATE}
           element={<CreateActivityScreen />}
         />
-        <Route
-          path={ApplicationLocations.SEARCH}
-          element={<SearchActivitesScreen />}
-        />
+        <Route path={ApplicationLocations.SEARCH} element={<SearchScreen />} />
         <Route
           path={ApplicationLocations.SETTINGS}
           element={<SettingsScreen />}
@@ -117,7 +116,7 @@ const Routes = () => {
         <Route path={ApplicationLocations.CHAT} element={<ChatScreen />} />
       </Route>
     </BaseRoutes>
-  )
-}
+  );
+};
 
-export default Routes
+export default Routes;

@@ -1,44 +1,45 @@
-import React, { useState } from 'react'
-import { Box, IconButton, Badge, AppBar, SxProps } from '@mui/material'
-import { Link, useLocation, useNavigate } from 'react-router-dom'
-import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined'
-import SettingsIcon from '@mui/icons-material/Settings'
-import PeopleAltIcon from '@mui/icons-material/PeopleAlt'
-import PeopleAltOutlinedIcon from '@mui/icons-material/PeopleAltOutlined'
-import NotificationsNoneOutlinedIcon from '@mui/icons-material/NotificationsNoneOutlined'
-import NotificationsIcon from '@mui/icons-material/Notifications'
-import MenuIcon from '@mui/icons-material/Menu'
+import React, { useState } from "react";
+import { Box, IconButton, Badge, AppBar, SxProps } from "@mui/material";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
+import SettingsIcon from "@mui/icons-material/Settings";
+import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
+import PeopleAltOutlinedIcon from "@mui/icons-material/PeopleAltOutlined";
+import NotificationsNoneOutlinedIcon from "@mui/icons-material/NotificationsNoneOutlined";
+import NotificationsIcon from "@mui/icons-material/Notifications";
+import MenuIcon from "@mui/icons-material/Menu";
 
-import { ApplicationLocations } from '../types/common/applications-locations.dto'
-import offliLogo from '../assets/img/logoPurple.png'
-import { HEADER_HEIGHT } from '../utils/common-constants'
-import { useQuery } from '@tanstack/react-query'
-import { getNotifications } from '../api/notifications/requests'
-import { AuthenticationContext } from '../assets/theme/authentication-provider'
-import { useNotifications } from '../hooks/use-notifications'
+import { ApplicationLocations } from "../types/common/applications-locations.dto";
+import offliLogo from "../assets/img/logoPurple.png";
+import { HEADER_HEIGHT } from "../utils/common-constants";
+import { useQuery } from "@tanstack/react-query";
+import { getNotifications } from "../api/notifications/requests";
+import { AuthenticationContext } from "../assets/theme/authentication-provider";
+import { useNotifications } from "../hooks/use-notifications";
+import DotsMobileStepper from "./stepper";
 
 interface IProps {
-  sx?: SxProps
+  sx?: SxProps;
 }
 
 const OffliHeader: React.FC<IProps> = ({ sx }) => {
-  const location = useLocation()
-  const navigate = useNavigate()
-  const [notificationNumber] = useState(5)
-  const headerRef = React.useRef<HTMLElement | null>(null)
-  const { userInfo } = React.useContext(AuthenticationContext)
+  const location = useLocation();
+  const navigate = useNavigate();
+  const [notificationNumber] = useState(5);
+  const headerRef = React.useRef<HTMLElement | null>(null);
+  const { userInfo } = React.useContext(AuthenticationContext);
 
-  const { data: notificationsData } = useNotifications(userInfo?.id)
+  const { data: notificationsData } = useNotifications(userInfo?.id);
 
   //TODO add component non-depending logic like styles outside the components
-  const iconStyle = { height: '24px', mr: -1 }
+  const iconStyle = { height: "24px", mr: -1 };
   const badgeStyle = {
-    '& .MuiBadge-badge': {
-      transform: 'scale(0.8)',
+    "& .MuiBadge-badge": {
+      transform: "scale(0.8)",
       right: -14,
       top: -10,
     },
-  }
+  };
 
   return (
     <Box
@@ -46,11 +47,11 @@ const OffliHeader: React.FC<IProps> = ({ sx }) => {
       ref={headerRef}
       sx={{
         height: HEADER_HEIGHT,
-        boxShadow: '1px 2px 2px #ccc',
-        position: 'sticky',
+        boxShadow: "1px 2px 2px #ccc",
+        position: "sticky",
         top: 0,
-        backgroundColor: 'white',
-        boxSizing: 'border-box',
+        backgroundColor: "white",
+        boxSizing: "border-box",
         pt: 2,
         zIndex: 500,
         ...sx,
@@ -58,23 +59,24 @@ const OffliHeader: React.FC<IProps> = ({ sx }) => {
     >
       <Box
         sx={{
-          width: '100%',
+          width: "100%",
           // borderBottom: '1px solid lightgrey',
         }}
       >
         <Box
           sx={{
-            width: '90%',
-            margin: 'auto',
-            display: 'flex',
-            alignItems: 'end',
-            justifyContent: 'space-between',
+            width: "90%",
+            margin: "auto",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
           }}
         >
-          <img src={offliLogo} alt="Offli logo" style={{ height: '40px' }} />
+          <img src={offliLogo} alt="Offli logo" style={{ height: "40px" }} />
+          {/* <DotsMobileStepper /> */}
           <Box
             sx={{
-              display: 'flex',
+              display: "flex",
             }}
           >
             {/* <IconButton component={Link} to={ApplicationLocations.SETTINGS}>
@@ -98,7 +100,7 @@ const OffliHeader: React.FC<IProps> = ({ sx }) => {
                   state: {
                     from: window.location.href,
                   },
-                })
+                });
               }}
             >
               <Badge
@@ -122,7 +124,7 @@ const OffliHeader: React.FC<IProps> = ({ sx }) => {
                   state: {
                     from: window.location.href,
                   },
-                })
+                });
               }}
               // component={Link}
               // to={ApplicationLocations.SETTINGS}
@@ -136,7 +138,7 @@ const OffliHeader: React.FC<IProps> = ({ sx }) => {
         </Box>
       </Box>
     </Box>
-  )
-}
+  );
+};
 
-export default OffliHeader
+export default OffliHeader;
