@@ -121,7 +121,7 @@ const ActivityCard: React.FC<IProps> = ({ activity, onLongPress, onPress }) => {
     <Box
       sx={{
         width: "99%",
-        height: "37%",
+        height: 200,
         marginTop: "2%",
         marginBottom: "2%",
         borderRadius: "12px",
