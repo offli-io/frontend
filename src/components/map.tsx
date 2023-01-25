@@ -15,6 +15,8 @@ import {
   useMapEvents,
 } from "react-leaflet";
 import { LatLng, LatLngTuple } from "leaflet";
+import { IActivity } from "../types/activities/activity.dto";
+import PlaceIcon from "@mui/icons-material/Place";
 
 // function LocationMarker() {
 //   const [position, setPosition] = React.useState<LatLng | null>(null);
@@ -48,6 +50,7 @@ interface ILabeledTileProps {
   title?: string;
   imageUrl?: string;
   sx?: SxProps;
+  activities?: IActivity[];
   onClick?: (title: string) => void;
   centerPosition?: GeolocationCoordinates;
 }
@@ -58,6 +61,7 @@ const Map: React.FC<ILabeledTileProps> = ({
   title,
   imageUrl,
   sx,
+  activities,
   onClick,
   centerPosition,
 }) => {
@@ -87,10 +91,22 @@ const Map: React.FC<ILabeledTileProps> = ({
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
+        {activities?.map(
+          ({ title = "Activity", location = null }) =>
+            location?.coordinates && (
+              <Marker
+                // icon={<PlaceIcon color='primary'}
+                position={[
+                  location?.coordinates?.lat ?? position[0],
+                  location?.coordinates?.lon ?? position[1],
+                ]}
+              >
+                <Popup>{title}</Popup>
+              </Marker>
+            )
+        )}
         <Marker position={latLonTuple ?? position}>
-          <Popup>
-            A pretty CSS3 popup. <br /> Easily customizable.
-          </Popup>
+          <Popup>You are here</Popup>
         </Marker>
         <RecenterAutomatically
           lat={currentLocation?.latitude}

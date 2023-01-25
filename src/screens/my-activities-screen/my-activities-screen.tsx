@@ -9,8 +9,11 @@ import {
 } from "@mui/material";
 import MyActivityCard from "../../components/my-activity-card";
 import { PageWrapper } from "../../components/page-wrapper";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { removePersonFromActivity } from "../../api/activities/requests";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  getActivity,
+  removePersonFromActivity,
+} from "../../api/activities/requests";
 import { AuthenticationContext } from "../../assets/theme/authentication-provider";
 import { DrawerContext } from "../../assets/theme/drawer-provider";
 import ActivityActions from "./components/activity-actions";
@@ -37,6 +40,19 @@ const ActivitiesScreen = () => {
 
   const { data: { data: { activities = [] } = {} } = {}, isLoading } =
     useActivities<IActivityListRestDto>();
+
+  // const { data: { data: { activities = [] } = {} } = {}, isLoading } = useQuery(
+  //   ["activities"],
+  //   () => getActivity<IActivityListRestDto>({ id: undefined }),
+  //   {
+  //     onError: () => {
+  //       //some generic toast for every hook
+  //       enqueueSnackbar(`Failed to load activit${"y"}`, {
+  //         variant: "error",
+  //       });
+  //     },
+  //   }
+  // );
 
   const myActivities = React.useMemo(
     () =>
