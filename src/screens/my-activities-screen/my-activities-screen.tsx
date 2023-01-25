@@ -2,6 +2,7 @@ import React from "react";
 import {
   Autocomplete,
   Box,
+  CircularProgress,
   InputAdornment,
   TextField,
   Typography,
@@ -34,7 +35,7 @@ const ActivitiesScreen = () => {
   const queryClient = useQueryClient();
   const [isSearchFocused, setIsSearchFocused] = React.useState(false);
 
-  const { data: { data: { activities = [] } = {} } = {} } =
+  const { data: { data: { activities = [] } = {} } = {}, isLoading } =
     useActivities<IActivityListRestDto>();
 
   const myActivities = React.useMemo(
@@ -182,7 +183,11 @@ const ActivitiesScreen = () => {
           />
         )}
       />
-      {!isSearchFocused && (
+      {isLoading ? (
+        <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
+          <CircularProgress color="primary" />
+        </Box>
+      ) : (
         <>
           <Box
             sx={{
@@ -228,7 +233,11 @@ const ActivitiesScreen = () => {
             }}
           >
             <Typography variant="h5">Near you</Typography>
-            <OffliButton variant="text" sx={{ fontSize: 16 }}>
+            <OffliButton
+              variant="text"
+              sx={{ fontSize: 16 }}
+              onClick={() => navigate(ApplicationLocations.MAP)}
+            >
               See map
             </OffliButton>
           </Box>

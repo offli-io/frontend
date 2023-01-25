@@ -23,9 +23,9 @@ import { ApplicationLocations } from "../types/common/applications-locations.dto
 import { getAuthToken } from "../utils/token.util";
 import ActivityDetailsScreen from "../screens/activity-details-screen";
 import NotificationsScreen from "../screens/notifications-screen/notifications-screen";
-import SearchIcon from "@mui/icons-material/Search";
 
 import { ActivityMembersScreen } from "../screens/activity-members-screen/activity-members-screen";
+import MapScreen from "../screens/map-screen";
 
 const Routes = () => {
   const token = getAuthToken();
@@ -101,6 +101,8 @@ const Routes = () => {
           element={<CreateActivityScreen />}
         />
         <Route path={ApplicationLocations.SEARCH} element={<SearchScreen />} />
+        <Route path={ApplicationLocations.MAP} element={<MapScreen />} />
+
         <Route
           path={ApplicationLocations.SETTINGS}
           element={<SettingsScreen />}

@@ -18,5 +18,6 @@ export enum ApplicationLocations {
   ACTIVITY_ID = "/activity",
   CREATE = "/create",
   SEARCH = "/search",
+  MAP = "/map",
   CHAT = "/chat",
 }
