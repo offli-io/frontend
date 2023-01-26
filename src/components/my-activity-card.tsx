@@ -12,8 +12,8 @@ import { format } from "date-fns";
 
 interface IMyActivityCardProps {
   activity?: IActivity;
-  onLongPress: (activityId: string) => void;
-  onPress: (activityId?: string) => void;
+  // onLongPress: (activityId: string) => void;
+  onPress: (activity?: IActivity) => void;
 }
 
 const MyActivityCard: React.FC<IMyActivityCardProps> = ({
@@ -43,7 +43,7 @@ const MyActivityCard: React.FC<IMyActivityCardProps> = ({
         px: 2,
         mb: 2,
       }}
-      onClick={() => onPress(activity?.id)}
+      onClick={() => onPress(activity)}
     >
       <Box
         sx={{

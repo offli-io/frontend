@@ -29,6 +29,7 @@ import ActivityCard from "../../components/activity-card";
 import OffliButton from "../../components/offli-button";
 import SearchIcon from "@mui/icons-material/Search";
 import PlaceIcon from "@mui/icons-material/Place";
+import { IActivity } from "../../types/activities/activity.dto";
 
 const ActivitiesScreen = () => {
   const { userInfo } = React.useContext(AuthenticationContext);
@@ -120,13 +121,13 @@ const ActivitiesScreen = () => {
   );
 
   const openActivityActions = React.useCallback(
-    (activityId?: string) =>
+    (activity?: IActivity) =>
       toggleDrawer({
         open: true,
         content: (
           <ActivityActions
             onActionClick={handleActionClick}
-            activityId={activityId}
+            activity={activity}
           />
         ),
       }),
@@ -234,7 +235,6 @@ const ActivitiesScreen = () => {
                 <MyActivityCard
                   key={activity?.id}
                   activity={activity}
-                  onLongPress={openActivityActions}
                   onPress={openActivityActions}
                 />
               );
@@ -272,7 +272,6 @@ const ActivitiesScreen = () => {
                 <ActivityCard
                   key={activity?.id}
                   activity={activity}
-                  onLongPress={openActivityActions}
                   onPress={openActivityActions}
                 />
               );
