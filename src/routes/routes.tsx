@@ -26,6 +26,8 @@ import NotificationsScreen from "../screens/notifications-screen/notifications-s
 
 import { ActivityMembersScreen } from "../screens/activity-members-screen/activity-members-screen";
 import MapScreen from "../screens/map-screen";
+import { IActivityListRestDto } from "../types/activities/activity-list-rest.dto";
+import { IActivityRestDto } from "../types/activities/activity-rest.dto";
 
 const Routes = () => {
   const token = getAuthToken();
@@ -101,7 +103,14 @@ const Routes = () => {
           element={<CreateActivityScreen />}
         />
         <Route path={ApplicationLocations.SEARCH} element={<SearchScreen />} />
-        <Route path={ApplicationLocations.MAP} element={<MapScreen />} />
+        <Route
+          path={ApplicationLocations.MAP}
+          element={<MapScreen<IActivityListRestDto> />}
+        />
+        <Route
+          path={`${ApplicationLocations.MAP}/:activityId`}
+          element={<MapScreen<IActivityRestDto> />}
+        />
 
         <Route
           path={ApplicationLocations.SETTINGS}

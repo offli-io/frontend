@@ -75,6 +75,12 @@ const Map: React.FC<ILabeledTileProps> = ({
     });
   }, []);
 
+  const isSingleActivity = activities?.length === 1;
+  const latLonTupleSingle = [
+    activities?.[0]?.location?.coordinates?.lat ?? position[0],
+    activities?.[0]?.location?.coordinates?.lon ?? position[1],
+  ];
+
   const latLonTuple =
     currentLocation &&
     ([currentLocation.latitude, currentLocation.longitude] as LatLngTuple);
@@ -92,7 +98,7 @@ const Map: React.FC<ILabeledTileProps> = ({
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
         {activities?.map(
-          ({ title = "Activity", location = null }) =>
+          ({ title = "Activity", location = null } = {}) =>
             location?.coordinates && (
               <Marker
                 // icon={<PlaceIcon color='primary'}
@@ -109,8 +115,12 @@ const Map: React.FC<ILabeledTileProps> = ({
           <Popup>You are here</Popup>
         </Marker>
         <RecenterAutomatically
-          lat={currentLocation?.latitude}
-          lon={currentLocation?.longitude}
+          lat={
+            isSingleActivity ? latLonTupleSingle[0] : currentLocation?.latitude
+          }
+          lon={
+            isSingleActivity ? latLonTupleSingle[1] : currentLocation?.longitude
+          }
         />
       </MapContainer>
     </Box>

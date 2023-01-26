@@ -113,6 +113,8 @@ const ActivitiesScreen = () => {
           });
         case ActivityActionsTypeEnumDto.MORE_INFORMATION:
           return navigate(`${ApplicationLocations.ACTIVITY_ID}/${activityId}`);
+        case ActivityActionsTypeEnumDto.MAP:
+          return navigate(`${ApplicationLocations.MAP}/${activityId}`);
         default:
           return console.log(action);
       }
