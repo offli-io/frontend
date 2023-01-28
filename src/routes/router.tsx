@@ -1,40 +1,35 @@
-import { ReactElement, Suspense } from 'react'
-import { BrowserRouter, useLocation } from 'react-router-dom'
-import { AuthenticationContext } from '../assets/theme/authentication-provider'
-import { CustomizationProvider } from '../assets/theme/customization-provider'
-import BottomNavigator from '../components/bottom-navigator'
-import OffliHeader from '../components/offli-header'
-import { getAuthToken } from '../utils/token.util'
-import Routes from './routes'
-import React from 'react'
-import { useQuery } from '@tanstack/react-query'
-import { getBuddies, getUsers } from '../api/activities/requests'
-import { Layout } from '../app/layout'
+import { ReactElement, Suspense } from "react";
+import { BrowserRouter } from "react-router-dom";
+import { AuthenticationContext } from "../assets/theme/authentication-provider";
+import React from "react";
+import { useQuery } from "@tanstack/react-query";
+import { getUsers } from "../api/activities/requests";
+import { Layout } from "../app/layout";
+import LoadingScreen from "../screens/loading-screen";
 
 const Router: React.FC = (): ReactElement => {
-  const { userInfo, setUserInfo } = React.useContext(AuthenticationContext)
+  const { userInfo, setUserInfo } = React.useContext(AuthenticationContext);
 
-  const token = getAuthToken()
-
+  //TODO what is this for?
   const userInfoQuery = useQuery(
-    ['user-info', userInfo?.username],
+    ["user-info", userInfo?.username],
     () => getUsers({ username: userInfo?.username }),
     {
       enabled: !!userInfo?.username,
-      onSuccess: data => {
-        setUserInfo && setUserInfo(data?.data)
+      onSuccess: (data) => {
+        setUserInfo && setUserInfo(data?.data);
       },
       cacheTime: Infinity,
     }
-  )
+  );
 
   return (
-    <Suspense fallback={<p>Loading ...</p>}>
+    <Suspense fallback={<LoadingScreen />}>
       <BrowserRouter>
         <Layout />
       </BrowserRouter>
     </Suspense>
-  )
-}
+  );
+};
 
-export default Router
+export default Router;

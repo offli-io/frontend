@@ -11,11 +11,10 @@ import { ActivityVisibilityEnum } from "../types/activities/activity-visibility-
 
 interface IProps {
   activity?: IActivity;
-  onLongPress: (activityId: string) => void;
-  onPress: (activityId?: string) => void;
+  onPress: (activity?: IActivity) => void;
 }
 
-const ActivityCard: React.FC<IProps> = ({ activity, onLongPress, onPress }) => {
+const ActivityCard: React.FC<IProps> = ({ activity, onPress }) => {
   //TODO maybe in later use also need some refactoring
   const { action, handlers } = useLongPress();
 
@@ -133,7 +132,7 @@ const ActivityCard: React.FC<IProps> = ({ activity, onLongPress, onPress }) => {
         alignItems: "flex-end",
         color: "white",
       }}
-      onClick={() => onPress(activity?.id)}
+      onClick={() => onPress(activity)}
       // {...handlers}
       // onTouchStart={() => {
       //   const timer = setTimeout(() => onLongPress(), 500);

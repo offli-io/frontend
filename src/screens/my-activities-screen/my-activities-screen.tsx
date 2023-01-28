@@ -2,14 +2,18 @@ import React from "react";
 import {
   Autocomplete,
   Box,
+  CircularProgress,
   InputAdornment,
   TextField,
   Typography,
 } from "@mui/material";
 import MyActivityCard from "../../components/my-activity-card";
 import { PageWrapper } from "../../components/page-wrapper";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { removePersonFromActivity } from "../../api/activities/requests";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  getActivity,
+  removePersonFromActivity,
+} from "../../api/activities/requests";
 import { AuthenticationContext } from "../../assets/theme/authentication-provider";
 import { DrawerContext } from "../../assets/theme/drawer-provider";
 import ActivityActions from "./components/activity-actions";
@@ -25,6 +29,7 @@ import ActivityCard from "../../components/activity-card";
 import OffliButton from "../../components/offli-button";
 import SearchIcon from "@mui/icons-material/Search";
 import PlaceIcon from "@mui/icons-material/Place";
+import { IActivity } from "../../types/activities/activity.dto";
 
 const ActivitiesScreen = () => {
   const { userInfo } = React.useContext(AuthenticationContext);
@@ -34,8 +39,21 @@ const ActivitiesScreen = () => {
   const queryClient = useQueryClient();
   const [isSearchFocused, setIsSearchFocused] = React.useState(false);
 
-  const { data: { data: { activities = [] } = {} } = {} } =
+  const { data: { data: { activities = [] } = {} } = {}, isLoading } =
     useActivities<IActivityListRestDto>();
+
+  // const { data: { data: { activities = [] } = {} } = {}, isLoading } = useQuery(
+  //   ["activities"],
+  //   () => getActivity<IActivityListRestDto>({ id: undefined }),
+  //   {
+  //     onError: () => {
+  //       //some generic toast for every hook
+  //       enqueueSnackbar(`Failed to load activit${"y"}`, {
+  //         variant: "error",
+  //       });
+  //     },
+  //   }
+  // );
 
   const myActivities = React.useMemo(
     () =>
@@ -95,6 +113,12 @@ const ActivitiesScreen = () => {
           });
         case ActivityActionsTypeEnumDto.MORE_INFORMATION:
           return navigate(`${ApplicationLocations.ACTIVITY_ID}/${activityId}`);
+        case ActivityActionsTypeEnumDto.MAP:
+          return navigate(`${ApplicationLocations.MAP}/${activityId}`, {
+            state: {
+              from: ApplicationLocations.ACTIVITIES,
+            },
+          });
         default:
           return console.log(action);
       }
@@ -103,13 +127,13 @@ const ActivitiesScreen = () => {
   );
 
   const openActivityActions = React.useCallback(
-    (activityId?: string) =>
+    (activity?: IActivity) =>
       toggleDrawer({
         open: true,
         content: (
           <ActivityActions
             onActionClick={handleActionClick}
-            activityId={activityId}
+            activity={activity}
           />
         ),
       }),
@@ -135,7 +159,9 @@ const ActivitiesScreen = () => {
           mb: 1,
         }}
       >
-        <Typography variant="h5">Explore</Typography>
+        <Typography variant="h5" sx={{ fontSize: 24 }}>
+          Explore
+        </Typography>
         <OffliButton
           variant="text"
           sx={{ fontSize: 16 }}
@@ -182,7 +208,11 @@ const ActivitiesScreen = () => {
           />
         )}
       />
-      {!isSearchFocused && (
+      {isLoading ? (
+        <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
+          <CircularProgress color="primary" />
+        </Box>
+      ) : (
         <>
           <Box
             sx={{
@@ -213,7 +243,6 @@ const ActivitiesScreen = () => {
                 <MyActivityCard
                   key={activity?.id}
                   activity={activity}
-                  onLongPress={openActivityActions}
                   onPress={openActivityActions}
                 />
               );
@@ -228,7 +257,17 @@ const ActivitiesScreen = () => {
             }}
           >
             <Typography variant="h5">Near you</Typography>
-            <OffliButton variant="text" sx={{ fontSize: 16 }}>
+            <OffliButton
+              variant="text"
+              sx={{ fontSize: 16 }}
+              onClick={() =>
+                navigate(ApplicationLocations.MAP, {
+                  state: {
+                    from: ApplicationLocations.ACTIVITIES,
+                  },
+                })
+              }
+            >
               See map
             </OffliButton>
           </Box>
@@ -247,7 +286,6 @@ const ActivitiesScreen = () => {
                 <ActivityCard
                   key={activity?.id}
                   activity={activity}
-                  onLongPress={openActivityActions}
                   onPress={openActivityActions}
                 />
               );

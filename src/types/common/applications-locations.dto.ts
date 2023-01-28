@@ -1,7 +1,6 @@
 export enum ApplicationLocations {
   LOADING = "/loading",
-  LOGIN = "/",
-  LOGINREGISTER = "/loginregister",
+  LOGIN = "/login",
   REGISTER = "/register",
   VERIFY = "/verify",
   PICK_USERNAME = "/pick-username",
@@ -18,5 +17,8 @@ export enum ApplicationLocations {
   ACTIVITY_ID = "/activity",
   CREATE = "/create",
   SEARCH = "/search",
+  MAP = "/map",
   CHAT = "/chat",
+  AUTHENTICATION_METHOD = "/",
+  FORGOTTEN_PASSWORD = "/forgotten-password",
 }

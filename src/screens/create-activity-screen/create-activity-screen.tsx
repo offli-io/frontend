@@ -148,8 +148,9 @@ const CreateActivityScreen = () => {
       onSuccess: (data) => {
         //invalidate user activites
         queryClient.setQueryData(["created-activity-data"], data?.data);
-        queryClient.invalidateQueries(["activities"]);
         queryClient.invalidateQueries(["user-info"]);
+        //TODO query invalidation doesnt work - activities are not refetched!
+        queryClient.invalidateQueries({ queryKey: ["activities"] });
         setActiveStep((activeStep) => activeStep + 1);
       },
       onError: (error) => {
