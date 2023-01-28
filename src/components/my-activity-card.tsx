@@ -72,7 +72,7 @@ const MyActivityCard: React.FC<IMyActivityCardProps> = ({
           justifyContent: "center",
         }}
       >
-        <Typography variant="h5">
+        <Typography variant="h5" sx={{ fontSize: 24 }}>
           {format(
             (activity?.datetime_from
               ? new Date(activity?.datetime_from)
@@ -80,7 +80,7 @@ const MyActivityCard: React.FC<IMyActivityCardProps> = ({
             "dd"
           )}
         </Typography>
-        <Typography variant="subtitle2">
+        <Typography variant="subtitle2" sx={{ fontSize: 12 }}>
           {format(
             (activity?.datetime_from
               ? new Date(activity?.datetime_from)
@@ -88,7 +88,7 @@ const MyActivityCard: React.FC<IMyActivityCardProps> = ({
             "LLLL"
           )}
         </Typography>
-        <Typography variant="body1">
+        <Typography variant="body1" sx={{ fontSize: 18 }}>
           {format(
             (activity?.datetime_from
               ? new Date(activity?.datetime_from)

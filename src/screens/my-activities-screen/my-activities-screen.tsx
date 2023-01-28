@@ -114,7 +114,11 @@ const ActivitiesScreen = () => {
         case ActivityActionsTypeEnumDto.MORE_INFORMATION:
           return navigate(`${ApplicationLocations.ACTIVITY_ID}/${activityId}`);
         case ActivityActionsTypeEnumDto.MAP:
-          return navigate(`${ApplicationLocations.MAP}/${activityId}`);
+          return navigate(`${ApplicationLocations.MAP}/${activityId}`, {
+            state: {
+              from: ApplicationLocations.ACTIVITIES,
+            },
+          });
         default:
           return console.log(action);
       }
@@ -155,7 +159,9 @@ const ActivitiesScreen = () => {
           mb: 1,
         }}
       >
-        <Typography variant="h5">Explore</Typography>
+        <Typography variant="h5" sx={{ fontSize: 24 }}>
+          Explore
+        </Typography>
         <OffliButton
           variant="text"
           sx={{ fontSize: 16 }}
@@ -254,7 +260,13 @@ const ActivitiesScreen = () => {
             <OffliButton
               variant="text"
               sx={{ fontSize: 16 }}
-              onClick={() => navigate(ApplicationLocations.MAP)}
+              onClick={() =>
+                navigate(ApplicationLocations.MAP, {
+                  state: {
+                    from: ApplicationLocations.ACTIVITIES,
+                  },
+                })
+              }
             >
               See map
             </OffliButton>

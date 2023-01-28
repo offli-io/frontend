@@ -98,10 +98,10 @@ const Map: React.FC<ILabeledTileProps> = ({
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
         {activities?.map(
-          ({ title = "Activity", location = null } = {}) =>
+          ({ title = "Activity", location = null, id } = {}) =>
             location?.coordinates && (
               <Marker
-                // icon={<PlaceIcon color='primary'}
+                key={`activity_${id}`}
                 position={[
                   location?.coordinates?.lat ?? position[0],
                   location?.coordinates?.lon ?? position[1],

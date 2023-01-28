@@ -122,7 +122,7 @@ const LoginScreen: React.FC = () => {
         {/* <button id="authorize-button">Authorize</button> */}
 
         <LabeledDivider sx={{ my: 1 }}>
-          <Typography variant="subtitle1">alebo</Typography>
+          <Typography variant="subtitle1">or</Typography>
         </LabeledDivider>
         <Controller
           name="username"
@@ -131,7 +131,7 @@ const LoginScreen: React.FC = () => {
             <TextField
               {...field}
               //label="Username"
-              placeholder="Meno, email alebo mobil"
+              label="Email or username"
               // variant="filled"
               error={!!error}
               // helperText={
@@ -150,7 +150,7 @@ const LoginScreen: React.FC = () => {
             <TextField
               {...field}
               //label="Username"
-              placeholder="Heslo"
+              label="Password"
               type={showPassword ? "text" : "password"}
               // variant="filled"
               error={!!error}
@@ -177,13 +177,12 @@ const LoginScreen: React.FC = () => {
           )}
         />
 
-        <OffliButton variant="text" disabled={isLoading}>
-          <Typography
-            variant="subtitle2"
-            sx={{ fontWeight: "bold", ml: "-70%" }}
-          >
-            Forgot your password?
-          </Typography>
+        <OffliButton
+          variant="text"
+          disabled={isLoading}
+          sx={{ fontSize: 14, mt: 1 }}
+        >
+          Forgot your password?
         </OffliButton>
       </Box>
       <OffliButton

@@ -28,6 +28,8 @@ import { ActivityMembersScreen } from "../screens/activity-members-screen/activi
 import MapScreen from "../screens/map-screen";
 import { IActivityListRestDto } from "../types/activities/activity-list-rest.dto";
 import { IActivityRestDto } from "../types/activities/activity-rest.dto";
+import AuthenticationMethodScreen from "../screens/authentication-method-screen";
+import ForgottenPasswordScreen from "../screens/forgotten-password-screen";
 
 const Routes = () => {
   const token = getAuthToken();
@@ -37,8 +39,12 @@ const Routes = () => {
       <Route path={ApplicationLocations.LOADING} element={<LoadingScreen />} />
       <Route path={ApplicationLocations.LOGIN} element={<LoginScreen />} />
       <Route
-        path={ApplicationLocations.LOGINREGISTER}
-        element={<LoginOrRegisterScreen />}
+        path={ApplicationLocations.FORGOTTEN_PASSWORD}
+        element={<ForgottenPasswordScreen />}
+      />
+      <Route
+        path={ApplicationLocations.AUTHENTICATION_METHOD}
+        element={<AuthenticationMethodScreen />}
       />
       <Route path={"/test"} element={<TestScreen />} />
       <Route
@@ -78,6 +84,7 @@ const Routes = () => {
           path={ApplicationLocations.RESET_PASSWORD}
           element={<ResetPasswordScreen />}
         />
+
         <Route
           path={ApplicationLocations.NEW_PASSWORD}
           element={<NewPasswordScreen />}
