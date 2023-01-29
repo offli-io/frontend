@@ -35,9 +35,20 @@ export const getActivities = async ({
   return promise;
 };
 
-export const getActivity = <T>({ id }: { id?: string }) => {
+export const getActivity = <T>({
+  id,
+  text,
+}: {
+  id?: string;
+  text?: string;
+}) => {
   const promise = axios.get<T>(
-    `${DEFAULT_DEV_URL}/activities${id ? `/${id}` : ""}`
+    `${DEFAULT_DEV_URL}/activities${id ? `/${id}` : ""}`,
+    {
+      params: {
+        text,
+      },
+    }
     // {
 
     //   params: searchParams,

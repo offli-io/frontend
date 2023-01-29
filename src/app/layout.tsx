@@ -24,7 +24,7 @@ export const Layout: React.FC<ILayoutProps> = ({ children }) => {
       [
         ApplicationLocations.SETTINGS,
         ApplicationLocations.EDIT_PROFILE,
-        ApplicationLocations.SEARCH,
+        // ApplicationLocations.SEARCH,
         ApplicationLocations.MAP,
         //ApplicationLocations.NOTIFICATIONS,
         // `${ApplicationLocations.PROFILE}/request`,

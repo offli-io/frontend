@@ -3,8 +3,11 @@ import {
   Autocomplete,
   Box,
   Button,
+  Chip,
+  CircularProgress,
   InputAdornment,
   TextField,
+  Typography,
 } from "@mui/material";
 import { AuthenticationContext } from "../assets/theme/authentication-provider";
 import { CLIENT_ID, SCOPE } from "../utils/common-constants";
@@ -12,6 +15,12 @@ import { addEventToCalendar } from "../api/google/requests";
 import SearchIcon from "@mui/icons-material/Search";
 import BackHeader from "../components/back-header";
 import { ApplicationLocations } from "../types/common/applications-locations.dto";
+import OffliButton from "../components/offli-button";
+import { useTags } from "../hooks/use-tags";
+import { useNavigate } from "react-router-dom";
+import { useActivities } from "../hooks/use-activities";
+import { IActivityListRestDto } from "../types/activities/activity-list-rest.dto";
+import { useDebounce } from "use-debounce";
 
 const event = {
   summary: "Test event Offli",
@@ -37,24 +46,29 @@ const event = {
 
 const SearchScreen = () => {
   // const { googleTokenClient } = React.useContext(AuthenticationContext)
+  const { data, isLoading } = useTags();
+  const navigate = useNavigate();
+  const [currentSearch, setCurrentSearch] = React.useState("");
+  const [queryStringDebounced] = useDebounce(currentSearch, 250);
+  const { data: activitiesData } = useActivities<IActivityListRestDto>({
+    text: queryStringDebounced,
+  });
+
+  const handleChipClick = React.useCallback(
+    (label?: string) => {
+      setCurrentSearch(label ?? "");
+    },
+    [setCurrentSearch]
+  );
   return (
-    <>
-      <BackHeader
-        title="Search activity"
-        sx={{ mb: 1 }}
-        to={ApplicationLocations.ACTIVITIES}
-      />
+    <Box sx={{ px: 1.5, boxSizing: "border-box" }}>
       <Box
         sx={{
-          // height: '100vh',
           width: "100%",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          px: 1.5,
-          boxSizing: "border-box",
         }}
-        // className="backgroundImage"
       >
         <Autocomplete
           options={[]}
@@ -68,9 +82,10 @@ const SearchScreen = () => {
               pr: 0,
             },
           }}
+          value={currentSearch}
           //loading={placeQuery?.isLoading}
           // isOptionEqualToValue={(option, value) => option.id === value.id}
-          onChange={(e, locationObject) => console.log(locationObject)}
+          onChange={(_, value) => setCurrentSearch(value ?? "")}
           // onFocus={() => setIsSearchFocused(true)}
           // onBlur={() => setIsSearchFocused(false)}
           // getOptionLabel={(option) => option?.display_name}
@@ -78,7 +93,8 @@ const SearchScreen = () => {
             <TextField
               {...params}
               autoFocus
-              placeholder="What kind of activity are you looking for?"
+              // value={currentSearch}
+              placeholder="Search by text in activity"
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
@@ -91,15 +107,49 @@ const SearchScreen = () => {
                   fontSize: 14,
                 },
               }}
-              // onChange={(e) => setValue("placeQuery", e.target.value)}
+              onChange={(e) => setCurrentSearch(e.target.value)}
             />
           )}
         />
+        <OffliButton
+          variant="text"
+          size="small"
+          sx={{ fontSize: 14, ml: 1 }}
+          onClick={() => navigate(ApplicationLocations.ACTIVITIES)}
+        >
+          Cancel
+        </OffliButton>
       </Box>
+      {isLoading ? (
+        <>
+          <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
+            <CircularProgress color="primary" />
+          </Box>
+        </>
+      ) : (
+        data?.data?.tags &&
+        data?.data?.tags?.length > 0 && (
+          <>
+            <Typography variant="h5">What's your mood for?</Typography>
+            {data.data.tags.map((tag) => (
+              <Chip
+                label={tag?.title}
+                key={tag?.title}
+                sx={{ mx: 1, my: 0.5 }}
+                color="primary"
+                onClick={() => handleChipClick(tag?.title)}
+              />
+            ))}
+          </>
+        )
+      )}
+
       {/* <Button onClick={() => addEventToCalendar("thefaston@gmail.com", event)}>
         Create calendar Event
-      </Button> */}
-    </>
+      </Button>
+      TODO H5 za H3 dohodnute s matom
+      */}
+    </Box>
   );
 };
 

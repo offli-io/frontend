@@ -148,6 +148,16 @@ const ActivitiesScreen = () => {
       });
   }, [toggleDrawer]);
 
+  const anyMyActivities = React.useMemo(
+    () => myActivities?.length > 0,
+    [myActivities]
+  );
+
+  const anyNearYouActivities = React.useMemo(
+    () => otherActivities?.length > 0,
+    [myActivities]
+  );
+
   return (
     <PageWrapper sxOverrides={{ px: 2 }}>
       <Box
@@ -214,83 +224,94 @@ const ActivitiesScreen = () => {
         </Box>
       ) : (
         <>
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              width: "100%",
-              mb: 1,
-            }}
-          >
-            <Typography variant="h5">Your upcoming this week</Typography>
-            <OffliButton variant="text" sx={{ fontSize: 16 }}>
-              See all
-            </OffliButton>
-          </Box>
-          <Box
-            sx={{
-              // height: "100vh",
-              width: "100vw",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "flex-start",
-            }}
-          >
-            {myActivities?.slice(0, 2)?.map((activity) => {
-              return (
-                <MyActivityCard
-                  key={activity?.id}
-                  activity={activity}
-                  onPress={openActivityActions}
-                />
-              );
-            })}
-          </Box>
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              width: "100%",
-            }}
-          >
-            <Typography variant="h5">Near you</Typography>
-            <OffliButton
-              variant="text"
-              sx={{ fontSize: 16 }}
-              onClick={() =>
-                navigate(ApplicationLocations.MAP, {
-                  state: {
-                    from: ApplicationLocations.ACTIVITIES,
-                  },
-                })
-              }
-            >
-              See map
-            </OffliButton>
-          </Box>
-          <Box
-            sx={{
-              // height: "100vh",
-              width: "100vw",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "flex-start",
-            }}
-          >
-            {otherActivities?.map((activity) => {
-              return (
-                <ActivityCard
-                  key={activity?.id}
-                  activity={activity}
-                  onPress={openActivityActions}
-                />
-              );
-            })}
-          </Box>
+          {!anyMyActivities && !anyNearYouActivities && (
+            <Box>There are no activities</Box>
+          )}
+          {anyMyActivities && (
+            <>
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  width: "100%",
+                  mb: 1,
+                }}
+              >
+                <Typography variant="h5">Your upcoming this week</Typography>
+                <OffliButton variant="text" sx={{ fontSize: 16 }}>
+                  See all
+                </OffliButton>
+              </Box>
+              <Box
+                sx={{
+                  // height: "100vh",
+                  width: "100vw",
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "flex-start",
+                }}
+              >
+                {myActivities?.slice(0, 2)?.map((activity) => {
+                  return (
+                    <MyActivityCard
+                      key={activity?.id}
+                      activity={activity}
+                      onPress={openActivityActions}
+                    />
+                  );
+                })}
+              </Box>
+            </>
+          )}
+          {anyNearYouActivities && (
+            <>
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  width: "100%",
+                }}
+              >
+                <Typography variant="h5">Near you</Typography>
+                <OffliButton
+                  variant="text"
+                  sx={{ fontSize: 16 }}
+                  onClick={() =>
+                    navigate(ApplicationLocations.MAP, {
+                      state: {
+                        from: ApplicationLocations.ACTIVITIES,
+                      },
+                    })
+                  }
+                >
+                  See map
+                </OffliButton>
+              </Box>
+              <Box
+                sx={{
+                  // height: "100vh",
+                  width: "100vw",
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "flex-start",
+                }}
+              >
+                {otherActivities?.map((activity) => {
+                  return (
+                    <ActivityCard
+                      key={activity?.id}
+                      activity={activity}
+                      onPress={openActivityActions}
+                    />
+                  );
+                })}
+              </Box>
+            </>
+          )}
         </>
       )}
     </PageWrapper>

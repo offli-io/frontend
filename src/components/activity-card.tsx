@@ -19,104 +19,6 @@ const ActivityCard: React.FC<IProps> = ({ activity, onPress }) => {
   const { action, handlers } = useLongPress();
 
   return (
-    // <Box
-    //   sx={{
-    //     width: "99%",
-    //     height: "20rem",
-    //     marginTop: "2%",
-    //     marginBottom: "5%",
-    //   }}
-    //   onClick={() => onPress(activity?.id)}
-    //   // {...handlers}
-    //   // onTouchStart={() => {
-    //   //   const timer = setTimeout(() => onLongPress(), 500)
-    //   // }}
-    //   // onTouchEnd={() => clearTimeout(timer)}
-    // >
-    //   <Box
-    //     sx={{
-    //       width: "100%",
-    //       height: "80%",
-    //       // backgroundImage: `url(${require('../assets/img/dune_small.png')})`,
-    //       backgroundImage: `url(${activity?.title_picture})`,
-    //       backgroundPosition: "center",
-    //       backgroundRepeat: "no-repeat",
-    //       backgroundSize: "cover",
-    //       display: "flex",
-    //       alignItems: "flex-end",
-    //       justifyContent: "center",
-    //       borderRadius: "12px",
-    //     }}
-    //   >
-    //     <Box
-    //       sx={{
-    //         width: "100%",
-    //         display: "flex",
-    //         alignItems: "center",
-    //         justifyContent: "space-between",
-    //         mb: 0.8,
-    //       }}
-    //     >
-    //       {activity?.limit ? (
-    //         <TransparentChip
-    //           text={`${activity?.participants?.length}/${activity?.limit}`}
-    //           Icon={<PeopleAltIcon sx={{ fontSize: "22px" }} />}
-    //         />
-    //       ) : (
-    //         <TransparentChip
-    //           text={`${activity?.participants?.length}`}
-    //           Icon={<PeopleAltIcon sx={{ fontSize: "22px" }} />}
-    //         />
-    //       )}
-
-    //       <TransparentChip
-    //         text={activity?.price}
-    //         Icon={<AttachMoneyIcon sx={{ fontSize: "22px" }} />}
-    //       />
-    //       {activity?.visibility === ActivityVisibilityEnum.public ? (
-    //         <TransparentChip
-    //           text={activity?.visibility}
-    //           Icon={<LockOpenIcon sx={{ fontSize: "22px" }} />}
-    //         />
-    //       ) : (
-    //         <TransparentChip
-    //           text={activity?.visibility}
-    //           Icon={<LockIcon sx={{ fontSize: "22px" }} />}
-    //         />
-    //       )}
-    //     </Box>
-    //   </Box>
-    //   <Box sx={{ ml: 1, mt: 1 }}>
-    //     <Typography
-    //       variant="h4"
-    //       sx={{
-    //         textTransform: "uppercase",
-    //         // fontWeight: 400,
-    //         lineHeight: 1.2,
-    //       }}
-    //     >
-    //       {activity?.title}
-    //     </Typography>
-    //     <Typography
-    //       variant="subtitle1"
-    //       sx={{
-    //         lineHeight: 1.3,
-    //       }}
-    //     >
-    //       {/* {activity?.datetime} ???? */}
-    //       September 15th 19:00
-    //     </Typography>
-    //     <Typography
-    //       variant="subtitle1"
-    //       sx={{
-    //         lineHeight: 1.2,
-    //       }}
-    //     >
-    //       {activity?.location?.name}
-    //     </Typography>
-    //   </Box>
-    // </Box>
-
     <Box
       sx={{
         width: "99%",
@@ -141,7 +43,6 @@ const ActivityCard: React.FC<IProps> = ({ activity, onPress }) => {
     >
       <Box
         sx={{
-          height: "25%",
           width: "100%",
           backgroundColor: "rgba(0,0,0,.8)",
           display: "flex",
@@ -155,30 +56,34 @@ const ActivityCard: React.FC<IProps> = ({ activity, onPress }) => {
           // bottom: 0,
         }}
       >
-        <Box sx={{ height: "100%" }}>
+        <Box
+          sx={{
+            maxWidth: 250,
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+          }}
+        >
           <Typography
             variant="h4"
             sx={{
               textTransform: "uppercase",
               fontWeight: 400,
-              lineHeight: 0.6,
+              lineHeight: 1,
+              mb: 0.5,
             }}
           >
             {activity?.title}
           </Typography>
-          {activity?.location?.name ? (
+          {activity?.location?.name && (
             <Typography
               variant="subtitle2"
-              sx={{ fontweight: 200, fontSize: 11, lineHeight: 2 }}
+              sx={{
+                fontweight: 200,
+                fontSize: 11,
+                lineHeight: 1.1,
+              }}
             >
               {activity?.location?.name}
-            </Typography>
-          ) : (
-            <Typography
-              variant="subtitle1"
-              sx={{ fontSize: 11, visibility: "hidden", lineHeight: 2 }}
-            >
-              pica
             </Typography>
           )}
           <Box
@@ -187,7 +92,6 @@ const ActivityCard: React.FC<IProps> = ({ activity, onPress }) => {
               flexDirection: "row",
               alignItems: "center",
               justifyContent: "flex-start",
-              mt: -0.5,
             }}
           >
             <Box>
@@ -197,14 +101,17 @@ const ActivityCard: React.FC<IProps> = ({ activity, onPress }) => {
               sx={{
                 display: "flex",
                 flexDirection: "row",
-                alignItems: "flex-end",
+                alignItems: "center",
               }}
             >
               <PeopleAltIcon sx={{ fontSize: "16px", ml: 1.5, mr: 0.5 }} />
               {activity?.limit ? (
                 <Typography
                   variant="subtitle2"
-                  sx={{ lineHeight: 1.1, fontWeight: 200 }}
+                  sx={{
+                    fontWeight: 200,
+                    lineHeight: 1.1,
+                  }}
                 >
                   {activity?.participants?.length}/{activity?.limit}
                 </Typography>
@@ -224,7 +131,14 @@ const ActivityCard: React.FC<IProps> = ({ activity, onPress }) => {
           }}
         >
           <Box>
-            <Typography variant="h6" sx={{ lineHeight: 1, fontSize: "24px" }}>
+            <Typography
+              variant="h6"
+              sx={{
+                fontSize: "24px",
+                my: 0.5,
+                lineHeight: 1,
+              }}
+            >
               20
             </Typography>
           </Box>
@@ -244,7 +158,11 @@ const ActivityCard: React.FC<IProps> = ({ activity, onPress }) => {
           <Box>
             <Typography
               variant="subtitle2"
-              sx={{ lineHeight: 1.1, fontSize: "20px", fontWeight: 200 }}
+              sx={{
+                fontSize: "20px",
+                fontWeight: 200,
+                lineHeight: 1.1,
+              }}
             >
               17:00
             </Typography>
@@ -256,3 +174,102 @@ const ActivityCard: React.FC<IProps> = ({ activity, onPress }) => {
 };
 
 export default ActivityCard;
+
+//some old code
+// <Box
+//   sx={{
+//     width: "99%",
+//     height: "20rem",
+//     marginTop: "2%",
+//     marginBottom: "5%",
+//   }}
+//   onClick={() => onPress(activity?.id)}
+//   // {...handlers}
+//   // onTouchStart={() => {
+//   //   const timer = setTimeout(() => onLongPress(), 500)
+//   // }}
+//   // onTouchEnd={() => clearTimeout(timer)}
+// >
+//   <Box
+//     sx={{
+//       width: "100%",
+//       height: "80%",
+//       // backgroundImage: `url(${require('../assets/img/dune_small.png')})`,
+//       backgroundImage: `url(${activity?.title_picture})`,
+//       backgroundPosition: "center",
+//       backgroundRepeat: "no-repeat",
+//       backgroundSize: "cover",
+//       display: "flex",
+//       alignItems: "flex-end",
+//       justifyContent: "center",
+//       borderRadius: "12px",
+//     }}
+//   >
+//     <Box
+//       sx={{
+//         width: "100%",
+//         display: "flex",
+//         alignItems: "center",
+//         justifyContent: "space-between",
+//         mb: 0.8,
+//       }}
+//     >
+//       {activity?.limit ? (
+//         <TransparentChip
+//           text={`${activity?.participants?.length}/${activity?.limit}`}
+//           Icon={<PeopleAltIcon sx={{ fontSize: "22px" }} />}
+//         />
+//       ) : (
+//         <TransparentChip
+//           text={`${activity?.participants?.length}`}
+//           Icon={<PeopleAltIcon sx={{ fontSize: "22px" }} />}
+//         />
+//       )}
+
+//       <TransparentChip
+//         text={activity?.price}
+//         Icon={<AttachMoneyIcon sx={{ fontSize: "22px" }} />}
+//       />
+//       {activity?.visibility === ActivityVisibilityEnum.public ? (
+//         <TransparentChip
+//           text={activity?.visibility}
+//           Icon={<LockOpenIcon sx={{ fontSize: "22px" }} />}
+//         />
+//       ) : (
+//         <TransparentChip
+//           text={activity?.visibility}
+//           Icon={<LockIcon sx={{ fontSize: "22px" }} />}
+//         />
+//       )}
+//     </Box>
+//   </Box>
+//   <Box sx={{ ml: 1, mt: 1 }}>
+//     <Typography
+//       variant="h4"
+//       sx={{
+//         textTransform: "uppercase",
+//         // fontWeight: 400,
+//         lineHeight: 1.2,
+//       }}
+//     >
+//       {activity?.title}
+//     </Typography>
+//     <Typography
+//       variant="subtitle1"
+//       sx={{
+//         lineHeight: 1.3,
+//       }}
+//     >
+//       {/* {activity?.datetime} ???? */}
+//       September 15th 19:00
+//     </Typography>
+//     <Typography
+//       variant="subtitle1"
+//       sx={{
+//         lineHeight: 1.2,
+//       }}
+//     >
+//       {activity?.location?.name}
+//     </Typography>
+//   </Box>
+// </Box>

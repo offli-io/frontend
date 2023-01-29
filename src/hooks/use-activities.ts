@@ -3,11 +3,14 @@ import { useSnackbar } from "notistack";
 import { getActivity, getUsers } from "../api/activities/requests";
 import { getNotifications } from "../api/notifications/requests";
 
-export const useActivities = <T>({ id }: { id?: string } = {}) => {
+export const useActivities = <T>({
+  id,
+  text,
+}: { id?: string; text?: string } = {}) => {
   const { enqueueSnackbar } = useSnackbar();
   const { data, isLoading } = useQuery(
-    ["activities", id],
-    () => getActivity<T>({ id }),
+    ["activities", id, text],
+    () => getActivity<T>({ id, text }),
     {
       onError: () => {
         //some generic toast for every hook
