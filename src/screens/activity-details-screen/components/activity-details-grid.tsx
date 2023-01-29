@@ -71,7 +71,7 @@ const ActivityDetailsGrid: React.FC<IProps> = ({ activity }) => {
           </Typography>
         </Link>
         <StyledText align="center" variant="subtitle1">
-          15. September 2022 19:00
+          {/* 15. September 2022 19:00 */}
           {activity?.datetime_from?.toString()}
         </StyledText>
       </StyledBox>
