@@ -5,6 +5,7 @@ import {
   Button,
   Chip,
   CircularProgress,
+  Divider,
   InputAdornment,
   TextField,
   Typography,
@@ -21,6 +22,7 @@ import { useNavigate } from "react-router-dom";
 import { useActivities } from "../hooks/use-activities";
 import { IActivityListRestDto } from "../types/activities/activity-list-rest.dto";
 import { useDebounce } from "use-debounce";
+import ActivityCard from "../components/activity-card";
 
 const event = {
   summary: "Test event Offli",
@@ -50,13 +52,17 @@ const SearchScreen = () => {
   const navigate = useNavigate();
   const [currentSearch, setCurrentSearch] = React.useState("");
   const [queryStringDebounced] = useDebounce(currentSearch, 250);
+
+  const isTag = queryStringDebounced?.includes("tag");
+
   const { data: activitiesData } = useActivities<IActivityListRestDto>({
-    text: queryStringDebounced,
+    text: isTag ? undefined : queryStringDebounced,
+    tag: isTag ? [queryStringDebounced.slice(4)] : undefined,
   });
 
   const handleChipClick = React.useCallback(
     (label?: string) => {
-      setCurrentSearch(label ?? "");
+      setCurrentSearch(label ? `tag:${label}` : "");
     },
     [setCurrentSearch]
   );
@@ -70,9 +76,8 @@ const SearchScreen = () => {
           justifyContent: "center",
         }}
       >
-        <Autocomplete
-          options={[]}
-          forcePopupIcon={false}
+        <TextField
+          autoFocus
           sx={{
             width: "100%",
             display: "flex",
@@ -81,36 +86,22 @@ const SearchScreen = () => {
             "& .MuiOutlinedInput-root": {
               pr: 0,
             },
+            "& input::placeholder": {
+              fontSize: 14,
+            },
           }}
           value={currentSearch}
-          //loading={placeQuery?.isLoading}
-          // isOptionEqualToValue={(option, value) => option.id === value.id}
-          onChange={(_, value) => setCurrentSearch(value ?? "")}
-          // onFocus={() => setIsSearchFocused(true)}
-          // onBlur={() => setIsSearchFocused(false)}
-          // getOptionLabel={(option) => option?.display_name}
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              autoFocus
-              // value={currentSearch}
-              placeholder="Search by text in activity"
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <SearchIcon sx={{ fontSize: "1.2rem" }} />
-                  </InputAdornment>
-                ),
-              }}
-              sx={{
-                "& input::placeholder": {
-                  fontSize: 14,
-                },
-              }}
-              onChange={(e) => setCurrentSearch(e.target.value)}
-            />
-          )}
+          placeholder="Search by text in activity"
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <SearchIcon sx={{ fontSize: "1.2rem" }} />
+              </InputAdornment>
+            ),
+          }}
+          onChange={(e) => setCurrentSearch(e.target.value)}
         />
+
         <OffliButton
           variant="text"
           size="small"
@@ -143,6 +134,14 @@ const SearchScreen = () => {
           </>
         )
       )}
+      <Divider sx={{ my: 2 }} />
+      {activitiesData?.data?.activities?.map((activity) => (
+        <ActivityCard
+          key={activity?.id}
+          activity={activity}
+          onPress={(act) => console.log(act)}
+        />
+      ))}
 
       {/* <Button onClick={() => addEventToCalendar("thefaston@gmail.com", event)}>
         Create calendar Event

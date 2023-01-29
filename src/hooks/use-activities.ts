@@ -6,11 +6,12 @@ import { getNotifications } from "../api/notifications/requests";
 export const useActivities = <T>({
   id,
   text,
-}: { id?: string; text?: string } = {}) => {
+  tag,
+}: { id?: string; text?: string; tag?: string[] } = {}) => {
   const { enqueueSnackbar } = useSnackbar();
   const { data, isLoading } = useQuery(
-    ["activities", id, text],
-    () => getActivity<T>({ id, text }),
+    ["activities", id, text, tag],
+    () => getActivity<T>({ id, text, tag }),
     {
       onError: () => {
         //some generic toast for every hook
