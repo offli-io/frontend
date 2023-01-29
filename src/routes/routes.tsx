@@ -29,7 +29,7 @@ import MapScreen from "../screens/map-screen";
 import { IActivityListRestDto } from "../types/activities/activity-list-rest.dto";
 import { IActivityRestDto } from "../types/activities/activity-rest.dto";
 import AuthenticationMethodScreen from "../screens/authentication-method-screen";
-import ForgottenPasswordScreen from "../screens/forgotten-password-screen";
+import ForgottenPasswordScreen from "../screens/forgotten-password-screen/forgotten-password-screen";
 
 const Routes = () => {
   const token = getAuthToken();

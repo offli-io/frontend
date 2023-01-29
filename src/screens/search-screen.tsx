@@ -55,10 +55,11 @@ const SearchScreen = () => {
 
   const isTag = queryStringDebounced?.includes("tag");
 
-  const { data: activitiesData } = useActivities<IActivityListRestDto>({
-    text: isTag ? undefined : queryStringDebounced,
-    tag: isTag ? [queryStringDebounced.slice(4)] : undefined,
-  });
+  const { data: activitiesData, isLoading: areActivitiesLoading } =
+    useActivities<IActivityListRestDto>({
+      text: isTag ? undefined : queryStringDebounced,
+      tag: isTag ? [queryStringDebounced.slice(4)] : undefined,
+    });
 
   const handleChipClick = React.useCallback(
     (label?: string) => {
@@ -135,13 +136,19 @@ const SearchScreen = () => {
         )
       )}
       <Divider sx={{ my: 2 }} />
-      {activitiesData?.data?.activities?.map((activity) => (
-        <ActivityCard
-          key={activity?.id}
-          activity={activity}
-          onPress={(act) => console.log(act)}
-        />
-      ))}
+      {areActivitiesLoading ? (
+        <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
+          <CircularProgress color="primary" />
+        </Box>
+      ) : (
+        activitiesData?.data?.activities?.map((activity) => (
+          <ActivityCard
+            key={activity?.id}
+            activity={activity}
+            onPress={(act) => console.log(act)}
+          />
+        ))
+      )}
 
       {/* <Button onClick={() => addEventToCalendar("thefaston@gmail.com", event)}>
         Create calendar Event

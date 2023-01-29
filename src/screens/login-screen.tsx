@@ -181,6 +181,7 @@ const LoginScreen: React.FC = () => {
           variant="text"
           disabled={isLoading}
           sx={{ fontSize: 14, mt: 1 }}
+          onClick={() => navigate(ApplicationLocations.FORGOTTEN_PASSWORD)}
         >
           Forgot your password?
         </OffliButton>
