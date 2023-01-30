@@ -8,7 +8,7 @@ import { PageWrapper } from "../components/page-wrapper";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import ProfileGallery from "../components/profile-gallery";
-import { Link, useLocation, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { ApplicationLocations } from "../types/common/applications-locations.dto";
 import { AuthenticationContext } from "../assets/theme/authentication-provider";
 import { getUsers } from "../api/activities/requests";
@@ -30,6 +30,7 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
     AuthenticationContext
   );
   const location = useLocation();
+  const navigate = useNavigate();
   const from = (location?.state as ICustomizedLocationStateDto)?.from;
   const { id } = useParams();
   const { enqueueSnackbar } = useSnackbar();
@@ -129,7 +130,17 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
               // mt: 0.2,
             }}
           >
-            <IconButton color="primary" sx={{ paddingRight: 0 }}>
+            <IconButton
+              color="primary"
+              sx={{ paddingRight: 0 }}
+              onClick={() =>
+                navigate(ApplicationLocations.BUDDIES, {
+                  state: {
+                    from: ApplicationLocations.PROFILE,
+                  },
+                })
+              }
+            >
               <PeopleAltIcon sx={{ fontSize: 18, padding: 0 }} />
             </IconButton>
             <Typography

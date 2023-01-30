@@ -7,7 +7,7 @@ import EditProfileScreen from "../screens/edit-profile-screen";
 import LoadingScreen from "../screens/loading-screen";
 import LoginOrRegisterScreen from "../screens/login-or-register";
 import LoginScreen from "../screens/login-screen";
-import MyBuddiesScreen from "../screens/my-buddies-screen";
+import MyBuddiesScreen from "../screens/my-buddies-screen/my-buddies-screen";
 import NewPasswordScreen from "../screens/new-password-screen";
 import PickUsernamePhotoScreen from "../screens/pick-username-photo-screen";
 import ProfileScreen from "../screens/profile-screen";
@@ -38,6 +38,7 @@ const Routes = () => {
     <BaseRoutes>
       <Route path={ApplicationLocations.LOADING} element={<LoadingScreen />} />
       <Route path={ApplicationLocations.LOGIN} element={<LoginScreen />} />
+
       <Route
         path={ApplicationLocations.FORGOTTEN_PASSWORD}
         element={<ForgottenPasswordScreen />}
