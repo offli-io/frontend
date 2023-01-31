@@ -78,6 +78,10 @@ const Routes = () => {
           element={<ProfileScreen type="request" />}
         />
         <Route
+          path={`${ApplicationLocations.PROFILE}/buddy/:id`}
+          element={<ProfileScreen type="buddy" />}
+        />
+        <Route
           path={ApplicationLocations.EDIT_PROFILE}
           element={<EditProfileScreen />}
         />

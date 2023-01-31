@@ -22,7 +22,7 @@ import { acceptBuddyInvitation } from "../api/users/requests";
 import ActionButton from "../components/action-button";
 
 interface IProfileScreenProps {
-  type: "profile" | "request";
+  type: "profile" | "request" | "buddy";
 }
 
 const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
@@ -92,8 +92,12 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
 
   return (
     <>
-      {type === "request" && (
-        <BackHeader title="Buddie request" sx={{ mb: 2 }} to={from} />
+      {(type === "request" || type === "buddy") && (
+        <BackHeader
+          title={type === "request" ? "Buddie request" : "Buddy"}
+          sx={{ mb: 2 }}
+          to={from}
+        />
       )}
       <PageWrapper>
         <Box
@@ -170,8 +174,8 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
             // align="center"
             sx={{ lineHeight: 1.2, width: "80%" }}
           >
-            I am student at FIIT STU. I like adventures and meditation. There is
-            always time for a beer. Cheers.
+            {data?.data?.about_me ??
+              "I am student at FIIT STU. I like adventures and meditation. There is always time for a beer. Cheers."}
           </Typography>
         </Box>
         {type === "profile" && (
@@ -191,9 +195,15 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
             This month
           </Typography>
           <ProfileStatistics
-            participatedNum={10}
+            participatedNum={
+              data?.data?.activities_participated_last_month_count
+            }
             enjoyedNum={data?.data.enjoyed_together_last_month_count}
-            createdNum={type === "profile" ? 9 : undefined}
+            createdNum={
+              type === "profile"
+                ? data?.data?.activities_created_last_month_count
+                : undefined
+            }
             metNum={
               type === "profile"
                 ? data?.data.new_buddies_last_month_count
@@ -201,14 +211,14 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
             }
           />
         </Box>
-        {type === "request" && (
+        {/* {type === "request" && (
           <OffliButton
             sx={{ fontSize: 16, px: 2.5, mt: 2 }}
             onClick={sendAcceptBuddyRequest}
           >
             Accept buddie request
           </OffliButton>
-        )}
+        )} */}
         <Box
           sx={{
             width: "90%",

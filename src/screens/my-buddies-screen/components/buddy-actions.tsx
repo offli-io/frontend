@@ -8,12 +8,12 @@ import { BuddyActionTypeEnum } from "../../../types/common/buddy-actions-type-en
 // import { useActivityMenuItems } from "../hooks/use-activity-menu-items";
 
 export interface IBuddyActionsProps {
-  onBuddyClick?: (type?: BuddyActionTypeEnum, activityId?: string) => void;
+  onBuddyActionClick?: (type?: BuddyActionTypeEnum, userId?: string) => void;
   buddy?: IPerson;
 }
 
 const BuddyActions: React.FC<IBuddyActionsProps> = ({
-  onBuddyClick,
+  onBuddyActionClick,
   buddy,
 }) => {
   const { userInfo } = React.useContext(AuthenticationContext);
@@ -42,7 +42,7 @@ const BuddyActions: React.FC<IBuddyActionsProps> = ({
           //temporary solution just add bolean if next icon should be displayed
           headerRight={<></>}
           onMenuItemClick={() =>
-            onBuddyClick?.(actionDefinition?.type, buddy?.id)
+            onBuddyActionClick?.(actionDefinition?.type, buddy?.id)
           }
         />
       ))}

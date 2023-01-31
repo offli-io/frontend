@@ -21,30 +21,69 @@ import { ActivityMembersActionTypeDto } from "../../types/common/activity-member
 import BuddyActions from "./components/buddy-actions";
 import { DrawerContext } from "../../assets/theme/drawer-provider";
 import { IPerson } from "../../types/activities/activity.dto";
+import { BuddyActionTypeEnum } from "../../types/common/buddy-actions-type-enum.dto";
+import { deleteBuddy } from "../../api/users/requests";
+import { useMutation, useQueries, useQueryClient } from "@tanstack/react-query";
+import { useSnackbar } from "notistack";
+import { AuthenticationContext } from "../../assets/theme/authentication-provider";
 
 const MyBuddiesScreen = () => {
   const navigate = useNavigate();
   const [currentSearch, setCurrentSearch] = React.useState("");
   const { toggleDrawer } = React.useContext(DrawerContext);
-
+  const { enqueueSnackbar } = useSnackbar();
+  const { userInfo } = React.useContext(AuthenticationContext);
   const location = useLocation();
   const from = (location?.state as ICustomizedLocationStateDto)?.from;
-  const { data, isLoading } = useBuddies({ text: currentSearch });
+  const { data, isLoading, invalidateBuddies } = useBuddies({
+    text: currentSearch,
+  });
 
-  const handleActionClick = React.useCallback(
-    (type?: ActivityMembersActionTypeDto, userId?: string) => {
-      // switch (type) {
-      //   case ActivityMembersActionTypeDto.KICK:
-      //     return sendKickPersonFromActivity(userId);
-      //   case ActivityMembersActionTypeDto.PROMOTE:
-      //     return console.log("call promote with id");
-      //   default:
-      //     return;
-      // }
-      console.log(type);
+  const { mutate: sendDeleteBuddy } = useMutation(
+    ["delete-buddy"],
+    (id?: string) => deleteBuddy(userInfo?.id, id),
+    {
+      onSuccess: (data, variables) => {
+        //TODO what to invalidate, and where to navigate after success
+        // queryClient.invalidateQueries(['notifications'])
+        // navigateBasedOnType(
+        //   variables?.type,
+        //   variables?.properties?.user?.id ?? variables?.properties?.activity?.id
+        // )
+        toggleDrawer({ open: false, content: undefined });
+        invalidateBuddies();
+
+        enqueueSnackbar("Buddy was successfully deleted", {
+          variant: "success",
+        });
+      },
+      onError: () => {
+        enqueueSnackbar("Failed to delete buddy", {
+          variant: "error",
+        });
+      },
+    }
+  );
+
+  const handleBuddyActionClick = React.useCallback(
+    (type?: BuddyActionTypeEnum, userId?: string) => {
+      switch (type) {
+        case BuddyActionTypeEnum.PROFILE:
+          toggleDrawer({ open: false, content: undefined });
+          return navigate(`${ApplicationLocations.PROFILE}/buddy/${userId}`, {
+            state: {
+              from: ApplicationLocations.BUDDIES,
+            },
+          });
+        case BuddyActionTypeEnum.REMOVE:
+          return sendDeleteBuddy(userId);
+        default:
+          return;
+      }
     },
     []
   );
+
   const handleBuddyActionsClick = React.useCallback(
     (buddy?: IPerson) => {
       toggleDrawer({
@@ -52,7 +91,7 @@ const MyBuddiesScreen = () => {
         content: (
           <BuddyActions
             buddy={buddy}
-            onBuddyClick={(type, id) => console.log(type, id)}
+            onBuddyActionClick={handleBuddyActionClick}
           />
         ),
       });
