@@ -209,6 +209,7 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
                 ? data?.data.new_buddies_last_month_count
                 : undefined
             }
+            isLoading={isLoading}
           />
         </Box>
         {/* {type === "request" && (
