@@ -269,3 +269,24 @@ export const kickUserFromActivity = (activityId: string, personId: string) => {
 
   return promise;
 };
+
+export const acceptActivityInvitation = (
+  activityId?: string,
+  userId?: string
+) => {
+  const CancelToken = axios.CancelToken;
+  const source = CancelToken.source();
+
+  const promise = axios.patch(
+    `${DEFAULT_DEV_URL}/activities/${activityId}/participants/${userId}`,
+    {
+      cancelToken: source?.token,
+    }
+  );
+
+  //   queryFunctionContext?.signal?.addEventListener('abort', () => {
+  //     source.cancel('Query was cancelled by React Query')
+  //   })
+
+  return promise;
+};

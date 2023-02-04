@@ -107,3 +107,21 @@ export const rejectBuddyInvitation = (
 
   return promise;
 };
+
+export const deleteBuddy = (userId?: string, idToDelete?: string) => {
+  const CancelToken = axios.CancelToken;
+  const source = CancelToken.source();
+
+  const promise = axios.delete(
+    `${DEFAULT_DEV_URL}/users/${userId}/buddies/${idToDelete}`,
+    {
+      cancelToken: source?.token,
+    }
+  );
+
+  //   queryFunctionContext?.signal?.addEventListener('abort', () => {
+  //     source.cancel('Query was cancelled by React Query')
+  //   })
+
+  return promise;
+};

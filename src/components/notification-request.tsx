@@ -1,4 +1,4 @@
-import { Box, styled, Typography } from "@mui/material";
+import { Box, Divider, styled, Typography } from "@mui/material";
 import logo from "../assets/img/profilePicture.jpg";
 import React from "react";
 import { INotificationDto } from "../types/notifications/notification.dto";
@@ -35,46 +35,55 @@ const NotificationRequest: React.FC<INotificationRequestProps> = ({
   }, [notification?.timestamp]);
 
   return (
-    <Box
-      onClick={() => onClick(notification)}
-      sx={{
-        display: "flex",
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "space-between",
-        py: 2,
-        textTransform: "none",
-        width: "100%",
-      }}
-    >
-      <Box sx={{ display: "flex", alignItems: "center" }}>
-        <Box
-          sx={{
-            backgroundColor: (theme) =>
-              notification?.seen ? "transparent" : theme.palette.primary.main,
-            height: 10,
-            width: 13,
-            borderRadius: 5,
-            mr: 1.5,
-          }}
-        />
-        <StyledImage src={data?.data?.profile_photo_url ?? logo} />
-        <Box sx={{ display: "flex", flexDirection: "column" }}>
-          <Typography sx={{ ml: 2, color: "black" }}>
-            {notification?.message}
-          </Typography>
-          <Typography
+    <>
+      <Box
+        onClick={() => onClick(notification)}
+        sx={{
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "space-between",
+          py: 2,
+          textTransform: "none",
+          width: "100%",
+        }}
+      >
+        <Box sx={{ display: "flex", alignItems: "center" }}>
+          <Box
             sx={{
-              ml: 2,
-              color: (theme) => theme.palette.inactiveFont.main,
-              fontSize: "0.8rem",
+              backgroundColor: (theme) =>
+                notification?.seen ? "transparent" : theme.palette.primary.main,
+              height: 10,
+              width: 13,
+              borderRadius: 5,
+              mr: 1.5,
             }}
-          >
-            {hourDifference()}
-          </Typography>
+          />
+          <StyledImage src={data?.data?.profile_photo_url ?? logo} />
+          <Box sx={{ display: "flex", flexDirection: "column" }}>
+            <Typography
+              sx={{
+                ml: 2,
+                color: "black",
+                fontWeight: notification?.seen ? "normal" : "bold",
+              }}
+            >
+              {notification?.message}
+            </Typography>
+            <Typography
+              sx={{
+                ml: 2,
+                color: (theme) => theme.palette.inactiveFont.main,
+                fontSize: "0.8rem",
+              }}
+            >
+              {hourDifference()}
+            </Typography>
+          </Box>
         </Box>
       </Box>
-    </Box>
+      <Divider sx={{ width: "100%" }} />
+    </>
   );
 };
 export default NotificationRequest;

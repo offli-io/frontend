@@ -1,45 +1,45 @@
-import React from 'react'
-import { Box, Typography, TextField } from '@mui/material'
-import BackButton from '../components/back-button'
-import { Controller, useForm } from 'react-hook-form'
-import * as yup from 'yup'
-import { yupResolver } from '@hookform/resolvers/yup'
-import OffliButton from '../components/offli-button'
+import React from "react";
+import { Box, Typography, TextField } from "@mui/material";
+import BackButton from "../components/back-button";
+import { Controller, useForm } from "react-hook-form";
+import * as yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
+import OffliButton from "../components/offli-button";
 // import ErrorIcon from '@mui/icons-material/Error'
-import { ApplicationLocations } from '../types/common/applications-locations.dto'
+import { ApplicationLocations } from "../types/common/applications-locations.dto";
 
 export interface FormValues {
-  email: string
+  email: string;
 }
 
 const schema: () => yup.SchemaOf<FormValues> = () =>
   yup.object({
     email: yup.string().email().defined().required(),
-  })
+  });
 
 const ResetPasswordScreen = () => {
   const { control, handleSubmit } = useForm<FormValues>({
     defaultValues: {
-      email: '',
+      email: "",
     },
     resolver: yupResolver(schema()),
-    mode: 'onChange',
-  })
+    mode: "onChange",
+  });
 
   const handleFormSubmit = React.useCallback(
     (values: FormValues) => console.log(values),
     []
-  )
+  );
 
   return (
-    <form onSubmit={handleSubmit(handleFormSubmit)} style={{ height: '100%' }}>
+    <form onSubmit={handleSubmit(handleFormSubmit)} style={{ height: "100%" }}>
       <Box
         sx={{
-          height: '100vh',
-          width: '100vw',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
+          height: "100vh",
+          width: "100vw",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
           //   justifyContent: 'center',
         }}
       >
@@ -48,11 +48,11 @@ const ResetPasswordScreen = () => {
           variant="h2"
           sx={{
             mt: 15,
-            display: 'flex',
+            display: "flex",
             flex: 1,
           }}
         >
-          Reset your<Box sx={{ color: 'primary.main' }}>&nbsp;password</Box>
+          Reset your<Box sx={{ color: "primary.main" }}>&nbsp;password</Box>
         </Typography>
         <Controller
           name="email"
@@ -70,7 +70,7 @@ const ResetPasswordScreen = () => {
               //   t(`value.${nextStep?.authenticationType}.placeholder`)
               // }
               //disabled={methodSelectionDisabled}
-              sx={{ mb: 4, width: '80%', flex: 3 }}
+              sx={{ mb: 4, width: "80%", flex: 3 }}
             />
           )}
         />
@@ -83,13 +83,13 @@ const ResetPasswordScreen = () => {
         <OffliButton
           variant="contained"
           type="submit"
-          sx={{ width: '80%', mb: 5 }}
+          sx={{ width: "80%", mb: 5 }}
         >
           Send verification code
         </OffliButton>
       </Box>
     </form>
-  )
-}
+  );
+};
 
-export default ResetPasswordScreen
+export default ResetPasswordScreen;

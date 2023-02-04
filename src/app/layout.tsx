@@ -11,7 +11,7 @@ interface ILayoutProps {
   children?: React.ReactNode;
 }
 
-const NOT_EXACT_UNALLOWED_URLS = ["/request", "/map/"];
+const NOT_EXACT_UNALLOWED_URLS = ["/request", "/map/", "/profile/buddy"];
 
 export const Layout: React.FC<ILayoutProps> = ({ children }) => {
   const { stateToken } = React.useContext(AuthenticationContext);
@@ -26,6 +26,7 @@ export const Layout: React.FC<ILayoutProps> = ({ children }) => {
         ApplicationLocations.EDIT_PROFILE,
         // ApplicationLocations.SEARCH,
         ApplicationLocations.MAP,
+        ApplicationLocations.BUDDIES,
         //ApplicationLocations.NOTIFICATIONS,
         // `${ApplicationLocations.PROFILE}/request`,
         // `${ApplicationLocations.ACTIVITIES}/request`,
