@@ -1,24 +1,24 @@
 export interface IUsername {
-  username?: string
+  username?: string;
 }
 
 export interface IEmailPassword {
-  email?: string
-  password?: string
+  email?: string;
+  password?: string;
 }
 
 export interface IUsernamePassword {
-  username?: string
-  password?: string
+  username?: string;
+  password?: string;
 }
 
 export interface IEmailUsernamePassword {
-  email?: string
-  username?: string
-  password?: string
+  email?: string;
+  username?: string;
+  password?: string;
 }
 
 export interface IEmailVerificationCode {
-  email?: string
-  verificationCode?: string
+  email?: string;
+  verification_code?: string;
 }

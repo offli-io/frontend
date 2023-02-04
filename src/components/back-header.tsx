@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState } from "react";
 import {
   Box,
   IconButton,
@@ -6,52 +6,53 @@ import {
   AppBar,
   Typography,
   SxProps,
-} from '@mui/material'
-import { Link, useLocation } from 'react-router-dom'
-import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined'
-import SettingsIcon from '@mui/icons-material/Settings'
-import PeopleAltIcon from '@mui/icons-material/PeopleAlt'
-import PeopleAltOutlinedIcon from '@mui/icons-material/PeopleAltOutlined'
-import NotificationsNoneOutlinedIcon from '@mui/icons-material/NotificationsNoneOutlined'
-import NotificationsIcon from '@mui/icons-material/Notifications'
-import MenuIcon from '@mui/icons-material/Menu'
-import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew'
+} from "@mui/material";
+import { Link, useLocation } from "react-router-dom";
+import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
+import SettingsIcon from "@mui/icons-material/Settings";
+import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
+import PeopleAltOutlinedIcon from "@mui/icons-material/PeopleAltOutlined";
+import NotificationsNoneOutlinedIcon from "@mui/icons-material/NotificationsNoneOutlined";
+import NotificationsIcon from "@mui/icons-material/Notifications";
+import MenuIcon from "@mui/icons-material/Menu";
+import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 
-import { ApplicationLocations } from '../types/common/applications-locations.dto'
-import offliLogo from '../assets/img/logoPurple.png'
-import { HEADER_HEIGHT } from '../utils/common-constants'
+import { ApplicationLocations } from "../types/common/applications-locations.dto";
+import offliLogo from "../assets/img/logoPurple.png";
+import { HEADER_HEIGHT } from "../utils/common-constants";
 
 interface IBackHeaderProps {
-  title?: string
-  sx?: SxProps
-  to?: string
+  title?: string;
+  sx?: SxProps;
+  to?: string;
 }
 
 const BackHeader: React.FC<IBackHeaderProps> = ({ title, sx, to }) => {
-  const location = useLocation().pathname
-  const [notificationNumber] = useState(5)
+  const location = useLocation().pathname;
+  const [notificationNumber] = useState(5);
 
-  const toParsed = to?.split('/')
-  const fromLocation = toParsed && `/${toParsed[toParsed?.length - 1]}`
+  const toParsed = to?.split("/");
+  const fromLocation = toParsed && `/${toParsed[toParsed?.length - 1]}`;
 
   return (
-    <Box sx={{ height: HEADER_HEIGHT, boxShadow: '1px 2px 2px #ccc', ...sx }}>
+    <Box sx={{ boxShadow: "1px 2px 2px #ccc", mb: 0.5, ...sx }}>
       <Box
         sx={{
-          width: '100%',
+          width: "100%",
           // borderBottom: '1px solid lightgrey',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          position: 'relative',
-          p: 2,
-          boxSizing: 'border-box',
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          position: "relative",
+          pt: 1,
+          boxSizing: "border-box",
         }}
       >
         {fromLocation && (
           <IconButton
             component={Link}
             to={fromLocation}
+            color="primary"
             sx={
               {
                 // flex: 1,
@@ -71,9 +72,9 @@ const BackHeader: React.FC<IBackHeaderProps> = ({ title, sx, to }) => {
         <Box
           sx={{
             flex: 10,
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
             mr: 6,
           }}
         >
@@ -81,7 +82,7 @@ const BackHeader: React.FC<IBackHeaderProps> = ({ title, sx, to }) => {
         </Box>
       </Box>
     </Box>
-  )
-}
+  );
+};
 
-export default BackHeader
+export default BackHeader;

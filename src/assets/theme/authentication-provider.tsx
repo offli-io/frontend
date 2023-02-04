@@ -139,12 +139,12 @@ export const AuthenticationProvider = ({
 
   React.useEffect(() => {
     /* global google */
-    google.accounts.id.initialize({
+    google?.accounts?.id.initialize({
       client_id: CLIENT_ID,
       callback: handleCredentialResponse,
     });
 
-    google.accounts.id.renderButton(
+    google?.accounts?.id.renderButton(
       document.getElementById("signIn") as HTMLElement,
       {
         type: "standard",

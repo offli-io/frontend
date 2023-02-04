@@ -69,7 +69,7 @@ const VerificationScreen = () => {
     (code: string) =>
       verifyCodeAndRetrieveUserId({
         email: precreatedEmailPassword?.email,
-        verificationCode: code,
+        verification_code: code,
       }),
     {
       onSuccess: (data) => {

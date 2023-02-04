@@ -35,9 +35,26 @@ export const getActivities = async ({
   return promise;
 };
 
-export const getActivity = <T>({ id }: { id?: string }) => {
+export const getActivity = <T>({
+  id,
+  text,
+  tag,
+}: {
+  id?: string;
+  text?: string;
+  tag?: string[];
+}) => {
   const promise = axios.get<T>(
-    `${DEFAULT_DEV_URL}/activities${id ? `/${id}` : ""}`
+    `${DEFAULT_DEV_URL}/activities${id ? `/${id}` : ""}`,
+    {
+      params: {
+        text,
+        tag,
+      },
+      paramsSerializer: (params) => {
+        return qs.stringify(params, { arrayFormat: "repeat" });
+      },
+    }
     // {
 
     //   params: searchParams,

@@ -11,6 +11,8 @@ interface ILayoutProps {
   children?: React.ReactNode;
 }
 
+const NOT_EXACT_UNALLOWED_URLS = ["/request", "/map/"];
+
 export const Layout: React.FC<ILayoutProps> = ({ children }) => {
   const { stateToken } = React.useContext(AuthenticationContext);
   const location = useLocation();
@@ -22,12 +24,15 @@ export const Layout: React.FC<ILayoutProps> = ({ children }) => {
       [
         ApplicationLocations.SETTINGS,
         ApplicationLocations.EDIT_PROFILE,
-        ApplicationLocations.SEARCH,
+        // ApplicationLocations.SEARCH,
+        ApplicationLocations.MAP,
         //ApplicationLocations.NOTIFICATIONS,
         // `${ApplicationLocations.PROFILE}/request`,
         // `${ApplicationLocations.ACTIVITIES}/request`,
       ].includes(location?.pathname as ApplicationLocations) ||
-      location?.pathname.includes("/request")
+      NOT_EXACT_UNALLOWED_URLS?.some((item) =>
+        location?.pathname.includes(item)
+      )
     ) {
       setDisplayHeader(false);
     } else {

@@ -1,8 +1,8 @@
-import { ThemeProvider } from '@mui/material'
-import { createTheme } from '@mui/material/styles'
-import React from 'react'
+import { ThemeProvider } from "@mui/material";
+import { createTheme } from "@mui/material/styles";
+import React from "react";
 
-declare module '@mui/material/styles' {
+declare module "@mui/material/styles" {
   // If we would like to declare something on the theme
   // https://mui.com/material-ui/customization/palette/ down on the site
 
@@ -12,12 +12,12 @@ declare module '@mui/material/styles' {
   //   };
   // }
   interface Palette {
-    inactive: Palette['primary']
-    inactiveFont: Palette['primary']
+    inactive: Palette["primary"];
+    inactiveFont: Palette["primary"];
   }
   interface PaletteOptions {
-    inactive: PaletteOptions['primary']
-    inactiveFont: PaletteOptions['primary']
+    inactive: PaletteOptions["primary"];
+    inactiveFont: PaletteOptions["primary"];
   }
 }
 
@@ -26,16 +26,16 @@ const theme = createTheme({
     // for dark mode
     //mode: 'dark',
     primary: {
-      main: '#4A148C',
+      main: "#4A148C",
     },
     secondary: {
-      main: '#ffa500',
+      main: "#ffa500",
     },
     inactive: {
-      main: '#B8B8B8',
+      main: "#B8B8B8",
     },
     inactiveFont: {
-      main: '#757575',
+      main: "#757575",
     },
   },
   components: {
@@ -54,8 +54,8 @@ const theme = createTheme({
           // height: 40,
           // width: '70%',
           borderRadius: 12,
-          textTransform: 'none',
-          fontSize: '20px',
+          textTransform: "none",
+          fontSize: "20px",
           // fontWeight: 'bold',
           margin: 2,
         },
@@ -65,23 +65,23 @@ const theme = createTheme({
       styleOverrides: {
         h1: {
           fontSize: 36,
-          fontWeight: 'bold',
+          fontWeight: "bold",
         },
         h2: {
           fontSize: 26,
-          fontWeight: 'bold',
+          fontWeight: "bold",
         },
         h3: {
           fontSize: 22,
-          fontWeight: 'bold',
+          fontWeight: "bold",
         },
         h4: {
           fontSize: 20,
-          fontWeight: 'bold',
+          fontWeight: "bold",
         },
         h5: {
           fontSize: 18,
-          fontWeight: 'bold',
+          fontWeight: "bold",
         },
         h6: {
           fontSize: 16,
@@ -90,21 +90,23 @@ const theme = createTheme({
           fontSize: 14,
           // fontWeight: 'bold',
         },
-        subtitle2: {
-          fontSize: 12,
+        // subtitle 2 should be used for state "no-data" texts
+        subtitle2: ({ theme }) => ({
+          fontSize: 16,
+          color: theme.palette.inactiveFont.main,
           // fontWeight: 'bold',
-        },
+        }),
       },
     },
   },
-})
+});
 
 interface ICustomizationProviderProps {
-  children: React.ReactElement
+  children: React.ReactElement;
 }
 
 export const CustomizationProvider: React.FC<ICustomizationProviderProps> = ({
   children,
 }) => {
-  return <ThemeProvider theme={theme}>{children}</ThemeProvider>
-}
+  return <ThemeProvider theme={theme}>{children}</ThemeProvider>;
+};
