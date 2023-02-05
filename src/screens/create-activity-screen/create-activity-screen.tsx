@@ -26,6 +26,7 @@ import ActivityCreatedScreen from "../static-screens/activity-created-screen";
 import { useNavigate } from "react-router-dom";
 import { ApplicationLocations } from "../../types/common/applications-locations.dto";
 import { AuthenticationContext } from "../../assets/theme/authentication-provider";
+import DotsMobileStepper from "../../components/stepper";
 
 interface FormValues {
   title?: string;
@@ -289,7 +290,7 @@ const CreateActivityScreen = () => {
         style={{
           display: "flex",
           alignItems: "flex-start",
-          justifyContent: getFormLayout(),
+          justifyContent: "flex-start",
           flexDirection: "column",
           height: "72vh",
           width: "100%",
@@ -299,6 +300,7 @@ const CreateActivityScreen = () => {
         }}
         onSubmit={handleSubmit(handleFormSubmit, handleFormError)}
       >
+        <DotsMobileStepper />
         {renderProperContent()}
       </form>
     </PageWrapper>

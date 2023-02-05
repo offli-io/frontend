@@ -21,9 +21,7 @@ export const NameForm: React.FC<INameFormProps> = ({
 
   return (
     <>
-      <Box
-        sx={{ display: "flex", width: "100%", alignItems: "flex-end", mt: -8 }}
-      >
+      <Box sx={{ display: "flex", width: "100%", alignItems: "flex-end" }}>
         <Box
           sx={{
             display: "flex",

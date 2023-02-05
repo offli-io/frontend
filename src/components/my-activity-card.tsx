@@ -26,7 +26,8 @@ const MyActivityCard: React.FC<IMyActivityCardProps> = ({
   return (
     <Card
       sx={{
-        width: "95%",
+        // width: "95%",
+        minWidth: 300,
         // height: 70,
         // marginTop: "2%",
         // marginBottom: "2%",
@@ -42,13 +43,14 @@ const MyActivityCard: React.FC<IMyActivityCardProps> = ({
         borderRadius: 1,
         px: 2,
         mb: 2,
+        mr: 2,
       }}
       onClick={() => onPress(activity)}
     >
       <Box
         sx={{
           height: "100%",
-          maxWidth: 250,
+          // maxWidth: 250,
           whiteSpace: "nowrap",
           overflow: "hidden",
         }}

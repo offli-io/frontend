@@ -1,11 +1,18 @@
 import * as React from "react";
-import { useTheme } from "@mui/material/styles";
+import { SxProps, useTheme } from "@mui/material/styles";
 import MobileStepper from "@mui/material/MobileStepper";
 import Button from "@mui/material/Button";
 import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
+import { Box } from "@mui/material";
 
-export default function DotsMobileStepper() {
+interface IDotsMobileStepperProps {
+  containerSx?: SxProps;
+}
+
+export default function DotsMobileStepper({
+  containerSx,
+}: IDotsMobileStepperProps) {
   const theme = useTheme();
   const [activeStep, setActiveStep] = React.useState(0);
 
@@ -23,7 +30,14 @@ export default function DotsMobileStepper() {
       steps={6}
       position="static"
       activeStep={activeStep}
-      //   sx={{ maxWidth: 400, flexGrow: 1 }}
+      sx={{
+        width: "100%",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        mb: 5,
+        ...containerSx,
+      }}
       nextButton={<></>}
       backButton={<></>}
     />
