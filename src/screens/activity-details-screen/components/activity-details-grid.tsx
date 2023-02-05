@@ -8,8 +8,11 @@ import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import RoomIcon from "@mui/icons-material/Room";
 import MonetizationOnIcon from "@mui/icons-material/MonetizationOn";
 import MoneyOffIcon from "@mui/icons-material/MoneyOff";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+
 import { IActivity } from "../../../types/activities/activity.dto";
+import { ApplicationLocations } from "../../../types/common/applications-locations.dto";
+import { ICustomizedLocationStateDto } from "../../../types/common/customized-location-state.dto";
 
 interface IProps {
   activity?: IActivity;
@@ -35,6 +38,17 @@ const StyledText = styled(Typography)(() => ({
 }));
 
 const ActivityDetailsGrid: React.FC<IProps> = ({ activity }) => {
+  const navigate = useNavigate();
+  // const from = (location?.state as ICustomizedLocationStateDto)?.from;
+
+  const handleShowOnMap = () => {
+    navigate(`${ApplicationLocations.MAP}/${activity?.id}`, {
+      state: {
+        from: `${ApplicationLocations.ACTIVITY_ID}/${activity?.id}`,
+      },
+    });
+  };
+
   return (
     <Box
       sx={{
@@ -51,7 +65,10 @@ const ActivityDetailsGrid: React.FC<IProps> = ({ activity }) => {
         <IconButton color="primary">
           <PeopleAltIcon sx={{ fontSize: 30 }} />
         </IconButton>
-        <Link to={""} style={{ textDecoration: "none" }}>
+        <Link
+          to={`${ApplicationLocations.ACTIVITY_ID}/${activity?.id}/members`}
+          style={{ textDecoration: "none" }}
+        >
           <Typography align="center" variant="subtitle2">
             show participants
           </Typography>
@@ -79,11 +96,15 @@ const ActivityDetailsGrid: React.FC<IProps> = ({ activity }) => {
         <IconButton color="primary">
           <RoomIcon sx={{ fontSize: 30 }} />
         </IconButton>
-        <Link to={""} style={{ textDecoration: "none" }}>
-          <Typography align="center" variant="subtitle2">
-            show on map
-          </Typography>
-        </Link>
+        {/* <Typography variant="h6" onClick={handleShowOnMap}> */}
+        <Typography
+          align="center"
+          variant="subtitle2"
+          onClick={handleShowOnMap}
+        >
+          show on map
+        </Typography>
+        {/* </Typography> */}
         <StyledText align="center" variant="subtitle1">
           {/* Miletičova 17, Bratislava */}
           {activity?.location?.name}
