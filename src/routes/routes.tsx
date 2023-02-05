@@ -21,7 +21,7 @@ import VerificationScreen from "../screens/verification-screen";
 import WelcomeScreen from "../screens/welcome-screen";
 import { ApplicationLocations } from "../types/common/applications-locations.dto";
 import { getAuthToken } from "../utils/token.util";
-import ActivityDetailsScreen from "../screens/activity-details-screen";
+import ActivityDetailsScreen from "../screens/activity-details-screen/activity-details-screen";
 import NotificationsScreen from "../screens/notifications-screen/notifications-screen";
 
 import { ActivityMembersScreen } from "../screens/activity-members-screen/activity-members-screen";
