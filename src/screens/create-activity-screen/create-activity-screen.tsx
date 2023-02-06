@@ -285,25 +285,28 @@ const CreateActivityScreen = () => {
   }, []);
 
   return (
-    <PageWrapper sxOverrides={{ alignItems: "center", px: 3 }}>
-      <form
-        style={{
-          display: "flex",
-          alignItems: "flex-start",
-          justifyContent: "flex-start",
-          flexDirection: "column",
-          height: "72vh",
-          width: "100%",
-          //TODO in the future maybe include navigation height in the PageWrapper component for now pb: 12 is enough
-          // paddingBottom: theme.spacing(20),
-          marginTop: theme.spacing(2),
-        }}
-        onSubmit={handleSubmit(handleFormSubmit, handleFormError)}
-      >
-        <DotsMobileStepper />
-        {renderProperContent()}
-      </form>
-    </PageWrapper>
+    <>
+      {activeStep <= 5 && (
+        <DotsMobileStepper activeStep={activeStep} containerSx={{ p: 0 }} />
+      )}
+      <PageWrapper sxOverrides={{ alignItems: "center", px: 3 }}>
+        <form
+          style={{
+            display: "flex",
+            alignItems: "flex-start",
+            justifyContent: getFormLayout(),
+            flexDirection: "column",
+            height: "72vh",
+            width: "100%",
+            //TODO in the future maybe include navigation height in the PageWrapper component for now pb: 12 is enough
+            // paddingBottom: theme.spacing(20),
+          }}
+          onSubmit={handleSubmit(handleFormSubmit, handleFormError)}
+        >
+          {renderProperContent()}
+        </form>
+      </PageWrapper>
+    </>
   );
 };
 

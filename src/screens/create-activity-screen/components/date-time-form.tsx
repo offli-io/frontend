@@ -229,12 +229,13 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
       }}
     >
       <Box sx={{ display: "flex", flexDirection: "column", width: "100%" }}>
-        <Box sx={{ display: "flex", mb: 1 }}>
-          <Typography variant="h4">Select</Typography>
-          <Typography variant="h4" sx={{ ml: 1, color: "primary.main" }}>
-            date
+        <Box sx={{ display: "flex", mb: 1, justifyContent: "center" }}>
+          <Typography variant="h2" sx={{ mr: 1, color: "primary.main" }}>
+            Select
           </Typography>
+          <Typography variant="h2">date and time</Typography>
         </Box>
+        <Typography sx={{ mt: 1, fontWeight: "bold" }}>Start date</Typography>
         <MobileCarousel
           items={date.fromOptions}
           onItemSelect={(item) => handleItemSelect("from", item)}
@@ -250,7 +251,7 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
               }}
             />
           }
-          label="End date same as start"
+          label="End date is same as start date"
         />
 
         {!sameEndDate && (
@@ -261,14 +262,7 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
           />
         )}
 
-        <Box sx={{ display: "flex", mt: 2, mb: 3 }}>
-          <Typography variant="h4" sx={{ ml: 1 }}>
-            ... and
-          </Typography>
-          <Typography variant="h4" sx={{ ml: 1, color: "primary.main" }}>
-            time
-          </Typography>
-        </Box>
+        <Typography sx={{ my: 2, fontWeight: "bold" }}>Start time</Typography>
 
         <Box
           sx={{

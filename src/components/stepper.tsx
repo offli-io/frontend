@@ -8,25 +8,18 @@ import { Box } from "@mui/material";
 
 interface IDotsMobileStepperProps {
   containerSx?: SxProps;
+  activeStep: number;
 }
 
 export default function DotsMobileStepper({
   containerSx,
+  activeStep,
 }: IDotsMobileStepperProps) {
   const theme = useTheme();
-  const [activeStep, setActiveStep] = React.useState(0);
-
-  const handleNext = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep + 1);
-  };
-
-  const handleBack = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep - 1);
-  };
 
   return (
     <MobileStepper
-      variant="dots"
+      wvariant="text"
       steps={6}
       position="static"
       activeStep={activeStep}
@@ -35,7 +28,10 @@ export default function DotsMobileStepper({
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        mb: 5,
+        height: 8,
+        "& span": {
+          width: "100%",
+        },
         ...containerSx,
       }}
       nextButton={<></>}

@@ -68,8 +68,9 @@ const theme = createTheme({
           fontWeight: "bold",
         },
         h2: {
-          fontSize: 26,
+          fontSize: 24,
           fontWeight: "bold",
+          fontFamily: "nunito",
         },
         h3: {
           fontSize: 22,
