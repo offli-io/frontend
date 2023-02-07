@@ -70,13 +70,16 @@ export const ActivityPhotoForm: React.FC<IActivityPhotoFormProps> = ({
           sx={{
             display: "flex",
             flexDirection: "column",
-            width: "50%",
+            alignItems: "center",
+            width: "100%",
           }}
         >
-          <Typography variant="h4" sx={{ color: "primary.main" }}>
-            Add
-          </Typography>
-          <Typography variant="h4">activity photo</Typography>
+          <Box sx={{ display: "flex" }}>
+            <Typography variant="h2" sx={{ color: "primary.main", mr: 1 }}>
+              Add
+            </Typography>
+            <Typography variant="h2">activity photo</Typography>
+          </Box>
           <Typography
             variant="subtitle2"
             sx={{ color: (theme) => theme.palette.inactiveFont.main, mt: 0.5 }}

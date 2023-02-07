@@ -245,20 +245,21 @@ const ActivitiesScreen = () => {
               </Box>
               <Box
                 sx={{
-                  // height: "100vh",
-                  width: "100vw",
                   display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  justifyContent: "flex-start",
+                  overflowX: "scroll",
+                  width: "100%",
+                  "::-webkit-scrollbar": { display: "none" },
                 }}
               >
-                {myActivities?.slice(0, 2)?.map((activity) => {
+                {myActivities?.map((activity) => {
                   return (
                     <MyActivityCard
                       key={activity?.id}
                       activity={activity}
                       onPress={openActivityActions}
+                      sx={{
+                        minWidth: myActivities?.length <= 1 ? "100%" : "80%",
+                      }}
                     />
                   );
                 })}

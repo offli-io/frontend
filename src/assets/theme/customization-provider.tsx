@@ -38,6 +38,9 @@ const theme = createTheme({
       main: "#757575",
     },
   },
+  typography: {
+    fontFamily: "Karla",
+  },
   components: {
     MuiOutlinedInput: {
       styleOverrides: {
@@ -63,21 +66,28 @@ const theme = createTheme({
     },
     MuiTypography: {
       styleOverrides: {
+        root: {
+          fontFamily: "Karla",
+        },
         h1: {
-          fontSize: 36,
+          fontSize: 32,
           fontWeight: "bold",
+          fontFamily: "nunito",
         },
         h2: {
-          fontSize: 26,
+          fontSize: 24,
           fontWeight: "bold",
+          fontFamily: "nunito",
         },
         h3: {
-          fontSize: 22,
+          fontSize: 20,
           fontWeight: "bold",
+          fontFamily: "nunito",
         },
         h4: {
           fontSize: 20,
-          fontWeight: "bold",
+          fontWeight: "600",
+          fontFamily: "nunito",
         },
         h5: {
           fontSize: 18,

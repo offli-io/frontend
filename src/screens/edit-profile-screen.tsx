@@ -26,6 +26,7 @@ import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { Dayjs } from "dayjs";
 import moment from "moment";
+import { useUsers } from "../hooks/use-users";
 
 interface IEditProfile {
   name: string;
@@ -52,10 +53,12 @@ const EditProfileScreen: React.FC = () => {
   const { userInfo } = React.useContext(AuthenticationContext);
   const queryClient = useQueryClient();
 
-  const data = queryClient.getQueryData<{ data: IPersonExtended }>([
-    "user-info",
-    userInfo?.username,
-  ]);
+  // const data = queryClient.getQueryData<{ data: IPersonExtended }>([
+  //   "user-info",
+  //   userInfo?.username,
+  // ]);
+
+  const { data: { data = {} } = {} } = useUsers({ id: userInfo?.id });
 
   const navigate = useNavigate();
 
@@ -74,11 +77,14 @@ const EditProfileScreen: React.FC = () => {
 
   useEffect(() => {
     // alebo setValue ak bude resetu kurovat
+
     reset({
-      name: data?.data?.name,
+      name: data?.name,
       // aboutMe: data?.data?.name, // TODO: doplnit udaje na BE a pripojit FE
-      aboutMe: "Type something about you",
-      location: "Neporadza",
+      aboutMe: data?.about_me ?? "",
+      location: data?.location ?? "",
+      // fix this mby later
+      birthDate: (data?.birthdate as Date) ?? null,
       // birthDate: '',
       instagramUsername: "staryjanotvojtatko",
     });
@@ -114,7 +120,7 @@ const EditProfileScreen: React.FC = () => {
           <img
             onClick={() => console.log("asas")}
             // todo add default picture in case of missing photo
-            src={data?.data?.profile_photo_url}
+            src={data?.profile_photo_url}
             alt="profile"
             style={{
               height: "70px",
@@ -152,7 +158,6 @@ const EditProfileScreen: React.FC = () => {
                   control={control}
                   render={({ field, fieldState: { error } }) => (
                     <TextField
-                      autoFocus
                       {...field}
                       variant="standard"
                       error={!!error}
@@ -172,7 +177,6 @@ const EditProfileScreen: React.FC = () => {
                   control={control}
                   render={({ field, fieldState: { error } }) => (
                     <TextField
-                      autoFocus
                       {...field}
                       multiline
                       maxRows={4}
@@ -194,7 +198,6 @@ const EditProfileScreen: React.FC = () => {
                   control={control}
                   render={({ field, fieldState: { error } }) => (
                     <TextField
-                      autoFocus
                       {...field}
                       variant="standard"
                       error={!!error}
@@ -261,7 +264,6 @@ const EditProfileScreen: React.FC = () => {
                   control={control}
                   render={({ field, fieldState: { error } }) => (
                     <TextField
-                      autoFocus
                       {...field}
                       variant="standard"
                       error={!!error}
