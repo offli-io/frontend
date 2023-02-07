@@ -251,12 +251,15 @@ const ActivitiesScreen = () => {
                   "::-webkit-scrollbar": { display: "none" },
                 }}
               >
-                {myActivities?.slice(0, 2)?.map((activity) => {
+                {myActivities?.map((activity) => {
                   return (
                     <MyActivityCard
                       key={activity?.id}
                       activity={activity}
                       onPress={openActivityActions}
+                      sx={{
+                        minWidth: myActivities?.length <= 1 ? "100%" : "80%",
+                      }}
                     />
                   );
                 })}

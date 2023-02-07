@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Card, Typography } from "@mui/material";
+import { Box, Card, SxProps, Typography } from "@mui/material";
 import { IActivity } from "../types/activities/activity.dto";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import LockIcon from "@mui/icons-material/Lock";
@@ -14,11 +14,13 @@ interface IMyActivityCardProps {
   activity?: IActivity;
   // onLongPress: (activityId: string) => void;
   onPress: (activity?: IActivity) => void;
+  sx?: SxProps;
 }
 
 const MyActivityCard: React.FC<IMyActivityCardProps> = ({
   activity,
   onPress,
+  sx,
 }) => {
   //TODO maybe in later use also need some refactoring
   const { action, handlers } = useLongPress();
@@ -44,6 +46,7 @@ const MyActivityCard: React.FC<IMyActivityCardProps> = ({
         px: 2,
         mb: 2,
         mr: 2,
+        ...sx,
       }}
       onClick={() => onPress(activity)}
     >
