@@ -19,7 +19,7 @@ export default function DotsMobileStepper({
 
   return (
     <MobileStepper
-      wvariant="text"
+      variant="progress"
       steps={6}
       position="static"
       activeStep={activeStep}
