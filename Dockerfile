@@ -9,6 +9,12 @@ COPY . .
 # ==== BUILD =====
 # Install dependencies (npm ci makes sure the exact versions in the lockfile gets installed)
 RUN npm ci 
+
+
+ARG REACT_APP_API_URL
+
+ENV REACT_APP_API_URL $REACT_APP_API_URL
+
 # Build the app
 RUN npm run build
 # ==== RUN =======
