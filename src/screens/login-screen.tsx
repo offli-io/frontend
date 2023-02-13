@@ -124,6 +124,7 @@ const LoginScreen: React.FC = () => {
         <LabeledDivider sx={{ my: 1 }}>
           <Typography variant="subtitle1">or</Typography>
         </LabeledDivider>
+        <Typography>{process.env.REACT_APP_BASE_URL}</Typography>
         <Controller
           name="username"
           control={control}
