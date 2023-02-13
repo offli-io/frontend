@@ -13,7 +13,7 @@ RUN npm ci
 
 #ARG REACT_APP_API_URL=http://localhost:adamko
 
-ENV REACT_APP_API_URL=http://localhost:adamko
+ENV REACT_APP_API_URL=http://localhost:5000
 
 # Build the app
 RUN npm run build
