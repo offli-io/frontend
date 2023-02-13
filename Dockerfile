@@ -11,9 +11,9 @@ COPY . .
 RUN npm ci 
 
 
-ARG REACT_APP_API_URL
+#ARG REACT_APP_API_URL=http://localhost:adamko
 
-ENV REACT_APP_API_URL $REACT_APP_API_URL
+ENV REACT_APP_API_URL=http://localhost:adamko
 
 # Build the app
 RUN npm run build
