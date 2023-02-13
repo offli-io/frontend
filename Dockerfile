@@ -11,14 +11,18 @@ COPY . .
 RUN npm ci 
 
 
-#ARG REACT_APP_API_URL=http://localhost:adamko
+ARG REACT_APP_API_URL
 
-ENV REACT_APP_API_URL=http://localhost:5000
+RUN echo $REACT_APP_API_URL
+
+ENV REACT_APP_API_URL=$REACT_APP_API_URL
+
+#ENV REACT_APP_API_URL=http://localhost:5000
 
 # Build the app
 RUN npm run build
 # ==== RUN =======
-# Set the env to "production"
+# Set the env to "production"   
 ENV NODE_ENV production
 # Expose the port on which the app will be running (3000 is the default that `serve` uses)
 EXPOSE 3000
