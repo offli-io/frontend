@@ -6,16 +6,15 @@ import {
   InputAdornment,
   IconButton,
 } from "@mui/material";
-// import BackButton from "../components/back-button";
 import { Controller, useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import OffliButton from "../../../components/offli-button";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import VisibilityIcon from "@mui/icons-material/Visibility";
-// import ErrorIcon from '@mui/icons-material/Error'
-import { ApplicationLocations } from "../../../types/common/applications-locations.dto";
-import BackButton from "../../../components/back-button";
+import { confirmResetPassword } from "../../../api/auth/requests";
+import { useMutation } from "@tanstack/react-query";
+import { useSnackbar } from "notistack";
 
 export interface FormValues {
   password: string;
@@ -24,6 +23,8 @@ export interface FormValues {
 
 interface INewPasswordFormProps {
   onSuccess: () => void;
+  email: string;
+  verificationCode: string;
 }
 
 const schema: () => yup.SchemaOf<FormValues> = () =>
@@ -47,8 +48,14 @@ const schema: () => yup.SchemaOf<FormValues> = () =>
       .oneOf([yup.ref("password"), null], "Passwords must match"),
   });
 
-const NewPasswordForm: React.FC<INewPasswordFormProps> = ({ onSuccess }) => {
+const NewPasswordForm: React.FC<INewPasswordFormProps> = ({
+  onSuccess,
+  email,
+  verificationCode,
+}) => {
   const [showPassword, setShowPassword] = React.useState(false);
+
+  const { enqueueSnackbar } = useSnackbar();
 
   const handleClickShowPassword = () => setShowPassword(!showPassword);
 
@@ -60,9 +67,31 @@ const NewPasswordForm: React.FC<INewPasswordFormProps> = ({ onSuccess }) => {
     mode: "onChange",
   });
 
+  const { isLoading, mutate: sendConfirmResetPassword } = useMutation(
+    ["confirm-reset-password"],
+    (values: FormValues) => {
+      return confirmResetPassword({
+        password: values?.password,
+        verification_code: verificationCode,
+        email,
+      });
+    },
+    {
+      onSuccess: (data, code) => {
+        enqueueSnackbar("Your password was successfully reset");
+        onSuccess();
+      },
+      onError: (error) => {
+        enqueueSnackbar("Failed to reset your password", {
+          variant: "error",
+        });
+      },
+    }
+  );
+
   const handleFormSubmit = React.useCallback(
-    (values: FormValues) => console.log(values),
-    []
+    (values: FormValues) => sendConfirmResetPassword(values),
+    [sendConfirmResetPassword]
   );
 
   return (
@@ -146,10 +175,9 @@ const NewPasswordForm: React.FC<INewPasswordFormProps> = ({ onSuccess }) => {
       />
 
       <OffliButton
-        variant="contained"
         type="submit"
         sx={{ width: "60%", alignSelf: "end" }}
-        onClick={() => onSuccess()}
+        isLoading={isLoading}
       >
         Reset password
       </OffliButton>

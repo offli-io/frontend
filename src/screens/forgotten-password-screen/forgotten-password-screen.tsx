@@ -32,9 +32,10 @@ const schema: () => yup.SchemaOf<FormValues> = () =>
 const ForgottenPasswordScreen = () => {
   const [showPassword, setShowPassword] = React.useState(false);
   const [email, setEmail] = React.useState("");
+  const [verificationCode, setVerificationCode] = React.useState("");
   const navigate = useNavigate();
   const handleClickShowPassword = () => setShowPassword(!showPassword);
-  const [activeStep, setActiveStep] = React.useState(0);
+  const [activeStep, setActiveStep] = React.useState(2);
 
   const { control, handleSubmit } = useForm<FormValues>({
     defaultValues: {
@@ -50,6 +51,9 @@ const ForgottenPasswordScreen = () => {
   );
 
   const generateBackButtonLabel = React.useCallback(() => {
+    if (activeStep === 0) {
+      return "Login";
+    }
     if (activeStep === 1) {
       return "Email";
     }
@@ -58,6 +62,13 @@ const ForgottenPasswordScreen = () => {
     }
     return "";
   }, [activeStep]);
+
+  const handleBackClicked = React.useCallback(() => {
+    if (activeStep === 0) {
+      return navigate(ApplicationLocations.LOGIN);
+    }
+    setActiveStep((activeStep) => activeStep - 1);
+  }, [activeStep, setActiveStep, navigate]);
 
   return (
     <Box
@@ -69,17 +80,16 @@ const ForgottenPasswordScreen = () => {
         alignItems: "center",
         justifyContent: "center",
         px: 4,
+        // move little bit upper to have space for mobile keyboard
+        pb: 10,
         boxSizing: "border-box",
       }}
     >
-      {activeStep !== 0 && (
-        <BackButton
-          href={ApplicationLocations.VERIFY}
-          sxOverrides={{ top: 20, left: 10 }}
-          text={generateBackButtonLabel()}
-          onClick={() => setActiveStep((activeStep) => activeStep - 1)}
-        />
-      )}
+      <BackButton
+        sxOverrides={{ top: 20, left: 10 }}
+        text={generateBackButtonLabel()}
+        onClick={handleBackClicked}
+      />
 
       {activeStep === 0 && (
         <ResetPasswordForm
@@ -92,18 +102,17 @@ const ForgottenPasswordScreen = () => {
       {activeStep === 1 && (
         <VerificationCodeForm
           email={email}
-          onSuccess={() => {
-            setEmail(email);
+          onSuccess={(code) => {
+            setVerificationCode(code);
             setActiveStep((activeStep) => activeStep + 1);
           }}
         />
       )}
       {activeStep === 2 && (
         <NewPasswordForm
-          onSuccess={() => {
-            // setEmail(email);
-            navigate(ApplicationLocations.LOGIN);
-          }}
+          email={email}
+          verificationCode={verificationCode}
+          onSuccess={() => navigate(ApplicationLocations.LOGIN)}
         />
       )}
     </Box>

@@ -7,6 +7,9 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import OffliButton from "../components/offli-button";
 // import ErrorIcon from '@mui/icons-material/Error'
 import { ApplicationLocations } from "../types/common/applications-locations.dto";
+import { useMutation } from "@tanstack/react-query";
+import { loginUser, resetPassword } from "../api/auth/requests";
+import { useSnackbar } from "notistack";
 
 export interface FormValues {
   email: string;
@@ -25,6 +28,31 @@ const ResetPasswordScreen = () => {
     resolver: yupResolver(schema()),
     mode: "onChange",
   });
+
+  const { enqueueSnackbar } = useSnackbar();
+
+  const { isLoading, mutate } = useMutation(
+    ["reset-password"],
+    (formValues: FormValues) => {
+      return resetPassword(formValues);
+    },
+    {
+      onSuccess: (data, params) => {
+        enqueueSnackbar("Verification code was sent to your email");
+        // setAuthToken(data?.data?.access_token)
+        // setRefreshToken(data?.data?.refresh_token)
+        // setStateToken(data?.data?.token?.access_token ?? null);
+        // !!setUserInfo && setUserInfo({ username: params?.username });
+        // localStorage.setItem("username", params?.username);
+        // navigate(ApplicationLocations.ACTIVITIES);
+      },
+      onError: (error) => {
+        enqueueSnackbar("Failed to send verification code to given email", {
+          variant: "error",
+        });
+      },
+    }
+  );
 
   const handleFormSubmit = React.useCallback(
     (values: FormValues) => console.log(values),
@@ -61,29 +89,18 @@ const ResetPasswordScreen = () => {
             <TextField
               autoFocus
               {...field}
-              //label="Username"
               placeholder="Email alebo mobil"
-              // variant="filled"
               error={!!error}
-              // helperText={
-              //   error?.message ||
-              //   t(`value.${nextStep?.authenticationType}.placeholder`)
-              // }
-              //disabled={methodSelectionDisabled}
               sx={{ mb: 4, width: "80%", flex: 3 }}
             />
           )}
         />
-        {/* <Box sx={{ display: 'flex', alignItems: 'center', mb: 3, ml: -15 }}>
-          <ErrorIcon sx={{ color: 'red', height: '18px' }} />
-          <Typography variant="subtitle2" sx={{ color: 'red' }}>
-            Username is taken!
-          </Typography>
-        </Box> */}
+
         <OffliButton
           variant="contained"
           type="submit"
           sx={{ width: "80%", mb: 5 }}
+          isLoading={isLoading}
         >
           Send verification code
         </OffliButton>
