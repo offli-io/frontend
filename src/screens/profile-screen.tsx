@@ -134,7 +134,26 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
               // mt: 0.2,
             }}
           >
-            <IconButton
+            <OffliButton
+              startIcon={<PeopleAltIcon sx={{ fontSize: 18, padding: 0 }} />}
+              onClick={() =>
+                navigate(ApplicationLocations.BUDDIES, {
+                  state: {
+                    from: ApplicationLocations.PROFILE,
+                  },
+                })
+              }
+              sx={{
+                bgcolor: (theme) => theme.palette.primary.light,
+                color: (theme) => theme.palette.primary.main,
+                py: 0.2,
+                mt: 1.5,
+                mb: 1,
+              }}
+            >
+              {String(data?.data?.buddies?.length) ?? "0"}
+            </OffliButton>
+            {/* <IconButton
               color="primary"
               sx={{ paddingRight: 0 }}
               onClick={() =>
@@ -153,7 +172,7 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
               sx={{ fontWeight: "bold", mt: 0.5, ml: 0.5 }}
             >
               {data?.data?.buddies?.length}
-            </Typography>
+            </Typography> */}
           </Box>
           <Box
             sx={{
