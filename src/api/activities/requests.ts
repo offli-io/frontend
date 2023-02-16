@@ -1,6 +1,5 @@
 import axios from "axios";
 import qs from "qs";
-import { QueryFunctionContext } from "react-query";
 import { DEFAULT_DEV_URL } from "../../assets/config";
 import {
   IActivity,
@@ -17,7 +16,7 @@ export const getActivities = async ({
   queryFunctionContext,
   searchParams,
 }: {
-  queryFunctionContext: QueryFunctionContext<any>;
+  queryFunctionContext: any;
   searchParams?: IActivitySearchParams | undefined;
 }) => {
   const CancelToken = axios.CancelToken;
