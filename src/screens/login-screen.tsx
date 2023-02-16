@@ -59,6 +59,10 @@ const LoginScreen: React.FC = () => {
     mode: "onChange",
   });
 
+  console.log(process.env.REACT_APP_BASE_URL);
+  console.log(process.env.REACT_APP_API_URL);
+  console.log(process.env.REACT_APP_JURO_URL);
+
   const { isLoading, mutate } = useMutation(
     ["login"],
     (formValues: FormValues) => {
@@ -125,6 +129,7 @@ const LoginScreen: React.FC = () => {
           <Typography variant="subtitle1">or</Typography>
         </LabeledDivider>
         <Typography>{process.env.REACT_APP_BASE_URL}</Typography>
+        <Typography>{process.env.REACT_APP_JURO_URL ?? "pica"}</Typography>
         <Controller
           name="username"
           control={control}
