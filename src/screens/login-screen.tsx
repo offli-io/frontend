@@ -52,6 +52,7 @@ const LoginScreen: React.FC = () => {
   const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
 
+  console.log(process.env.REACT_APP_API_URL);
   const handleClickShowPassword = () => setShowPassword(!showPassword);
 
   const { control, handleSubmit, watch } = useForm<FormValues>({
@@ -128,7 +129,7 @@ const LoginScreen: React.FC = () => {
         <LabeledDivider sx={{ my: 1 }}>
           <Typography variant="subtitle1">or</Typography>
         </LabeledDivider>
-        <Typography>{BASE_URL}</Typography>
+        <Typography>{process.env.REACT_APP_API_URL ?? "nevyplnena"}</Typography>
         <Controller
           name="username"
           control={control}
