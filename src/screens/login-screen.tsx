@@ -28,7 +28,6 @@ import { ApplicationLocations } from "../types/common/applications-locations.dto
 import { useNavigate } from "react-router-dom";
 import { DEFAULT_KEYCLOAK_URL } from "../assets/config";
 import { loginUser } from "../api/auth/requests";
-import Config from "../config.json";
 
 export interface FormValues {
   username: string;
@@ -46,6 +45,8 @@ const LoginScreen: React.FC = () => {
   const { setUserInfo, setStateToken } = React.useContext(
     AuthenticationContext
   );
+
+  const [config, setConfig] = React.useState<any>();
   const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
 
@@ -59,7 +60,13 @@ const LoginScreen: React.FC = () => {
     resolver: yupResolver(schema()),
     mode: "onChange",
   });
-  console.log("config.json" + Config?.BASE_URL);
+
+  React.useEffect(() => {
+    const configImported = import("../config.json").then((config) =>
+      setConfig(config)
+    );
+  }, []);
+  console.log(config);
 
   const { isLoading, mutate } = useMutation(
     ["login"],
@@ -126,7 +133,7 @@ const LoginScreen: React.FC = () => {
         <LabeledDivider sx={{ my: 1 }}>
           <Typography variant="subtitle1">or</Typography>
         </LabeledDivider>
-        <Typography>{Config?.BASE_URL}</Typography>
+        <Typography>{config?.BASE_URL}</Typography>
         <Controller
           name="username"
           control={control}

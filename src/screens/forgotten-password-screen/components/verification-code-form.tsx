@@ -4,6 +4,7 @@ import OffliButton from "../../../components/offli-button";
 import ReactInputVerificationCode from "react-input-verification-code";
 import { useMutation } from "@tanstack/react-query";
 import {
+  checkVerificationCode,
   resendCode,
   resetPassword,
   verifyEmail,
@@ -23,18 +24,18 @@ const VerificationCodeForm: React.FC<IVerificationCodeFormProps> = ({
     useMutation(
       ["reset-password"],
       (code: string) => {
-        return verifyEmail({
+        return checkVerificationCode({
           email,
           verification_code: code,
         });
       },
       {
         onSuccess: (data, code) => {
-          // enqueueSnackbar("Verification code was sent to your email");
           onSuccess(code);
         },
         onError: (error) => {
-          enqueueSnackbar("Failed to send verification code to given email", {
+          //TODO this not might be always the problem check request status
+          enqueueSnackbar("Verification code is incorrect", {
             variant: "error",
           });
         },
