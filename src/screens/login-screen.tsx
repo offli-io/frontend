@@ -46,6 +46,8 @@ const LoginScreen: React.FC = () => {
     AuthenticationContext
   );
 
+  let BASE_URL = (window as any)?.appConfig?.ANALYTICS_URL;
+
   const [config, setConfig] = React.useState<any>();
   const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
@@ -60,13 +62,6 @@ const LoginScreen: React.FC = () => {
     resolver: yupResolver(schema()),
     mode: "onChange",
   });
-
-  React.useEffect(() => {
-    const configImported = import("../config.json").then((config) =>
-      setConfig(config)
-    );
-  }, []);
-  console.log(config);
 
   const { isLoading, mutate } = useMutation(
     ["login"],
@@ -133,7 +128,7 @@ const LoginScreen: React.FC = () => {
         <LabeledDivider sx={{ my: 1 }}>
           <Typography variant="subtitle1">or</Typography>
         </LabeledDivider>
-        <Typography>{config?.BASE_URL}</Typography>
+        <Typography>{BASE_URL}</Typography>
         <Controller
           name="username"
           control={control}
