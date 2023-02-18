@@ -36,11 +36,11 @@ const queryClient = new QueryClient({
   },
 });
 
-declare module "react-query/types/react/QueryClientProvider" {
-  interface QueryClientProviderProps {
-    children?: ReactNode;
-  }
-}
+// declare module "react-query/types/react/QueryClientProvider" {
+//   interface QueryClientProviderProps {
+//     children?: ReactNode;
+//   }
+// }
 
 function App() {
   window.addEventListener("load", function () {
