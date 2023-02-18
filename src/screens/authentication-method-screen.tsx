@@ -1,35 +1,10 @@
 import React from "react";
-import {
-  Box,
-  TextField,
-  Typography,
-  InputAdornment,
-  IconButton,
-} from "@mui/material";
-import qs from "qs";
+import { Box, Typography } from "@mui/material";
 import Logo from "../components/logo";
 import authenticationMethod from "../assets/img/authentication-method.svg";
-
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { Controller, useForm } from "react-hook-form";
-import * as yup from "yup";
-import { yupResolver } from "@hookform/resolvers/yup";
 import OffliButton from "../components/offli-button";
-import LabeledDivider from "../components/labeled-divider";
-import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
-import VisibilityIcon from "@mui/icons-material/Visibility";
-import axios from "axios";
-import { useSnackbar } from "notistack";
-import {
-  getAuthToken,
-  setAuthToken,
-  setRefreshToken,
-} from "../utils/token.util";
-import { AuthenticationContext } from "../assets/theme/authentication-provider";
 import { ApplicationLocations } from "../types/common/applications-locations.dto";
 import { useNavigate } from "react-router-dom";
-import { DEFAULT_KEYCLOAK_URL } from "../assets/config";
-import { loginUser } from "../api/auth/requests";
 
 const AuthenticationMethodScreen: React.FC = () => {
   const [showPassword, setShowPassword] = React.useState(false);

@@ -26,6 +26,7 @@ import { deleteBuddy } from "../../api/users/requests";
 import { useMutation, useQueries, useQueryClient } from "@tanstack/react-query";
 import { useSnackbar } from "notistack";
 import { AuthenticationContext } from "../../assets/theme/authentication-provider";
+import NoBuddiesScreen from "./components/no-buddies-screen";
 
 const MyBuddiesScreen = () => {
   const navigate = useNavigate();
@@ -102,95 +103,107 @@ const MyBuddiesScreen = () => {
   return (
     <>
       <BackHeader title="Buddies" to={from} />
-      <Box sx={{ mx: 1.5 }}>
-        <Box
-          sx={{
-            width: "100%",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <TextField
-            autoFocus
-            sx={{
-              width: "100%",
-              display: "flex",
-              justifyContent: "center",
-              my: 1.5,
-              "& .MuiOutlinedInput-root": {
-                pr: 0,
-              },
-              "& input::placeholder": {
-                fontSize: 14,
-              },
-            }}
-            value={currentSearch}
-            placeholder="Search among your buddies"
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon sx={{ fontSize: "1.2rem" }} />
-                </InputAdornment>
-              ),
-            }}
-            onChange={(e) => setCurrentSearch(e.target.value)}
-          />
-
-          <IconButton
-            sx={{ fontSize: 14, ml: 1 }}
-            onClick={() => navigate(ApplicationLocations.ACTIVITIES)}
-          >
-            <PersonAddIcon color="primary" />
-          </IconButton>
-        </Box>
-        {(data?.data ?? [])?.length < 1 ? (
-          <Box
-            sx={{
-              height: 100,
-              width: "100%",
-              my: 3,
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              borderTop: "1px solid lightgrey",
-              borderBottom: "1px solid lightgrey",
-            }}
-          >
-            <Typography sx={{ color: (theme) => theme.palette.inactive.main }}>
-              No activity members
-            </Typography>
-          </Box>
+      <Box sx={{ mx: 1.5, height: "100%" }}>
+        {data?.data?.length === 0 && currentSearch?.length === 0 ? (
+          <NoBuddiesScreen />
         ) : (
-          <Box
-            sx={{
-              height: 300,
-              width: "100%",
-              overflowY: "auto",
-              overflowX: "hidden",
-              my: 3,
-              borderTop: "1px solid lightgrey",
-              borderBottom: "1px solid lightgrey",
-            }}
-          >
-            {isLoading ? (
-              <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
-                <CircularProgress color="primary" />
+          <>
+            <Box
+              sx={{
+                width: "100%",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <TextField
+                autoFocus
+                sx={{
+                  width: "100%",
+                  display: "flex",
+                  justifyContent: "center",
+                  my: 1.5,
+                  "& .MuiOutlinedInput-root": {
+                    pr: 0,
+                  },
+                  "& input::placeholder": {
+                    fontSize: 14,
+                  },
+                }}
+                value={currentSearch}
+                placeholder="Search among your buddies"
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <SearchIcon sx={{ fontSize: "1.2rem" }} />
+                    </InputAdornment>
+                  ),
+                }}
+                onChange={(e) => setCurrentSearch(e.target.value)}
+              />
+
+              <IconButton
+                sx={{ fontSize: 14, ml: 1 }}
+                onClick={() => navigate(ApplicationLocations.ACTIVITIES)}
+              >
+                <PersonAddIcon color="primary" />
+              </IconButton>
+            </Box>
+            {(data?.data ?? [])?.length < 1 ? (
+              <Box
+                sx={{
+                  height: 100,
+                  width: "100%",
+                  my: 3,
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  borderTop: "1px solid lightgrey",
+                  borderBottom: "1px solid lightgrey",
+                }}
+              >
+                <Typography
+                  sx={{ color: (theme) => theme.palette.inactive.main }}
+                >
+                  No activity members
+                </Typography>
               </Box>
             ) : (
-              data?.data.map((buddy) => (
-                <BuddyItem
-                  key={buddy?.id}
-                  buddy={buddy}
-                  actionContent={
-                    <IconButton onClick={() => handleBuddyActionsClick(buddy)}>
-                      <MoreHorizIcon />
-                    </IconButton>
-                  }
-                />
-              ))
+              <Box
+                sx={{
+                  height: 300,
+                  width: "100%",
+                  overflowY: "auto",
+                  overflowX: "hidden",
+                  my: 3,
+                  borderTop: "1px solid lightgrey",
+                  borderBottom: "1px solid lightgrey",
+                }}
+              >
+                {isLoading ? (
+                  <Box
+                    sx={{ display: "flex", justifyContent: "center", mt: 4 }}
+                  >
+                    <CircularProgress color="primary" />
+                  </Box>
+                ) : (
+                  data?.data.map((buddy) => (
+                    <BuddyItem
+                      key={buddy?.id}
+                      buddy={buddy}
+                      actionContent={
+                        <IconButton
+                          onClick={() => handleBuddyActionsClick(buddy)}
+                        >
+                          <MoreHorizIcon />
+                        </IconButton>
+                      }
+                    />
+                  ))
+                )}
+              </Box>
             )}
-          </Box>
+          </>
         )}
       </Box>
     </>

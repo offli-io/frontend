@@ -78,7 +78,9 @@ const NewPasswordForm: React.FC<INewPasswordFormProps> = ({
     },
     {
       onSuccess: (data, code) => {
-        enqueueSnackbar("Your password was successfully reset");
+        enqueueSnackbar("Your password was successfully reset", {
+          variant: "success",
+        });
         onSuccess();
       },
       onError: (error) => {
@@ -130,7 +132,6 @@ const NewPasswordForm: React.FC<INewPasswordFormProps> = ({
         control={control}
         render={({ field, fieldState: { error } }) => (
           <TextField
-            autoFocus
             {...field}
             type={showPassword ? "text" : "password"}
             label="New password"
@@ -154,7 +155,6 @@ const NewPasswordForm: React.FC<INewPasswordFormProps> = ({
         control={control}
         render={({ field, fieldState: { error } }) => (
           <TextField
-            autoFocus
             {...field}
             type={showPassword ? "text" : "password"}
             label="Repeat password"

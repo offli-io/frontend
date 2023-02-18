@@ -8,7 +8,7 @@ export const useNotifications = (userId?: string) => {
     ["notifications", userId],
     () => getNotifications(userId ?? ""),
     {
-      // enabled: !!userId,
+      enabled: !!userId,
       onError: () => {
         //some generic toast for every hook
         enqueueSnackbar("Failed to load notifications", { variant: "error" });

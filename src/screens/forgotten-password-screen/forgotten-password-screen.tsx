@@ -35,7 +35,7 @@ const ForgottenPasswordScreen = () => {
   const [verificationCode, setVerificationCode] = React.useState("");
   const navigate = useNavigate();
   const handleClickShowPassword = () => setShowPassword(!showPassword);
-  const [activeStep, setActiveStep] = React.useState(2);
+  const [activeStep, setActiveStep] = React.useState(0);
 
   const { control, handleSubmit } = useForm<FormValues>({
     defaultValues: {
