@@ -29,7 +29,7 @@ const SettingsScreen = () => {
     setAuthToken(undefined);
     queryClient.removeQueries();
     localStorage.removeItem("token");
-    localStorage.removeItem("username");
+    localStorage.removeItem("userId");
     navigate(ApplicationLocations.LOGIN);
   }, [setStateToken]);
 

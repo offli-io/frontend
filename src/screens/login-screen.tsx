@@ -90,9 +90,11 @@ const LoginScreen: React.FC = () => {
         console.log(data?.data);
         // setAuthToken(data?.data?.access_token)
         // setRefreshToken(data?.data?.refresh_token)
+        //TODO refresh user Id after refresh
         setStateToken(data?.data?.token?.access_token ?? null);
-        !!setUserInfo && setUserInfo({ username: params?.username });
-        localStorage.setItem("username", params?.username);
+        !!setUserInfo &&
+          setUserInfo({ username: params?.username, id: data?.data?.user_id });
+        localStorage.setItem("userId", data?.data?.user_id);
         navigate(ApplicationLocations.ACTIVITIES);
       },
       onError: (error) => {

@@ -12,7 +12,7 @@ import {
   useTheme,
 } from "@mui/material";
 import { PageWrapper } from "../components/page-wrapper";
-import { useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import BackHeader from "../components/back-header";
 import { IPersonExtended } from "../types/activities/activity.dto";
 import { ApplicationLocations } from "../types/common/applications-locations.dto";
@@ -27,22 +27,24 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { Dayjs } from "dayjs";
 import moment from "moment";
 import { useUsers } from "../hooks/use-users";
+import { updateProfileInfo } from "../api/users/requests";
+import { useSnackbar } from "notistack";
 
 interface IEditProfile {
   name: string;
-  aboutMe: string;
+  about_me: string;
   location: string;
-  birthDate: Date | null;
-  instagramUsername: string;
+  birthdate: Date | null;
+  instagram: string;
 }
 
 const schema: () => yup.SchemaOf<IEditProfile> = () =>
   yup.object({
     name: yup.string().defined().required("Please enter your name"),
-    aboutMe: yup.string().defined().required("Please enter your aboutMe"),
+    about_me: yup.string().defined().required("Please enter your aboutMe"),
     location: yup.string().defined().required("Please enter your location"),
-    birthDate: yup.date().nullable().required("Please enter your birthDate"),
-    instagramUsername: yup
+    birthdate: yup.date().nullable().required("Please enter your birthDate"),
+    instagram: yup
       .string()
       .defined()
       .required("Please enter your instagramUsername"),
@@ -52,11 +54,37 @@ const EditProfileScreen: React.FC = () => {
   const theme = useTheme();
   const { userInfo } = React.useContext(AuthenticationContext);
   const queryClient = useQueryClient();
+  const { enqueueSnackbar } = useSnackbar();
 
   // const data = queryClient.getQueryData<{ data: IPersonExtended }>([
   //   "user-info",
   //   userInfo?.username,
   // ]);
+
+  const { mutate: sendUpdateProfile } = useMutation(
+    ["update-profile-info"],
+    (values: IEditProfile) => updateProfileInfo(userInfo?.id, values),
+    {
+      onSuccess: (data, variables) => {
+        //TODO what to invalidate, and where to navigate after success
+        // queryClient.invalidateQueries(['notifications'])
+        // navigateBasedOnType(
+        //   variables?.type,
+        //   variables?.properties?.user?.id ?? variables?.properties?.activity?.id
+        // )
+        queryClient.invalidateQueries(["users"]);
+        enqueueSnackbar("Your personal information was successfully updated", {
+          variant: "success",
+        });
+        navigate(ApplicationLocations.PROFILE);
+      },
+      onError: () => {
+        enqueueSnackbar("Failed to update your personal info", {
+          variant: "error",
+        });
+      },
+    }
+  );
 
   const { data: { data = {} } = {} } = useUsers({ id: userInfo?.id });
 
@@ -66,10 +94,10 @@ const EditProfileScreen: React.FC = () => {
     useForm<IEditProfile>({
       defaultValues: {
         name: "",
-        aboutMe: "",
+        about_me: "",
         location: "",
-        birthDate: null,
-        instagramUsername: "",
+        birthdate: null,
+        instagram: "",
       },
       resolver: yupResolver(schema()),
       mode: "onChange",
@@ -81,12 +109,12 @@ const EditProfileScreen: React.FC = () => {
     reset({
       name: data?.name,
       // aboutMe: data?.data?.name, // TODO: doplnit udaje na BE a pripojit FE
-      aboutMe: data?.about_me ?? "",
+      about_me: data?.about_me ?? "",
       location: data?.location ?? "",
       // fix this mby later
-      birthDate: (data?.birthdate as Date) ?? null,
+      birthdate: (data?.birthdate as Date) ?? null,
       // birthDate: '',
-      instagramUsername: "staryjanotvojtatko",
+      instagram: "staryjanotvojtatko",
     });
   }, [data]);
 
@@ -96,7 +124,7 @@ const EditProfileScreen: React.FC = () => {
     //OnSuccess
     // queryClient.invalidateQueries(['user-info'])
     // navigate(ApplicationLocations.PROFILE)
-    console.log(values?.birthDate?.toISOString());
+    sendUpdateProfile(values);
   }, []);
 
   return (
@@ -141,7 +169,9 @@ const EditProfileScreen: React.FC = () => {
               alignItems: "center",
               width: "100%",
             }}
-            onSubmit={handleSubmit(handleFormSubmit)}
+            onSubmit={handleSubmit(handleFormSubmit, (data, e) =>
+              console.log(data, e)
+            )}
           >
             <Grid
               container
@@ -173,7 +203,7 @@ const EditProfileScreen: React.FC = () => {
               </Grid>
               <Grid item xs={7} sx={{ mt: 1 }}>
                 <Controller
-                  name="aboutMe"
+                  name="about_me"
                   control={control}
                   render={({ field, fieldState: { error } }) => (
                     <TextField
@@ -214,7 +244,7 @@ const EditProfileScreen: React.FC = () => {
               <Grid item xs={7}>
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <Controller
-                    name="birthDate"
+                    name="birthdate"
                     control={control}
                     render={({
                       field: { onChange, value },
@@ -260,7 +290,7 @@ const EditProfileScreen: React.FC = () => {
               </Grid>
               <Grid item xs={7} sx={{ mt: 1 }}>
                 <Controller
-                  name="instagramUsername"
+                  name="instagram"
                   control={control}
                   render={({ field, fieldState: { error } }) => (
                     <TextField
