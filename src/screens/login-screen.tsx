@@ -7,6 +7,8 @@ import {
   IconButton,
 } from "@mui/material";
 import qs from "qs";
+import GoogleIcon from "@mui/icons-material/Google";
+
 import Logo from "../components/logo";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Controller, useForm } from "react-hook-form";
@@ -20,6 +22,7 @@ import axios from "axios";
 import { useSnackbar } from "notistack";
 import {
   getAuthToken,
+  getGoogleUrl,
   setAuthToken,
   setRefreshToken,
 } from "../utils/token.util";
@@ -27,7 +30,7 @@ import { AuthenticationContext } from "../assets/theme/authentication-provider";
 import { ApplicationLocations } from "../types/common/applications-locations.dto";
 import { useNavigate } from "react-router-dom";
 import { DEFAULT_KEYCLOAK_URL } from "../assets/config";
-import { loginUser } from "../api/auth/requests";
+import { loginUser, loginViaGoogle } from "../api/auth/requests";
 
 export interface FormValues {
   username: string;
@@ -50,6 +53,11 @@ const LoginScreen: React.FC = () => {
   const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
 
+<<<<<<< Updated upstream
+=======
+  const queryParameters = new URLSearchParams(window.location.search);
+  const authorizationCode = queryParameters.get("code");
+>>>>>>> Stashed changes
   const handleClickShowPassword = () => setShowPassword(!showPassword);
 
   const { control, handleSubmit, watch } = useForm<FormValues>({
@@ -61,12 +69,30 @@ const LoginScreen: React.FC = () => {
     mode: "onChange",
   });
 
+<<<<<<< Updated upstream
   React.useEffect(() => {
     const configImported = import("../config.json").then((config) =>
       setConfig(config)
     );
   }, []);
   console.log(config);
+=======
+  const { isLoading: isGoogleLoginLoading, mutate: sendLoginViaGoogle } =
+    useMutation(
+      ["google-login"],
+      (authorizationCode?: string) => loginViaGoogle({ authorizationCode }),
+      {
+        onSuccess: (data, params) => {
+          console.log("login success");
+        },
+        onError: (error) => {
+          enqueueSnackbar("Registration with google failed", {
+            variant: "error",
+          });
+        },
+      }
+    );
+>>>>>>> Stashed changes
 
   const { isLoading, mutate } = useMutation(
     ["login"],
@@ -108,6 +134,12 @@ const LoginScreen: React.FC = () => {
     [mutate]
   );
 
+  React.useEffect(() => {
+    if (authorizationCode) {
+      sendLoginViaGoogle(authorizationCode);
+    }
+  }, [authorizationCode]);
+
   return (
     <form
       onSubmit={handleSubmit(handleFormSubmit)}
@@ -129,8 +161,15 @@ const LoginScreen: React.FC = () => {
           alignItems: "center",
         }}
       >
-        <Box id="signIn"></Box>
-        {/* <button id="authorize-button">Authorize</button> */}
+        <OffliButton
+          startIcon={<GoogleIcon />}
+          onClick={() => {
+            window.location.href = getGoogleUrl("login");
+          }}
+          sx={{ mb: 2 }}
+        >
+          Sign in with Google
+        </OffliButton>
 
         <LabeledDivider sx={{ my: 1 }}>
           <Typography variant="subtitle1">or</Typography>

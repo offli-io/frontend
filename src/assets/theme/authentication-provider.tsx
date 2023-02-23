@@ -1,6 +1,14 @@
+import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import jwt_decode from "jwt-decode";
+import { useSnackbar } from "notistack";
 import React from "react";
+import { useLocation } from "react-router-dom";
+import {
+  loginUser,
+  loginViaGoogle,
+  registerViaGoogle,
+} from "../../api/auth/requests";
 import { useServiceInterceptors } from "../../hooks/use-service-interceptors";
 import { IPersonExtended } from "../../types/activities/activity.dto";
 import { setAuthToken } from "../../utils/token.util";
@@ -64,11 +72,36 @@ export const AuthenticationProvider = ({
 }) => {
   useServiceInterceptors();
   //one way to authenticate but I think token refresh and handling will be done by keycloak
-
+  const { enqueueSnackbar } = useSnackbar();
   const [stateToken, setStateToken] = React.useState<null | string>(null);
   const [userInfo, setUserInfo] = React.useState<IPersonExtended | undefined>();
   const [googleTokenClient] = React.useState<any>();
   const [instagramCode, setInstagramCode] = React.useState<string | null>(null);
+
+  const isLogin = window?.location?.href?.includes("login");
+
+  const { isLoading, mutate: sendAuthenticateViaGoogle } = useMutation(
+    ["google-login"],
+    (authorizationCode?: string) => {
+      return isLogin
+        ? loginViaGoogle({ authorizationCode })
+        : registerViaGoogle({ authorizationCode });
+    },
+    {
+      onSuccess: (data, params) => {
+        console.log(data?.data);
+        // setAuthToken(data?.data?.access_token)
+        // setRefreshToken(data?.data?.refresh_token)
+        // setStateToken(data?.data?.token?.access_token ?? null);
+        // !!setUserInfo && setUserInfo({ username: params?.username });
+        // localStorage.setItem("username", params?.username);
+        // navigate(ApplicationLocations.ACTIVITIES);
+      },
+      onError: (error) => {
+        enqueueSnackbar("Failed to log in", { variant: "error" });
+      },
+    }
+  );
 
   //another way just to inform with boolean,
   //const [authenticated, setIsAuthenticated] = React.useState<boolean>(false)
@@ -83,6 +116,7 @@ export const AuthenticationProvider = ({
     console.log("Encoded JWT ID token: " + response.credential);
     const decoded: any = jwt_decode(response.credential);
     console.log(decoded);
+    sendAuthenticateViaGoogle(response.credential);
   }
 
   React.useEffect(() => {

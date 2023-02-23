@@ -50,6 +50,7 @@ const Routes = () => {
         path={ApplicationLocations.REGISTER}
         element={<RegistrationScreen />}
       />
+
       <Route
         path={ApplicationLocations.VERIFY}
         element={<VerificationScreen />}
