@@ -51,7 +51,7 @@ const PickUsernamePhotoScreen = () => {
 
   const isUsernameInUse = Object.keys(formState?.errors)?.length !== 0;
 
-  const precreateUserMutation = useMutation(
+  const { mutate: sendPresignupUser, isLoading } = useMutation(
     ["pre-created-user"],
     (values: IEmailUsernamePassword) => preCreateUser(values),
     {
@@ -80,7 +80,7 @@ const PickUsernamePhotoScreen = () => {
 
     // navigate(ApplicationLocations.VERIFY);
 
-    precreateUserMutation.mutate({
+    sendPresignupUser({
       email: registrationEmailPassword?.email,
       username: values?.username,
       password: registrationEmailPassword?.password,
@@ -137,7 +137,7 @@ const PickUsernamePhotoScreen = () => {
           variant="contained"
           type="submit"
           sx={{ width: "80%", mb: 5 }}
-          // disabled={usernameAlreadyTaken?.data}
+          disabled={isLoading}
         >
           Next
         </OffliButton>

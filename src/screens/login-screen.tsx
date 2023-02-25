@@ -31,6 +31,7 @@ import { ApplicationLocations } from "../types/common/applications-locations.dto
 import { useNavigate } from "react-router-dom";
 import { DEFAULT_KEYCLOAK_URL } from "../assets/config";
 import { loginUser, loginViaGoogle } from "../api/auth/requests";
+import OffliBackButton from "../components/offli-back-button";
 
 export interface FormValues {
   username: string;
@@ -49,18 +50,19 @@ const LoginScreen: React.FC = () => {
     AuthenticationContext
   );
 
+  let BASE_URL = (window as any)?.appConfig?.ANALYTICS_URL;
+
   const [config, setConfig] = React.useState<any>();
   const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
 
-<<<<<<< Updated upstream
-=======
   const queryParameters = new URLSearchParams(window.location.search);
   const authorizationCode = queryParameters.get("code");
->>>>>>> Stashed changes
+
+  console.log(process.env.REACT_APP_API_URL);
   const handleClickShowPassword = () => setShowPassword(!showPassword);
 
-  const { control, handleSubmit, watch } = useForm<FormValues>({
+  const { control, handleSubmit, watch, formState } = useForm<FormValues>({
     defaultValues: {
       username: "",
       password: "",
@@ -69,14 +71,6 @@ const LoginScreen: React.FC = () => {
     mode: "onChange",
   });
 
-<<<<<<< Updated upstream
-  React.useEffect(() => {
-    const configImported = import("../config.json").then((config) =>
-      setConfig(config)
-    );
-  }, []);
-  console.log(config);
-=======
   const { isLoading: isGoogleLoginLoading, mutate: sendLoginViaGoogle } =
     useMutation(
       ["google-login"],
@@ -92,8 +86,6 @@ const LoginScreen: React.FC = () => {
         },
       }
     );
->>>>>>> Stashed changes
-
   const { isLoading, mutate } = useMutation(
     ["login"],
     (formValues: FormValues) => {
@@ -141,110 +133,118 @@ const LoginScreen: React.FC = () => {
   }, [authorizationCode]);
 
   return (
-    <form
-      onSubmit={handleSubmit(handleFormSubmit)}
-      style={{
-        height: "100%",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "space-evenly",
-      }}
-      // className="backgroundImage"
-    >
-      <Logo />
-      <Box
-        sx={{
+    <>
+      <OffliBackButton
+        onClick={() => navigate(ApplicationLocations.REGISTER)}
+        sx={{ alignSelf: "flex-start", m: 1 }}
+      >
+        Sign up
+      </OffliBackButton>
+      <form
+        onSubmit={handleSubmit(handleFormSubmit)}
+        style={{
+          height: "100%",
           display: "flex",
           flexDirection: "column",
-          width: "100%",
           alignItems: "center",
+          // justifyContent: "space-between",
         }}
       >
-        <OffliButton
-          startIcon={<GoogleIcon />}
-          onClick={() => {
-            window.location.href = getGoogleUrl("login");
+        <Logo sx={{ mb: 5, mt: 2 }} />
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            width: "100%",
+            alignItems: "center",
           }}
-          sx={{ mb: 2 }}
         >
-          Sign in with Google
-        </OffliButton>
+          <OffliButton
+            startIcon={<GoogleIcon />}
+            onClick={() => {
+              window.location.href = getGoogleUrl("login");
+            }}
+            sx={{ mb: 1 }}
+          >
+            Sign in with Google
+          </OffliButton>
 
-        <LabeledDivider sx={{ my: 1 }}>
-          <Typography variant="subtitle1">or</Typography>
-        </LabeledDivider>
-        <Typography>{config?.BASE_URL}</Typography>
-        <Controller
-          name="username"
-          control={control}
-          render={({ field, fieldState: { error } }) => (
-            <TextField
-              {...field}
-              //label="Username"
-              label="Email or username"
-              // variant="filled"
-              error={!!error}
-              // helperText={
-              //   error?.message ||
-              //   t(`value.${nextStep?.authenticationType}.placeholder`)
-              // }
-              // disabled={methodSelectionDisabled}
-              sx={{ width: "80%", mb: 2 }}
-            />
-          )}
-        />
-        <Controller
-          name="password"
-          control={control}
-          render={({ field, fieldState: { error } }) => (
-            <TextField
-              {...field}
-              //label="Username"
-              label="Password"
-              type={showPassword ? "text" : "password"}
-              // variant="filled"
-              error={!!error}
-              // helperText={
-              //   error?.message ||
-              //   t(`value.${nextStep?.authenticationType}.placeholder`)
-              // }
-              //disabled={methodSelectionDisabled}
-              sx={{ width: "80%" }}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton onClick={handleClickShowPassword}>
-                      {showPassword ? (
-                        <VisibilityIcon />
-                      ) : (
-                        <VisibilityOffIcon />
-                      )}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-            />
-          )}
-        />
+          <LabeledDivider sx={{ my: 1 }}>
+            <Typography variant="subtitle1">or</Typography>
+          </LabeledDivider>
+          {/* <Typography>{process.env.REACT_APP_API_URL ?? "nevyplnena"}</Typography> */}
+          <Controller
+            name="username"
+            control={control}
+            render={({ field, fieldState: { error } }) => (
+              <TextField
+                {...field}
+                //label="Username"
+                label="Email or username"
+                // variant="filled"
+                error={!!error}
+                // helperText={
+                //   error?.message ||
+                //   t(`value.${nextStep?.authenticationType}.placeholder`)
+                // }
+                // disabled={methodSelectionDisabled}
+                sx={{ width: "80%", mb: 2 }}
+              />
+            )}
+          />
+          <Controller
+            name="password"
+            control={control}
+            render={({ field, fieldState: { error } }) => (
+              <TextField
+                {...field}
+                //label="Username"
+                label="Password"
+                type={showPassword ? "text" : "password"}
+                // variant="filled"
+                error={!!error}
+                // helperText={
+                //   error?.message ||
+                //   t(`value.${nextStep?.authenticationType}.placeholder`)
+                // }
+                //disabled={methodSelectionDisabled}
+                sx={{ width: "80%" }}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton onClick={handleClickShowPassword}>
+                        {showPassword ? (
+                          <VisibilityIcon />
+                        ) : (
+                          <VisibilityOffIcon />
+                        )}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+              />
+            )}
+          />
 
+          <OffliButton
+            variant="text"
+            disabled={isLoading}
+            sx={{ fontSize: 14, mt: 1, mb: 7 }}
+            onClick={() => navigate(ApplicationLocations.FORGOTTEN_PASSWORD)}
+          >
+            Forgot your password?
+          </OffliButton>
+        </Box>
         <OffliButton
-          variant="text"
-          disabled={isLoading}
-          sx={{ fontSize: 14, mt: 1 }}
-          onClick={() => navigate(ApplicationLocations.FORGOTTEN_PASSWORD)}
+          sx={{ width: "80%", mb: 5 }}
+          type="submit"
+          isLoading={isLoading}
+          disabled={!formState?.isValid}
         >
-          Forgot your password?
+          Login
         </OffliButton>
-      </Box>
-      <OffliButton
-        sx={{ width: "80%", mb: 5 }}
-        type="submit"
-        isLoading={isLoading}
-      >
-        Login
-      </OffliButton>
-    </form>
+      </form>
+    </>
   );
 };
 

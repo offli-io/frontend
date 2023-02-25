@@ -30,9 +30,12 @@ import OffliButton from "../../components/offli-button";
 import SearchIcon from "@mui/icons-material/Search";
 import PlaceIcon from "@mui/icons-material/Place";
 import { IActivity } from "../../types/activities/activity.dto";
+import FirstTimeLoginContent from "./components/first-time-login-content";
 
 const ActivitiesScreen = () => {
-  const { userInfo } = React.useContext(AuthenticationContext);
+  const { userInfo, isFirstTimeLogin } = React.useContext(
+    AuthenticationContext
+  );
   const { toggleDrawer } = React.useContext(DrawerContext);
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
@@ -157,6 +160,14 @@ const ActivitiesScreen = () => {
     () => otherActivities?.length > 0,
     [myActivities]
   );
+
+  React.useEffect(() => {
+    Boolean(!isFirstTimeLogin) &&
+      toggleDrawer({
+        open: true,
+        content: <FirstTimeLoginContent />,
+      });
+  }, [isFirstTimeLogin, toggleDrawer]);
 
   return (
     <PageWrapper sxOverrides={{ px: 2 }}>

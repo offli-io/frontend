@@ -27,7 +27,7 @@ const VerificationScreen = () => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
-  const { stateToken, setStateToken, setUserInfo } = React.useContext(
+  const { setIsFirstTimeLogin, setStateToken, setUserInfo } = React.useContext(
     AuthenticationContext
   );
 
@@ -50,6 +50,7 @@ const VerificationScreen = () => {
         setStateToken(data?.data?.token?.access_token ?? null);
         !!setUserInfo && setUserInfo({ username: params?.username });
         localStorage.setItem("username", params?.username);
+        setIsFirstTimeLogin?.(true);
         navigate(ApplicationLocations.ACTIVITIES);
       },
       onError: (error) => {
@@ -100,7 +101,7 @@ const VerificationScreen = () => {
       >
         Username
       </OffliBackButton>
-      <Typography variant="h2" sx={{ mt: 20, width: "75%" }} align="left">
+      <Typography variant="h2" sx={{ mt: 15, width: "75%" }} align="left">
         <Box sx={{ color: "primary.main" }}>Confirm</Box>verification code
       </Typography>
       <Typography

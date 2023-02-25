@@ -96,7 +96,6 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
           to={from}
         />
       )}
-
       <PageWrapper>
         <Box
           sx={{

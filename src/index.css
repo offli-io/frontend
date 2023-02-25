@@ -15,6 +15,10 @@ body {
   --ReactInputVerificationCode-itemSpacing: 1rem;
 }
 
+li {
+  font-family: "Karla";
+}
+
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;

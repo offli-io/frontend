@@ -27,6 +27,7 @@ import { CLIENT_ID } from "../utils/common-constants";
 import { registerViaGoogle } from "../api/auth/requests";
 import { useSnackbar } from "notistack";
 import { getGoogleUrl } from "../utils/token.util";
+import OffliBackButton from "../components/offli-back-button";
 
 const schema: () => yup.SchemaOf<IEmailPassword> = () =>
   yup.object({
@@ -119,140 +120,146 @@ export const RegistrationScreen: React.FC = () => {
   }, [emailAlreadyTaken]);
 
   return (
-    <form onSubmit={handleSubmit(handleFormSubmit)}>
-      <Box
-        sx={{
-          height: "100vh",
-          width: "100vw",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          //   justifyContent: 'center',
-        }}
+    <>
+      <OffliBackButton
+        onClick={() => navigate(ApplicationLocations.LOGIN)}
+        sx={{ alignSelf: "flex-start", m: 1 }}
       >
-        <Typography
-          variant="h1"
-          gutterBottom
+        Sign in
+      </OffliBackButton>
+      <form onSubmit={handleSubmit(handleFormSubmit)}>
+        <Box
           sx={{
-            mt: 10,
+            height: "100vh",
+            width: "100vw",
             display: "flex",
-            flex: 1,
+            flexDirection: "column",
+            alignItems: "center",
+            //   justifyContent: 'center',
           }}
         >
-          Your offline life.
-        </Typography>
-        {/* <Box
+          <Typography
+            variant="h1"
+            gutterBottom
+            sx={{
+              my: 5,
+              display: "flex",
+            }}
+          >
+            Your offline life.
+          </Typography>
+          {/* <Box
           sx={{
             mb: 1,
           }}
           id="signIn"
         ></Box> */}
-        <OffliButton
-          startIcon={<GoogleIcon />}
-          onClick={() => {
-            window.location.href = getGoogleUrl("register");
-          }}
-          sx={{ mb: 2 }}
-        >
-          Sign up with Google
-        </OffliButton>
-        {/* <a href={getGoogleUrl()}>Continue with Google</a> */}
+          <OffliButton
+            startIcon={<GoogleIcon />}
+            onClick={() => {
+              window.location.href = getGoogleUrl("register");
+            }}
+            sx={{ mb: 1 }}
+          >
+            Sign up with Google
+          </OffliButton>
 
-        <LabeledDivider sx={{ my: 2 }}>
-          <Typography variant="subtitle1">or</Typography>
-        </LabeledDivider>
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            width: "100%",
-            alignItems: "center",
-            flex: 3,
-          }}
-        >
-          <Controller
-            name="email"
-            control={control}
-            render={({ field, fieldState: { error } }) => (
-              <TextField
-                {...field}
-                //   label="Username"
-                placeholder="Email"
-                error={!!error}
-                helperText={error?.message}
-                //disabled={methodSelectionDisabled}
-                sx={{ width: "80%", mb: 2 }}
-                onBlur={(event) => setEmail(event.target.value)}
-                // InputProps={{
-                //   endAdornment: (
-                //     <InputAdornment position="end">
-                //       <IconButton>
-                //         {renderEmailIcon()}
-                //         {/* {emailValidity ? (
-                //           <CheckCircleIcon sx={{ color: 'green' }} />
-                //         ) : (
-                //           <RemoveCircleIcon sx={{ color: 'red' }} />
-                //         )} */}
-                //       </IconButton>
-                //     </InputAdornment>
-                //   ),
-                // }}
-              />
-            )}
-          />
-          <Controller
-            name="password"
-            control={control}
-            render={({ field, fieldState: { error } }) => (
-              <TextField
-                {...field}
-                //label="Username"
-                placeholder="Password"
-                type={showPassword ? "text" : "password"}
-                // variant="filled"
-                error={!!error}
-                helperText={error?.message}
-                //disabled={methodSelectionDisabled}
-                sx={{ width: "80%" }}
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton onClick={handleClickShowPassword}>
-                        {showPassword ? (
-                          <VisibilityIcon sx={{ color: "lightgrey" }} />
-                        ) : (
-                          <VisibilityOffIcon sx={{ color: "lightgrey" }} />
-                        )}
-                      </IconButton>
-                    </InputAdornment>
-                  ),
-                }}
-              />
-            )}
-          />
-          <Typography
-            variant="subtitle1"
-            align="center"
+          <LabeledDivider sx={{ my: 1 }}>
+            <Typography variant="subtitle1">or</Typography>
+          </LabeledDivider>
+          <Box
             sx={{
-              color: "lightgrey",
-              mt: 2,
-              lineHeight: 1.2,
+              display: "flex",
+              flexDirection: "column",
+              width: "100%",
+              alignItems: "center",
+              mb: 7,
             }}
           >
-            By signing up, you agree to the terms of the <br />
-            Offli <b>Privacy Policy</b> and <b>Cookie Policy</b>.
-          </Typography>
-        </Box>
+            <Controller
+              name="email"
+              control={control}
+              render={({ field, fieldState: { error } }) => (
+                <TextField
+                  {...field}
+                  //   label="Username"
+                  placeholder="Email"
+                  error={!!error}
+                  helperText={error?.message}
+                  //disabled={methodSelectionDisabled}
+                  sx={{ width: "80%", mb: 2 }}
+                  onBlur={(event) => setEmail(event.target.value)}
+                  // InputProps={{
+                  //   endAdornment: (
+                  //     <InputAdornment position="end">
+                  //       <IconButton>
+                  //         {renderEmailIcon()}
+                  //         {/* {emailValidity ? (
+                  //           <CheckCircleIcon sx={{ color: 'green' }} />
+                  //         ) : (
+                  //           <RemoveCircleIcon sx={{ color: 'red' }} />
+                  //         )} */}
+                  //       </IconButton>
+                  //     </InputAdornment>
+                  //   ),
+                  // }}
+                />
+              )}
+            />
+            <Controller
+              name="password"
+              control={control}
+              render={({ field, fieldState: { error } }) => (
+                <TextField
+                  {...field}
+                  //label="Username"
+                  placeholder="Password"
+                  type={showPassword ? "text" : "password"}
+                  // variant="filled"
+                  error={!!error}
+                  helperText={error?.message}
+                  //disabled={methodSelectionDisabled}
+                  sx={{ width: "80%" }}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton onClick={handleClickShowPassword}>
+                          {showPassword ? (
+                            <VisibilityIcon sx={{ color: "lightgrey" }} />
+                          ) : (
+                            <VisibilityOffIcon sx={{ color: "lightgrey" }} />
+                          )}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+              )}
+            />
+            <Typography
+              variant="subtitle1"
+              align="center"
+              sx={{
+                color: "lightgrey",
+                mt: 2,
+                lineHeight: 1.2,
+              }}
+            >
+              By signing up, you agree to the terms of the <br />
+              Offli <b>Privacy Policy</b> and <b>Cookie Policy</b>.
+            </Typography>
+          </Box>
 
-        <OffliButton
-          type="submit"
-          sx={{ width: "70%", mb: 5 }}
-          disabled={!formState?.isValid || isEmailInUse}
-        >
-          Register
-        </OffliButton>
-      </Box>
-    </form>
+          <OffliButton
+            type="submit"
+            sx={{ width: "70%", mb: 5 }}
+            disabled={!formState?.isValid || isEmailInUse}
+          >
+            Register
+          </OffliButton>
+        </Box>
+      </form>
+    </>
   );
 };
 

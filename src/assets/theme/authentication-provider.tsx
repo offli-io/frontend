@@ -42,6 +42,10 @@ interface IAuthenticationContext {
   setUserInfo?: React.Dispatch<
     React.SetStateAction<IPersonExtended | undefined>
   >;
+  isFirstTimeLogin?: boolean;
+  setIsFirstTimeLogin?: React.Dispatch<
+    React.SetStateAction<boolean | undefined>
+  >;
   googleTokenClient: any;
   instagramCode: string | null;
   setInstagramCode: React.Dispatch<React.SetStateAction<string | null>>;
@@ -77,6 +81,9 @@ export const AuthenticationProvider = ({
   const [userInfo, setUserInfo] = React.useState<IPersonExtended | undefined>();
   const [googleTokenClient] = React.useState<any>();
   const [instagramCode, setInstagramCode] = React.useState<string | null>(null);
+  const [isFirstTimeLogin, setIsFirstTimeLogin] = React.useState<
+    boolean | undefined
+  >(false);
 
   const isLogin = window?.location?.href?.includes("login");
 
@@ -218,6 +225,8 @@ export const AuthenticationProvider = ({
         googleTokenClient,
         instagramCode,
         setInstagramCode,
+        isFirstTimeLogin,
+        setIsFirstTimeLogin,
       }}
     >
       {children}
