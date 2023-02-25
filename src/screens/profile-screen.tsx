@@ -18,8 +18,12 @@ import BackHeader from "../components/back-header";
 import { ICustomizedLocationStateDto } from "../types/common/customized-location-state.dto";
 import OffliButton from "../components/offli-button";
 import { useSnackbar } from "notistack";
-import { acceptBuddyInvitation } from "../api/users/requests";
+import {
+  acceptBuddyInvitation,
+  updateProfileInfo,
+} from "../api/users/requests";
 import ActionButton from "../components/action-button";
+import { useUsers } from "../hooks/use-users";
 
 interface IProfileScreenProps {
   type: "profile" | "request" | "buddy";
@@ -38,16 +42,9 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
   const instagramCode = queryParameters.get("code");
   console.log(instagramCode);
 
-  const { data, isLoading } = useQuery(
-    ["user-info", userInfo?.username, id],
-    () => getUsers({ username: id ? undefined : userInfo?.username, id }),
-    {
-      enabled: !!userInfo?.username,
-      onSuccess: (data) => {
-        setUserInfo && !id && setUserInfo(data?.data);
-      },
-    }
-  );
+  const { data: { data = {} } = {}, isLoading } = useUsers({
+    id: userInfo?.id,
+  });
 
   const { mutate: sendAcceptBuddyRequest } = useMutation(
     ["accept-buddy-request"],
@@ -111,12 +108,12 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
           }}
         >
           <Typography variant="h4" sx={{ mb: 0.5 }}>
-            {data?.data?.username}
+            {data?.username}
           </Typography>
           <img
             // todo add default picture in case of missing photo
             // src={data?.data?.profilePhotoUrl}
-            src={data?.data?.profile_photo_url}
+            src={data?.profile_photo_url}
             alt="profile"
             style={{
               height: "70px",
@@ -134,8 +131,9 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
               // mt: 0.2,
             }}
           >
-            <OffliButton
-              startIcon={<PeopleAltIcon sx={{ fontSize: 18, padding: 0 }} />}
+            <IconButton
+              color="primary"
+              sx={{ paddingRight: 0 }}
               onClick={() =>
                 navigate(ApplicationLocations.BUDDIES, {
                   state: {
@@ -143,18 +141,80 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
                   },
                 })
               }
-              sx={{
-                bgcolor: (theme) => theme.palette.primary.light,
-                color: (theme) => theme.palette.primary.main,
-                py: 0,
-                mt: 1.5,
-                mb: 1,
-              }}
             >
-              {String(data?.data?.buddies?.length) ?? "0"}
-            </OffliButton>
+              <PeopleAltIcon sx={{ fontSize: 18, padding: 0 }} />
+            </IconButton>
+            <Typography
+              variant="subtitle1"
+              color="primary"
+              sx={{ fontWeight: "bold", mt: 0.5, ml: 0.5 }}
+            >
+              {data?.buddies?.length}
+            </Typography>
           </Box>
+          <Box
+            sx={{
+              ml: -1.5,
+              display: "flex",
+              alignItems: "center",
+              mt: -1,
+              // justifyContent: 'flex-start',
+            }}
+          >
+            <IconButton sx={{ paddingRight: 0, color: "black" }}>
+              <LocationOnIcon sx={{ fontSize: 20 }} />
+            </IconButton>
+            <Typography variant="subtitle2">Bratislava, Slovakia</Typography>
+          </Box>
+          <Typography
+            variant="subtitle2"
+            // align="center"
+            sx={{ lineHeight: 1.2, width: "80%" }}
+          >
+            {data?.about_me ??
+              "I am student at FIIT STU. I like adventures and meditation. There is always time for a beer. Cheers."}
+          </Typography>
         </Box>
+        {type === "profile" && (
+          <ActionButton
+            text="Edit profile"
+            sx={{ mt: 2 }}
+            // href={ApplicationLocations.EDIT_PROFILE}
+            onClick={() => navigate(ApplicationLocations.EDIT_PROFILE)}
+          />
+        )}
+        <Box
+          sx={{
+            width: "90%",
+          }}
+        >
+          <Typography align="left" variant="h5" sx={{ mt: 3 }}>
+            This month
+          </Typography>
+          <ProfileStatistics
+            participatedNum={data?.activities_participated_last_month_count}
+            enjoyedNum={data?.enjoyed_together_last_month_count}
+            createdNum={
+              type === "profile"
+                ? data?.activities_created_last_month_count
+                : undefined
+            }
+            metNum={
+              type === "profile"
+                ? data?.new_buddies_last_month_count
+                : undefined
+            }
+            isLoading={isLoading}
+          />
+        </Box>
+        {/* {type === "request" && (
+          <OffliButton
+            sx={{ fontSize: 16, px: 2.5, mt: 2 }}
+            onClick={sendAcceptBuddyRequest}
+          >
+            Accept buddie request
+          </OffliButton>
+        )} */}
         <Box
           sx={{
             width: "90%",
@@ -184,7 +244,7 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
               variant="subtitle1"
               sx={{ ml: 0.5, mt: 3, color: "primary.main", fontWeight: "bold" }}
             >
-              {data?.data.username}
+              {data?.username}
             </Typography>
           </Box>
         </Box>

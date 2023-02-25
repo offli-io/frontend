@@ -16,7 +16,9 @@ import { useQueryClient } from "@tanstack/react-query";
 
 const SettingsScreen = () => {
   const [darkMode, setDarkMode] = React.useState(false);
-  const { setStateToken } = React.useContext(AuthenticationContext);
+  const { setStateToken, setUserInfo } = React.useContext(
+    AuthenticationContext
+  );
   const navigate = useNavigate();
   const location = useLocation();
   const queryClient = useQueryClient();
@@ -27,9 +29,10 @@ const SettingsScreen = () => {
     //TODO double check if any security issues aren't here I am not sure about using tokens from 2 places
     setStateToken(null);
     setAuthToken(undefined);
+    setUserInfo?.({ username: undefined, id: undefined });
     queryClient.removeQueries();
     localStorage.removeItem("token");
-    localStorage.removeItem("username");
+    localStorage.removeItem("userId");
     navigate(ApplicationLocations.LOGIN);
   }, [setStateToken]);
 

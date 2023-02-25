@@ -1,5 +1,6 @@
 import axios from "axios";
 import { DEFAULT_DEV_URL } from "../../assets/config";
+import { IUpdateUserRequestDto } from "../../types/users/update-user-request.dto";
 import {
   IEmailUsernamePassword,
   IEmailVerificationCode,
@@ -78,6 +79,24 @@ export const acceptBuddyInvitation = (
       cancelToken: source?.token,
     }
   );
+
+  //   queryFunctionContext?.signal?.addEventListener('abort', () => {
+  //     source.cancel('Query was cancelled by React Query')
+  //   })
+
+  return promise;
+};
+
+export const updateProfileInfo = (
+  userId?: string,
+  values?: IUpdateUserRequestDto
+) => {
+  const CancelToken = axios.CancelToken;
+  const source = CancelToken.source();
+
+  const promise = axios.put(`${DEFAULT_DEV_URL}/users/${userId}`, values, {
+    cancelToken: source?.token,
+  });
 
   //   queryFunctionContext?.signal?.addEventListener('abort', () => {
   //     source.cancel('Query was cancelled by React Query')

@@ -8,7 +8,7 @@ export const PrivateRoutes = () => {
     AuthenticationContext
   );
   const token = getAuthToken();
-  const usernameFromStorage = localStorage.getItem("username");
+  const userIdFromStorage = localStorage.getItem("userId");
 
   React.useEffect(() => {
     if (!stateToken && !!token) {
@@ -17,8 +17,8 @@ export const PrivateRoutes = () => {
   }, [stateToken, token]);
 
   React.useEffect(() => {
-    if (!userInfo && !!usernameFromStorage) {
-      setUserInfo && setUserInfo({ username: usernameFromStorage });
+    if (!userInfo && !!userIdFromStorage) {
+      setUserInfo && setUserInfo({ id: userIdFromStorage });
     }
   });
 

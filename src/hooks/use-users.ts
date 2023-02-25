@@ -19,6 +19,7 @@ export const useUsers = ({
         //some generic toast for every hook
         enqueueSnackbar("Failed to load notifications", { variant: "error" });
       },
+      enabled: !!id,
     }
   );
 

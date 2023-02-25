@@ -1,23 +1,25 @@
 import { Box, Typography } from "@mui/material";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import axios from "axios";
 import React from "react";
 import ReactInputVerificationCode from "react-input-verification-code";
 import { useNavigate } from "react-router-dom";
 import { verifyCodeAndRetrieveUserId } from "../api/users/requests";
-import BackButton from "../components/back-button";
 import OffliButton from "../components/offli-button";
 import { ApplicationLocations } from "../types/common/applications-locations.dto";
-
 import { useSnackbar } from "notistack";
-import qs from "qs";
-import { DEFAULT_KEYCLOAK_URL } from "../assets/config";
 import { AuthenticationContext } from "../assets/theme/authentication-provider";
 import {
   IEmailPassword,
   IUsername,
   IUsernamePassword,
 } from "../types/users/user.dto";
+import OffliBackButton from "../components/offli-back-button";
+import { loginUser } from "../api/auth/requests";
+
+interface LoginValues {
+  username: string;
+  password: string;
+}
 
 const VerificationScreen = () => {
   const [verificationCode, setVerificationCode] = React.useState<string>("");
@@ -25,7 +27,9 @@ const VerificationScreen = () => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
-  const { stateToken, setStateToken } = React.useContext(AuthenticationContext);
+  const { setIsFirstTimeLogin, setStateToken, setUserInfo } = React.useContext(
+    AuthenticationContext
+  );
 
   const precreatedEmailPassword = queryClient.getQueryData<IEmailPassword>([
     "registration-email-password",
@@ -35,29 +39,19 @@ const VerificationScreen = () => {
     "registration-username",
   ]);
 
-  const loginMutation = useMutation(
-    ["keycloak-login"],
-    (formValues: IUsernamePassword) => {
-      const data = {
-        ...formValues,
-        grant_type: "password",
-        client_id: "UserManagement",
-      };
-      const options = {
-        method: "POST",
-        headers: { "content-type": "application/x-www-form-urlencoded" },
-        data: qs.stringify(data),
-        url: `${DEFAULT_KEYCLOAK_URL}/realms/Offli/protocol/openid-connect/token`,
-      };
-      return axios(options);
+  const { isLoading, mutate: sendLoginUser } = useMutation(
+    ["login"],
+    (values: LoginValues) => {
+      return loginUser(values);
     },
     {
-      onSuccess: (data) => {
+      onSuccess: (data, params) => {
         console.log(data?.data);
-        // setAuthToken(data?.data?.access_token)
-        // setRefreshToken(data?.data?.refresh_token)
-        setStateToken(data?.data?.access_token);
-        navigate(ApplicationLocations.WELCOME);
+        setStateToken(data?.data?.token?.access_token ?? null);
+        !!setUserInfo && setUserInfo({ username: params?.username });
+        localStorage.setItem("username", params?.username);
+        setIsFirstTimeLogin?.(true);
+        navigate(ApplicationLocations.ACTIVITIES);
       },
       onError: (error) => {
         enqueueSnackbar("Failed to log in", { variant: "error" });
@@ -74,9 +68,9 @@ const VerificationScreen = () => {
     {
       onSuccess: (data) => {
         console.log(data?.data);
-        loginMutation.mutate({
-          username: precreatedUsername?.username,
-          password: precreatedEmailPassword?.password,
+        sendLoginUser({
+          username: precreatedUsername?.username ?? "",
+          password: precreatedEmailPassword?.password ?? "",
         });
       },
       onError: (error) => {
@@ -88,10 +82,6 @@ const VerificationScreen = () => {
   const handleOnCompleted = (code: string) => {
     setVerificationCode(code);
     verifyCodeMutation.mutate(code);
-    // loginMutation.mutate({
-    //   username: 'anal',
-    //   password: 'test',
-    // })
   };
 
   return (
@@ -105,8 +95,13 @@ const VerificationScreen = () => {
         //   justifyContent: 'center',
       }}
     >
-      <BackButton href={ApplicationLocations.REGISTER} text="Register" />
-      <Typography variant="h2" sx={{ mt: 20, width: "75%" }} align="left">
+      <OffliBackButton
+        onClick={() => navigate(ApplicationLocations.REGISTER)}
+        sx={{ alignSelf: "flex-start", m: 1 }}
+      >
+        Username
+      </OffliBackButton>
+      <Typography variant="h2" sx={{ mt: 15, width: "75%" }} align="left">
         <Box sx={{ color: "primary.main" }}>Confirm</Box>verification code
       </Typography>
       <Typography

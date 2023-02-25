@@ -5,6 +5,7 @@ import axios from "axios";
 import { IVerifyEmailRequestDto } from "../../types/auth/verify-email-request.dto";
 import { IConfirmResetPasswordDto } from "../../types/auth/confirm-reset-password.dto";
 import { ICheckResetPasswordVerificationCodeRequest } from "../../types/auth/check-reset-password-verification-code-request.dto";
+import { IGoogleLoginRequestDto } from "../../types/auth/google-login-request.dto";
 
 export const refreshTokenSetup = (res: any) => {
   const refreshTiming = (res.tokenObj.expires_in || 3600 - 5 * 60) * 1000;
@@ -17,6 +18,34 @@ export const loginUser = (values: ILoginRequestDto) => {
 
   const promise = axios.post<ILoginResponseDto>(
     `${DEFAULT_DEV_URL}/login`,
+    values,
+    {
+      cancelToken: source?.token,
+    }
+  );
+  return promise;
+};
+
+export const loginViaGoogle = (values: IGoogleLoginRequestDto) => {
+  const CancelToken = axios.CancelToken;
+  const source = CancelToken.source();
+
+  const promise = axios.post<ILoginResponseDto>(
+    `${DEFAULT_DEV_URL}/google/login`,
+    values,
+    {
+      cancelToken: source?.token,
+    }
+  );
+  return promise;
+};
+
+export const registerViaGoogle = (values: IGoogleLoginRequestDto) => {
+  const CancelToken = axios.CancelToken;
+  const source = CancelToken.source();
+
+  const promise = axios.post<ILoginResponseDto>(
+    `${DEFAULT_DEV_URL}/google/registration`,
     values,
     {
       cancelToken: source?.token,

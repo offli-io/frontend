@@ -32,8 +32,6 @@ import AuthenticationMethodScreen from "../screens/authentication-method-screen"
 import ForgottenPasswordScreen from "../screens/forgotten-password-screen/forgotten-password-screen";
 
 const Routes = () => {
-  const token = getAuthToken();
-
   return (
     <BaseRoutes>
       <Route path={ApplicationLocations.LOADING} element={<LoadingScreen />} />
@@ -52,6 +50,7 @@ const Routes = () => {
         path={ApplicationLocations.REGISTER}
         element={<RegistrationScreen />}
       />
+
       <Route
         path={ApplicationLocations.VERIFY}
         element={<VerificationScreen />}
