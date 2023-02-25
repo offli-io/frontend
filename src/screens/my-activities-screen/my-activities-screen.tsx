@@ -162,7 +162,7 @@ const ActivitiesScreen = () => {
   );
 
   React.useEffect(() => {
-    Boolean(!isFirstTimeLogin) &&
+    Boolean(isFirstTimeLogin) &&
       toggleDrawer({
         open: true,
         content: <FirstTimeLoginContent />,

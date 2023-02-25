@@ -20,6 +20,7 @@ import {
 } from "../api/users/requests";
 import OffliBackButton from "../components/offli-back-button";
 import { useSnackbar } from "notistack";
+import { useDebounce } from "use-debounce";
 
 const schema: () => yup.SchemaOf<IUsername> = () =>
   yup.object({
@@ -31,21 +32,24 @@ const PickUsernamePhotoScreen = () => {
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
 
-  const { control, handleSubmit, setError, formState } = useForm<IUsername>({
-    defaultValues: {
-      username: "",
-    },
-    resolver: yupResolver(schema()),
-    mode: "onChange",
-  });
+  const { control, handleSubmit, setError, formState, watch } =
+    useForm<IUsername>({
+      defaultValues: {
+        username: "",
+      },
+      resolver: yupResolver(schema()),
+      mode: "onChange",
+    });
 
   const queryClient = useQueryClient();
 
+  const [queryString] = useDebounce(watch("username"), 250);
+
   const { data: usernameAlreadyTaken } = useQuery<any>(
-    ["username-taken", username],
-    () => checkIfUsernameAlreadyTaken(username),
+    ["username-taken", queryString],
+    () => checkIfUsernameAlreadyTaken(queryString),
     {
-      enabled: !!username,
+      enabled: !!queryString,
     }
   );
 
@@ -126,9 +130,6 @@ const PickUsernamePhotoScreen = () => {
               placeholder="Username"
               error={!!error}
               helperText={error?.message}
-              onBlur={(event) => {
-                setUsername(event.target.value);
-              }}
               sx={{ width: "80%", mt: 4, mb: 8 }}
             />
           )}
@@ -137,7 +138,8 @@ const PickUsernamePhotoScreen = () => {
           variant="contained"
           type="submit"
           sx={{ width: "80%", mb: 5 }}
-          disabled={isLoading}
+          disabled={isUsernameInUse}
+          isLoading={isLoading}
         >
           Next
         </OffliButton>

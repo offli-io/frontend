@@ -56,7 +56,7 @@ export const RegistrationScreen: React.FC = () => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
 
-  const { data: emailAlreadyTaken } = useQuery<any>(
+  const { data: emailAlreadyTaken, isLoading } = useQuery<any>(
     ["email-taken", email],
     () => checkIfEmailAlreadyTaken(email),
     {
@@ -64,7 +64,7 @@ export const RegistrationScreen: React.FC = () => {
     }
   );
 
-  const { isLoading, mutate: sendRegisterViaGoogle } = useMutation(
+  const { mutate: sendRegisterViaGoogle } = useMutation(
     ["google-registration"],
     (authorizationCode?: string) => registerViaGoogle({ authorizationCode }),
     {
@@ -253,7 +253,7 @@ export const RegistrationScreen: React.FC = () => {
           <OffliButton
             type="submit"
             sx={{ width: "70%", mb: 5 }}
-            disabled={!formState?.isValid || isEmailInUse}
+            disabled={!formState?.isValid || isEmailInUse || isLoading}
           >
             Register
           </OffliButton>
