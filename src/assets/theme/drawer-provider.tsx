@@ -1,15 +1,16 @@
-import React from 'react'
+import React from "react";
 
-import { SwipeableDrawer, Box } from '@mui/material'
-import { styled } from '@mui/material/styles'
+import { SwipeableDrawer, Box } from "@mui/material";
+import { styled } from "@mui/material/styles";
 
 interface IDrawerData {
-  open?: boolean
-  content?: React.ReactElement
+  open?: boolean;
+  content?: React.ReactElement;
+  onClose?: () => void;
 }
 
 interface IDrawerContext {
-  toggleDrawer: (drawerData: IDrawerData) => void
+  toggleDrawer: (drawerData: IDrawerData) => void;
 }
 
 const Puller = styled(Box)(({ theme }) => ({
@@ -17,19 +18,19 @@ const Puller = styled(Box)(({ theme }) => ({
   height: 6,
   backgroundColor: theme.palette.primary.main,
   borderRadius: 3,
-  position: 'absolute',
+  position: "absolute",
   top: 8,
-  left: 'calc(50% - 15px)',
-}))
+  left: "calc(50% - 15px)",
+}));
 
 export const DrawerContext = React.createContext<IDrawerContext>(
   {} as IDrawerContext
-)
+);
 
 export const DrawerProvider = ({ children }: { children: React.ReactNode }) => {
   const [drawerData, toggleDrawer] = React.useState<IDrawerData>({
     open: false,
-  })
+  });
 
   return (
     <DrawerContext.Provider value={{ toggleDrawer }}>
@@ -37,10 +38,13 @@ export const DrawerProvider = ({ children }: { children: React.ReactNode }) => {
       <SwipeableDrawer
         anchor="bottom"
         open={Boolean(drawerData?.open)}
-        onOpen={() => console.log('wtf')}
-        onClose={() => toggleDrawer({ open: false, content: undefined })}
+        onOpen={() => console.log("wtf")}
+        onClose={() => {
+          drawerData?.onClose && drawerData?.onClose();
+          toggleDrawer({ open: false, content: undefined });
+        }}
         sx={{
-          '& .MuiPaper-root': {
+          "& .MuiPaper-root": {
             borderTopLeftRadius: 8,
             borderTopRightRadius: 8,
             pt: 3,
@@ -53,5 +57,5 @@ export const DrawerProvider = ({ children }: { children: React.ReactNode }) => {
         {drawerData?.content}
       </SwipeableDrawer>
     </DrawerContext.Provider>
-  )
-}
+  );
+};

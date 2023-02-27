@@ -33,7 +33,7 @@ import { IActivity } from "../../types/activities/activity.dto";
 import FirstTimeLoginContent from "./components/first-time-login-content";
 
 const ActivitiesScreen = () => {
-  const { userInfo, isFirstTimeLogin } = React.useContext(
+  const { userInfo, isFirstTimeLogin, setIsFirstTimeLogin } = React.useContext(
     AuthenticationContext
   );
   const { toggleDrawer } = React.useContext(DrawerContext);
@@ -166,6 +166,7 @@ const ActivitiesScreen = () => {
       toggleDrawer({
         open: true,
         content: <FirstTimeLoginContent />,
+        onClose: () => setIsFirstTimeLogin?.(false),
       });
   }, [isFirstTimeLogin, toggleDrawer]);
 
