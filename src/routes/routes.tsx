@@ -30,6 +30,7 @@ import { IActivityListRestDto } from "../types/activities/activity-list-rest.dto
 import { IActivityRestDto } from "../types/activities/activity-rest.dto";
 import AuthenticationMethodScreen from "../screens/authentication-method-screen";
 import ForgottenPasswordScreen from "../screens/forgotten-password-screen/forgotten-password-screen";
+import ChooseUsernameGooglePage from "../screens/choose-username-google-page";
 
 const Routes = () => {
   return (
@@ -96,6 +97,10 @@ const Routes = () => {
         <Route
           path={ApplicationLocations.ACTIVITIES}
           element={<ActivitiesScreen />}
+        />
+        <Route
+          path={ApplicationLocations.CHOOSE_USERNAME_GOOGLE}
+          element={<ChooseUsernameGooglePage />}
         />
         <Route
           path={`${ApplicationLocations.ACTIVITY_ID}/:id`}

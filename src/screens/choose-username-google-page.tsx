@@ -1,36 +1,34 @@
 import React from "react";
-import { Box, Typography, TextField, IconButton, Icon } from "@mui/material";
-import BackButton from "../components/back-button";
+import { Box, Typography, TextField } from "@mui/material";
 import { Controller, useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useQueryClient, useMutation, useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import OffliButton from "../components/offli-button";
-import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import { ApplicationLocations } from "../types/common/applications-locations.dto";
-import {
-  IEmailPassword,
-  IEmailUsernamePassword,
-  IUsername,
-} from "../types/users/user.dto";
+import { IUsername } from "../types/users/user.dto";
 import {
   checkIfUsernameAlreadyTaken,
-  preCreateUser,
+  updateProfileInfo,
 } from "../api/users/requests";
-import OffliBackButton from "../components/offli-back-button";
 import { useSnackbar } from "notistack";
 import { useDebounce } from "use-debounce";
+import { AuthenticationContext } from "../assets/theme/authentication-provider";
 
 const schema: () => yup.SchemaOf<IUsername> = () =>
   yup.object({
     username: yup.string().defined().required("Please enter your username"),
   });
 
+interface IChooseUsernameValues {
+  username?: string;
+}
 const ChooseUsernameGooglePage = () => {
   const [username, setUsername] = React.useState<string>("");
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
+  const { userInfo } = React.useContext(AuthenticationContext);
 
   const { control, handleSubmit, setError, formState, watch } =
     useForm<IUsername>({
@@ -55,41 +53,30 @@ const ChooseUsernameGooglePage = () => {
 
   const isUsernameInUse = Object.keys(formState?.errors)?.length !== 0;
 
-  const { mutate: sendPresignupUser, isLoading } = useMutation(
-    ["pre-created-user"],
-    (values: IEmailUsernamePassword) => preCreateUser(values),
+  const { mutate: sendUpdateUsername, isLoading } = useMutation(
+    ["update-username"],
+    (values?: IChooseUsernameValues) => updateProfileInfo(userInfo?.id, values),
     {
       onSuccess: (data) => {
-        console.log(data);
-        navigate(ApplicationLocations.VERIFY);
+        enqueueSnackbar("Username successfully updated", {
+          variant: "success",
+        });
+        queryClient.invalidateQueries(["users", userInfo?.id]);
+        navigate(ApplicationLocations.ACTIVITIES);
       },
       onError: (error) => {
         console.log(error);
-        enqueueSnackbar("Failed to pre-signup", { variant: "error" });
+        enqueueSnackbar("Failed to update username", { variant: "error" });
       },
     }
   );
 
-  const handleFormSubmit = React.useCallback((values: IUsername) => {
-    // if (usernameAlreadyTaken?.data) {
-    //   setError('username', { message: 'Username already in use' })
-    //   console.log(usernameAlreadyTaken?.data)
-    //   return
-    // }
-    queryClient.setQueryData(["registration-username"], values);
-
-    const registrationEmailPassword = queryClient.getQueryData<IEmailPassword>([
-      "registration-email-password",
-    ]);
-
-    // navigate(ApplicationLocations.VERIFY);
-
-    sendPresignupUser({
-      email: registrationEmailPassword?.email,
-      username: values?.username,
-      password: registrationEmailPassword?.password,
-    });
-  }, []);
+  const handleFormSubmit = React.useCallback(
+    (values: IChooseUsernameValues) => {
+      sendUpdateUsername(values);
+    },
+    []
+  );
 
   React.useEffect(() => {
     if (usernameAlreadyTaken?.data) {
@@ -99,12 +86,12 @@ const ChooseUsernameGooglePage = () => {
 
   return (
     <form onSubmit={handleSubmit(handleFormSubmit)} style={{ height: "100%" }}>
-      <OffliBackButton
+      {/* <OffliBackButton
         onClick={() => navigate(ApplicationLocations.REGISTER)}
         sx={{ alignSelf: "flex-start", m: 1 }}
       >
         Registration
-      </OffliBackButton>
+      </OffliBackButton> */}
       <Box
         sx={{
           height: "100vh",
@@ -112,10 +99,10 @@ const ChooseUsernameGooglePage = () => {
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          // justifyContent: "center",
+          justifyContent: "center",
         }}
       >
-        <Typography variant="h2" align="left" sx={{ width: "75%", mt: 15 }}>
+        <Typography variant="h2" align="left" sx={{ width: "75%" }}>
           <Box sx={{ color: "primary.main", width: "85%" }}>Choose&nbsp;</Box>
           your username
         </Typography>
@@ -141,7 +128,7 @@ const ChooseUsernameGooglePage = () => {
           disabled={isUsernameInUse}
           isLoading={isLoading}
         >
-          Next
+          Confirm
         </OffliButton>
       </Box>
     </form>
