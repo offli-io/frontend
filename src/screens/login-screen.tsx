@@ -7,6 +7,8 @@ import {
   IconButton,
 } from "@mui/material";
 import qs from "qs";
+import GoogleIcon from "@mui/icons-material/Google";
+
 import Logo from "../components/logo";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Controller, useForm } from "react-hook-form";
@@ -20,6 +22,7 @@ import axios from "axios";
 import { useSnackbar } from "notistack";
 import {
   getAuthToken,
+  getGoogleUrl,
   setAuthToken,
   setRefreshToken,
 } from "../utils/token.util";
@@ -27,7 +30,8 @@ import { AuthenticationContext } from "../assets/theme/authentication-provider";
 import { ApplicationLocations } from "../types/common/applications-locations.dto";
 import { useNavigate } from "react-router-dom";
 import { DEFAULT_KEYCLOAK_URL } from "../assets/config";
-import { loginUser } from "../api/auth/requests";
+import { loginUser, loginViaGoogle } from "../api/auth/requests";
+import OffliBackButton from "../components/offli-back-button";
 
 export interface FormValues {
   username: string;
@@ -45,12 +49,20 @@ const LoginScreen: React.FC = () => {
   const { setUserInfo, setStateToken } = React.useContext(
     AuthenticationContext
   );
+
+  let BASE_URL = (window as any)?.appConfig?.ANALYTICS_URL;
+
+  const [config, setConfig] = React.useState<any>();
   const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
 
+  const queryParameters = new URLSearchParams(window.location.search);
+  const authorizationCode = queryParameters.get("code");
+
+  console.log(process.env.REACT_APP_API_URL);
   const handleClickShowPassword = () => setShowPassword(!showPassword);
 
-  const { control, handleSubmit, watch } = useForm<FormValues>({
+  const { control, handleSubmit, watch, formState } = useForm<FormValues>({
     defaultValues: {
       username: "",
       password: "",
@@ -59,6 +71,21 @@ const LoginScreen: React.FC = () => {
     mode: "onChange",
   });
 
+  const { isLoading: isGoogleLoginLoading, mutate: sendLoginViaGoogle } =
+    useMutation(
+      ["google-login"],
+      (authorizationCode?: string) => loginViaGoogle({ authorizationCode }),
+      {
+        onSuccess: (data, params) => {
+          console.log("login success");
+        },
+        onError: (error) => {
+          enqueueSnackbar("Registration with google failed", {
+            variant: "error",
+          });
+        },
+      }
+    );
   const { isLoading, mutate } = useMutation(
     ["login"],
     (formValues: FormValues) => {
@@ -81,9 +108,11 @@ const LoginScreen: React.FC = () => {
         console.log(data?.data);
         // setAuthToken(data?.data?.access_token)
         // setRefreshToken(data?.data?.refresh_token)
+        //TODO refresh user Id after refresh
         setStateToken(data?.data?.token?.access_token ?? null);
-        !!setUserInfo && setUserInfo({ username: params?.username });
-        localStorage.setItem("username", params?.username);
+        !!setUserInfo &&
+          setUserInfo({ username: params?.username, id: data?.data?.user_id });
+        localStorage.setItem("userId", data?.data?.user_id);
         navigate(ApplicationLocations.ACTIVITIES);
       },
       onError: (error) => {
@@ -97,103 +126,125 @@ const LoginScreen: React.FC = () => {
     [mutate]
   );
 
+  React.useEffect(() => {
+    if (authorizationCode) {
+      sendLoginViaGoogle(authorizationCode);
+    }
+  }, [authorizationCode]);
+
   return (
-    <form
-      onSubmit={handleSubmit(handleFormSubmit)}
-      style={{
-        height: "100%",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "space-evenly",
-      }}
-      // className="backgroundImage"
-    >
-      <Logo />
-      <Box
-        sx={{
+    <>
+      <OffliBackButton
+        onClick={() => navigate(ApplicationLocations.REGISTER)}
+        sx={{ alignSelf: "flex-start", m: 1 }}
+      >
+        Sign up
+      </OffliBackButton>
+      <form
+        onSubmit={handleSubmit(handleFormSubmit)}
+        style={{
+          height: "100%",
           display: "flex",
           flexDirection: "column",
-          width: "100%",
           alignItems: "center",
+          // justifyContent: "space-between",
         }}
       >
-        <Box id="signIn"></Box>
-        {/* <button id="authorize-button">Authorize</button> */}
-
-        <LabeledDivider sx={{ my: 1 }}>
-          <Typography variant="subtitle1">or</Typography>
-        </LabeledDivider>
-        <Controller
-          name="username"
-          control={control}
-          render={({ field, fieldState: { error } }) => (
-            <TextField
-              {...field}
-              //label="Username"
-              label="Email or username"
-              // variant="filled"
-              error={!!error}
-              // helperText={
-              //   error?.message ||
-              //   t(`value.${nextStep?.authenticationType}.placeholder`)
-              // }
-              // disabled={methodSelectionDisabled}
-              sx={{ width: "80%", mb: 2 }}
-            />
-          )}
-        />
-        <Controller
-          name="password"
-          control={control}
-          render={({ field, fieldState: { error } }) => (
-            <TextField
-              {...field}
-              //label="Username"
-              label="Password"
-              type={showPassword ? "text" : "password"}
-              // variant="filled"
-              error={!!error}
-              // helperText={
-              //   error?.message ||
-              //   t(`value.${nextStep?.authenticationType}.placeholder`)
-              // }
-              //disabled={methodSelectionDisabled}
-              sx={{ width: "80%" }}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton onClick={handleClickShowPassword}>
-                      {showPassword ? (
-                        <VisibilityIcon />
-                      ) : (
-                        <VisibilityOffIcon />
-                      )}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-            />
-          )}
-        />
-
-        <OffliButton
-          variant="text"
-          disabled={isLoading}
-          sx={{ fontSize: 14, mt: 1 }}
-          onClick={() => navigate(ApplicationLocations.FORGOTTEN_PASSWORD)}
+        <Logo sx={{ mb: 5, mt: 2 }} />
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            width: "100%",
+            alignItems: "center",
+          }}
         >
-          Forgot your password?
+          <OffliButton
+            startIcon={<GoogleIcon />}
+            onClick={() => {
+              window.location.href = getGoogleUrl("login");
+            }}
+            sx={{ mb: 1 }}
+          >
+            Sign in with Google
+          </OffliButton>
+
+          <LabeledDivider sx={{ my: 1 }}>
+            <Typography variant="subtitle1">or</Typography>
+          </LabeledDivider>
+          {/* <Typography>{process.env.REACT_APP_API_URL ?? "nevyplnena"}</Typography> */}
+          <Controller
+            name="username"
+            control={control}
+            render={({ field, fieldState: { error } }) => (
+              <TextField
+                {...field}
+                //label="Username"
+                label="Email or username"
+                // variant="filled"
+                error={!!error}
+                // helperText={
+                //   error?.message ||
+                //   t(`value.${nextStep?.authenticationType}.placeholder`)
+                // }
+                // disabled={methodSelectionDisabled}
+                sx={{ width: "80%", mb: 2 }}
+              />
+            )}
+          />
+          <Controller
+            name="password"
+            control={control}
+            render={({ field, fieldState: { error } }) => (
+              <TextField
+                {...field}
+                //label="Username"
+                label="Password"
+                type={showPassword ? "text" : "password"}
+                // variant="filled"
+                error={!!error}
+                // helperText={
+                //   error?.message ||
+                //   t(`value.${nextStep?.authenticationType}.placeholder`)
+                // }
+                //disabled={methodSelectionDisabled}
+                sx={{ width: "80%" }}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton onClick={handleClickShowPassword}>
+                        {showPassword ? (
+                          <VisibilityIcon />
+                        ) : (
+                          <VisibilityOffIcon />
+                        )}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+              />
+            )}
+          />
+
+          <OffliButton
+            variant="text"
+            disabled={isLoading}
+            sx={{ fontSize: 14, mt: 1, mb: 7 }}
+            onClick={() => navigate(ApplicationLocations.FORGOTTEN_PASSWORD)}
+          >
+            Forgot your password?
+          </OffliButton>
+        </Box>
+        <OffliButton
+          sx={{ width: "80%", mb: 5 }}
+          type="submit"
+          isLoading={isLoading}
+          disabled={!formState?.isValid}
+        >
+          Login
         </OffliButton>
-      </Box>
-      <OffliButton
-        sx={{ width: "80%", mb: 5 }}
-        type="submit"
-        isLoading={isLoading}
-      >
-        Login
-      </OffliButton>
-    </form>
+      </form>
+    </>
   );
 };
 

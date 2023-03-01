@@ -11,22 +11,22 @@ import {
   TextField,
   Typography,
   useTheme,
-} from '@mui/material'
-import React from 'react'
-import { Controller, UseFormReturn } from 'react-hook-form'
-import OffliButton from '../../../components/offli-button'
-import { ActivityVisibilityEnum } from '../../../types/activities/activity-visibility-enum.dto'
+} from "@mui/material";
+import React from "react";
+import { Controller, UseFormReturn } from "react-hook-form";
+import OffliButton from "../../../components/offli-button";
+import { ActivityVisibilityEnum } from "../../../types/activities/activity-visibility-enum.dto";
 import {
   ActivityPriceOptionsEnum,
   ActivityRepetitionOptionsEnum,
-} from '../../../types/common/types'
-import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew'
+} from "../../../types/common/types";
+import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 
 interface IPlaceFormProps {
-  onNextClicked: () => void
+  onNextClicked: () => void;
 
-  onBackClicked: () => void
-  methods: UseFormReturn
+  onBackClicked: () => void;
+  methods: UseFormReturn;
 }
 
 export const ActivityDetailsForm: React.FC<IPlaceFormProps> = ({
@@ -34,24 +34,31 @@ export const ActivityDetailsForm: React.FC<IPlaceFormProps> = ({
   onBackClicked,
   methods,
 }) => {
-  const { control, handleSubmit, formState, watch } = methods
+  const { control, handleSubmit, formState, watch } = methods;
 
   // filter backend results based on query string
-  const queryString = watch('place')
-  console.log(queryString)
+  const queryString = watch("place");
+  console.log(queryString);
 
   return (
     <>
       <Box
         sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          width: '100%',
-          alignItems: 'flex-start',
+          display: "flex",
+          flexDirection: "column",
+          width: "100%",
+          alignItems: "flex-start",
         }}
       >
-        <Box sx={{ display: 'flex', mb: 4 }}>
-          <Typography variant="h4">Activity details</Typography>
+        <Box
+          sx={{
+            display: "flex",
+            mb: 2,
+            justifyContent: "center",
+            width: "100%",
+          }}
+        >
+          <Typography variant="h2">Activity details</Typography>
         </Box>
         <Controller
           name="visibility"
@@ -59,20 +66,20 @@ export const ActivityDetailsForm: React.FC<IPlaceFormProps> = ({
           render={({ field, fieldState: { error } }) => (
             <Box
               sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                width: '100%',
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                width: "100%",
               }}
             >
               {/* TODO add only boolean to hook form for example public, which will be either false or true */}
               {/* <Typography>Accessibility</Typography> */}
               <Box
                 sx={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  width: '100%',
-                  justifyContent: 'space-around',
+                  display: "flex",
+                  alignItems: "center",
+                  width: "100%",
+                  justifyContent: "space-around",
                   mb: 5,
                 }}
               >
@@ -81,10 +88,10 @@ export const ActivityDetailsForm: React.FC<IPlaceFormProps> = ({
                 >
                   Accessibility
                 </FormLabel> */}
-                <Typography sx={{ fontWeight: 'bold' }}>
+                <Typography sx={{ fontWeight: "bold" }}>
                   Accessibility
                 </Typography>
-                <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                <Box sx={{ display: "flex", alignItems: "center" }}>
                   <Switch
                     sx={{ mx: 1 }}
                     {...field}
@@ -93,12 +100,12 @@ export const ActivityDetailsForm: React.FC<IPlaceFormProps> = ({
                         ? false
                         : true
                     }
-                    onChange={e => {
+                    onChange={(e) => {
                       field.onChange(
                         e.target.checked
                           ? ActivityVisibilityEnum.public
                           : ActivityVisibilityEnum.private
-                      )
+                      );
                     }}
                     color="primary"
                   />
@@ -111,27 +118,6 @@ export const ActivityDetailsForm: React.FC<IPlaceFormProps> = ({
               </Box>
 
               <Controller
-                name="price"
-                control={control}
-                render={({ field, fieldState: { error } }) => (
-                  <TextField
-                    {...field}
-                    id="outlined-select-currency"
-                    select
-                    sx={{ width: '100%', mb: 5 }}
-                    label="Any fees?"
-                    // helperText="Please select your currency"
-                  >
-                    {Object.values(ActivityPriceOptionsEnum).map(option => (
-                      <MenuItem key={option} value={option}>
-                        {option}
-                      </MenuItem>
-                    ))}
-                  </TextField>
-                )}
-              />
-
-              <Controller
                 name="limit"
                 control={control}
                 render={({ field, fieldState: { error } }) => (
@@ -140,8 +126,8 @@ export const ActivityDetailsForm: React.FC<IPlaceFormProps> = ({
                     //autoFocus
                     {...field}
                     error={!!error}
-                    sx={{ width: '100%', mb: 5 }}
-                    label="Capacity"
+                    sx={{ width: "100%", mb: 5 }}
+                    label="How many people can attend"
                     // InputProps={{
                     //   startAdornment: <SearchIcon />,
                     // }}
@@ -149,6 +135,27 @@ export const ActivityDetailsForm: React.FC<IPlaceFormProps> = ({
                     //label="Username"
                     // disabled={methodSelectionDisabled}
                   />
+                )}
+              />
+
+              <Controller
+                name="price"
+                control={control}
+                render={({ field, fieldState: { error } }) => (
+                  <TextField
+                    {...field}
+                    id="outlined-select-currency"
+                    select
+                    sx={{ width: "100%", mb: 5 }}
+                    label="Any fees?"
+                    // helperText="Please select your currency"
+                  >
+                    {Object.values(ActivityPriceOptionsEnum).map((option) => (
+                      <MenuItem key={option} value={option}>
+                        {option}
+                      </MenuItem>
+                    ))}
+                  </TextField>
                 )}
               />
 
@@ -194,9 +201,9 @@ export const ActivityDetailsForm: React.FC<IPlaceFormProps> = ({
               label="Additional description"
               placeholder="Type more info about the activity"
               sx={{
-                width: '100%',
-                '& .MuiOutlinedInput-root': {
-                  height: 'unset',
+                width: "100%",
+                "& .MuiOutlinedInput-root": {
+                  height: "unset",
                 },
               }}
               inputProps={{ maxLength: 200 }}
@@ -210,9 +217,9 @@ export const ActivityDetailsForm: React.FC<IPlaceFormProps> = ({
       </Box>
       <Box
         sx={{
-          width: '100%',
-          display: 'flex',
-          justifyContent: 'space-between',
+          width: "100%",
+          display: "flex",
+          justifyContent: "space-between",
           mt: 2,
         }}
       >
@@ -228,12 +235,12 @@ export const ActivityDetailsForm: React.FC<IPlaceFormProps> = ({
         </OffliButton> */}
         <OffliButton
           onClick={onNextClicked}
-          sx={{ width: '40%' }}
+          sx={{ width: "40%" }}
           disabled={!formState.isValid}
         >
           Next
         </OffliButton>
       </Box>
     </>
-  )
-}
+  );
+};

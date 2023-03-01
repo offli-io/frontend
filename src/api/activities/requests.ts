@@ -1,6 +1,5 @@
 import axios from "axios";
 import qs from "qs";
-import { QueryFunctionContext } from "react-query";
 import { DEFAULT_DEV_URL } from "../../assets/config";
 import {
   IActivity,
@@ -17,7 +16,7 @@ export const getActivities = async ({
   queryFunctionContext,
   searchParams,
 }: {
-  queryFunctionContext: QueryFunctionContext<any>;
+  queryFunctionContext: any;
   searchParams?: IActivitySearchParams | undefined;
 }) => {
   const CancelToken = axios.CancelToken;
@@ -258,6 +257,27 @@ export const kickUserFromActivity = (activityId: string, personId: string) => {
 
   const promise = axios.delete<void>(
     `${DEFAULT_DEV_URL}/activities/${activityId}/participants/${personId}`,
+    {
+      cancelToken: source?.token,
+    }
+  );
+
+  //   queryFunctionContext?.signal?.addEventListener('abort', () => {
+  //     source.cancel('Query was cancelled by React Query')
+  //   })
+
+  return promise;
+};
+
+export const acceptActivityInvitation = (
+  activityId?: string,
+  userId?: string
+) => {
+  const CancelToken = axios.CancelToken;
+  const source = CancelToken.source();
+
+  const promise = axios.patch(
+    `${DEFAULT_DEV_URL}/activities/${activityId}/participants/${userId}`,
     {
       cancelToken: source?.token,
     }

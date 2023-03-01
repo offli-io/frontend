@@ -1,15 +1,15 @@
-import React from 'react'
+import React from "react";
 
-import { Button, Typography, SxProps } from '@mui/material'
-import { Link, useLocation, useParams } from 'react-router-dom'
-import { ApplicationLocations } from '../types/common/applications-locations.dto'
+import { Button, Typography, SxProps } from "@mui/material";
+import { Link, useLocation, useParams } from "react-router-dom";
+import { ApplicationLocations } from "../types/common/applications-locations.dto";
 
 interface IProps {
-  type?: 'button' | 'reset' | 'submit' | undefined
-  text: string
-  sx?: SxProps
-  onClick?: () => void
-  href?: string
+  type?: "button" | "reset" | "submit" | undefined;
+  text: string;
+  sx?: SxProps;
+  onClick?: () => void;
+  href?: string;
 }
 
 const ActionButton: React.FC<IProps> = ({ type, text, sx, onClick, href }) => {
@@ -17,24 +17,24 @@ const ActionButton: React.FC<IProps> = ({ type, text, sx, onClick, href }) => {
     <Button
       sx={{
         ...sx,
-        width: '60%',
-        borderRadius: '15px',
-        backgroundColor: '#E4E3FF',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: '2%',
+        width: "60%",
+        borderRadius: "15px",
+        backgroundColor: (theme) => theme.palette.primary.light,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: "2%",
       }}
       type={type}
       onClick={onClick}
     >
       {href ? (
-        <Link to={href!} style={{ textDecoration: 'none' }}>
+        <Link to={href!} style={{ textDecoration: "none" }}>
           <Typography
             variant="h6"
             sx={{
-              color: 'primary.main',
-              fontWeight: 'bold',
+              color: "primary.main",
+              fontWeight: "bold",
             }}
           >
             {text}
@@ -44,15 +44,15 @@ const ActionButton: React.FC<IProps> = ({ type, text, sx, onClick, href }) => {
         <Typography
           variant="h6"
           sx={{
-            color: 'primary.main',
-            fontWeight: 'bold',
+            color: "primary.main",
+            fontWeight: "bold",
           }}
         >
           {text}
         </Typography>
       )}
     </Button>
-  )
-}
+  );
+};
 
-export default ActionButton
+export default ActionButton;

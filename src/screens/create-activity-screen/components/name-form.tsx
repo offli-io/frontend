@@ -21,28 +21,30 @@ export const NameForm: React.FC<INameFormProps> = ({
 
   return (
     <>
-      <Box
-        sx={{ display: "flex", width: "100%", alignItems: "flex-end", mt: -8 }}
-      >
+      <Box sx={{ display: "flex", width: "100%", alignItems: "flex-end" }}>
         <Box
           sx={{
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
             width: "50%",
+            pl: 1,
           }}
         >
-          <Typography variant="h4" sx={{ color: "primary.main" }}>
+          <Typography
+            variant="h2"
+            sx={{ color: "primary.main", fontFamily: "Nunito" }}
+          >
             Create
           </Typography>
-          <Typography variant="h4">new activity</Typography>
+          <Typography variant="h2">new activity</Typography>
         </Box>
         <Box sx={{ width: "50%", display: "flex", justifyContent: "center" }}>
           <img src={createActivityImg} style={{ height: 80 }} alt="Name form" />
         </Box>
       </Box>
       <Box
-        sx={{ width: "100%", display: "flex", justifyContent: "center", mt: 8 }}
+        sx={{ width: "100%", display: "flex", justifyContent: "center", mt: 6 }}
       >
         <Controller
           name="title"

@@ -75,18 +75,21 @@ export const PlaceForm: React.FC<IPlaceFormProps> = ({
 
   return (
     <>
-      <Box
-        sx={{ display: "flex", width: "100%", alignItems: "flex-end", mt: -8 }}
-      >
+      <Box sx={{ display: "flex", width: "100%", alignItems: "flex-end" }}>
         <Box
           sx={{
             display: "flex",
+            flexDirection: "column",
             alignItems: "center",
             justifyContent: "center",
+            // pl: 2,
             width: "50%",
           }}
         >
-          <Typography variant="h4">Add place</Typography>
+          <Typography variant="h2" sx={{ color: "primary.main" }}>
+            Set
+          </Typography>
+          <Typography variant="h2">location</Typography>
         </Box>
         <Box sx={{ width: "50%", display: "flex", justifyContent: "center" }}>
           <img src={activityLocation} style={{ height: 80 }} alt="place-form" />
@@ -143,16 +146,17 @@ export const PlaceForm: React.FC<IPlaceFormProps> = ({
           justifyContent: "space-between",
         }}
       >
-        <IconButton onClick={onBackClicked} color="primary">
+        {/* <IconButton onClick={onBackClicked} color="primary">
           <ArrowBackIosNewIcon />
-        </IconButton>
-        {/* <OffliButton
+        </IconButton> */}
+        <OffliButton
           onClick={onBackClicked}
-          sx={{ width: '40%' }}
+          sx={{ width: "40%" }}
           variant="text"
+          startIcon={<ArrowBackIosNewIcon />}
         >
           Back
-        </OffliButton> */}
+        </OffliButton>
         <OffliButton
           onClick={onNextClicked}
           sx={{ width: "40%" }}

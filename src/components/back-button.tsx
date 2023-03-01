@@ -3,7 +3,7 @@ import { Button, SxProps, Typography } from "@mui/material";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 
 export interface IBackButtonProps {
-  href: string;
+  href?: string;
   text: string;
   sxOverrides?: SxProps;
   onClick?: () => void;

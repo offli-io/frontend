@@ -21,9 +21,9 @@ const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       retry: 1,
-      refetchOnMount: false,
-      refetchOnWindowFocus: false,
-      refetchOnReconnect: false,
+      refetchOnMount: true,
+      refetchOnWindowFocus: true,
+      refetchOnReconnect: true,
       cacheTime: 1000 * 300, //5 minutes
       refetchInterval: 1000 * 300, //5 minutes
       refetchIntervalInBackground: false,
@@ -36,11 +36,11 @@ const queryClient = new QueryClient({
   },
 });
 
-declare module "react-query/types/react/QueryClientProvider" {
-  interface QueryClientProviderProps {
-    children?: ReactNode;
-  }
-}
+// declare module "react-query/types/react/QueryClientProvider" {
+//   interface QueryClientProviderProps {
+//     children?: ReactNode;
+//   }
+// }
 
 function App() {
   window.addEventListener("load", function () {

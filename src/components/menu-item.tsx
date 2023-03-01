@@ -1,18 +1,19 @@
-import { Box, Button, Checkbox, styled, Typography } from "@mui/material";
-import logo from "../assets/img/profilePicture.jpg";
+import { Box, Typography } from "@mui/material";
 import React from "react";
-import OffliButton from "./offli-button";
-import { IPerson } from "../types/activities/activity.dto";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import { SettingsTypeEnumDto } from "../types/common/settings-type-enum.dto";
 import { ActivityActionsTypeEnumDto } from "../types/common/activity-actions-type-enum.dto";
+import { BuddyActionTypeEnum } from "../types/common/buddy-actions-type-enum.dto";
 
 interface ILabeledDividerProps {
   label?: string;
   onMenuItemClick?: (
-    type?: SettingsTypeEnumDto | ActivityActionsTypeEnumDto
+    type?:
+      | SettingsTypeEnumDto
+      | ActivityActionsTypeEnumDto
+      | BuddyActionTypeEnum
   ) => void;
-  type?: SettingsTypeEnumDto | ActivityActionsTypeEnumDto;
+  type?: SettingsTypeEnumDto | ActivityActionsTypeEnumDto | BuddyActionTypeEnum;
   icon?: React.ReactElement;
   headerRight?: React.ReactElement;
 }

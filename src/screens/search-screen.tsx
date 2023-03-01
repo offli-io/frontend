@@ -150,11 +150,9 @@ const SearchScreen = () => {
         ))
       )}
 
-      {/* <Button onClick={() => addEventToCalendar("thefaston@gmail.com", event)}>
+      <Button onClick={() => addEventToCalendar("thefaston@gmail.com", event)}>
         Create calendar Event
       </Button>
-      TODO H5 za H3 dohodnute s matom
-      */}
     </Box>
   );
 };

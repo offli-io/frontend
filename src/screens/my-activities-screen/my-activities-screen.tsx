@@ -30,9 +30,12 @@ import OffliButton from "../../components/offli-button";
 import SearchIcon from "@mui/icons-material/Search";
 import PlaceIcon from "@mui/icons-material/Place";
 import { IActivity } from "../../types/activities/activity.dto";
+import FirstTimeLoginContent from "./components/first-time-login-content";
 
 const ActivitiesScreen = () => {
-  const { userInfo } = React.useContext(AuthenticationContext);
+  const { userInfo, isFirstTimeLogin } = React.useContext(
+    AuthenticationContext
+  );
   const { toggleDrawer } = React.useContext(DrawerContext);
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
@@ -158,6 +161,14 @@ const ActivitiesScreen = () => {
     [myActivities]
   );
 
+  React.useEffect(() => {
+    Boolean(isFirstTimeLogin) &&
+      toggleDrawer({
+        open: true,
+        content: <FirstTimeLoginContent />,
+      });
+  }, [isFirstTimeLogin, toggleDrawer]);
+
   return (
     <PageWrapper sxOverrides={{ px: 2 }}>
       <Box
@@ -245,20 +256,21 @@ const ActivitiesScreen = () => {
               </Box>
               <Box
                 sx={{
-                  // height: "100vh",
-                  width: "100vw",
                   display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  justifyContent: "flex-start",
+                  overflowX: "scroll",
+                  width: "100%",
+                  "::-webkit-scrollbar": { display: "none" },
                 }}
               >
-                {myActivities?.slice(0, 2)?.map((activity) => {
+                {myActivities?.map((activity) => {
                   return (
                     <MyActivityCard
                       key={activity?.id}
                       activity={activity}
                       onPress={openActivityActions}
+                      sx={{
+                        minWidth: myActivities?.length <= 1 ? "100%" : "80%",
+                      }}
                     />
                   );
                 })}

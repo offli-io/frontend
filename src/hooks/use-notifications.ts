@@ -1,20 +1,20 @@
-import { useQuery } from '@tanstack/react-query'
-import { useSnackbar } from 'notistack'
-import { getNotifications } from '../api/notifications/requests'
+import { useQuery } from "@tanstack/react-query";
+import { useSnackbar } from "notistack";
+import { getNotifications } from "../api/notifications/requests";
 
 export const useNotifications = (userId?: string) => {
-  const { enqueueSnackbar } = useSnackbar()
+  const { enqueueSnackbar } = useSnackbar();
   const { data, isLoading } = useQuery(
-    ['notifications', userId],
-    () => getNotifications(userId ?? ''),
+    ["notifications", userId],
+    () => getNotifications(userId ?? ""),
     {
       enabled: !!userId,
       onError: () => {
         //some generic toast for every hook
-        enqueueSnackbar('Failed to load notifications', { variant: 'error' })
+        enqueueSnackbar("Failed to load notifications", { variant: "error" });
       },
     }
-  )
+  );
 
-  return { data, isLoading }
-}
+  return { data, isLoading };
+};
