@@ -35,13 +35,13 @@ import ChooseLocationScreen from "../screens/choose-location-screen";
 import AddBuddyScreen from "../screens/add-buddies-screen/add-buddies-screen";
 import AddBuddiesScreen from "../screens/add-buddies-screen/add-buddies-screen";
 import { ProfileEntryTypeEnum } from "../screens/profile-screen/types/profile-entry-type";
+import EditActivityScreen from "../screens/edit-activity-screen/edit-activity-screen";
 
 const Routes = () => {
   return (
     <BaseRoutes>
       <Route path={ApplicationLocations.LOADING} element={<LoadingScreen />} />
       <Route path={ApplicationLocations.LOGIN} element={<LoginScreen />} />
-
       <Route
         path={ApplicationLocations.FORGOTTEN_PASSWORD}
         element={<ForgottenPasswordScreen />}
@@ -55,7 +55,6 @@ const Routes = () => {
         path={ApplicationLocations.REGISTER}
         element={<RegistrationScreen />}
       />
-
       <Route
         path={ApplicationLocations.VERIFY}
         element={<VerificationScreen />}
@@ -127,6 +126,10 @@ const Routes = () => {
           element={<ActivityMembersScreen />}
         />
         <Route
+          path={`${ApplicationLocations.EDIT_ACTIVITY}/:id`}
+          element={<EditActivityScreen />}
+        />
+        <Route
           path={ApplicationLocations.CREATE}
           element={<CreateActivityScreen />}
         />
@@ -139,7 +142,6 @@ const Routes = () => {
           path={`${ApplicationLocations.MAP}/:activityId`}
           element={<MapScreen<IActivityRestDto> />}
         />
-
         <Route
           path={ApplicationLocations.SETTINGS}
           element={<SettingsScreen />}
