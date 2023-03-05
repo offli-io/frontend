@@ -1,0 +1,4 @@
+export const MIN_ACTIVITY_ATTENDANCE = 2;
+export const MAX_ACTIVITY_ATTENDANCE = 30;
+
+export const ACTIVITY_FEE_OPTIONS = []
