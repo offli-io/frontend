@@ -10,9 +10,17 @@ interface IProps {
   sx?: SxProps;
   onClick?: () => void;
   href?: string;
+  disabled?: boolean;
 }
 
-const ActionButton: React.FC<IProps> = ({ type, text, sx, onClick, href }) => {
+const ActionButton: React.FC<IProps> = ({
+  type,
+  text,
+  sx,
+  onClick,
+  href,
+  disabled,
+}) => {
   return (
     <Button
       sx={{
@@ -27,6 +35,7 @@ const ActionButton: React.FC<IProps> = ({ type, text, sx, onClick, href }) => {
       }}
       type={type}
       onClick={onClick}
+      disabled={disabled}
     >
       {href ? (
         <Link to={href!} style={{ textDecoration: "none" }}>

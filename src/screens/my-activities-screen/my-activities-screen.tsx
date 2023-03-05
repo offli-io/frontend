@@ -122,6 +122,15 @@ const ActivitiesScreen = () => {
               from: ApplicationLocations.ACTIVITIES,
             },
           });
+        case ActivityActionsTypeEnumDto.EDIT:
+          return navigate(
+            `${ApplicationLocations.EDIT_ACTIVITY}/${activityId}`,
+            {
+              state: {
+                from: ApplicationLocations.ACTIVITIES,
+              },
+            }
+          );
         default:
           return console.log(action);
       }
