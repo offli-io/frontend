@@ -1,3 +1,4 @@
+import { IUpdateActivityRequestDto } from './../../types/activities/update-activity-request.dto';
 import axios from "axios";
 import qs from "qs";
 import { DEFAULT_DEV_URL } from "../../assets/config";
@@ -282,6 +283,26 @@ export const acceptActivityInvitation = (
       cancelToken: source?.token,
     }
   );
+
+  //   queryFunctionContext?.signal?.addEventListener('abort', () => {
+  //     source.cancel('Query was cancelled by React Query')
+  //   })
+
+  return promise;
+};
+
+export const updateActivityInfo = (
+  activityId?: string,
+  values?: IUpdateActivityRequestDto
+) => {
+  const CancelToken = axios.CancelToken;
+  const source = CancelToken.source();
+
+  console.log(values);
+  
+  const promise = axios.put(`${DEFAULT_DEV_URL}/activities/${activityId}`, values, {
+    cancelToken: source?.token,
+  });
 
   //   queryFunctionContext?.signal?.addEventListener('abort', () => {
   //     source.cancel('Query was cancelled by React Query')
