@@ -9,7 +9,7 @@ import {
   Chip,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import BackHeader from "../../components/back-header";
 import { ICustomizedLocationStateDto } from "../../types/common/customized-location-state.dto";
 import { Controller, useForm } from "react-hook-form";
@@ -32,6 +32,11 @@ import {
 import ActionButton from "../../components/action-button";
 import { useTags } from "../../hooks/use-tags";
 import { IPredefinedTagDto } from "../../types/activities/predefined-tag.dto";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useSnackbar } from "notistack";
+import { ApplicationLocations } from "../../types/common/applications-locations.dto";
+import { updateActivityInfo } from "../../api/activities/requests";
+import { IUpdateActivityRequestDto } from "../../types/activities/update-activity-request.dto";
 
 interface IProps {}
 
@@ -40,11 +45,10 @@ interface IEditActivity {
   location: string;
   startDateTime: Date;
   endDateTime: Date;
-  isPrivate: boolean | undefined;
+  isPrivate: boolean;
   maxAttendance: number;
   price: string;
   additionalDesc: string;
-  // startTime: Dayjs | undefined;
 }
 
 interface ICategoryTag {
@@ -58,7 +62,7 @@ const schema: () => yup.SchemaOf<IEditActivity> = () =>
     location: yup.string().defined().required("Please enter the Location"),
     startDateTime: yup.date().defined().required("Please enter the Start Date"),
     endDateTime: yup.date().defined().required("Please enter the End Date"),
-    isPrivate: yup.boolean(),
+    isPrivate: yup.boolean().defined(),
     maxAttendance: yup
       .number()
       .defined()
@@ -80,15 +84,21 @@ const schema: () => yup.SchemaOf<IEditActivity> = () =>
 const EditActivityScreen: React.FC<IProps> = () => {
   const { id } = useParams();
   const location = useLocation();
-  const from = (location?.state as ICustomizedLocationStateDto)?.from;
   const theme = useTheme();
+  const queryClient = useQueryClient();
+  const { enqueueSnackbar } = useSnackbar();
+  const navigate = useNavigate();
+
+  const from = (location?.state as ICustomizedLocationStateDto)?.from;
   const lodash = require("lodash"); // to create array within given range easily
 
-  const [categoryTags, setCategoryTags] = useState<ICategoryTag[] | null>(null); /// TODO dat prec | null
+  const [categoryTags, setCategoryTags] = useState<ICategoryTag[]>([]); /// TODO dat prec | null
   const [activeCategoryTags, setActiveCategoryTags] = useState<string[]>([]);
 
   const { data: predefinedTags } = useTags();
   const { data: { data = {} } = {} }: any = useActivities({ id });
+
+  console.log(data);
 
   const { control, handleSubmit, reset, formState } = useForm<IEditActivity>({
     defaultValues: {
@@ -108,6 +118,7 @@ const EditActivityScreen: React.FC<IProps> = () => {
   useEffect(() => {
     // if predefinedTag is included in activity tags, set tag`s active param to true and vice versa,
     // also add active tags to activeCategoryTags, for easier insert of tags into PUT request
+    console.log("useeffect");
 
     let tagsTmp: ICategoryTag[] = [];
     let activeTagsTmp: string[] = [];
@@ -120,10 +131,9 @@ const EditActivityScreen: React.FC<IProps> = () => {
           }
           if (!data?.activity?.tags?.includes(tag?.title)) {
             tagsTmp.push({ title: tag?.title, active: false });
+          } else {
+            return;
           }
-          // else {
-          //   return;
-          // }
         });
         setCategoryTags(tagsTmp);
         setActiveCategoryTags(activeTagsTmp);
@@ -139,17 +149,18 @@ const EditActivityScreen: React.FC<IProps> = () => {
       setCategoryTags(newTagsArr);
     }
 
+    // mozno staci len na handleSubmit dat .filter(kde sa (ne)rovna active)
     if (activeCategoryTags) {
-      var newActiveCategoryTags = [...activeCategoryTags];
+      var newActiveTagsArr = [...activeCategoryTags];
       if (activeCategoryTags.includes(title)) {
-        var newActiveCategoryTags = activeCategoryTags.filter(function (e) {
+        newActiveTagsArr = activeCategoryTags.filter(function (e) {
           return e !== title;
         });
       }
       if (!activeCategoryTags.includes(title)) {
-        newActiveCategoryTags.push(title);
+        newActiveTagsArr.push(title);
       }
-      setActiveCategoryTags(newActiveCategoryTags);
+      setActiveCategoryTags(newActiveTagsArr);
     }
   };
 
@@ -180,13 +191,43 @@ const EditActivityScreen: React.FC<IProps> = () => {
     });
   }, [data]);
 
+  const { mutate: sendUpdateActivity } = useMutation(
+    ["update-profile-info"],
+    (values: IUpdateActivityRequestDto) => updateActivityInfo(id, values),
+    {
+      onSuccess: (data, variables) => {
+        // queryClient.invalidateQueries(["users"]);
+        enqueueSnackbar("Activity information was successfully updated", {
+          variant: "success",
+        });
+        // navigate(ApplicationLocations.ACTIVITIES);
+      },
+      onError: () => {
+        enqueueSnackbar("Failed to update activity info", {
+          variant: "error",
+        });
+      },
+    }
+  );
+
   const handleFormSubmit = React.useCallback((values: IEditActivity) => {
-    //OnSuccess
-    // queryClient.invalidateQueries(['user-info'])
-    // navigate(ApplicationLocations.PROFILE)
-    //sendUpdateProfile(values);
-    console.log(values);
-    console.log(categoryTags);
+    // console.log(values);
+
+    sendUpdateActivity({
+      title: values.title,
+      location: values.location,
+      startDateTime: values.startDateTime.toISOString(),
+      endDateTime: values.endDateTime.toISOString(),
+      isPrivate: values.isPrivate,
+      maxAttendance: values.maxAttendance,
+      price: values.price,
+      additionalDesc: values.additionalDesc,
+    });
+
+    // var newActiveTagsArr = categoryTags?.filter(function (e) {
+    //   return e.active !== true;
+    // });
+    // console.log(newActiveTagsArr);
   }, []);
 
   return (
@@ -363,7 +404,7 @@ const EditActivityScreen: React.FC<IProps> = () => {
                   <FormControlLabel
                     control={
                       <IOSSwitch
-                        {...field}
+                        // {...field} // TODO: jebe error kvoli ref
                         onChange={(e) => onChange(e.target.checked)}
                         checked={value}
                         sx={{ ml: 1, mr: 1.7 }}

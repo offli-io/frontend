@@ -1,3 +1,4 @@
+import { IUpdateActivityRequestDto } from "./../../types/activities/update-activity-request.dto";
 import axios from "axios";
 import qs from "qs";
 import { DEFAULT_DEV_URL } from "../../assets/config";
