@@ -100,7 +100,12 @@ const EditActivityScreen: React.FC<IProps> = () => {
 
   console.log(data);
 
-  const { control, handleSubmit, reset, formState } = useForm<IEditActivity>({
+  const {
+    control,
+    handleSubmit,
+    reset,
+    formState: { dirtyFields = [], isValid },
+  } = useForm<IEditActivity>({
     defaultValues: {
       title: "",
       location: "",
@@ -210,25 +215,38 @@ const EditActivityScreen: React.FC<IProps> = () => {
     }
   );
 
-  const handleFormSubmit = React.useCallback((values: IEditActivity) => {
-    // console.log(values);
+  const handleFormSubmit = React.useCallback(
+    (values: IEditActivity) => {
+      // console.log(values);
 
-    sendUpdateActivity({
-      title: values.title,
-      location: values.location,
-      startDateTime: values.startDateTime.toISOString(),
-      endDateTime: values.endDateTime.toISOString(),
-      isPrivate: values.isPrivate,
-      maxAttendance: values.maxAttendance,
-      price: values.price,
-      additionalDesc: values.additionalDesc,
-    });
+      let newValues = {};
 
-    // var newActiveTagsArr = categoryTags?.filter(function (e) {
-    //   return e.active !== true;
-    // });
-    // console.log(newActiveTagsArr);
-  }, []);
+      console.log(dirtyFields);
+
+      Object.keys(dirtyFields).forEach((field: string) => {
+        newValues = { ...newValues, [field]: (values as any)?.[field] };
+      });
+
+      console.log(newValues);
+
+      sendUpdateActivity({
+        title: values.title,
+        location: values.location,
+        startDateTime: values.startDateTime.toISOString(),
+        endDateTime: values.endDateTime.toISOString(),
+        isPrivate: values.isPrivate,
+        maxAttendance: values.maxAttendance,
+        price: values.price,
+        additionalDesc: values.additionalDesc,
+      });
+
+      // var newActiveTagsArr = categoryTags?.filter(function (e) {
+      //   return e.active !== true;
+      // });
+      // console.log(newActiveTagsArr);
+    },
+    [dirtyFields]
+  );
 
   return (
     <>
@@ -520,7 +538,7 @@ const EditActivityScreen: React.FC<IProps> = () => {
               type="submit"
               text="Save"
               sx={{ mt: 4 }}
-              disabled={!formState.isValid}
+              disabled={!isValid}
             />
           </form>
         </Box>
