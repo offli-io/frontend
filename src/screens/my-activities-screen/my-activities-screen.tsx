@@ -31,6 +31,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import PlaceIcon from "@mui/icons-material/Place";
 import { IActivity } from "../../types/activities/activity.dto";
 import FirstTimeLoginContent from "./components/first-time-login-content";
+import { SetLocationContent } from "./components/set-location-content";
 
 const ActivitiesScreen = () => {
   const { userInfo, isFirstTimeLogin, setIsFirstTimeLogin } = React.useContext(
@@ -161,6 +162,18 @@ const ActivitiesScreen = () => {
     [myActivities]
   );
 
+  const handleLocationSelect = React.useCallback(() => {
+    toggleDrawer({
+      open: true,
+      content: (
+        <SetLocationContent
+          onLocationSelect={(location) => console.log(location)}
+        />
+      ),
+      onClose: () => setIsFirstTimeLogin?.(false),
+    });
+  }, []);
+
   React.useEffect(() => {
     Boolean(isFirstTimeLogin) &&
       toggleDrawer({
@@ -188,6 +201,7 @@ const ActivitiesScreen = () => {
           variant="text"
           sx={{ fontSize: 16 }}
           startIcon={<PlaceIcon sx={{ fontSize: "1.4rem" }} />}
+          onClick={handleLocationSelect}
         >
           Bratislava
         </OffliButton>
