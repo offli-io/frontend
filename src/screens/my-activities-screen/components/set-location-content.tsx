@@ -186,6 +186,7 @@ export const SetLocationContent: React.FC<IPlaceFormProps> = ({
           startIcon={<NearMeIcon />}
           sx={{ width: "100%", my: 4 }}
           onClick={handleUseCurrentLocation}
+          disabled={!coords}
         >
           Use my current location
         </OffliButton>
