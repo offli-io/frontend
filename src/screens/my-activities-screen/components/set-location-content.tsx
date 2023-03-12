@@ -16,16 +16,20 @@ import React from "react";
 import { Controller, UseFormReturn } from "react-hook-form";
 import OffliButton from "../../../components/offli-button";
 import activityLocation from "../../../assets/img/activity-location.svg";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { getLocationFromQuery } from "../../../api/activities/requests";
 import { useDebounce } from "use-debounce";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import { IPlaceExternalApiDto } from "../../../types/activities/place-external-api.dto";
 import { ILocation } from "../../../types/activities/location.dto";
 import NearMeIcon from "@mui/icons-material/NearMe";
+import { useCurrentLocation } from "../../../hooks/use-current-location";
+import { useGeolocated } from "react-geolocated";
+import { useNavigate } from "react-router-dom";
+import { ApplicationLocations } from "../../../types/common/applications-locations.dto";
 
 interface IPlaceFormProps {
-  onLocationSelect: (location: ILocation) => void;
+  onLocationSelect: (location: any) => void;
 }
 
 export const SetLocationContent: React.FC<IPlaceFormProps> = ({
@@ -35,6 +39,19 @@ export const SetLocationContent: React.FC<IPlaceFormProps> = ({
   const [selectedLocation, setSelectedLocation] = React.useState<
     IPlaceExternalApiDto | undefined | null
   >();
+
+  const queryClient = useQueryClient();
+
+  const { coords, isGeolocationAvailable, isGeolocationEnabled, getPosition } =
+    useGeolocated({
+      positionOptions: {
+        enableHighAccuracy: false,
+      },
+      //   userDecisionTimeout: 5000,
+      //   suppressLocationOnMount: true,
+    });
+
+  console.log(coords);
 
   // filter backend results based on query string
   const [queryString] = useDebounce(placeQuery, 1000);
@@ -46,6 +63,11 @@ export const SetLocationContent: React.FC<IPlaceFormProps> = ({
       enabled: !!queryString,
     }
   );
+
+  const handleUseCurrentLocation = React.useCallback(() => {
+    queryClient.setQueryData(["current-location"], { coords });
+    onLocationSelect(coords);
+  }, [coords]);
 
   return (
     <>
@@ -81,7 +103,7 @@ export const SetLocationContent: React.FC<IPlaceFormProps> = ({
           //   mb: 30,
         }}
       >
-        <Autocomplete
+        {/* <Autocomplete
           value={selectedLocation}
           options={data?.data ?? []}
           sx={{
@@ -108,8 +130,12 @@ export const SetLocationContent: React.FC<IPlaceFormProps> = ({
               onChange={(e) => setPlaceQuery(e.target.value)}
             />
           )}
-        />
-        <OffliButton startIcon={<NearMeIcon />} sx={{ width: "100%", my: 4 }}>
+        /> */}
+        <OffliButton
+          startIcon={<NearMeIcon />}
+          sx={{ width: "100%", my: 4 }}
+          onClick={handleUseCurrentLocation}
+        >
           Use my current location
         </OffliButton>
       </Box>

@@ -46,6 +46,8 @@ const ActivitiesScreen = () => {
   const { data: { data: { activities = [] } = {} } = {}, isLoading } =
     useActivities<IActivityListRestDto>();
 
+  console.log(queryClient.getQueryData(["current-location"]));
+
   // const { data: { data: { activities = [] } = {} } = {}, isLoading } = useQuery(
   //   ["activities"],
   //   () => getActivity<IActivityListRestDto>({ id: undefined }),
@@ -167,7 +169,10 @@ const ActivitiesScreen = () => {
       open: true,
       content: (
         <SetLocationContent
-          onLocationSelect={(location) => console.log(location)}
+          onLocationSelect={(location) => {
+            toggleDrawer({ open: false, content: undefined });
+            console.log(location);
+          }}
         />
       ),
       onClose: () => setIsFirstTimeLogin?.(false),

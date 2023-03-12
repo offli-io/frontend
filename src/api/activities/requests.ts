@@ -8,7 +8,10 @@ import {
   IPersonExtended,
 } from "../../types/activities/activity.dto";
 import { ICreateActivityRequestDto } from "../../types/activities/create-activity-request.dto";
-import { IPlaceExternalApiDto } from "../../types/activities/place-external-api.dto";
+import {
+  IPlaceExternalApiDto,
+  IPlaceExternalApiFetchDto,
+} from "../../types/activities/place-external-api.dto";
 import { IPredefinedPictureDto } from "../../types/activities/predefined-picture.dto";
 import { IPredefinedTagDto } from "../../types/activities/predefined-tag.dto";
 
@@ -91,7 +94,63 @@ export const getLocationFromQuery = (queryString: string) => {
   const source = CancelToken.source();
 
   const promise = axios.get<IPlaceExternalApiDto[]>(
-    `https://nominatim.openstreetmap.org/search?q=${queryString}&format=jsonv2`,
+    // `https://nominatim.openstreetmap.org/search?q=${queryString}&format=jsonv2`,
+    `https://api.geoapify.com/v1/geocode/search?name=${queryString}&limit=10&format=json&apiKey=86a10638b4cf4c339ade6ab08f753b16
+    `,
+    {
+      cancelToken: source?.token,
+      headers: {
+        origin: "https://localhost:3000/",
+        "Access-Control-Allow-Origin": "*",
+      },
+    }
+  );
+
+  // queryFunctionContext?.signal?.addEventListener('abort', () => {
+  //   source.cancel('Query was cancelled by React Query')
+  // })
+
+  return promise;
+};
+
+export const getLocationFromQueryFetch = (
+  queryString: string
+): Promise<IPlaceExternalApiFetchDto> => {
+  const CancelToken = axios.CancelToken;
+  const source = CancelToken.source();
+
+  // const promise = axios.get<IPlaceExternalApiDto[]>(
+  //   // `https://nominatim.openstreetmap.org/search?q=${queryString}&format=jsonv2`,
+  //   `https://api.geoapify.com/v1/geocode/search?name=${queryString}&limit=10&format=json&apiKey=86a10638b4cf4c339ade6ab08f753b16
+  //   `,
+  //   {
+  //     cancelToken: source?.token,
+  //   }
+  // );
+
+  var requestOptions = {
+    method: "GET",
+  };
+
+  const promise = fetch(
+    `https://api.geoapify.com/v1/geocode/search?name=${queryString}&limit=10&format=json&apiKey=86a10638b4cf4c339ade6ab08f753b16`,
+    requestOptions
+  ).then((response) => response.json());
+
+  // queryFunctionContext?.signal?.addEventListener('abort', () => {
+  //   source.cancel('Query was cancelled by React Query')
+  // })
+
+  return promise;
+};
+
+export const getPlaceFromCoordinates = (lat: number, lon: number) => {
+  const CancelToken = axios.CancelToken;
+  const source = CancelToken.source();
+
+  const promise = axios.get<IPlaceExternalApiDto[]>(
+    `https://api.geoapify.com/v1/geocode/reverse?lat=${lat}&lon=${lon}&format=json&apiKey=YOUR_API_KEY
+    `,
     {
       cancelToken: source?.token,
     }
