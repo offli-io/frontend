@@ -32,6 +32,7 @@ import PlaceIcon from "@mui/icons-material/Place";
 import { IActivity } from "../../types/activities/activity.dto";
 import FirstTimeLoginContent from "./components/first-time-login-content";
 import { SetLocationContent } from "./components/set-location-content";
+import { ILocation } from "../../types/activities/location.dto";
 
 const ActivitiesScreen = () => {
   const { userInfo, isFirstTimeLogin, setIsFirstTimeLogin } = React.useContext(
@@ -42,6 +43,15 @@ const ActivitiesScreen = () => {
   const { enqueueSnackbar } = useSnackbar();
   const queryClient = useQueryClient();
   const [isSearchFocused, setIsSearchFocused] = React.useState(false);
+
+  const storageLocation = sessionStorage.getItem("current_location");
+  const _storageLocation = !!storageLocation
+    ? JSON.parse(storageLocation)
+    : null;
+
+  const [selectedLocation, setSelectedLocation] = React.useState<
+    ILocation | undefined | null
+  >(_storageLocation ?? userInfo?.location);
 
   const { data: { data: { activities = [] } = {} } = {}, isLoading } =
     useActivities<IActivityListRestDto>();
@@ -171,11 +181,15 @@ const ActivitiesScreen = () => {
         <SetLocationContent
           onLocationSelect={(location) => {
             toggleDrawer({ open: false, content: undefined });
-            console.log(location);
+            setSelectedLocation(location);
+            sessionStorage.setItem(
+              "current_location",
+              JSON.stringify(location)
+            );
           }}
         />
       ),
-      onClose: () => setIsFirstTimeLogin?.(false),
+      // onClose: () => setIsFirstTimeLogin?.(false),
     });
   }, []);
 
@@ -208,7 +222,7 @@ const ActivitiesScreen = () => {
           startIcon={<PlaceIcon sx={{ fontSize: "1.4rem" }} />}
           onClick={handleLocationSelect}
         >
-          Bratislava
+          {selectedLocation?.name ?? "No location found"}
         </OffliButton>
       </Box>
       <Autocomplete

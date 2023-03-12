@@ -144,17 +144,18 @@ export const getLocationFromQueryFetch = (
   return promise;
 };
 
-export const getPlaceFromCoordinates = (lat: number, lon: number) => {
-  const CancelToken = axios.CancelToken;
-  const source = CancelToken.source();
+export const getPlaceFromCoordinates = (
+  lat: number,
+  lon: number
+): Promise<IPlaceExternalApiFetchDto> => {
+  var requestOptions = {
+    method: "GET",
+  };
 
-  const promise = axios.get<IPlaceExternalApiDto[]>(
-    `https://api.geoapify.com/v1/geocode/reverse?lat=${lat}&lon=${lon}&format=json&apiKey=YOUR_API_KEY
-    `,
-    {
-      cancelToken: source?.token,
-    }
-  );
+  const promise = fetch(
+    `https://api.geoapify.com/v1/geocode/reverse?lat=${lat}&lon=${lon}&limit=10&format=json&apiKey=86a10638b4cf4c339ade6ab08f753b16`,
+    requestOptions
+  ).then((response) => response.json());
 
   // queryFunctionContext?.signal?.addEventListener('abort', () => {
   //   source.cancel('Query was cancelled by React Query')

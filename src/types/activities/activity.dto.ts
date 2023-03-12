@@ -23,7 +23,7 @@ export interface IPersonExtended {
   activities_participated_last_month_count?: number;
   about_me?: string | null;
   birthdate?: Date | null;
-  location?: string | null;
+  location?: ILocation | null;
 }
 
 export interface IActivityLocation {
