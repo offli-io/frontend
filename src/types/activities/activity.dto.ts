@@ -2,10 +2,10 @@ import { ActivityVisibilityEnum } from "./activity-visibility-enum.dto";
 import { ILocation } from "./location.dto";
 
 export interface IPerson {
-  id: string;
-  name: string;
-  username: string;
-  profile_photo: string;
+  id?: string;
+  name?: string;
+  username?: string;
+  profile_photo?: string;
 }
 
 export interface IPersonExtended {

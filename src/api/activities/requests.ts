@@ -1,12 +1,14 @@
 import axios from "axios";
 import qs from "qs";
 import { DEFAULT_DEV_URL } from "../../assets/config";
+import { ActivityInviteStateEnum } from "../../types/activities/activity-invite-state-enum.dto";
 import {
   IActivity,
   IActivitySearchParams,
   IPerson,
   IPersonExtended,
 } from "../../types/activities/activity.dto";
+import { ICreateActivityParticipantRequestDto } from "../../types/activities/create-activity-participant-request.dto";
 import { ICreateActivityRequestDto } from "../../types/activities/create-activity-request.dto";
 import {
   IPlaceExternalApiDto,
@@ -250,13 +252,16 @@ export const getPredefinedTags = () => {
   return promise;
 };
 
-export const inviteBuddy = (activityId: string, values: any) => {
+export const inviteBuddy = (
+  activityId: string,
+  userInfo: ICreateActivityParticipantRequestDto
+) => {
   const CancelToken = axios.CancelToken;
   const source = CancelToken.source();
 
   const promise = axios.post(
-    `${DEFAULT_DEV_URL}/activities/${activityId}/invitations`,
-    { ...values, profile_photo: values?.profile_photo_url },
+    `${DEFAULT_DEV_URL}/activities/${activityId}/participants`,
+    userInfo,
     {
       cancelToken: source?.token,
     }
@@ -269,12 +274,12 @@ export const inviteBuddy = (activityId: string, values: any) => {
   return promise;
 };
 
-export const uninviteBuddy = (activityId: number, personId: number) => {
+export const uninviteBuddy = (activityId: string, userId: string) => {
   const CancelToken = axios.CancelToken;
   const source = CancelToken.source();
 
   const promise = axios.delete(
-    `/activity/${activityId}/invitation/${personId}`,
+    `/activity/${activityId}/participants/${userId}`,
     {
       cancelToken: source?.token,
     }
@@ -299,7 +304,7 @@ export const getPredefinedPhotos = (tag?: string[]) => {
         tag,
       },
       paramsSerializer: (params) => {
-        return qs.stringify(params);
+        return qs.stringify(params, { arrayFormat: "repeat" });
       },
     }
   );
