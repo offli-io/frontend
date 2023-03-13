@@ -1,7 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { useSnackbar } from "notistack";
-import { getActivity, getUsers } from "../api/activities/requests";
-import { getNotifications } from "../api/notifications/requests";
+import { getActivity } from "../api/activities/requests";
 
 export const useActivities = <T>({
   id,

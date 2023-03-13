@@ -48,6 +48,7 @@ export interface IActivity {
   datetime_until?: Date | string;
   location?: ILocation;
   tags?: string[];
+  participants_thumb?: IPerson[];
   //TODO mozne nejake enumy na "public/private"
   visibility?: ActivityVisibilityEnum | string;
   limit?: number;

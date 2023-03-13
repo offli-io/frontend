@@ -3,5 +3,5 @@ import { IPerson } from "./activity.dto";
 
 export interface ICreateActivityParticipantRequestDto extends IPerson {
   status?: ActivityInviteStateEnum;
-  invitedBy?: string;
+  invited_by?: string;
 }

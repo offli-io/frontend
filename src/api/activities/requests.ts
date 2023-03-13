@@ -10,6 +10,7 @@ import {
 } from "../../types/activities/activity.dto";
 import { ICreateActivityParticipantRequestDto } from "../../types/activities/create-activity-participant-request.dto";
 import { ICreateActivityRequestDto } from "../../types/activities/create-activity-request.dto";
+import { IListActivitiesResponseDto } from "../../types/activities/list-activities-response.dto";
 import {
   IPlaceExternalApiDto,
   IPlaceExternalApiFetchDto,
@@ -58,6 +59,32 @@ export const getActivity = <T>({
       paramsSerializer: (params) => {
         return qs.stringify(params, { arrayFormat: "repeat" });
       },
+    }
+    // {
+
+    //   params: searchParams,
+    //   cancelToken: source?.token,
+    // }
+  );
+
+  // queryFunctionContext?.signal?.addEventListener('abort', () => {
+  //   source.cancel('Query was cancelled by React Query')
+  // })
+
+  return promise;
+};
+
+export const getParticipantActivities = ({ userId }: { userId?: string }) => {
+  const promise = axios.get<IListActivitiesResponseDto>(
+    `${DEFAULT_DEV_URL}/participants/${userId}/activities`,
+    {
+      // params: {
+      //   text,
+      //   tag,
+      // },
+      // paramsSerializer: (params) => {
+      //   return qs.stringify(params, { arrayFormat: "repeat" });
+      // },
     }
     // {
 
@@ -279,7 +306,7 @@ export const uninviteBuddy = (activityId: string, userId: string) => {
   const source = CancelToken.source();
 
   const promise = axios.delete(
-    `/activity/${activityId}/participants/${userId}`,
+    `/activities/${activityId}/participants/${userId}`,
     {
       cancelToken: source?.token,
     }

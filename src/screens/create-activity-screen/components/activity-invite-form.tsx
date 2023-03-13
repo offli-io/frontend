@@ -105,12 +105,13 @@ export const ActivityInviteForm: React.FC<IActivityTypeFormProps> = ({
     (buddy?: IPerson) =>
       inviteBuddy(String(activityId?.id), {
         ...buddy,
-        invitedBy: userInfo?.id,
+        invited_by: userInfo?.id,
         status: ActivityInviteStateEnum.INVITED,
+        profile_photo: (buddy as any)?.profile_photo_url,
       }),
     {
-      onSuccess: (data, buddyId) => {
-        setInvitedBuddies([...invitedBuddies, String(buddyId)]);
+      onSuccess: (data, buddy) => {
+        setInvitedBuddies([...invitedBuddies, String(buddy?.id)]);
       },
       onError: (error) => {
         enqueueSnackbar("Failed to invite user", { variant: "error" });
@@ -133,14 +134,17 @@ export const ActivityInviteForm: React.FC<IActivityTypeFormProps> = ({
     }
   );
 
-  const handleBuddyInviteClick = React.useCallback((buddy: IPerson) => {
-    //fire request for invite
-    if (invitedBuddies?.includes(String(buddy?.id))) {
-      sendUninviteBuddy(buddy?.id);
-    } else {
-      sendInviteBuddy(buddy);
-    }
-  }, []);
+  const handleBuddyInviteClick = React.useCallback(
+    (buddy: IPerson) => {
+      //fire request for invite
+      if (invitedBuddies?.includes(String(buddy?.id))) {
+        sendUninviteBuddy(buddy?.id);
+      } else {
+        sendInviteBuddy(buddy);
+      }
+    },
+    [invitedBuddies, sendInviteBuddy, sendUninviteBuddy]
+  );
 
   return (
     <>
