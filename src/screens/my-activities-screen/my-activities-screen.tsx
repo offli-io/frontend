@@ -332,44 +332,27 @@ const ActivitiesScreen = () => {
                   See all
                 </OffliButton>
               </Box>
-              {/* <Box
+              <Box
                 sx={{
-                  // display: "flex",
-                  // overflow: "auto",
-                  // scrollSnapType: "x mandatory",
-                  // "& > *": {
-                  //   scrollSnapAlign: "center",
-                  // },
-                  // "::-webkit-scrollbar": { display: "none" },
-                  // my: 2,
-                  width: 500,
+                  display: "flex",
                   overflowX: "scroll",
-                  whiteSpace: "nowrap",
+                  width: "100%",
+                  "::-webkit-scrollbar": { display: "none" },
                 }}
               >
                 {participantActivites?.map((activity) => {
-                  return <Box sx={{ width: 200, height: 100 }}>Lol</Box>;
+                  return (
+                    <MyActivityCard
+                      key={activity?.id}
+                      activity={activity}
+                      onPress={openActivityActions}
+                      sx={{
+                        minWidth:
+                          participantActivites?.length <= 1 ? "100%" : "80%",
+                      }}
+                    />
+                  );
                 })}
-              </Box> */}
-              <Box
-                sx={{
-                  height: 120,
-                  overflowX: "auto",
-                  overflowY: "hidden",
-                  whiteSpace: "nowrap",
-                }}
-              >
-                <Box
-                  sx={{
-                    display: "inline-block",
-                    whiteSpace: "nowrap",
-                    width: 200,
-                  }}
-                >
-                  Lol
-                </Box>
-                ;<Box sx={{ width: 200, height: 100 }}>Lol</Box>;
-                <Box sx={{ width: 200, height: 100 }}>Lol</Box>;
               </Box>
             </>
           )}
