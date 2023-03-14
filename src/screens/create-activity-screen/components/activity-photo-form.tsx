@@ -261,7 +261,7 @@ export const ActivityPhotoForm: React.FC<IActivityPhotoFormProps> = ({
         </OffliButton> */}
         <OffliButton
           sx={{ width: "60%" }}
-          disabled={!formState.isValid}
+          disabled={!formState.isValid || !selectedPhoto}
           type="submit"
         >
           Create

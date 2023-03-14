@@ -87,28 +87,28 @@ export const AuthenticationProvider = ({
 
   const isLogin = window?.location?.href?.includes("login");
 
-  const { isLoading, mutate: sendAuthenticateViaGoogle } = useMutation(
-    ["google-login"],
-    (authorizationCode?: string) => {
-      return isLogin
-        ? loginViaGoogle({ authorizationCode })
-        : registerViaGoogle({ authorizationCode });
-    },
-    {
-      onSuccess: (data, params) => {
-        console.log(data?.data);
-        // setAuthToken(data?.data?.access_token)
-        // setRefreshToken(data?.data?.refresh_token)
-        // setStateToken(data?.data?.token?.access_token ?? null);
-        // !!setUserInfo && setUserInfo({ username: params?.username });
-        // localStorage.setItem("username", params?.username);
-        // navigate(ApplicationLocations.ACTIVITIES);
-      },
-      onError: (error) => {
-        enqueueSnackbar("Failed to log in", { variant: "error" });
-      },
-    }
-  );
+  // const { isLoading, mutate: sendAuthenticateViaGoogle } = useMutation(
+  //   ["google-login"],
+  //   (authorizationCode?: string) => {
+  //     return isLogin
+  //       ? loginViaGoogle({ authorizationCode })
+  //       : registerViaGoogle({ authorizationCode });
+  //   },
+  //   {
+  //     onSuccess: (data, params) => {
+  //       console.log(data?.data);
+  //       // setAuthToken(data?.data?.access_token)
+  //       // setRefreshToken(data?.data?.refresh_token)
+  //       // setStateToken(data?.data?.token?.access_token ?? null);
+  //       // !!setUserInfo && setUserInfo({ username: params?.username });
+  //       // localStorage.setItem("username", params?.username);
+  //       // navigate(ApplicationLocations.ACTIVITIES);
+  //     },
+  //     onError: (error) => {
+  //       enqueueSnackbar("Failed to log in", { variant: "error" });
+  //     },
+  //   }
+  // );
 
   //another way just to inform with boolean,
   //const [authenticated, setIsAuthenticated] = React.useState<boolean>(false)
@@ -119,12 +119,12 @@ export const AuthenticationProvider = ({
     }
   }, [stateToken]);
 
-  async function handleCredentialResponse(response: any) {
-    console.log("Encoded JWT ID token: " + response.credential);
-    const decoded: any = jwt_decode(response.credential);
-    console.log(decoded);
-    sendAuthenticateViaGoogle(response.credential);
-  }
+  // async function handleCredentialResponse(response: any) {
+  //   console.log("Encoded JWT ID token: " + response.credential);
+  //   const decoded: any = jwt_decode(response.credential);
+  //   console.log(decoded);
+  //   sendAuthenticateViaGoogle(response.credential);
+  // }
 
   React.useEffect(() => {
     // if I get instagram code, exchange it for access token
@@ -180,21 +180,19 @@ export const AuthenticationProvider = ({
 
   React.useEffect(() => {
     /* global google */
-    google?.accounts?.id.initialize({
-      client_id: CLIENT_ID,
-      callback: handleCredentialResponse,
-    });
-
-    google?.accounts?.id.renderButton(
-      document.getElementById("signIn") as HTMLElement,
-      {
-        type: "standard",
-        theme: "outline",
-        size: "large",
-        width: "270px",
-      }
-    );
-
+    // google?.accounts?.id.initialize({
+    //   client_id: CLIENT_ID,
+    //   callback: handleCredentialResponse,
+    // });
+    // google?.accounts?.id.renderButton(
+    //   document.getElementById("signIn") as HTMLElement,
+    //   {
+    //     type: "standard",
+    //     theme: "outline",
+    //     size: "large",
+    //     width: "270px",
+    //   }
+    // );
     // TODO old way maybe if I can call this with params I can use it later
     // setGoogleTokenClient(
     //   google.accounts.oauth2.initTokenClient({

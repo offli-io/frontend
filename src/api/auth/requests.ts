@@ -6,6 +6,7 @@ import { IVerifyEmailRequestDto } from "../../types/auth/verify-email-request.dt
 import { IConfirmResetPasswordDto } from "../../types/auth/confirm-reset-password.dto";
 import { ICheckResetPasswordVerificationCodeRequest } from "../../types/auth/check-reset-password-verification-code-request.dto";
 import { IGoogleLoginRequestDto } from "../../types/auth/google-login-request.dto";
+import { CLIENT_ID } from "../../utils/common-constants";
 
 export const refreshTokenSetup = (res: any) => {
   const refreshTiming = (res.tokenObj.expires_in || 3600 - 5 * 60) * 1000;
@@ -26,13 +27,13 @@ export const loginUser = (values: ILoginRequestDto) => {
   return promise;
 };
 
-export const loginViaGoogle = (values: IGoogleLoginRequestDto) => {
+export const loginViaGoogle = (accessToken?: string) => {
   const CancelToken = axios.CancelToken;
   const source = CancelToken.source();
 
   const promise = axios.post<ILoginResponseDto>(
     `${DEFAULT_DEV_URL}/google/login`,
-    values,
+    { googleBearerToken: accessToken },
     {
       cancelToken: source?.token,
     }
@@ -40,13 +41,25 @@ export const loginViaGoogle = (values: IGoogleLoginRequestDto) => {
   return promise;
 };
 
-export const registerViaGoogle = (values: IGoogleLoginRequestDto) => {
+export const getBearerToken = (code?: string, type?: "login" | "register") => {
+  const promise = axios.post("https://www.googleapis.com/oauth2/v4/token", {
+    client_id: CLIENT_ID,
+    client_secret: "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",
+    code,
+    grant_type: "authorization_code",
+    redirect_uri: `https://localhost:3000/${type}/`,
+  });
+
+  return promise;
+};
+
+export const registerViaGoogle = async (accessToken?: string) => {
   const CancelToken = axios.CancelToken;
   const source = CancelToken.source();
 
   const promise = axios.post<ILoginResponseDto>(
     `${DEFAULT_DEV_URL}/google/registration`,
-    values,
+    { googleBearerToken: accessToken },
     {
       cancelToken: source?.token,
     }

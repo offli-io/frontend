@@ -95,7 +95,7 @@ const EditProfileScreen: React.FC = () => {
       defaultValues: {
         name: "",
         about_me: "",
-        location: "",
+        // location: "",
         birthdate: null,
         instagram: "",
       },
@@ -110,7 +110,7 @@ const EditProfileScreen: React.FC = () => {
       name: data?.name,
       // aboutMe: data?.data?.name, // TODO: doplnit udaje na BE a pripojit FE
       about_me: data?.about_me ?? "",
-      location: data?.location ?? "",
+      // location: data?.location ?? "",
       // fix this mby later
       birthdate: (data?.birthdate as Date) ?? null,
       // birthDate: '',

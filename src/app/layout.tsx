@@ -3,10 +3,11 @@ import BottomNavigator from "../components/bottom-navigator";
 import React from "react";
 import Routes from "../routes/routes";
 import OffliHeader from "../components/offli-header";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Box } from "@mui/material";
 import { ApplicationLocations } from "../types/common/applications-locations.dto";
 import BackHeader from "../components/back-header";
+import { useUsers } from "../hooks/use-users";
 interface ILayoutProps {
   children?: React.ReactNode;
 }
@@ -14,10 +15,23 @@ interface ILayoutProps {
 const NOT_EXACT_UNALLOWED_URLS = ["/request", "/map/", "/profile/buddy"];
 
 export const Layout: React.FC<ILayoutProps> = ({ children }) => {
-  const { stateToken } = React.useContext(AuthenticationContext);
+  const { stateToken, userInfo } = React.useContext(AuthenticationContext);
   const location = useLocation();
+  const navigate = useNavigate();
 
   const [displayHeader, setDisplayHeader] = React.useState(true);
+  const [displayBottomNavigator, setDisplayBottomNavigator] =
+    React.useState(true);
+
+  const { data: { data } = {}, isLoading } = useUsers({
+    id: userInfo?.id,
+  });
+
+  React.useEffect(() => {
+    if (!!data && !data?.username && stateToken) {
+      navigate(ApplicationLocations.CHOOSE_USERNAME_GOOGLE);
+    }
+  }, [data]);
 
   React.useEffect(() => {
     if (
@@ -27,6 +41,7 @@ export const Layout: React.FC<ILayoutProps> = ({ children }) => {
         // ApplicationLocations.SEARCH,
         ApplicationLocations.MAP,
         ApplicationLocations.BUDDIES,
+        ApplicationLocations.CHOOSE_USERNAME_GOOGLE,
         //ApplicationLocations.NOTIFICATIONS,
         // `${ApplicationLocations.PROFILE}/request`,
         // `${ApplicationLocations.ACTIVITIES}/request`,
@@ -40,6 +55,19 @@ export const Layout: React.FC<ILayoutProps> = ({ children }) => {
       setDisplayHeader(true);
     }
   }, [location]);
+
+  React.useEffect(() => {
+    if (
+      [ApplicationLocations.CHOOSE_USERNAME_GOOGLE].includes(
+        location?.pathname as ApplicationLocations
+      )
+    ) {
+      setDisplayBottomNavigator(false);
+    } else {
+      setDisplayBottomNavigator(true);
+    }
+  }, [location]);
+
   return (
     <>
       <Box
@@ -63,7 +91,9 @@ export const Layout: React.FC<ILayoutProps> = ({ children }) => {
         >
           <Routes />
         </Box>
-        {stateToken && <BottomNavigator sx={{ height: "100%" }} />}
+        {stateToken && displayBottomNavigator && (
+          <BottomNavigator sx={{ height: "100%" }} />
+        )}
       </Box>
     </>
   );

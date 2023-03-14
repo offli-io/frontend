@@ -24,10 +24,11 @@ import { checkIfEmailAlreadyTaken, preCreateUser } from "../api/users/requests";
 import { ApplicationLocations } from "../types/common/applications-locations.dto";
 import { IEmailPassword } from "../types/users/user.dto";
 import { CLIENT_ID } from "../utils/common-constants";
-import { registerViaGoogle } from "../api/auth/requests";
+import { getBearerToken, registerViaGoogle } from "../api/auth/requests";
 import { useSnackbar } from "notistack";
 import { getGoogleUrl } from "../utils/token.util";
 import OffliBackButton from "../components/offli-back-button";
+import { AuthenticationContext } from "../assets/theme/authentication-provider";
 
 const schema: () => yup.SchemaOf<IEmailPassword> = () =>
   yup.object({
@@ -52,6 +53,9 @@ export const RegistrationScreen: React.FC = () => {
   const queryParameters = new URLSearchParams(window.location.search);
   const authorizationCode = queryParameters.get("code");
   const { enqueueSnackbar } = useSnackbar();
+  const { setUserInfo, setStateToken } = React.useContext(
+    AuthenticationContext
+  );
 
   const queryClient = useQueryClient();
   const navigate = useNavigate();
@@ -64,18 +68,42 @@ export const RegistrationScreen: React.FC = () => {
     }
   );
 
-  const { mutate: sendRegisterViaGoogle } = useMutation(
+  const { mutate: sendGetBearerToken } = useMutation(
     ["google-registration"],
-    (authorizationCode?: string) => registerViaGoogle({ authorizationCode }),
+    (authorizationCode?: string) =>
+      getBearerToken(authorizationCode, "register"),
     {
       onSuccess: (data, params) => {
-        // console.log(data?.data);
-        // setAuthToken(data?.data?.access_token)
-        // setRefreshToken(data?.data?.refresh_token)
+        data?.data?.access_token &&
+          sendRegisterViaGoogle(data?.data?.access_token);
         // setStateToken(data?.data?.token?.access_token ?? null);
-        // !!setUserInfo && setUserInfo({ username: params?.username });
-        // localStorage.setItem("username", params?.username);
+        // !!setUserInfo && setUserInfo({ id: data?.data?.user_id });
+        // data?.data?.user_id &&
+        //   localStorage.setItem("userId", data?.data?.user_id);
         // navigate(ApplicationLocations.ACTIVITIES);
+      },
+      onError: (error) => {
+        // enqueueSnackbar("Registration with google failed", {
+        //   variant: "error",
+        // });
+        //TODO debug why there are 2 requests
+      },
+    }
+  );
+
+  const { mutate: sendRegisterViaGoogle } = useMutation(
+    ["google-registration"],
+    (authorizationCode?: string) => registerViaGoogle(authorizationCode),
+    {
+      onSuccess: (data, params) => {
+        enqueueSnackbar("You account has been successfully registered", {
+          variant: "success",
+        });
+        setStateToken(data?.data?.token?.access_token ?? null);
+        !!setUserInfo && setUserInfo({ id: data?.data?.user_id });
+        data?.data?.user_id &&
+          localStorage.setItem("userId", data?.data?.user_id);
+        navigate(ApplicationLocations.ACTIVITIES);
       },
       onError: (error) => {
         enqueueSnackbar("Registration with google failed", {
@@ -101,7 +129,7 @@ export const RegistrationScreen: React.FC = () => {
 
   React.useEffect(() => {
     if (authorizationCode) {
-      sendRegisterViaGoogle(authorizationCode);
+      sendGetBearerToken(authorizationCode);
     }
   }, [authorizationCode]);
 

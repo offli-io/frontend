@@ -12,6 +12,7 @@ import { PageWrapper } from "../../components/page-wrapper";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   getActivity,
+  inviteBuddy,
   removePersonFromActivity,
 } from "../../api/activities/requests";
 import { AuthenticationContext } from "../../assets/theme/authentication-provider";
@@ -29,11 +30,16 @@ import ActivityCard from "../../components/activity-card";
 import OffliButton from "../../components/offli-button";
 import SearchIcon from "@mui/icons-material/Search";
 import PlaceIcon from "@mui/icons-material/Place";
-import { IActivity } from "../../types/activities/activity.dto";
+import { IActivity, IPerson } from "../../types/activities/activity.dto";
 import FirstTimeLoginContent from "./components/first-time-login-content";
+import { SetLocationContent } from "./components/set-location-content";
+import { ILocation } from "../../types/activities/location.dto";
+import { ActivityInviteStateEnum } from "../../types/activities/activity-invite-state-enum.dto";
+import { useUsers } from "../../hooks/use-users";
+import { useParticipantActivities } from "../../hooks/use-participant-activities";
 
 const ActivitiesScreen = () => {
-  const { userInfo, isFirstTimeLogin } = React.useContext(
+  const { userInfo, isFirstTimeLogin, setIsFirstTimeLogin } = React.useContext(
     AuthenticationContext
   );
   const { toggleDrawer } = React.useContext(DrawerContext);
@@ -42,8 +48,39 @@ const ActivitiesScreen = () => {
   const queryClient = useQueryClient();
   const [isSearchFocused, setIsSearchFocused] = React.useState(false);
 
+  const storageLocation = sessionStorage.getItem("current_location");
+  const _storageLocation = !!storageLocation
+    ? JSON.parse(storageLocation)
+    : null;
+
+  const [selectedLocation, setSelectedLocation] = React.useState<
+    ILocation | undefined | null
+  >(_storageLocation ?? userInfo?.location);
+
   const { data: { data: { activities = [] } = {} } = {}, isLoading } =
     useActivities<IActivityListRestDto>();
+
+  const {
+    data: { data = {} } = {},
+    isLoading: areParticipantActivitiesLoading,
+    invalidate: invalidateParticipantActivities,
+  } = useParticipantActivities({ userId: userInfo?.id });
+
+  const participantActivites = data?.activities ?? [];
+
+  console.log(participantActivites);
+
+  const filteredActivities = activities?.filter(
+    (activity) =>
+      !participantActivites?.some(
+        (participantActivity) => participantActivity?.id === activity?.id
+      )
+  );
+
+  //TODO either call it like this or set user info once useUsers request in layout.tsx got Promise resolved
+  const { data: { data: userData } = {} } = useUsers({
+    id: userInfo?.id,
+  });
 
   // const { data: { data: { activities = [] } = {} } = {}, isLoading } = useQuery(
   //   ["activities"],
@@ -58,16 +95,34 @@ const ActivitiesScreen = () => {
   //   }
   // );
 
-  const myActivities = React.useMemo(
-    () =>
-      activities?.filter((activity) => activity.creator?.id === userInfo?.id),
-    [activities, userInfo]
-  );
+  const { mutate: sendJoinActivity } = useMutation(
+    ["invite-person"],
+    (activityId?: string) => {
+      const { id, name, username, profile_photo_url } = { ...userData };
+      return inviteBuddy(String(activityId), {
+        id,
+        name,
+        username,
+        status: ActivityInviteStateEnum.CONFIRMED,
+        profile_photo: profile_photo_url,
+      });
+    },
 
-  const otherActivities = React.useMemo(
-    () =>
-      activities?.filter((activity) => activity.creator?.id !== userInfo?.id),
-    [activities, userInfo]
+    {
+      onSuccess: (data, buddy) => {
+        enqueueSnackbar("You have successfully joined the activity", {
+          variant: "success",
+        });
+        invalidateParticipantActivities();
+        queryClient.invalidateQueries(["activities"]);
+        hideDrawer();
+      },
+      onError: (error) => {
+        enqueueSnackbar("Failed to join selected activity", {
+          variant: "error",
+        });
+      },
+    }
   );
 
   const hideDrawer = React.useCallback(() => {
@@ -122,6 +177,8 @@ const ActivitiesScreen = () => {
               from: ApplicationLocations.ACTIVITIES,
             },
           });
+        case ActivityActionsTypeEnumDto.JOIN:
+          return sendJoinActivity(activityId);
         default:
           return console.log(action);
       }
@@ -152,20 +209,40 @@ const ActivitiesScreen = () => {
   }, [toggleDrawer]);
 
   const anyMyActivities = React.useMemo(
-    () => myActivities?.length > 0,
-    [myActivities]
+    () => participantActivites?.length > 0,
+    [participantActivites]
   );
 
   const anyNearYouActivities = React.useMemo(
-    () => otherActivities?.length > 0,
-    [myActivities]
+    () => filteredActivities?.length > 0,
+    [filteredActivities]
   );
+
+  const handleLocationSelect = React.useCallback(() => {
+    toggleDrawer({
+      open: true,
+      content: (
+        <SetLocationContent
+          onLocationSelect={(location) => {
+            toggleDrawer({ open: false, content: undefined });
+            setSelectedLocation(location);
+            sessionStorage.setItem(
+              "current_location",
+              JSON.stringify(location)
+            );
+          }}
+        />
+      ),
+      // onClose: () => setIsFirstTimeLogin?.(false),
+    });
+  }, []);
 
   React.useEffect(() => {
     Boolean(isFirstTimeLogin) &&
       toggleDrawer({
         open: true,
         content: <FirstTimeLoginContent />,
+        onClose: () => setIsFirstTimeLogin?.(false),
       });
   }, [isFirstTimeLogin, toggleDrawer]);
 
@@ -187,8 +264,9 @@ const ActivitiesScreen = () => {
           variant="text"
           sx={{ fontSize: 16 }}
           startIcon={<PlaceIcon sx={{ fontSize: "1.4rem" }} />}
+          onClick={handleLocationSelect}
         >
-          Bratislava
+          {selectedLocation?.name ?? "No location found"}
         </OffliButton>
       </Box>
       <Autocomplete
@@ -262,14 +340,15 @@ const ActivitiesScreen = () => {
                   "::-webkit-scrollbar": { display: "none" },
                 }}
               >
-                {myActivities?.map((activity) => {
+                {participantActivites?.map((activity) => {
                   return (
                     <MyActivityCard
                       key={activity?.id}
                       activity={activity}
                       onPress={openActivityActions}
                       sx={{
-                        minWidth: myActivities?.length <= 1 ? "100%" : "80%",
+                        minWidth:
+                          participantActivites?.length <= 1 ? "100%" : "80%",
                       }}
                     />
                   );
@@ -312,7 +391,7 @@ const ActivitiesScreen = () => {
                   justifyContent: "flex-start",
                 }}
               >
-                {otherActivities?.map((activity) => {
+                {filteredActivities?.map((activity) => {
                   return (
                     <ActivityCard
                       key={activity?.id}
