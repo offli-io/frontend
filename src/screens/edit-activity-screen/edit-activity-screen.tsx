@@ -7,6 +7,7 @@ import {
   Select,
   MenuItem,
   Chip,
+  Autocomplete,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
@@ -32,23 +33,30 @@ import {
 import ActionButton from "../../components/action-button";
 import { useTags } from "../../hooks/use-tags";
 import { IPredefinedTagDto } from "../../types/activities/predefined-tag.dto";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useSnackbar } from "notistack";
 import { ApplicationLocations } from "../../types/common/applications-locations.dto";
-import { updateActivityInfo } from "../../api/activities/requests";
+import {
+  getLocationFromQuery,
+  updateActivityInfo,
+} from "../../api/activities/requests";
 import { IUpdateActivityRequestDto } from "../../types/activities/update-activity-request.dto";
+import { ILocation } from "../../types/activities/location.dto";
+import { useDebounce } from "use-debounce";
+import { ActivityPriceOptionsEnum } from "../../types/common/types";
 
 interface IProps {}
 
-interface IEditActivity {
-  title: string;
-  location: string;
-  startDateTime: Date;
-  endDateTime: Date;
-  isPrivate: boolean;
-  maxAttendance: number;
-  price: string;
-  additionalDesc: string;
+interface FormValues {
+  title?: string;
+  location?: ILocation;
+  datetime_from?: Date;
+  datetime_until?: Date;
+  visibility?: ActivityVisibilityEnum | string;
+  limit?: number;
+  price?: ActivityPriceOptionsEnum | string;
+  description?: string;
+  placeQuery?: string;
 }
 
 interface ICategoryTag {
@@ -56,29 +64,44 @@ interface ICategoryTag {
   active: boolean;
 }
 
-const schema: () => yup.SchemaOf<IEditActivity> = () =>
+const schema: () => yup.SchemaOf<FormValues> = () =>
   yup.object({
     title: yup.string().defined().required("Please enter the Title"),
-    location: yup.string().defined().required("Please enter the Location"),
-    startDateTime: yup.date().defined().required("Please enter the Start Date"),
-    endDateTime: yup.date().defined().required("Please enter the End Date"),
-    isPrivate: yup.boolean().defined(),
-    maxAttendance: yup
-      .number()
+    location: yup
+      .object({
+        name: yup.string().defined().required(),
+        coordinates: yup.object({
+          lat: yup.number().defined().required(),
+          lon: yup.number().defined().required(),
+        }),
+      })
+      .required(),
+    datetime_from: yup
+      .date()
       .defined()
-      .required("Please enter How many people can attend"),
-    price: yup.string().defined().required("Please enter the Price"),
-    additionalDesc: yup
+      .required("Please enter the Start Date")
+      .default(() => new Date()),
+    datetime_until: yup
+      .date()
+      .defined()
+      .required("Please enter the End Date")
+      .default(() => new Date()),
+    visibility: yup
+      .mixed<ActivityVisibilityEnum>()
+      .oneOf(Object.values(ActivityVisibilityEnum))
+      .notRequired(),
+    limit: yup.number().required("Please enter the Max Attendance").defined(),
+    price: yup
+      .mixed<ActivityPriceOptionsEnum>()
+      .oneOf(Object.values(ActivityPriceOptionsEnum))
+      .defined()
+      .required("Please enter the Price")
+      .default(ActivityPriceOptionsEnum.free),
+    description: yup
       .string()
       .defined()
       .required("Please enter the Description"),
-    // about_me: yup.string().defined().required("Please enter your aboutMe"),
-    // location: yup.string().defined().required("Please enter your location"),
-    // birthdate: yup.date().nullable().required("Please enter your birthDate"),
-    // instagram: yup
-    //   .string()
-    //   .defined()
-    //   .required("Please enter your instagramUsername"),
+    placeQuery: yup.string().notRequired(),
   });
 
 const EditActivityScreen: React.FC<IProps> = () => {
@@ -93,46 +116,58 @@ const EditActivityScreen: React.FC<IProps> = () => {
   const lodash = require("lodash"); // to create array within given range easily
 
   const [categoryTags, setCategoryTags] = useState<ICategoryTag[]>([]); /// TODO dat prec | null
-  const [activeCategoryTags, setActiveCategoryTags] = useState<string[]>([]);
+  // const [activeCategoryTags, setActiveCategoryTags] = useState<string[]>([]);
 
   const { data: predefinedTags } = useTags();
   const { data: { data = {} } = {} }: any = useActivities({ id });
 
-  console.log(data);
+  // console.log(data);
 
   const {
     control,
     handleSubmit,
     reset,
+    watch,
+    setValue,
     formState: { dirtyFields = [], isValid },
-  } = useForm<IEditActivity>({
+  } = useForm<FormValues>({
     defaultValues: {
       title: "",
-      location: "",
-      startDateTime: new Date(), // TODO: pridava 2 hodiny kvoli timezone
-      endDateTime: new Date(), // TODO: pridava 2 hodiny kvoli timezone
-      isPrivate: true,
-      maxAttendance: MAX_ACTIVITY_ATTENDANCE,
-      price: "",
-      additionalDesc: "",
+      datetime_from: new Date(), // TODO: pridava 2 hodiny kvoli timezone
+      // datetime_until: new Date(), // TODO: pridava 2 hodiny kvoli timezone
+      visibility: ActivityVisibilityEnum.public,
+      limit: MAX_ACTIVITY_ATTENDANCE,
+      price: ActivityPriceOptionsEnum.free,
+      description: "",
     },
     resolver: yupResolver(schema()),
     mode: "onChange",
   });
 
+  // filter backend results based on query string
+  const [queryString] = useDebounce(watch("placeQuery"), 1000);
+
+  const placeQuery = useQuery(
+    ["locations", queryString],
+    (props) => getLocationFromQuery(queryString!!),
+    {
+      enabled: !!queryString,
+    }
+  );
+
   useEffect(() => {
     // if predefinedTag is included in activity tags, set tag`s active param to true and vice versa,
     // also add active tags to activeCategoryTags, for easier insert of tags into PUT request
-    console.log("useeffect");
+    // console.log("useeffect");
 
     let tagsTmp: ICategoryTag[] = [];
-    let activeTagsTmp: string[] = [];
+    // let activeTagsTmp: string[] = [];
     if (predefinedTags?.data?.tags && predefinedTags?.data?.tags?.length > 0) {
       if (data?.activity?.tags && data?.activity?.tags?.length > 0) {
         predefinedTags?.data?.tags.map((tag) => {
           if (data?.activity?.tags?.includes(tag?.title)) {
             tagsTmp.push({ title: tag?.title, active: true });
-            activeTagsTmp.push(tag?.title);
+            // activeTagsTmp.push(tag?.title);
           }
           if (!data?.activity?.tags?.includes(tag?.title)) {
             tagsTmp.push({ title: tag?.title, active: false });
@@ -141,7 +176,7 @@ const EditActivityScreen: React.FC<IProps> = () => {
           }
         });
         setCategoryTags(tagsTmp);
-        setActiveCategoryTags(activeTagsTmp);
+        // setActiveCategoryTags(activeTagsTmp);
       }
     }
   }, [predefinedTags, data]);
@@ -155,45 +190,41 @@ const EditActivityScreen: React.FC<IProps> = () => {
     }
 
     // mozno staci len na handleSubmit dat .filter(kde sa (ne)rovna active)
-    if (activeCategoryTags) {
-      var newActiveTagsArr = [...activeCategoryTags];
-      if (activeCategoryTags.includes(title)) {
-        newActiveTagsArr = activeCategoryTags.filter(function (e) {
-          return e !== title;
-        });
-      }
-      if (!activeCategoryTags.includes(title)) {
-        newActiveTagsArr.push(title);
-      }
-      setActiveCategoryTags(newActiveTagsArr);
-    }
+    // if (activeCategoryTags) {
+    //   var newActiveTagsArr = [...activeCategoryTags];
+    //   if (activeCategoryTags.includes(title)) {
+    //     newActiveTagsArr = activeCategoryTags.filter(function (e) {
+    //       return e !== title;
+    //     });
+    //   }
+    //   if (!activeCategoryTags.includes(title)) {
+    //     newActiveTagsArr.push(title);
+    //   }
+    //   setActiveCategoryTags(newActiveTagsArr);
+    // }
   };
 
   useEffect(() => {
     const recievedStartDateTime = new Date(data?.activity?.datetime_from);
     const recievedEndDateTime = new Date(data?.activity?.datetime_until);
 
-    const recievedVisibility = data?.activity?.visibility;
-    let isPrivateA = false;
-    if (recievedVisibility) {
-      if (recievedVisibility === ActivityVisibilityEnum.private) {
-        isPrivateA = true;
-      }
-      if (recievedVisibility === ActivityVisibilityEnum.public) {
-        isPrivateA = false;
-      }
-    }
-
     reset({
       title: data?.activity?.title,
-      location: data?.activity?.location?.name,
-      startDateTime: recievedStartDateTime,
-      endDateTime: recievedEndDateTime,
-      isPrivate: isPrivateA,
-      maxAttendance: data?.activity?.limit,
+      location: {
+        coordinates: {
+          lat: data?.activity?.location?.coordinates?.lat,
+          lon: data?.activity?.location?.coordinates?.lon,
+        },
+        name: data?.activity?.location?.name,
+      },
+      datetime_from: recievedStartDateTime,
+      datetime_until: recievedEndDateTime,
+      visibility: data?.activity?.visibility,
+      limit: data?.activity?.limit,
       price: data?.activity?.price,
-      additionalDesc: data?.activity?.description,
+      description: data?.activity?.description,
     });
+    console.log(data);
   }, [data]);
 
   const { mutate: sendUpdateActivity } = useMutation(
@@ -216,34 +247,52 @@ const EditActivityScreen: React.FC<IProps> = () => {
   );
 
   const handleFormSubmit = React.useCallback(
-    (values: IEditActivity) => {
+    (values: FormValues) => {
       // console.log(values);
+      let valuesToPatch: IUpdateActivityRequestDto = {};
+      var activeTagsArr = categoryTags
+        ?.filter(function (tag) {
+          return tag.active === true;
+        })
+        .map((tag) => {
+          return tag.title;
+        });
 
-      let newValues = {};
-
-      console.log(dirtyFields);
-
-      Object.keys(dirtyFields).forEach((field: string) => {
-        newValues = { ...newValues, [field]: (values as any)?.[field] };
-      });
-
-      console.log(newValues);
-
-      sendUpdateActivity({
+      const tmpUpdateObj: IUpdateActivityRequestDto = {
         title: values.title,
-        location: values.location,
-        startDateTime: values.startDateTime.toISOString(),
-        endDateTime: values.endDateTime.toISOString(),
-        isPrivate: values.isPrivate,
-        maxAttendance: values.maxAttendance,
-        price: values.price,
-        additionalDesc: values.additionalDesc,
+        location: {
+          coordinates: {
+            lat: values?.location?.coordinates?.lat,
+            lon: values?.location?.coordinates?.lon,
+          },
+          name: values?.location?.name,
+        },
+        datetime_from: values?.datetime_from?.toISOString(),
+        datetime_until: values?.datetime_until?.toISOString(),
+        visibility: values?.visibility,
+        limit: values?.limit,
+        price: values?.price,
+        description: values?.description,
+        tags: activeTagsArr,
+      };
+
+      // NOT including tags
+      Object.keys(dirtyFields).map((field) => {
+        valuesToPatch = {
+          ...valuesToPatch,
+          [field]: (tmpUpdateObj as any)?.[field],
+        };
       });
 
-      // var newActiveTagsArr = categoryTags?.filter(function (e) {
-      //   return e.active !== true;
-      // });
-      // console.log(newActiveTagsArr);
+      // add tags to valuesToPatch, if user touched them
+      if (!lodash.isEqual(activeTagsArr, data?.activity?.tags)) {
+        console.log("tags changed");
+        valuesToPatch = { ...valuesToPatch, tags: activeTagsArr };
+      }
+
+      console.log("values to patch:", valuesToPatch);
+
+      sendUpdateActivity(valuesToPatch);
     },
     [dirtyFields]
   );
@@ -302,15 +351,43 @@ const EditActivityScreen: React.FC<IProps> = () => {
             <Controller
               name="location"
               control={control}
-              render={({ field, fieldState: { error } }) => (
-                <TextField
-                  {...field}
-                  label="Location"
-                  variant="outlined"
-                  error={!!error}
-                  helperText={error?.message}
-                  //disabled={methodSelectionDisabled}
-                  sx={{ width: "95%", mt: 2 }}
+              render={({
+                field: { value, ...field },
+                fieldState: { error },
+              }) => (
+                <Autocomplete
+                  options={placeQuery?.data?.data ?? []}
+                  // value={placeQuery?.data?.data?.find((option) => option.display_name === value)} // TODO show current location name in Textfield
+                  sx={{
+                    width: "95%",
+                    display: "flex",
+                    justifyContent: "center",
+                    mt: 2,
+                  }}
+                  loading={placeQuery?.isLoading}
+                  // isOptionEqualToValue={(option, value) => option.id === value.id}
+                  onChange={(e, locationObject) =>
+                    field.onChange({
+                      name: locationObject?.display_name,
+                      coordinates: {
+                        lat: locationObject?.lat,
+                        lon: locationObject?.lon,
+                      },
+                    })
+                  }
+                  getOptionLabel={(option) => option?.display_name}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Search place"
+                      value={placeQuery?.data?.data?.find(
+                        (option) => option.display_name === value
+                      )}
+                      onChange={(e) => setValue("placeQuery", e.target.value)}
+                      // error={!!error}
+                      // helperText={error?.message}
+                    />
+                  )}
                 />
               )}
             />
@@ -324,7 +401,7 @@ const EditActivityScreen: React.FC<IProps> = () => {
                     <b>Start</b>
                   </Typography>
                   <Controller
-                    name="startDateTime"
+                    name="datetime_from"
                     control={control}
                     render={({
                       field: { onChange, ...field },
@@ -363,7 +440,7 @@ const EditActivityScreen: React.FC<IProps> = () => {
                     <b>End</b>
                   </Typography>
                   <Controller
-                    name="endDateTime"
+                    name="datetime_until"
                     control={control}
                     render={({
                       field: { onChange, ...field },
@@ -413,7 +490,7 @@ const EditActivityScreen: React.FC<IProps> = () => {
                 <b>Accessibility</b>
               </Typography>
               <Controller
-                name="isPrivate"
+                name="visibility"
                 control={control}
                 render={({
                   field: { value, onChange, ...field },
@@ -422,21 +499,26 @@ const EditActivityScreen: React.FC<IProps> = () => {
                   <FormControlLabel
                     control={
                       <IOSSwitch
-                        // {...field} // TODO: jebe error kvoli ref
-                        onChange={(e) => onChange(e.target.checked)}
-                        checked={value}
+                        onChange={(e) => onChange(e.target.checked)} // TODO: prerobit na enum, nefunguje
+                        checked={
+                          value === ActivityVisibilityEnum.public ? false : true
+                        }
                         sx={{ ml: 1, mr: 1.7 }}
                       />
                     }
                     labelPlacement="start"
-                    label={value ? "private" : "public"}
+                    label={
+                      value === ActivityVisibilityEnum.public
+                        ? "public"
+                        : "private"
+                    }
                   ></FormControlLabel>
                 )}
               />
             </Box>
             {/* ///////////////////////////////////////////////////////////////////////////////// MAX ATTENDANCE */}
             <Controller
-              name="maxAttendance"
+              name="limit"
               control={control}
               render={({ field, fieldState: { error } }) => (
                 <TextField
@@ -478,17 +560,19 @@ const EditActivityScreen: React.FC<IProps> = () => {
                   //disabled={methodSelectionDisabled}
                   sx={{ width: "95%", mt: 3 }}
                 >
-                  {ACTIVITY_FEE_OPTIONS.map((item: string) => (
-                    <MenuItem key={item} value={item}>
-                      {item}
-                    </MenuItem>
-                  ))}
+                  {Object.values(ActivityPriceOptionsEnum).map(
+                    (value: string) => (
+                      <MenuItem key={value} value={value}>
+                        {value}
+                      </MenuItem>
+                    )
+                  )}
                 </TextField>
               )}
             />
             {/* ///////////////////////////////////////////////////////////////////////////////// ADDITIONAL DESC */}
             <Controller
-              name="additionalDesc"
+              name="description"
               control={control}
               render={({ field, fieldState: { error } }) => (
                 <TextField

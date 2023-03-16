@@ -420,10 +420,6 @@ export const acceptActivityInvitation = (
     }
   );
 
-  //   queryFunctionContext?.signal?.addEventListener('abort', () => {
-  //     source.cancel('Query was cancelled by React Query')
-  //   })
-
   return promise;
 };
 
@@ -459,10 +455,6 @@ export const uploadActivityPhoto = (formData?: FormData) => {
       cancelToken: source?.token,
     }
   );
-
-  //   queryFunctionContext?.signal?.addEventListener('abort', () => {
-  //     source.cancel('Query was cancelled by React Query')
-  //   })
 
   return promise;
 };
