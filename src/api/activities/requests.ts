@@ -284,10 +284,6 @@ export const acceptActivityInvitation = (
     }
   );
 
-  //   queryFunctionContext?.signal?.addEventListener('abort', () => {
-  //     source.cancel('Query was cancelled by React Query')
-  //   })
-
   return promise;
 };
 
@@ -300,13 +296,9 @@ export const updateActivityInfo = (
 
   console.log(values);
   
-  const promise = axios.put(`${DEFAULT_DEV_URL}/activities/${activityId}`, values, {
+  const promise = axios.patch(`${DEFAULT_DEV_URL}/activities/${activityId}`, values, {
     cancelToken: source?.token,
   });
-
-  //   queryFunctionContext?.signal?.addEventListener('abort', () => {
-  //     source.cancel('Query was cancelled by React Query')
-  //   })
 
   return promise;
 };
