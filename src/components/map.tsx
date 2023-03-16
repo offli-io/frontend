@@ -55,6 +55,7 @@ interface ILabeledTileProps {
   centerPosition?: GeolocationCoordinates;
 }
 
+// bratislava position
 const position = [48.1486, 17.1077] as LatLngTuple;
 
 const Map: React.FC<ILabeledTileProps> = ({

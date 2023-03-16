@@ -17,7 +17,10 @@ import { Controller, UseFormReturn } from "react-hook-form";
 import OffliButton from "../../../components/offli-button";
 import activityLocation from "../../../assets/img/activity-location.svg";
 import { useQuery } from "@tanstack/react-query";
-import { getLocationFromQuery } from "../../../api/activities/requests";
+import {
+  getLocationFromQuery,
+  getLocationFromQueryFetch,
+} from "../../../api/activities/requests";
 import { useDebounce } from "use-debounce";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 
@@ -64,11 +67,13 @@ export const PlaceForm: React.FC<IPlaceFormProps> = ({
 
   const placeQuery = useQuery(
     ["locations", queryString],
-    (props) => getLocationFromQuery(queryString),
+    (props) => getLocationFromQueryFetch(queryString),
     {
       enabled: !!queryString,
     }
   );
+
+  console.log(placeQuery?.data?.results);
 
   const place = watch("place");
   console.log(place);
@@ -109,7 +114,7 @@ export const PlaceForm: React.FC<IPlaceFormProps> = ({
           control={control}
           render={({ field, fieldState: { error } }) => (
             <Autocomplete
-              options={placeQuery?.data?.data ?? []}
+              options={placeQuery?.data?.results ?? []}
               sx={{
                 width: "100%",
                 display: "flex",
@@ -120,14 +125,14 @@ export const PlaceForm: React.FC<IPlaceFormProps> = ({
               // isOptionEqualToValue={(option, value) => option.id === value.id}
               onChange={(e, locationObject) =>
                 field.onChange({
-                  name: locationObject?.display_name,
+                  name: locationObject?.formatted,
                   coordinates: {
                     lat: locationObject?.lat,
                     lon: locationObject?.lon,
                   },
                 })
               }
-              getOptionLabel={(option) => option?.display_name}
+              getOptionLabel={(option) => String(option?.formatted)}
               renderInput={(params) => (
                 <TextField
                   {...params}

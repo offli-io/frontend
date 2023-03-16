@@ -2,14 +2,20 @@ import { IUpdateActivityRequestDto } from './../../types/activities/update-activ
 import axios from "axios";
 import qs from "qs";
 import { DEFAULT_DEV_URL } from "../../assets/config";
+import { ActivityInviteStateEnum } from "../../types/activities/activity-invite-state-enum.dto";
 import {
   IActivity,
   IActivitySearchParams,
   IPerson,
   IPersonExtended,
 } from "../../types/activities/activity.dto";
+import { ICreateActivityParticipantRequestDto } from "../../types/activities/create-activity-participant-request.dto";
 import { ICreateActivityRequestDto } from "../../types/activities/create-activity-request.dto";
-import { IPlaceExternalApiDto } from "../../types/activities/place-external-api.dto";
+import { IListActivitiesResponseDto } from "../../types/activities/list-activities-response.dto";
+import {
+  IPlaceExternalApiDto,
+  IPlaceExternalApiFetchDto,
+} from "../../types/activities/place-external-api.dto";
 import { IPredefinedPictureDto } from "../../types/activities/predefined-picture.dto";
 import { IPredefinedTagDto } from "../../types/activities/predefined-tag.dto";
 
@@ -69,6 +75,32 @@ export const getActivity = <T>({
   return promise;
 };
 
+export const getParticipantActivities = ({ userId }: { userId?: string }) => {
+  const promise = axios.get<IListActivitiesResponseDto>(
+    `${DEFAULT_DEV_URL}/participants/${userId}/activities`,
+    {
+      // params: {
+      //   text,
+      //   tag,
+      // },
+      // paramsSerializer: (params) => {
+      //   return qs.stringify(params, { arrayFormat: "repeat" });
+      // },
+    }
+    // {
+
+    //   params: searchParams,
+    //   cancelToken: source?.token,
+    // }
+  );
+
+  // queryFunctionContext?.signal?.addEventListener('abort', () => {
+  //   source.cancel('Query was cancelled by React Query')
+  // })
+
+  return promise;
+};
+
 export const removePersonFromActivity = ({
   personId,
   activityId,
@@ -92,11 +124,68 @@ export const getLocationFromQuery = (queryString: string) => {
   const source = CancelToken.source();
 
   const promise = axios.get<IPlaceExternalApiDto[]>(
-    `https://nominatim.openstreetmap.org/search?q=${queryString}&format=jsonv2`,
+    // `https://nominatim.openstreetmap.org/search?q=${queryString}&format=jsonv2`,
+    `https://api.geoapify.com/v1/geocode/search?name=${queryString}&limit=10&format=json&apiKey=86a10638b4cf4c339ade6ab08f753b16
+    `,
     {
       cancelToken: source?.token,
+      headers: {
+        origin: "https://localhost:3000/",
+        "Access-Control-Allow-Origin": "*",
+      },
     }
   );
+
+  // queryFunctionContext?.signal?.addEventListener('abort', () => {
+  //   source.cancel('Query was cancelled by React Query')
+  // })
+
+  return promise;
+};
+
+export const getLocationFromQueryFetch = (
+  queryString: string
+): Promise<IPlaceExternalApiFetchDto> => {
+  const CancelToken = axios.CancelToken;
+  const source = CancelToken.source();
+
+  // const promise = axios.get<IPlaceExternalApiDto[]>(
+  //   // `https://nominatim.openstreetmap.org/search?q=${queryString}&format=jsonv2`,
+  //   `https://api.geoapify.com/v1/geocode/search?name=${queryString}&limit=10&format=json&apiKey=86a10638b4cf4c339ade6ab08f753b16
+  //   `,
+  //   {
+  //     cancelToken: source?.token,
+  //   }
+  // );
+
+  var requestOptions = {
+    method: "GET",
+  };
+
+  const promise = fetch(
+    `https://api.geoapify.com/v1/geocode/search?name=${queryString}&limit=10&format=json&apiKey=86a10638b4cf4c339ade6ab08f753b16`,
+    requestOptions
+  ).then((response) => response.json());
+
+  // queryFunctionContext?.signal?.addEventListener('abort', () => {
+  //   source.cancel('Query was cancelled by React Query')
+  // })
+
+  return promise;
+};
+
+export const getPlaceFromCoordinates = (
+  lat: number,
+  lon: number
+): Promise<IPlaceExternalApiFetchDto> => {
+  var requestOptions = {
+    method: "GET",
+  };
+
+  const promise = fetch(
+    `https://api.geoapify.com/v1/geocode/reverse?lat=${lat}&lon=${lon}&limit=10&format=json&apiKey=86a10638b4cf4c339ade6ab08f753b16`,
+    requestOptions
+  ).then((response) => response.json());
 
   // queryFunctionContext?.signal?.addEventListener('abort', () => {
   //   source.cancel('Query was cancelled by React Query')
@@ -191,13 +280,16 @@ export const getPredefinedTags = () => {
   return promise;
 };
 
-export const inviteBuddy = (activityId: string, values: any) => {
+export const inviteBuddy = (
+  activityId: string,
+  userInfo: ICreateActivityParticipantRequestDto
+) => {
   const CancelToken = axios.CancelToken;
   const source = CancelToken.source();
 
   const promise = axios.post(
-    `${DEFAULT_DEV_URL}/activities/${activityId}/invitations`,
-    { ...values, profile_photo: values?.profile_photo_url },
+    `${DEFAULT_DEV_URL}/activities/${activityId}/participants`,
+    userInfo,
     {
       cancelToken: source?.token,
     }
@@ -210,12 +302,12 @@ export const inviteBuddy = (activityId: string, values: any) => {
   return promise;
 };
 
-export const uninviteBuddy = (activityId: number, personId: number) => {
+export const uninviteBuddy = (activityId: string, userId: string) => {
   const CancelToken = axios.CancelToken;
   const source = CancelToken.source();
 
   const promise = axios.delete(
-    `/activity/${activityId}/invitation/${personId}`,
+    `/activities/${activityId}/participants/${userId}`,
     {
       cancelToken: source?.token,
     }
@@ -240,7 +332,7 @@ export const getPredefinedPhotos = (tag?: string[]) => {
         tag,
       },
       paramsSerializer: (params) => {
-        return qs.stringify(params);
+        return qs.stringify(params, { arrayFormat: "repeat" });
       },
     }
   );

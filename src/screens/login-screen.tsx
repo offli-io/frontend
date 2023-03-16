@@ -30,7 +30,11 @@ import { AuthenticationContext } from "../assets/theme/authentication-provider";
 import { ApplicationLocations } from "../types/common/applications-locations.dto";
 import { useNavigate } from "react-router-dom";
 import { DEFAULT_KEYCLOAK_URL } from "../assets/config";
-import { loginUser, loginViaGoogle } from "../api/auth/requests";
+import {
+  getBearerToken,
+  loginUser,
+  loginViaGoogle,
+} from "../api/auth/requests";
 import OffliBackButton from "../components/offli-back-button";
 
 export interface FormValues {
@@ -71,13 +75,41 @@ const LoginScreen: React.FC = () => {
     mode: "onChange",
   });
 
+  const { mutate: sendGetBearerToken } = useMutation(
+    ["google-registration"],
+    (authorizationCode?: string) => getBearerToken(authorizationCode, "login"),
+    {
+      onSuccess: (data, params) => {
+        data?.data?.access_token &&
+          sendLoginViaGoogle(data?.data?.access_token);
+        // setStateToken(data?.data?.token?.access_token ?? null);
+        // !!setUserInfo && setUserInfo({ id: data?.data?.user_id });
+        // data?.data?.user_id &&
+        //   localStorage.setItem("userId", data?.data?.user_id);
+        // navigate(ApplicationLocations.ACTIVITIES);
+      },
+      onError: (error) => {
+        // enqueueSnackbar("Registration with google failed", {
+        //   variant: "error",
+        // });
+        //TODO debug why there are 2 requests
+      },
+    }
+  );
+
   const { isLoading: isGoogleLoginLoading, mutate: sendLoginViaGoogle } =
     useMutation(
       ["google-login"],
-      (authorizationCode?: string) => loginViaGoogle({ authorizationCode }),
+      (authorizationCode?: string) => loginViaGoogle(authorizationCode),
       {
         onSuccess: (data, params) => {
-          console.log("login success");
+          setStateToken(data?.data?.token?.access_token ?? null);
+          !!setUserInfo &&
+            setUserInfo({
+              id: data?.data?.user_id,
+            });
+          localStorage.setItem("userId", data?.data?.user_id);
+          navigate(ApplicationLocations.ACTIVITIES);
         },
         onError: (error) => {
           enqueueSnackbar("Registration with google failed", {
@@ -128,7 +160,7 @@ const LoginScreen: React.FC = () => {
 
   React.useEffect(() => {
     if (authorizationCode) {
-      sendLoginViaGoogle(authorizationCode);
+      sendGetBearerToken(authorizationCode);
     }
   }, [authorizationCode]);
 

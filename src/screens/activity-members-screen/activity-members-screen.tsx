@@ -48,19 +48,6 @@ export const ActivityMembersScreen: React.FC = () => {
 
   const queryClient = useQueryClient();
 
-  const { mutate: sendInviteBuddy } = useMutation(
-    ["invite-person"],
-    (values: IPerson) => inviteBuddy(String(2), values),
-    {
-      onSuccess: (data, variables) => {
-        setInvitedBuddies([...invitedBuddies, variables?.id]);
-      },
-      onError: (error) => {
-        enqueueSnackbar("Failed to invite user", { variant: "error" });
-      },
-    }
-  );
-
   const { mutate: sendKickPersonFromActivity } = useMutation(
     ["kick-person"],
     (personId?: string) => kickUserFromActivity(String(id), String(personId)),
@@ -74,31 +61,6 @@ export const ActivityMembersScreen: React.FC = () => {
       },
     }
   );
-
-  const { mutate: sendUninviteBuddy } = useMutation(
-    ["uninvite-person"],
-    (values: IPerson) => uninviteBuddy(2, Number(values?.id)),
-    {
-      onSuccess: (data, variables) => {
-        const _buddies = invitedBuddies?.filter(
-          (buddy) => buddy !== variables?.id
-        );
-        setInvitedBuddies(_buddies);
-      },
-      // onError: error => {
-      //   enqueueSnackbar('Failed to create new activity', { variant: 'error' })
-      // },
-    }
-  );
-
-  const handleBuddyInviteClick = React.useCallback((buddy: IPerson) => {
-    //fire request for invite
-    if (invitedBuddies?.includes(buddy?.id)) {
-      sendUninviteBuddy(buddy);
-    } else {
-      sendInviteBuddy(buddy);
-    }
-  }, []);
 
   //TODO now filtering is done on FE -> move to BE when capacity is available
   const activityMembers = React.useMemo(() => {

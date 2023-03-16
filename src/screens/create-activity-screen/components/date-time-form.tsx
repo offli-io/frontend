@@ -110,7 +110,7 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
         setValue(type, date);
       }
     },
-    [setValue, watch]
+    [setValue, watch, currentStartDate]
   );
 
   const isFormValid = !!watch("datetime_from") && !!watch("datetime_until");
@@ -126,13 +126,14 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
   };
 
   const getToDisabledOptions = (option: string) => {
-    if (currentStartDate) {
-      const [hours, minutes] = option.split(":");
-      const _option = new Date().setHours(Number(hours), Number(minutes));
-      if (_option <= currentStartDate) {
-        return true;
-      }
-    }
+    //TODO this is bad fix it or not even use it
+    // if (currentStartDate) {
+    //   const [hours, minutes] = option.split(":");
+    //   const _option = new Date().setHours(Number(hours), Number(minutes));
+    //   if (_option <= currentStartDate) {
+    //     return true;
+    //   }
+    // }
     return false;
   };
 
