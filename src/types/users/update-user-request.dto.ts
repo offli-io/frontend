@@ -1,5 +1,5 @@
 export interface IUpdateUserRequestDto {
-  username?: string;
+  username?: any;
   email?: string;
   name?: string;
   profile_photo_url?: string;

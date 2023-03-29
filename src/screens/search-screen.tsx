@@ -23,6 +23,7 @@ import { useActivities } from "../hooks/use-activities";
 import { IActivityListRestDto } from "../types/activities/activity-list-rest.dto";
 import { useDebounce } from "use-debounce";
 import ActivityCard from "../components/activity-card";
+import ActivitySearchCard from "../components/activity-search-card";
 
 const event = {
   summary: "Test event Offli",
@@ -142,7 +143,7 @@ const SearchScreen = () => {
         </Box>
       ) : (
         activitiesData?.data?.activities?.map((activity) => (
-          <ActivityCard
+          <ActivitySearchCard
             key={activity?.id}
             activity={activity}
             onPress={(act) => console.log(act)}

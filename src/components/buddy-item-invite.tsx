@@ -43,7 +43,10 @@ const BuddyItemInvite: React.FC<ILabeledDividerProps> = ({
       {...rest}
     >
       <Box sx={{ display: "flex", alignItems: "center" }}>
-        <StyledImage src={buddy?.profile_photo ?? logo} alt="profile picture" />
+        <StyledImage
+          src={buddy?.profile_photo_url ?? logo}
+          alt="profile picture"
+        />
         <Typography sx={{ ml: 2, color: "black" }}>
           {buddy?.username}
         </Typography>
