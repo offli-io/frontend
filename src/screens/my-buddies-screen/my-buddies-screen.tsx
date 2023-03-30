@@ -27,6 +27,7 @@ import { useMutation, useQueries, useQueryClient } from "@tanstack/react-query";
 import { useSnackbar } from "notistack";
 import { AuthenticationContext } from "../../assets/theme/authentication-provider";
 import NoBuddiesScreen from "./components/no-buddies-screen";
+import BuddySuggestCard from "../../components/buddy-suggest-card";
 
 const MyBuddiesScreen = () => {
   const navigate = useNavigate();
@@ -149,60 +150,91 @@ const MyBuddiesScreen = () => {
                 <PersonAddIcon color="primary" />
               </IconButton>
             </Box>
-            {(data?.data ?? [])?.length < 1 ? (
+            <Box>
+              <Typography variant="h5" sx={{ mb: 2 }}>
+                People you attended activity with
+              </Typography>
               <Box
                 sx={{
-                  height: 100,
-                  width: "100%",
-                  my: 3,
                   display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  borderTop: "1px solid lightgrey",
-                  borderBottom: "1px solid lightgrey",
-                }}
-              >
-                <Typography
-                  sx={{ color: (theme) => theme.palette.inactive.main }}
-                >
-                  No activity members
-                </Typography>
-              </Box>
-            ) : (
-              <Box
-                sx={{
-                  height: 300,
+                  overflowX: "scroll",
                   width: "100%",
-                  overflowY: "auto",
-                  overflowX: "hidden",
-                  my: 3,
-                  borderTop: "1px solid lightgrey",
-                  borderBottom: "1px solid lightgrey",
+                  "::-webkit-scrollbar": { display: "none" },
                 }}
               >
-                {isLoading ? (
-                  <Box
-                    sx={{ display: "flex", justifyContent: "center", mt: 4 }}
-                  >
-                    <CircularProgress color="primary" />
-                  </Box>
-                ) : (
-                  data?.data.map((buddy) => (
-                    <BuddyItem
+                {data?.data.map((buddy) => (
+                  <>
+                    <BuddySuggestCard
                       key={buddy?.id}
                       buddy={buddy}
-                      actionContent={
-                        <IconButton
-                          onClick={() => handleBuddyActionsClick(buddy)}
-                        >
-                          <MoreHorizIcon />
-                        </IconButton>
-                      }
+                      onAddBuddyClick={(buddy) => console.log(buddy)}
                     />
-                  ))
-                )}
+                    <BuddySuggestCard key={buddy?.id} buddy={buddy} />
+                    <BuddySuggestCard key={buddy?.id} buddy={buddy} />
+                    <BuddySuggestCard key={buddy?.id} buddy={buddy} />
+                  </>
+                ))}
               </Box>
-            )}
+            </Box>
+            <Box>
+              <Typography variant="h5" sx={{ mt: 2, mb: 1 }}>
+                Your buddies
+              </Typography>
+              {(data?.data ?? [])?.length < 1 ? (
+                <Box
+                  sx={{
+                    height: 100,
+                    width: "100%",
+                    // my: 3,
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    // borderTop: "1px solid lightgrey",
+                    // borderBottom: "1px solid lightgrey",
+                  }}
+                >
+                  <Typography
+                    sx={{ color: (theme) => theme.palette.inactive.main }}
+                  >
+                    No activity members
+                  </Typography>
+                </Box>
+              ) : (
+                <Box
+                  sx={{
+                    height: 300,
+                    width: "100%",
+                    overflowY: "auto",
+                    overflowX: "hidden",
+                    // my: 3,
+                    // borderTop: "1px solid lightgrey",
+                    // borderBottom: "1px solid lightgrey",
+                  }}
+                >
+                  {isLoading ? (
+                    <Box
+                      sx={{ display: "flex", justifyContent: "center", mt: 4 }}
+                    >
+                      <CircularProgress color="primary" />
+                    </Box>
+                  ) : (
+                    data?.data.map((buddy) => (
+                      <BuddyItem
+                        key={buddy?.id}
+                        buddy={buddy}
+                        actionContent={
+                          <IconButton
+                            onClick={() => handleBuddyActionsClick(buddy)}
+                          >
+                            <MoreHorizIcon />
+                          </IconButton>
+                        }
+                      />
+                    ))
+                  )}
+                </Box>
+              )}
+            </Box>
           </>
         )}
       </Box>

@@ -5,7 +5,7 @@ export interface IPerson {
   id?: string;
   name?: string;
   username?: string;
-  profile_photo?: string;
+  profile_photo_url?: string;
 }
 
 export interface IPersonExtended {
