@@ -4,7 +4,6 @@ import {
   TextField,
   useTheme,
   FormControlLabel,
-  Select,
   MenuItem,
   Chip,
   Autocomplete,
@@ -14,7 +13,6 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import BackHeader from "../../components/back-header";
 import { ICustomizedLocationStateDto } from "../../types/common/customized-location-state.dto";
 import { Controller, useForm } from "react-hook-form";
-import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useActivities } from "../../hooks/use-activities";
 import { PageWrapper } from "../../components/page-wrapper";
@@ -44,10 +42,9 @@ import { IUpdateActivityRequestDto } from "../../types/activities/update-activit
 import { ILocation } from "../../types/activities/location.dto";
 import { useDebounce } from "use-debounce";
 import { ActivityPriceOptionsEnum } from "../../types/common/types";
+import { editActivitySchema } from "./utils/validation-schema";
 
-interface IProps {}
-
-interface FormValues {
+export interface FormValues {
   title?: string;
   location?: ILocation;
   datetime_from?: Date;
@@ -64,47 +61,7 @@ interface ICategoryTag {
   active: boolean;
 }
 
-const schema: () => yup.SchemaOf<FormValues> = () =>
-  yup.object({
-    title: yup.string().defined().required("Please enter the Title"),
-    location: yup
-      .object({
-        name: yup.string().defined().required(),
-        coordinates: yup.object({
-          lat: yup.number().defined().required(),
-          lon: yup.number().defined().required(),
-        }),
-      })
-      .required(),
-    datetime_from: yup
-      .date()
-      .defined()
-      .required("Please enter the Start Date")
-      .default(() => new Date()),
-    datetime_until: yup
-      .date()
-      .defined()
-      .required("Please enter the End Date")
-      .default(() => new Date()),
-    visibility: yup
-      .mixed<ActivityVisibilityEnum>()
-      .oneOf(Object.values(ActivityVisibilityEnum))
-      .notRequired(),
-    limit: yup.number().required("Please enter the Max Attendance").defined(),
-    price: yup
-      .mixed<ActivityPriceOptionsEnum>()
-      .oneOf(Object.values(ActivityPriceOptionsEnum))
-      .defined()
-      .required("Please enter the Price")
-      .default(ActivityPriceOptionsEnum.free),
-    description: yup
-      .string()
-      .defined()
-      .required("Please enter the Description"),
-    placeQuery: yup.string().notRequired(),
-  });
-
-const EditActivityScreen: React.FC<IProps> = () => {
+const EditActivityScreen: React.FC = () => {
   const { id } = useParams();
   const location = useLocation();
   const theme = useTheme();
@@ -133,14 +90,14 @@ const EditActivityScreen: React.FC<IProps> = () => {
   } = useForm<FormValues>({
     defaultValues: {
       title: "",
-      datetime_from: new Date(), // TODO: pridava 2 hodiny kvoli timezone
+      // datetime_from: new Date(), // TODO: pridava 2 hodiny kvoli timezone
       // datetime_until: new Date(), // TODO: pridava 2 hodiny kvoli timezone
       visibility: ActivityVisibilityEnum.public,
       limit: MAX_ACTIVITY_ATTENDANCE,
       price: ActivityPriceOptionsEnum.free,
       description: "",
     },
-    resolver: yupResolver(schema()),
+    resolver: yupResolver(editActivitySchema()),
     mode: "onChange",
   });
 
@@ -156,9 +113,7 @@ const EditActivityScreen: React.FC<IProps> = () => {
   );
 
   useEffect(() => {
-    // if predefinedTag is included in activity tags, set tag`s active param to true and vice versa,
-    // also add active tags to activeCategoryTags, for easier insert of tags into PUT request
-    // console.log("useeffect");
+    // if predefinedTag is included in activity tags, set tag`s active param to true and vice versa
 
     let tagsTmp: ICategoryTag[] = [];
     // let activeTagsTmp: string[] = [];
@@ -284,7 +239,7 @@ const EditActivityScreen: React.FC<IProps> = () => {
         };
       });
 
-      // add tags to valuesToPatch, if user touched them
+      // include tags in valuesToPatch, if user touched them
       if (!lodash.isEqual(activeTagsArr, data?.activity?.tags)) {
         console.log("tags changed");
         valuesToPatch = { ...valuesToPatch, tags: activeTagsArr };
@@ -292,7 +247,7 @@ const EditActivityScreen: React.FC<IProps> = () => {
 
       console.log("values to patch:", valuesToPatch);
 
-      sendUpdateActivity(valuesToPatch);
+      // sendUpdateActivity(valuesToPatch);
     },
     [dirtyFields]
   );
