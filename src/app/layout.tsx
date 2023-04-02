@@ -39,12 +39,20 @@ export const Layout: React.FC<ILayoutProps> = ({ children }) => {
   }, [data]);
 
   React.useEffect(() => {
+    if (!!data && !data?.location && stateToken) {
+      // TODO when on BE will be patch implemented
+      // navigate(ApplicationLocations.CHOOSE_LOCATION);
+    }
+  }, [data]);
+
+  React.useEffect(() => {
     if (
       [
         ApplicationLocations.SETTINGS,
         ApplicationLocations.EDIT_PROFILE,
         ApplicationLocations.EDIT_ACTIVITY,
         // ApplicationLocations.SEARCH,
+        ApplicationLocations.CHOOSE_LOCATION,
         ApplicationLocations.MAP,
         ApplicationLocations.BUDDIES,
         ApplicationLocations.CHOOSE_USERNAME_GOOGLE,
@@ -64,9 +72,10 @@ export const Layout: React.FC<ILayoutProps> = ({ children }) => {
 
   React.useEffect(() => {
     if (
-      [ApplicationLocations.CHOOSE_USERNAME_GOOGLE].includes(
-        location?.pathname as ApplicationLocations
-      )
+      [
+        ApplicationLocations.CHOOSE_USERNAME_GOOGLE,
+        ApplicationLocations.CHOOSE_LOCATION,
+      ].includes(location?.pathname as ApplicationLocations)
     ) {
       setDisplayBottomNavigator(false);
     } else {

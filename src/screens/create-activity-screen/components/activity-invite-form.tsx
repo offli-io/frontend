@@ -29,51 +29,6 @@ interface IActivityTypeFormProps {
   methods: UseFormReturn;
 }
 
-const budky = [
-  {
-    id: "2312",
-    name: "Milada Jankovic",
-    username: "milhaus",
-    profile_photo:
-      "https://w7.pngwing.com/pngs/569/273/png-transparent-silhouette-human-head-head-face-animals-head-thumbnail.png",
-  },
-  {
-    id: "2312",
-    name: "Milada Jankovic",
-    username: "milhaus",
-    profile_photo:
-      "https://w7.pngwing.com/pngs/569/273/png-transparent-silhouette-human-head-head-face-animals-head-thumbnail.png",
-  },
-  {
-    id: "2312",
-    name: "Milada Jankovic",
-    username: "milhaus",
-    profile_photo:
-      "https://w7.pngwing.com/pngs/569/273/png-transparent-silhouette-human-head-head-face-animals-head-thumbnail.png",
-  },
-  {
-    id: "2312",
-    name: "Milada Jankovic",
-    username: "milhaus",
-    profile_photo:
-      "https://w7.pngwing.com/pngs/569/273/png-transparent-silhouette-human-head-head-face-animals-head-thumbnail.png",
-  },
-  {
-    id: "2312",
-    name: "Milada Jankovic",
-    username: "milhaus",
-    profile_photo:
-      "https://w7.pngwing.com/pngs/569/273/png-transparent-silhouette-human-head-head-face-animals-head-thumbnail.png",
-  },
-  {
-    id: "2312",
-    name: "Milada Jankovic",
-    username: "milhaus",
-    profile_photo:
-      "https://w7.pngwing.com/pngs/569/273/png-transparent-silhouette-human-head-head-face-animals-head-thumbnail.png",
-  },
-];
-
 export const ActivityInviteForm: React.FC<IActivityTypeFormProps> = ({
   onNextClicked,
   methods,
@@ -107,7 +62,7 @@ export const ActivityInviteForm: React.FC<IActivityTypeFormProps> = ({
         ...buddy,
         invited_by: userInfo?.id,
         status: ActivityInviteStateEnum.INVITED,
-        profile_photo: (buddy as any)?.profile_photo_url,
+        profile_photo_url: buddy?.profile_photo_url,
       }),
     {
       onSuccess: (data, buddy) => {

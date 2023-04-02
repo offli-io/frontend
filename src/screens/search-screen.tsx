@@ -23,6 +23,7 @@ import { useActivities } from "../hooks/use-activities";
 import { IActivityListRestDto } from "../types/activities/activity-list-rest.dto";
 import { useDebounce } from "use-debounce";
 import ActivityCard from "../components/activity-card";
+import ActivitySearchCard from "../components/activity-search-card";
 
 const event = {
   summary: "Test event Offli",
@@ -123,15 +124,24 @@ const SearchScreen = () => {
         data?.data?.tags?.length > 0 && (
           <>
             <Typography variant="h5">What's your mood for?</Typography>
-            {data.data.tags.map((tag) => (
-              <Chip
-                label={tag?.title}
-                key={tag?.title}
-                sx={{ mx: 1, my: 0.5 }}
-                color="primary"
-                onClick={() => handleChipClick(tag?.title)}
-              />
-            ))}
+            <Box
+              sx={{
+                display: "flex",
+                overflowX: "scroll",
+                width: "100%",
+                "::-webkit-scrollbar": { display: "none" },
+              }}
+            >
+              {data.data.tags.map((tag) => (
+                <Chip
+                  label={tag?.title}
+                  key={tag?.title}
+                  sx={{ m: 1 }}
+                  color="primary"
+                  onClick={() => handleChipClick(tag?.title)}
+                />
+              ))}
+            </Box>
           </>
         )
       )}
@@ -142,17 +152,17 @@ const SearchScreen = () => {
         </Box>
       ) : (
         activitiesData?.data?.activities?.map((activity) => (
-          <ActivityCard
+          <ActivitySearchCard
             key={activity?.id}
             activity={activity}
             onPress={(act) => console.log(act)}
           />
         ))
       )}
-
+      {/* 
       <Button onClick={() => addEventToCalendar("thefaston@gmail.com", event)}>
         Create calendar Event
-      </Button>
+      </Button> */}
     </Box>
   );
 };

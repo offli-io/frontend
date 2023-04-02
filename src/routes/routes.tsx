@@ -32,6 +32,7 @@ import AuthenticationMethodScreen from "../screens/authentication-method-screen"
 import ForgottenPasswordScreen from "../screens/forgotten-password-screen/forgotten-password-screen";
 import EditActivityScreen from "../screens/edit-activity-screen/edit-activity-screen";
 import ChooseUsernameGooglePage from "../screens/choose-username-google-page";
+import ChooseLocationScreen from "../screens/choose-location-screen";
 
 const Routes = () => {
   return (
@@ -96,6 +97,10 @@ const Routes = () => {
         <Route
           path={ApplicationLocations.ACTIVITIES}
           element={<ActivitiesScreen />}
+        />
+        <Route
+          path={ApplicationLocations.CHOOSE_LOCATION}
+          element={<ChooseLocationScreen />}
         />
         <Route
           path={ApplicationLocations.CHOOSE_USERNAME_GOOGLE}

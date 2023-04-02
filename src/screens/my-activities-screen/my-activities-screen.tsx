@@ -104,7 +104,7 @@ const ActivitiesScreen = () => {
         name,
         username,
         status: ActivityInviteStateEnum.CONFIRMED,
-        profile_photo: profile_photo_url,
+        profile_photo_url,
       });
     },
 

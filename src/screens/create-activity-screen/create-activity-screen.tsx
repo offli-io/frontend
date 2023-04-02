@@ -27,6 +27,7 @@ import { useNavigate } from "react-router-dom";
 import { ApplicationLocations } from "../../types/common/applications-locations.dto";
 import { AuthenticationContext } from "../../assets/theme/authentication-provider";
 import DotsMobileStepper from "../../components/stepper";
+import { useUsers } from "../../hooks/use-users";
 
 interface FormValues {
   title?: string;
@@ -124,6 +125,10 @@ const CreateActivityScreen = () => {
   const [activeStep, setActiveStep] = React.useState<number>(0);
   const navigate = useNavigate();
   const { userInfo } = React.useContext(AuthenticationContext);
+  const { data: { data: userData } = {}, isLoading: isUserDataLoading } =
+    useUsers({
+      id: userInfo?.id,
+    });
 
   const methods = useForm<FormValues>({
     defaultValues: {
@@ -163,14 +168,14 @@ const CreateActivityScreen = () => {
   const handleFormSubmit = React.useCallback((data: FormValues) => {
     const { placeQuery, ...restValues } = data;
     //TODO fill with real user data
+    const { id, name, username, profile_photo_url } = { ...userData };
     mutate({
       ...restValues,
       creator: {
-        id: "635e5530b9c8eae920a7a976",
-        name: "Frank Marigold",
-        username: "FMe",
-        profile_photo:
-          "https://www.pngfind.com/pngs/m/676-6764065_default-profile-picture-transparent-hd-png-download.png",
+        id,
+        name,
+        username,
+        profile_photo_url,
       },
     });
   }, []);

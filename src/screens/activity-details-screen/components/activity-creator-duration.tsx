@@ -36,7 +36,7 @@ const ActivityCreatorDuration: React.FC<IProps> = ({
             }}
           >
             <img
-              src={creator?.profile_photo}
+              src={creator?.profile_photo_url}
               alt="profile"
               style={{
                 height: "25px",

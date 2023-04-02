@@ -30,7 +30,14 @@ import { useNavigate } from "react-router-dom";
 import { DEFAULT_KEYCLOAK_URL } from "../assets/config";
 import { loginUser } from "../api/auth/requests";
 import { useDebounce } from "use-debounce";
-import { getLocationFromQuery } from "../api/activities/requests";
+import {
+  getLocationFromQuery,
+  getLocationFromQueryFetch,
+} from "../api/activities/requests";
+import chooseLocationUrl from "../assets/img/choose-location.svg";
+
+import { IPlaceExternalApiResultDto } from "../types/activities/place-external-api.dto";
+import { ILocation } from "../types/activities/location.dto";
 
 export interface FormValues {
   placeQuery: string;
@@ -42,11 +49,21 @@ const schema: () => yup.SchemaOf<FormValues> = () =>
   });
 
 const ChooseLocationScreen: React.FC = () => {
-  const [showPassword, setShowPassword] = React.useState(false);
-  const { setUserInfo, setStateToken } = React.useContext(
-    AuthenticationContext
+  const [placeQuery, setPlaceQuery] = React.useState("");
+  const [selectedLocation, setSelectedLocation] = React.useState<
+    IPlaceExternalApiResultDto | undefined | null
+  >(null);
+
+  const [queryString] = useDebounce(placeQuery, 1000);
+
+  const { data, isLoading } = useQuery(
+    ["locations", queryString],
+    (props) => getLocationFromQueryFetch(queryString),
+    {
+      enabled: !!queryString,
+    }
   );
-  const { enqueueSnackbar } = useSnackbar();
+
   const navigate = useNavigate();
 
   const { control, handleSubmit, watch, setValue } = useForm<FormValues>({
@@ -57,109 +74,78 @@ const ChooseLocationScreen: React.FC = () => {
     mode: "onChange",
   });
 
-  const [queryString] = useDebounce(watch("placeQuery"), 1000);
-
-  const placeQuery = useQuery(
-    ["locations", queryString],
-    (props) => getLocationFromQuery(queryString),
-    {
-      enabled: !!queryString,
-    }
-  );
-  //   const { isLoading, mutate } = useMutation(
-  //     ["login"],
-  //     (formValues: FormValues) => {
-  //       //keycloak login that we are using no more
-  //       // const data = {
-  //       //   ...formValues,
-  //       //   grant_type: 'password',
-  //       //   client_id: 'UserManagement',
-  //       // }
-  //       // const options = {
-  //       //   method: 'POST',
-  //       //   headers: { 'content-type': 'application/x-www-form-urlencoded' },
-  //       //   data: qs.stringify(data),
-  //       //   url: `${DEFAULT_KEYCLOAK_URL}/realms/Offli/protocol/openid-connect/token`,
-  //       // }
-  //       return loginUser(formValues);
-  //     },
-  //     {
-  //       onSuccess: (data, params) => {
-  //         console.log(data?.data);
-  //         // setAuthToken(data?.data?.access_token)
-  //         // setRefreshToken(data?.data?.refresh_token)
-  //         setStateToken(data?.data?.token?.access_token ?? null);
-  //         !!setUserInfo && setUserInfo({ username: params?.username });
-  //         localStorage.setItem("username", params?.username);
-  //         navigate(ApplicationLocations.ACTIVITIES);
-  //       },
-  //       onError: (error) => {
-  //         enqueueSnackbar("Failed to log in", { variant: "error" });
-  //       },
-  //     }
-  //   );
-
-  const handleFormSubmit = React.useCallback(
-    (values: FormValues) => console.log(values),
+  const handleLocationSelect = React.useCallback(
+    (e: any, locationObject: IPlaceExternalApiResultDto | null) => {
+      setSelectedLocation(locationObject);
+    },
     []
   );
 
+  const handleConfirmSelectedLocation = React.useCallback(() => {
+    console.log({
+      name: selectedLocation?.formatted,
+      coordinates: {
+        lat: selectedLocation?.lat,
+        lon: selectedLocation?.lon,
+      },
+    });
+  }, [selectedLocation]);
+
   return (
-    <form
-      onSubmit={handleSubmit(handleFormSubmit)}
-      style={{
+    <Box
+      sx={{
         height: "100%",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        justifyContent: "space-evenly",
+        justifyContent: "center",
+        mx: 5,
       }}
-      // className="backgroundImage"
     >
-      <Logo />
-
-      <Controller
-        name="placeQuery"
-        control={control}
-        render={({ field, fieldState: { error } }) => (
-          <Autocomplete
-            options={placeQuery?.data?.data ?? []}
-            sx={{
-              width: "100%",
-              display: "flex",
-              justifyContent: "center",
-              mb: 2,
-            }}
-            loading={placeQuery?.isLoading}
-            // isOptionEqualToValue={(option, value) => option.id === value.id}
-            onChange={(e, locationObject) =>
-              field.onChange({
-                name: locationObject?.display_name,
-                coordinates: {
-                  lat: locationObject?.lat,
-                  lon: locationObject?.lon,
-                },
-              })
-            }
-            getOptionLabel={(option) => option?.display_name}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                label="Search place"
-                onChange={(e) => setValue("placeQuery", e.target.value)}
-              />
-            )}
+      <Box sx={{ width: "100%", mb: 4, mt: -3, display: "flex" }}>
+        <Typography variant="h2" color="primary" sx={{ mr: 1 }}>
+          Choose
+        </Typography>
+        <Typography variant="h2">your location</Typography>
+      </Box>
+      <img
+        style={{
+          height: 100,
+        }}
+        src={chooseLocationUrl}
+        alt="Choose location"
+      />
+      <Autocomplete
+        value={selectedLocation}
+        options={data?.results ?? []}
+        sx={{
+          width: "100%",
+          display: "flex",
+          justifyContent: "center",
+          mt: 5,
+          mb: 4,
+        }}
+        loading={isLoading}
+        onChange={handleLocationSelect}
+        getOptionLabel={(option) => String(option?.formatted)}
+        renderInput={(params) => (
+          <TextField
+            {...params}
+            label="Search place"
+            onChange={(e) => setPlaceQuery(e.target.value)}
           />
         )}
       />
+
       <OffliButton
-        sx={{ width: "80%", mb: 5 }}
+        sx={{ width: "100%", mb: 5 }}
         type="submit"
-        // isLoading={isLoading}
+        disabled={!selectedLocation}
+        onClick={handleConfirmSelectedLocation}
       >
-        Login
+        Let's explore
       </OffliButton>
-    </form>
+    </Box>
   );
 };
 
