@@ -22,7 +22,7 @@ import BuddyActions from "./components/buddy-actions";
 import { DrawerContext } from "../../assets/theme/drawer-provider";
 import { IPerson } from "../../types/activities/activity.dto";
 import { BuddyActionTypeEnum } from "../../types/common/buddy-actions-type-enum.dto";
-import { deleteBuddy } from "../../api/users/requests";
+import { addBuddy, deleteBuddy } from "../../api/users/requests";
 import { useMutation, useQueries, useQueryClient } from "@tanstack/react-query";
 import { useSnackbar } from "notistack";
 import { AuthenticationContext } from "../../assets/theme/authentication-provider";
@@ -61,6 +61,32 @@ const MyBuddiesScreen = () => {
       },
       onError: () => {
         enqueueSnackbar("Failed to delete buddy", {
+          variant: "error",
+        });
+      },
+    }
+  );
+
+  const { mutate: sendAddBuddy, isLoading: isAddBuddyLoading } = useMutation(
+    ["add-buddy"],
+    (id?: string) => addBuddy(userInfo?.id, id),
+    {
+      onSuccess: (data, variables) => {
+        //TODO what to invalidate, and where to navigate after success
+        // queryClient.invalidateQueries(['notifications'])
+        // navigateBasedOnType(
+        //   variables?.type,
+        //   variables?.properties?.user?.id ?? variables?.properties?.activity?.id
+        // )
+        // toggleDrawer({ open: false, content: undefined });
+        invalidateBuddies();
+
+        enqueueSnackbar("Buddy request was sent", {
+          variant: "success",
+        });
+      },
+      onError: () => {
+        enqueueSnackbar("Failed to add new buddy", {
           variant: "error",
         });
       },
@@ -167,7 +193,8 @@ const MyBuddiesScreen = () => {
                     <BuddySuggestCard
                       key={buddy?.id}
                       buddy={buddy}
-                      onAddBuddyClick={(buddy) => console.log(buddy)}
+                      onAddBuddyClick={(buddy) => sendAddBuddy(buddy?.id)}
+                      isLoading={isAddBuddyLoading}
                     />
                     <BuddySuggestCard key={buddy?.id} buddy={buddy} />
                     <BuddySuggestCard key={buddy?.id} buddy={buddy} />

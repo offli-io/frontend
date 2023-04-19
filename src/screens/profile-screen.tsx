@@ -123,17 +123,16 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
               border: "2px solid black",
             }}
           />
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              // mt: 0.2,
-            }}
-          >
+          {type !== "request" && (
             <IconButton
               color="primary"
-              sx={{ paddingRight: 0 }}
+              sx={{
+                backgroundColor: (theme) => theme.palette.primary.light,
+                mt: 1,
+                px: 2.5,
+                py: 0.5,
+                borderRadius: "15px",
+              }}
               onClick={() =>
                 navigate(ApplicationLocations.BUDDIES, {
                   state: {
@@ -143,21 +142,25 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
               }
             >
               <PeopleAltIcon sx={{ fontSize: 18, padding: 0 }} />
+              <Typography
+                variant="subtitle1"
+                color="primary"
+                sx={{
+                  fontWeight: "bold",
+                  mt: 0.5,
+                  ml: 0.5,
+                }}
+              >
+                {data?.buddies?.length}
+              </Typography>
             </IconButton>
-            <Typography
-              variant="subtitle1"
-              color="primary"
-              sx={{ fontWeight: "bold", mt: 0.5, ml: 0.5 }}
-            >
-              {data?.buddies?.length}
-            </Typography>
-          </Box>
+          )}
+
           <Box
             sx={{
               ml: -1.5,
               display: "flex",
               alignItems: "center",
-              mt: -1,
               // justifyContent: 'flex-start',
             }}
           >

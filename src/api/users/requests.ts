@@ -72,6 +72,7 @@ export const acceptBuddyInvitation = (
   const CancelToken = axios.CancelToken;
   const source = CancelToken.source();
 
+  //change to PATCH
   const promise = axios.post(
     `${DEFAULT_DEV_URL}/users/${userId}/buddies`,
     { buddy_to_be_id: buddyToBeId },
@@ -112,9 +113,10 @@ export const rejectBuddyInvitation = (
   const CancelToken = axios.CancelToken;
   const source = CancelToken.source();
 
-  const promise = axios.post(
+  const promise = axios.patch(
     `${DEFAULT_DEV_URL}/users/${userId}/buddies`,
-    { buddy_to_be_id: buddyToBeId },
+    //define DTO on FE
+    { status: "Rejected" },
     {
       cancelToken: source?.token,
     }
@@ -133,6 +135,25 @@ export const deleteBuddy = (userId?: string, idToDelete?: string) => {
 
   const promise = axios.delete(
     `${DEFAULT_DEV_URL}/users/${userId}/buddies/${idToDelete}`,
+    {
+      cancelToken: source?.token,
+    }
+  );
+
+  //   queryFunctionContext?.signal?.addEventListener('abort', () => {
+  //     source.cancel('Query was cancelled by React Query')
+  //   })
+
+  return promise;
+};
+
+export const addBuddy = (userId?: string, buddyId?: string) => {
+  const CancelToken = axios.CancelToken;
+  const source = CancelToken.source();
+
+  const promise = axios.patch(
+    `${DEFAULT_DEV_URL}/users/${userId}/buddies/${buddyId}`,
+    { status: "Pending" },
     {
       cancelToken: source?.token,
     }

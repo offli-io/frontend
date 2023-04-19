@@ -10,9 +10,10 @@ import {
   FormControlLabel,
   Checkbox,
   useTheme,
+  Autocomplete,
 } from "@mui/material";
 import { PageWrapper } from "../components/page-wrapper";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import BackHeader from "../components/back-header";
 import { IPersonExtended } from "../types/activities/activity.dto";
 import { ApplicationLocations } from "../types/common/applications-locations.dto";
@@ -29,21 +30,36 @@ import moment from "moment";
 import { useUsers } from "../hooks/use-users";
 import { updateProfileInfo } from "../api/users/requests";
 import { useSnackbar } from "notistack";
+import { getLocationFromQueryFetch } from "../api/activities/requests";
+import { useDebounce } from "use-debounce";
+import { ILocation } from "../types/activities/location.dto";
 
 interface IEditProfile {
   name: string;
   about_me: string;
-  location: string;
+  location: ILocation;
   birthdate: Date | null;
   instagram: string;
+  placeQuery?: string;
 }
 
 const schema: () => yup.SchemaOf<IEditProfile> = () =>
   yup.object({
     name: yup.string().defined().required("Please enter your name"),
     about_me: yup.string().defined().required("Please enter your aboutMe"),
-    location: yup.string().defined().required("Please enter your location"),
+    location: yup
+      .object()
+      .shape({
+        name: yup.string().notRequired(),
+        coordinates: yup.object().shape({
+          lat: yup.number().notRequired(),
+          lon: yup.number().notRequired(),
+        }),
+      })
+      .defined()
+      .required("Please enter your location"),
     birthdate: yup.date().nullable().required("Please enter your birthDate"),
+    placeQuery: yup.string().notRequired(),
     instagram: yup
       .string()
       .defined()
@@ -63,7 +79,18 @@ const EditProfileScreen: React.FC = () => {
 
   const { mutate: sendUpdateProfile } = useMutation(
     ["update-profile-info"],
-    (values: IEditProfile) => updateProfileInfo(userInfo?.id, values),
+    (values: IEditProfile) =>
+      //TODO handle location through autocomplete
+      updateProfileInfo(userInfo?.id, {
+        ...values,
+        // location: {
+        //   name: values?.location,
+        //   coordinates: {
+        //     lat: 1,
+        //     lon: 1,
+        //   },
+        // },
+      }),
     {
       onSuccess: (data, variables) => {
         //TODO what to invalidate, and where to navigate after success
@@ -90,7 +117,7 @@ const EditProfileScreen: React.FC = () => {
 
   const navigate = useNavigate();
 
-  const { control, handleSubmit, watch, setError, formState, reset } =
+  const { control, handleSubmit, watch, setError, formState, reset, setValue } =
     useForm<IEditProfile>({
       defaultValues: {
         name: "",
@@ -102,6 +129,16 @@ const EditProfileScreen: React.FC = () => {
       resolver: yupResolver(schema()),
       mode: "onChange",
     });
+
+  const [queryString] = useDebounce(watch("placeQuery"), 1000);
+
+  const placeQuery = useQuery(
+    ["locations", queryString],
+    (props) => getLocationFromQueryFetch(String(queryString)),
+    {
+      enabled: !!queryString,
+    }
+  );
 
   useEffect(() => {
     // alebo setValue ak bude resetu kurovat
@@ -176,7 +213,13 @@ const EditProfileScreen: React.FC = () => {
             <Grid
               container
               rowSpacing={1.5}
-              sx={{ width: "80%", mt: 1, fontSize: 5, alignItems: "center" }}
+              sx={{
+                width: "100%",
+                mt: 1,
+                fontSize: 5,
+                alignItems: "center",
+                px: 2,
+              }}
             >
               <Grid item xs={5}>
                 <Typography variant="h5">Name</Typography>
@@ -223,7 +266,7 @@ const EditProfileScreen: React.FC = () => {
                 <Typography variant="h5">Location</Typography>
               </Grid>
               <Grid item xs={7} sx={{ mt: 1 }}>
-                <Controller
+                {/* <Controller
                   name="location"
                   control={control}
                   render={({ field, fieldState: { error } }) => (
@@ -234,6 +277,43 @@ const EditProfileScreen: React.FC = () => {
                       helperText={error?.message}
                       //disabled={methodSelectionDisabled}
                       sx={{ width: "100%" }}
+                    />
+                  )}
+                /> */}
+                <Controller
+                  name="location"
+                  control={control}
+                  render={({ field, fieldState: { error } }) => (
+                    <Autocomplete
+                      options={placeQuery?.data?.results ?? []}
+                      sx={{
+                        width: "100%",
+                        display: "flex",
+                        justifyContent: "center",
+                        mb: 2,
+                      }}
+                      loading={placeQuery?.isLoading}
+                      // isOptionEqualToValue={(option, value) => option.id === value.id}
+                      onChange={(e, locationObject) =>
+                        field.onChange({
+                          name: locationObject?.formatted,
+                          coordinates: {
+                            lat: locationObject?.lat,
+                            lon: locationObject?.lon,
+                          },
+                        })
+                      }
+                      getOptionLabel={(option) => String(option?.formatted)}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          variant="standard"
+                          label="Search place"
+                          onChange={(e) =>
+                            setValue("placeQuery", e.target.value)
+                          }
+                        />
+                      )}
                     />
                   )}
                 />
@@ -261,6 +341,7 @@ const EditProfileScreen: React.FC = () => {
                           <TextField
                             variant="standard"
                             {...params}
+                            sx={{ width: "100%" }}
                             error={!!error}
                             helperText={error?.message}
                           />

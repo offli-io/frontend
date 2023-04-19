@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 import qs from "qs";
 import Logo from "../components/logo";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Controller, useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -38,6 +38,7 @@ import chooseLocationUrl from "../assets/img/choose-location.svg";
 
 import { IPlaceExternalApiResultDto } from "../types/activities/place-external-api.dto";
 import { ILocation } from "../types/activities/location.dto";
+import { updateProfileInfo } from "../api/users/requests";
 
 export interface FormValues {
   placeQuery: string;
@@ -50,9 +51,13 @@ const schema: () => yup.SchemaOf<FormValues> = () =>
 
 const ChooseLocationScreen: React.FC = () => {
   const [placeQuery, setPlaceQuery] = React.useState("");
+  const { userInfo } = React.useContext(AuthenticationContext);
   const [selectedLocation, setSelectedLocation] = React.useState<
     IPlaceExternalApiResultDto | undefined | null
   >(null);
+
+  const queryClient = useQueryClient();
+  const { enqueueSnackbar } = useSnackbar();
 
   const [queryString] = useDebounce(placeQuery, 1000);
 
@@ -61,6 +66,31 @@ const ChooseLocationScreen: React.FC = () => {
     (props) => getLocationFromQueryFetch(queryString),
     {
       enabled: !!queryString,
+    }
+  );
+
+  const { mutate: sendUpdateProfile } = useMutation(
+    ["update-profile-info"],
+    (location: ILocation) => updateProfileInfo(userInfo?.id, { location }),
+    {
+      onSuccess: (data, variables) => {
+        //TODO what to invalidate, and where to navigate after success
+        // queryClient.invalidateQueries(['notifications'])
+        // navigateBasedOnType(
+        //   variables?.type,
+        //   variables?.properties?.user?.id ?? variables?.properties?.activity?.id
+        // )
+        queryClient.invalidateQueries(["users"]);
+        enqueueSnackbar("Your location was successfully saved", {
+          variant: "success",
+        });
+        navigate(ApplicationLocations.ACTIVITIES);
+      },
+      onError: () => {
+        enqueueSnackbar("Failed to select location", {
+          variant: "error",
+        });
+      },
     }
   );
 
