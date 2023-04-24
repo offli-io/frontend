@@ -36,7 +36,7 @@ export const Layout: React.FC<ILayoutProps> = ({ children }) => {
   React.useEffect(() => {
     if (!!data && !data?.location && stateToken) {
       // TODO when on BE will be patch implemented
-      // navigate(ApplicationLocations.CHOOSE_LOCATION);
+      navigate(ApplicationLocations.CHOOSE_LOCATION);
     }
   }, [data]);
 

@@ -18,6 +18,8 @@ import LabeledDivider from "../components/labeled-divider";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import axios from "axios";
+import NearMeIcon from "@mui/icons-material/NearMe";
+
 import { useSnackbar } from "notistack";
 import {
   getAuthToken,
@@ -33,12 +35,14 @@ import { useDebounce } from "use-debounce";
 import {
   getLocationFromQuery,
   getLocationFromQueryFetch,
+  getPlaceFromCoordinates,
 } from "../api/activities/requests";
 import chooseLocationUrl from "../assets/img/choose-location.svg";
 
 import { IPlaceExternalApiResultDto } from "../types/activities/place-external-api.dto";
 import { ILocation } from "../types/activities/location.dto";
 import { updateProfileInfo } from "../api/users/requests";
+import { useGeolocated } from "react-geolocated";
 
 export interface FormValues {
   placeQuery: string;
@@ -55,6 +59,34 @@ const ChooseLocationScreen: React.FC = () => {
   const [selectedLocation, setSelectedLocation] = React.useState<
     IPlaceExternalApiResultDto | undefined | null
   >(null);
+
+  const [latLonBrowserTuple, setLatLonBrowserTuple] = React.useState<
+    { lat?: number; lon?: number } | undefined
+  >();
+
+  const { coords, isGeolocationAvailable, isGeolocationEnabled, getPosition } =
+    useGeolocated({
+      positionOptions: {
+        enableHighAccuracy: false,
+      },
+      //   userDecisionTimeout: 5000,
+      //   suppressLocationOnMount: true,
+    });
+
+  const {
+    data: placeFromCoordinatesData,
+    isLoading: isPlaceFromCoordinatesDataLoading,
+  } = useQuery(
+    ["locations", latLonBrowserTuple],
+    () =>
+      getPlaceFromCoordinates(
+        Number(latLonBrowserTuple?.lat),
+        Number(latLonBrowserTuple?.lon)
+      ),
+    {
+      enabled: !!latLonBrowserTuple,
+    }
+  );
 
   const queryClient = useQueryClient();
   const { enqueueSnackbar } = useSnackbar();
@@ -75,11 +107,6 @@ const ChooseLocationScreen: React.FC = () => {
     {
       onSuccess: (data, variables) => {
         //TODO what to invalidate, and where to navigate after success
-        // queryClient.invalidateQueries(['notifications'])
-        // navigateBasedOnType(
-        //   variables?.type,
-        //   variables?.properties?.user?.id ?? variables?.properties?.activity?.id
-        // )
         queryClient.invalidateQueries(["users"]);
         enqueueSnackbar("Your location was successfully saved", {
           variant: "success",
@@ -96,6 +123,7 @@ const ChooseLocationScreen: React.FC = () => {
 
   const navigate = useNavigate();
 
+  //TODO remove validation it is not needed here
   const { control, handleSubmit, watch, setValue } = useForm<FormValues>({
     defaultValues: {
       placeQuery: "",
@@ -112,14 +140,32 @@ const ChooseLocationScreen: React.FC = () => {
   );
 
   const handleConfirmSelectedLocation = React.useCallback(() => {
-    console.log({
+    sendUpdateProfile({
       name: selectedLocation?.formatted,
       coordinates: {
         lat: selectedLocation?.lat,
         lon: selectedLocation?.lon,
       },
     });
-  }, [selectedLocation]);
+  }, [selectedLocation, sendUpdateProfile]);
+
+  const handleUseCurrentLocation = React.useCallback(() => {
+    // queryClient.setQueryData(["current-location"], { coords });
+    setLatLonBrowserTuple({ lat: coords?.latitude, lon: coords?.longitude });
+    // onLocationSelect({ name: null, coordinates: });
+  }, [coords]);
+
+  React.useEffect(() => {
+    if (!!placeFromCoordinatesData?.results) {
+      sendUpdateProfile({
+        name: placeFromCoordinatesData?.results?.[0]?.name,
+        coordinates: {
+          lat: placeFromCoordinatesData?.results?.[0]?.lat,
+          lon: placeFromCoordinatesData?.results?.[0]?.lon,
+        },
+      });
+    }
+  }, [placeFromCoordinatesData?.results]);
 
   return (
     <Box
@@ -166,6 +212,16 @@ const ChooseLocationScreen: React.FC = () => {
           />
         )}
       />
+
+      <OffliButton
+        startIcon={<NearMeIcon />}
+        sx={{ width: "100%", my: 2, fontSize: 16 }}
+        onClick={handleUseCurrentLocation}
+        disabled={!coords}
+        variant="text"
+      >
+        Use my current location
+      </OffliButton>
 
       <OffliButton
         sx={{ width: "100%", mb: 5 }}

@@ -53,12 +53,19 @@ const ActivitiesScreen = () => {
     ? JSON.parse(storageLocation)
     : null;
 
+  //TODO either call it like this or set user info once useUsers request in layout.tsx got Promise resolved
+  const { data: { data: userData } = {} } = useUsers({
+    id: userInfo?.id,
+  });
+
   const [selectedLocation, setSelectedLocation] = React.useState<
     ILocation | undefined | null
-  >(_storageLocation ?? userInfo?.location);
+  >(_storageLocation ?? userData?.location);
 
   const { data: { data: { activities = [] } = {} } = {}, isLoading } =
     useActivities<IActivityListRestDto>();
+
+  console.log(userData?.location);
 
   const {
     data: { data = {} } = {},
@@ -68,19 +75,12 @@ const ActivitiesScreen = () => {
 
   const participantActivites = data?.activities ?? [];
 
-  console.log(participantActivites);
-
   const filteredActivities = activities?.filter(
     (activity) =>
       !participantActivites?.some(
         (participantActivity) => participantActivity?.id === activity?.id
       )
   );
-
-  //TODO either call it like this or set user info once useUsers request in layout.tsx got Promise resolved
-  const { data: { data: userData } = {} } = useUsers({
-    id: userInfo?.id,
-  });
 
   // const { data: { data: { activities = [] } = {} } = {}, isLoading } = useQuery(
   //   ["activities"],
@@ -246,6 +246,17 @@ const ActivitiesScreen = () => {
       });
   }, [isFirstTimeLogin, toggleDrawer]);
 
+  React.useEffect(() => {
+    // set default location value when component completely renders
+    if (!selectedLocation) {
+      if (!!_storageLocation) {
+        setSelectedLocation(_storageLocation);
+      } else if (!!userData?.location) {
+        setSelectedLocation(userData?.location);
+      }
+    }
+  }, [_storageLocation, userData?.location]);
+
   return (
     <PageWrapper sxOverrides={{ px: 2 }}>
       <Box
@@ -262,7 +273,7 @@ const ActivitiesScreen = () => {
         </Typography>
         <OffliButton
           variant="text"
-          sx={{ fontSize: 16 }}
+          sx={{ fontSize: 16, maxWidth: 200 }}
           startIcon={<PlaceIcon sx={{ fontSize: "1.4rem" }} />}
           onClick={handleLocationSelect}
         >
