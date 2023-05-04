@@ -32,6 +32,8 @@ import AuthenticationMethodScreen from "../screens/authentication-method-screen"
 import ForgottenPasswordScreen from "../screens/forgotten-password-screen/forgotten-password-screen";
 import ChooseUsernameGooglePage from "../screens/choose-username-google-page";
 import ChooseLocationScreen from "../screens/choose-location-screen";
+import AddBuddyScreen from "../screens/add-buddies-screen/add-buddies-screen";
+import AddBuddiesScreen from "../screens/add-buddies-screen/add-buddies-screen";
 
 const Routes = () => {
   return (
@@ -144,6 +146,10 @@ const Routes = () => {
         <Route
           path={ApplicationLocations.BUDDIES}
           element={<MyBuddiesScreen />}
+        />
+        <Route
+          path={ApplicationLocations.ADD_BUDDIES}
+          element={<AddBuddiesScreen />}
         />
         <Route path={ApplicationLocations.CHAT} element={<ChatScreen />} />
       </Route>

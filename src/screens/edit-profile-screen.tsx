@@ -37,7 +37,7 @@ import { ILocation } from "../types/activities/location.dto";
 interface IEditProfile {
   name: string;
   about_me: string;
-  location: ILocation;
+  location?: ILocation | null;
   birthdate: Date | null;
   instagram: string;
   placeQuery?: string;
@@ -56,8 +56,7 @@ const schema: () => yup.SchemaOf<IEditProfile> = () =>
           lon: yup.number().notRequired(),
         }),
       })
-      .defined()
-      .required("Please enter your location"),
+      .nullable(true),
     birthdate: yup.date().nullable().required("Please enter your birthDate"),
     placeQuery: yup.string().notRequired(),
     instagram: yup
@@ -151,6 +150,7 @@ const EditProfileScreen: React.FC = () => {
       // fix this mby later
       birthdate: (data?.birthdate as Date) ?? null,
       // birthDate: '',
+      location: data?.location,
       instagram: "staryjanotvojtatko",
     });
   }, [data]);
@@ -286,6 +286,8 @@ const EditProfileScreen: React.FC = () => {
                   render={({ field, fieldState: { error } }) => (
                     <Autocomplete
                       options={placeQuery?.data?.results ?? []}
+                      // value={field?.value?.name as ILocation}
+                      //TODO display default location value
                       sx={{
                         width: "100%",
                         display: "flex",
@@ -306,7 +308,14 @@ const EditProfileScreen: React.FC = () => {
                       getOptionLabel={(option) => String(option?.formatted)}
                       renderInput={(params) => (
                         <TextField
+                          // value="ahoj"
                           {...params}
+                          // InputProps={{
+                          //   value: field?.value?.name,
+                          //   ...params.InputProps,
+                          // }}
+                          // value={field?.value?.name}
+
                           variant="standard"
                           label="Search place"
                           onChange={(e) =>

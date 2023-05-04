@@ -6,7 +6,7 @@ export interface IUpdateUserRequestDto {
   name?: string;
   profile_photo_url?: string;
   about_me?: string;
-  location?: ILocation;
+  location?: ILocation | null;
   birthdate?: Date | null;
   instagram?: string;
 }

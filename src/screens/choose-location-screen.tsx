@@ -158,7 +158,7 @@ const ChooseLocationScreen: React.FC = () => {
   React.useEffect(() => {
     if (!!placeFromCoordinatesData?.results) {
       sendUpdateProfile({
-        name: placeFromCoordinatesData?.results?.[0]?.name,
+        name: placeFromCoordinatesData?.results?.[0]?.formatted,
         coordinates: {
           lat: placeFromCoordinatesData?.results?.[0]?.lat,
           lon: placeFromCoordinatesData?.results?.[0]?.lon,

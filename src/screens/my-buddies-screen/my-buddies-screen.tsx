@@ -171,7 +171,13 @@ const MyBuddiesScreen = () => {
 
               <IconButton
                 sx={{ fontSize: 14, ml: 1 }}
-                onClick={() => navigate(ApplicationLocations.ACTIVITIES)}
+                onClick={() =>
+                  navigate(ApplicationLocations.ADD_BUDDIES, {
+                    state: {
+                      from: ApplicationLocations.BUDDIES,
+                    },
+                  })
+                }
               >
                 <PersonAddIcon color="primary" />
               </IconButton>

@@ -36,7 +36,7 @@ export const Layout: React.FC<ILayoutProps> = ({ children }) => {
   React.useEffect(() => {
     if (!!data && !data?.location && stateToken) {
       // TODO when on BE will be patch implemented
-      navigate(ApplicationLocations.CHOOSE_LOCATION);
+      // navigate(ApplicationLocations.CHOOSE_LOCATION);
     }
   }, [data]);
 
@@ -49,6 +49,7 @@ export const Layout: React.FC<ILayoutProps> = ({ children }) => {
         ApplicationLocations.CHOOSE_LOCATION,
         ApplicationLocations.MAP,
         ApplicationLocations.BUDDIES,
+        ApplicationLocations.ADD_BUDDIES,
         ApplicationLocations.CHOOSE_USERNAME_GOOGLE,
         //ApplicationLocations.NOTIFICATIONS,
         // `${ApplicationLocations.PROFILE}/request`,
