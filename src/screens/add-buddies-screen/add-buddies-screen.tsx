@@ -20,25 +20,46 @@ import { useBuddies } from "../../hooks/use-buddies";
 import { ActivityMembersActionTypeDto } from "../../types/common/activity-members-action-type.dto";
 // import BuddyActions from "./components/buddy-actions";
 import { DrawerContext } from "../../assets/theme/drawer-provider";
-import { IPerson } from "../../types/activities/activity.dto";
+import { IPerson, IPersonExtended } from "../../types/activities/activity.dto";
 import { BuddyActionTypeEnum } from "../../types/common/buddy-actions-type-enum.dto";
 import { addBuddy, deleteBuddy } from "../../api/users/requests";
-import { useMutation, useQueries, useQueryClient } from "@tanstack/react-query";
+import {
+  useMutation,
+  useQueries,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { useSnackbar } from "notistack";
 import { AuthenticationContext } from "../../assets/theme/authentication-provider";
+import { getUsers } from "../../api/activities/requests";
+import { useUsers } from "../../hooks/use-users";
 // import BuddySuggestCard from "../../components/buddy-suggest-card";
 
 const AddBuddiesScreen = () => {
   const navigate = useNavigate();
-  const [currentSearch, setCurrentSearch] = React.useState("");
+  const [username, setUsername] = React.useState("");
   const { toggleDrawer } = React.useContext(DrawerContext);
   const { enqueueSnackbar } = useSnackbar();
   const { userInfo } = React.useContext(AuthenticationContext);
   const location = useLocation();
   const from = (location?.state as ICustomizedLocationStateDto)?.from;
-  const { data, isLoading, invalidateBuddies } = useBuddies({
-    text: currentSearch,
+
+  //TODO polish this avoid erorrs that cause whole application down
+  const { data = {}, isLoading } = useUsers<IPersonExtended[]>({
+    username,
   });
+
+  // const { data, isLoading } = useQuery(
+  //   ["users", username],
+  //   () => getUsers({ username }),
+  //   {
+  //     onError: () => {
+  //       //some generic toast for every hook
+  //       enqueueSnackbar("Failed to search users", { variant: "error" });
+  //     },
+  //     enabled: !!username,
+  //   }
+  // );
 
   const { mutate: sendDeleteBuddy } = useMutation(
     ["delete-buddy"],
@@ -52,7 +73,7 @@ const AddBuddiesScreen = () => {
         //   variables?.properties?.user?.id ?? variables?.properties?.activity?.id
         // )
         toggleDrawer({ open: false, content: undefined });
-        invalidateBuddies();
+        // invalidateBuddies();
 
         enqueueSnackbar("Buddy was successfully deleted", {
           variant: "success",
@@ -78,7 +99,7 @@ const AddBuddiesScreen = () => {
         //   variables?.properties?.user?.id ?? variables?.properties?.activity?.id
         // )
         // toggleDrawer({ open: false, content: undefined });
-        invalidateBuddies();
+        // invalidateBuddies();
 
         enqueueSnackbar("Buddy request was sent", {
           variant: "success",
@@ -145,8 +166,8 @@ const AddBuddiesScreen = () => {
               fontSize: 14,
             },
           }}
-          value={currentSearch}
-          placeholder="Search among your buddies"
+          value={username}
+          placeholder="Search among users"
           InputProps={{
             startAdornment: (
               <InputAdornment position="start">
@@ -154,11 +175,11 @@ const AddBuddiesScreen = () => {
               </InputAdornment>
             ),
           }}
-          onChange={(e) => setCurrentSearch(e.target.value)}
+          onChange={(e) => setUsername(e.target.value)}
         />
 
         <Box>
-          {(data?.data ?? [])?.length < 1 ? (
+          {(data ?? [])?.length < 1 ? (
             <Box
               sx={{
                 height: 100,
@@ -174,7 +195,7 @@ const AddBuddiesScreen = () => {
               <Typography
                 sx={{ color: (theme) => theme.palette.inactive.main }}
               >
-                No activity members
+                No users found
               </Typography>
             </Box>
           ) : (
@@ -194,14 +215,12 @@ const AddBuddiesScreen = () => {
                   <CircularProgress color="primary" />
                 </Box>
               ) : (
-                data?.data.map((buddy) => (
+                data?.data.map((user: IPersonExtended) => (
                   <BuddyItem
-                    key={buddy?.id}
-                    buddy={buddy}
+                    key={user?.id}
+                    buddy={user}
                     actionContent={
-                      <IconButton
-                        onClick={() => handleBuddyActionsClick(buddy)}
-                      >
+                      <IconButton onClick={() => handleBuddyActionsClick(user)}>
                         <MoreHorizIcon />
                       </IconButton>
                     }

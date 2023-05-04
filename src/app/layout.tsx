@@ -8,6 +8,7 @@ import { Box } from "@mui/material";
 import { ApplicationLocations } from "../types/common/applications-locations.dto";
 import BackHeader from "../components/back-header";
 import { useUsers } from "../hooks/use-users";
+import { IPersonExtended } from "../types/activities/activity.dto";
 interface ILayoutProps {
   children?: React.ReactNode;
 }
@@ -23,7 +24,7 @@ export const Layout: React.FC<ILayoutProps> = ({ children }) => {
   const [displayBottomNavigator, setDisplayBottomNavigator] =
     React.useState(true);
 
-  const { data: { data } = {}, isLoading } = useUsers({
+  const { data: { data } = {}, isLoading } = useUsers<IPersonExtended>({
     id: userInfo?.id,
   });
 

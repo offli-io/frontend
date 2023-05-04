@@ -4,6 +4,7 @@ import React from "react";
 import { INotificationDto } from "../types/notifications/notification.dto";
 import { useUsers } from "../hooks/use-users";
 import { differenceInHours } from "date-fns";
+import { IPersonExtended } from "../types/activities/activity.dto";
 
 interface INotificationRequestProps {
   notification: INotificationDto;
@@ -24,7 +25,9 @@ const NotificationRequest: React.FC<INotificationRequestProps> = ({
   notification,
   onClick,
 }) => {
-  const { data, isLoading } = useUsers({ id: notification?.user_id });
+  const { data, isLoading } = useUsers<IPersonExtended>({
+    id: notification?.user_id,
+  });
 
   const hourDifference = React.useCallback(() => {
     if (notification?.timestamp) {

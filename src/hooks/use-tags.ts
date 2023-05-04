@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { useSnackbar } from "notistack";
-import { getPredefinedTags, getUsers } from "../api/activities/requests";
+import { getPredefinedTags } from "../api/activities/requests";
 
 export const useTags = () => {
   const { enqueueSnackbar } = useSnackbar();

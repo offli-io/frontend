@@ -112,7 +112,9 @@ const EditProfileScreen: React.FC = () => {
     }
   );
 
-  const { data: { data = {} } = {} } = useUsers({ id: userInfo?.id });
+  const { data: { data = {} } = {} } = useUsers<IPersonExtended>({
+    id: userInfo?.id,
+  });
 
   const navigate = useNavigate();
 

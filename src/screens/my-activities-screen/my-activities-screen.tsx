@@ -30,7 +30,11 @@ import ActivityCard from "../../components/activity-card";
 import OffliButton from "../../components/offli-button";
 import SearchIcon from "@mui/icons-material/Search";
 import PlaceIcon from "@mui/icons-material/Place";
-import { IActivity, IPerson } from "../../types/activities/activity.dto";
+import {
+  IActivity,
+  IPerson,
+  IPersonExtended,
+} from "../../types/activities/activity.dto";
 import FirstTimeLoginContent from "./components/first-time-login-content";
 import { SetLocationContent } from "./components/set-location-content";
 import { ILocation } from "../../types/activities/location.dto";
@@ -54,7 +58,7 @@ const ActivitiesScreen = () => {
     : null;
 
   //TODO either call it like this or set user info once useUsers request in layout.tsx got Promise resolved
-  const { data: { data: userData } = {} } = useUsers({
+  const { data: { data: userData } = {} } = useUsers<IPersonExtended>({
     id: userInfo?.id,
   });
 
@@ -98,7 +102,12 @@ const ActivitiesScreen = () => {
   const { mutate: sendJoinActivity } = useMutation(
     ["invite-person"],
     (activityId?: string) => {
-      const { id, name, username, profile_photo_url } = { ...userData };
+      const {
+        id = undefined,
+        name = undefined,
+        username = undefined,
+        profile_photo_url = undefined,
+      } = { ...userData };
       return inviteBuddy(String(activityId), {
         id,
         name,
