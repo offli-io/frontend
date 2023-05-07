@@ -112,7 +112,7 @@ const EditProfileScreen: React.FC = () => {
     }
   );
 
-  const { data: { data = {} } = {} } = useUsers<IPersonExtended>({
+  const { data = {} } = useUsers<IPersonExtended>({
     id: userInfo?.id,
   });
 

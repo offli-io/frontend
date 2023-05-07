@@ -58,7 +58,7 @@ const ActivitiesScreen = () => {
     : null;
 
   //TODO either call it like this or set user info once useUsers request in layout.tsx got Promise resolved
-  const { data: { data: userData } = {} } = useUsers<IPersonExtended>({
+  const { data: userData } = useUsers<IPersonExtended>({
     id: userInfo?.id,
   });
 

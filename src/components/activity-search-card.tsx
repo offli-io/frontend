@@ -34,7 +34,7 @@ const ActivitySearchCard: React.FC<IMyActivityCardProps> = ({
   //TODO maybe in later use also need some refactoring
   const { action, handlers } = useLongPress();
   const { userInfo } = React.useContext(AuthenticationContext);
-  const { data: { data: userData } = {} } = useUsers<IPersonExtended>({
+  const { data: userData = {} } = useUsers<IPersonExtended>({
     id: userInfo?.id,
   });
 

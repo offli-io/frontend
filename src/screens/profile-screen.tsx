@@ -41,8 +41,6 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
     id: userInfo?.id,
   });
 
-  console.log(data);
-
   const { mutate: sendAcceptBuddyRequest } = useMutation(
     ["accept-buddy-request"],
     () => acceptBuddyInvitation(userInfo?.id, id),

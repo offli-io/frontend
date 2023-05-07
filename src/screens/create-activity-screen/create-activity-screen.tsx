@@ -125,7 +125,7 @@ const CreateActivityScreen = () => {
   const [activeStep, setActiveStep] = React.useState<number>(0);
   const navigate = useNavigate();
   const { userInfo } = React.useContext(AuthenticationContext);
-  const { data: { data: userData } = {}, isLoading: isUserDataLoading } =
+  const { data: userData = {}, isLoading: isUserDataLoading } =
     useUsers<IPersonExtended>({
       id: userInfo?.id,
     });

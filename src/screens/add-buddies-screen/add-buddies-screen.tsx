@@ -215,7 +215,7 @@ const AddBuddiesScreen = () => {
                   <CircularProgress color="primary" />
                 </Box>
               ) : (
-                data?.data.map((user: IPersonExtended) => (
+                data?.map((user: IPersonExtended) => (
                   <BuddyItem
                     key={user?.id}
                     buddy={user}

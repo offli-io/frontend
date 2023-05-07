@@ -62,7 +62,7 @@ const NotificationRequest: React.FC<INotificationRequestProps> = ({
               mr: 1.5,
             }}
           />
-          <StyledImage src={data?.data?.profile_photo_url ?? logo} />
+          <StyledImage src={data?.profile_photo_url ?? logo} />
           <Box sx={{ display: "flex", flexDirection: "column" }}>
             <Typography
               sx={{
