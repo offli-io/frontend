@@ -52,6 +52,7 @@ export const Layout: React.FC<ILayoutProps> = ({ children }) => {
         ApplicationLocations.BUDDIES,
         ApplicationLocations.ADD_BUDDIES,
         ApplicationLocations.CHOOSE_USERNAME_GOOGLE,
+        ApplicationLocations.SEARCH,
         //ApplicationLocations.NOTIFICATIONS,
         // `${ApplicationLocations.PROFILE}/request`,
         // `${ApplicationLocations.ACTIVITIES}/request`,

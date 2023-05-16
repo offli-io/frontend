@@ -13,7 +13,7 @@ import PickUsernamePhotoScreen from "../screens/pick-username-photo-screen";
 import ProfileScreen from "../screens/profile-screen";
 import RegistrationScreen from "../screens/registration-screen";
 import ResetPasswordScreen from "../screens/reset-password-screen";
-import SearchScreen from "../screens/search-screen";
+import SearchScreen from "../screens/search-screen/search-screen";
 import SelectProfilePictureScreen from "../screens/select-picture-screen";
 import SettingsScreen from "../screens/settings-screen/settings-screen";
 import TestScreen from "../screens/test-screen";
