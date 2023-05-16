@@ -1,6 +1,6 @@
 import React from "react";
 import { Box, Card, IconButton, SxProps, Typography } from "@mui/material";
-import { IActivity } from "../types/activities/activity.dto";
+import { IActivity, IPersonExtended } from "../types/activities/activity.dto";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import LockIcon from "@mui/icons-material/Lock";
 import LockOpenIcon from "@mui/icons-material/LockOpen";
@@ -34,7 +34,7 @@ const ActivitySearchCard: React.FC<IMyActivityCardProps> = ({
   //TODO maybe in later use also need some refactoring
   const { action, handlers } = useLongPress();
   const { userInfo } = React.useContext(AuthenticationContext);
-  const { data: { data: userData } = {} } = useUsers({
+  const { data: userData = {} } = useUsers<IPersonExtended>({
     id: userInfo?.id,
   });
 

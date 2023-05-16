@@ -15,7 +15,7 @@ export interface ICarouselItem {
 interface IMobileCarouselProps {
   items?: ICarouselItem[];
   title?: string;
-  onItemSelect?: (id?: string) => void;
+  onItemSelect?: (item: ICarouselItem) => void;
   onSlotAdd?: (addedDate: any) => void;
 }
 
@@ -72,7 +72,7 @@ export const MobileCarousel: React.FC<IMobileCarouselProps> = ({
               alignItems: "center",
               justifyContent: "center",
             }}
-            onClick={() => onItemSelect?.(item?.id)}
+            onClick={() => onItemSelect?.(item)}
           >
             <Typography sx={{ color: item?.selected ? "white" : "black" }}>
               {item.title}

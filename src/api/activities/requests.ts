@@ -212,7 +212,7 @@ export const createActivity = async (values: IActivity) => {
   return promise;
 };
 
-export const getUsers = ({
+export const getUsers = <T>({
   username,
   id,
 }: {
@@ -223,15 +223,23 @@ export const getUsers = ({
   const source = CancelToken.source();
   const validUsername = username ?? localStorage.getItem("username");
 
-  const promise = axios.get<IPersonExtended>(
-    `${DEFAULT_DEV_URL}/users${id ? `/${id}` : ""}`,
-    {
+  //IPersonExtended
+  const promise = axios
+    .get<T>(`${DEFAULT_DEV_URL}/users${id ? `/${id}` : ""}`, {
       params: {
         username: username ? validUsername : undefined,
       },
       cancelToken: source?.token,
-    }
-  );
+    })
+    .then((response) => {
+      const { data } = response;
+      // If the response is an array with only one element, flatten it
+      if (Array.isArray(data) && data.length === 1) {
+        return data[0];
+      }
+      // Otherwise, return the original response
+      return data;
+    });
 
   // queryFunctionContext?.signal?.addEventListener('abort', () => {
   //   source.cancel('Query was cancelled by React Query')

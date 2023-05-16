@@ -43,6 +43,8 @@ export const DrawerProvider = ({ children }: { children: React.ReactNode }) => {
           drawerData?.onClose && drawerData?.onClose();
           toggleDrawer({ open: false, content: undefined });
         }}
+        // disableDiscovery
+        disableSwipeToOpen
         sx={{
           "& .MuiPaper-root": {
             borderTopLeftRadius: 8,

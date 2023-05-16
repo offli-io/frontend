@@ -1,5 +1,6 @@
 import { Box, CardActionArea, DividerProps, SxProps } from "@mui/material";
 import logo from "../assets/img/gym.svg";
+import L from "leaflet";
 import React from "react";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
@@ -29,6 +30,18 @@ import PlaceIcon from "@mui/icons-material/Place";
 //       map.flyTo(e.latlng, map.getZoom());
 //     },
 //   });
+
+// const iconPerson = new L.Icon({
+//   iconUrl: require("../img/marker-pin-person.svg"),
+//   iconRetinaUrl: require("../img/marker-pin-person.svg"),
+//   // iconAnchor: null,
+//   // popupAnchor: null,
+//   // shadowUrl: null,
+//   // shadowSize: null,
+//   // shadowAnchor: null,
+//   iconSize: new L.Point(60, 75),
+//   className: "leaflet-div-icon",
+// });
 
 const RecenterAutomatically = ({
   lat,

@@ -44,7 +44,10 @@ const generateOptionsOrder = (type: "from" | "until") => {
   return timeSlots.slice(index).concat(timeSlots.slice(0, index));
 };
 
-const generateDateSlots: () => ICarouselItem[] = () => {
+//todo oursource into util functions
+export const generateDateSlots: (
+  isFirstSelected?: boolean
+) => ICarouselItem[] = (isFirstSelected?: boolean) => {
   const dateSlots = [];
   for (let i = 0; i < 5; i++) {
     const date = add(new Date(), {
@@ -55,7 +58,7 @@ const generateDateSlots: () => ICarouselItem[] = () => {
       title: format(date, "EEEE").slice(0, 3),
       description: format(date, "dd.MM.yyyy"),
       disabled: false,
-      selected: i === 0,
+      selected: isFirstSelected ? i === 0 : false,
       id: `date_slot_${format(date, "dd.MM.yyyy")}`,
     });
   }
@@ -239,7 +242,7 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
         <Typography sx={{ mt: 1, fontWeight: "bold" }}>Start date</Typography>
         <MobileCarousel
           items={date.fromOptions}
-          onItemSelect={(item) => handleItemSelect("from", item)}
+          onItemSelect={(item) => handleItemSelect("from", item?.id)}
           onSlotAdd={handleDateAdd}
         />
         <FormControlLabel
@@ -259,7 +262,7 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
           <MobileCarousel
             items={date.untilOptions}
             // title="Select end date"
-            onItemSelect={(item) => handleItemSelect("until", item)}
+            onItemSelect={(item) => handleItemSelect("until", item?.id)}
           />
         )}
 

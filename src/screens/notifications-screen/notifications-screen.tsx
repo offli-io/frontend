@@ -26,7 +26,7 @@ const NotificationsScreen = () => {
   const { mutate: sendMarkNotification } = useMutation(
     ["mark-notification"],
     (notification: INotificationDto) =>
-      markNotificationAsSeen({ ...notification, seen: true }),
+      markNotificationAsSeen(notification?.id),
     {
       onSuccess: (data, variables) => {
         queryClient.invalidateQueries(["notifications"]);

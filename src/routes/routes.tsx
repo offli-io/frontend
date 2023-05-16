@@ -13,7 +13,7 @@ import PickUsernamePhotoScreen from "../screens/pick-username-photo-screen";
 import ProfileScreen from "../screens/profile-screen";
 import RegistrationScreen from "../screens/registration-screen";
 import ResetPasswordScreen from "../screens/reset-password-screen";
-import SearchScreen from "../screens/search-screen";
+import SearchScreen from "../screens/search-screen/search-screen";
 import SelectProfilePictureScreen from "../screens/select-picture-screen";
 import SettingsScreen from "../screens/settings-screen/settings-screen";
 import TestScreen from "../screens/test-screen";
@@ -32,6 +32,8 @@ import AuthenticationMethodScreen from "../screens/authentication-method-screen"
 import ForgottenPasswordScreen from "../screens/forgotten-password-screen/forgotten-password-screen";
 import ChooseUsernameGooglePage from "../screens/choose-username-google-page";
 import ChooseLocationScreen from "../screens/choose-location-screen";
+import AddBuddyScreen from "../screens/add-buddies-screen/add-buddies-screen";
+import AddBuddiesScreen from "../screens/add-buddies-screen/add-buddies-screen";
 
 const Routes = () => {
   return (
@@ -144,6 +146,10 @@ const Routes = () => {
         <Route
           path={ApplicationLocations.BUDDIES}
           element={<MyBuddiesScreen />}
+        />
+        <Route
+          path={ApplicationLocations.ADD_BUDDIES}
+          element={<AddBuddiesScreen />}
         />
         <Route path={ApplicationLocations.CHAT} element={<ChatScreen />} />
       </Route>

@@ -8,6 +8,7 @@ import { Box } from "@mui/material";
 import { ApplicationLocations } from "../types/common/applications-locations.dto";
 import BackHeader from "../components/back-header";
 import { useUsers } from "../hooks/use-users";
+import { IPersonExtended } from "../types/activities/activity.dto";
 interface ILayoutProps {
   children?: React.ReactNode;
 }
@@ -23,7 +24,7 @@ export const Layout: React.FC<ILayoutProps> = ({ children }) => {
   const [displayBottomNavigator, setDisplayBottomNavigator] =
     React.useState(true);
 
-  const { data: { data } = {}, isLoading } = useUsers({
+  const { data, isLoading } = useUsers<IPersonExtended>({
     id: userInfo?.id,
   });
 
@@ -31,14 +32,14 @@ export const Layout: React.FC<ILayoutProps> = ({ children }) => {
     if (!!data && !data?.username && stateToken) {
       navigate(ApplicationLocations.CHOOSE_USERNAME_GOOGLE);
     }
-  }, [data]);
+  }, [data, stateToken]);
 
   React.useEffect(() => {
     if (!!data && !data?.location && stateToken) {
       // TODO when on BE will be patch implemented
-      // navigate(ApplicationLocations.CHOOSE_LOCATION);
+      navigate(ApplicationLocations.CHOOSE_LOCATION);
     }
-  }, [data]);
+  }, [data, stateToken]);
 
   React.useEffect(() => {
     if (
@@ -49,7 +50,9 @@ export const Layout: React.FC<ILayoutProps> = ({ children }) => {
         ApplicationLocations.CHOOSE_LOCATION,
         ApplicationLocations.MAP,
         ApplicationLocations.BUDDIES,
+        ApplicationLocations.ADD_BUDDIES,
         ApplicationLocations.CHOOSE_USERNAME_GOOGLE,
+        ApplicationLocations.SEARCH,
         //ApplicationLocations.NOTIFICATIONS,
         // `${ApplicationLocations.PROFILE}/request`,
         // `${ApplicationLocations.ACTIVITIES}/request`,
