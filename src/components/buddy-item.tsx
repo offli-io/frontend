@@ -3,10 +3,11 @@ import logo from "../assets/img/profilePicture.jpg";
 import React from "react";
 import { IPerson } from "../types/activities/activity.dto";
 
-interface ILabeledDividerProps {
+interface IBuddyItemProps {
   buddy: IPerson;
   children?: React.ReactElement;
   actionContent?: React.ReactElement;
+  onClick?: (buddy?: IPerson) => void;
 }
 
 const StyledImage = styled((props: any) => <img {...props} alt="Buddy item" />)`
@@ -16,15 +17,16 @@ const StyledImage = styled((props: any) => <img {...props} alt="Buddy item" />)`
   border-radius: 50%;
 `;
 
-const BuddyItem: React.FC<ILabeledDividerProps> = ({
+const BuddyItem: React.FC<IBuddyItemProps> = ({
   children,
   buddy,
   actionContent,
+  onClick,
   ...rest
 }) => {
   return (
     <Box
-      //onClick={() => handleClick(checked)}
+      onClick={() => onClick?.(buddy)}
       sx={{
         display: "flex",
         flexDirection: "row",

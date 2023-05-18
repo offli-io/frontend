@@ -9,11 +9,17 @@ import { ApplicationLocations } from "../types/common/applications-locations.dto
 import BackHeader from "../components/back-header";
 import { useUsers } from "../hooks/use-users";
 import { IPersonExtended } from "../types/activities/activity.dto";
+import { useUser } from "../hooks/use-user";
 interface ILayoutProps {
   children?: React.ReactNode;
 }
 
-const NOT_EXACT_UNALLOWED_URLS = ["/request", "/map/", "/profile/buddy"];
+const NOT_EXACT_UNALLOWED_URLS = [
+  "/request",
+  "/map/",
+  "/profile/buddy",
+  "/profile/user",
+];
 
 export const Layout: React.FC<ILayoutProps> = ({ children }) => {
   const { stateToken, userInfo } = React.useContext(AuthenticationContext);
@@ -24,7 +30,7 @@ export const Layout: React.FC<ILayoutProps> = ({ children }) => {
   const [displayBottomNavigator, setDisplayBottomNavigator] =
     React.useState(true);
 
-  const { data, isLoading } = useUsers<IPersonExtended>({
+  const { data: { data = {} } = {}, isLoading } = useUser({
     id: userInfo?.id,
   });
 

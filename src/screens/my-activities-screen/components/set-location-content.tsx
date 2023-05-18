@@ -13,6 +13,8 @@ import {
   useTheme,
 } from "@mui/material";
 import React from "react";
+import PlaceIcon from "@mui/icons-material/Place";
+
 import { Controller, UseFormReturn } from "react-hook-form";
 import OffliButton from "../../../components/offli-button";
 import activityLocation from "../../../assets/img/activity-location.svg";
@@ -37,10 +39,12 @@ import { ApplicationLocations } from "../../../types/common/applications-locatio
 
 interface IPlaceFormProps {
   onLocationSelect: (location: ILocation) => void;
+  externalLocation?: ILocation | null;
 }
 
 export const SetLocationContent: React.FC<IPlaceFormProps> = ({
   onLocationSelect,
+  externalLocation,
 }) => {
   const [placeQuery, setPlaceQuery] = React.useState("");
   const [selectedLocation, setSelectedLocation] = React.useState<
@@ -140,13 +144,23 @@ export const SetLocationContent: React.FC<IPlaceFormProps> = ({
           <img src={activityLocation} style={{ height: 80 }} alt="place-form" />
         </Box>
       </Box>
+      <OffliButton
+        variant="text"
+        sx={{
+          fontSize: 16,
+          mt: 2,
+        }}
+        startIcon={<PlaceIcon />}
+      >
+        {externalLocation?.name ?? "No location found"}
+      </OffliButton>
       <Box
         sx={{
           display: "flex",
           flexDirection: "column",
           width: "100%",
           alignItems: "flex-start",
-          mt: 4,
+          mt: 2,
           px: 2,
           boxSizing: "border-box",
           //   mb: 30,

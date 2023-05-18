@@ -10,7 +10,7 @@ import LoginScreen from "../screens/login-screen";
 import MyBuddiesScreen from "../screens/my-buddies-screen/my-buddies-screen";
 import NewPasswordScreen from "../screens/new-password-screen";
 import PickUsernamePhotoScreen from "../screens/pick-username-photo-screen";
-import ProfileScreen from "../screens/profile-screen";
+import ProfileScreen from "../screens/profile-screen/profile-screen";
 import RegistrationScreen from "../screens/registration-screen";
 import ResetPasswordScreen from "../screens/reset-password-screen";
 import SearchScreen from "../screens/search-screen/search-screen";
@@ -34,6 +34,7 @@ import ChooseUsernameGooglePage from "../screens/choose-username-google-page";
 import ChooseLocationScreen from "../screens/choose-location-screen";
 import AddBuddyScreen from "../screens/add-buddies-screen/add-buddies-screen";
 import AddBuddiesScreen from "../screens/add-buddies-screen/add-buddies-screen";
+import { ProfileEntryTypeEnum } from "../screens/profile-screen/types/profile-entry-type";
 
 const Routes = () => {
   return (
@@ -74,15 +75,19 @@ const Routes = () => {
         />
         <Route
           path={ApplicationLocations.PROFILE}
-          element={<ProfileScreen type="profile" />}
+          element={<ProfileScreen type={ProfileEntryTypeEnum.PROFILE} />}
         />
         <Route
           path={`${ApplicationLocations.PROFILE}/request/:id`}
-          element={<ProfileScreen type="request" />}
+          element={<ProfileScreen type={ProfileEntryTypeEnum.REQUEST} />}
         />
         <Route
           path={`${ApplicationLocations.PROFILE}/buddy/:id`}
-          element={<ProfileScreen type="buddy" />}
+          element={<ProfileScreen type={ProfileEntryTypeEnum.BUDDY} />}
+        />
+        <Route
+          path={`${ApplicationLocations.PROFILE}/user/:id`}
+          element={<ProfileScreen type={ProfileEntryTypeEnum.USER_PROFILE} />}
         />
         <Route
           path={ApplicationLocations.EDIT_PROFILE}

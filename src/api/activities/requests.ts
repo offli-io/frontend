@@ -212,34 +212,44 @@ export const createActivity = async (values: IActivity) => {
   return promise;
 };
 
-export const getUsers = <T>({
-  username,
-  id,
-}: {
-  username?: string;
-  id?: string;
-}) => {
+export const getUsers = ({ username }: { username?: string }) => {
   const CancelToken = axios.CancelToken;
   const source = CancelToken.source();
   const validUsername = username ?? localStorage.getItem("username");
 
-  //IPersonExtended
-  const promise = axios
-    .get<T>(`${DEFAULT_DEV_URL}/users${id ? `/${id}` : ""}`, {
-      params: {
-        username: username ? validUsername : undefined,
-      },
+  const promise = axios.get<IPersonExtended[]>(`${DEFAULT_DEV_URL}/users`, {
+    params: {
+      username: username ? validUsername : undefined,
+    },
+    cancelToken: source?.token,
+  });
+  // .then((response) => {
+  //   const { data } = response;
+  //   // If the response is an array with only one element, flatten it
+  //   if (Array.isArray(data) && data.length === 1) {
+  //     return data[0];
+  //   }
+  //   // Otherwise, return the original response
+  //   return data;
+  // });
+
+  // queryFunctionContext?.signal?.addEventListener('abort', () => {
+  //   source.cancel('Query was cancelled by React Query')
+  // })
+
+  return promise;
+};
+
+export const getUser = ({ id }: { id?: string }) => {
+  const CancelToken = axios.CancelToken;
+  const source = CancelToken.source();
+
+  const promise = axios.get<IPersonExtended>(
+    `${DEFAULT_DEV_URL}/users${id ? `/${id}` : ""}`,
+    {
       cancelToken: source?.token,
-    })
-    .then((response) => {
-      const { data } = response;
-      // If the response is an array with only one element, flatten it
-      if (Array.isArray(data) && data.length === 1) {
-        return data[0];
-      }
-      // Otherwise, return the original response
-      return data;
-    });
+    }
+  );
 
   // queryFunctionContext?.signal?.addEventListener('abort', () => {
   //   source.cancel('Query was cancelled by React Query')
@@ -378,6 +388,27 @@ export const acceptActivityInvitation = (
 
   const promise = axios.patch(
     `${DEFAULT_DEV_URL}/activities/${activityId}/participants/${userId}`,
+    {
+      cancelToken: source?.token,
+    }
+  );
+
+  //   queryFunctionContext?.signal?.addEventListener('abort', () => {
+  //     source.cancel('Query was cancelled by React Query')
+  //   })
+
+  return promise;
+};
+
+export const sendBuddyRequest = (userId?: string, buddy_to_be_id?: string) => {
+  const CancelToken = axios.CancelToken;
+  const source = CancelToken.source();
+
+  const promise = axios.post(
+    `${DEFAULT_DEV_URL}/users/${userId}/buddies`,
+    {
+      buddy_to_be_id,
+    },
     {
       cancelToken: source?.token,
     }
