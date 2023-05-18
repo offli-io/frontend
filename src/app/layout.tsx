@@ -30,7 +30,7 @@ export const Layout: React.FC<ILayoutProps> = ({ children }) => {
   const [displayBottomNavigator, setDisplayBottomNavigator] =
     React.useState(true);
 
-  const { data: { data = {} } = {}, isLoading } = useUser({
+  const { data: { data } = {}, isLoading } = useUser({
     id: userInfo?.id,
   });
 
