@@ -19,6 +19,7 @@ import { useUsers } from "../hooks/use-users";
 import { ApplicationLocations } from "../types/common/applications-locations.dto";
 import { ICustomizedLocationStateDto } from "../types/common/customized-location-state.dto";
 import { IPersonExtended } from "../types/activities/activity.dto";
+import { useUser } from "../hooks/use-user";
 
 interface IProfileScreenProps {
   type: "profile" | "request" | "buddy";
@@ -37,7 +38,7 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
   const instagramCode = queryParameters.get("code");
   console.log(instagramCode);
 
-  const { data, isLoading } = useUsers<IPersonExtended>({
+  const { data: { data = {} } = {}, isLoading } = useUser({
     id: userInfo?.id,
   });
 

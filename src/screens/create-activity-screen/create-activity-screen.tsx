@@ -28,6 +28,7 @@ import { ApplicationLocations } from "../../types/common/applications-locations.
 import { AuthenticationContext } from "../../assets/theme/authentication-provider";
 import DotsMobileStepper from "../../components/stepper";
 import { useUsers } from "../../hooks/use-users";
+import { useUser } from "../../hooks/use-user";
 
 interface FormValues {
   title?: string;
@@ -125,8 +126,8 @@ const CreateActivityScreen = () => {
   const [activeStep, setActiveStep] = React.useState<number>(0);
   const navigate = useNavigate();
   const { userInfo } = React.useContext(AuthenticationContext);
-  const { data: userData = {}, isLoading: isUserDataLoading } =
-    useUsers<IPersonExtended>({
+  const { data: { data: userData = {} } = {}, isLoading: isUserDataLoading } =
+    useUser({
       id: userInfo?.id,
     });
 

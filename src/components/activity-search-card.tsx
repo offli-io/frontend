@@ -18,6 +18,7 @@ import { AuthenticationContext } from "../assets/theme/authentication-provider";
 import MonetizationOnIcon from "@mui/icons-material/MonetizationOn";
 import { LatLngTuple } from "leaflet";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import { useUser } from "../hooks/use-user";
 
 interface IMyActivityCardProps {
   activity?: IActivity;
@@ -34,7 +35,7 @@ const ActivitySearchCard: React.FC<IMyActivityCardProps> = ({
   //TODO maybe in later use also need some refactoring
   const { action, handlers } = useLongPress();
   const { userInfo } = React.useContext(AuthenticationContext);
-  const { data: userData = {} } = useUsers<IPersonExtended>({
+  const { data: { data = {} } = {} } = useUser({
     id: userInfo?.id,
   });
 

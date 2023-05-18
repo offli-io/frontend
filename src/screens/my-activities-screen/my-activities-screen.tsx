@@ -41,6 +41,7 @@ import { ILocation } from "../../types/activities/location.dto";
 import { ActivityInviteStateEnum } from "../../types/activities/activity-invite-state-enum.dto";
 import { useUsers } from "../../hooks/use-users";
 import { useParticipantActivities } from "../../hooks/use-participant-activities";
+import { useUser } from "../../hooks/use-user";
 
 const ActivitiesScreen = () => {
   const { userInfo, isFirstTimeLogin, setIsFirstTimeLogin } = React.useContext(
@@ -58,7 +59,7 @@ const ActivitiesScreen = () => {
     : null;
 
   //TODO either call it like this or set user info once useUsers request in layout.tsx got Promise resolved
-  const { data: userData } = useUsers<IPersonExtended>({
+  const { data: { data: userData = {} } = {} } = useUser({
     id: userInfo?.id,
   });
 
@@ -240,6 +241,7 @@ const ActivitiesScreen = () => {
               JSON.stringify(location)
             );
           }}
+          externalLocation={selectedLocation}
         />
       ),
       // onClose: () => setIsFirstTimeLogin?.(false),
@@ -282,7 +284,13 @@ const ActivitiesScreen = () => {
         </Typography>
         <OffliButton
           variant="text"
-          sx={{ fontSize: 16, maxWidth: 200 }}
+          sx={{
+            fontSize: 16,
+            maxWidth: 200,
+            justifyContent: "flex-start",
+            overflow: "hidden",
+            whiteSpace: "nowrap",
+          }}
           startIcon={<PlaceIcon sx={{ fontSize: "1.4rem" }} />}
           onClick={handleLocationSelect}
         >

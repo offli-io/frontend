@@ -45,21 +45,9 @@ const AddBuddiesScreen = () => {
   const from = (location?.state as ICustomizedLocationStateDto)?.from;
 
   //TODO polish this avoid erorrs that cause whole application down
-  const { data = {}, isLoading } = useUsers<IPersonExtended[]>({
+  const { data: { data = [] } = {}, isLoading } = useUsers({
     username,
   });
-
-  // const { data, isLoading } = useQuery(
-  //   ["users", username],
-  //   () => getUsers({ username }),
-  //   {
-  //     onError: () => {
-  //       //some generic toast for every hook
-  //       enqueueSnackbar("Failed to search users", { variant: "error" });
-  //     },
-  //     enabled: !!username,
-  //   }
-  // );
 
   const { mutate: sendDeleteBuddy } = useMutation(
     ["delete-buddy"],
@@ -147,6 +135,8 @@ const AddBuddiesScreen = () => {
     },
     [toggleDrawer]
   );
+
+  console.log(data);
 
   return (
     <>

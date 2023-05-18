@@ -33,6 +33,7 @@ import { useSnackbar } from "notistack";
 import { getLocationFromQueryFetch } from "../api/activities/requests";
 import { useDebounce } from "use-debounce";
 import { ILocation } from "../types/activities/location.dto";
+import { useUser } from "../hooks/use-user";
 
 interface IEditProfile {
   name: string;
@@ -112,7 +113,7 @@ const EditProfileScreen: React.FC = () => {
     }
   );
 
-  const { data = {} } = useUsers<IPersonExtended>({
+  const { data: { data = {} } = {} } = useUser({
     id: userInfo?.id,
   });
 
