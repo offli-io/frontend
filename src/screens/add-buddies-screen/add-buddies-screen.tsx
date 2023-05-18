@@ -42,7 +42,9 @@ const AddBuddiesScreen = () => {
   const { enqueueSnackbar } = useSnackbar();
   const { userInfo } = React.useContext(AuthenticationContext);
   const location = useLocation();
-  const from = (location?.state as ICustomizedLocationStateDto)?.from;
+  const from =
+    (location?.state as ICustomizedLocationStateDto)?.from ??
+    ApplicationLocations.BUDDIES;
 
   //TODO polish this avoid erorrs that cause whole application down
   const { data: { data = [] } = {}, isLoading } = useUsers({
@@ -122,21 +124,25 @@ const AddBuddiesScreen = () => {
 
   const handleBuddyActionsClick = React.useCallback(
     (buddy?: IPerson) => {
-      toggleDrawer({
-        open: true,
-        content: (
-          //   <BuddyActions
-          //     buddy={buddy}
-          //     onBuddyActionClick={handleBuddyActionClick}
-          //   />
-          <></>
-        ),
+      // TODO in later versions when there will be more than 1 action after click
+      // toggleDrawer({
+      //   open: true,
+      //   content: (
+      //     //   <BuddyActions
+      //     //     buddy={buddy}
+      //     //     onBuddyActionClick={handleBuddyActionClick}
+      //     //   />
+      //     <></>
+      //   ),
+      // });
+      navigate(`${ApplicationLocations.PROFILE}/user/${buddy?.id}`, {
+        state: {
+          from: ApplicationLocations.ADD_BUDDIES,
+        },
       });
     },
     [toggleDrawer]
   );
-
-  console.log(data);
 
   return (
     <>
@@ -209,8 +215,9 @@ const AddBuddiesScreen = () => {
                   <BuddyItem
                     key={user?.id}
                     buddy={user}
+                    onClick={(_user) => handleBuddyActionsClick(_user)}
                     actionContent={
-                      <IconButton onClick={() => handleBuddyActionsClick(user)}>
+                      <IconButton>
                         <MoreHorizIcon />
                       </IconButton>
                     }

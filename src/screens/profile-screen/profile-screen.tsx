@@ -1,28 +1,31 @@
 import InstagramIcon from "@mui/icons-material/Instagram";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
-import { Box, IconButton, Typography } from "@mui/material";
+import { Box, IconButton, Typography, useTheme } from "@mui/material";
 import React from "react";
 
 import { useMutation } from "@tanstack/react-query";
 import { useSnackbar } from "notistack";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { acceptBuddyInvitation } from "../api/users/requests";
-import { AuthenticationContext } from "../assets/theme/authentication-provider";
-import ActionButton from "../components/action-button";
-import BackHeader from "../components/back-header";
-import OffliButton from "../components/offli-button";
-import { PageWrapper } from "../components/page-wrapper";
-import ProfileGallery from "../components/profile-gallery";
-import ProfileStatistics from "../components/profile-statistics";
-import { useUsers } from "../hooks/use-users";
-import { ApplicationLocations } from "../types/common/applications-locations.dto";
-import { ICustomizedLocationStateDto } from "../types/common/customized-location-state.dto";
-import { IPersonExtended } from "../types/activities/activity.dto";
-import { useUser } from "../hooks/use-user";
+import { acceptBuddyInvitation } from "../../api/users/requests";
+import { AuthenticationContext } from "../../assets/theme/authentication-provider";
+import ActionButton from "../../components/action-button";
+import BackHeader from "../../components/back-header";
+import OffliButton from "../../components/offli-button";
+import { PageWrapper } from "../../components/page-wrapper";
+import ProfileGallery from "../../components/profile-gallery";
+import ProfileStatistics from "../../components/profile-statistics";
+import { useUsers } from "../../hooks/use-users";
+import { ApplicationLocations } from "../../types/common/applications-locations.dto";
+import { ICustomizedLocationStateDto } from "../../types/common/customized-location-state.dto";
+import { IPersonExtended } from "../../types/activities/activity.dto";
+import { useUser } from "../../hooks/use-user";
+import { ProfileEntryTypeEnum } from "./types/profile-entry-type";
+import { generateBackHeaderTitle } from "./utils/profile-screen-utils";
+import userPlaceholder from "../../assets/img/user-placeholder.png";
 
 interface IProfileScreenProps {
-  type: "profile" | "request" | "buddy";
+  type: ProfileEntryTypeEnum;
 }
 
 const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
@@ -34,36 +37,14 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
   const from = (location?.state as ICustomizedLocationStateDto)?.from;
   const { id } = useParams();
   const { enqueueSnackbar } = useSnackbar();
+  const theme = useTheme();
   const queryParameters = new URLSearchParams(window.location.search);
   const instagramCode = queryParameters.get("code");
   console.log(instagramCode);
 
   const { data: { data = {} } = {}, isLoading } = useUser({
-    id: userInfo?.id,
+    id: id ?? userInfo?.id,
   });
-
-  const { mutate: sendAcceptBuddyRequest } = useMutation(
-    ["accept-buddy-request"],
-    () => acceptBuddyInvitation(userInfo?.id, id),
-    {
-      onSuccess: (data, variables) => {
-        //TODO what to invalidate, and where to navigate after success
-        // queryClient.invalidateQueries(['notifications'])
-        // navigateBasedOnType(
-        //   variables?.type,
-        //   variables?.properties?.user?.id ?? variables?.properties?.activity?.id
-        // )
-        enqueueSnackbar("User was successfully confirmed as your buddy", {
-          variant: "success",
-        });
-      },
-      onError: () => {
-        enqueueSnackbar("Failed to accept buddy request", {
-          variant: "error",
-        });
-      },
-    }
-  );
 
   React.useEffect(() => {
     if (instagramCode) {
@@ -85,9 +66,13 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
 
   return (
     <>
-      {(type === "request" || type === "buddy") && (
+      {[
+        ProfileEntryTypeEnum.REQUEST,
+        ProfileEntryTypeEnum.BUDDY,
+        ProfileEntryTypeEnum.USER_PROFILE,
+      ].includes(type) && (
         <BackHeader
-          title={type === "request" ? "Buddie request" : "Buddy"}
+          title={generateBackHeaderTitle(type)}
           sx={{ mb: 2 }}
           to={from}
         />
@@ -109,17 +94,18 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
           <img
             // todo add default picture in case of missing photo
             // src={data?.data?.profilePhotoUrl}
-            src={data?.profile_photo_url}
+            src={data?.profile_photo_url ?? userPlaceholder}
             alt="profile"
             style={{
               height: "70px",
               width: "70px",
               borderRadius: "50%",
+              // backgroundColor: theme?.palette?.inactive as string,
               // border: '2px solid primary.main', //nejde pica
               border: "2px solid black",
             }}
           />
-          {type !== "request" && (
+          {type !== ProfileEntryTypeEnum.REQUEST && (
             <IconButton
               color="primary"
               sx={{
@@ -174,7 +160,7 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
               "I am student at FIIT STU. I like adventures and meditation. There is always time for a beer. Cheers."}
           </Typography>
         </Box>
-        {type === "profile" && (
+        {type === ProfileEntryTypeEnum.PROFILE && (
           <ActionButton
             text="Edit profile"
             sx={{ mt: 2 }}
@@ -194,12 +180,12 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
             participatedNum={data?.activities_participated_last_month_count}
             enjoyedNum={data?.enjoyed_together_last_month_count}
             createdNum={
-              type === "profile"
+              type === ProfileEntryTypeEnum.PROFILE
                 ? data?.activities_created_last_month_count
                 : undefined
             }
             metNum={
-              type === "profile"
+              type === ProfileEntryTypeEnum.PROFILE
                 ? data?.new_buddies_last_month_count
                 : undefined
             }

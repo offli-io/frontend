@@ -91,6 +91,18 @@ const FiltersDrawerContent: React.FC<IFiltersDrawerContentProps> = ({
     });
   }, [dateOptions, selectedFilter, selectedTags]);
 
+  const handleTagClick = React.useCallback((title?: string) => {
+    title &&
+      setSelectedTags((tags) => {
+        if (tags?.includes(title)) {
+          const filteredTags = tags?.filter((tag) => tag !== title);
+          return filteredTags;
+        } else {
+          return [...tags, title];
+        }
+      });
+  }, []);
+
   return (
     <Box sx={{ display: "flex", flexDirection: "column", mx: 1.5 }}>
       <Box>
@@ -150,9 +162,7 @@ const FiltersDrawerContent: React.FC<IFiltersDrawerContentProps> = ({
                   variant={
                     selectedTags.includes(tag?.title) ? "filled" : "outlined"
                   }
-                  onClick={() =>
-                    setSelectedTags((tags) => [...tags, tag?.title])
-                  }
+                  onClick={() => handleTagClick(tag?.title)}
                 />
               ))}
             </Box>

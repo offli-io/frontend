@@ -399,3 +399,24 @@ export const acceptActivityInvitation = (
 
   return promise;
 };
+
+export const sendBuddyRequest = (userId?: string, buddy_to_be_id?: string) => {
+  const CancelToken = axios.CancelToken;
+  const source = CancelToken.source();
+
+  const promise = axios.post(
+    `${DEFAULT_DEV_URL}/users/${userId}/buddies`,
+    {
+      buddy_to_be_id,
+    },
+    {
+      cancelToken: source?.token,
+    }
+  );
+
+  //   queryFunctionContext?.signal?.addEventListener('abort', () => {
+  //     source.cancel('Query was cancelled by React Query')
+  //   })
+
+  return promise;
+};

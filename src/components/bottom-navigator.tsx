@@ -23,7 +23,10 @@ import { AuthenticationContext } from "../assets/theme/authentication-provider";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useSnackbar } from "notistack";
 import { HEADER_HEIGHT } from "../utils/common-constants";
-import { acceptActivityInvitation } from "../api/activities/requests";
+import {
+  acceptActivityInvitation,
+  sendBuddyRequest,
+} from "../api/activities/requests";
 import { useNotifications } from "../hooks/use-notifications";
 
 interface IBottomNavigatorProps {
@@ -44,11 +47,12 @@ const BottomNavigator: React.FC<IBottomNavigatorProps> = ({ sx }) => {
   const queryClient = useQueryClient();
 
   const isBuddyRequest = location?.pathname?.includes("/profile/request");
+  const isUserProfile = location?.pathname?.includes("/profile/user");
   const isActivityRequest = location?.pathname?.includes("/activity/request");
 
   React.useEffect(() => {
     setValue(location?.pathname as ApplicationLocations);
-    if (location?.pathname.includes("/request")) {
+    if (location?.pathname.includes("/request") || isUserProfile) {
       setIsActionRequired(true);
     } else {
       setIsActionRequired(false);
@@ -107,6 +111,31 @@ const BottomNavigator: React.FC<IBottomNavigatorProps> = ({ sx }) => {
     }
   );
 
+  const { mutate: sendSubmitBuddyRequest } = useMutation(
+    ["send-buddy-request"],
+    () => sendBuddyRequest(userInfo?.id, id),
+    {
+      onSuccess: (data, variables) => {
+        //TODO what to invalidate, and where to navigate after success
+        // queryClient.invalidateQueries(['notifications'])
+        // navigateBasedOnType(
+        //   variables?.type,
+        //   variables?.properties?.user?.id ?? variables?.properties?.activity?.id
+        // )
+        // queryClient.invalidateQueries(["notifications"]);
+        enqueueSnackbar("Buddy request successfully sent", {
+          variant: "success",
+        });
+        navigate(ApplicationLocations.ADD_BUDDIES);
+      },
+      onError: () => {
+        enqueueSnackbar("Failed to send buddy request", {
+          variant: "error",
+        });
+      },
+    }
+  );
+
   const acceptInvitation = React.useCallback(() => {
     if (isBuddyRequest) {
       return sendAcceptBuddyRequest();
@@ -127,6 +156,10 @@ const BottomNavigator: React.FC<IBottomNavigatorProps> = ({ sx }) => {
     return;
   }, [isBuddyRequest, isActivityRequest]);
 
+  const submitBuddyRequest = React.useCallback(() => {
+    sendSubmitBuddyRequest();
+  }, [sendSubmitBuddyRequest]);
+
   return (
     <Paper
       sx={{
@@ -146,27 +179,44 @@ const BottomNavigator: React.FC<IBottomNavigatorProps> = ({ sx }) => {
       elevation={3}
     >
       {isActionRequired ? (
-        <Box
-          sx={{
-            width: "100%",
-            display: "flex",
-            justifyContent: "space-evenly",
-          }}
-        >
-          <OffliButton
-            sx={{ width: "30%", fontSize: 16 }}
-            variant="outlined"
-            onClick={declineInvitation}
-          >
-            Reject
-          </OffliButton>
-          <OffliButton
-            sx={{ width: "50%", fontSize: 16 }}
-            onClick={acceptInvitation}
-          >
-            Accept
-          </OffliButton>
-        </Box>
+        <>
+          {isBuddyRequest && (
+            <Box
+              sx={{
+                width: "100%",
+                display: "flex",
+                justifyContent: "space-evenly",
+              }}
+            >
+              <OffliButton
+                sx={{ width: "30%", fontSize: 16 }}
+                variant="outlined"
+                onClick={declineInvitation}
+              >
+                Reject
+              </OffliButton>
+              <OffliButton
+                sx={{ width: "50%", fontSize: 16 }}
+                onClick={acceptInvitation}
+              >
+                Accept
+              </OffliButton>
+            </Box>
+          )}
+          {isUserProfile && (
+            <Box
+              sx={{
+                width: "100%",
+                display: "flex",
+                justifyContent: "space-evenly",
+              }}
+            >
+              <OffliButton onClick={submitBuddyRequest}>
+                Send buddy request
+              </OffliButton>
+            </Box>
+          )}
+        </>
       ) : (
         <BottomNavigation
           showLabels

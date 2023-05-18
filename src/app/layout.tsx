@@ -14,7 +14,12 @@ interface ILayoutProps {
   children?: React.ReactNode;
 }
 
-const NOT_EXACT_UNALLOWED_URLS = ["/request", "/map/", "/profile/buddy"];
+const NOT_EXACT_UNALLOWED_URLS = [
+  "/request",
+  "/map/",
+  "/profile/buddy",
+  "/profile/user",
+];
 
 export const Layout: React.FC<ILayoutProps> = ({ children }) => {
   const { stateToken, userInfo } = React.useContext(AuthenticationContext);
