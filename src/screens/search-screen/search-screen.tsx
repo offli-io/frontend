@@ -138,38 +138,7 @@ const SearchScreen = () => {
             Cancel
           </OffliButton>
         </Box>
-        {/* {isLoading ? (
-          <>
-            <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
-              <CircularProgress color="primary" />
-            </Box>
-          </>
-        ) : (
-          data?.data?.tags &&
-          data?.data?.tags?.length > 0 && (
-            <>
-              <Typography variant="h5">What's your mood for?</Typography>
-              <Box
-                sx={{
-                  display: "flex",
-                  overflowX: "scroll",
-                  width: "100%",
-                  "::-webkit-scrollbar": { display: "none" },
-                }}
-              >
-                {data.data.tags.map((tag) => (
-                  <Chip
-                    label={tag?.title}
-                    key={tag?.title}
-                    sx={{ m: 1 }}
-                    color="primary"
-                    onClick={() => handleChipClick(tag?.title)}
-                  />
-                ))}
-              </Box>
-            </>
-          )
-        )} */}
+
         <Divider sx={{ my: 2 }} />
         {areActivitiesLoading ? (
           <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
