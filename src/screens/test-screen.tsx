@@ -3,7 +3,7 @@ import React from "react";
 
 import { DrawerContext } from "../assets/theme/drawer-provider";
 import Map from "../components/map";
-import { MobileCarousel } from "../components/mobile-carousel";
+import { ICarouselItem, MobileCarousel } from "../components/mobile-carousel";
 
 const data = [
   {
@@ -44,13 +44,16 @@ const TestScreen = () => {
 
   const [_data, setData] = React.useState(data);
 
-  const handleCarouselItemSelect = React.useCallback((id?: string) => {
-    const updatedData = _data?.map((item) => ({
-      ...item,
-      selected: item?.id === id ? true : false,
-    }));
-    setData(updatedData);
-  }, []);
+  const handleCarouselItemSelect = React.useCallback(
+    (_item?: ICarouselItem) => {
+      const updatedData = _data?.map((item) => ({
+        ...item,
+        selected: item?.id === _item?.id ? true : false,
+      }));
+      setData(updatedData);
+    },
+    []
+  );
 
   return (
     <Box sx={{ p: 4 }}>

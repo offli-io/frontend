@@ -7,7 +7,7 @@ import {
   Typography,
   SxProps,
 } from "@mui/material";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import SettingsIcon from "@mui/icons-material/Settings";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
@@ -25,14 +25,39 @@ interface IBackHeaderProps {
   title?: string;
   sx?: SxProps;
   to?: string;
+  headerRightContent?: React.ReactElement;
 }
 
-const BackHeader: React.FC<IBackHeaderProps> = ({ title, sx, to }) => {
+const BackHeader: React.FC<IBackHeaderProps> = ({
+  title,
+  sx,
+  to,
+  headerRightContent,
+}) => {
   const location = useLocation().pathname;
   const [notificationNumber] = useState(5);
+  const navigate = useNavigate();
 
   const toParsed = to?.split("/");
   const fromLocation = toParsed && `/${toParsed[toParsed?.length - 1]}`;
+
+  const handleBackNavigation = React.useCallback(() => {
+    if (!fromLocation) {
+      return;
+    }
+    // edge cases when there is double navigation via header (e.g. BUDDIES -> ADD_BUDDY screens)
+    if (
+      fromLocation === ApplicationLocations.BUDDIES &&
+      location === ApplicationLocations.ADD_BUDDIES
+    ) {
+      return navigate(fromLocation, {
+        state: {
+          from: ApplicationLocations.PROFILE,
+        },
+      });
+    }
+    navigate(fromLocation);
+  }, []);
 
   return (
     <Box sx={{ boxShadow: "1px 2px 2px #ccc", mb: 0.5, ...sx }}>
@@ -41,7 +66,7 @@ const BackHeader: React.FC<IBackHeaderProps> = ({ title, sx, to }) => {
           width: "100%",
           // borderBottom: '1px solid lightgrey',
           display: "flex",
-          justifyContent: "center",
+          justifyContent: "space-between",
           alignItems: "center",
           position: "relative",
           pt: 1,
@@ -50,8 +75,7 @@ const BackHeader: React.FC<IBackHeaderProps> = ({ title, sx, to }) => {
       >
         {fromLocation && (
           <IconButton
-            component={Link}
-            to={fromLocation}
+            onClick={handleBackNavigation}
             color="primary"
             sx={
               {
@@ -63,23 +87,25 @@ const BackHeader: React.FC<IBackHeaderProps> = ({ title, sx, to }) => {
               }
             }
           >
-            <ArrowBackIosNewIcon
-
-            // sx={{ color: 'primary.main' }}
-            />
+            <ArrowBackIosNewIcon />
           </IconButton>
         )}
         <Box
           sx={{
-            flex: 10,
+            // flex: 10,
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
-            mr: 6,
+            position: "absolute",
+            left: "50%",
+            top: "55%",
+            transform: "translate(-50%, -50%)",
+            // mr: 6,
           }}
         >
           <Typography variant="h4">{title}</Typography>
         </Box>
+        {headerRightContent}
       </Box>
     </Box>
   );

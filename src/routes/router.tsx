@@ -1,10 +1,7 @@
-import { ReactElement, Suspense } from "react";
+import React, { ReactElement, Suspense } from "react";
 import { BrowserRouter } from "react-router-dom";
-import { AuthenticationContext } from "../assets/theme/authentication-provider";
-import React from "react";
-import { useQuery } from "@tanstack/react-query";
-import { getUsers } from "../api/activities/requests";
 import { Layout } from "../app/layout";
+import { AuthenticationContext } from "../assets/theme/authentication-provider";
 import LoadingScreen from "../screens/loading-screen";
 
 const Router: React.FC = (): ReactElement => {

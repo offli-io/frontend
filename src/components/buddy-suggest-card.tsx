@@ -8,6 +8,7 @@ interface ILabeledDividerProps {
   buddy: IPerson;
   children?: React.ReactElement;
   onAddBuddyClick?: (buddy: IPerson) => void;
+  isLoading?: boolean;
 }
 
 const StyledImage = styled((props: any) => <img {...props} alt="Buddy item" />)`
@@ -21,6 +22,7 @@ const BuddySuggestCard: React.FC<ILabeledDividerProps> = ({
   children,
   buddy,
   onAddBuddyClick,
+  isLoading,
   ...rest
 }) => {
   return (
@@ -47,6 +49,7 @@ const BuddySuggestCard: React.FC<ILabeledDividerProps> = ({
       <OffliButton
         onClick={() => onAddBuddyClick?.(buddy)}
         sx={{ fontSize: 14 }}
+        isLoading={isLoading}
       >
         Add buddy
       </OffliButton>

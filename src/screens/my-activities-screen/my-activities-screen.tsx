@@ -30,13 +30,18 @@ import ActivityCard from "../../components/activity-card";
 import OffliButton from "../../components/offli-button";
 import SearchIcon from "@mui/icons-material/Search";
 import PlaceIcon from "@mui/icons-material/Place";
-import { IActivity, IPerson } from "../../types/activities/activity.dto";
+import {
+  IActivity,
+  IPerson,
+  IPersonExtended,
+} from "../../types/activities/activity.dto";
 import FirstTimeLoginContent from "./components/first-time-login-content";
 import { SetLocationContent } from "./components/set-location-content";
 import { ILocation } from "../../types/activities/location.dto";
 import { ActivityInviteStateEnum } from "../../types/activities/activity-invite-state-enum.dto";
 import { useUsers } from "../../hooks/use-users";
 import { useParticipantActivities } from "../../hooks/use-participant-activities";
+import { useUser } from "../../hooks/use-user";
 
 const ActivitiesScreen = () => {
   const { userInfo, isFirstTimeLogin, setIsFirstTimeLogin } = React.useContext(
@@ -53,12 +58,19 @@ const ActivitiesScreen = () => {
     ? JSON.parse(storageLocation)
     : null;
 
+  //TODO either call it like this or set user info once useUsers request in layout.tsx got Promise resolved
+  const { data: { data: userData = {} } = {} } = useUser({
+    id: userInfo?.id,
+  });
+
   const [selectedLocation, setSelectedLocation] = React.useState<
     ILocation | undefined | null
-  >(_storageLocation ?? userInfo?.location);
+  >(_storageLocation ?? userData?.location);
 
   const { data: { data: { activities = [] } = {} } = {}, isLoading } =
     useActivities<IActivityListRestDto>();
+
+  console.log(userData?.location);
 
   const {
     data: { data = {} } = {},
@@ -68,19 +80,12 @@ const ActivitiesScreen = () => {
 
   const participantActivites = data?.activities ?? [];
 
-  console.log(participantActivites);
-
   const filteredActivities = activities?.filter(
     (activity) =>
       !participantActivites?.some(
         (participantActivity) => participantActivity?.id === activity?.id
       )
   );
-
-  //TODO either call it like this or set user info once useUsers request in layout.tsx got Promise resolved
-  const { data: { data: userData } = {} } = useUsers({
-    id: userInfo?.id,
-  });
 
   // const { data: { data: { activities = [] } = {} } = {}, isLoading } = useQuery(
   //   ["activities"],
@@ -98,7 +103,12 @@ const ActivitiesScreen = () => {
   const { mutate: sendJoinActivity } = useMutation(
     ["invite-person"],
     (activityId?: string) => {
-      const { id, name, username, profile_photo_url } = { ...userData };
+      const {
+        id = undefined,
+        name = undefined,
+        username = undefined,
+        profile_photo_url = undefined,
+      } = { ...userData };
       return inviteBuddy(String(activityId), {
         id,
         name,
@@ -240,6 +250,7 @@ const ActivitiesScreen = () => {
               JSON.stringify(location)
             );
           }}
+          externalLocation={selectedLocation}
         />
       ),
       // onClose: () => setIsFirstTimeLogin?.(false),
@@ -254,6 +265,17 @@ const ActivitiesScreen = () => {
         onClose: () => setIsFirstTimeLogin?.(false),
       });
   }, [isFirstTimeLogin, toggleDrawer]);
+
+  React.useEffect(() => {
+    // set default location value when component completely renders
+    if (!selectedLocation) {
+      if (!!_storageLocation) {
+        setSelectedLocation(_storageLocation);
+      } else if (!!userData?.location) {
+        setSelectedLocation(userData?.location);
+      }
+    }
+  }, [_storageLocation, userData?.location]);
 
   return (
     <PageWrapper sxOverrides={{ px: 2 }}>
@@ -271,7 +293,13 @@ const ActivitiesScreen = () => {
         </Typography>
         <OffliButton
           variant="text"
-          sx={{ fontSize: 16 }}
+          sx={{
+            fontSize: 16,
+            maxWidth: 200,
+            justifyContent: "flex-start",
+            overflow: "hidden",
+            whiteSpace: "nowrap",
+          }}
           startIcon={<PlaceIcon sx={{ fontSize: "1.4rem" }} />}
           onClick={handleLocationSelect}
         >

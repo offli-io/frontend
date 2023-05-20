@@ -213,23 +213,41 @@ export const createActivity = async (values: IActivity) => {
   return promise;
 };
 
-export const getUsers = ({
-  username,
-  id,
-}: {
-  username?: string;
-  id?: string;
-}) => {
+export const getUsers = ({ username }: { username?: string }) => {
   const CancelToken = axios.CancelToken;
   const source = CancelToken.source();
   const validUsername = username ?? localStorage.getItem("username");
 
+  const promise = axios.get<IPersonExtended[]>(`${DEFAULT_DEV_URL}/users`, {
+    params: {
+      username: username ? validUsername : undefined,
+    },
+    cancelToken: source?.token,
+  });
+  // .then((response) => {
+  //   const { data } = response;
+  //   // If the response is an array with only one element, flatten it
+  //   if (Array.isArray(data) && data.length === 1) {
+  //     return data[0];
+  //   }
+  //   // Otherwise, return the original response
+  //   return data;
+  // });
+
+  // queryFunctionContext?.signal?.addEventListener('abort', () => {
+  //   source.cancel('Query was cancelled by React Query')
+  // })
+
+  return promise;
+};
+
+export const getUser = ({ id }: { id?: string }) => {
+  const CancelToken = axios.CancelToken;
+  const source = CancelToken.source();
+
   const promise = axios.get<IPersonExtended>(
     `${DEFAULT_DEV_URL}/users${id ? `/${id}` : ""}`,
     {
-      params: {
-        username: username ? validUsername : undefined,
-      },
       cancelToken: source?.token,
     }
   );
@@ -391,6 +409,27 @@ export const updateActivityInfo = (
   const promise = axios.patch(`${DEFAULT_DEV_URL}/activities/${activityId}`, values, {
     cancelToken: source?.token,
   });
+
+  return promise;
+};
+
+export const sendBuddyRequest = (userId?: string, buddy_to_be_id?: string) => {
+  const CancelToken = axios.CancelToken;
+  const source = CancelToken.source();
+
+  const promise = axios.post(
+    `${DEFAULT_DEV_URL}/users/${userId}/buddies`,
+    {
+      buddy_to_be_id,
+    },
+    {
+      cancelToken: source?.token,
+    }
+  );
+
+  //   queryFunctionContext?.signal?.addEventListener('abort', () => {
+  //     source.cancel('Query was cancelled by React Query')
+  //   })
 
   return promise;
 };

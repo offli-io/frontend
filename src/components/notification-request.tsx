@@ -4,6 +4,8 @@ import React from "react";
 import { INotificationDto } from "../types/notifications/notification.dto";
 import { useUsers } from "../hooks/use-users";
 import { differenceInHours } from "date-fns";
+import { IPersonExtended } from "../types/activities/activity.dto";
+import { useUser } from "../hooks/use-user";
 
 interface INotificationRequestProps {
   notification: INotificationDto;
@@ -24,7 +26,9 @@ const NotificationRequest: React.FC<INotificationRequestProps> = ({
   notification,
   onClick,
 }) => {
-  const { data, isLoading } = useUsers({ id: notification?.user_id });
+  const { data: { data = {} } = {}, isLoading } = useUser({
+    id: notification?.user_id,
+  });
 
   const hourDifference = React.useCallback(() => {
     if (notification?.timestamp) {
@@ -59,7 +63,7 @@ const NotificationRequest: React.FC<INotificationRequestProps> = ({
               mr: 1.5,
             }}
           />
-          <StyledImage src={data?.data?.profile_photo_url ?? logo} />
+          <StyledImage src={data?.profile_photo_url ?? logo} />
           <Box sx={{ display: "flex", flexDirection: "column" }}>
             <Typography
               sx={{

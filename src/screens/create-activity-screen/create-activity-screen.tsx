@@ -21,13 +21,14 @@ import { ActivityVisibilityEnum } from "../../types/activities/activity-visibili
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createActivity } from "../../api/activities/requests";
 import { useSnackbar } from "notistack";
-import { IPerson } from "../../types/activities/activity.dto";
+import { IPerson, IPersonExtended } from "../../types/activities/activity.dto";
 import ActivityCreatedScreen from "../static-screens/activity-created-screen";
 import { useNavigate } from "react-router-dom";
 import { ApplicationLocations } from "../../types/common/applications-locations.dto";
 import { AuthenticationContext } from "../../assets/theme/authentication-provider";
 import DotsMobileStepper from "../../components/stepper";
 import { useUsers } from "../../hooks/use-users";
+import { useUser } from "../../hooks/use-user";
 
 interface FormValues {
   title?: string;
@@ -125,8 +126,8 @@ const CreateActivityScreen = () => {
   const [activeStep, setActiveStep] = React.useState<number>(0);
   const navigate = useNavigate();
   const { userInfo } = React.useContext(AuthenticationContext);
-  const { data: { data: userData } = {}, isLoading: isUserDataLoading } =
-    useUsers({
+  const { data: { data: userData = {} } = {}, isLoading: isUserDataLoading } =
+    useUser({
       id: userInfo?.id,
     });
 
@@ -168,7 +169,12 @@ const CreateActivityScreen = () => {
   const handleFormSubmit = React.useCallback((data: FormValues) => {
     const { placeQuery, ...restValues } = data;
     //TODO fill with real user data
-    const { id, name, username, profile_photo_url } = { ...userData };
+    const {
+      id = undefined,
+      name = undefined,
+      username = undefined,
+      profile_photo_url = undefined,
+    } = { ...userData };
     mutate({
       ...restValues,
       creator: {

@@ -30,6 +30,7 @@ const SettingsScreen = () => {
     setStateToken(null);
     setAuthToken(undefined);
     setUserInfo?.({ username: undefined, id: undefined });
+    queryClient.invalidateQueries();
     queryClient.removeQueries();
     localStorage.removeItem("token");
     localStorage.removeItem("userId");

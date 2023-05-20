@@ -3,23 +3,17 @@ import { useSnackbar } from "notistack";
 import { getUsers } from "../api/activities/requests";
 import { getNotifications } from "../api/notifications/requests";
 
-export const useUsers = ({
-  id,
-  username,
-}: {
-  id?: string;
-  username?: string;
-}) => {
+export const useUsers = ({ username }: { username?: string }) => {
   const { enqueueSnackbar } = useSnackbar();
   const { data, isLoading } = useQuery(
-    ["users", id, username],
-    () => getUsers({ id, username }),
+    ["users", username],
+    () => getUsers({ username }),
     {
       onError: () => {
         //some generic toast for every hook
-        enqueueSnackbar("Failed to load notifications", { variant: "error" });
+        enqueueSnackbar("Failed to load users", { variant: "error" });
       },
-      enabled: !!id,
+      enabled: !!username,
     }
   );
 
