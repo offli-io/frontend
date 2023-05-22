@@ -20,7 +20,7 @@ import jwt_decode from "jwt-decode";
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      retry: 1,
+      retry: false,
       refetchOnMount: true,
       refetchOnWindowFocus: true,
       refetchOnReconnect: true,
@@ -31,7 +31,7 @@ const queryClient = new QueryClient({
       staleTime: 1000 * 300,
     },
     mutations: {
-      retry: 0,
+      retry: false,
     },
   },
 });
