@@ -279,6 +279,24 @@ export const getBuddies = (userId: string, queryString?: string) => {
   return promise;
 };
 
+export const getRecommendedBuddies = (userId: string) => {
+  const CancelToken = axios.CancelToken;
+  const source = CancelToken.source();
+
+  const promise = axios.get<IPerson[]>(
+    `${DEFAULT_DEV_URL}/users/${userId}/buddies-recommendation`,
+    {
+      cancelToken: source?.token,
+    }
+  );
+
+  // queryFunctionContext?.signal?.addEventListener('abort', () => {
+  //   source.cancel('Query was cancelled by React Query')
+  // })
+
+  return promise;
+};
+
 export const getPredefinedTags = () => {
   const CancelToken = axios.CancelToken;
   const source = CancelToken.source();

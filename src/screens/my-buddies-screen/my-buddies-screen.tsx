@@ -23,11 +23,20 @@ import { DrawerContext } from "../../assets/theme/drawer-provider";
 import { IPerson } from "../../types/activities/activity.dto";
 import { BuddyActionTypeEnum } from "../../types/common/buddy-actions-type-enum.dto";
 import { addBuddy, deleteBuddy } from "../../api/users/requests";
-import { useMutation, useQueries, useQueryClient } from "@tanstack/react-query";
+import {
+  useMutation,
+  useQueries,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { useSnackbar } from "notistack";
 import { AuthenticationContext } from "../../assets/theme/authentication-provider";
 import NoBuddiesScreen from "./components/no-buddies-screen";
 import BuddySuggestCard from "../../components/buddy-suggest-card";
+import {
+  getBuddies,
+  getRecommendedBuddies,
+} from "../../api/activities/requests";
 
 const MyBuddiesScreen = () => {
   const navigate = useNavigate();
@@ -40,6 +49,23 @@ const MyBuddiesScreen = () => {
   const { data, isLoading, invalidateBuddies } = useBuddies({
     text: currentSearch,
   });
+
+  const {
+    data: recommendedBuddiesData,
+    isLoading: areBuddiesRecommendationsLoading,
+  } = useQuery(
+    ["buddies", userInfo?.id],
+    () => getRecommendedBuddies(String(userInfo?.id)),
+    {
+      onError: () => {
+        //some generic toast for every hook
+        enqueueSnackbar(`Failed to load recommended buddies`, {
+          variant: "error",
+        });
+      },
+      enabled: !!userInfo?.id,
+    }
+  );
 
   const { mutate: sendDeleteBuddy } = useMutation(
     ["delete-buddy"],
