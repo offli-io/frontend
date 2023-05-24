@@ -1,7 +1,7 @@
 import { Box, CardActionArea, DividerProps, SxProps } from "@mui/material";
 import logo from "../assets/img/gym.svg";
 import L from "leaflet";
-import React from "react";
+import React, { useMemo } from "react";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
@@ -18,6 +18,9 @@ import {
 import { LatLng, LatLngTuple } from "leaflet";
 import { IActivity } from "../types/activities/activity.dto";
 import PlaceIcon from "@mui/icons-material/Place";
+import { DrawerContext } from "../assets/theme/drawer-provider";
+import ActivityDetailsScreen from "../screens/activity-details-screen/activity-details-screen";
+import ActivityDetailsScreenLayout from "../screens/activity-details-screen/components/activity-details-screen-layout";
 
 // function LocationMarker() {
 //   const [position, setPosition] = React.useState<LatLng | null>(null);
@@ -89,6 +92,15 @@ const Map: React.FC<ILabeledTileProps> = ({
     });
   }, []);
 
+  const { toggleDrawer } = React.useContext(DrawerContext);
+
+  const handleMarkerClick = (activity: IActivity) => {
+    toggleDrawer({
+      open: true,
+      content: <ActivityDetailsScreenLayout activity={activity} />,
+    });
+  };
+
   const isSingleActivity = activities?.length === 1;
   const latLonTupleSingle = [
     activities?.[0]?.location?.coordinates?.lat ?? position[0],
@@ -112,16 +124,20 @@ const Map: React.FC<ILabeledTileProps> = ({
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
         {activities?.map(
-          ({ title = "Activity", location = null, id } = {}) =>
-            location?.coordinates && (
+          // ({ title = "Activity", location = null, id } = {}) =>
+          (activity) =>
+            activity.location?.coordinates && (
               <Marker
-                key={`activity_${id}`}
+                key={`activity_${activity.id}`}
                 position={[
-                  location?.coordinates?.lat ?? position[0],
-                  location?.coordinates?.lon ?? position[1],
+                  activity.location?.coordinates?.lat ?? position[0],
+                  activity.location?.coordinates?.lon ?? position[1],
                 ]}
+                eventHandlers={{
+                  click: () => handleMarkerClick(activity),
+                }}
               >
-                <Popup>{title}</Popup>
+                <Popup>{activity.title}</Popup>
               </Marker>
             )
         )}
