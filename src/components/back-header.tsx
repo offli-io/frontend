@@ -57,7 +57,7 @@ const BackHeader: React.FC<IBackHeaderProps> = ({
       });
     }
     navigate(fromLocation);
-  }, []);
+  }, [fromLocation, location, navigate]);
 
   return (
     <Box sx={{ boxShadow: "1px 2px 2px #ccc", mb: 0.5, ...sx }}>

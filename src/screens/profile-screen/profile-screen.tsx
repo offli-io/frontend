@@ -130,10 +130,10 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
                 sx={{
                   fontWeight: "bold",
                   mt: 0.5,
-                  ml: 0.5,
+                  ml: 0.75,
                 }}
               >
-                {data?.buddies?.length}
+                {`Buddies (${data?.buddies?.length})`}
               </Typography>
             </IconButton>
           )}

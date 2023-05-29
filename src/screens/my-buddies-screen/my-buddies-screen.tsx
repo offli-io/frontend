@@ -45,7 +45,9 @@ const MyBuddiesScreen = () => {
   const { enqueueSnackbar } = useSnackbar();
   const { userInfo } = React.useContext(AuthenticationContext);
   const location = useLocation();
-  const from = (location?.state as ICustomizedLocationStateDto)?.from;
+  const from =
+    (location?.state as ICustomizedLocationStateDto)?.from ??
+    ApplicationLocations.PROFILE;
   const { data, isLoading, invalidateBuddies } = useBuddies({
     text: currentSearch,
   });
@@ -208,33 +210,32 @@ const MyBuddiesScreen = () => {
                 <PersonAddIcon color="primary" />
               </IconButton>
             </Box>
-            <Box>
-              <Typography variant="h5" sx={{ mb: 2 }}>
-                People you attended activity with
-              </Typography>
-              <Box
-                sx={{
-                  display: "flex",
-                  overflowX: "scroll",
-                  width: "100%",
-                  "::-webkit-scrollbar": { display: "none" },
-                }}
-              >
-                {data?.data.map((buddy) => (
-                  <>
-                    <BuddySuggestCard
-                      key={buddy?.id}
-                      buddy={buddy}
-                      onAddBuddyClick={(buddy) => sendAddBuddy(buddy?.id)}
-                      isLoading={isAddBuddyLoading}
-                    />
-                    <BuddySuggestCard key={buddy?.id} buddy={buddy} />
-                    <BuddySuggestCard key={buddy?.id} buddy={buddy} />
-                    <BuddySuggestCard key={buddy?.id} buddy={buddy} />
-                  </>
-                ))}
+            {(recommendedBuddiesData?.data ?? [])?.length > 0 && (
+              <Box>
+                <Typography variant="h5" sx={{ mb: 2 }}>
+                  People you attended activity with
+                </Typography>
+                <Box
+                  sx={{
+                    display: "flex",
+                    overflowX: "scroll",
+                    width: "100%",
+                    "::-webkit-scrollbar": { display: "none" },
+                  }}
+                >
+                  {recommendedBuddiesData?.data?.map((buddy) => (
+                    <>
+                      <BuddySuggestCard
+                        key={buddy?.id}
+                        buddy={buddy}
+                        onAddBuddyClick={(buddy) => sendAddBuddy(buddy?.id)}
+                        isLoading={isAddBuddyLoading}
+                      />
+                    </>
+                  ))}
+                </Box>
               </Box>
-            </Box>
+            )}
             <Box>
               <Typography variant="h5" sx={{ mt: 2, mb: 1 }}>
                 Your buddies
