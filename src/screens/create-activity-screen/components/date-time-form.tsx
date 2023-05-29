@@ -107,15 +107,27 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
     (type: "datetime_from" | "datetime_until", value: string | null) => {
       if (value) {
         const timeSplit = value.split(":");
-        const date = currentStartDate ? new Date(currentStartDate) : new Date();
-        date.setHours(Number(timeSplit[0]), Number(timeSplit[1]), 0);
+        const _date = currentStartDate
+          ? new Date(currentStartDate)
+          : new Date();
+        _date.setHours(Number(timeSplit[0]), Number(timeSplit[1]), 0);
 
-        setValue(type, date);
+        setValue(type, _date);
+        if (!currentStartDate) {
+          const _fromOptions = date?.fromOptions?.map((item, index) =>
+            index === 0 ? { ...item, selected: true } : item
+          );
+          setDate((options) => ({
+            ...options,
+            fromOptions: _fromOptions,
+          }));
+        }
       }
     },
-    [setValue, watch, currentStartDate]
+    [setValue, watch, currentStartDate, currentStartDate, date]
   );
 
+  console.log(watch("datetime_from"));
   const isFormValid = !!watch("datetime_from") && !!watch("datetime_until");
 
   const getFromDisabledOptions = (option: string) => {

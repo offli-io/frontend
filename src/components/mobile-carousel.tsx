@@ -10,6 +10,7 @@ export interface ICarouselItem {
   id?: string;
   selected?: boolean;
   value?: unknown;
+  dateValue?: Date | null;
 }
 
 interface IMobileCarouselProps {
@@ -61,7 +62,7 @@ export const MobileCarousel: React.FC<IMobileCarouselProps> = ({
         {items?.map((item) => (
           <Card
             raised={item?.selected}
-            key={item.title}
+            key={item.id}
             sx={{
               minWidth: 100,
               height: 50,

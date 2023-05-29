@@ -83,12 +83,9 @@ const schema: (activeStep: number) => yup.SchemaOf<FormValues> = (
         : yup.array().of(yup.string()).notRequired(),
     datetime_from:
       activeStep === 3
-        ? yup
-            .date()
-            .defined()
-            .required()
-            .default(() => new Date())
-        : yup.date().notRequired(),
+        ? yup.date().defined().required()
+        : // .default(() => new Date())
+          yup.date().notRequired(),
     datetime_until:
       activeStep === 3
         ? yup.date().defined().required()
