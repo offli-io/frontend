@@ -48,13 +48,13 @@ const generateOptionsOrder = (type: "from" | "until") => {
 export const generateDateSlots: (
   isFirstSelected?: boolean
 ) => ICarouselItem[] = (isFirstSelected?: boolean) => {
-  const dateSlots = [];
+  const dateSlots = [] as ICarouselItem[];
   for (let i = 0; i < 5; i++) {
     const date = add(new Date(), {
       days: i,
     });
     dateSlots.push({
-      value: date,
+      dateValue: date,
       title: format(date, "EEEE").slice(0, 3),
       description: format(date, "dd.MM.yyyy"),
       disabled: false,
@@ -83,7 +83,6 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
 }) => {
   const { control, formState, watch, setValue } = methods;
   const currentStartDate = watch("datetime_from");
-  console.log(currentStartDate);
   const currentEndDate = watch("datetime_until");
   const [date, setDate] = React.useState({
     fromOptions: generateDateSlots(),
@@ -98,8 +97,6 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
     from: "",
     until: "",
   });
-
-  console.log(roundMinutes(new Date()));
 
   const [sameEndDate, setSameEndDate] = React.useState(true);
 
@@ -130,50 +127,16 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
   console.log(watch("datetime_from"));
   const isFormValid = !!watch("datetime_from") && !!watch("datetime_until");
 
-  const getFromDisabledOptions = (option: string) => {
-    const toTime = !!currentEndDate && format(currentEndDate, "hh:mm");
-    if (toTime) {
-      if (option >= toTime) {
-        return true;
-      }
-    }
-    return false;
-  };
-
-  const getToDisabledOptions = (option: string) => {
-    //TODO this is bad fix it or not even use it
-    // if (currentStartDate) {
-    //   const [hours, minutes] = option.split(":");
-    //   const _option = new Date().setHours(Number(hours), Number(minutes));
-    //   if (_option <= currentStartDate) {
-    //     return true;
-    //   }
-    // }
-    return false;
-  };
-
   React.useEffect(() => {
     const selectedDate = date?.fromOptions?.find((item) => item.selected);
-    setValue("datetime_from", selectedDate?.value);
-    if (sameEndDate) {
-      setValue("datetime_until", selectedDate?.value);
+
+    if (selectedDate) {
+      setValue("datetime_from", selectedDate?.dateValue);
+      if (sameEndDate) {
+        setValue("datetime_until", selectedDate?.dateValue);
+      }
     }
   }, [date?.fromOptions]);
-
-  // const defaultValueFrom = React.useMemo(
-  //   () => `${new Date().getHours() + 1}:00`,
-  //   []
-  // )
-
-  // const defaultValueTo = React.useMemo(
-  //   () => `${new Date().getHours() + 2}:00`,
-  //   []
-  // )
-
-  // React.useEffect(() => {
-  //   setValue('datetime_from', defaultValueFrom)
-  //   setValue('datetime_until', defaultValueTo)
-  // }, [])
 
   const handleItemSelect = React.useCallback(
     (type: "from" | "until", id?: string) => {
@@ -302,7 +265,6 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
             value={timeValues?.from}
             //defaultValue={"18:00"}
             //IDK if we should use from disabled options
-            //getOptionDisabled={getFromDisabledOptions}
           />
           <Typography sx={{ fontWeight: 200, fontSize: "2rem" }}>-</Typography>
 
@@ -317,7 +279,6 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
               handleTimeChange("datetime_until", value);
             }}
             options={generateOptionsOrder("until")}
-            getOptionDisabled={getToDisabledOptions}
             //defaultValue={defaultValueTo}
           />
         </Box>

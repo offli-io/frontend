@@ -42,7 +42,7 @@ interface FormValues {
   // public?: boolean
   //repeated?: ActivityRepetitionOptionsEnum | string
   price?: ActivityPriceOptionsEnum | string;
-  title_picture?: string;
+  title_picture_url?: string;
   placeQuery?: string;
   visibility?: ActivityVisibilityEnum;
   limit?: number;
@@ -84,8 +84,7 @@ const schema: (activeStep: number) => yup.SchemaOf<FormValues> = (
     datetime_from:
       activeStep === 3
         ? yup.date().defined().required()
-        : // .default(() => new Date())
-          yup.date().notRequired(),
+        : yup.date().notRequired(),
     datetime_until:
       activeStep === 3
         ? yup.date().defined().required()
@@ -107,7 +106,7 @@ const schema: (activeStep: number) => yup.SchemaOf<FormValues> = (
       activeStep === 4
         ? yup.number().required().defined()
         : yup.number().notRequired(),
-    title_picture: yup.string().notRequired(),
+    title_picture_url: yup.string().notRequired(),
     placeQuery: yup.string().notRequired(),
     description: yup.string().notRequired(),
     visibility: yup
@@ -135,8 +134,6 @@ const CreateActivityScreen = () => {
       visibility: ActivityVisibilityEnum.private,
       price: ActivityPriceOptionsEnum.free,
       limit: 10,
-      // title_picture:
-      //   'https://www.pngfind.com/pngs/m/676-6764065_default-profile-picture-transparent-hd-png-download.png',
     },
     resolver: yupResolver(schema(activeStep)),
     mode: "onChange",
@@ -163,25 +160,28 @@ const CreateActivityScreen = () => {
     }
   );
 
-  const handleFormSubmit = React.useCallback((data: FormValues) => {
-    const { placeQuery, ...restValues } = data;
-    //TODO fill with real user data
-    const {
-      id = undefined,
-      name = undefined,
-      username = undefined,
-      profile_photo_url = undefined,
-    } = { ...userData };
-    mutate({
-      ...restValues,
-      creator: {
-        id,
-        name,
-        username,
-        profile_photo_url,
-      },
-    });
-  }, []);
+  const handleFormSubmit = React.useCallback(
+    (data: FormValues) => {
+      const { placeQuery, ...restValues } = data;
+      //TODO fill with real user data
+      const {
+        id = undefined,
+        name = undefined,
+        username = undefined,
+        profile_photo_url = undefined,
+      } = { ...userData };
+      mutate({
+        ...restValues,
+        creator: {
+          id,
+          name,
+          username,
+          profile_photo_url,
+        },
+      });
+    },
+    [userData, mutate]
+  );
 
   const handleFormError = React.useCallback(
     (error: any) => console.log(error),

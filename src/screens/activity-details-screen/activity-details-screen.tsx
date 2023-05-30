@@ -43,7 +43,6 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
           width: "100%",
           height: "50%",
           backgroundImage: `url(${require("../../assets/img/dune.webp")})`,
-          // backgroundImage: `url(${activity?.title_picture})`,
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat",
           backgroundSize: "cover",

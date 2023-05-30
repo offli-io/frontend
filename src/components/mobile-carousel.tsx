@@ -9,6 +9,7 @@ export interface ICarouselItem {
   description?: string;
   id?: string;
   selected?: boolean;
+  disabled?: boolean;
   value?: unknown;
   dateValue?: Date | null;
 }
@@ -18,6 +19,7 @@ interface IMobileCarouselProps {
   title?: string;
   onItemSelect?: (item: ICarouselItem) => void;
   onSlotAdd?: (addedDate: any) => void;
+  onDuplicateEntry?: (addedDate: any) => void;
 }
 
 export const MobileCarousel: React.FC<IMobileCarouselProps> = ({
@@ -25,10 +27,27 @@ export const MobileCarousel: React.FC<IMobileCarouselProps> = ({
   title,
   onItemSelect,
   onSlotAdd,
+  onDuplicateEntry,
 }) => {
   const handleDatePick = React.useCallback(
     (date: Date | null) => {
-      !!date &&
+      if (!date) {
+        return;
+      }
+      //check if there isn't any of items already added to only select it
+      if (
+        items?.some(
+          (item) => item?.id === `date_slot_${format(date, "dd.MM.yyyy")}`
+        )
+      ) {
+        onItemSelect?.({
+          dateValue: date,
+          title: format(date, "EEEE").slice(0, 3),
+          description: format(date, "dd.MM.yyyy"),
+          selected: true,
+          id: `date_slot_${format(date, "dd.MM.yyyy")}`,
+        });
+      } else {
         onSlotAdd?.({
           dateValue: date,
           title: format(date, "EEEE").slice(0, 3),
@@ -37,8 +56,9 @@ export const MobileCarousel: React.FC<IMobileCarouselProps> = ({
           selected: true,
           id: `date_slot_${format(date, "dd.MM.yyyy")}`,
         });
+      }
     },
-    [onSlotAdd]
+    [onSlotAdd, onDuplicateEntry, items]
   );
   return (
     <>
