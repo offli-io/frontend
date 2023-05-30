@@ -103,6 +103,7 @@ export const ActivityTypeForm: React.FC<IActivityTypeFormProps> = ({
               key={index}
               title={title}
               onClick={handleTileClick}
+              selected={tags?.includes(title)}
               sx={{
                 width: "42%",
                 mb: 2,

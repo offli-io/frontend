@@ -153,17 +153,9 @@ export const PlaceForm: React.FC<IPlaceFormProps> = ({
           justifyContent: "space-between",
         }}
       >
-        {/* <IconButton onClick={onBackClicked} color="primary">
+        <IconButton onClick={onBackClicked} color="primary">
           <ArrowBackIosNewIcon />
-        </IconButton> */}
-        <OffliButton
-          onClick={onBackClicked}
-          sx={{ width: "40%" }}
-          variant="text"
-          startIcon={<ArrowBackIosNewIcon />}
-        >
-          Back
-        </OffliButton>
+        </IconButton>
         <OffliButton
           onClick={onNextClicked}
           sx={{ width: "40%" }}
