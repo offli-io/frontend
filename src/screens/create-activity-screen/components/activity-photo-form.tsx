@@ -19,6 +19,13 @@ import AddAPhotoIcon from "@mui/icons-material/AddAPhoto";
 import LabeledDivider from "../../../components/labeled-divider";
 import { DrawerContext } from "../../../assets/theme/drawer-provider";
 import OffliGallery from "./offli-gallery";
+import { useSnackbar } from "notistack";
+import {
+  ALLOWED_PHOTO_EXTENSIONS,
+  MAX_FILE_SIZE,
+} from "../../../utils/common-constants";
+import { DEFAULT_DEV_URL } from "../../../assets/config";
+import { getAuthToken } from "../../../utils/token.util";
 
 interface IActivityPhotoFormProps {
   methods: UseFormReturn;
@@ -34,10 +41,13 @@ export const ActivityPhotoForm: React.FC<IActivityPhotoFormProps> = ({
   const onImageSelect = (e: BaseSyntheticEvent) => {
     console.log(e.target.files);
   };
+  const token = getAuthToken();
+
+  const { enqueueSnackbar } = useSnackbar();
   const theme = useTheme();
   const tags = watch("tags");
 
-  const selectedPhoto = watch("title_picture");
+  const selectedPhoto = watch("title_picture_url");
 
   const openGallery = React.useCallback(
     () =>
@@ -47,13 +57,42 @@ export const ActivityPhotoForm: React.FC<IActivityPhotoFormProps> = ({
           <OffliGallery
             tags={tags}
             onPictureSelect={(url) => {
-              setValue("title_picture", url);
+              setValue("title_picture_url", url);
               toggleDrawer({ open: false, content: undefined });
             }}
           />
         ),
       }),
     [toggleDrawer, setValue]
+  );
+
+  const checkFileBeforeUpload = React.useCallback(
+    (file: RcFile) => {
+      // check file size
+      if (file?.size > MAX_FILE_SIZE) {
+        enqueueSnackbar("File is too large", { variant: "error" });
+        return false;
+      }
+
+      // check file format
+      const fileExtension = file.name.split(".").pop();
+      if (fileExtension && !ALLOWED_PHOTO_EXTENSIONS.includes(fileExtension)) {
+        enqueueSnackbar("Unsupported file format", { variant: "error" });
+        return false;
+      }
+      return true;
+    },
+    [enqueueSnackbar]
+  );
+
+  const handleSuccessfullFileUpload = React.useCallback(
+    (result: Record<string, unknown>, file: RcFile) => {
+      enqueueSnackbar("Your photo has been successfully uploaded", {
+        variant: "success",
+      });
+      setValue("title_picture_url", "link");
+    },
+    [enqueueSnackbar, setValue]
   );
 
   return (
@@ -123,7 +162,7 @@ export const ActivityPhotoForm: React.FC<IActivityPhotoFormProps> = ({
               variant="text"
               sx={{ mt: 2, fontSize: 16 }}
               size="small"
-              onClick={openGallery}
+              onClick={() => setValue("title_picture_url", undefined)}
             >
               Choose different picture
             </OffliButton>
@@ -131,7 +170,7 @@ export const ActivityPhotoForm: React.FC<IActivityPhotoFormProps> = ({
         ) : (
           <>
             <Controller
-              name="title_picture"
+              name="title_picture_url"
               control={control}
               render={({ field: { ref, ...field }, fieldState: { error } }) => {
                 return (
@@ -139,37 +178,17 @@ export const ActivityPhotoForm: React.FC<IActivityPhotoFormProps> = ({
                     name="file"
                     value={field.value?.[0]}
                     style={{ display: "flex", justifyContent: "center" }}
-                    // beforeUpload={(file: RcFile) => {
-                    //   // check file size
-                    //   if (file?.size > fileLimit) {w
-                    //     showNotification(t('file-too-large'), 'error');
-                    //     return false;
-                    //   }
-
-                    //   // check file format
-                    //   const fileExtension = file?.name?.split('.').pop();
-                    //   if (
-                    //     !allowedExtensions.includes(
-                    //       `.${fileExtension?.toLowerCase()}`
-                    //     )
-                    //   ) {
-                    //     showNotification(t('unsupported-file-format'), 'error');
-                    //     return false;
-                    //   }
-                    //   return true;
-                    // }}
-                    // onSuccess={(result, file) => {
-                    //   onSuccessfullUpload();
-                    //   field.onChange(file);
-                    //   showNotification(t('file-successfully-uploaded'));
-                    // }}
-                    // action={() =>
-                    //   `${endpointMap[application]}/user-file/fields/${id}/import`
-                    // }
-                    // headers={{
-                    //   authorization: `Bearer ${token}`,
-                    // }}
-                    multiple
+                    beforeUpload={checkFileBeforeUpload}
+                    onSuccess={handleSuccessfullFileUpload}
+                    onError={() =>
+                      enqueueSnackbar("Failed to upload photo", {
+                        variant: "error",
+                      })
+                    }
+                    action={() => `${DEFAULT_DEV_URL}/files`}
+                    headers={{
+                      authorization: `Bearer ${token}`,
+                    }}
                   >
                     {/* TODO outsource this component */}
                     <Box

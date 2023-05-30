@@ -40,6 +40,8 @@ export const ActivityDetailsForm: React.FC<IPlaceFormProps> = ({
   const queryString = watch("place");
   console.log(queryString);
 
+  console.log(watch());
+
   return (
     <>
       <Box
@@ -72,8 +74,6 @@ export const ActivityDetailsForm: React.FC<IPlaceFormProps> = ({
                 width: "100%",
               }}
             >
-              {/* TODO add only boolean to hook form for example public, which will be either false or true */}
-              {/* <Typography>Accessibility</Typography> */}
               <Box
                 sx={{
                   display: "flex",
@@ -83,19 +83,19 @@ export const ActivityDetailsForm: React.FC<IPlaceFormProps> = ({
                   mb: 5,
                 }}
               >
-                {/* <FormLabel
-                //sx={!field.value ? { color: 'black' } : {}}
-                >
-                  Accessibility
-                </FormLabel> */}
                 <Typography sx={{ fontWeight: "bold" }}>
                   Accessibility
                 </Typography>
                 <Box sx={{ display: "flex", alignItems: "center" }}>
                   <Switch
                     sx={{ mx: 1 }}
-                    {...field}
+                    // {...field}
                     value={
+                      field?.value === ActivityVisibilityEnum.private
+                        ? false
+                        : true
+                    }
+                    checked={
                       field?.value === ActivityVisibilityEnum.private
                         ? false
                         : true
@@ -109,11 +109,7 @@ export const ActivityDetailsForm: React.FC<IPlaceFormProps> = ({
                     }}
                     color="primary"
                   />
-                  <FormLabel
-                  //sx={field.value ? { color: 'black' } : {}}
-                  >
-                    public
-                  </FormLabel>
+                  <FormLabel>public</FormLabel>
                 </Box>
               </Box>
 

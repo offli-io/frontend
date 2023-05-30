@@ -44,7 +44,7 @@ const ActivityLeaveConfirmation: React.FC<IActivityActionsProps> = ({
           borderRadius: 35,
           boxShadow: "2px 3px 4px #ccc",
         }}
-        src={data?.data?.activity?.title_picture}
+        src={data?.data?.activity?.title_picture_url}
         alt="Activity leave"
       />
       <Box display="flex" sx={{ my: 2 }}>

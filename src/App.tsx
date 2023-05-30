@@ -16,11 +16,12 @@ import { gapi } from "gapi-script";
 import { useGoogleCalendar } from "./hooks/use-google-calendar";
 import axios from "axios";
 import jwt_decode from "jwt-decode";
+import { LocationProvider } from "./app/providers/location-provider";
 
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      retry: 1,
+      retry: false,
       refetchOnMount: true,
       refetchOnWindowFocus: true,
       refetchOnReconnect: true,
@@ -31,7 +32,7 @@ const queryClient = new QueryClient({
       staleTime: 1000 * 300,
     },
     mutations: {
-      retry: 0,
+      retry: false,
     },
   },
 });
@@ -78,7 +79,9 @@ function App() {
             <CustomizationProvider>
               <Box sx={{ height: "100vh", overflow: "hidden" }}>
                 <DrawerProvider>
-                  <Router />
+                  <LocationProvider>
+                    <Router />
+                  </LocationProvider>
                 </DrawerProvider>
               </Box>
             </CustomizationProvider>

@@ -11,6 +11,7 @@ interface ILabeledTileProps {
   title: string;
   imageUrl?: string;
   sx?: SxProps;
+  selected?: boolean;
   onClick: (title: string) => void;
 }
 
@@ -18,12 +19,10 @@ const LabeledTile: React.FC<ILabeledTileProps> = ({
   title,
   imageUrl,
   sx,
+  selected,
   onClick,
 }) => {
-  const [selected, setSelected] = React.useState<boolean>(false);
-
   const handleCardClick = React.useCallback(() => {
-    setSelected((selected) => !selected);
     onClick(title);
   }, [onClick]);
 

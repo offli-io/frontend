@@ -42,30 +42,23 @@ import { ActivityInviteStateEnum } from "../../types/activities/activity-invite-
 import { useUsers } from "../../hooks/use-users";
 import { useParticipantActivities } from "../../hooks/use-participant-activities";
 import { useUser } from "../../hooks/use-user";
+import { LocationContext } from "../../app/providers/location-provider";
 
 const ActivitiesScreen = () => {
   const { userInfo, isFirstTimeLogin, setIsFirstTimeLogin } = React.useContext(
     AuthenticationContext
   );
+  const { location, setLocation } = React.useContext(LocationContext);
   const { toggleDrawer } = React.useContext(DrawerContext);
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
   const queryClient = useQueryClient();
   const [isSearchFocused, setIsSearchFocused] = React.useState(false);
 
-  const storageLocation = sessionStorage.getItem("current_location");
-  const _storageLocation = !!storageLocation
-    ? JSON.parse(storageLocation)
-    : null;
-
   //TODO either call it like this or set user info once useUsers request in layout.tsx got Promise resolved
   const { data: { data: userData = {} } = {} } = useUser({
     id: userInfo?.id,
   });
-
-  const [selectedLocation, setSelectedLocation] = React.useState<
-    ILocation | undefined | null
-  >(_storageLocation ?? userData?.location);
 
   const { data: { data: { activities = [] } = {} } = {}, isLoading } =
     useActivities<IActivityListRestDto>();
@@ -86,19 +79,6 @@ const ActivitiesScreen = () => {
         (participantActivity) => participantActivity?.id === activity?.id
       )
   );
-
-  // const { data: { data: { activities = [] } = {} } = {}, isLoading } = useQuery(
-  //   ["activities"],
-  //   () => getActivity<IActivityListRestDto>({ id: undefined }),
-  //   {
-  //     onError: () => {
-  //       //some generic toast for every hook
-  //       enqueueSnackbar(`Failed to load activit${"y"}`, {
-  //         variant: "error",
-  //       });
-  //     },
-  //   }
-  // );
 
   const { mutate: sendJoinActivity } = useMutation(
     ["invite-person"],
@@ -235,18 +215,14 @@ const ActivitiesScreen = () => {
         <SetLocationContent
           onLocationSelect={(location) => {
             toggleDrawer({ open: false, content: undefined });
-            setSelectedLocation(location);
-            sessionStorage.setItem(
-              "current_location",
-              JSON.stringify(location)
-            );
+            setLocation?.(location);
           }}
-          externalLocation={selectedLocation}
+          externalLocation={location}
         />
       ),
       // onClose: () => setIsFirstTimeLogin?.(false),
     });
-  }, []);
+  }, [location]);
 
   React.useEffect(() => {
     Boolean(isFirstTimeLogin) &&
@@ -256,17 +232,6 @@ const ActivitiesScreen = () => {
         onClose: () => setIsFirstTimeLogin?.(false),
       });
   }, [isFirstTimeLogin, toggleDrawer]);
-
-  React.useEffect(() => {
-    // set default location value when component completely renders
-    if (!selectedLocation) {
-      if (!!_storageLocation) {
-        setSelectedLocation(_storageLocation);
-      } else if (!!userData?.location) {
-        setSelectedLocation(userData?.location);
-      }
-    }
-  }, [_storageLocation, userData?.location]);
 
   return (
     <PageWrapper sxOverrides={{ px: 2 }}>
@@ -294,7 +259,7 @@ const ActivitiesScreen = () => {
           startIcon={<PlaceIcon sx={{ fontSize: "1.4rem" }} />}
           onClick={handleLocationSelect}
         >
-          {selectedLocation?.name ?? "No location found"}
+          {location?.name ?? "No location found"}
         </OffliButton>
       </Box>
       <Autocomplete

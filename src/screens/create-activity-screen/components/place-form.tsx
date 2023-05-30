@@ -23,6 +23,7 @@ import {
 } from "../../../api/activities/requests";
 import { useDebounce } from "use-debounce";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
+import { mapPlaceValue } from "../utils/map-place-value.util";
 
 interface IPlaceFormProps {
   onNextClicked: () => void;
@@ -73,10 +74,7 @@ export const PlaceForm: React.FC<IPlaceFormProps> = ({
     }
   );
 
-  console.log(placeQuery?.data?.results);
-
   const place = watch("place");
-  console.log(place);
 
   return (
     <>
@@ -114,7 +112,12 @@ export const PlaceForm: React.FC<IPlaceFormProps> = ({
           control={control}
           render={({ field, fieldState: { error } }) => (
             <Autocomplete
+              {...field}
               options={placeQuery?.data?.results ?? []}
+              value={mapPlaceValue(field?.value)}
+              isOptionEqualToValue={(option, value) =>
+                option?.formatted === (value?.formatted ?? value?.name)
+              }
               sx={{
                 width: "100%",
                 display: "flex",
@@ -122,7 +125,6 @@ export const PlaceForm: React.FC<IPlaceFormProps> = ({
                 mb: 2,
               }}
               loading={placeQuery?.isLoading}
-              // isOptionEqualToValue={(option, value) => option.id === value.id}
               onChange={(e, locationObject) =>
                 field.onChange({
                   name: locationObject?.formatted,
@@ -151,17 +153,9 @@ export const PlaceForm: React.FC<IPlaceFormProps> = ({
           justifyContent: "space-between",
         }}
       >
-        {/* <IconButton onClick={onBackClicked} color="primary">
+        <IconButton onClick={onBackClicked} color="primary">
           <ArrowBackIosNewIcon />
-        </IconButton> */}
-        <OffliButton
-          onClick={onBackClicked}
-          sx={{ width: "40%" }}
-          variant="text"
-          startIcon={<ArrowBackIosNewIcon />}
-        >
-          Back
-        </OffliButton>
+        </IconButton>
         <OffliButton
           onClick={onNextClicked}
           sx={{ width: "40%" }}
