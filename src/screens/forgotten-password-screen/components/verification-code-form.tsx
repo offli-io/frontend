@@ -51,7 +51,9 @@ const VerificationCodeForm: React.FC<IVerificationCodeFormProps> = ({
     },
     {
       onSuccess: (data, code) => {
-        enqueueSnackbar("Verification code was re-sent to your email");
+        enqueueSnackbar("Verification code was re-sent to your email", {
+          variant: "success",
+        });
       },
       onError: (error) => {
         enqueueSnackbar("Failed to re-send verification code to given email", {

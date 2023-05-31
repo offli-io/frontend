@@ -132,7 +132,7 @@ const SearchScreen = () => {
           <OffliButton
             variant="text"
             size="small"
-            sx={{ fontSize: 14, ml: 1 }}
+            sx={{ fontSize: 14, ml: 0.5 }}
             onClick={() => navigate(ApplicationLocations.ACTIVITIES)}
           >
             Cancel
@@ -146,11 +146,14 @@ const SearchScreen = () => {
           </Box>
         ) : (
           activitiesData?.data?.activities?.map((activity) => (
-            <ActivitySearchCard
-              key={activity?.id}
-              activity={activity}
-              onPress={(act) => console.log(act)}
-            />
+            <>
+              <ActivitySearchCard
+                key={activity?.id}
+                activity={activity}
+                onPress={(act) => console.log(act)}
+              />
+              <Divider sx={{ mb: 1 }} />
+            </>
           ))
         )}
         {/* 
