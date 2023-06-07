@@ -15,12 +15,14 @@ import {
   useMap,
   useMapEvents,
 } from "react-leaflet";
-import { LatLng, LatLngTuple } from "leaflet";
+import { LatLng, LatLngTuple, Icon } from "leaflet";
 import { IActivity } from "../types/activities/activity.dto";
 import PlaceIcon from "@mui/icons-material/Place";
 import { DrawerContext } from "../assets/theme/drawer-provider";
-import ActivityDetailsScreen from "../screens/activity-details-screen/activity-details-screen";
 import ActivityDetailsScreenLayout from "../screens/activity-details-screen/components/activity-details-screen-layout";
+import PowerSettingsNewIcon from "@mui/icons-material/PowerSettingsNew";
+
+import offliMarker from "../assets/img/offli-icon.svg";
 
 // function LocationMarker() {
 //   const [position, setPosition] = React.useState<LatLng | null>(null);
@@ -34,9 +36,9 @@ import ActivityDetailsScreenLayout from "../screens/activity-details-screen/comp
 //     },
 //   });
 
-// const iconPerson = new L.Icon({
-//   iconUrl: require("../img/marker-pin-person.svg"),
-//   iconRetinaUrl: require("../img/marker-pin-person.svg"),
+// const offliMapIcon = new L.Icon({
+//   iconUrl: require("../assets/img/offli-icon.svg"),
+//   iconRetinaUrl: require("../assets/img/offli-icon.svg"),
 //   // iconAnchor: null,
 //   // popupAnchor: null,
 //   // shadowUrl: null,
@@ -45,6 +47,12 @@ import ActivityDetailsScreenLayout from "../screens/activity-details-screen/comp
 //   iconSize: new L.Point(60, 75),
 //   className: "leaflet-div-icon",
 // });
+
+const offliMapIcon = new Icon({
+  iconUrl: offliMarker,
+  iconSize: [32, 32],
+  // popupAnchor:  [-0, -0],
+});
 
 const RecenterAutomatically = ({
   lat,
@@ -97,7 +105,8 @@ const Map: React.FC<ILabeledTileProps> = ({
   const handleMarkerClick = (activity: IActivity) => {
     toggleDrawer({
       open: true,
-      content: <ActivityDetailsScreenLayout activity={activity} />,
+      // content: <ActivityDetailsScreenLayout activity={activity} />, //kokotina, spravit novy komponent pre map detail
+      content: <div>{activity.title}</div>,
     });
   };
 
@@ -129,6 +138,7 @@ const Map: React.FC<ILabeledTileProps> = ({
             activity.location?.coordinates && (
               <Marker
                 key={`activity_${activity.id}`}
+                icon={offliMapIcon}
                 position={[
                   activity.location?.coordinates?.lat ?? position[0],
                   activity.location?.coordinates?.lon ?? position[1],
@@ -141,7 +151,7 @@ const Map: React.FC<ILabeledTileProps> = ({
               </Marker>
             )
         )}
-        <Marker position={latLonTuple ?? position}>
+        <Marker position={latLonTuple ?? position} icon={offliMapIcon}>
           <Popup>You are here</Popup>
         </Marker>
         <RecenterAutomatically

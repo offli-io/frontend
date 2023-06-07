@@ -25,8 +25,6 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
   );
   const activity = data?.data?.activity;
 
-  console.log(activity);
-
   return (
     <>
       {type === "request" && <BackHeader title="Activity invite" to={from} />}

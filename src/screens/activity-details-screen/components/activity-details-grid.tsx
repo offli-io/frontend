@@ -38,19 +38,16 @@ const StyledText = styled(Typography)(() => ({
 }));
 
 const ActivityDetailsGrid: React.FC<IProps> = ({ activity }) => {
-  // hadze error v ked sa vyrenderuje do Map draweru (useNavigate() may be used only in the context of a <Router> component),
-  // asi prerobit na Link
+  const navigate = useNavigate();
+  // const from = (location?.state as ICustomizedLocationStateDto)?.from;
 
-  // const navigate = useNavigate();
-  // // const from = (location?.state as ICustomizedLocationStateDto)?.from;
-
-  // const handleShowOnMap = () => {
-  //   navigate(`${ApplicationLocations.MAP}/${activity?.id}`, {
-  //     state: {
-  //       from: `${ApplicationLocations.ACTIVITY_ID}/${activity?.id}`,
-  //     },
-  //   });
-  // };
+  const handleShowOnMap = () => {
+    navigate(`${ApplicationLocations.MAP}/${activity?.id}`, {
+      state: {
+        from: `${ApplicationLocations.ACTIVITY_ID}/${activity?.id}`,
+      },
+    });
+  };
 
   return (
     <Box
@@ -103,7 +100,7 @@ const ActivityDetailsGrid: React.FC<IProps> = ({ activity }) => {
         <Typography
           align="center"
           variant="subtitle2"
-          // onClick={handleShowOnMap}
+          onClick={handleShowOnMap}
         >
           show on map
         </Typography>
