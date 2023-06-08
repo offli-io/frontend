@@ -212,6 +212,7 @@ const LoginScreen: React.FC = () => {
               <TextField
                 {...field}
                 //label="Username"
+                data-testid="usernameInput"
                 label="Email or username"
                 // variant="filled"
                 error={!!error}
@@ -231,6 +232,7 @@ const LoginScreen: React.FC = () => {
               <TextField
                 {...field}
                 //label="Username"
+                data-testid="passwordInput"
                 label="Password"
                 type={showPassword ? "text" : "password"}
                 // variant="filled"
@@ -268,6 +270,7 @@ const LoginScreen: React.FC = () => {
           </OffliButton>
         </Box>
         <OffliButton
+          data-testid="submitBtn"
           sx={{ width: "80%", mb: 5 }}
           type="submit"
           isLoading={isLoading}
