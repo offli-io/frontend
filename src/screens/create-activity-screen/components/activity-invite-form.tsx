@@ -1,28 +1,20 @@
-import {
-  Box,
-  Button,
-  CircularProgress,
-  TextField,
-  Typography,
-} from "@mui/material";
-import React from "react";
-import { Controller, UseFormReturn } from "react-hook-form";
-import LabeledTile from "../../../components/labeled-tile";
-import OffliButton from "../../../components/offli-button";
-import SearchIcon from "@mui/icons-material/Search";
-import BuddyItemInvite from "../../../components/buddy-item-invite";
+import { Box, CircularProgress, TextField, Typography } from "@mui/material";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useSnackbar } from "notistack";
+import React from "react";
+import { UseFormReturn } from "react-hook-form";
+import { useDebounce } from "use-debounce";
 import {
   getBuddies,
   inviteBuddy,
   uninviteBuddy,
 } from "../../../api/activities/requests";
-import { IPerson } from "../../../types/activities/activity.dto";
-import { useDebounce } from "use-debounce";
-import { useSnackbar } from "notistack";
 import { AuthenticationContext } from "../../../assets/theme/authentication-provider";
-import { ICreateActivityRequestDto } from "../../../types/activities/create-activity-request.dto";
+import BuddyItemInvite from "../../../components/buddy-item-invite";
+import OffliButton from "../../../components/offli-button";
 import { ActivityInviteStateEnum } from "../../../types/activities/activity-invite-state-enum.dto";
+import { IPerson } from "../../../types/activities/activity.dto";
+import { ICreateActivityRequestDto } from "../../../types/activities/create-activity-request.dto";
 
 interface IActivityTypeFormProps {
   onNextClicked: () => void;
@@ -31,10 +23,8 @@ interface IActivityTypeFormProps {
 
 export const ActivityInviteForm: React.FC<IActivityTypeFormProps> = ({
   onNextClicked,
-  methods,
 }) => {
   const { userInfo } = React.useContext(AuthenticationContext);
-  const { control, setValue, watch } = methods;
   const [invitedBuddies, setInvitedBuddies] = React.useState<string[]>([]);
   const { enqueueSnackbar } = useSnackbar();
   const queryClient = useQueryClient();
@@ -83,9 +73,11 @@ export const ActivityInviteForm: React.FC<IActivityTypeFormProps> = ({
         const _buddies = invitedBuddies?.filter((buddy) => buddy !== buddyId);
         setInvitedBuddies(_buddies);
       },
-      // onError: error => {
-      //   enqueueSnackbar('Failed to create new activity', { variant: 'error' })
-      // },
+      onError: (error) => {
+        enqueueSnackbar("Failed to cancel invite for user", {
+          variant: "error",
+        });
+      },
     }
   );
 
@@ -117,16 +109,12 @@ export const ActivityInviteForm: React.FC<IActivityTypeFormProps> = ({
         }}
       >
         <TextField
-          // TODO idk if this is really needed and not anti-pattern
-          //autoFocus
           value={queryString}
           onChange={(e) => setQueryString(e.target.value)}
           sx={{ width: "100%" }}
           label="Search within your buddies"
-          // InputProps={{
-          //   startAdornment: <SearchIcon />,
-          // }}
           placeholder="Type buddy username"
+          data-testid="activity-invite-buddies-input"
         />
         {buddies?.data && buddies?.data?.length < 1 ? (
           <Box
@@ -179,7 +167,7 @@ export const ActivityInviteForm: React.FC<IActivityTypeFormProps> = ({
         <OffliButton
           onClick={onNextClicked}
           sx={{ width: "40%" }}
-          //disabled={!formState.isValid}
+          data-testid="skip-btn"
         >
           Skip
         </OffliButton>

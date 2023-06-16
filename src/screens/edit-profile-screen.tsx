@@ -1,43 +1,44 @@
-import React, { useState, useEffect } from "react";
-import {
-  Box,
-  IconButton,
-  Typography,
-  Grid,
-  Button,
-  TextField,
-  FormGroup,
-  FormControlLabel,
-  Checkbox,
-  useTheme,
-  Autocomplete,
-} from "@mui/material";
-import { PageWrapper } from "../components/page-wrapper";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import BackHeader from "../components/back-header";
-import { IPersonExtended } from "../types/activities/activity.dto";
-import { ApplicationLocations } from "../types/common/applications-locations.dto";
-import { AuthenticationContext } from "../assets/theme/authentication-provider";
-import ActionButton from "../components/action-button";
-import { Controller, useForm } from "react-hook-form";
-import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useNavigate } from "react-router-dom";
+import {
+  Autocomplete,
+  Box,
+  Checkbox,
+  FormControlLabel,
+  FormGroup,
+  Grid,
+  TextField,
+  Typography,
+  useTheme,
+} from "@mui/material";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { Dayjs } from "dayjs";
-import moment from "moment";
-import { useUsers } from "../hooks/use-users";
-import { updateProfileInfo } from "../api/users/requests";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useSnackbar } from "notistack";
-import { getLocationFromQueryFetch } from "../api/activities/requests";
+import React, { useEffect } from "react";
+import { Controller, useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 import { useDebounce } from "use-debounce";
-import { ILocation } from "../types/activities/location.dto";
+import * as yup from "yup";
+import { getLocationFromQueryFetch } from "../api/activities/requests";
+import { updateProfileInfo } from "../api/users/requests";
+import { AuthenticationContext } from "../assets/theme/authentication-provider";
+import ActionButton from "../components/action-button";
+import BackHeader from "../components/back-header";
+import { PageWrapper } from "../components/page-wrapper";
 import { useUser } from "../hooks/use-user";
+import { ILocation } from "../types/activities/location.dto";
+import { ApplicationLocations } from "../types/common/applications-locations.dto";
+import {
+  mapExternalApiOptions,
+  mapFormattedToValue,
+  mapLocationValue,
+} from "../utils/map-location-value.util";
+import { mapPlaceValue } from "./create-activity-screen/utils/map-place-value.util";
+import OffliButton from "../components/offli-button";
 
 interface IEditProfile {
   name: string;
-  about_me: string;
+  about_me?: string;
   location?: ILocation | null;
   birthdate: Date | null;
   instagram: string;
@@ -47,23 +48,25 @@ interface IEditProfile {
 const schema: () => yup.SchemaOf<IEditProfile> = () =>
   yup.object({
     name: yup.string().defined().required("Please enter your name"),
-    about_me: yup.string().defined().required("Please enter your aboutMe"),
+    about_me: yup.string().notRequired(),
     location: yup
-      .object()
-      .shape({
-        name: yup.string().notRequired(),
-        coordinates: yup.object().shape({
-          lat: yup.number().notRequired(),
-          lon: yup.number().notRequired(),
-        }),
+      .object({
+        name: yup.string().defined().required(),
+        coordinates: yup
+          .object({
+            lat: yup.number().defined().required(),
+            lon: yup.number().defined().required(),
+          })
+          .defined()
+          .required(),
       })
       .nullable(true),
-    birthdate: yup.date().nullable().required("Please enter your birthDate"),
+    birthdate: yup.date().nullable().required("Please enter your birth date"),
     placeQuery: yup.string().notRequired(),
     instagram: yup
       .string()
       .defined()
-      .required("Please enter your instagramUsername"),
+      .required("Please enter your instagram username"),
   });
 
 const EditProfileScreen: React.FC = () => {
@@ -72,24 +75,12 @@ const EditProfileScreen: React.FC = () => {
   const queryClient = useQueryClient();
   const { enqueueSnackbar } = useSnackbar();
 
-  // const data = queryClient.getQueryData<{ data: IPersonExtended }>([
-  //   "user-info",
-  //   userInfo?.username,
-  // ]);
-
-  const { mutate: sendUpdateProfile } = useMutation(
+  const { mutate: sendUpdateProfile, isLoading: isSubmitting } = useMutation(
     ["update-profile-info"],
     (values: IEditProfile) =>
       //TODO handle location through autocomplete
       updateProfileInfo(userInfo?.id, {
         ...values,
-        // location: {
-        //   name: values?.location,
-        //   coordinates: {
-        //     lat: 1,
-        //     lon: 1,
-        //   },
-        // },
       }),
     {
       onSuccess: (data, variables) => {
@@ -126,6 +117,7 @@ const EditProfileScreen: React.FC = () => {
         about_me: "",
         // location: "",
         birthdate: null,
+        location: null,
         instagram: "",
       },
       resolver: yupResolver(schema()),
@@ -146,26 +138,19 @@ const EditProfileScreen: React.FC = () => {
     // alebo setValue ak bude resetu kurovat
 
     reset({
-      name: data?.name,
-      // aboutMe: data?.data?.name, // TODO: doplnit udaje na BE a pripojit FE
+      name: data?.name ?? "",
       about_me: data?.about_me ?? "",
-      // location: data?.location ?? "",
-      // fix this mby later
       birthdate: (data?.birthdate as Date) ?? null,
-      // birthDate: '',
-      location: data?.location,
-      instagram: "staryjanotvojtatko",
+      location: data?.location ?? null,
+      instagram: data?.instagram,
     });
   }, [data]);
 
-  // console.log(formState?.errors)
-
   const handleFormSubmit = React.useCallback((values: IEditProfile) => {
-    //OnSuccess
-    // queryClient.invalidateQueries(['user-info'])
-    // navigate(ApplicationLocations.PROFILE)
     sendUpdateProfile(values);
   }, []);
+
+  const location = watch("location");
 
   return (
     <>
@@ -195,7 +180,6 @@ const EditProfileScreen: React.FC = () => {
               width: "70px",
               borderRadius: "50%",
               border: `3px solid ${theme.palette.primary.main}`, //nejde pica
-              // border: '2px solid black',
             }}
           />
           <FormGroup sx={{ ml: 2, mt: 1 }}>
@@ -212,216 +196,145 @@ const EditProfileScreen: React.FC = () => {
             onSubmit={handleSubmit(handleFormSubmit, (data, e) =>
               console.log(data, e)
             )}
+            data-testid="edit-profile-form"
           >
-            <Grid
-              container
-              rowSpacing={1.5}
-              sx={{
-                width: "100%",
-                mt: 1,
-                fontSize: 5,
-                alignItems: "center",
-                px: 2,
-              }}
-            >
-              <Grid item xs={5}>
-                <Typography variant="h5">Name</Typography>
-              </Grid>
-              <Grid item xs={7}>
-                {/* <Typography variant="h6">{data?.data?.name}</Typography> */}
+            <Box sx={{ mx: 2 }}>
+              <Controller
+                name="name"
+                control={control}
+                render={({ field, fieldState: { error } }) => (
+                  <TextField
+                    {...field}
+                    error={!!error}
+                    helperText={error?.message}
+                    sx={{ width: "100%", my: 1.5 }}
+                    data-testid="name-input"
+                    label="Name"
+                  />
+                )}
+              />
+
+              <Controller
+                name="about_me"
+                control={control}
+                render={({ field, fieldState: { error } }) => (
+                  <TextField
+                    {...field}
+                    multiline
+                    rows={3}
+                    label="Additional description"
+                    placeholder="Type more info about the activity"
+                    sx={{
+                      width: "100%",
+                      "& .MuiOutlinedInput-root": {
+                        height: "unset",
+                      },
+                      my: 1.5,
+                    }}
+                    helperText={`${field?.value?.length ?? 0}/200`}
+                    inputProps={{ maxLength: 200 }}
+                    data-testid="about-me-input"
+                  />
+                )}
+              />
+
+              <Controller
+                name="location"
+                control={control}
+                render={({ field, fieldState: { error } }) => (
+                  // We have completely different approach handling location here and in place-form
+                  // TODO we should map options to our ILocation object as it is here
+                  <Autocomplete
+                    {...field}
+                    options={mapExternalApiOptions(placeQuery?.data?.results)}
+                    value={field?.value}
+                    // isOptionEqualToValue={(option, value) =>
+                    //   option?.formatted === (value?.formatted ?? value?.name)
+                    // }
+                    sx={{
+                      width: "100%",
+                      display: "flex",
+                      justifyContentw: "center",
+                      my: 1.5,
+                    }}
+                    loading={placeQuery?.isLoading}
+                    onChange={(e, locationObject) => {
+                      console.log(e, locationObject);
+                      field.onChange({
+                        name: locationObject?.name ?? "",
+                        coordinates: locationObject?.coordinates,
+                      });
+                    }}
+                    inputValue={field?.value?.name}
+                    getOptionLabel={(option) => String(option?.name)}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Location"
+                        onChange={(e) => setValue("placeQuery", e.target.value)}
+                        error={!!error}
+                        helperText={!!error && "Location is required"}
+                      />
+                    )}
+                    data-testid="activity-place-input"
+                  />
+                )}
+              />
+
+              {/* TODO outsource this on the Contexes and Adapters level in the App */}
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <Controller
-                  name="name"
+                  name="birthdate"
                   control={control}
-                  render={({ field, fieldState: { error } }) => (
-                    <TextField
-                      {...field}
-                      variant="standard"
-                      error={!!error}
-                      helperText={error?.message}
-                      //disabled={methodSelectionDisabled}
-                      sx={{ width: "100%" }}
-                    />
-                  )}
-                />
-              </Grid>
-              <Grid item xs={5} sx={{ mt: 1 }}>
-                <Typography variant="h5">About me</Typography>
-              </Grid>
-              <Grid item xs={7} sx={{ mt: 1 }}>
-                <Controller
-                  name="about_me"
-                  control={control}
-                  render={({ field, fieldState: { error } }) => (
-                    <TextField
-                      {...field}
-                      multiline
-                      maxRows={4}
-                      variant="standard"
-                      error={!!error}
-                      helperText={error?.message}
-                      //disabled={methodSelectionDisabled}
-                      sx={{ width: "100%" }}
-                    />
-                  )}
-                />
-              </Grid>
-              <Grid item xs={5} sx={{ mt: 1 }}>
-                <Typography variant="h5">Location</Typography>
-              </Grid>
-              <Grid item xs={7} sx={{ mt: 1 }}>
-                {/* <Controller
-                  name="location"
-                  control={control}
-                  render={({ field, fieldState: { error } }) => (
-                    <TextField
-                      {...field}
-                      variant="standard"
-                      error={!!error}
-                      helperText={error?.message}
-                      //disabled={methodSelectionDisabled}
-                      sx={{ width: "100%" }}
-                    />
-                  )}
-                /> */}
-                <Controller
-                  name="location"
-                  control={control}
-                  render={({ field, fieldState: { error } }) => (
-                    <Autocomplete
-                      options={placeQuery?.data?.results ?? []}
-                      // value={field?.value?.name as ILocation}
-                      //TODO display default location value
-                      sx={{
-                        width: "100%",
-                        display: "flex",
-                        justifyContent: "center",
-                        mb: 2,
-                      }}
-                      loading={placeQuery?.isLoading}
-                      // isOptionEqualToValue={(option, value) => option.id === value.id}
-                      onChange={(e, locationObject) =>
-                        field.onChange({
-                          name: locationObject?.formatted,
-                          coordinates: {
-                            lat: locationObject?.lat,
-                            lon: locationObject?.lon,
-                          },
-                        })
-                      }
-                      getOptionLabel={(option) => String(option?.formatted)}
+                  render={({
+                    field: { onChange, value },
+                    fieldState: { error },
+                  }) => (
+                    <DatePicker
+                      openTo="year"
+                      inputFormat="DD/MM/YYYY"
+                      value={value}
+                      disableFuture
+                      // closeOnSelect
+                      onChange={onChange}
+                      maxDate={new Date()}
+                      data-testid="birthdate-date-picker"
                       renderInput={(params) => (
                         <TextField
-                          // value="ahoj"
                           {...params}
-                          // InputProps={{
-                          //   value: field?.value?.name,
-                          //   ...params.InputProps,
-                          // }}
-                          // value={field?.value?.name}
-
-                          variant="standard"
-                          label="Search place"
-                          onChange={(e) =>
-                            setValue("placeQuery", e.target.value)
-                          }
+                          sx={{ width: "100%", my: 1.5 }}
+                          error={!!error}
+                          helperText={error?.message}
+                          label="Birthdate"
                         />
                       )}
                     />
                   )}
                 />
-              </Grid>
-              <Grid item xs={5}>
-                <Typography variant="h5">Birthdate</Typography>
-              </Grid>
-              <Grid item xs={7}>
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                  <Controller
-                    name="birthdate"
-                    control={control}
-                    render={({
-                      field: { onChange, value },
-                      fieldState: { error },
-                    }) => (
-                      <DatePicker
-                        openTo="year"
-                        inputFormat="DD/MM/YYYY"
-                        value={value}
-                        disableFuture
-                        // closeOnSelect
-                        onChange={onChange}
-                        renderInput={(params) => (
-                          <TextField
-                            variant="standard"
-                            {...params}
-                            sx={{ width: "100%" }}
-                            error={!!error}
-                            helperText={error?.message}
-                          />
-                        )}
-                      />
-                    )}
+              </LocalizationProvider>
+              <Controller
+                name="instagram"
+                control={control}
+                render={({ field, fieldState: { error } }) => (
+                  <TextField
+                    {...field}
+                    error={!!error}
+                    helperText={error?.message}
+                    sx={{ width: "100%", my: 1.5 }}
+                    data-testid="instagram-username-input"
                   />
-                </LocalizationProvider>
-                {/* <Controller
-                  name="birthDate"
-                  control={control}
-                  render={({ field, fieldState: { error } }) => (
-                    <TextField
-                      autoFocus
-                      {...field}
-                      variant="standard"
-                      error={!!error}
-                      helperText={error?.message}
-                      //disabled={methodSelectionDisabled}
-                      sx={{ width: '100%' }}
-                    />
-                  )}
-                /> */}
-              </Grid>
-              <Grid item xs={5} sx={{ mt: 1 }}>
-                <Typography variant="h5">Instagram Username</Typography>
-              </Grid>
-              <Grid item xs={7} sx={{ mt: 1 }}>
-                <Controller
-                  name="instagram"
-                  control={control}
-                  render={({ field, fieldState: { error } }) => (
-                    <TextField
-                      {...field}
-                      variant="standard"
-                      error={!!error}
-                      helperText={error?.message}
-                      sx={{ width: "100%" }}
-                    />
-                  )}
-                />
-              </Grid>
-            </Grid>
-            <ActionButton type="submit" text="Save" sx={{ mt: 5 }} />
+                )}
+              />
+            </Box>
+            <OffliButton
+              type="submit"
+              sx={{ mt: 3, mb: 2, width: "50%" }}
+              isLoading={isSubmitting}
+              data-testid="submit-btn"
+            >
+              Save
+            </OffliButton>
           </form>
-          {/* <Button
-          style={{
-            width: '60%',
-            borderRadius: '15px',
-            backgroundColor: '#E4E3FF',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            padding: '2%',
-            marginTop: '12%',
-          }}
-          onClick={saveChanges}
-        >
-          <Typography
-            variant="subtitle1"
-            sx={{
-              color: 'primary.main',
-              fontWeight: 'bold',
-            }}
-          >
-            Save
-          </Typography>
-        </Button> */}
         </Box>
       </PageWrapper>
     </>

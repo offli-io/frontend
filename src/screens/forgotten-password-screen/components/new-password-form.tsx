@@ -138,6 +138,7 @@ const NewPasswordForm: React.FC<INewPasswordFormProps> = ({
             error={!!error}
             helperText={error?.message}
             sx={{ width: "100%", mb: 2 }}
+            data-testid="new-password-input"
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">
@@ -161,6 +162,7 @@ const NewPasswordForm: React.FC<INewPasswordFormProps> = ({
             error={!!error}
             helperText={error?.message}
             sx={{ width: "100%", mb: 2 }}
+            data-testid="repeat-password-input"
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">
@@ -178,6 +180,7 @@ const NewPasswordForm: React.FC<INewPasswordFormProps> = ({
         type="submit"
         sx={{ width: "60%", alignSelf: "end" }}
         isLoading={isLoading}
+        data-testid="reset-password-btn"
       >
         Reset password
       </OffliButton>

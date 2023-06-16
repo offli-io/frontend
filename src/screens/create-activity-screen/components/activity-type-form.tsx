@@ -1,34 +1,17 @@
-import {
-  Box,
-  CircularProgress,
-  IconButton,
-  TextField,
-  Typography,
-} from "@mui/material";
+import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
+import { Box, CircularProgress, IconButton, Typography } from "@mui/material";
+import { useQuery } from "@tanstack/react-query";
 import React from "react";
-import { Controller, UseFormReturn } from "react-hook-form";
+import { UseFormReturn } from "react-hook-form";
+import { getPredefinedTags } from "../../../api/activities/requests";
 import LabeledTile from "../../../components/labeled-tile";
 import OffliButton from "../../../components/offli-button";
-import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
-import { getPredefinedTags } from "../../../api/activities/requests";
-import { useQuery } from "@tanstack/react-query";
 
 interface IActivityTypeFormProps {
   onNextClicked: () => void;
   onBackClicked: () => void;
   methods: UseFormReturn;
 }
-
-const activityTypes = [
-  "Sports and drinks",
-  "Relax",
-  "Cinema",
-  "Food",
-  "Music",
-  "Nature",
-  "Adrenaline",
-  "Charitable",
-];
 
 export const ActivityTypeForm: React.FC<IActivityTypeFormProps> = ({
   onNextClicked,
@@ -112,27 +95,23 @@ export const ActivityTypeForm: React.FC<IActivityTypeFormProps> = ({
             />
           ))
         )}
-        {/* <LabeledTile title="Sports and drinks" onClick={handleTileClick} />
-        <LabeledTile title="Relax" sx={{ ml: 3 }} onClick={handleTileClick} /> */}
       </Box>
 
       <Box
         sx={{ width: "100%", display: "flex", justifyContent: "space-between" }}
       >
-        <IconButton onClick={onBackClicked} color="primary">
+        <IconButton
+          onClick={onBackClicked}
+          color="primary"
+          data-testid="back-btn"
+        >
           <ArrowBackIosNewIcon />
         </IconButton>
-        {/* <OffliButton
-          onClick={onBackClicked}
-          sx={{ width: '40%' }}
-          variant="text"
-        >
-          Back
-        </OffliButton> */}
+
         <OffliButton
           onClick={onNextClicked}
           sx={{ width: "40%" }}
-          //disabled={!formState.isValid}
+          data-testid="next-btn"
         >
           Next
         </OffliButton>

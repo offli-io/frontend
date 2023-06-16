@@ -1,31 +1,23 @@
-import {
-  Box,
-  Button,
-  IconButton,
-  TextField,
-  Typography,
-  useTheme,
-} from "@mui/material";
-import React, { BaseSyntheticEvent } from "react";
-import { Controller, UseFormReturn } from "react-hook-form";
-import OffliButton from "../../../components/offli-button";
-import activityPhotoImg from "../../../assets/img/activity-photo.svg";
+import AddAPhotoIcon from "@mui/icons-material/AddAPhoto";
+import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
+import { Box, IconButton, Typography, useTheme } from "@mui/material";
+import { grey } from "@mui/material/colors";
+import { useSnackbar } from "notistack";
 import Upload from "rc-upload";
 import { RcFile } from "rc-upload/lib/interface";
-import FileUploadIcon from "@mui/icons-material/FileUpload";
-import { grey } from "@mui/material/colors";
-import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
-import AddAPhotoIcon from "@mui/icons-material/AddAPhoto";
-import LabeledDivider from "../../../components/labeled-divider";
+import React, { BaseSyntheticEvent } from "react";
+import { Controller, UseFormReturn } from "react-hook-form";
+import { DEFAULT_DEV_URL } from "../../../assets/config";
+import activityPhotoImg from "../../../assets/img/activity-photo.svg";
 import { DrawerContext } from "../../../assets/theme/drawer-provider";
-import OffliGallery from "./offli-gallery";
-import { useSnackbar } from "notistack";
+import LabeledDivider from "../../../components/labeled-divider";
+import OffliButton from "../../../components/offli-button";
 import {
   ALLOWED_PHOTO_EXTENSIONS,
   MAX_FILE_SIZE,
 } from "../../../utils/common-constants";
-import { DEFAULT_DEV_URL } from "../../../assets/config";
 import { getAuthToken } from "../../../utils/token.util";
+import OffliGallery from "./offli-gallery";
 
 interface IActivityPhotoFormProps {
   methods: UseFormReturn;
@@ -42,7 +34,6 @@ export const ActivityPhotoForm: React.FC<IActivityPhotoFormProps> = ({
     console.log(e.target.files);
   };
   const token = getAuthToken();
-
   const { enqueueSnackbar } = useSnackbar();
   const theme = useTheme();
   const tags = watch("tags");
@@ -157,12 +148,14 @@ export const ActivityPhotoForm: React.FC<IActivityPhotoFormProps> = ({
                 boxShadow: "2px 3px 3px #ccc",
               }}
               alt="Selected img"
+              data-testid="activity-selected-img"
             />
             <OffliButton
               variant="text"
               sx={{ mt: 2, fontSize: 16 }}
               size="small"
               onClick={() => setValue("title_picture_url", undefined)}
+              data-testid="choose-different-img-btn"
             >
               Choose different picture
             </OffliButton>
@@ -206,13 +199,7 @@ export const ActivityPhotoForm: React.FC<IActivityPhotoFormProps> = ({
                           `1px dashed ${theme.palette.primary.main}`,
                       }}
                     >
-                      {/* <Box></Box> */}
-                      <IconButton
-                        //component="label"
-                        //variant="text"
-                        // sx={{ textTransform: 'none', pb: 0.5 }}
-                        size="large"
-                      >
+                      <IconButton size="large" data-testid="upload-img-btn">
                         <AddAPhotoIcon color="primary" />
                       </IconButton>
                       <Typography sx={{ fontSize: 14 }}>
@@ -249,6 +236,7 @@ export const ActivityPhotoForm: React.FC<IActivityPhotoFormProps> = ({
                   borderRadius: 5,
                   border: (theme) => `1px dashed ${theme.palette.primary.main}`,
                 }}
+                data-testid="open-gallery-btn"
               >
                 <img
                   src={activityPhotoImg}
@@ -268,20 +256,19 @@ export const ActivityPhotoForm: React.FC<IActivityPhotoFormProps> = ({
           justifyContent: "space-between",
         }}
       >
-        <IconButton onClick={onBackClicked} color="primary">
+        <IconButton
+          onClick={onBackClicked}
+          color="primary"
+          data-testid="back-btn"
+        >
           <ArrowBackIosNewIcon />
         </IconButton>
-        {/* <OffliButton
-          onClick={onBackClicked}
-          sx={{ width: '40%' }}
-          variant="text"
-        >
-          Back
-        </OffliButton> */}
+
         <OffliButton
           sx={{ width: "60%" }}
           disabled={!formState.isValid || !selectedPhoto}
           type="submit"
+          data-testid="create-btn"
         >
           Create
         </OffliButton>

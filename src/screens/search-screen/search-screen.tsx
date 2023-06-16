@@ -89,6 +89,7 @@ const SearchScreen = () => {
           <IconButton
             onClick={toggleFilters}
             color={!!filters ? "primary" : undefined}
+            data-testid="toggle-filters-btn"
           >
             <FilterListIcon />
           </IconButton>
@@ -127,6 +128,7 @@ const SearchScreen = () => {
               ),
             }}
             onChange={(e) => setCurrentSearch(e.target.value)}
+            data-testid="search-activities-input"
           />
 
           <OffliButton
@@ -134,6 +136,7 @@ const SearchScreen = () => {
             size="small"
             sx={{ fontSize: 14, ml: 0.5 }}
             onClick={() => navigate(ApplicationLocations.ACTIVITIES)}
+            data-testid="cancel-search-btn"
           >
             Cancel
           </OffliButton>

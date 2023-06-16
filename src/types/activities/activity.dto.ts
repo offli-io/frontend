@@ -24,6 +24,7 @@ export interface IPersonExtended {
   about_me?: string | null;
   birthdate?: Date | null;
   location?: ILocation | null;
+  instagram?: string;
 }
 
 export interface IActivityLocation {
@@ -46,7 +47,7 @@ export interface IActivity {
   creator?: IPerson;
   datetime_from?: Date | string;
   datetime_until?: Date | string;
-  location?: ILocation;
+  location?: ILocation | null;
   tags?: string[];
   participants_thumb?: IPerson[];
   //TODO mozne nejake enumy na "public/private"

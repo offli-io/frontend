@@ -94,6 +94,7 @@ export const MobileCarousel: React.FC<IMobileCarouselProps> = ({
               justifyContent: "center",
             }}
             onClick={() => onItemSelect?.(item)}
+            data-testid="mobile-carousel-item"
           >
             <Typography sx={{ color: item?.selected ? "white" : "black" }}>
               {item.title}
@@ -111,19 +112,14 @@ export const MobileCarousel: React.FC<IMobileCarouselProps> = ({
           </Card>
         ))}
         <Card
-          // raised={item?.selected}
-          // key={item.title}
           sx={{
             minWidth: 100,
             height: 50,
-            //   bgcolor: (theme) =>
-            //     item?.selected ? theme.palette.primary.main : "transparent",
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
             justifyContent: "center",
           }}
-          //   onClick={() => onItemSelect?.(item?.id)}
         >
           <MobileDatePicker
             onChange={handleDatePick}
@@ -140,6 +136,7 @@ export const MobileCarousel: React.FC<IMobileCarouselProps> = ({
                 <CalendarMonthIcon color="primary" />
               </IconButton>
             )}
+            data-testid="mobile-date-picker"
           />
         </Card>
       </Box>

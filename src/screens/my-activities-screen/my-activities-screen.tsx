@@ -258,6 +258,7 @@ const ActivitiesScreen = () => {
           }}
           startIcon={<PlaceIcon sx={{ fontSize: "1.4rem" }} />}
           onClick={handleLocationSelect}
+          data-test-id="current-location-btn"
         >
           {location?.name ?? "No location found"}
         </OffliButton>
@@ -296,6 +297,7 @@ const ActivitiesScreen = () => {
                 fontSize: 14,
               },
             }}
+            data-testid="activities-search-input"
             // onChange={(e) => setValue("placeQuery", e.target.value)}
           />
         )}
@@ -321,7 +323,11 @@ const ActivitiesScreen = () => {
                 }}
               >
                 <Typography variant="h5">Your upcoming this week</Typography>
-                <OffliButton variant="text" sx={{ fontSize: 16 }}>
+                <OffliButton
+                  variant="text"
+                  sx={{ fontSize: 16 }}
+                  data-testid="see-all-activities-btn"
+                >
                   See all
                 </OffliButton>
               </Box>
@@ -370,6 +376,7 @@ const ActivitiesScreen = () => {
                       },
                     })
                   }
+                  data-testid="see-map-btn"
                 >
                   See map
                 </OffliButton>

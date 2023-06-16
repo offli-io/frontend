@@ -1,8 +1,6 @@
-import * as React from "react";
-import TextField from "@mui/material/TextField";
-import Autocomplete, { AutocompleteProps } from "@mui/material/Autocomplete";
-import { Box, Chip, CircularProgress, SxProps } from "@mui/material";
+import { Box, Chip, CircularProgress } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
+import * as React from "react";
 import { getPredefinedPhotos } from "../../../api/activities/requests";
 
 interface ITimePickerProps {
@@ -52,6 +50,7 @@ const OffliGallery: React.FC<ITimePickerProps> = ({
               }}
               onClick={() => picture && onPictureSelect(picture)}
               key={picture}
+              data-testid="offli-gallery-img-btn"
             >
               <img src={picture} style={{ maxWidth: "100%" }} alt="gallery" />
             </Box>

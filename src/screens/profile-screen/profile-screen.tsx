@@ -104,6 +104,7 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
               // border: '2px solid primary.main', //nejde pica
               border: "2px solid black",
             }}
+            data-testid="profile-img"
           />
           {type !== ProfileEntryTypeEnum.REQUEST && (
             <IconButton
@@ -122,6 +123,7 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
                   },
                 })
               }
+              data-testid="buddies-btn"
             >
               <PeopleAltIcon sx={{ fontSize: 18, padding: 0 }} />
               <Typography
@@ -164,7 +166,6 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
           <ActionButton
             text="Edit profile"
             sx={{ mt: 2 }}
-            // href={ApplicationLocations.EDIT_PROFILE}
             onClick={() => navigate(ApplicationLocations.EDIT_PROFILE)}
           />
         )}
@@ -192,14 +193,7 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
             isLoading={isLoading}
           />
         </Box>
-        {/* {type === "request" && (
-          <OffliButton
-            sx={{ fontSize: 16, px: 2.5, mt: 2 }}
-            onClick={sendAcceptBuddyRequest}
-          >
-            Accept buddie request
-          </OffliButton>
-        )} */}
+
         <Box
           sx={{
             width: "90%",

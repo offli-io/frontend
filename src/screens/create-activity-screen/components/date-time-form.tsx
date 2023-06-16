@@ -228,6 +228,7 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
                 setValue("datetime_until", watch("datetime_from"));
                 setSameEndDate((previousValue) => !previousValue);
               }}
+              data-testid="same-end-date-checkbox"
             />
           }
           label="End date is same as start date"
@@ -263,8 +264,7 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
             }}
             options={generateOptionsOrder("from")}
             value={timeValues?.from}
-            //defaultValue={"18:00"}
-            //IDK if we should use from disabled options
+            data-testid="activitiy-from-time-picker"
           />
           <Typography sx={{ fontWeight: 200, fontSize: "2rem" }}>-</Typography>
 
@@ -279,7 +279,7 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
               handleTimeChange("datetime_until", value);
             }}
             options={generateOptionsOrder("until")}
-            //defaultValue={defaultValueTo}
+            data-testid="activitiy-to-time-picker"
           />
         </Box>
       </Box>
@@ -287,20 +287,19 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
       <Box
         sx={{ width: "100%", display: "flex", justifyContent: "space-between" }}
       >
-        <IconButton onClick={onBackClicked} color="primary">
+        <IconButton
+          onClick={onBackClicked}
+          color="primary"
+          data-testid="back-btn"
+        >
           <ArrowBackIosNewIcon />
         </IconButton>
-        {/* <OffliButton
-          onClick={onBackClicked}
-          sx={{ width: '40%' }}
-          variant="text"
-        >
-          Back
-        </OffliButton> */}
+
         <OffliButton
           onClick={onNextClicked}
           sx={{ width: "40%" }}
           disabled={!isFormValid || !isTimeSelected}
+          data-testid="next-btn"
         >
           Next
         </OffliButton>

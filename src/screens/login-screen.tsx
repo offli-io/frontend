@@ -212,6 +212,7 @@ const LoginScreen: React.FC = () => {
               <TextField
                 {...field}
                 //label="Username"
+                data-testid="username-input"
                 label="Email or username"
                 // variant="filled"
                 error={!!error}
@@ -231,6 +232,7 @@ const LoginScreen: React.FC = () => {
               <TextField
                 {...field}
                 //label="Username"
+                data-testid="password-input"
                 label="Password"
                 type={showPassword ? "text" : "password"}
                 // variant="filled"
@@ -263,11 +265,13 @@ const LoginScreen: React.FC = () => {
             disabled={isLoading}
             sx={{ fontSize: 14, mt: 1, mb: 7 }}
             onClick={() => navigate(ApplicationLocations.FORGOTTEN_PASSWORD)}
+            data-testid="forgot-password-btn"
           >
             Forgot your password?
           </OffliButton>
         </Box>
         <OffliButton
+          data-testid="submit-btn"
           sx={{ width: "80%", mb: 5 }}
           type="submit"
           isLoading={isLoading}

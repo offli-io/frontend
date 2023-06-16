@@ -31,6 +31,7 @@ const ActivitySearchCard: React.FC<IMyActivityCardProps> = ({
   activity,
   onPress,
   sx,
+  ...rest
 }) => {
   //TODO maybe in later use also need some refactoring
   const { action, handlers } = useLongPress();
@@ -53,6 +54,8 @@ const ActivitySearchCard: React.FC<IMyActivityCardProps> = ({
         ...sx,
       }}
       onClick={() => onPress(activity)}
+      data-testid="activity-search-card"
+      {...rest}
     >
       <Box sx={{ p: 0.5, mr: 1 }}>
         <img

@@ -51,16 +51,13 @@ export const NameForm: React.FC<INameFormProps> = ({
           control={control}
           render={({ field, fieldState: { error } }) => (
             <TextField
-              // TODO idk if this is really needed and not anti-pattern
-              //autoFocus
               {...field}
               error={!!error}
               sx={{ width: "100%" }}
               label="Name"
               placeholder="Type activity name"
               helperText={!!error && "Activity name is required"}
-              //label="Username"
-              // disabled={methodSelectionDisabled}
+              data-testid="activity-name-input"
             />
           )}
         />
@@ -78,6 +75,7 @@ export const NameForm: React.FC<INameFormProps> = ({
           sx={{ width: "40%" }}
           //TODO some bug isValid returning false when name is
           disabled={!isFormValid}
+          data-testid="next-btn"
         >
           Next
         </OffliButton>

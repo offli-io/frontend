@@ -21,6 +21,7 @@ const MyActivityCard: React.FC<IMyActivityCardProps> = ({
   activity,
   onPress,
   sx,
+  ...rest
 }) => {
   //TODO maybe in later use also need some refactoring
   const { action, handlers } = useLongPress();
@@ -49,6 +50,8 @@ const MyActivityCard: React.FC<IMyActivityCardProps> = ({
         ...sx,
       }}
       onClick={() => onPress(activity)}
+      data-testid="my-activitiy-card"
+      {...rest}
     >
       <Box
         sx={{

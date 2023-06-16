@@ -1,33 +1,22 @@
-import * as React from "react";
-import {
-  Navigate,
-  useLocation,
-  useNavigate,
-  useParams,
-} from "react-router-dom";
+import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import TravelExploreIcon from "@mui/icons-material/TravelExplore";
+import { Box, Paper, SxProps } from "@mui/material";
 import BottomNavigation from "@mui/material/BottomNavigation";
 import BottomNavigationAction from "@mui/material/BottomNavigationAction";
-import { Box, Paper, SxProps } from "@mui/material";
-import { Link } from "react-router-dom";
-import OfflineBoltIcon from "@mui/icons-material/OfflineBolt";
-import OfflineBoltOutlinedIcon from "@mui/icons-material/OfflineBoltOutlined";
-import TravelExploreIcon from "@mui/icons-material/TravelExplore";
-import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
-import AddCircleIcon from "@mui/icons-material/AddCircleOutline";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
-import { ApplicationLocations } from "../types/common/applications-locations.dto";
-import OffliButton from "./offli-button";
-import { acceptBuddyInvitation } from "../api/users/requests";
-import { AuthenticationContext } from "../assets/theme/authentication-provider";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useSnackbar } from "notistack";
-import { HEADER_HEIGHT } from "../utils/common-constants";
+import * as React from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   acceptActivityInvitation,
   sendBuddyRequest,
 } from "../api/activities/requests";
-import { useNotifications } from "../hooks/use-notifications";
+import { acceptBuddyInvitation } from "../api/users/requests";
+import { AuthenticationContext } from "../assets/theme/authentication-provider";
+import { ApplicationLocations } from "../types/common/applications-locations.dto";
+import { HEADER_HEIGHT } from "../utils/common-constants";
+import OffliButton from "./offli-button";
 
 interface IBottomNavigatorProps {
   sx?: SxProps;
@@ -192,12 +181,14 @@ const BottomNavigator: React.FC<IBottomNavigatorProps> = ({ sx }) => {
                 sx={{ width: "30%", fontSize: 16 }}
                 variant="outlined"
                 onClick={declineInvitation}
+                data-testid="reject-invitation-btn"
               >
                 Reject
               </OffliButton>
               <OffliButton
                 sx={{ width: "50%", fontSize: 16 }}
                 onClick={acceptInvitation}
+                data-testid="accept-invitation-btn"
               >
                 Accept
               </OffliButton>
@@ -211,7 +202,10 @@ const BottomNavigator: React.FC<IBottomNavigatorProps> = ({ sx }) => {
                 justifyContent: "space-evenly",
               }}
             >
-              <OffliButton onClick={submitBuddyRequest}>
+              <OffliButton
+                onClick={submitBuddyRequest}
+                data-testid="send-buddy-request-btn"
+              >
                 Send buddy request
               </OffliButton>
             </Box>
@@ -231,6 +225,7 @@ const BottomNavigator: React.FC<IBottomNavigatorProps> = ({ sx }) => {
               fontSize: "12px !important",
             },
           }}
+          data-testid="bottom-navigator"
         >
           <BottomNavigationAction
             label="Explore"
@@ -238,6 +233,7 @@ const BottomNavigator: React.FC<IBottomNavigatorProps> = ({ sx }) => {
             component={Link}
             value={ApplicationLocations.ACTIVITIES}
             to={ApplicationLocations.ACTIVITIES}
+            data-testid="navigator-activities"
           />
           <BottomNavigationAction
             label="Create"
@@ -245,6 +241,7 @@ const BottomNavigator: React.FC<IBottomNavigatorProps> = ({ sx }) => {
             component={Link}
             value={ApplicationLocations.CREATE}
             to={ApplicationLocations.CREATE}
+            data-testid="navigator-create"
           />
           <BottomNavigationAction
             label="Profile"
@@ -252,6 +249,7 @@ const BottomNavigator: React.FC<IBottomNavigatorProps> = ({ sx }) => {
             component={Link}
             value={ApplicationLocations.PROFILE}
             to={ApplicationLocations.PROFILE}
+            data-testid="navigator-profile"
           />
         </BottomNavigation>
       )}
