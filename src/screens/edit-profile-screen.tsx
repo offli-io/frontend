@@ -90,7 +90,8 @@ const EditProfileScreen: React.FC = () => {
         //   variables?.type,
         //   variables?.properties?.user?.id ?? variables?.properties?.activity?.id
         // )
-        queryClient.invalidateQueries(["users"]);
+
+        queryClient.invalidateQueries(["user"]);
         enqueueSnackbar("Your personal information was successfully updated", {
           variant: "success",
         });
@@ -322,6 +323,7 @@ const EditProfileScreen: React.FC = () => {
                     helperText={error?.message}
                     sx={{ width: "100%", my: 1.5 }}
                     data-testid="instagram-username-input"
+                    label="Instagram"
                   />
                 )}
               />
