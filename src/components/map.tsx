@@ -18,6 +18,8 @@ import {
 import { LatLng, LatLngTuple } from "leaflet";
 import { IActivity } from "../types/activities/activity.dto";
 import PlaceIcon from "@mui/icons-material/Place";
+import { DrawerContext } from "../assets/theme/drawer-provider";
+import MapDetail from "../screens/map-screen/components/map-detail";
 
 // function LocationMarker() {
 //   const [position, setPosition] = React.useState<LatLng | null>(null);
@@ -99,6 +101,15 @@ const Map: React.FC<ILabeledTileProps> = ({
     currentLocation &&
     ([currentLocation.latitude, currentLocation.longitude] as LatLngTuple);
 
+  const { toggleDrawer } = React.useContext(DrawerContext);
+
+  const handleMarkerClick = (activity: IActivity) => {
+    toggleDrawer({
+      open: true,
+      content: <MapDetail />,
+    });
+  };
+
   return (
     <Box sx={{ width: "100%", height: "100%", position: "fixed" }}>
       <MapContainer
@@ -113,22 +124,27 @@ const Map: React.FC<ILabeledTileProps> = ({
           url="https://{s}.tile.jawg.io/jawg-sunny/{z}/{x}/{y}{r}.png?access-token=dY2cc1f9EUuag5geOpQB30R31VnRRhl7O401y78cM0NWSvzLf7irQSUGfA4m7Va5"
         />
         {activities?.map(
-          ({ title = "Activity", location = null, id } = {}) =>
-            location?.coordinates && (
+          // ({ title = "Activity", location = null, id } = {}) =>
+          (activity) =>
+            activity.location?.coordinates && (
               <Marker
-                key={`activity_${id}`}
-                position={[
-                  location?.coordinates?.lat ?? position[0],
-                  location?.coordinates?.lon ?? position[1],
-                ]}
+                key={`activity_${activity.id}`}
+                // position={[
+                //   activity.location?.coordinates?.lat ?? position[0],
+                //   activity.location?.coordinates?.lon ?? position[1],
+                // ]}
+                position={latLonTuple ?? position}
+                eventHandlers={{
+                  click: () => handleMarkerClick(activity),
+                }}
               >
                 <Popup>{title}</Popup>
               </Marker>
             )
         )}
-        <Marker position={latLonTuple ?? position}>
+        {/* <Marker position={latLonTuple ?? position}>
           <Popup>You are here</Popup>
-        </Marker>
+        </Marker> */}
         <RecenterAutomatically
           lat={
             isSingleActivity ? latLonTupleSingle[0] : currentLocation?.latitude

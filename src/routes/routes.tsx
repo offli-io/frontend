@@ -25,7 +25,7 @@ import ActivityDetailsScreen from "../screens/activity-details-screen/activity-d
 import NotificationsScreen from "../screens/notifications-screen/notifications-screen";
 
 import { ActivityMembersScreen } from "../screens/activity-members-screen/activity-members-screen";
-import MapScreen from "../screens/map-screen";
+import MapScreen from "../screens/map-screen/map-screen";
 import { IActivityListRestDto } from "../types/activities/activity-list-rest.dto";
 import { IActivityRestDto } from "../types/activities/activity-rest.dto";
 import AuthenticationMethodScreen from "../screens/authentication-method-screen";
