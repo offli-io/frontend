@@ -17,7 +17,7 @@ import SearchScreen from "../screens/search-screen/search-screen";
 import SelectProfilePictureScreen from "../screens/select-picture-screen";
 import SettingsScreen from "../screens/settings-screen/settings-screen";
 import TestScreen from "../screens/test-screen";
-import VerificationScreen from "../screens/verification-screen";
+import VerificationScreen from "../screens/verification-screen/verification-screen";
 import WelcomeScreen from "../screens/welcome-screen";
 import { ApplicationLocations } from "../types/common/applications-locations.dto";
 import { getAuthToken } from "../utils/token.util";
@@ -35,7 +35,6 @@ import ChooseLocationScreen from "../screens/choose-location-screen";
 import AddBuddyScreen from "../screens/add-buddies-screen/add-buddies-screen";
 import AddBuddiesScreen from "../screens/add-buddies-screen/add-buddies-screen";
 import { ProfileEntryTypeEnum } from "../screens/profile-screen/types/profile-entry-type";
-import EditActivityScreen from "../screens/edit-activity-screen/edit-activity-screen";
 
 const Routes = () => {
   return (
