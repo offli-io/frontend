@@ -1,4 +1,4 @@
-import { Box, Chip, CircularProgress } from "@mui/material";
+import { Box, Chip, CircularProgress, Typography } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import * as React from "react";
 import { getPredefinedPhotos } from "../../../api/activities/requests";
@@ -12,8 +12,9 @@ const OffliGallery: React.FC<ITimePickerProps> = ({
   tags,
   onPictureSelect,
 }) => {
-  const { data, isLoading } = useQuery(["predefined-photos", tags], () =>
-    getPredefinedPhotos(tags)
+  const { data: { data: { pictures = [] } = {} } = {}, isLoading } = useQuery(
+    ["predefined-photos", tags],
+    () => getPredefinedPhotos(tags)
   );
   return (
     <Box>
@@ -31,7 +32,7 @@ const OffliGallery: React.FC<ITimePickerProps> = ({
         >
           <CircularProgress color="primary" />
         </Box>
-      ) : (
+      ) : pictures?.length > 0 ? (
         <Box
           sx={{
             display: "grid",
@@ -41,7 +42,7 @@ const OffliGallery: React.FC<ITimePickerProps> = ({
             my: 4,
           }}
         >
-          {data?.data?.pictures?.map(({ picture }) => (
+          {pictures.map(({ picture }) => (
             <Box
               sx={{
                 maxWidth: "100%",
@@ -55,6 +56,17 @@ const OffliGallery: React.FC<ITimePickerProps> = ({
               <img src={picture} style={{ maxWidth: "100%" }} alt="gallery" />
             </Box>
           ))}
+        </Box>
+      ) : (
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            my: 2,
+          }}
+        >
+          <Typography>There are no available pre-defined pictures</Typography>
         </Box>
       )}
     </Box>
