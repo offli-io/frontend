@@ -1,5 +1,5 @@
 import { AuthenticationContext } from "../assets/theme/authentication-provider";
-import BottomNavigator from "../components/bottom-navigator";
+import BottomNavigator from "../components/bottom-navigator/bottom-navigator";
 import React from "react";
 import Routes from "../routes/routes";
 import OffliHeader from "../components/offli-header";

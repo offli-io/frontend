@@ -11,12 +11,13 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   acceptActivityInvitation,
   sendBuddyRequest,
-} from "../api/activities/requests";
-import { acceptBuddyInvitation } from "../api/users/requests";
-import { AuthenticationContext } from "../assets/theme/authentication-provider";
-import { ApplicationLocations } from "../types/common/applications-locations.dto";
-import { HEADER_HEIGHT } from "../utils/common-constants";
-import OffliButton from "./offli-button";
+} from "../../api/activities/requests";
+import { acceptBuddyInvitation } from "../../api/users/requests";
+import { AuthenticationContext } from "../../assets/theme/authentication-provider";
+import { ApplicationLocations } from "../../types/common/applications-locations.dto";
+import { HEADER_HEIGHT } from "../../utils/common-constants";
+import OffliButton from "../offli-button";
+import { mapLocationToNavigatorValue } from "./utils/map-location-to-navigator-value.util";
 
 interface IBottomNavigatorProps {
   sx?: SxProps;
@@ -214,7 +215,7 @@ const BottomNavigator: React.FC<IBottomNavigatorProps> = ({ sx }) => {
       ) : (
         <BottomNavigation
           showLabels
-          value={value}
+          value={mapLocationToNavigatorValue(value)}
           onChange={(event, newValue) => {
             setValue(newValue);
           }}
