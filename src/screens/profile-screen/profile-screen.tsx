@@ -32,12 +32,12 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
   const { userInfo, setUserInfo, setInstagramCode } = React.useContext(
     AuthenticationContext
   );
+  const { palette } = useTheme();
   const location = useLocation();
   const navigate = useNavigate();
   const from = (location?.state as ICustomizedLocationStateDto)?.from;
   const { id } = useParams();
   const { enqueueSnackbar } = useSnackbar();
-  const theme = useTheme();
   const queryParameters = new URLSearchParams(window.location.search);
   const instagramCode = queryParameters.get("code");
   console.log(instagramCode);
@@ -88,7 +88,10 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
             flexDirection: "column",
           }}
         >
-          <Typography variant="h4" sx={{ mb: 0.5 }}>
+          <Typography
+            variant="h4"
+            sx={{ mb: 0.5, color: palette?.text?.primary }}
+          >
             {data?.username}
           </Typography>
           <img
@@ -102,7 +105,7 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
               borderRadius: "50%",
               // backgroundColor: theme?.palette?.inactive as string,
               // border: '2px solid primary.main', //nejde pica
-              border: "2px solid black",
+              border: `2px solid black`,
             }}
             data-testid="profile-img"
           />
@@ -145,18 +148,27 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
               ml: -1.5,
               display: "flex",
               alignItems: "center",
+              my: 1,
               // justifyContent: 'flex-start',
             }}
           >
-            <IconButton sx={{ paddingRight: 0, color: "black" }}>
+            <IconButton
+              sx={{ paddingRight: 0, color: palette?.text?.primary, mr: 1 }}
+            >
               <LocationOnIcon sx={{ fontSize: 20 }} />
             </IconButton>
-            <Typography variant="subtitle2">Bratislava, Slovakia</Typography>
+            <Typography sx={{ color: palette?.text.primary }}>
+              Bratislava, Slovakia
+            </Typography>
           </Box>
           <Typography
-            variant="subtitle2"
+            // variant="subtitle2"
             // align="center"
-            sx={{ lineHeight: 1.2, width: "80%" }}
+            sx={{
+              lineHeight: 1.2,
+              width: "80%",
+              color: palette?.text?.primary,
+            }}
           >
             {data?.about_me ??
               "I am student at FIIT STU. I like adventures and meditation. There is always time for a beer. Cheers."}
@@ -174,7 +186,11 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
             width: "90%",
           }}
         >
-          <Typography align="left" variant="h5" sx={{ mt: 3 }}>
+          <Typography
+            align="left"
+            variant="h5"
+            sx={{ mt: 3, color: palette?.text?.primary }}
+          >
             This month
           </Typography>
           <ProfileStatistics
@@ -204,7 +220,11 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
           }}
         >
           <Box sx={{ mt: 3 }}>
-            <Typography align="left" variant="h5">
+            <Typography
+              align="left"
+              variant="h5"
+              sx={{ color: palette?.text?.primary }}
+            >
               Photos
             </Typography>
           </Box>

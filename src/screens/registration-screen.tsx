@@ -172,6 +172,7 @@ export const RegistrationScreen: React.FC = () => {
             sx={{
               my: 5,
               display: "flex",
+              color: ({ palette }) => palette?.text?.primary,
             }}
           >
             Your offline life.

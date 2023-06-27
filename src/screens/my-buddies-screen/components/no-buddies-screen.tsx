@@ -23,7 +23,11 @@ const NoBuddiesScreen: React.FC = () => {
         alt="authentication method"
         style={{ height: "30%" }}
       />
-      <Typography sx={{ my: 2 }}>You have no buddies yet</Typography>
+      <Typography
+        sx={{ my: 2, color: ({ palette }) => palette?.text?.primary }}
+      >
+        You have no buddies yet
+      </Typography>
       <Box
         sx={{
           display: "flex",

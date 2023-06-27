@@ -43,9 +43,17 @@ const MenuItem: React.FC<ILabeledDividerProps> = ({
     >
       <Box sx={{ display: "flex", alignItems: "center" }}>
         {icon}
-        <Typography sx={{ ml: 2, color: "black" }}>{label}</Typography>
+        <Typography
+          sx={{ ml: 2, color: ({ palette }) => palette?.text?.primary }}
+        >
+          {label}
+        </Typography>
       </Box>
-      {headerRight ?? <NavigateNextIcon />}
+      {headerRight ?? (
+        <NavigateNextIcon
+          sx={{ color: ({ palette }) => palette?.text?.primary }}
+        />
+      )}
     </Box>
   );
 };
