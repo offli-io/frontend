@@ -21,12 +21,13 @@ const TimePicker: React.FC<ITimePickerProps> = ({
   getOptionDisabled,
   defaultValue,
   value,
+  ...rest
 }) => {
   return (
     <Autocomplete
       defaultValue={defaultValue}
       disableClearable
-      id="disabled-options-demo"
+      id="autocomplete-time-picker"
       options={options}
       sx={sx}
       getOptionDisabled={getOptionDisabled}
@@ -35,6 +36,8 @@ const TimePicker: React.FC<ITimePickerProps> = ({
       }
       renderInput={(params) => <TextField {...params} label={label} />}
       value={value}
+      data-testid="activity-time-picker"
+      {...rest}
     />
   );
 };

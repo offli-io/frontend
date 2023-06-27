@@ -24,11 +24,13 @@ import {
 import { useDebounce } from "use-debounce";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import { mapPlaceValue } from "../utils/map-place-value.util";
+import { FormValues } from "../create-activity-screen";
+import { mapLocationValue } from "../../../utils/map-location-value.util";
 
 interface IPlaceFormProps {
   onNextClicked: () => void;
   onBackClicked: () => void;
-  methods: UseFormReturn;
+  methods: UseFormReturn<FormValues>;
 }
 
 const top100Films = [
@@ -62,19 +64,20 @@ export const PlaceForm: React.FC<IPlaceFormProps> = ({
   methods,
 }) => {
   const { control, setValue, formState, watch } = methods;
+  const { palette } = useTheme();
 
   // filter backend results based on query string
   const [queryString] = useDebounce(watch("placeQuery"), 1000);
 
   const placeQuery = useQuery(
     ["locations", queryString],
-    (props) => getLocationFromQueryFetch(queryString),
+    (props) => getLocationFromQueryFetch(String(queryString)),
     {
       enabled: !!queryString,
     }
   );
 
-  const place = watch("place");
+  const inputValue = watch("placeQuery");
 
   return (
     <>
@@ -92,7 +95,9 @@ export const PlaceForm: React.FC<IPlaceFormProps> = ({
           <Typography variant="h2" sx={{ color: "primary.main" }}>
             Set
           </Typography>
-          <Typography variant="h2">location</Typography>
+          <Typography variant="h2" sx={{ color: palette.text.primary }}>
+            location
+          </Typography>
         </Box>
         <Box sx={{ width: "50%", display: "flex", justifyContent: "center" }}>
           <img src={activityLocation} style={{ height: 80 }} alt="place-form" />
@@ -114,7 +119,7 @@ export const PlaceForm: React.FC<IPlaceFormProps> = ({
             <Autocomplete
               {...field}
               options={placeQuery?.data?.results ?? []}
-              value={mapPlaceValue(field?.value)}
+              value={mapLocationValue(field?.value)}
               isOptionEqualToValue={(option, value) =>
                 option?.formatted === (value?.formatted ?? value?.name)
               }
@@ -135,6 +140,7 @@ export const PlaceForm: React.FC<IPlaceFormProps> = ({
                 })
               }
               getOptionLabel={(option) => String(option?.formatted)}
+              // inputValue={inputValue ?? ""}
               renderInput={(params) => (
                 <TextField
                   {...params}
@@ -142,6 +148,7 @@ export const PlaceForm: React.FC<IPlaceFormProps> = ({
                   onChange={(e) => setValue("placeQuery", e.target.value)}
                 />
               )}
+              data-testid="activity-place-input"
             />
           )}
         />
@@ -153,13 +160,18 @@ export const PlaceForm: React.FC<IPlaceFormProps> = ({
           justifyContent: "space-between",
         }}
       >
-        <IconButton onClick={onBackClicked} color="primary">
+        <IconButton
+          onClick={onBackClicked}
+          color="primary"
+          data-testid="back-btn"
+        >
           <ArrowBackIosNewIcon />
         </IconButton>
         <OffliButton
           onClick={onNextClicked}
           sx={{ width: "40%" }}
           disabled={!formState.isValid}
+          data-testid="next-btn"
         >
           Next
         </OffliButton>

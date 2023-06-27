@@ -31,6 +31,7 @@ const ActivitySearchCard: React.FC<IMyActivityCardProps> = ({
   activity,
   onPress,
   sx,
+  ...rest
 }) => {
   //TODO maybe in later use also need some refactoring
   const { action, handlers } = useLongPress();
@@ -40,24 +41,27 @@ const ActivitySearchCard: React.FC<IMyActivityCardProps> = ({
   });
 
   return (
-    <Card
+    <Box
       sx={{
         minWidth: 300,
         display: "grid",
         gridTemplateColumns: "2fr 5fr",
-        boxSizing: "border-box",
-        boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)",
+        alignItems: "center",
+        // boxSizing: "border-box",
+        // boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)",
         borderRadius: 1,
         mb: 2,
         ...sx,
       }}
       onClick={() => onPress(activity)}
+      data-testid="activity-search-card"
+      {...rest}
     >
-      <Box sx={{ p: 0.5 }}>
+      <Box sx={{ p: 0.5, mr: 1 }}>
         <img
           src={activity?.title_picture_url ?? activityPlaceholderImage}
           alt="activity_image"
-          style={{ height: 70 }}
+          style={{ height: 80, borderRadius: 10 }}
         />
       </Box>
       <Box
@@ -69,15 +73,15 @@ const ActivitySearchCard: React.FC<IMyActivityCardProps> = ({
         }}
       >
         <Box sx={{ display: "flex" }}>
-          <Box sx={{ width: "80%" }}>
+          <Box>
             <Typography variant="h6" sx={{ fontWeight: "bold" }}>
               {activity?.title}
             </Typography>
-            <Typography sx={{ fontSize: 12 }}>
+            <Typography sx={{ fontSize: 12, lineHeight: 1.2 }}>
               {activity?.location?.name}
             </Typography>
 
-            <Typography sx={{ fontSize: 12 }}>
+            <Typography sx={{ fontSize: 12, lineHeight: 1.2 }}>
               {format(
                 (activity?.datetime_from
                   ? new Date(activity?.datetime_from)
@@ -86,14 +90,11 @@ const ActivitySearchCard: React.FC<IMyActivityCardProps> = ({
               )}
             </Typography>
           </Box>
-          <IconButton onClick={() => console.log("join activity")}>
-            <AddCircleOutlineIcon color="primary" />
-          </IconButton>
         </Box>
         <Box sx={{ display: "flex", gap: 2, mt: 1 }}>
           <Box sx={{ display: "flex", alignItems: "center" }}>
             <NearMeIcon sx={{ fontSize: 18, mr: 0.5 }} />
-            <Typography sx={{ fontSize: 14 }}>
+            <Typography sx={{ fontSize: 12 }}>
               {`${calculateDistance(activity?.location?.coordinates, {
                 lon: 25.2,
                 lat: -75.25,
@@ -102,19 +103,24 @@ const ActivitySearchCard: React.FC<IMyActivityCardProps> = ({
           </Box>
           <Box sx={{ display: "flex", alignItems: "center" }}>
             <PeopleAltIcon sx={{ fontSize: 18, mr: 0.5 }} />
-            <Typography sx={{ fontSize: 14 }}>
+            <Typography sx={{ fontSize: 12 }}>
               {`${activity?.participants?.length ?? 0}/${activity?.limit}`}
             </Typography>
           </Box>
           <Box sx={{ display: "flex", alignItems: "center" }}>
             <MonetizationOnIcon sx={{ fontSize: 18, mr: 0.5 }} />
-            <Typography sx={{ fontSize: 14 }}>
+            <Typography sx={{ fontSize: 12 }}>
               {`${activity?.price}`}
             </Typography>
           </Box>
         </Box>
       </Box>
-    </Card>
+      {/* <Box>
+        <IconButton onClick={() => console.log("join activity")}>
+          <AddCircleOutlineIcon color="primary" />
+        </IconButton>
+      </Box> */}
+    </Box>
   );
 };
 

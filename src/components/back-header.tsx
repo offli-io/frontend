@@ -103,7 +103,12 @@ const BackHeader: React.FC<IBackHeaderProps> = ({
             // mr: 6,
           }}
         >
-          <Typography variant="h4">{title}</Typography>
+          <Typography
+            variant="h4"
+            sx={{ color: ({ palette }) => palette?.text.primary }}
+          >
+            {title}
+          </Typography>
         </Box>
         {headerRightContent}
       </Box>

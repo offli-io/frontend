@@ -30,10 +30,10 @@ import DotsMobileStepper from "../../components/stepper";
 import { useUsers } from "../../hooks/use-users";
 import { useUser } from "../../hooks/use-user";
 
-interface FormValues {
+export interface FormValues {
   title?: string;
   description?: string;
-  location?: ILocation;
+  location?: ILocation | null;
   tags?: string[];
   //todo alter keys
   datetime_from?: Date;
@@ -75,6 +75,7 @@ const schema: (activeStep: number) => yup.SchemaOf<FormValues> = (
                 lon: yup.number().defined().required(),
               }),
             })
+            .nullable(true)
             .notRequired(),
 
     tags:
@@ -116,7 +117,7 @@ const schema: (activeStep: number) => yup.SchemaOf<FormValues> = (
   });
 
 const CreateActivityScreen = () => {
-  const theme = useTheme();
+  const { palette } = useTheme();
   const queryClient = useQueryClient();
   const { enqueueSnackbar } = useSnackbar();
   const [activeStep, setActiveStep] = React.useState<number>(0);
@@ -134,6 +135,7 @@ const CreateActivityScreen = () => {
       visibility: ActivityVisibilityEnum.private,
       price: ActivityPriceOptionsEnum.free,
       limit: 10,
+      location: null,
     },
     resolver: yupResolver(schema(activeStep)),
     mode: "onChange",
@@ -297,7 +299,13 @@ const CreateActivityScreen = () => {
       {activeStep <= 5 && (
         <DotsMobileStepper activeStep={activeStep} containerSx={{ p: 0 }} />
       )}
-      <PageWrapper sxOverrides={{ alignItems: "center", px: 3 }}>
+      <PageWrapper
+        sxOverrides={{
+          alignItems: "center",
+          px: 3,
+          bgcolor: palette.background.default,
+        }}
+      >
         <form
           style={{
             display: "flex",

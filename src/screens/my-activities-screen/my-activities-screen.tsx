@@ -6,6 +6,7 @@ import {
   InputAdornment,
   TextField,
   Typography,
+  useTheme,
 } from "@mui/material";
 import MyActivityCard from "../../components/my-activity-card";
 import { PageWrapper } from "../../components/page-wrapper";
@@ -54,6 +55,7 @@ const ActivitiesScreen = () => {
   const { enqueueSnackbar } = useSnackbar();
   const queryClient = useQueryClient();
   const [isSearchFocused, setIsSearchFocused] = React.useState(false);
+  const { palette } = useTheme();
 
   //TODO either call it like this or set user info once useUsers request in layout.tsx got Promise resolved
   const { data: { data: userData = {} } = {} } = useUser({
@@ -244,7 +246,10 @@ const ActivitiesScreen = () => {
           mb: 1,
         }}
       >
-        <Typography variant="h5" sx={{ fontSize: 24 }}>
+        <Typography
+          variant="h5"
+          sx={{ fontSize: 24, color: palette?.text?.primary }}
+        >
           Explore
         </Typography>
         <OffliButton
@@ -258,6 +263,7 @@ const ActivitiesScreen = () => {
           }}
           startIcon={<PlaceIcon sx={{ fontSize: "1.4rem" }} />}
           onClick={handleLocationSelect}
+          data-test-id="current-location-btn"
         >
           {location?.name ?? "No location found"}
         </OffliButton>
@@ -296,6 +302,7 @@ const ActivitiesScreen = () => {
                 fontSize: 14,
               },
             }}
+            data-testid="activities-search-input"
             // onChange={(e) => setValue("placeQuery", e.target.value)}
           />
         )}
@@ -307,7 +314,12 @@ const ActivitiesScreen = () => {
       ) : (
         <>
           {!anyMyActivities && !anyNearYouActivities && (
-            <Box>There are no activities</Box>
+            <Typography
+              variant="h4"
+              sx={{ my: 6, color: palette?.text?.primary }}
+            >
+              There are no activities
+            </Typography>
           )}
           {anyMyActivities && (
             <>
@@ -321,7 +333,11 @@ const ActivitiesScreen = () => {
                 }}
               >
                 <Typography variant="h5">Your upcoming this week</Typography>
-                <OffliButton variant="text" sx={{ fontSize: 16 }}>
+                <OffliButton
+                  variant="text"
+                  sx={{ fontSize: 16 }}
+                  data-testid="see-all-activities-btn"
+                >
                   See all
                 </OffliButton>
               </Box>
@@ -370,6 +386,7 @@ const ActivitiesScreen = () => {
                       },
                     })
                   }
+                  data-testid="see-map-btn"
                 >
                   See map
                 </OffliButton>

@@ -51,7 +51,9 @@ const VerificationCodeForm: React.FC<IVerificationCodeFormProps> = ({
     },
     {
       onSuccess: (data, code) => {
-        enqueueSnackbar("Verification code was re-sent to your email");
+        enqueueSnackbar("Verification code was re-sent to your email", {
+          variant: "success",
+        });
       },
       onError: (error) => {
         enqueueSnackbar("Failed to re-send verification code to given email", {
@@ -87,6 +89,7 @@ const VerificationCodeForm: React.FC<IVerificationCodeFormProps> = ({
           // call mutation if code is correct
           sendResetPassword(value)
         }
+        dataCy="verification-code-input"
       />
       <Box sx={{ display: "flex", mr: -15, alignItems: "center" }}>
         <Typography variant="subtitle2">No email?</Typography>
@@ -95,6 +98,7 @@ const VerificationCodeForm: React.FC<IVerificationCodeFormProps> = ({
           isLoading={isLoading}
           onClick={() => sendResendCode()}
           sx={{ fontSize: 18, fontWeight: 600 }}
+          data-testid="resend-code-btn"
         >
           Resend code
         </OffliButton>

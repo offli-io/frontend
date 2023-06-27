@@ -7,6 +7,7 @@ import {
   MenuItem,
   TextField,
   Typography,
+  useTheme,
 } from "@mui/material";
 import React from "react";
 import { Controller, UseFormReturn } from "react-hook-form";
@@ -82,15 +83,12 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
   methods,
 }) => {
   const { control, formState, watch, setValue } = methods;
+  const { palette } = useTheme();
   const currentStartDate = watch("datetime_from");
   const currentEndDate = watch("datetime_until");
   const [date, setDate] = React.useState({
     fromOptions: generateDateSlots(),
     untilOptions: generateDateSlots(),
-  });
-  const [time, setTime] = React.useState({
-    fromOptions: generateOptionsOrder("from"),
-    untilOptions: generateOptionsOrder("until"),
   });
 
   const [timeValues, setTimeValues] = React.useState<ITimeValues>({
@@ -212,9 +210,15 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
           <Typography variant="h2" sx={{ mr: 1, color: "primary.main" }}>
             Select
           </Typography>
-          <Typography variant="h2">date and time</Typography>
+          <Typography variant="h2" sx={{ color: palette?.text?.primary }}>
+            date and time
+          </Typography>
         </Box>
-        <Typography sx={{ mt: 1, fontWeight: "bold" }}>Start date</Typography>
+        <Typography
+          sx={{ mt: 1, fontWeight: "bold", color: palette?.text?.primary }}
+        >
+          Start date
+        </Typography>
         <MobileCarousel
           items={date.fromOptions}
           onItemSelect={(item) => handleItemSelect("from", item?.id)}
@@ -228,9 +232,11 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
                 setValue("datetime_until", watch("datetime_from"));
                 setSameEndDate((previousValue) => !previousValue);
               }}
+              data-testid="same-end-date-checkbox"
             />
           }
           label="End date is same as start date"
+          sx={{ color: palette?.text?.primary }}
         />
 
         {!sameEndDate && (
@@ -241,7 +247,11 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
           />
         )}
 
-        <Typography sx={{ my: 2, fontWeight: "bold" }}>Start time</Typography>
+        <Typography
+          sx={{ my: 2, fontWeight: "bold", color: palette?.text?.primary }}
+        >
+          Start time
+        </Typography>
 
         <Box
           sx={{
@@ -263,10 +273,17 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
             }}
             options={generateOptionsOrder("from")}
             value={timeValues?.from}
-            //defaultValue={"18:00"}
-            //IDK if we should use from disabled options
+            data-testid="activitiy-from-time-picker"
           />
-          <Typography sx={{ fontWeight: 200, fontSize: "2rem" }}>-</Typography>
+          <Typography
+            sx={{
+              fontWeight: 200,
+              fontSize: "2rem",
+              color: palette?.text?.primary,
+            }}
+          >
+            -
+          </Typography>
 
           <TimePicker
             label="To"
@@ -279,7 +296,7 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
               handleTimeChange("datetime_until", value);
             }}
             options={generateOptionsOrder("until")}
-            //defaultValue={defaultValueTo}
+            data-testid="activitiy-to-time-picker"
           />
         </Box>
       </Box>
@@ -287,20 +304,19 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
       <Box
         sx={{ width: "100%", display: "flex", justifyContent: "space-between" }}
       >
-        <IconButton onClick={onBackClicked} color="primary">
+        <IconButton
+          onClick={onBackClicked}
+          color="primary"
+          data-testid="back-btn"
+        >
           <ArrowBackIosNewIcon />
         </IconButton>
-        {/* <OffliButton
-          onClick={onBackClicked}
-          sx={{ width: '40%' }}
-          variant="text"
-        >
-          Back
-        </OffliButton> */}
+
         <OffliButton
           onClick={onNextClicked}
           sx={{ width: "40%" }}
           disabled={!isFormValid || !isTimeSelected}
+          data-testid="next-btn"
         >
           Next
         </OffliButton>

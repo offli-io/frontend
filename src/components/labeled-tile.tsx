@@ -21,6 +21,7 @@ const LabeledTile: React.FC<ILabeledTileProps> = ({
   sx,
   selected,
   onClick,
+  ...rest
 }) => {
   const handleCardClick = React.useCallback(() => {
     onClick(title);
@@ -43,6 +44,8 @@ const LabeledTile: React.FC<ILabeledTileProps> = ({
       <Button
         sx={{ bgcolor: "transparent", width: "100%", height: "100%" }}
         onClick={handleCardClick}
+        data-testid="labeled-tile-btn"
+        {...rest}
       >
         <img
           alt="Labeled tile"

@@ -1,22 +1,14 @@
-import React, { useState } from "react";
-import { Box, IconButton, Badge, AppBar, SxProps } from "@mui/material";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
-import SettingsIcon from "@mui/icons-material/Settings";
-import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
-import PeopleAltOutlinedIcon from "@mui/icons-material/PeopleAltOutlined";
-import NotificationsNoneOutlinedIcon from "@mui/icons-material/NotificationsNoneOutlined";
 import NotificationsIcon from "@mui/icons-material/Notifications";
-import MenuIcon from "@mui/icons-material/Menu";
-
-import { ApplicationLocations } from "../types/common/applications-locations.dto";
+import NotificationsNoneOutlinedIcon from "@mui/icons-material/NotificationsNoneOutlined";
+import SettingsIcon from "@mui/icons-material/Settings";
+import { Badge, Box, IconButton, SxProps, useTheme } from "@mui/material";
+import React from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import offliLogo from "../assets/img/logoPurple.png";
-import { HEADER_HEIGHT } from "../utils/common-constants";
-import { useQuery } from "@tanstack/react-query";
-import { getNotifications } from "../api/notifications/requests";
 import { AuthenticationContext } from "../assets/theme/authentication-provider";
 import { useNotifications } from "../hooks/use-notifications";
-import DotsMobileStepper from "./stepper";
+import { ApplicationLocations } from "../types/common/applications-locations.dto";
+import { HEADER_HEIGHT } from "../utils/common-constants";
 
 interface IProps {
   sx?: SxProps;
@@ -25,9 +17,9 @@ interface IProps {
 const OffliHeader: React.FC<IProps> = ({ sx }) => {
   const location = useLocation();
   const navigate = useNavigate();
-  const [notificationNumber] = useState(5);
   const headerRef = React.useRef<HTMLElement | null>(null);
   const { userInfo } = React.useContext(AuthenticationContext);
+  const { palette } = useTheme();
 
   const { data: notificationsData } = useNotifications(userInfo?.id);
 
@@ -43,24 +35,22 @@ const OffliHeader: React.FC<IProps> = ({ sx }) => {
 
   return (
     <Box
-      // color="inherit"
       ref={headerRef}
       sx={{
         height: HEADER_HEIGHT,
         boxShadow: "1px 2px 2px #ccc",
         position: "sticky",
         top: 0,
-        backgroundColor: "white",
         boxSizing: "border-box",
         pt: 2,
         zIndex: 500,
+        bgcolor: palette.background.default,
         ...sx,
       }}
     >
       <Box
         sx={{
           width: "100%",
-          // borderBottom: '1px solid lightgrey',
         }}
       >
         <Box
@@ -72,28 +62,17 @@ const OffliHeader: React.FC<IProps> = ({ sx }) => {
             justifyContent: "space-between",
           }}
         >
-          <img src={offliLogo} alt="Offli logo" style={{ height: "40px" }} />
-          {/* <DotsMobileStepper /> */}
+          <img
+            src={offliLogo}
+            alt="Offli logo"
+            style={{ height: "40px" }}
+            data-testid="offli-logo"
+          />
           <Box
             sx={{
               display: "flex",
             }}
           >
-            {/* <IconButton component={Link} to={ApplicationLocations.SETTINGS}>
-              {location === ApplicationLocations.SETTINGS ? (
-                <SettingsIcon sx={iconStyle} />
-              ) : (
-                <SettingsOutlinedIcon sx={iconStyle} />
-              )}
-            </IconButton>
-            <IconButton component={Link} to={ApplicationLocations.BUDDIES}>
-              {location === ApplicationLocations.BUDDIES ? (
-                <PeopleAltIcon sx={iconStyle} />
-              ) : (
-                <PeopleAltOutlinedIcon sx={iconStyle} />
-              )}
-            </IconButton> */}
-
             <IconButton
               onClick={() => {
                 navigate(ApplicationLocations.NOTIFICATIONS, {
@@ -102,6 +81,7 @@ const OffliHeader: React.FC<IProps> = ({ sx }) => {
                   },
                 });
               }}
+              data-testid="notifications-btn"
             >
               <Badge
                 badgeContent={notificationsData?.data?.unseen}
@@ -126,8 +106,7 @@ const OffliHeader: React.FC<IProps> = ({ sx }) => {
                   },
                 });
               }}
-              // component={Link}
-              // to={ApplicationLocations.SETTINGS}
+              data-testid="settings-btn"
             >
               <SettingsIcon
                 sx={{ iconStyle, ml: 0.5 }}
