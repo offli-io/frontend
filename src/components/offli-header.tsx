@@ -1,7 +1,7 @@
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import NotificationsNoneOutlinedIcon from "@mui/icons-material/NotificationsNoneOutlined";
 import SettingsIcon from "@mui/icons-material/Settings";
-import { Badge, Box, IconButton, SxProps } from "@mui/material";
+import { Badge, Box, IconButton, SxProps, useTheme } from "@mui/material";
 import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import offliLogo from "../assets/img/logoPurple.png";
@@ -19,6 +19,7 @@ const OffliHeader: React.FC<IProps> = ({ sx }) => {
   const navigate = useNavigate();
   const headerRef = React.useRef<HTMLElement | null>(null);
   const { userInfo } = React.useContext(AuthenticationContext);
+  const { palette } = useTheme();
 
   const { data: notificationsData } = useNotifications(userInfo?.id);
 
@@ -40,10 +41,10 @@ const OffliHeader: React.FC<IProps> = ({ sx }) => {
         boxShadow: "1px 2px 2px #ccc",
         position: "sticky",
         top: 0,
-        backgroundColor: "white",
         boxSizing: "border-box",
         pt: 2,
         zIndex: 500,
+        bgcolor: palette.background.default,
         ...sx,
       }}
     >

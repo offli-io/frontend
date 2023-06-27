@@ -4,7 +4,7 @@ import React from "react";
 import Routes from "../routes/routes";
 import OffliHeader from "../components/offli-header";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Box } from "@mui/material";
+import { Box, useTheme } from "@mui/material";
 import { ApplicationLocations } from "../types/common/applications-locations.dto";
 import BackHeader from "../components/back-header";
 import { useUsers } from "../hooks/use-users";
@@ -25,6 +25,7 @@ export const Layout: React.FC<ILayoutProps> = ({ children }) => {
   const { stateToken, userInfo } = React.useContext(AuthenticationContext);
   const location = useLocation();
   const navigate = useNavigate();
+  const { palette } = useTheme();
 
   const [displayHeader, setDisplayHeader] = React.useState(true);
   const [displayBottomNavigator, setDisplayBottomNavigator] =
@@ -105,6 +106,7 @@ export const Layout: React.FC<ILayoutProps> = ({ children }) => {
             width: "100%",
             height: "100%",
             overflow: "scroll",
+            bgcolor: palette.background.default,
           }}
         >
           <Routes />

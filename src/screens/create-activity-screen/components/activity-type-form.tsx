@@ -1,5 +1,11 @@
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
-import { Box, CircularProgress, IconButton, Typography } from "@mui/material";
+import {
+  Box,
+  CircularProgress,
+  IconButton,
+  Typography,
+  useTheme,
+} from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import React from "react";
 import { UseFormReturn } from "react-hook-form";
@@ -19,6 +25,7 @@ export const ActivityTypeForm: React.FC<IActivityTypeFormProps> = ({
   methods,
 }) => {
   const { control, setValue, watch } = methods;
+  const { palette } = useTheme();
 
   const tags: string[] = watch("tags") ?? [];
 
@@ -54,7 +61,9 @@ export const ActivityTypeForm: React.FC<IActivityTypeFormProps> = ({
           <Typography variant="h2" sx={{ mr: 1, color: "primary.main" }}>
             Choose
           </Typography>
-          <Typography variant="h2">category</Typography>
+          <Typography variant="h2" sx={{ color: palette.text.primary }}>
+            category
+          </Typography>
         </Box>
         <Typography variant="subtitle2">
           You can pick none, or more categories
@@ -80,7 +89,7 @@ export const ActivityTypeForm: React.FC<IActivityTypeFormProps> = ({
           >
             <CircularProgress color="primary" />
           </Box>
-        ) : (
+        ) : tiles?.length > 0 ? (
           tiles?.map(({ title, picture }, index) => (
             <LabeledTile
               key={index}
@@ -94,6 +103,14 @@ export const ActivityTypeForm: React.FC<IActivityTypeFormProps> = ({
               imageUrl={picture}
             />
           ))
+        ) : (
+          <Box sx={{ mt: 4, mb: 10 }}>
+            <Typography
+              sx={{ color: palette.text.primary, textAlign: "center" }}
+            >
+              Unfortunately there are no pre-defined categories to use
+            </Typography>
+          </Box>
         )}
       </Box>
 

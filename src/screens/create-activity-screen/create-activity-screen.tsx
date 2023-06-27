@@ -117,7 +117,7 @@ const schema: (activeStep: number) => yup.SchemaOf<FormValues> = (
   });
 
 const CreateActivityScreen = () => {
-  const theme = useTheme();
+  const { palette } = useTheme();
   const queryClient = useQueryClient();
   const { enqueueSnackbar } = useSnackbar();
   const [activeStep, setActiveStep] = React.useState<number>(0);
@@ -299,7 +299,13 @@ const CreateActivityScreen = () => {
       {activeStep <= 5 && (
         <DotsMobileStepper activeStep={activeStep} containerSx={{ p: 0 }} />
       )}
-      <PageWrapper sxOverrides={{ alignItems: "center", px: 3 }}>
+      <PageWrapper
+        sxOverrides={{
+          alignItems: "center",
+          px: 3,
+          bgcolor: palette.background.default,
+        }}
+      >
         <form
           style={{
             display: "flex",

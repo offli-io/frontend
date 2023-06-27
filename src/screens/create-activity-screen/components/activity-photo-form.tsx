@@ -35,7 +35,7 @@ export const ActivityPhotoForm: React.FC<IActivityPhotoFormProps> = ({
   };
   const token = getAuthToken();
   const { enqueueSnackbar } = useSnackbar();
-  const theme = useTheme();
+  const { palette } = useTheme();
   const tags = watch("tags");
 
   const selectedPhoto = watch("title_picture_url");
@@ -108,7 +108,9 @@ export const ActivityPhotoForm: React.FC<IActivityPhotoFormProps> = ({
             <Typography variant="h2" sx={{ color: "primary.main", mr: 1 }}>
               Add
             </Typography>
-            <Typography variant="h2">activity photo</Typography>
+            <Typography variant="h2" sx={{ color: palette?.text?.primary }}>
+              activity photo
+            </Typography>
           </Box>
           <Typography
             variant="subtitle2"
@@ -143,7 +145,7 @@ export const ActivityPhotoForm: React.FC<IActivityPhotoFormProps> = ({
               style={{
                 width: 250,
                 height: 200,
-                border: `1px solid ${theme.palette.primary.main}`,
+                border: `1px solid ${palette?.primary.main}`,
                 borderRadius: 5,
                 boxShadow: "2px 3px 3px #ccc",
               }}
@@ -193,7 +195,10 @@ export const ActivityPhotoForm: React.FC<IActivityPhotoFormProps> = ({
                         alignItems: "center",
                         justifyContent: "center",
                         position: "relative",
-                        bgcolor: grey[200],
+                        bgcolor:
+                          palette?.mode === "light"
+                            ? grey[200]
+                            : palette?.background?.default,
                         borderRadius: 5,
                         border: (theme) =>
                           `1px dashed ${theme.palette.primary.main}`,
@@ -202,7 +207,9 @@ export const ActivityPhotoForm: React.FC<IActivityPhotoFormProps> = ({
                       <IconButton size="large" data-testid="upload-img-btn">
                         <AddAPhotoIcon color="primary" />
                       </IconButton>
-                      <Typography sx={{ fontSize: 14 }}>
+                      <Typography
+                        sx={{ fontSize: 14, color: palette?.text?.primary }}
+                      >
                         Upload from your phone
                       </Typography>
                     </Box>
@@ -232,7 +239,11 @@ export const ActivityPhotoForm: React.FC<IActivityPhotoFormProps> = ({
                   alignItems: "center",
                   justifyContent: "center",
                   position: "relative",
-                  bgcolor: grey[200],
+                  // bgcolor: grey[200],
+                  bgcolor:
+                    palette?.mode === "light"
+                      ? grey[200]
+                      : palette?.background?.default,
                   borderRadius: 5,
                   border: (theme) => `1px dashed ${theme.palette.primary.main}`,
                 }}
@@ -243,7 +254,11 @@ export const ActivityPhotoForm: React.FC<IActivityPhotoFormProps> = ({
                   style={{ height: 50, marginBottom: 12 }}
                   alt="Activity img"
                 />
-                <Typography sx={{ fontSize: 14 }}>Select from Offli</Typography>
+                <Typography
+                  sx={{ fontSize: 14, color: palette?.text?.primary }}
+                >
+                  Select from Offli
+                </Typography>
               </Box>
             </Box>
           </>

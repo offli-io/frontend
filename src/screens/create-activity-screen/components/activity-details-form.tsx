@@ -7,6 +7,7 @@ import {
   Switch,
   TextField,
   Typography,
+  useTheme,
 } from "@mui/material";
 import React from "react";
 import { Controller, UseFormReturn } from "react-hook-form";
@@ -26,6 +27,7 @@ export const ActivityDetailsForm: React.FC<IPlaceFormProps> = ({
   methods,
 }) => {
   const { control, formState } = methods;
+  const { palette } = useTheme();
 
   return (
     <>
@@ -45,7 +47,9 @@ export const ActivityDetailsForm: React.FC<IPlaceFormProps> = ({
             width: "100%",
           }}
         >
-          <Typography variant="h2">Activity details</Typography>
+          <Typography variant="h2" sx={{ color: palette?.text?.primary }}>
+            Activity details
+          </Typography>
         </Box>
         <Controller
           name="visibility"
@@ -68,7 +72,9 @@ export const ActivityDetailsForm: React.FC<IPlaceFormProps> = ({
                   mb: 5,
                 }}
               >
-                <Typography sx={{ fontWeight: "bold" }}>
+                <Typography
+                  sx={{ fontWeight: "bold", color: palette?.text?.primary }}
+                >
                   Accessibility
                 </Typography>
                 <Box sx={{ display: "flex", alignItems: "center" }}>

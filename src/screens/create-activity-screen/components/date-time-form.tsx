@@ -7,6 +7,7 @@ import {
   MenuItem,
   TextField,
   Typography,
+  useTheme,
 } from "@mui/material";
 import React from "react";
 import { Controller, UseFormReturn } from "react-hook-form";
@@ -82,15 +83,12 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
   methods,
 }) => {
   const { control, formState, watch, setValue } = methods;
+  const { palette } = useTheme();
   const currentStartDate = watch("datetime_from");
   const currentEndDate = watch("datetime_until");
   const [date, setDate] = React.useState({
     fromOptions: generateDateSlots(),
     untilOptions: generateDateSlots(),
-  });
-  const [time, setTime] = React.useState({
-    fromOptions: generateOptionsOrder("from"),
-    untilOptions: generateOptionsOrder("until"),
   });
 
   const [timeValues, setTimeValues] = React.useState<ITimeValues>({
@@ -212,9 +210,15 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
           <Typography variant="h2" sx={{ mr: 1, color: "primary.main" }}>
             Select
           </Typography>
-          <Typography variant="h2">date and time</Typography>
+          <Typography variant="h2" sx={{ color: palette?.text?.primary }}>
+            date and time
+          </Typography>
         </Box>
-        <Typography sx={{ mt: 1, fontWeight: "bold" }}>Start date</Typography>
+        <Typography
+          sx={{ mt: 1, fontWeight: "bold", color: palette?.text?.primary }}
+        >
+          Start date
+        </Typography>
         <MobileCarousel
           items={date.fromOptions}
           onItemSelect={(item) => handleItemSelect("from", item?.id)}
@@ -232,6 +236,7 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
             />
           }
           label="End date is same as start date"
+          sx={{ color: palette?.text?.primary }}
         />
 
         {!sameEndDate && (
@@ -242,7 +247,11 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
           />
         )}
 
-        <Typography sx={{ my: 2, fontWeight: "bold" }}>Start time</Typography>
+        <Typography
+          sx={{ my: 2, fontWeight: "bold", color: palette?.text?.primary }}
+        >
+          Start time
+        </Typography>
 
         <Box
           sx={{
@@ -266,7 +275,15 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
             value={timeValues?.from}
             data-testid="activitiy-from-time-picker"
           />
-          <Typography sx={{ fontWeight: 200, fontSize: "2rem" }}>-</Typography>
+          <Typography
+            sx={{
+              fontWeight: 200,
+              fontSize: "2rem",
+              color: palette?.text?.primary,
+            }}
+          >
+            -
+          </Typography>
 
           <TimePicker
             label="To"

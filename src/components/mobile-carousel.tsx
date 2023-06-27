@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Card, Typography, Box, IconButton } from "@mui/material";
+import { Card, Typography, Box, IconButton, useTheme } from "@mui/material";
 import { MobileDatePicker } from "@mui/x-date-pickers";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import { format } from "date-fns";
@@ -29,6 +29,7 @@ export const MobileCarousel: React.FC<IMobileCarouselProps> = ({
   onSlotAdd,
   onDuplicateEntry,
 }) => {
+  const { palette } = useTheme();
   const handleDatePick = React.useCallback(
     (date: Date | null) => {
       if (!date) {
@@ -63,7 +64,10 @@ export const MobileCarousel: React.FC<IMobileCarouselProps> = ({
   return (
     <>
       {title && (
-        <Typography variant="h4" sx={{ my: 1.5 }}>
+        <Typography
+          variant="h4"
+          sx={{ my: 1.5, color: palette?.text?.primary }}
+        >
           {title}
         </Typography>
       )}
@@ -92,11 +96,18 @@ export const MobileCarousel: React.FC<IMobileCarouselProps> = ({
               flexDirection: "column",
               alignItems: "center",
               justifyContent: "center",
+              mr: 1,
             }}
             onClick={() => onItemSelect?.(item)}
             data-testid="mobile-carousel-item"
           >
-            <Typography sx={{ color: item?.selected ? "white" : "black" }}>
+            <Typography
+              sx={{
+                //TODO fix this,
+                color: item?.selected ? palette?.text?.primary : "black",
+                // color: item?.selected ? "white" : "black"
+              }}
+            >
               {item.title}
             </Typography>
             {item?.description && (

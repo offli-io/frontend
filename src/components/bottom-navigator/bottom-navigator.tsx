@@ -1,7 +1,7 @@
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import TravelExploreIcon from "@mui/icons-material/TravelExplore";
-import { Box, Paper, SxProps } from "@mui/material";
+import { Box, Paper, SxProps, useTheme } from "@mui/material";
 import BottomNavigation from "@mui/material/BottomNavigation";
 import BottomNavigationAction from "@mui/material/BottomNavigationAction";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -24,6 +24,7 @@ interface IBottomNavigatorProps {
 }
 
 const BottomNavigator: React.FC<IBottomNavigatorProps> = ({ sx }) => {
+  const { palette } = useTheme();
   const [value, setValue] = React.useState<ApplicationLocations>(
     ApplicationLocations.ACTIVITIES
   );
@@ -164,7 +165,11 @@ const BottomNavigator: React.FC<IBottomNavigatorProps> = ({ sx }) => {
           alignItems: "center",
           justifyContent: "center",
         }),
+        bgcolor: palette?.background?.default,
+
+        // boxShadow: 15,
       }}
+      //TODO either Box with boxShadow as sx or Paper with elevation 3 - need to compare
       // sx={sx}
       elevation={3}
     >
@@ -220,11 +225,12 @@ const BottomNavigator: React.FC<IBottomNavigatorProps> = ({ sx }) => {
             setValue(newValue);
           }}
           sx={{
-            width: "85%",
             margin: "auto",
             "& .Mui-selected": {
               fontSize: "12px !important",
             },
+            color: palette?.background?.default,
+            bgcolor: palette?.background?.default,
           }}
           data-testid="bottom-navigator"
         >

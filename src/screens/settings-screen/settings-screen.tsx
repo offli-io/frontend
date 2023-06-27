@@ -13,9 +13,9 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { ApplicationLocations } from "../../types/common/applications-locations.dto";
 import { ICustomizedLocationStateDto } from "../../types/common/customized-location-state.dto";
 import { useQueryClient } from "@tanstack/react-query";
+import { CustomizationContext } from "../../assets/theme/customization-provider";
 
 const SettingsScreen = () => {
-  const [darkMode, setDarkMode] = React.useState(false);
   const { setStateToken, setUserInfo } = React.useContext(
     AuthenticationContext
   );
@@ -24,6 +24,7 @@ const SettingsScreen = () => {
   const queryClient = useQueryClient();
   const state = location?.state as ICustomizedLocationStateDto;
   const { from } = state;
+  const { setMode, mode } = React.useContext(CustomizationContext);
 
   const handleLogout = React.useCallback(() => {
     //TODO double check if any security issues aren't here I am not sure about using tokens from 2 places
@@ -62,8 +63,8 @@ const SettingsScreen = () => {
           icon={<DarkModeIcon color="primary" />}
           headerRight={
             <Switch
-              checked={darkMode}
-              onChange={() => setDarkMode((darkMode) => !darkMode)}
+              checked={mode === "dark"}
+              onChange={() => setMode(mode === "dark" ? "light" : "dark")}
             />
           }
         />

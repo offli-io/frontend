@@ -1,4 +1,4 @@
-import { Box, TextField, Typography } from "@mui/material";
+import { Box, TextField, Typography, useTheme } from "@mui/material";
 import React from "react";
 import { Controller, UseFormReturn } from "react-hook-form";
 import OffliButton from "../../../components/offli-button";
@@ -14,6 +14,7 @@ export const NameForm: React.FC<INameFormProps> = ({
   methods,
 }) => {
   const { control, formState, watch } = methods;
+  const { palette } = useTheme();
 
   const errors = React.useMemo(() => formState.errors, [formState]);
   const isFormValid =
@@ -37,7 +38,9 @@ export const NameForm: React.FC<INameFormProps> = ({
           >
             Create
           </Typography>
-          <Typography variant="h2">new activity</Typography>
+          <Typography variant="h2" sx={{ color: palette.text.primary }}>
+            new activity
+          </Typography>
         </Box>
         <Box sx={{ width: "50%", display: "flex", justifyContent: "center" }}>
           <img src={createActivityImg} style={{ height: 80 }} alt="Name form" />

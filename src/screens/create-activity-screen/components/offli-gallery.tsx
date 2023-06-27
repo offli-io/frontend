@@ -66,7 +66,9 @@ const OffliGallery: React.FC<ITimePickerProps> = ({
             my: 2,
           }}
         >
-          <Typography>There are no available pre-defined pictures</Typography>
+          <Typography sx={{ color: (theme) => theme?.palette?.text?.primary }}>
+            There are no available pre-defined pictures
+          </Typography>
         </Box>
       )}
     </Box>

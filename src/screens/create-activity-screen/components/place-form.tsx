@@ -64,6 +64,7 @@ export const PlaceForm: React.FC<IPlaceFormProps> = ({
   methods,
 }) => {
   const { control, setValue, formState, watch } = methods;
+  const { palette } = useTheme();
 
   // filter backend results based on query string
   const [queryString] = useDebounce(watch("placeQuery"), 1000);
@@ -94,7 +95,9 @@ export const PlaceForm: React.FC<IPlaceFormProps> = ({
           <Typography variant="h2" sx={{ color: "primary.main" }}>
             Set
           </Typography>
-          <Typography variant="h2">location</Typography>
+          <Typography variant="h2" sx={{ color: palette.text.primary }}>
+            location
+          </Typography>
         </Box>
         <Box sx={{ width: "50%", display: "flex", justifyContent: "center" }}>
           <img src={activityLocation} style={{ height: 80 }} alt="place-form" />
