@@ -68,7 +68,7 @@ const schema: () => yup.SchemaOf<IEditProfile> = () =>
   });
 
 const EditProfileScreen: React.FC = () => {
-  const theme = useTheme();
+  const { palette } = useTheme();
   const { userInfo } = React.useContext(AuthenticationContext);
   const queryClient = useQueryClient();
   const { enqueueSnackbar } = useSnackbar();
@@ -202,7 +202,7 @@ const EditProfileScreen: React.FC = () => {
                 height: "70px",
                 width: "70px",
                 borderRadius: "50%",
-                border: `2px solid ${theme.palette.primary.main}`,
+                border: `2px solid ${palette.primary.main}`,
                 boxShadow: "5px 5px 20px 0px rgba(0,0,0,0.6)",
               }}
             />
@@ -213,7 +213,7 @@ const EditProfileScreen: React.FC = () => {
                 p: 0.5,
                 m: 0,
                 right: 2,
-                bgcolor: theme?.palette?.primary?.main,
+                bgcolor: palette?.primary?.main,
                 width: 20,
                 height: 20,
                 minWidth: "unset",
@@ -246,7 +246,9 @@ const EditProfileScreen: React.FC = () => {
                 control={control}
                 render={({ field, fieldState: { error } }) => (
                   <>
-                    <Typography sx={{ fontWeight: "bold" }}>
+                    <Typography
+                      sx={{ fontWeight: "bold", color: palette?.text?.primary }}
+                    >
                       Username
                     </Typography>
                     <TextField
@@ -266,7 +268,9 @@ const EditProfileScreen: React.FC = () => {
                 control={control}
                 render={({ field, fieldState: { error } }) => (
                   <>
-                    <Typography sx={{ fontWeight: "bold" }}>
+                    <Typography
+                      sx={{ fontWeight: "bold", color: palette?.text?.primary }}
+                    >
                       About me
                     </Typography>
                     <TextField
@@ -295,7 +299,9 @@ const EditProfileScreen: React.FC = () => {
                 control={control}
                 render={({ field, fieldState: { error } }) => (
                   <>
-                    <Typography sx={{ fontWeight: "bold" }}>
+                    <Typography
+                      sx={{ fontWeight: "bold", color: palette?.text?.primary }}
+                    >
                       Location
                     </Typography>
                     {/* // We have completely different approach handling location here and in place-form
@@ -351,7 +357,12 @@ const EditProfileScreen: React.FC = () => {
                     fieldState: { error },
                   }) => (
                     <>
-                      <Typography sx={{ fontWeight: "bold" }}>
+                      <Typography
+                        sx={{
+                          fontWeight: "bold",
+                          color: palette?.text?.primary,
+                        }}
+                      >
                         Birthdate
                       </Typography>
                       <DatePicker
@@ -382,7 +393,9 @@ const EditProfileScreen: React.FC = () => {
                 control={control}
                 render={({ field, fieldState: { error } }) => (
                   <>
-                    <Typography sx={{ fontWeight: "bold" }}>
+                    <Typography
+                      sx={{ fontWeight: "bold", color: palette?.text?.primary }}
+                    >
                       Instagram
                     </Typography>
                     <TextField
