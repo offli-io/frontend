@@ -22,7 +22,7 @@ import { IPersonExtended } from "../../types/activities/activity.dto";
 import { useUser } from "../../hooks/use-user";
 import { ProfileEntryTypeEnum } from "./types/profile-entry-type";
 import { generateBackHeaderTitle } from "./utils/profile-screen-utils";
-import userPlaceholder from "../../assets/img/user-placeholder.png";
+import userPlaceholder from "../../assets/img/user-placeholder.svg";
 
 interface IProfileScreenProps {
   type: ProfileEntryTypeEnum;
@@ -90,7 +90,7 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
         >
           <Typography
             variant="h4"
-            sx={{ mb: 0.5, color: palette?.text?.primary }}
+            sx={{ mb: 2, color: palette?.text?.primary }}
           >
             {data?.username}
           </Typography>
@@ -105,7 +105,8 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
               borderRadius: "50%",
               // backgroundColor: theme?.palette?.inactive as string,
               // border: '2px solid primary.main', //nejde pica
-              border: `2px solid black`,
+              border: `2px solid ${palette?.primary?.main}`,
+              boxShadow: "5px 5px 20px 0px rgba(0,0,0,0.6)",
             }}
             data-testid="profile-img"
           />
@@ -114,7 +115,7 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
               color="primary"
               sx={{
                 backgroundColor: (theme) => theme.palette.primary.light,
-                mt: 1,
+                mt: 2,
                 px: 2.5,
                 py: 0.5,
                 borderRadius: "15px",

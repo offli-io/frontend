@@ -33,7 +33,7 @@ const ProfileStatistics: React.FC<IProps> = ({
       sx={{
         width: "100%",
         borderRadius: "15px",
-        backgroundColor: "#E4E3FF",
+        // backgroundColor: "#E4E3FF",
         paddingBottom: "5%",
         marginTop: "1%",
       }}
