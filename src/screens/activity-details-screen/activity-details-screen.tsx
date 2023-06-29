@@ -24,7 +24,7 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
 
   const { data } = useQuery(
     ["activity", id],
-    () => getActivity<IActivityRestDto>({ id }),
+    () => getActivity<IActivityRestDto>({ id: Number(id) }),
     {
       enabled: !!id,
     }

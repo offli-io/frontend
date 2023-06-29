@@ -2,14 +2,14 @@ import { ActivityVisibilityEnum } from "./activity-visibility-enum.dto";
 import { ILocation } from "./location.dto";
 
 export interface IPerson {
-  id?: string;
+  id?: number;
   name?: string;
   username?: string;
   profile_photo_url?: string;
 }
 
 export interface IPersonExtended {
-  id?: string;
+  id?: number;
   username?: string;
   name?: string;
   profile_photo_url?: string;
@@ -38,7 +38,7 @@ export interface IActivityLimit {
 }
 
 export interface IActivity {
-  id?: string;
+  id?: number;
   participants?: IPerson[];
   title?: string;
   description?: string;

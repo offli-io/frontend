@@ -1,3 +1,3 @@
 export interface ICreateActivityRequestDto {
-  id?: string
+  id?: number;
 }

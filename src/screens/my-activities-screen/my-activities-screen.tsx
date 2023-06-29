@@ -65,13 +65,11 @@ const ActivitiesScreen = () => {
   const { data: { data: { activities = [] } = {} } = {}, isLoading } =
     useActivities<IActivityListRestDto>();
 
-  console.log(userData?.location);
-
   const {
     data: { data = {} } = {},
     isLoading: areParticipantActivitiesLoading,
     invalidate: invalidateParticipantActivities,
-  } = useParticipantActivities({ userId: userInfo?.id });
+  } = useParticipantActivities({ participantId: userInfo?.id });
 
   const participantActivites = data?.activities ?? [];
 
@@ -84,14 +82,14 @@ const ActivitiesScreen = () => {
 
   const { mutate: sendJoinActivity } = useMutation(
     ["invite-person"],
-    (activityId?: string) => {
+    (activityId?: number) => {
       const {
         id = undefined,
         name = undefined,
         username = undefined,
         profile_photo_url = undefined,
       } = { ...userData };
-      return inviteBuddy(String(activityId), {
+      return inviteBuddy(activityId ?? -1, {
         id,
         name,
         username,
@@ -126,7 +124,7 @@ const ActivitiesScreen = () => {
 
   const { mutate: sendLeaveActivity } = useMutation(
     ["leave-activity"],
-    (activityId?: string) =>
+    (activityId?: number) =>
       removePersonFromActivity({ activityId, personId: userInfo?.id }),
     {
       onSuccess: () => {
@@ -144,7 +142,7 @@ const ActivitiesScreen = () => {
   );
 
   const handleActionClick = React.useCallback(
-    (action?: ActivityActionsTypeEnumDto, activityId?: string) => {
+    (action?: ActivityActionsTypeEnumDto, activityId?: number) => {
       switch (action) {
         case ActivityActionsTypeEnumDto.ACTIVITY_MEMBERS:
           return navigate(
@@ -282,7 +280,6 @@ const ActivitiesScreen = () => {
         }}
         //loading={placeQuery?.isLoading}
         // isOptionEqualToValue={(option, value) => option.id === value.id}
-        onChange={(e, locationObject) => console.log(locationObject)}
         onFocus={() => navigate(ApplicationLocations.SEARCH)}
         onBlur={() => setIsSearchFocused(false)}
         // getOptionLabel={(option) => option?.display_name}

@@ -102,7 +102,7 @@ export const RegistrationScreen: React.FC = () => {
         setStateToken(data?.data?.token?.access_token ?? null);
         !!setUserInfo && setUserInfo({ id: data?.data?.user_id });
         data?.data?.user_id &&
-          localStorage.setItem("userId", data?.data?.user_id);
+          localStorage.setItem("userId", String(data?.data?.user_id));
         navigate(ApplicationLocations.ACTIVITIES);
       },
       onError: (error) => {

@@ -18,6 +18,7 @@ import {
 } from "../../../utils/common-constants";
 import { getAuthToken } from "../../../utils/token.util";
 import OffliGallery from "./offli-gallery";
+import { fileToBlob } from "../utils/file-to-blob";
 
 interface IActivityPhotoFormProps {
   methods: UseFormReturn;
@@ -37,7 +38,7 @@ export const ActivityPhotoForm: React.FC<IActivityPhotoFormProps> = ({
   const { enqueueSnackbar } = useSnackbar();
   const { palette } = useTheme();
   const tags = watch("tags");
-
+  const hiddenFileInput = React.useRef<HTMLInputElement | null>(null);
   const selectedPhoto = watch("title_picture_url");
 
   const openGallery = React.useCallback(
@@ -84,6 +85,27 @@ export const ActivityPhotoForm: React.FC<IActivityPhotoFormProps> = ({
       setValue("title_picture_url", "link");
     },
     [enqueueSnackbar, setValue]
+  );
+
+  const handleFileUpload = React.useCallback(
+    async (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e?.target?.files?.[0];
+      if (!file) {
+        return;
+      }
+      const formData = new FormData();
+      const blob = await fileToBlob(file);
+
+      formData.append("file", blob, file.name);
+
+      // Make your HTTP request with the formData
+      // For example, using the Fetch API:
+      const response = await fetch(`${DEFAULT_DEV_URL}/files`, {
+        method: "POST",
+        body: formData,
+      });
+    },
+    []
   );
 
   return (
@@ -169,51 +191,64 @@ export const ActivityPhotoForm: React.FC<IActivityPhotoFormProps> = ({
               control={control}
               render={({ field: { ref, ...field }, fieldState: { error } }) => {
                 return (
-                  <Upload
-                    name="file"
-                    value={field.value?.[0]}
-                    style={{ display: "flex", justifyContent: "center" }}
-                    beforeUpload={checkFileBeforeUpload}
-                    onSuccess={handleSuccessfullFileUpload}
-                    onError={() =>
-                      enqueueSnackbar("Failed to upload photo", {
-                        variant: "error",
-                      })
-                    }
-                    action={() => `${DEFAULT_DEV_URL}/files`}
-                    headers={{
-                      authorization: `Bearer ${token}`,
+                  // <Upload
+                  //   name="file"
+                  //   // value={field.value?.[0]}
+                  //   // data={(file) => {
+                  //   //   console.log(file);
+                  //   //   const formData = new FormData();
+                  //   //   formData.append("file", file);
+                  //   //   return formData as any;
+                  //   // }}
+                  //   style={{ display: "flex", justifyContent: "center" }}
+                  //   beforeUpload={checkFileBeforeUpload}
+                  //   onSuccess={handleSuccessfullFileUpload}
+                  //   onError={() =>
+                  //     enqueueSnackbar("Failed to upload photo", {
+                  //       variant: "error",
+                  //     })
+                  //   }
+                  //   action={() => `${DEFAULT_DEV_URL}/files`}
+                  //   headers={{
+                  //     authorization: `Bearer ${token}`,
+                  //     "Content-type": "multipart/form-data",
+                  //   }}
+                  // >
+
+                  <Box
+                    sx={{
+                      width: 200,
+                      height: 100,
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      position: "relative",
+                      bgcolor:
+                        palette?.mode === "light"
+                          ? grey[200]
+                          : palette?.background?.default,
+                      borderRadius: 5,
+                      border: (theme) =>
+                        `1px dashed ${theme.palette.primary.main}`,
                     }}
+                    onClick={() => hiddenFileInput?.current?.click()}
                   >
-                    {/* TODO outsource this component */}
-                    <Box
-                      sx={{
-                        width: 200,
-                        height: 100,
-                        display: "flex",
-                        flexDirection: "column",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        position: "relative",
-                        bgcolor:
-                          palette?.mode === "light"
-                            ? grey[200]
-                            : palette?.background?.default,
-                        borderRadius: 5,
-                        border: (theme) =>
-                          `1px dashed ${theme.palette.primary.main}`,
-                      }}
+                    <input
+                      onChange={handleFileUpload}
+                      type="file"
+                      style={{ display: "none" }}
+                      ref={hiddenFileInput}
+                    />
+                    <IconButton size="large" data-testid="upload-img-btn">
+                      <AddAPhotoIcon color="primary" />
+                    </IconButton>
+                    <Typography
+                      sx={{ fontSize: 14, color: palette?.text?.primary }}
                     >
-                      <IconButton size="large" data-testid="upload-img-btn">
-                        <AddAPhotoIcon color="primary" />
-                      </IconButton>
-                      <Typography
-                        sx={{ fontSize: 14, color: palette?.text?.primary }}
-                      >
-                        Upload from your phone
-                      </Typography>
-                    </Box>
-                  </Upload>
+                      Upload from your phone
+                    </Typography>
+                  </Box>
                 );
               }}
             />

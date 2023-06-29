@@ -2,11 +2,11 @@ import { useQuery } from "@tanstack/react-query";
 import { useSnackbar } from "notistack";
 import { getNotifications } from "../api/notifications/requests";
 
-export const useNotifications = (userId?: string) => {
+export const useNotifications = (userId?: number) => {
   const { enqueueSnackbar } = useSnackbar();
   const { data, isLoading } = useQuery(
     ["notifications", userId],
-    () => getNotifications(userId ?? ""),
+    () => getNotifications(userId ?? -1),
     {
       enabled: !!userId,
       onError: () => {

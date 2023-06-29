@@ -5,9 +5,9 @@ import { useActivities } from "../../../hooks/use-activities";
 import { IActivityRestDto } from "../../../types/activities/activity-rest.dto";
 
 export interface IActivityActionsProps {
-  onLeaveConfirm?: (activityId?: string) => void;
-  onLeaveCancel?: (activityId?: string) => void;
-  activityId?: string;
+  onLeaveConfirm?: (activityId?: number) => void;
+  onLeaveCancel?: (activityId?: number) => void;
+  activityId?: number;
 }
 
 const ActivityLeaveConfirmation: React.FC<IActivityActionsProps> = ({

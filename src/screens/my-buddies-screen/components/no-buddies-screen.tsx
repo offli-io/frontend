@@ -3,6 +3,7 @@ import { Box, Typography } from "@mui/material";
 import addFriends from "../../../assets/img/add-friends.svg";
 import OffliButton from "../../../components/offli-button";
 import { useNavigate } from "react-router-dom";
+import { ApplicationLocations } from "../../../types/common/applications-locations.dto";
 
 const NoBuddiesScreen: React.FC = () => {
   const [showPassword, setShowPassword] = React.useState(false);
@@ -39,7 +40,13 @@ const NoBuddiesScreen: React.FC = () => {
         <OffliButton
           color="primary"
           sx={{ mt: 8 }}
-          // onClick={() => navigate(ApplicationLocations.REGISTER)}
+          onClick={() =>
+            navigate(ApplicationLocations.ADD_BUDDIES, {
+              state: {
+                from: ApplicationLocations.BUDDIES,
+              },
+            })
+          }
         >
           Find new buddies
         </OffliButton>

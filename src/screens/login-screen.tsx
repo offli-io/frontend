@@ -90,7 +90,7 @@ const LoginScreen: React.FC = () => {
             setUserInfo({
               id: data?.data?.user_id,
             });
-          localStorage.setItem("userId", data?.data?.user_id);
+          localStorage.setItem("userId", String(data?.data?.user_id));
           navigate(ApplicationLocations.ACTIVITIES);
         },
         onError: (error) => {
@@ -113,7 +113,7 @@ const LoginScreen: React.FC = () => {
         //TODO refresh user Id after refresh
         setStateToken(data?.data?.token?.access_token ?? null);
         setUserInfo?.({ username: params?.username, id: data?.data?.user_id });
-        localStorage.setItem("userId", data?.data?.user_id);
+        localStorage.setItem("userId", String(data?.data?.user_id));
         navigate(ApplicationLocations.ACTIVITIES);
       },
       onError: (error) => {

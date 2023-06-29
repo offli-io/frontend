@@ -47,7 +47,7 @@ export interface IEditProfile {
 
 const schema: () => yup.SchemaOf<IEditProfile> = () =>
   yup.object({
-    username: yup.string().defined().required("Please enter your name"),
+    username: yup.string().defined().required("Please enter your username"),
     about_me: yup.string().notRequired(),
     location: yup
       .object({
@@ -322,7 +322,6 @@ const EditProfileScreen: React.FC = () => {
                       }}
                       loading={placeQuery?.isLoading}
                       onChange={(e, locationObject) => {
-                        console.log(e, locationObject);
                         field.onChange({
                           name: locationObject?.name ?? "",
                           coordinates: locationObject?.coordinates,

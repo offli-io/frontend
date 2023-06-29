@@ -10,7 +10,7 @@ import { useActivityMenuItems } from "../hooks/use-activity-menu-items";
 export interface IActivityActionsProps {
   onActionClick?: (
     type?: ActivityActionsTypeEnumDto,
-    activityId?: string
+    activityId?: number
   ) => void;
   activity?: IActivity;
 }

@@ -80,7 +80,7 @@ export const MobileCarousel: React.FC<IMobileCarouselProps> = ({
             scrollSnapAlign: "center",
           },
           "::-webkit-scrollbar": { display: "none" },
-          my: 2,
+          p: 1,
         }}
       >
         {items?.map((item) => (
@@ -104,7 +104,7 @@ export const MobileCarousel: React.FC<IMobileCarouselProps> = ({
             <Typography
               sx={{
                 //TODO fix this,
-                color: item?.selected ? palette?.text?.primary : "black",
+                color: item?.selected ? "white" : palette?.text?.primary,
                 // color: item?.selected ? "white" : "black"
               }}
             >
@@ -114,7 +114,7 @@ export const MobileCarousel: React.FC<IMobileCarouselProps> = ({
               <Typography
                 sx={{
                   fontSize: "0.75rem",
-                  color: item?.selected ? "white" : "black",
+                  color: item?.selected ? "white" : palette?.text?.primary,
                 }}
               >
                 {item.description}

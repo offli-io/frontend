@@ -43,7 +43,7 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
   console.log(instagramCode);
 
   const { data: { data = {} } = {}, isLoading } = useUser({
-    id: id ?? userInfo?.id,
+    id: id ? Number(id) : userInfo?.id,
   });
 
   React.useEffect(() => {
@@ -144,36 +144,40 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
             </IconButton>
           )}
 
-          <Box
-            sx={{
-              ml: -1.5,
-              display: "flex",
-              alignItems: "center",
-              my: 1,
-              // justifyContent: 'flex-start',
-            }}
-          >
-            <IconButton
-              sx={{ paddingRight: 0, color: palette?.text?.primary, mr: 1 }}
+          {!!data?.location && (
+            <Box
+              sx={{
+                ml: -1.5,
+                display: "flex",
+                alignItems: "center",
+                my: 1,
+                // justifyContent: 'flex-start',
+              }}
             >
-              <LocationOnIcon sx={{ fontSize: 20 }} />
-            </IconButton>
-            <Typography sx={{ color: palette?.text.primary }}>
-              Bratislava, Slovakia
+              <IconButton
+                sx={{ paddingRight: 0, color: palette?.text?.primary, mr: 1 }}
+              >
+                <LocationOnIcon sx={{ fontSize: 20 }} />
+              </IconButton>
+              <Typography sx={{ color: palette?.text.primary, width: 250 }}>
+                {data?.location?.name}
+              </Typography>
+            </Box>
+          )}
+          {!!data?.about_me && (
+            <Typography
+              // variant="subtitle2"
+              // align="center"
+              sx={{
+                lineHeight: 1.2,
+                width: "80%",
+                color: palette?.text?.primary,
+              }}
+            >
+              {data?.about_me ??
+                "I am student at FIIT STU. I like adventures and meditation. There is always time for a beer. Cheers."}
             </Typography>
-          </Box>
-          <Typography
-            // variant="subtitle2"
-            // align="center"
-            sx={{
-              lineHeight: 1.2,
-              width: "80%",
-              color: palette?.text?.primary,
-            }}
-          >
-            {data?.about_me ??
-              "I am student at FIIT STU. I like adventures and meditation. There is always time for a beer. Cheers."}
-          </Typography>
+          )}
         </Box>
         {type === ProfileEntryTypeEnum.PROFILE && (
           <ActionButton

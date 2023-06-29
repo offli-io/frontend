@@ -32,7 +32,9 @@ const BottomNavigator: React.FC<IBottomNavigatorProps> = ({ sx }) => {
   const { userInfo } = React.useContext(AuthenticationContext);
   const location = useLocation();
   const paramsArray = location?.pathname.split("/");
-  const id = paramsArray[paramsArray.length - 1];
+  const id = paramsArray[paramsArray.length - 1]
+    ? Number(paramsArray[paramsArray.length - 1])
+    : -1;
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
   const queryClient = useQueryClient();

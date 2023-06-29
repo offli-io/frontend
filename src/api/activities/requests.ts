@@ -45,7 +45,7 @@ export const getActivity = <T>({
   text,
   tag,
 }: {
-  id?: string;
+  id?: number;
   text?: string;
   tag?: string[];
 }) => {
@@ -74,10 +74,17 @@ export const getActivity = <T>({
   return promise;
 };
 
-export const getParticipantActivities = ({ userId }: { userId?: string }) => {
+export const getParticipantActivities = ({
+  participantId,
+}: {
+  participantId?: number;
+}) => {
   const promise = axios.get<IListActivitiesResponseDto>(
-    `${DEFAULT_DEV_URL}/participants/${userId}/activities`,
+    `${DEFAULT_DEV_URL}/activities`,
     {
+      params: {
+        participantId,
+      },
       // params: {
       //   text,
       //   tag,
@@ -104,8 +111,8 @@ export const removePersonFromActivity = ({
   personId,
   activityId,
 }: {
-  personId?: string;
-  activityId?: string;
+  personId?: number;
+  activityId?: number;
 }) => {
   const promise = axios.delete<void>(
     `${DEFAULT_DEV_URL}/activities/${activityId}/participants/${personId}`
@@ -240,7 +247,7 @@ export const getUsers = ({ username }: { username?: string }) => {
   return promise;
 };
 
-export const getUser = ({ id }: { id?: string }) => {
+export const getUser = ({ id }: { id?: number }) => {
   const CancelToken = axios.CancelToken;
   const source = CancelToken.source();
 
@@ -258,7 +265,7 @@ export const getUser = ({ id }: { id?: string }) => {
   return promise;
 };
 
-export const getBuddies = (userId: string, queryString?: string) => {
+export const getBuddies = (userId: number, queryString?: string) => {
   const CancelToken = axios.CancelToken;
   const source = CancelToken.source();
 
@@ -279,7 +286,7 @@ export const getBuddies = (userId: string, queryString?: string) => {
   return promise;
 };
 
-export const getRecommendedBuddies = (userId: string) => {
+export const getRecommendedBuddies = (userId: number) => {
   const CancelToken = axios.CancelToken;
   const source = CancelToken.source();
 
@@ -316,7 +323,7 @@ export const getPredefinedTags = () => {
 };
 
 export const inviteBuddy = (
-  activityId: string,
+  activityId: number,
   userInfo: ICreateActivityParticipantRequestDto
 ) => {
   const CancelToken = axios.CancelToken;
@@ -337,7 +344,7 @@ export const inviteBuddy = (
   return promise;
 };
 
-export const uninviteBuddy = (activityId: string, userId: string) => {
+export const uninviteBuddy = (activityId: number, userId: number) => {
   const CancelToken = axios.CancelToken;
   const source = CancelToken.source();
 
@@ -379,7 +386,7 @@ export const getPredefinedPhotos = (tag?: string[]) => {
   return promise;
 };
 
-export const kickUserFromActivity = (activityId: string, personId: string) => {
+export const kickUserFromActivity = (activityId: number, personId: number) => {
   const CancelToken = axios.CancelToken;
   const source = CancelToken.source();
 
@@ -398,8 +405,8 @@ export const kickUserFromActivity = (activityId: string, personId: string) => {
 };
 
 export const acceptActivityInvitation = (
-  activityId?: string,
-  userId?: string
+  activityId?: number,
+  userId?: number
 ) => {
   const CancelToken = axios.CancelToken;
   const source = CancelToken.source();
@@ -418,7 +425,7 @@ export const acceptActivityInvitation = (
   return promise;
 };
 
-export const sendBuddyRequest = (userId?: string, buddy_to_be_id?: string) => {
+export const sendBuddyRequest = (userId?: number, buddy_to_be_id?: number) => {
   const CancelToken = axios.CancelToken;
   const source = CancelToken.source();
 
