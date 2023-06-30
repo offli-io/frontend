@@ -159,7 +159,7 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
               >
                 <LocationOnIcon sx={{ fontSize: 20 }} />
               </IconButton>
-              <Typography sx={{ color: palette?.text.primary, width: 250 }}>
+              <Typography sx={{ color: palette?.text.primary, maxWidth: 250 }}>
                 {data?.location?.name}
               </Typography>
             </Box>

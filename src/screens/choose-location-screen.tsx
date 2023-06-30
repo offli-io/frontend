@@ -110,7 +110,7 @@ const ChooseLocationScreen: React.FC = () => {
       onSuccess: (data, location) => {
         //TODO what to invalidate, and where to navigate after success
         setLocation?.(location);
-        queryClient.invalidateQueries(["users"]);
+        queryClient.invalidateQueries(["user"]);
         //TODO display snackbar for first login? Idk too many windows (Welcome screen and snackbar)
         // enqueueSnackbar("Your location was successfully saved", {
         //   variant: "success",
