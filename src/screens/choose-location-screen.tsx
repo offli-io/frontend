@@ -43,6 +43,7 @@ import { IPlaceExternalApiResultDto } from "../types/activities/place-external-a
 import { ILocation } from "../types/activities/location.dto";
 import { updateProfileInfo } from "../api/users/requests";
 import { useGeolocated } from "react-geolocated";
+import { LocationContext } from "../app/providers/location-provider";
 
 export interface FormValues {
   placeQuery: string;
@@ -59,6 +60,7 @@ const ChooseLocationScreen: React.FC = () => {
   const [selectedLocation, setSelectedLocation] = React.useState<
     IPlaceExternalApiResultDto | undefined | null
   >(null);
+  const { setLocation } = React.useContext(LocationContext);
 
   const [latLonBrowserTuple, setLatLonBrowserTuple] = React.useState<
     { lat?: number; lon?: number } | undefined
@@ -105,12 +107,15 @@ const ChooseLocationScreen: React.FC = () => {
     ["update-profile-info"],
     (location: ILocation) => updateProfileInfo(userInfo?.id, { location }),
     {
-      onSuccess: (data, variables) => {
+      onSuccess: (data, location) => {
         //TODO what to invalidate, and where to navigate after success
+        setLocation?.(location);
         queryClient.invalidateQueries(["users"]);
-        enqueueSnackbar("Your location was successfully saved", {
-          variant: "success",
-        });
+        //TODO display snackbar for first login? Idk too many windows (Welcome screen and snackbar)
+        // enqueueSnackbar("Your location was successfully saved", {
+        //   variant: "success",
+        // });
+
         navigate(ApplicationLocations.ACTIVITIES);
       },
       onError: () => {
