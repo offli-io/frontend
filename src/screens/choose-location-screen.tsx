@@ -95,7 +95,7 @@ const ChooseLocationScreen: React.FC = () => {
 
   const [queryString] = useDebounce(placeQuery, 1000);
 
-  const { data, isLoading } = useQuery(
+  const { data, isLoading: isLocationQueryLoading } = useQuery(
     ["locations", queryString],
     (props) => getLocationFromQueryFetch(queryString),
     {
@@ -103,28 +103,29 @@ const ChooseLocationScreen: React.FC = () => {
     }
   );
 
-  const { mutate: sendUpdateProfile } = useMutation(
-    ["update-profile-info"],
-    (location: ILocation) => updateProfileInfo(userInfo?.id, { location }),
-    {
-      onSuccess: (data, location) => {
-        //TODO what to invalidate, and where to navigate after success
-        setLocation?.(location);
-        queryClient.invalidateQueries(["user"]);
-        //TODO display snackbar for first login? Idk too many windows (Welcome screen and snackbar)
-        // enqueueSnackbar("Your location was successfully saved", {
-        //   variant: "success",
-        // });
+  const { mutate: sendUpdateProfile, isLoading: isUpdatingProfile } =
+    useMutation(
+      ["update-profile-info"],
+      (location: ILocation) => updateProfileInfo(userInfo?.id, { location }),
+      {
+        onSuccess: (data, location) => {
+          //TODO what to invalidate, and where to navigate after success
+          setLocation?.(location);
+          queryClient.invalidateQueries(["user"]);
+          //TODO display snackbar for first login? Idk too many windows (Welcome screen and snackbar)
+          // enqueueSnackbar("Your location was successfully saved", {
+          //   variant: "success",
+          // });
 
-        navigate(ApplicationLocations.ACTIVITIES);
-      },
-      onError: () => {
-        enqueueSnackbar("Failed to select location", {
-          variant: "error",
-        });
-      },
-    }
-  );
+          navigate(ApplicationLocations.ACTIVITIES);
+        },
+        onError: () => {
+          enqueueSnackbar("Failed to select location", {
+            variant: "error",
+          });
+        },
+      }
+    );
 
   const navigate = useNavigate();
 
@@ -206,7 +207,7 @@ const ChooseLocationScreen: React.FC = () => {
           mt: 5,
           mb: 4,
         }}
-        loading={isLoading}
+        loading={isLocationQueryLoading}
         onChange={handleLocationSelect}
         getOptionLabel={(option) => String(option?.formatted)}
         renderInput={(params) => (
@@ -233,6 +234,7 @@ const ChooseLocationScreen: React.FC = () => {
         type="submit"
         disabled={!selectedLocation}
         onClick={handleConfirmSelectedLocation}
+        isLoading={isUpdatingProfile}
       >
         Let's explore
       </OffliButton>

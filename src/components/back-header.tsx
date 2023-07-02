@@ -60,7 +60,7 @@ const BackHeader: React.FC<IBackHeaderProps> = ({
   }, [fromLocation, location, navigate]);
 
   return (
-    <Box sx={{ boxShadow: "1px 2px 2px #ccc", mb: 0.5, ...sx }}>
+    <Box sx={{ boxShadow: "1px 2px 2px #ccc", mb: 0.5, height: 45, ...sx }}>
       <Box
         sx={{
           width: "100%",
@@ -71,21 +71,20 @@ const BackHeader: React.FC<IBackHeaderProps> = ({
           position: "relative",
           pt: 1,
           boxSizing: "border-box",
+          height: "100%",
         }}
       >
         {fromLocation && (
           <IconButton
             onClick={handleBackNavigation}
             color="primary"
-            sx={
-              {
-                // flex: 1,
-                // position: 'absolute',
-                // top: 10,
-                // left: 5,
-                // textTransform: 'none',
-              }
-            }
+            sx={{
+              flex: 1,
+              position: "absolute",
+              top: 2,
+              // left: 5,
+              textTransform: "none",
+            }}
           >
             <ArrowBackIosNewIcon />
           </IconButton>
@@ -98,7 +97,7 @@ const BackHeader: React.FC<IBackHeaderProps> = ({
             alignItems: "center",
             position: "absolute",
             left: "50%",
-            top: "55%",
+            top: 22,
             transform: "translate(-50%, -50%)",
             // mr: 6,
           }}

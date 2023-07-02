@@ -35,6 +35,8 @@ export const Layout: React.FC<ILayoutProps> = ({ children }) => {
     id: userInfo?.id,
   });
 
+  const isBuddyRequest = location?.pathname?.includes("/profile/request");
+
   React.useEffect(() => {
     if (!!data && !data?.username && stateToken) {
       navigate(ApplicationLocations.CHOOSE_USERNAME_GOOGLE);
@@ -111,7 +113,7 @@ export const Layout: React.FC<ILayoutProps> = ({ children }) => {
         >
           <Routes />
         </Box>
-        {stateToken && displayBottomNavigator && (
+        {stateToken && displayBottomNavigator && !isBuddyRequest && (
           <BottomNavigator sx={{ height: "100%" }} />
         )}
       </Box>

@@ -180,7 +180,7 @@ const BottomNavigator: React.FC<IBottomNavigatorProps> = ({ sx }) => {
     >
       {isActionRequired ? (
         <>
-          {isBuddyRequest && (
+          {/* {isBuddyRequest && (
             <Box
               sx={{
                 width: "100%",
@@ -204,7 +204,7 @@ const BottomNavigator: React.FC<IBottomNavigatorProps> = ({ sx }) => {
                 Accept
               </OffliButton>
             </Box>
-          )}
+          )} */}
           {isUserProfile && (
             <Box
               sx={{
