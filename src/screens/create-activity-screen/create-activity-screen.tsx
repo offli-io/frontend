@@ -145,7 +145,7 @@ const CreateActivityScreen = () => {
 
   const { data, mutate, isLoading } = useMutation(
     ["create-activity"],
-    (formValues: FormValues & { creator?: IPerson }) =>
+    (formValues: FormValues & { creator_id?: number }) =>
       createActivity(formValues),
     {
       onSuccess: (data) => {
@@ -174,12 +174,7 @@ const CreateActivityScreen = () => {
       } = { ...userData };
       mutate({
         ...restValues,
-        creator: {
-          id,
-          name,
-          username,
-          profile_photo_url,
-        },
+        creator_id: id,
       });
     },
     [userData, mutate]

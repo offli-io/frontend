@@ -20,7 +20,7 @@ const ActivityActions: React.FC<IActivityActionsProps> = ({
   activity,
 }) => {
   const { userInfo } = React.useContext(AuthenticationContext);
-  const isCreator = activity?.creator?.id === userInfo?.id;
+  const isCreator = activity?.creator_id === userInfo?.id;
   const isParticipant = !!activity?.participants?.find(
     (participant) => participant?.id === userInfo?.id
   );

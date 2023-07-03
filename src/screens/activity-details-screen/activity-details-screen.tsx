@@ -12,6 +12,7 @@ import LockOpenIcon from "@mui/icons-material/LockOpen";
 import ActivityDetailsGrid from "./components/activity-details-grid";
 import ActivityDescriptionTags from "./components/activity-description-tags";
 import ActivityCreatorDuration from "./components/activity-creator-duration";
+import { useUser } from "../../hooks/use-user";
 
 interface IProps {
   type: "detail" | "request";
@@ -29,7 +30,12 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
       enabled: !!id,
     }
   );
+
   const activity = data?.data?.activity;
+
+  const { data: { data: activityCreator } = {}, isLoading } = useUser({
+    id: activity?.creator_id,
+  });
 
   console.log(activity);
 
@@ -102,7 +108,7 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
           tags={activity?.tags!}
         />
         <ActivityCreatorDuration
-          creator={activity?.creator}
+          creator={activityCreator}
           // duration={activity?.tags!}
           duration="3 hours"
           createdDateTime="22.01.2023 5:16 PM"

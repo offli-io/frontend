@@ -44,7 +44,7 @@ export interface IActivity {
   description?: string;
   price?: string;
   title_picture_url?: string;
-  creator?: IPerson;
+  creator_id?: number;
   datetime_from?: Date | string;
   datetime_until?: Date | string;
   location?: ILocation | null;

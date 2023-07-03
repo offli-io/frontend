@@ -17,6 +17,7 @@ import {
 } from "../../types/activities/place-external-api.dto";
 import { IPredefinedPictureDto } from "../../types/activities/predefined-picture.dto";
 import { IPredefinedTagDto } from "../../types/activities/predefined-tag.dto";
+import { IFileFormDataRequestDto } from "../../types/activities/file-form-data-request.dto";
 
 export const getActivities = async ({
   queryFunctionContext,
@@ -434,6 +435,25 @@ export const sendBuddyRequest = (userId?: number, buddy_to_be_id?: number) => {
     {
       buddy_to_be_id,
     },
+    {
+      cancelToken: source?.token,
+    }
+  );
+
+  //   queryFunctionContext?.signal?.addEventListener('abort', () => {
+  //     source.cancel('Query was cancelled by React Query')
+  //   })
+
+  return promise;
+};
+
+export const uploadActivityPhoto = (formData?: FormData) => {
+  const CancelToken = axios.CancelToken;
+  const source = CancelToken.source();
+
+  const promise = axios.post<{ url?: string }>(
+    `${DEFAULT_DEV_URL}/files`,
+    formData,
     {
       cancelToken: source?.token,
     }
