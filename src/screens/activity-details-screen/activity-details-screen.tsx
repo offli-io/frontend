@@ -37,13 +37,8 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
     id: activity?.creator_id,
   });
 
-  console.log(activity);
-
   return (
     <>
-      {type === "request" && <BackHeader title="Activity invite" to={from} />}
-      {/* <PageWrapper> */}
-      {/* {activity ? ( */}
       <Box
         sx={{
           width: "100%",

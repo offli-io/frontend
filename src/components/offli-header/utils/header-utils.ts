@@ -2,6 +2,11 @@ import { ApplicationLocations } from "../../../types/common/applications-locatio
 
 export const mapPathnameToHeaderTitle = (pathname?: ApplicationLocations) => {
   //TODO move this to switch
+
+  if (pathname?.startsWith(ApplicationLocations.ACTIVITY_INVITE)) {
+    return "Activity invite";
+  }
+
   if (pathname?.startsWith(ApplicationLocations.USER_PROFILE)) {
     return "User profile";
   }

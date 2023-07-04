@@ -21,6 +21,7 @@ export enum ApplicationLocations {
   CHOOSE_USERNAME_GOOGLE = "/choose-username",
   CHOOSE_LOCATION = "/choose-location",
   ACTIVITY_ID = "/activity",
+  ACTIVITY_INVITE = "/activities/request",
   CREATE = "/create",
   SEARCH = "/search",
   MAP = "/map",

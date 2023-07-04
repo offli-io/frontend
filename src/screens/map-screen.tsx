@@ -28,7 +28,6 @@ const MapScreen = <T extends unknown>() => {
 
   return (
     <>
-      {/* <BackHeader title="Map" to={from} /> */}
       <Map activities={activityData} />
     </>
   );
