@@ -89,7 +89,6 @@ const NotificationsScreen = () => {
         height: "100vh",
       }}
     >
-      {/* <BackHeader title="Notifications" sx={{ mb: 2 }} to={from} /> */}
       <Box
         sx={{
           display: "flex",

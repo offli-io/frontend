@@ -20,6 +20,7 @@ import { IActivityListRestDto } from "../../types/activities/activity-list-rest.
 import { ApplicationLocations } from "../../types/common/applications-locations.dto";
 import FiltersDrawerContent from "./components/filters-drawer-content";
 import { IFiltersDto } from "./types/filters.dto";
+import { HeaderContext } from "../../app/providers/header-provider";
 
 const event = {
   summary: "Test event Offli",
@@ -49,6 +50,7 @@ const SearchScreen = () => {
   const [queryStringDebounced] = useDebounce(currentSearch, 250);
   const [filters, setFilters] = React.useState<IFiltersDto | undefined>();
   const { toggleDrawer } = React.useContext(DrawerContext);
+  const { setHeaderRightContent } = React.useContext(HeaderContext);
 
   const isTag = queryStringDebounced?.includes("tag");
 
@@ -79,9 +81,21 @@ const SearchScreen = () => {
     });
   }, [filters, handleApplyFilters]);
 
+  React.useEffect(() => {
+    setHeaderRightContent(
+      <IconButton
+        onClick={toggleFilters}
+        color={!!filters ? "primary" : undefined}
+        data-testid="toggle-filters-btn"
+      >
+        <FilterListIcon />
+      </IconButton>
+    );
+  }, []);
+
   return (
     <>
-      <BackHeader
+      {/* <BackHeader
         title="Search activities"
         sx={{ mb: 2 }}
         to={ApplicationLocations.ACTIVITIES}
@@ -94,7 +108,7 @@ const SearchScreen = () => {
             <FilterListIcon />
           </IconButton>
         }
-      />
+      /> */}
       <Box sx={{ px: 1.5, boxSizing: "border-box" }}>
         <Box
           sx={{

@@ -170,7 +170,7 @@ export const PlaceForm: React.FC<IPlaceFormProps> = ({
         <OffliButton
           onClick={onNextClicked}
           sx={{ width: "40%" }}
-          disabled={!formState.isValid}
+          // disabled={!formState.isValid}
           data-testid="next-btn"
         >
           Next

@@ -60,7 +60,20 @@ const BackHeader: React.FC<IBackHeaderProps> = ({
   }, [fromLocation, location, navigate]);
 
   return (
-    <Box sx={{ boxShadow: "1px 2px 2px #ccc", mb: 0.5, height: 45, ...sx }}>
+    <Box
+      sx={{
+        //  boxShadow: "1px 2px 2px #ccc", mb: 0.5, height: 45, ...sx
+        height: HEADER_HEIGHT,
+        boxShadow: "1px 2px 2px #ccc",
+        position: "sticky",
+        top: 0,
+        boxSizing: "border-box",
+        pt: 2,
+        zIndex: 500,
+        bgcolor: ({ palette }) => palette.background.default,
+        ...sx,
+      }}
+    >
       <Box
         sx={{
           width: "100%",

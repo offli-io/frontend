@@ -178,11 +178,6 @@ const EditProfileScreen: React.FC = () => {
 
   return (
     <>
-      <BackHeader
-        title="Edit profile"
-        sx={{ mb: 2 }}
-        to={ApplicationLocations.PROFILE}
-      />
       <PageWrapper>
         <Box
           sx={{

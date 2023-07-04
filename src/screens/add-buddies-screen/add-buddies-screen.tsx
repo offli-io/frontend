@@ -146,7 +146,6 @@ const AddBuddiesScreen = () => {
 
   return (
     <>
-      <BackHeader title="Find new buddies" to={from} />
       <Box sx={{ mx: 1.5, height: "100%" }}>
         <TextField
           autoFocus

@@ -4,17 +4,20 @@ import SettingsIcon from "@mui/icons-material/Settings";
 import { Badge, Box, IconButton, SxProps, useTheme } from "@mui/material";
 import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import offliLogo from "../assets/img/logoPurple.png";
-import { AuthenticationContext } from "../assets/theme/authentication-provider";
-import { useNotifications } from "../hooks/use-notifications";
-import { ApplicationLocations } from "../types/common/applications-locations.dto";
-import { HEADER_HEIGHT } from "../utils/common-constants";
+import offliLogo from "../../assets/img/logoPurple.png";
+import { AuthenticationContext } from "../../assets/theme/authentication-provider";
+import { useNotifications } from "../../hooks/use-notifications";
+import { ApplicationLocations } from "../../types/common/applications-locations.dto";
+import { HEADER_HEIGHT } from "../../utils/common-constants";
+import BackHeader from "./components/back-header";
+import { mapPathnameToHeaderTitle } from "./utils/map-pathname-to-header-title";
 
 interface IProps {
+  backHeader?: boolean;
   sx?: SxProps;
 }
 
-const OffliHeader: React.FC<IProps> = ({ sx }) => {
+const OffliHeader: React.FC<IProps> = ({ sx, backHeader }) => {
   const location = useLocation();
   const navigate = useNavigate();
   const headerRef = React.useRef<HTMLElement | null>(null);
@@ -42,17 +45,21 @@ const OffliHeader: React.FC<IProps> = ({ sx }) => {
         position: "sticky",
         top: 0,
         boxSizing: "border-box",
-        pt: 2,
+        // pt: 2,
         zIndex: 500,
         bgcolor: palette.background.default,
+        display: "flex",
         ...sx,
       }}
     >
-      <Box
-        sx={{
-          width: "100%",
-        }}
-      >
+      {backHeader ? (
+        <BackHeader
+          title={mapPathnameToHeaderTitle(
+            location?.pathname as ApplicationLocations
+          )}
+          to={ApplicationLocations.PROFILE}
+        />
+      ) : (
         <Box
           sx={{
             width: "90%",
@@ -115,7 +122,7 @@ const OffliHeader: React.FC<IProps> = ({ sx }) => {
             </IconButton>
           </Box>
         </Box>
-      </Box>
+      )}
     </Box>
   );
 };
