@@ -47,7 +47,6 @@ const SettingsScreen = () => {
         height: "100vh",
       }}
     >
-      <BackHeader title="Settings" sx={{ mb: 2 }} to={from} />
       <Box sx={{ display: "flex", flexDirection: "column", width: "100%" }}>
         {SettingsItemsObject.map((item) => (
           <MenuItem

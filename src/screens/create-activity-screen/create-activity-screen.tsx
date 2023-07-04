@@ -154,6 +154,7 @@ const CreateActivityScreen = () => {
         queryClient.invalidateQueries(["user-info"]);
         //TODO query invalidation doesnt work - activities are not refetched!
         queryClient.invalidateQueries({ queryKey: ["activities"] });
+        queryClient.invalidateQueries({ queryKey: ["participant-activities"] });
         setActiveStep((activeStep) => activeStep + 1);
       },
       onError: (error) => {

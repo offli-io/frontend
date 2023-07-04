@@ -23,6 +23,7 @@ export const useParticipantActivities = ({
       refetchOnMount: true,
       refetchOnWindowFocus: true,
       refetchOnReconnect: true,
+      enabled: !!participantId,
     }
   );
 

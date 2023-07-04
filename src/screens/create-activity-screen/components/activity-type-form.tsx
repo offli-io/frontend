@@ -90,7 +90,7 @@ export const ActivityTypeForm: React.FC<IActivityTypeFormProps> = ({
             <CircularProgress color="primary" />
           </Box>
         ) : tiles?.length > 0 ? (
-          tiles?.map(({ title, picture }, index) => (
+          tiles?.map(({ title, picture_url }, index) => (
             <LabeledTile
               key={index}
               title={title}
@@ -100,7 +100,7 @@ export const ActivityTypeForm: React.FC<IActivityTypeFormProps> = ({
                 width: "42%",
                 mb: 2,
               }}
-              imageUrl={picture}
+              imageUrl={picture_url}
             />
           ))
         ) : (
