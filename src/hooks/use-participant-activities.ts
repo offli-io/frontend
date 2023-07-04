@@ -6,13 +6,13 @@ import { getNotifications } from "../api/notifications/requests";
 export const PARTICIPANT_ACTIVITIES_QUERY_KEY = "participant-activities";
 
 export const useParticipantActivities = ({
-  userId,
-}: { userId?: string } = {}) => {
+  participantId,
+}: { participantId?: number } = {}) => {
   const queryClient = useQueryClient();
   const { enqueueSnackbar } = useSnackbar();
   const { data, isLoading } = useQuery(
-    [PARTICIPANT_ACTIVITIES_QUERY_KEY, userId],
-    () => getParticipantActivities({ userId }),
+    [PARTICIPANT_ACTIVITIES_QUERY_KEY, participantId],
+    () => getParticipantActivities({ participantId }),
     {
       onError: () => {
         //some generic toast for every hook

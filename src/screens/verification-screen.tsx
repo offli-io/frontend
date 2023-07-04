@@ -48,7 +48,7 @@ const VerificationScreen = () => {
       onSuccess: (data, params) => {
         setStateToken(data?.data?.token?.access_token ?? null);
         setUserInfo?.({ username: params?.username, id: data?.data?.user_id });
-        localStorage.setItem("userId", data?.data?.user_id);
+        localStorage.setItem("userId", String(data?.data?.user_id));
         setIsFirstTimeLogin?.(true);
         navigate(ApplicationLocations.ACTIVITIES);
       },

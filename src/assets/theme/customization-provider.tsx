@@ -26,7 +26,7 @@ const createCustomizationTheme = (mode: PaletteMode = "light") => {
       // for dark mode
       mode,
       primary: {
-        main: "#4A148C",
+        main: mode === "light" ? "#4A148C" : "#7D3FC8",
         light: "#E4E3FF",
       },
       secondary: {

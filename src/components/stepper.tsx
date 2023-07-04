@@ -28,9 +28,10 @@ export default function DotsMobileStepper({
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        height: 8,
+        height: 5,
         "& span": {
           width: "100%",
+          height: "100%",
         },
         ...containerSx,
       }}

@@ -18,6 +18,7 @@ import { ApplicationLocations } from "../../types/common/applications-locations.
 import { HEADER_HEIGHT } from "../../utils/common-constants";
 import OffliButton from "../offli-button";
 import { mapLocationToNavigatorValue } from "./utils/map-location-to-navigator-value.util";
+import { CustomizationContext } from "../../assets/theme/customization-provider";
 
 interface IBottomNavigatorProps {
   sx?: SxProps;
@@ -30,9 +31,13 @@ const BottomNavigator: React.FC<IBottomNavigatorProps> = ({ sx }) => {
   );
   const [isActionRequired, setIsActionRequired] = React.useState(false);
   const { userInfo } = React.useContext(AuthenticationContext);
+  const { mode } = React.useContext(CustomizationContext);
+
   const location = useLocation();
   const paramsArray = location?.pathname.split("/");
-  const id = paramsArray[paramsArray.length - 1];
+  const id = paramsArray[paramsArray.length - 1]
+    ? Number(paramsArray[paramsArray.length - 1])
+    : -1;
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
   const queryClient = useQueryClient();
@@ -175,7 +180,7 @@ const BottomNavigator: React.FC<IBottomNavigatorProps> = ({ sx }) => {
     >
       {isActionRequired ? (
         <>
-          {isBuddyRequest && (
+          {/* {isBuddyRequest && (
             <Box
               sx={{
                 width: "100%",
@@ -199,7 +204,7 @@ const BottomNavigator: React.FC<IBottomNavigatorProps> = ({ sx }) => {
                 Accept
               </OffliButton>
             </Box>
-          )}
+          )} */}
           {isUserProfile && (
             <Box
               sx={{
@@ -241,6 +246,9 @@ const BottomNavigator: React.FC<IBottomNavigatorProps> = ({ sx }) => {
             value={ApplicationLocations.ACTIVITIES}
             to={ApplicationLocations.ACTIVITIES}
             data-testid="navigator-activities"
+            sx={{
+              ...(mode === "dark" ? { color: palette?.text?.primary } : {}),
+            }}
           />
           <BottomNavigationAction
             label="Create"
@@ -249,6 +257,9 @@ const BottomNavigator: React.FC<IBottomNavigatorProps> = ({ sx }) => {
             value={ApplicationLocations.CREATE}
             to={ApplicationLocations.CREATE}
             data-testid="navigator-create"
+            sx={{
+              ...(mode === "dark" ? { color: palette?.text?.primary } : {}),
+            }}
           />
           <BottomNavigationAction
             label="Profile"
@@ -257,6 +268,9 @@ const BottomNavigator: React.FC<IBottomNavigatorProps> = ({ sx }) => {
             value={ApplicationLocations.PROFILE}
             to={ApplicationLocations.PROFILE}
             data-testid="navigator-profile"
+            sx={{
+              ...(mode === "dark" ? { color: palette?.text?.primary } : {}),
+            }}
           />
         </BottomNavigation>
       )}

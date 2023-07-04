@@ -1,13 +1,13 @@
 import AddAPhotoIcon from "@mui/icons-material/AddAPhoto";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
-import { Box, IconButton, Typography, useTheme } from "@mui/material";
+import { Box, IconButton, Modal, Typography, useTheme } from "@mui/material";
 import { grey } from "@mui/material/colors";
+import { useMutation } from "@tanstack/react-query";
 import { useSnackbar } from "notistack";
-import Upload from "rc-upload";
-import { RcFile } from "rc-upload/lib/interface";
 import React, { BaseSyntheticEvent } from "react";
+import Cropper from "react-easy-crop";
 import { Controller, UseFormReturn } from "react-hook-form";
-import { DEFAULT_DEV_URL } from "../../../assets/config";
+import "react-image-crop/dist/ReactCrop.css";
 import activityPhotoImg from "../../../assets/img/activity-photo.svg";
 import { DrawerContext } from "../../../assets/theme/drawer-provider";
 import LabeledDivider from "../../../components/labeled-divider";
@@ -18,6 +18,8 @@ import {
 } from "../../../utils/common-constants";
 import { getAuthToken } from "../../../utils/token.util";
 import OffliGallery from "./offli-gallery";
+import { uploadActivityPhoto } from "../../../api/activities/requests";
+import getCroppedImg from "../utils/crop-utils";
 
 interface IActivityPhotoFormProps {
   methods: UseFormReturn;
@@ -37,8 +39,30 @@ export const ActivityPhotoForm: React.FC<IActivityPhotoFormProps> = ({
   const { enqueueSnackbar } = useSnackbar();
   const { palette } = useTheme();
   const tags = watch("tags");
-
+  const hiddenFileInput = React.useRef<HTMLInputElement | null>(null);
   const selectedPhoto = watch("title_picture_url");
+  // const [crop, setCrop] = React.useState<any>({
+  //   unit: "%", // Can be 'px' or '%'
+  //   width: 100,
+  //   height: 70,
+  //   x: 25,
+  //   y: 25,
+  //   // width: 100,
+  //   // aspect: 16 / 9,
+  // });
+  // const [croppedImage, setCroppedImage] = React.useState(null);
+  const [localFile, setLocalFile] = React.useState<any>();
+  const [crop, setCrop] = React.useState({ x: 0, y: 0 });
+  const [zoom, setZoom] = React.useState(1);
+  const [croppedAreaPixels, setCroppedAreaPixels] = React.useState(null);
+  const [croppedImage, setCroppedImage] = React.useState<any>(null);
+
+  const onCropComplete = React.useCallback(
+    (croppedArea: any, croppedAreaPixels: any) => {
+      setCroppedAreaPixels(croppedAreaPixels);
+    },
+    []
+  );
 
   const openGallery = React.useCallback(
     () =>
@@ -57,37 +81,138 @@ export const ActivityPhotoForm: React.FC<IActivityPhotoFormProps> = ({
     [toggleDrawer, setValue]
   );
 
-  const checkFileBeforeUpload = React.useCallback(
-    (file: RcFile) => {
-      // check file size
-      if (file?.size > MAX_FILE_SIZE) {
+  const { mutate: sendUploadActivityPhoto, isLoading } = useMutation(
+    ["activity-photo-upload"],
+    (formData?: FormData) => uploadActivityPhoto(formData),
+    {
+      onSuccess: (data) => {
+        enqueueSnackbar("Your photo has been successfully uploaded", {
+          variant: "success",
+        });
+        setLocalFile(null);
+        setValue("title_picture_url", data?.data?.url);
+      },
+      onError: (error) => {
+        enqueueSnackbar("Failed to upload activity photo", {
+          variant: "error",
+        });
+      },
+    }
+  );
+
+  const handleFileUpload = React.useCallback(
+    async (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e?.target?.files?.[0];
+      if (!file) {
+        return;
+      }
+      if (file.size > MAX_FILE_SIZE) {
         enqueueSnackbar("File is too large", { variant: "error" });
-        return false;
+        return;
       }
 
       // check file format
       const fileExtension = file.name.split(".").pop();
       if (fileExtension && !ALLOWED_PHOTO_EXTENSIONS.includes(fileExtension)) {
         enqueueSnackbar("Unsupported file format", { variant: "error" });
-        return false;
+        return;
       }
-      return true;
+      setLocalFile(URL.createObjectURL(file));
     },
-    [enqueueSnackbar]
+    [sendUploadActivityPhoto]
   );
 
-  const handleSuccessfullFileUpload = React.useCallback(
-    (result: Record<string, unknown>, file: RcFile) => {
-      enqueueSnackbar("Your photo has been successfully uploaded", {
-        variant: "success",
-      });
-      setValue("title_picture_url", "link");
-    },
-    [enqueueSnackbar, setValue]
-  );
+  const showCroppedImage = React.useCallback(async () => {
+    try {
+      const croppedImage: any = await getCroppedImg(
+        localFile,
+        croppedAreaPixels
+      );
+      if (!!croppedImage) {
+        const formData = new FormData();
+        // we now only have string from createObjectURL, now we need to resolve it
+        // Creates a 'blob:nodedata:...' URL string that represents the given <Blob> object and can be used to retrieve the Blob later.
+        let blobImage = await fetch(croppedImage).then((r) => r.blob());
+        formData.append("file", blobImage, "Idk.jpg");
+
+        sendUploadActivityPhoto(formData);
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }, [croppedAreaPixels]);
+
+  const handleCloseModal = React.useCallback(() => {
+    setLocalFile(null);
+  }, []);
+
+  const handleResetSelectedPhoto = React.useCallback(() => {
+    setCroppedImage(null);
+    setValue("title_picture_url", undefined);
+  }, [setValue]);
 
   return (
     <>
+      <Modal
+        aria-labelledby="modal-title"
+        aria-describedby="modal-description"
+        open={!!localFile}
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          backdropFilter: "blur(4px)", // Add backdrop filter to blur the background
+          // zIndex: theme.zIndex.modal + 1,
+        }}
+        onClose={handleCloseModal}
+      >
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            // backgroundColor: (theme) => theme.palette.background.paper,
+            // boxShadow: (theme) => theme.shadows[5],
+            outline: "none",
+            width: "90%",
+          }}
+        >
+          <Box
+            sx={{
+              position: "relative",
+              height: 400,
+              width: "90%",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+            }}
+          >
+            <Box sx={{ position: "relative", height: 350, width: "100%" }}>
+              <Cropper
+                image={localFile}
+                crop={crop}
+                zoom={zoom}
+                aspect={4 / 3}
+                onCropChange={setCrop}
+                onCropComplete={onCropComplete}
+                onZoomChange={setZoom}
+                style={{
+                  containerStyle: {
+                    color: "transparent",
+                  },
+                }}
+              />
+            </Box>
+            <OffliButton
+              sx={{ mt: 4, width: "80%" }}
+              onClick={showCroppedImage}
+            >
+              Crop
+            </OffliButton>
+          </Box>
+        </Box>
+      </Modal>
       <Box
         sx={{
           display: "flex",
@@ -127,11 +252,11 @@ export const ActivityPhotoForm: React.FC<IActivityPhotoFormProps> = ({
           display: "flex",
           flexDirection: "column",
           justifyContent: "center",
-          alignItem: "center",
+          alignItems: "center",
           mb: 6,
         }}
       >
-        {selectedPhoto ? (
+        {selectedPhoto || croppedImage ? (
           <Box
             sx={{
               width: "100%",
@@ -142,21 +267,20 @@ export const ActivityPhotoForm: React.FC<IActivityPhotoFormProps> = ({
           >
             <img
               src={selectedPhoto}
+              alt="cropped"
               style={{
-                width: 250,
-                height: 200,
+                width: 280,
+                aspectRatio: 4 / 3,
                 border: `1px solid ${palette?.primary.main}`,
                 borderRadius: 5,
                 boxShadow: "2px 3px 3px #ccc",
               }}
-              alt="Selected img"
-              data-testid="activity-selected-img"
             />
             <OffliButton
               variant="text"
               sx={{ mt: 2, fontSize: 16 }}
               size="small"
-              onClick={() => setValue("title_picture_url", undefined)}
+              onClick={handleResetSelectedPhoto}
               data-testid="choose-different-img-btn"
             >
               Choose different picture
@@ -169,51 +293,42 @@ export const ActivityPhotoForm: React.FC<IActivityPhotoFormProps> = ({
               control={control}
               render={({ field: { ref, ...field }, fieldState: { error } }) => {
                 return (
-                  <Upload
-                    name="file"
-                    value={field.value?.[0]}
-                    style={{ display: "flex", justifyContent: "center" }}
-                    beforeUpload={checkFileBeforeUpload}
-                    onSuccess={handleSuccessfullFileUpload}
-                    onError={() =>
-                      enqueueSnackbar("Failed to upload photo", {
-                        variant: "error",
-                      })
-                    }
-                    action={() => `${DEFAULT_DEV_URL}/files`}
-                    headers={{
-                      authorization: `Bearer ${token}`,
+                  <Box
+                    sx={{
+                      width: "75%",
+                      height: 100,
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      position: "relative",
+                      bgcolor:
+                        palette?.mode === "light"
+                          ? grey[200]
+                          : palette?.background?.default,
+                      borderRadius: 5,
+                      border: (theme) =>
+                        `1px dashed ${theme.palette.primary.main}`,
                     }}
+                    onClick={() => hiddenFileInput?.current?.click()}
                   >
-                    {/* TODO outsource this component */}
-                    <Box
-                      sx={{
-                        width: 200,
-                        height: 100,
-                        display: "flex",
-                        flexDirection: "column",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        position: "relative",
-                        bgcolor:
-                          palette?.mode === "light"
-                            ? grey[200]
-                            : palette?.background?.default,
-                        borderRadius: 5,
-                        border: (theme) =>
-                          `1px dashed ${theme.palette.primary.main}`,
-                      }}
+                    <input
+                      onChange={handleFileUpload}
+                      type="file"
+                      style={{ display: "none" }}
+                      ref={hiddenFileInput}
+                      // setting empty string to always fire onChange event on input even when selecting same pictures 2 times in a row
+                      value={""}
+                    />
+                    <IconButton size="large" data-testid="upload-img-btn">
+                      <AddAPhotoIcon color="primary" />
+                    </IconButton>
+                    <Typography
+                      sx={{ fontSize: 14, color: palette?.text?.primary }}
                     >
-                      <IconButton size="large" data-testid="upload-img-btn">
-                        <AddAPhotoIcon color="primary" />
-                      </IconButton>
-                      <Typography
-                        sx={{ fontSize: 14, color: palette?.text?.primary }}
-                      >
-                        Upload from your phone
-                      </Typography>
-                    </Box>
-                  </Upload>
+                      Upload from your phone
+                    </Typography>
+                  </Box>
                 );
               }}
             />
@@ -232,7 +347,7 @@ export const ActivityPhotoForm: React.FC<IActivityPhotoFormProps> = ({
               <Box
                 onClick={openGallery}
                 sx={{
-                  width: 200,
+                  width: "75%",
                   height: 100,
                   display: "flex",
                   flexDirection: "column",

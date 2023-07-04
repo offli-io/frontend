@@ -44,7 +44,7 @@ const NotificationsScreen = () => {
   );
 
   const navigateBasedOnType = React.useCallback(
-    (type?: NotificationTypeEnum, id?: string) => {
+    (type?: NotificationTypeEnum, id?: number) => {
       if (type === NotificationTypeEnum.ACTIVITY_INV) {
         return navigate(`${ApplicationLocations.ACTIVITIES}/request/${id}`, {
           state: {
@@ -89,7 +89,6 @@ const NotificationsScreen = () => {
         height: "100vh",
       }}
     >
-      {/* <BackHeader title="Notifications" sx={{ mb: 2 }} to={from} /> */}
       <Box
         sx={{
           display: "flex",

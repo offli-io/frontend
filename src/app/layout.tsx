@@ -2,7 +2,7 @@ import { AuthenticationContext } from "../assets/theme/authentication-provider";
 import BottomNavigator from "../components/bottom-navigator/bottom-navigator";
 import React from "react";
 import Routes from "../routes/routes";
-import OffliHeader from "../components/offli-header";
+import OffliHeader from "../components/offli-header/offli-header";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Box, useTheme } from "@mui/material";
 import { ApplicationLocations } from "../types/common/applications-locations.dto";
@@ -34,6 +34,8 @@ export const Layout: React.FC<ILayoutProps> = ({ children }) => {
   const { data: { data } = {}, isLoading } = useUser({
     id: userInfo?.id,
   });
+
+  const isBuddyRequest = location?.pathname?.includes("/profile/request");
 
   React.useEffect(() => {
     if (!!data && !data?.username && stateToken) {
@@ -100,7 +102,10 @@ export const Layout: React.FC<ILayoutProps> = ({ children }) => {
           overflow: "hidden",
         }}
       >
-        {stateToken && displayHeader && <OffliHeader sx={{ width: "100%" }} />}
+        {/* TODO backHeader and diusplayheader better naming */}
+        {stateToken && (
+          <OffliHeader sx={{ width: "100%" }} backHeader={!displayHeader} />
+        )}
         <Box
           sx={{
             width: "100%",
@@ -111,7 +116,7 @@ export const Layout: React.FC<ILayoutProps> = ({ children }) => {
         >
           <Routes />
         </Box>
-        {stateToken && displayBottomNavigator && (
+        {stateToken && displayBottomNavigator && !isBuddyRequest && (
           <BottomNavigator sx={{ height: "100%" }} />
         )}
       </Box>

@@ -25,7 +25,7 @@ export const ActivityInviteForm: React.FC<IActivityTypeFormProps> = ({
   onNextClicked,
 }) => {
   const { userInfo } = React.useContext(AuthenticationContext);
-  const [invitedBuddies, setInvitedBuddies] = React.useState<string[]>([]);
+  const [invitedBuddies, setInvitedBuddies] = React.useState<number[]>([]);
   const { enqueueSnackbar } = useSnackbar();
   const queryClient = useQueryClient();
 
@@ -38,7 +38,7 @@ export const ActivityInviteForm: React.FC<IActivityTypeFormProps> = ({
   const { data: buddies, isLoading } = useQuery(
     ["buddies", userInfo?.id, queryStringDebounced],
     // TODO Fetch with current user id
-    () => getBuddies(String(userInfo?.id), queryStringDebounced),
+    () => getBuddies(Number(userInfo?.id), queryStringDebounced),
     {
       // enabled: !!queryStringDebounced,
       enabled: !!userInfo?.id,
@@ -48,7 +48,7 @@ export const ActivityInviteForm: React.FC<IActivityTypeFormProps> = ({
   const { mutate: sendInviteBuddy } = useMutation(
     ["invite-person"],
     (buddy?: IPerson) =>
-      inviteBuddy(String(activityId?.id), {
+      inviteBuddy(Number(activityId?.id), {
         ...buddy,
         invited_by: userInfo?.id,
         status: ActivityInviteStateEnum.INVITED,
@@ -56,7 +56,7 @@ export const ActivityInviteForm: React.FC<IActivityTypeFormProps> = ({
       }),
     {
       onSuccess: (data, buddy) => {
-        setInvitedBuddies([...invitedBuddies, String(buddy?.id)]);
+        setInvitedBuddies([...invitedBuddies, Number(buddy?.id)]);
       },
       onError: (error) => {
         enqueueSnackbar("Failed to invite user", { variant: "error" });
@@ -66,8 +66,8 @@ export const ActivityInviteForm: React.FC<IActivityTypeFormProps> = ({
 
   const { mutate: sendUninviteBuddy } = useMutation(
     ["uninvite-person"],
-    (buddyId?: string) =>
-      uninviteBuddy(String(activityId?.id), String(buddyId)),
+    (buddyId?: number) =>
+      uninviteBuddy(Number(activityId?.id), Number(buddyId)),
     {
       onSuccess: (data, buddyId) => {
         const _buddies = invitedBuddies?.filter((buddy) => buddy !== buddyId);
@@ -84,7 +84,7 @@ export const ActivityInviteForm: React.FC<IActivityTypeFormProps> = ({
   const handleBuddyInviteClick = React.useCallback(
     (buddy: IPerson) => {
       //fire request for invite
-      if (invitedBuddies?.includes(String(buddy?.id))) {
+      if (invitedBuddies?.includes(Number(buddy?.id))) {
         sendUninviteBuddy(buddy?.id);
       } else {
         sendInviteBuddy(buddy);
@@ -155,7 +155,7 @@ export const ActivityInviteForm: React.FC<IActivityTypeFormProps> = ({
                   key={buddy?.id}
                   onInviteClick={handleBuddyInviteClick}
                   buddy={buddy}
-                  invited={invitedBuddies?.includes(String(buddy?.id))}
+                  invited={invitedBuddies?.includes(Number(buddy?.id))}
                 />
               ))
             )}

@@ -3,7 +3,7 @@ import { PrivateRoutes } from "../components/private-routes";
 import ActivitiesScreen from "../screens/my-activities-screen/my-activities-screen";
 import ChatScreen from "../screens/chat-screen";
 import CreateActivityScreen from "../screens/create-activity-screen/create-activity-screen";
-import EditProfileScreen from "../screens/edit-profile-screen";
+import EditProfileScreen from "../screens/edit-profile-screen/edit-profile-screen";
 import LoadingScreen from "../screens/loading-screen";
 import LoginOrRegisterScreen from "../screens/login-or-register";
 import LoginScreen from "../screens/login-screen";
