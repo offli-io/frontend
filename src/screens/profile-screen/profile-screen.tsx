@@ -66,7 +66,7 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
 
   return (
     <>
-      {[
+      {/* {[
         ProfileEntryTypeEnum.REQUEST,
         ProfileEntryTypeEnum.BUDDY,
         ProfileEntryTypeEnum.USER_PROFILE,
@@ -76,7 +76,7 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
           sx={{ mb: 2 }}
           to={from}
         />
-      )}
+      )} */}
       <PageWrapper>
         <Box
           sx={{
@@ -110,7 +110,7 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
             }}
             data-testid="profile-img"
           />
-          {type !== ProfileEntryTypeEnum.REQUEST && (
+          {type === ProfileEntryTypeEnum.PROFILE && (
             <IconButton
               color="primary"
               sx={{

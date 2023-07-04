@@ -10,7 +10,8 @@ import { useNotifications } from "../../hooks/use-notifications";
 import { ApplicationLocations } from "../../types/common/applications-locations.dto";
 import { HEADER_HEIGHT } from "../../utils/common-constants";
 import BackHeader from "./components/back-header";
-import { mapPathnameToHeaderTitle } from "./utils/map-pathname-to-header-title";
+import { mapPathnameToHeaderTitle } from "./utils/header-utils";
+import { ICustomizedLocationStateDto } from "../../types/common/customized-location-state.dto";
 
 interface IProps {
   backHeader?: boolean;
@@ -19,6 +20,7 @@ interface IProps {
 
 const OffliHeader: React.FC<IProps> = ({ sx, backHeader }) => {
   const location = useLocation();
+  const from = (location?.state as ICustomizedLocationStateDto)?.from;
   const navigate = useNavigate();
   const headerRef = React.useRef<HTMLElement | null>(null);
   const { userInfo } = React.useContext(AuthenticationContext);
@@ -57,7 +59,7 @@ const OffliHeader: React.FC<IProps> = ({ sx, backHeader }) => {
           title={mapPathnameToHeaderTitle(
             location?.pathname as ApplicationLocations
           )}
-          to={ApplicationLocations.PROFILE}
+          to={from}
         />
       ) : (
         <Box

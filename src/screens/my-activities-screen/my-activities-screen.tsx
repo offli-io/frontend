@@ -280,7 +280,13 @@ const ActivitiesScreen = () => {
         }}
         //loading={placeQuery?.isLoading}
         // isOptionEqualToValue={(option, value) => option.id === value.id}
-        onFocus={() => navigate(ApplicationLocations.SEARCH)}
+        onFocus={() =>
+          navigate(ApplicationLocations.SEARCH, {
+            state: {
+              from: ApplicationLocations.ACTIVITIES,
+            },
+          })
+        }
         onBlur={() => setIsSearchFocused(false)}
         // getOptionLabel={(option) => option?.display_name}
         renderInput={(params) => (

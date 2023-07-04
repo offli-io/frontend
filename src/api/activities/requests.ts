@@ -18,6 +18,7 @@ import {
 import { IPredefinedPictureDto } from "../../types/activities/predefined-picture.dto";
 import { IPredefinedTagDto } from "../../types/activities/predefined-tag.dto";
 import { IFileFormDataRequestDto } from "../../types/activities/file-form-data-request.dto";
+import { ActivitiyParticipantStateEnum } from "../../types/activities/activity-participant-state-enum.dto";
 
 export const getActivities = async ({
   queryFunctionContext,
@@ -85,6 +86,7 @@ export const getParticipantActivities = ({
     {
       params: {
         participantId,
+        participantStatus: ActivitiyParticipantStateEnum.CONFIRMED,
       },
       // params: {
       //   text,

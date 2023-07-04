@@ -42,12 +42,14 @@ export const loginViaGoogle = (accessToken?: string) => {
 };
 
 export const getBearerToken = (code?: string, type?: "login" | "register") => {
+  const currentUrl = window.location.href.split("/").slice(0, -1).join("/");
+
   const promise = axios.post("https://www.googleapis.com/oauth2/v4/token", {
     client_id: CLIENT_ID,
     client_secret: "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",
     code,
     grant_type: "authorization_code",
-    redirect_uri: `https://localhost:3000/${type}/`,
+    redirect_uri: `${currentUrl}/`,
   });
 
   return promise;
