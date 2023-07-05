@@ -11,6 +11,7 @@ interface ILabeledTileProps {
   title: string;
   imageUrl?: string;
   sx?: SxProps;
+  selected?: boolean;
   onClick: (title: string) => void;
 }
 
@@ -18,12 +19,11 @@ const LabeledTile: React.FC<ILabeledTileProps> = ({
   title,
   imageUrl,
   sx,
+  selected,
   onClick,
+  ...rest
 }) => {
-  const [selected, setSelected] = React.useState<boolean>(false);
-
   const handleCardClick = React.useCallback(() => {
-    setSelected((selected) => !selected);
     onClick(title);
   }, [onClick]);
 
@@ -44,6 +44,8 @@ const LabeledTile: React.FC<ILabeledTileProps> = ({
       <Button
         sx={{ bgcolor: "transparent", width: "100%", height: "100%" }}
         onClick={handleCardClick}
+        data-testid="labeled-tile-btn"
+        {...rest}
       >
         <img
           alt="Labeled tile"

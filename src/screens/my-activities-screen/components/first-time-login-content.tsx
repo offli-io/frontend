@@ -7,9 +7,9 @@ import firstTimeLoginUrl from "../../../assets/img/first-time-login.svg";
 import { AuthenticationContext } from "../../../assets/theme/authentication-provider";
 
 export interface IActivityActionsProps {
-  onLeaveConfirm?: (activityId?: string) => void;
-  onLeaveCancel?: (activityId?: string) => void;
-  activityId?: string;
+  onLeaveConfirm?: (activityId?: number) => void;
+  onLeaveCancel?: (activityId?: number) => void;
+  activityId?: number;
 }
 
 const FirstTimeLoginContent: React.FC<IActivityActionsProps> = ({

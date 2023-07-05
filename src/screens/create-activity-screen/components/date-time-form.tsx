@@ -7,6 +7,7 @@ import {
   MenuItem,
   TextField,
   Typography,
+  useTheme,
 } from "@mui/material";
 import React from "react";
 import { Controller, UseFormReturn } from "react-hook-form";
@@ -48,13 +49,13 @@ const generateOptionsOrder = (type: "from" | "until") => {
 export const generateDateSlots: (
   isFirstSelected?: boolean
 ) => ICarouselItem[] = (isFirstSelected?: boolean) => {
-  const dateSlots = [];
+  const dateSlots = [] as ICarouselItem[];
   for (let i = 0; i < 5; i++) {
     const date = add(new Date(), {
       days: i,
     });
     dateSlots.push({
-      value: date,
+      dateValue: date,
       title: format(date, "EEEE").slice(0, 3),
       description: format(date, "dd.MM.yyyy"),
       disabled: false,
@@ -82,16 +83,12 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
   methods,
 }) => {
   const { control, formState, watch, setValue } = methods;
+  const { palette } = useTheme();
   const currentStartDate = watch("datetime_from");
-  console.log(currentStartDate);
   const currentEndDate = watch("datetime_until");
   const [date, setDate] = React.useState({
     fromOptions: generateDateSlots(),
     untilOptions: generateDateSlots(),
-  });
-  const [time, setTime] = React.useState({
-    fromOptions: generateOptionsOrder("from"),
-    untilOptions: generateOptionsOrder("until"),
   });
 
   const [timeValues, setTimeValues] = React.useState<ITimeValues>({
@@ -99,69 +96,45 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
     until: "",
   });
 
-  console.log(roundMinutes(new Date()));
-
   const [sameEndDate, setSameEndDate] = React.useState(true);
 
   const handleTimeChange = React.useCallback(
     (type: "datetime_from" | "datetime_until", value: string | null) => {
       if (value) {
         const timeSplit = value.split(":");
-        const date = currentStartDate ? new Date(currentStartDate) : new Date();
-        date.setHours(Number(timeSplit[0]), Number(timeSplit[1]), 0);
+        const _date = currentStartDate
+          ? new Date(currentStartDate)
+          : new Date();
+        _date.setHours(Number(timeSplit[0]), Number(timeSplit[1]), 0);
 
-        setValue(type, date);
+        setValue(type, _date);
+        if (!currentStartDate) {
+          const _fromOptions = date?.fromOptions?.map((item, index) =>
+            index === 0 ? { ...item, selected: true } : item
+          );
+          setDate((options) => ({
+            ...options,
+            fromOptions: _fromOptions,
+          }));
+        }
       }
     },
-    [setValue, watch, currentStartDate]
+    [setValue, watch, currentStartDate, currentStartDate, date]
   );
 
+  console.log(watch("datetime_from"));
   const isFormValid = !!watch("datetime_from") && !!watch("datetime_until");
-
-  const getFromDisabledOptions = (option: string) => {
-    const toTime = !!currentEndDate && format(currentEndDate, "hh:mm");
-    if (toTime) {
-      if (option >= toTime) {
-        return true;
-      }
-    }
-    return false;
-  };
-
-  const getToDisabledOptions = (option: string) => {
-    //TODO this is bad fix it or not even use it
-    // if (currentStartDate) {
-    //   const [hours, minutes] = option.split(":");
-    //   const _option = new Date().setHours(Number(hours), Number(minutes));
-    //   if (_option <= currentStartDate) {
-    //     return true;
-    //   }
-    // }
-    return false;
-  };
 
   React.useEffect(() => {
     const selectedDate = date?.fromOptions?.find((item) => item.selected);
-    setValue("datetime_from", selectedDate?.value);
-    if (sameEndDate) {
-      setValue("datetime_until", selectedDate?.value);
+
+    if (selectedDate) {
+      setValue("datetime_from", selectedDate?.dateValue);
+      if (sameEndDate) {
+        setValue("datetime_until", selectedDate?.dateValue);
+      }
     }
   }, [date?.fromOptions]);
-
-  // const defaultValueFrom = React.useMemo(
-  //   () => `${new Date().getHours() + 1}:00`,
-  //   []
-  // )
-
-  // const defaultValueTo = React.useMemo(
-  //   () => `${new Date().getHours() + 2}:00`,
-  //   []
-  // )
-
-  // React.useEffect(() => {
-  //   setValue('datetime_from', defaultValueFrom)
-  //   setValue('datetime_until', defaultValueTo)
-  // }, [])
 
   const handleItemSelect = React.useCallback(
     (type: "from" | "until", id?: string) => {
@@ -237,9 +210,15 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
           <Typography variant="h2" sx={{ mr: 1, color: "primary.main" }}>
             Select
           </Typography>
-          <Typography variant="h2">date and time</Typography>
+          <Typography variant="h2" sx={{ color: palette?.text?.primary }}>
+            date and time
+          </Typography>
         </Box>
-        <Typography sx={{ mt: 1, fontWeight: "bold" }}>Start date</Typography>
+        <Typography
+          sx={{ mt: 1, fontWeight: "bold", color: palette?.text?.primary }}
+        >
+          Start date
+        </Typography>
         <MobileCarousel
           items={date.fromOptions}
           onItemSelect={(item) => handleItemSelect("from", item?.id)}
@@ -253,9 +232,11 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
                 setValue("datetime_until", watch("datetime_from"));
                 setSameEndDate((previousValue) => !previousValue);
               }}
+              data-testid="same-end-date-checkbox"
             />
           }
           label="End date is same as start date"
+          sx={{ color: palette?.text?.primary }}
         />
 
         {!sameEndDate && (
@@ -266,7 +247,11 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
           />
         )}
 
-        <Typography sx={{ my: 2, fontWeight: "bold" }}>Start time</Typography>
+        <Typography
+          sx={{ my: 2, fontWeight: "bold", color: palette?.text?.primary }}
+        >
+          Start time
+        </Typography>
 
         <Box
           sx={{
@@ -288,11 +273,17 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
             }}
             options={generateOptionsOrder("from")}
             value={timeValues?.from}
-            //defaultValue={"18:00"}
-            //IDK if we should use from disabled options
-            //getOptionDisabled={getFromDisabledOptions}
+            data-testid="activitiy-from-time-picker"
           />
-          <Typography sx={{ fontWeight: 200, fontSize: "2rem" }}>-</Typography>
+          <Typography
+            sx={{
+              fontWeight: 200,
+              fontSize: "2rem",
+              color: palette?.text?.primary,
+            }}
+          >
+            -
+          </Typography>
 
           <TimePicker
             label="To"
@@ -305,8 +296,7 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
               handleTimeChange("datetime_until", value);
             }}
             options={generateOptionsOrder("until")}
-            getOptionDisabled={getToDisabledOptions}
-            //defaultValue={defaultValueTo}
+            data-testid="activitiy-to-time-picker"
           />
         </Box>
       </Box>
@@ -314,20 +304,19 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
       <Box
         sx={{ width: "100%", display: "flex", justifyContent: "space-between" }}
       >
-        <IconButton onClick={onBackClicked} color="primary">
+        <IconButton
+          onClick={onBackClicked}
+          color="primary"
+          data-testid="back-btn"
+        >
           <ArrowBackIosNewIcon />
         </IconButton>
-        {/* <OffliButton
-          onClick={onBackClicked}
-          sx={{ width: '40%' }}
-          variant="text"
-        >
-          Back
-        </OffliButton> */}
+
         <OffliButton
           onClick={onNextClicked}
           sx={{ width: "40%" }}
           disabled={!isFormValid || !isTimeSelected}
+          data-testid="next-btn"
         >
           Next
         </OffliButton>

@@ -20,7 +20,7 @@ const OffliBackButton: React.FC<IOffliBackButtonProps> = ({
       variant="text"
       sx={{
         fontSize: 16,
-        color: "black",
+        color: ({ palette }) => palette?.text?.primary,
         "& .MuiButton-startIcon": {
           mr: 0.4,
         },

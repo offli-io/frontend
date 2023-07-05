@@ -6,6 +6,7 @@ import {
   InputAdornment,
   TextField,
   Typography,
+  useTheme,
 } from "@mui/material";
 import MyActivityCard from "../../components/my-activity-card";
 import { PageWrapper } from "../../components/page-wrapper";
@@ -42,41 +43,33 @@ import { ActivityInviteStateEnum } from "../../types/activities/activity-invite-
 import { useUsers } from "../../hooks/use-users";
 import { useParticipantActivities } from "../../hooks/use-participant-activities";
 import { useUser } from "../../hooks/use-user";
+import { LocationContext } from "../../app/providers/location-provider";
 
 const ActivitiesScreen = () => {
   const { userInfo, isFirstTimeLogin, setIsFirstTimeLogin } = React.useContext(
     AuthenticationContext
   );
+  const { location, setLocation } = React.useContext(LocationContext);
   const { toggleDrawer } = React.useContext(DrawerContext);
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
   const queryClient = useQueryClient();
   const [isSearchFocused, setIsSearchFocused] = React.useState(false);
-
-  const storageLocation = sessionStorage.getItem("current_location");
-  const _storageLocation = !!storageLocation
-    ? JSON.parse(storageLocation)
-    : null;
+  const { palette } = useTheme();
 
   //TODO either call it like this or set user info once useUsers request in layout.tsx got Promise resolved
   const { data: { data: userData = {} } = {} } = useUser({
     id: userInfo?.id,
   });
 
-  const [selectedLocation, setSelectedLocation] = React.useState<
-    ILocation | undefined | null
-  >(_storageLocation ?? userData?.location);
-
   const { data: { data: { activities = [] } = {} } = {}, isLoading } =
     useActivities<IActivityListRestDto>();
-
-  console.log(userData?.location);
 
   const {
     data: { data = {} } = {},
     isLoading: areParticipantActivitiesLoading,
     invalidate: invalidateParticipantActivities,
-  } = useParticipantActivities({ userId: userInfo?.id });
+  } = useParticipantActivities({ participantId: userInfo?.id });
 
   const participantActivites = data?.activities ?? [];
 
@@ -87,29 +80,16 @@ const ActivitiesScreen = () => {
       )
   );
 
-  // const { data: { data: { activities = [] } = {} } = {}, isLoading } = useQuery(
-  //   ["activities"],
-  //   () => getActivity<IActivityListRestDto>({ id: undefined }),
-  //   {
-  //     onError: () => {
-  //       //some generic toast for every hook
-  //       enqueueSnackbar(`Failed to load activit${"y"}`, {
-  //         variant: "error",
-  //       });
-  //     },
-  //   }
-  // );
-
   const { mutate: sendJoinActivity } = useMutation(
     ["invite-person"],
-    (activityId?: string) => {
+    (activityId?: number) => {
       const {
         id = undefined,
         name = undefined,
         username = undefined,
         profile_photo_url = undefined,
       } = { ...userData };
-      return inviteBuddy(String(activityId), {
+      return inviteBuddy(activityId ?? -1, {
         id,
         name,
         username,
@@ -144,7 +124,7 @@ const ActivitiesScreen = () => {
 
   const { mutate: sendLeaveActivity } = useMutation(
     ["leave-activity"],
-    (activityId?: string) =>
+    (activityId?: number) =>
       removePersonFromActivity({ activityId, personId: userInfo?.id }),
     {
       onSuccess: () => {
@@ -162,7 +142,7 @@ const ActivitiesScreen = () => {
   );
 
   const handleActionClick = React.useCallback(
-    (action?: ActivityActionsTypeEnumDto, activityId?: string) => {
+    (action?: ActivityActionsTypeEnumDto, activityId?: number) => {
       switch (action) {
         case ActivityActionsTypeEnumDto.ACTIVITY_MEMBERS:
           return navigate(
@@ -244,18 +224,14 @@ const ActivitiesScreen = () => {
         <SetLocationContent
           onLocationSelect={(location) => {
             toggleDrawer({ open: false, content: undefined });
-            setSelectedLocation(location);
-            sessionStorage.setItem(
-              "current_location",
-              JSON.stringify(location)
-            );
+            setLocation?.(location);
           }}
-          externalLocation={selectedLocation}
+          externalLocation={location}
         />
       ),
       // onClose: () => setIsFirstTimeLogin?.(false),
     });
-  }, []);
+  }, [location]);
 
   React.useEffect(() => {
     Boolean(isFirstTimeLogin) &&
@@ -265,17 +241,6 @@ const ActivitiesScreen = () => {
         onClose: () => setIsFirstTimeLogin?.(false),
       });
   }, [isFirstTimeLogin, toggleDrawer]);
-
-  React.useEffect(() => {
-    // set default location value when component completely renders
-    if (!selectedLocation) {
-      if (!!_storageLocation) {
-        setSelectedLocation(_storageLocation);
-      } else if (!!userData?.location) {
-        setSelectedLocation(userData?.location);
-      }
-    }
-  }, [_storageLocation, userData?.location]);
 
   return (
     <PageWrapper sxOverrides={{ px: 2 }}>
@@ -288,7 +253,10 @@ const ActivitiesScreen = () => {
           mb: 1,
         }}
       >
-        <Typography variant="h5" sx={{ fontSize: 24 }}>
+        <Typography
+          variant="h5"
+          sx={{ fontSize: 24, color: palette?.text?.primary }}
+        >
           Explore
         </Typography>
         <OffliButton
@@ -302,8 +270,9 @@ const ActivitiesScreen = () => {
           }}
           startIcon={<PlaceIcon sx={{ fontSize: "1.4rem" }} />}
           onClick={handleLocationSelect}
+          data-test-id="current-location-btn"
         >
-          {selectedLocation?.name ?? "No location found"}
+          {location?.name ?? "No location found"}
         </OffliButton>
       </Box>
       <Autocomplete
@@ -320,8 +289,13 @@ const ActivitiesScreen = () => {
         }}
         //loading={placeQuery?.isLoading}
         // isOptionEqualToValue={(option, value) => option.id === value.id}
-        onChange={(e, locationObject) => console.log(locationObject)}
-        onFocus={() => navigate(ApplicationLocations.SEARCH)}
+        onFocus={() =>
+          navigate(ApplicationLocations.SEARCH, {
+            state: {
+              from: ApplicationLocations.ACTIVITIES,
+            },
+          })
+        }
         onBlur={() => setIsSearchFocused(false)}
         // getOptionLabel={(option) => option?.display_name}
         renderInput={(params) => (
@@ -340,6 +314,7 @@ const ActivitiesScreen = () => {
                 fontSize: 14,
               },
             }}
+            data-testid="activities-search-input"
             // onChange={(e) => setValue("placeQuery", e.target.value)}
           />
         )}
@@ -351,7 +326,12 @@ const ActivitiesScreen = () => {
       ) : (
         <>
           {!anyMyActivities && !anyNearYouActivities && (
-            <Box>There are no activities</Box>
+            <Typography
+              variant="h4"
+              sx={{ my: 6, color: palette?.text?.primary }}
+            >
+              There are no activities
+            </Typography>
           )}
           {anyMyActivities && (
             <>
@@ -365,7 +345,11 @@ const ActivitiesScreen = () => {
                 }}
               >
                 <Typography variant="h5">Your upcoming this week</Typography>
-                <OffliButton variant="text" sx={{ fontSize: 16 }}>
+                <OffliButton
+                  variant="text"
+                  sx={{ fontSize: 16 }}
+                  data-testid="see-all-activities-btn"
+                >
                   See all
                 </OffliButton>
               </Box>
@@ -414,6 +398,7 @@ const ActivitiesScreen = () => {
                       },
                     })
                   }
+                  data-testid="see-map-btn"
                 >
                   See map
                 </OffliButton>

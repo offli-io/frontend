@@ -1,10 +1,10 @@
 import { AuthenticationContext } from "../assets/theme/authentication-provider";
-import BottomNavigator from "../components/bottom-navigator";
+import BottomNavigator from "../components/bottom-navigator/bottom-navigator";
 import React from "react";
 import Routes from "../routes/routes";
-import OffliHeader from "../components/offli-header";
+import OffliHeader from "../components/offli-header/offli-header";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Box } from "@mui/material";
+import { Box, useTheme } from "@mui/material";
 import { ApplicationLocations } from "../types/common/applications-locations.dto";
 import BackHeader from "../components/back-header";
 import { useUsers } from "../hooks/use-users";
@@ -26,6 +26,7 @@ export const Layout: React.FC<ILayoutProps> = ({ children }) => {
   const { stateToken, userInfo } = React.useContext(AuthenticationContext);
   const location = useLocation();
   const navigate = useNavigate();
+  const { palette } = useTheme();
 
   const [displayHeader, setDisplayHeader] = React.useState(true);
   const [displayBottomNavigator, setDisplayBottomNavigator] =
@@ -34,6 +35,8 @@ export const Layout: React.FC<ILayoutProps> = ({ children }) => {
   const { data: { data } = {}, isLoading } = useUser({
     id: userInfo?.id,
   });
+
+  const isBuddyRequest = location?.pathname?.includes("/profile/request");
 
   React.useEffect(() => {
     if (!!data && !data?.username && stateToken) {
@@ -101,17 +104,21 @@ export const Layout: React.FC<ILayoutProps> = ({ children }) => {
           overflow: "hidden",
         }}
       >
-        {stateToken && displayHeader && <OffliHeader sx={{ width: "100%" }} />}
+        {/* TODO backHeader and diusplayheader better naming */}
+        {stateToken && (
+          <OffliHeader sx={{ width: "100%" }} backHeader={!displayHeader} />
+        )}
         <Box
           sx={{
             width: "100%",
             height: "100%",
             overflow: "scroll",
+            bgcolor: palette.background.default,
           }}
         >
           <Routes />
         </Box>
-        {stateToken && displayBottomNavigator && (
+        {stateToken && displayBottomNavigator && !isBuddyRequest && (
           <BottomNavigator sx={{ height: "100%" }} />
         )}
       </Box>

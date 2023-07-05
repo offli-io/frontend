@@ -8,7 +8,7 @@ import { BuddyActionTypeEnum } from "../../../types/common/buddy-actions-type-en
 // import { useActivityMenuItems } from "../hooks/use-activity-menu-items";
 
 export interface IBuddyActionsProps {
-  onBuddyActionClick?: (type?: BuddyActionTypeEnum, userId?: string) => void;
+  onBuddyActionClick?: (type?: BuddyActionTypeEnum, userId?: number) => void;
   buddy?: IPerson;
 }
 

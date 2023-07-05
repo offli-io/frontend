@@ -1,20 +1,16 @@
-import React from "react";
-import { Box, Typography } from "@mui/material";
-import { IActivity } from "../types/activities/activity.dto";
-import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import LockIcon from "@mui/icons-material/Lock";
-import LockOpenIcon from "@mui/icons-material/LockOpen";
-import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
+import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
+import { Box, Typography } from "@mui/material";
+import React from "react";
 import useLongPress from "../hooks/use-long-press";
-import TransparentChip from "./transparent-chip";
-import { ActivityVisibilityEnum } from "../types/activities/activity-visibility-enum.dto";
+import { IActivity } from "../types/activities/activity.dto";
 
 interface IProps {
   activity?: IActivity;
   onPress: (activity?: IActivity) => void;
 }
 
-const ActivityCard: React.FC<IProps> = ({ activity, onPress }) => {
+const ActivityCard: React.FC<IProps> = ({ activity, onPress, ...rest }) => {
   //TODO maybe in later use also need some refactoring
   const { action, handlers } = useLongPress();
 
@@ -26,7 +22,7 @@ const ActivityCard: React.FC<IProps> = ({ activity, onPress }) => {
         marginTop: "2%",
         marginBottom: "2%",
         borderRadius: "12px",
-        backgroundImage: `url(${require("../assets/img/dune.webp")})`,
+        backgroundImage: `url(${activity?.title_picture_url})`,
         // backgroundImage: `url(${activity?.title_picture})`,
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
@@ -36,11 +32,13 @@ const ActivityCard: React.FC<IProps> = ({ activity, onPress }) => {
         color: "white",
       }}
       onClick={() => onPress(activity)}
+      data-testid="activity-card"
       // {...handlers}
       // onTouchStart={() => {
       //   const timer = setTimeout(() => onLongPress(), 500);
       // }}
       // onTouchEnd={() => clearTimeout(timer)}
+      {...rest}
     >
       <Box
         sx={{

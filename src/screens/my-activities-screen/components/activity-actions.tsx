@@ -10,7 +10,7 @@ import { useActivityMenuItems } from "../hooks/use-activity-menu-items";
 export interface IActivityActionsProps {
   onActionClick?: (
     type?: ActivityActionsTypeEnumDto,
-    activityId?: string
+    activityId?: number
   ) => void;
   activity?: IActivity;
 }
@@ -20,7 +20,7 @@ const ActivityActions: React.FC<IActivityActionsProps> = ({
   activity,
 }) => {
   const { userInfo } = React.useContext(AuthenticationContext);
-  const isCreator = activity?.creator?.id === userInfo?.id;
+  const isCreator = activity?.creator_id === userInfo?.id;
   const isParticipant = !!activity?.participants?.find(
     (participant) => participant?.id === userInfo?.id
   );

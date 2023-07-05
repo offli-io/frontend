@@ -23,11 +23,20 @@ import { DrawerContext } from "../../assets/theme/drawer-provider";
 import { IPerson } from "../../types/activities/activity.dto";
 import { BuddyActionTypeEnum } from "../../types/common/buddy-actions-type-enum.dto";
 import { addBuddy, deleteBuddy } from "../../api/users/requests";
-import { useMutation, useQueries, useQueryClient } from "@tanstack/react-query";
+import {
+  useMutation,
+  useQueries,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { useSnackbar } from "notistack";
 import { AuthenticationContext } from "../../assets/theme/authentication-provider";
 import NoBuddiesScreen from "./components/no-buddies-screen";
 import BuddySuggestCard from "../../components/buddy-suggest-card";
+import {
+  getBuddies,
+  getRecommendedBuddies,
+} from "../../api/activities/requests";
 
 const MyBuddiesScreen = () => {
   const navigate = useNavigate();
@@ -36,14 +45,33 @@ const MyBuddiesScreen = () => {
   const { enqueueSnackbar } = useSnackbar();
   const { userInfo } = React.useContext(AuthenticationContext);
   const location = useLocation();
-  const from = (location?.state as ICustomizedLocationStateDto)?.from;
+  const from =
+    (location?.state as ICustomizedLocationStateDto)?.from ??
+    ApplicationLocations.PROFILE;
   const { data, isLoading, invalidateBuddies } = useBuddies({
     text: currentSearch,
   });
 
+  const {
+    data: recommendedBuddiesData,
+    isLoading: areBuddiesRecommendationsLoading,
+  } = useQuery(
+    ["buddies", userInfo?.id],
+    () => getRecommendedBuddies(userInfo?.id ?? -1),
+    {
+      onError: () => {
+        //some generic toast for every hook
+        enqueueSnackbar(`Failed to load recommended buddies`, {
+          variant: "error",
+        });
+      },
+      enabled: !!userInfo?.id,
+    }
+  );
+
   const { mutate: sendDeleteBuddy } = useMutation(
     ["delete-buddy"],
-    (id?: string) => deleteBuddy(userInfo?.id, id),
+    (id?: number) => deleteBuddy(userInfo?.id, id),
     {
       onSuccess: (data, variables) => {
         //TODO what to invalidate, and where to navigate after success
@@ -69,7 +97,7 @@ const MyBuddiesScreen = () => {
 
   const { mutate: sendAddBuddy, isLoading: isAddBuddyLoading } = useMutation(
     ["add-buddy"],
-    (id?: string) => addBuddy(userInfo?.id, id),
+    (id?: number) => addBuddy(userInfo?.id, id),
     {
       onSuccess: (data, variables) => {
         //TODO what to invalidate, and where to navigate after success
@@ -94,7 +122,7 @@ const MyBuddiesScreen = () => {
   );
 
   const handleBuddyActionClick = React.useCallback(
-    (type?: BuddyActionTypeEnum, userId?: string) => {
+    (type?: BuddyActionTypeEnum, userId?: number) => {
       switch (type) {
         case BuddyActionTypeEnum.PROFILE:
           toggleDrawer({ open: false, content: undefined });
@@ -129,9 +157,9 @@ const MyBuddiesScreen = () => {
 
   return (
     <>
-      <BackHeader title="Buddies" to={from} />
+      {/* <BackHeader title="Buddies" to={from} /> */}
       <Box sx={{ mx: 1.5, height: "100%" }}>
-        {data?.data?.length === 0 && currentSearch?.length === 0 ? (
+        {!data || (data?.data?.length === 0 && currentSearch?.length === 0) ? (
           <NoBuddiesScreen />
         ) : (
           <>
@@ -182,33 +210,32 @@ const MyBuddiesScreen = () => {
                 <PersonAddIcon color="primary" />
               </IconButton>
             </Box>
-            <Box>
-              <Typography variant="h5" sx={{ mb: 2 }}>
-                People you attended activity with
-              </Typography>
-              <Box
-                sx={{
-                  display: "flex",
-                  overflowX: "scroll",
-                  width: "100%",
-                  "::-webkit-scrollbar": { display: "none" },
-                }}
-              >
-                {data?.data.map((buddy) => (
-                  <>
-                    <BuddySuggestCard
-                      key={buddy?.id}
-                      buddy={buddy}
-                      onAddBuddyClick={(buddy) => sendAddBuddy(buddy?.id)}
-                      isLoading={isAddBuddyLoading}
-                    />
-                    <BuddySuggestCard key={buddy?.id} buddy={buddy} />
-                    <BuddySuggestCard key={buddy?.id} buddy={buddy} />
-                    <BuddySuggestCard key={buddy?.id} buddy={buddy} />
-                  </>
-                ))}
+            {(recommendedBuddiesData?.data ?? [])?.length > 0 && (
+              <Box>
+                <Typography variant="h5" sx={{ mb: 2 }}>
+                  People you attended activity with
+                </Typography>
+                <Box
+                  sx={{
+                    display: "flex",
+                    overflowX: "scroll",
+                    width: "100%",
+                    "::-webkit-scrollbar": { display: "none" },
+                  }}
+                >
+                  {recommendedBuddiesData?.data?.map((buddy) => (
+                    <>
+                      <BuddySuggestCard
+                        key={buddy?.id}
+                        buddy={buddy}
+                        onAddBuddyClick={(buddy) => sendAddBuddy(buddy?.id)}
+                        isLoading={isAddBuddyLoading}
+                      />
+                    </>
+                  ))}
+                </Box>
               </Box>
-            </Box>
+            )}
             <Box>
               <Typography variant="h5" sx={{ mt: 2, mb: 1 }}>
                 Your buddies

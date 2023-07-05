@@ -4,6 +4,7 @@ import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import { SettingsTypeEnumDto } from "../types/common/settings-type-enum.dto";
 import { ActivityActionsTypeEnumDto } from "../types/common/activity-actions-type-enum.dto";
 import { BuddyActionTypeEnum } from "../types/common/buddy-actions-type-enum.dto";
+import { ProfilePhotoActionsEnum } from "../screens/edit-profile-screen/components/profile-photo-actions";
 
 interface ILabeledDividerProps {
   label?: string;
@@ -12,8 +13,13 @@ interface ILabeledDividerProps {
       | SettingsTypeEnumDto
       | ActivityActionsTypeEnumDto
       | BuddyActionTypeEnum
+      | ProfilePhotoActionsEnum
   ) => void;
-  type?: SettingsTypeEnumDto | ActivityActionsTypeEnumDto | BuddyActionTypeEnum;
+  type?:
+    | SettingsTypeEnumDto
+    | ActivityActionsTypeEnumDto
+    | BuddyActionTypeEnum
+    | ProfilePhotoActionsEnum;
   icon?: React.ReactElement;
   headerRight?: React.ReactElement;
 }
@@ -43,9 +49,17 @@ const MenuItem: React.FC<ILabeledDividerProps> = ({
     >
       <Box sx={{ display: "flex", alignItems: "center" }}>
         {icon}
-        <Typography sx={{ ml: 2, color: "black" }}>{label}</Typography>
+        <Typography
+          sx={{ ml: 2, color: ({ palette }) => palette?.text?.primary }}
+        >
+          {label}
+        </Typography>
       </Box>
-      {headerRight ?? <NavigateNextIcon />}
+      {headerRight ?? (
+        <NavigateNextIcon
+          sx={{ color: ({ palette }) => palette?.text?.primary }}
+        />
+      )}
     </Box>
   );
 };

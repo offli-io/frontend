@@ -1,9 +1,6 @@
+import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import {
-  Autocomplete,
   Box,
-  Checkbox,
-  FormControl,
-  FormControlLabel,
   FormLabel,
   IconButton,
   MenuItem,
@@ -16,15 +13,10 @@ import React from "react";
 import { Controller, UseFormReturn } from "react-hook-form";
 import OffliButton from "../../../components/offli-button";
 import { ActivityVisibilityEnum } from "../../../types/activities/activity-visibility-enum.dto";
-import {
-  ActivityPriceOptionsEnum,
-  ActivityRepetitionOptionsEnum,
-} from "../../../types/common/types";
-import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
+import { ActivityPriceOptionsEnum } from "../../../types/common/types";
 
 interface IPlaceFormProps {
   onNextClicked: () => void;
-
   onBackClicked: () => void;
   methods: UseFormReturn;
 }
@@ -34,11 +26,8 @@ export const ActivityDetailsForm: React.FC<IPlaceFormProps> = ({
   onBackClicked,
   methods,
 }) => {
-  const { control, handleSubmit, formState, watch } = methods;
-
-  // filter backend results based on query string
-  const queryString = watch("place");
-  console.log(queryString);
+  const { control, formState } = methods;
+  const { palette } = useTheme();
 
   return (
     <>
@@ -58,7 +47,9 @@ export const ActivityDetailsForm: React.FC<IPlaceFormProps> = ({
             width: "100%",
           }}
         >
-          <Typography variant="h2">Activity details</Typography>
+          <Typography variant="h2" sx={{ color: palette?.text?.primary }}>
+            Activity details
+          </Typography>
         </Box>
         <Controller
           name="visibility"
@@ -72,8 +63,6 @@ export const ActivityDetailsForm: React.FC<IPlaceFormProps> = ({
                 width: "100%",
               }}
             >
-              {/* TODO add only boolean to hook form for example public, which will be either false or true */}
-              {/* <Typography>Accessibility</Typography> */}
               <Box
                 sx={{
                   display: "flex",
@@ -83,19 +72,20 @@ export const ActivityDetailsForm: React.FC<IPlaceFormProps> = ({
                   mb: 5,
                 }}
               >
-                {/* <FormLabel
-                //sx={!field.value ? { color: 'black' } : {}}
+                <Typography
+                  sx={{ fontWeight: "bold", color: palette?.text?.primary }}
                 >
-                  Accessibility
-                </FormLabel> */}
-                <Typography sx={{ fontWeight: "bold" }}>
                   Accessibility
                 </Typography>
                 <Box sx={{ display: "flex", alignItems: "center" }}>
                   <Switch
                     sx={{ mx: 1 }}
-                    {...field}
                     value={
+                      field?.value === ActivityVisibilityEnum.private
+                        ? false
+                        : true
+                    }
+                    checked={
                       field?.value === ActivityVisibilityEnum.private
                         ? false
                         : true
@@ -108,12 +98,9 @@ export const ActivityDetailsForm: React.FC<IPlaceFormProps> = ({
                       );
                     }}
                     color="primary"
+                    data-testid="accessibility-switch"
                   />
-                  <FormLabel
-                  //sx={field.value ? { color: 'black' } : {}}
-                  >
-                    public
-                  </FormLabel>
+                  <FormLabel>public</FormLabel>
                 </Box>
               </Box>
 
@@ -122,18 +109,12 @@ export const ActivityDetailsForm: React.FC<IPlaceFormProps> = ({
                 control={control}
                 render={({ field, fieldState: { error } }) => (
                   <TextField
-                    // TODO idk if this is really needed and not anti-pattern
-                    //autoFocus
                     {...field}
                     error={!!error}
                     sx={{ width: "100%", mb: 5 }}
                     label="How many people can attend"
-                    // InputProps={{
-                    //   startAdornment: <SearchIcon />,
-                    // }}
                     placeholder="Type activity capacity"
-                    //label="Username"
-                    // disabled={methodSelectionDisabled}
+                    data-testid="limit-input"
                   />
                 )}
               />
@@ -148,7 +129,7 @@ export const ActivityDetailsForm: React.FC<IPlaceFormProps> = ({
                     select
                     sx={{ width: "100%", mb: 5 }}
                     label="Any fees?"
-                    // helperText="Please select your currency"
+                    data-testid="price-input"
                   >
                     {Object.values(ActivityPriceOptionsEnum).map((option) => (
                       <MenuItem key={option} value={option}>
@@ -192,8 +173,6 @@ export const ActivityDetailsForm: React.FC<IPlaceFormProps> = ({
           control={control}
           render={({ field, fieldState: { error } }) => (
             <TextField
-              // TODO idk if this is really needed and not anti-pattern
-              //autoFocus
               {...field}
               multiline
               rows={3}
@@ -208,9 +187,7 @@ export const ActivityDetailsForm: React.FC<IPlaceFormProps> = ({
               }}
               inputProps={{ maxLength: 200 }}
               helperText={`${field?.value?.length ?? 0}/200`}
-              //helperText={!!error && 'Activity name is required'}
-              //label="Username"
-              // disabled={methodSelectionDisabled}
+              data-testid="description-input"
             />
           )}
         />
@@ -223,20 +200,19 @@ export const ActivityDetailsForm: React.FC<IPlaceFormProps> = ({
           mt: 2,
         }}
       >
-        <IconButton onClick={onBackClicked} color="primary">
+        <IconButton
+          onClick={onBackClicked}
+          color="primary"
+          data-testid="back-btn"
+        >
           <ArrowBackIosNewIcon />
         </IconButton>
-        {/* <OffliButton
-          onClick={onBackClicked}
-          sx={{ width: '40%' }}
-          variant="text"
-        >
-          Back
-        </OffliButton> */}
+
         <OffliButton
           onClick={onNextClicked}
           sx={{ width: "40%" }}
           disabled={!formState.isValid}
+          data-testid="next-btn"
         >
           Next
         </OffliButton>

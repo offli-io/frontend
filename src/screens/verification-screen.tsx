@@ -14,7 +14,7 @@ import {
   IUsernamePassword,
 } from "../types/users/user.dto";
 import OffliBackButton from "../components/offli-back-button";
-import { loginUser } from "../api/auth/requests";
+import { loginUser, resendCode } from "../api/auth/requests";
 
 interface LoginValues {
   username: string;
@@ -48,7 +48,7 @@ const VerificationScreen = () => {
       onSuccess: (data, params) => {
         setStateToken(data?.data?.token?.access_token ?? null);
         setUserInfo?.({ username: params?.username, id: data?.data?.user_id });
-        localStorage.setItem("userId", data?.data?.user_id);
+        localStorage.setItem("userId", String(data?.data?.user_id));
         setIsFirstTimeLogin?.(true);
         navigate(ApplicationLocations.ACTIVITIES);
       },
@@ -78,10 +78,33 @@ const VerificationScreen = () => {
     }
   );
 
+  const { isLoading: isResendingCode, mutate: sendResendCode } = useMutation(
+    ["resend-code"],
+    () => {
+      return resendCode({
+        email: precreatedEmailPassword?.email,
+      });
+    },
+    {
+      onSuccess: (data, code) => {
+        enqueueSnackbar("Verification code was re-sent to your email", {
+          variant: "success",
+        });
+      },
+      onError: (error) => {
+        enqueueSnackbar("Failed to re-send verification code to given email", {
+          variant: "error",
+        });
+      },
+    }
+  );
+
   const handleOnCompleted = (code: string) => {
     setVerificationCode(code);
     verifyCodeMutation.mutate(code);
   };
+
+  const handleResendCode = React.useCallback(() => sendResendCode(), []);
 
   return (
     <Box
@@ -122,7 +145,11 @@ const VerificationScreen = () => {
       />
       <Box sx={{ display: "flex", mr: -15, alignItems: "center" }}>
         <Typography variant="subtitle2">No email?</Typography>
-        <OffliButton variant="text">
+        <OffliButton
+          variant="text"
+          onClick={handleResendCode}
+          isLoading={isResendingCode}
+        >
           <Typography
             variant="subtitle2"
             sx={{ color: "primary.main", ml: -1 }}

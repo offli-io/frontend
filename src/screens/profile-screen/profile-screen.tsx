@@ -22,7 +22,7 @@ import { IPersonExtended } from "../../types/activities/activity.dto";
 import { useUser } from "../../hooks/use-user";
 import { ProfileEntryTypeEnum } from "./types/profile-entry-type";
 import { generateBackHeaderTitle } from "./utils/profile-screen-utils";
-import userPlaceholder from "../../assets/img/user-placeholder.png";
+import userPlaceholder from "../../assets/img/user-placeholder.svg";
 
 interface IProfileScreenProps {
   type: ProfileEntryTypeEnum;
@@ -32,18 +32,18 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
   const { userInfo, setUserInfo, setInstagramCode } = React.useContext(
     AuthenticationContext
   );
+  const { palette } = useTheme();
   const location = useLocation();
   const navigate = useNavigate();
   const from = (location?.state as ICustomizedLocationStateDto)?.from;
   const { id } = useParams();
   const { enqueueSnackbar } = useSnackbar();
-  const theme = useTheme();
   const queryParameters = new URLSearchParams(window.location.search);
   const instagramCode = queryParameters.get("code");
   console.log(instagramCode);
 
   const { data: { data = {} } = {}, isLoading } = useUser({
-    id: id ?? userInfo?.id,
+    id: id ? Number(id) : userInfo?.id,
   });
 
   React.useEffect(() => {
@@ -66,7 +66,7 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
 
   return (
     <>
-      {[
+      {/* {[
         ProfileEntryTypeEnum.REQUEST,
         ProfileEntryTypeEnum.BUDDY,
         ProfileEntryTypeEnum.USER_PROFILE,
@@ -76,7 +76,7 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
           sx={{ mb: 2 }}
           to={from}
         />
-      )}
+      )} */}
       <PageWrapper>
         <Box
           sx={{
@@ -88,7 +88,10 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
             flexDirection: "column",
           }}
         >
-          <Typography variant="h4" sx={{ mb: 0.5 }}>
+          <Typography
+            variant="h4"
+            sx={{ mb: 2, color: palette?.text?.primary }}
+          >
             {data?.username}
           </Typography>
           <img
@@ -102,15 +105,17 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
               borderRadius: "50%",
               // backgroundColor: theme?.palette?.inactive as string,
               // border: '2px solid primary.main', //nejde pica
-              border: "2px solid black",
+              border: `2px solid ${palette?.primary?.main}`,
+              boxShadow: "5px 5px 20px 0px rgba(0,0,0,0.6)",
             }}
+            data-testid="profile-img"
           />
-          {type !== ProfileEntryTypeEnum.REQUEST && (
+          {type === ProfileEntryTypeEnum.PROFILE && (
             <IconButton
               color="primary"
               sx={{
                 backgroundColor: (theme) => theme.palette.primary.light,
-                mt: 1,
+                mt: 2,
                 px: 2.5,
                 py: 0.5,
                 borderRadius: "15px",
@@ -122,6 +127,7 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
                   },
                 })
               }
+              data-testid="buddies-btn"
             >
               <PeopleAltIcon sx={{ fontSize: 18, padding: 0 }} />
               <Typography
@@ -130,41 +136,53 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
                 sx={{
                   fontWeight: "bold",
                   mt: 0.5,
-                  ml: 0.5,
+                  ml: 0.75,
                 }}
               >
-                {data?.buddies?.length}
+                {`Buddies (${data?.buddies?.length})`}
               </Typography>
             </IconButton>
           )}
 
-          <Box
-            sx={{
-              ml: -1.5,
-              display: "flex",
-              alignItems: "center",
-              // justifyContent: 'flex-start',
-            }}
-          >
-            <IconButton sx={{ paddingRight: 0, color: "black" }}>
-              <LocationOnIcon sx={{ fontSize: 20 }} />
-            </IconButton>
-            <Typography variant="subtitle2">Bratislava, Slovakia</Typography>
-          </Box>
-          <Typography
-            variant="subtitle2"
-            // align="center"
-            sx={{ lineHeight: 1.2, width: "80%" }}
-          >
-            {data?.about_me ??
-              "I am student at FIIT STU. I like adventures and meditation. There is always time for a beer. Cheers."}
-          </Typography>
+          {!!data?.location && (
+            <Box
+              sx={{
+                ml: -1.5,
+                display: "flex",
+                alignItems: "center",
+                my: 1,
+                // justifyContent: 'flex-start',
+              }}
+            >
+              <IconButton
+                sx={{ paddingRight: 0, color: palette?.text?.primary, mr: 1 }}
+              >
+                <LocationOnIcon sx={{ fontSize: 20 }} />
+              </IconButton>
+              <Typography sx={{ color: palette?.text.primary, maxWidth: 250 }}>
+                {data?.location?.name}
+              </Typography>
+            </Box>
+          )}
+          {!!data?.about_me && (
+            <Typography
+              // variant="subtitle2"
+              // align="center"
+              sx={{
+                lineHeight: 1.2,
+                width: "80%",
+                color: palette?.text?.primary,
+              }}
+            >
+              {data?.about_me ??
+                "I am student at FIIT STU. I like adventures and meditation. There is always time for a beer. Cheers."}
+            </Typography>
+          )}
         </Box>
         {type === ProfileEntryTypeEnum.PROFILE && (
           <ActionButton
             text="Edit profile"
             sx={{ mt: 2 }}
-            // href={ApplicationLocations.EDIT_PROFILE}
             onClick={() => navigate(ApplicationLocations.EDIT_PROFILE)}
           />
         )}
@@ -173,7 +191,11 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
             width: "90%",
           }}
         >
-          <Typography align="left" variant="h5" sx={{ mt: 3 }}>
+          <Typography
+            align="left"
+            variant="h5"
+            sx={{ mt: 3, color: palette?.text?.primary }}
+          >
             This month
           </Typography>
           <ProfileStatistics
@@ -192,14 +214,7 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
             isLoading={isLoading}
           />
         </Box>
-        {/* {type === "request" && (
-          <OffliButton
-            sx={{ fontSize: 16, px: 2.5, mt: 2 }}
-            onClick={sendAcceptBuddyRequest}
-          >
-            Accept buddie request
-          </OffliButton>
-        )} */}
+
         <Box
           sx={{
             width: "90%",
@@ -210,7 +225,11 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
           }}
         >
           <Box sx={{ mt: 3 }}>
-            <Typography align="left" variant="h5">
+            <Typography
+              align="left"
+              variant="h5"
+              sx={{ color: palette?.text?.primary }}
+            >
               Photos
             </Typography>
           </Box>

@@ -26,7 +26,7 @@ export const verifyCodeAndRetrieveUserId = async (
   const CancelToken = axios.CancelToken;
   const source = CancelToken.source();
 
-  const promise = axios.post<{ userId?: string }>(
+  const promise = axios.post<{ userId?: number }>(
     `${DEFAULT_DEV_URL}/registration/verify-email`,
     values,
     {
@@ -66,8 +66,8 @@ export const checkIfUsernameAlreadyTaken = async (username?: string) => {
 };
 
 export const acceptBuddyInvitation = (
-  userId?: string,
-  buddyToBeId?: string
+  userId?: number,
+  buddyToBeId?: number
 ) => {
   const CancelToken = axios.CancelToken;
   const source = CancelToken.source();
@@ -89,13 +89,13 @@ export const acceptBuddyInvitation = (
 };
 
 export const updateProfileInfo = (
-  userId?: string,
+  userId?: number,
   values?: IUpdateUserRequestDto
 ) => {
   const CancelToken = axios.CancelToken;
   const source = CancelToken.source();
 
-  const promise = axios.put(`${DEFAULT_DEV_URL}/users/${userId}`, values, {
+  const promise = axios.patch(`${DEFAULT_DEV_URL}/users/${userId}`, values, {
     cancelToken: source?.token,
   });
 
@@ -107,8 +107,8 @@ export const updateProfileInfo = (
 };
 
 export const rejectBuddyInvitation = (
-  userId?: string,
-  buddyToBeId?: string
+  userId?: number,
+  buddyToBeId?: number
 ) => {
   const CancelToken = axios.CancelToken;
   const source = CancelToken.source();
@@ -129,7 +129,7 @@ export const rejectBuddyInvitation = (
   return promise;
 };
 
-export const deleteBuddy = (userId?: string, idToDelete?: string) => {
+export const deleteBuddy = (userId?: number, idToDelete?: number) => {
   const CancelToken = axios.CancelToken;
   const source = CancelToken.source();
 
@@ -147,7 +147,7 @@ export const deleteBuddy = (userId?: string, idToDelete?: string) => {
   return promise;
 };
 
-export const addBuddy = (userId?: string, buddyId?: string) => {
+export const addBuddy = (userId?: number, buddyId?: number) => {
   const CancelToken = axios.CancelToken;
   const source = CancelToken.source();
 

@@ -16,7 +16,7 @@ interface ILocation {
 const MapScreen = <T extends unknown>() => {
   const { activityId } = useParams();
   const { data: { data = {} } = {}, isLoading } = useActivities<T>({
-    id: activityId,
+    id: activityId ? Number(activityId) : -1,
   });
   const location = useLocation();
   const state = location?.state as ICustomizedLocationStateDto;
@@ -28,7 +28,6 @@ const MapScreen = <T extends unknown>() => {
 
   return (
     <>
-      <BackHeader title="Map" to={from} />
       <Map activities={activityData} />
     </>
   );

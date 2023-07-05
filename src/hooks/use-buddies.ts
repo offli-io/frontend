@@ -13,7 +13,7 @@ export const useBuddies = ({ text }: { text?: string } = {}) => {
 
   const { data, isLoading } = useQuery(
     ["buddies", userInfo?.id, text],
-    () => getBuddies(String(userInfo?.id), text),
+    () => getBuddies(Number(userInfo?.id), text),
     {
       onError: () => {
         //some generic toast for every hook

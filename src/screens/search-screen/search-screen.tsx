@@ -20,6 +20,7 @@ import { IActivityListRestDto } from "../../types/activities/activity-list-rest.
 import { ApplicationLocations } from "../../types/common/applications-locations.dto";
 import FiltersDrawerContent from "./components/filters-drawer-content";
 import { IFiltersDto } from "./types/filters.dto";
+import { HeaderContext } from "../../app/providers/header-provider";
 
 const event = {
   summary: "Test event Offli",
@@ -49,6 +50,7 @@ const SearchScreen = () => {
   const [queryStringDebounced] = useDebounce(currentSearch, 250);
   const [filters, setFilters] = React.useState<IFiltersDto | undefined>();
   const { toggleDrawer } = React.useContext(DrawerContext);
+  const { setHeaderRightContent } = React.useContext(HeaderContext);
 
   const isTag = queryStringDebounced?.includes("tag");
 
@@ -79,9 +81,21 @@ const SearchScreen = () => {
     });
   }, [filters, handleApplyFilters]);
 
+  React.useEffect(() => {
+    setHeaderRightContent(
+      <IconButton
+        onClick={toggleFilters}
+        color={!!filters ? "primary" : undefined}
+        data-testid="toggle-filters-btn"
+      >
+        <FilterListIcon />
+      </IconButton>
+    );
+  }, []);
+
   return (
     <>
-      <BackHeader
+      {/* <BackHeader
         title="Search activities"
         sx={{ mb: 2 }}
         to={ApplicationLocations.ACTIVITIES}
@@ -89,11 +103,12 @@ const SearchScreen = () => {
           <IconButton
             onClick={toggleFilters}
             color={!!filters ? "primary" : undefined}
+            data-testid="toggle-filters-btn"
           >
             <FilterListIcon />
           </IconButton>
         }
-      />
+      /> */}
       <Box sx={{ px: 1.5, boxSizing: "border-box" }}>
         <Box
           sx={{
@@ -127,49 +142,20 @@ const SearchScreen = () => {
               ),
             }}
             onChange={(e) => setCurrentSearch(e.target.value)}
+            data-testid="search-activities-input"
           />
 
           <OffliButton
             variant="text"
             size="small"
-            sx={{ fontSize: 14, ml: 1 }}
+            sx={{ fontSize: 14, ml: 0.5 }}
             onClick={() => navigate(ApplicationLocations.ACTIVITIES)}
+            data-testid="cancel-search-btn"
           >
             Cancel
           </OffliButton>
         </Box>
-        {/* {isLoading ? (
-          <>
-            <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
-              <CircularProgress color="primary" />
-            </Box>
-          </>
-        ) : (
-          data?.data?.tags &&
-          data?.data?.tags?.length > 0 && (
-            <>
-              <Typography variant="h5">What's your mood for?</Typography>
-              <Box
-                sx={{
-                  display: "flex",
-                  overflowX: "scroll",
-                  width: "100%",
-                  "::-webkit-scrollbar": { display: "none" },
-                }}
-              >
-                {data.data.tags.map((tag) => (
-                  <Chip
-                    label={tag?.title}
-                    key={tag?.title}
-                    sx={{ m: 1 }}
-                    color="primary"
-                    onClick={() => handleChipClick(tag?.title)}
-                  />
-                ))}
-              </Box>
-            </>
-          )
-        )} */}
+
         <Divider sx={{ my: 2 }} />
         {areActivitiesLoading ? (
           <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
@@ -177,11 +163,14 @@ const SearchScreen = () => {
           </Box>
         ) : (
           activitiesData?.data?.activities?.map((activity) => (
-            <ActivitySearchCard
-              key={activity?.id}
-              activity={activity}
-              onPress={(act) => console.log(act)}
-            />
+            <>
+              <ActivitySearchCard
+                key={activity?.id}
+                activity={activity}
+                onPress={(act) => console.log(act)}
+              />
+              <Divider sx={{ mb: 1 }} />
+            </>
           ))
         )}
         {/* 

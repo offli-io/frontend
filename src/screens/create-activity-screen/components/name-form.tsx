@@ -1,4 +1,4 @@
-import { Box, TextField, Typography } from "@mui/material";
+import { Box, TextField, Typography, useTheme } from "@mui/material";
 import React from "react";
 import { Controller, UseFormReturn } from "react-hook-form";
 import OffliButton from "../../../components/offli-button";
@@ -14,6 +14,7 @@ export const NameForm: React.FC<INameFormProps> = ({
   methods,
 }) => {
   const { control, formState, watch } = methods;
+  const { palette } = useTheme();
 
   const errors = React.useMemo(() => formState.errors, [formState]);
   const isFormValid =
@@ -37,7 +38,9 @@ export const NameForm: React.FC<INameFormProps> = ({
           >
             Create
           </Typography>
-          <Typography variant="h2">new activity</Typography>
+          <Typography variant="h2" sx={{ color: palette.text.primary }}>
+            new activity
+          </Typography>
         </Box>
         <Box sx={{ width: "50%", display: "flex", justifyContent: "center" }}>
           <img src={createActivityImg} style={{ height: 80 }} alt="Name form" />
@@ -51,16 +54,13 @@ export const NameForm: React.FC<INameFormProps> = ({
           control={control}
           render={({ field, fieldState: { error } }) => (
             <TextField
-              // TODO idk if this is really needed and not anti-pattern
-              //autoFocus
               {...field}
               error={!!error}
               sx={{ width: "100%" }}
               label="Name"
               placeholder="Type activity name"
               helperText={!!error && "Activity name is required"}
-              //label="Username"
-              // disabled={methodSelectionDisabled}
+              data-testid="activity-name-input"
             />
           )}
         />
@@ -78,6 +78,7 @@ export const NameForm: React.FC<INameFormProps> = ({
           sx={{ width: "40%" }}
           //TODO some bug isValid returning false when name is
           disabled={!isFormValid}
+          data-testid="next-btn"
         >
           Next
         </OffliButton>

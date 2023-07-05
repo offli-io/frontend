@@ -30,10 +30,10 @@ import DotsMobileStepper from "../../components/stepper";
 import { useUsers } from "../../hooks/use-users";
 import { useUser } from "../../hooks/use-user";
 
-interface FormValues {
+export interface FormValues {
   title?: string;
   description?: string;
-  location?: ILocation;
+  location?: ILocation | null;
   tags?: string[];
   //todo alter keys
   datetime_from?: Date;
@@ -42,7 +42,7 @@ interface FormValues {
   // public?: boolean
   //repeated?: ActivityRepetitionOptionsEnum | string
   price?: ActivityPriceOptionsEnum | string;
-  title_picture?: string;
+  title_picture_url?: string;
   placeQuery?: string;
   visibility?: ActivityVisibilityEnum;
   limit?: number;
@@ -75,6 +75,7 @@ const schema: (activeStep: number) => yup.SchemaOf<FormValues> = (
                 lon: yup.number().defined().required(),
               }),
             })
+            .nullable(true)
             .notRequired(),
 
     tags:
@@ -83,11 +84,7 @@ const schema: (activeStep: number) => yup.SchemaOf<FormValues> = (
         : yup.array().of(yup.string()).notRequired(),
     datetime_from:
       activeStep === 3
-        ? yup
-            .date()
-            .defined()
-            .required()
-            .default(() => new Date())
+        ? yup.date().defined().required()
         : yup.date().notRequired(),
     datetime_until:
       activeStep === 3
@@ -110,7 +107,7 @@ const schema: (activeStep: number) => yup.SchemaOf<FormValues> = (
       activeStep === 4
         ? yup.number().required().defined()
         : yup.number().notRequired(),
-    title_picture: yup.string().notRequired(),
+    title_picture_url: yup.string().notRequired(),
     placeQuery: yup.string().notRequired(),
     description: yup.string().notRequired(),
     visibility: yup
@@ -120,7 +117,7 @@ const schema: (activeStep: number) => yup.SchemaOf<FormValues> = (
   });
 
 const CreateActivityScreen = () => {
-  const theme = useTheme();
+  const { palette } = useTheme();
   const queryClient = useQueryClient();
   const { enqueueSnackbar } = useSnackbar();
   const [activeStep, setActiveStep] = React.useState<number>(0);
@@ -138,8 +135,7 @@ const CreateActivityScreen = () => {
       visibility: ActivityVisibilityEnum.private,
       price: ActivityPriceOptionsEnum.free,
       limit: 10,
-      // title_picture:
-      //   'https://www.pngfind.com/pngs/m/676-6764065_default-profile-picture-transparent-hd-png-download.png',
+      location: null,
     },
     resolver: yupResolver(schema(activeStep)),
     mode: "onChange",
@@ -149,7 +145,7 @@ const CreateActivityScreen = () => {
 
   const { data, mutate, isLoading } = useMutation(
     ["create-activity"],
-    (formValues: FormValues & { creator?: IPerson }) =>
+    (formValues: FormValues & { creator_id?: number }) =>
       createActivity(formValues),
     {
       onSuccess: (data) => {
@@ -158,6 +154,7 @@ const CreateActivityScreen = () => {
         queryClient.invalidateQueries(["user-info"]);
         //TODO query invalidation doesnt work - activities are not refetched!
         queryClient.invalidateQueries({ queryKey: ["activities"] });
+        queryClient.invalidateQueries({ queryKey: ["participant-activities"] });
         setActiveStep((activeStep) => activeStep + 1);
       },
       onError: (error) => {
@@ -166,25 +163,23 @@ const CreateActivityScreen = () => {
     }
   );
 
-  const handleFormSubmit = React.useCallback((data: FormValues) => {
-    const { placeQuery, ...restValues } = data;
-    //TODO fill with real user data
-    const {
-      id = undefined,
-      name = undefined,
-      username = undefined,
-      profile_photo_url = undefined,
-    } = { ...userData };
-    mutate({
-      ...restValues,
-      creator: {
-        id,
-        name,
-        username,
-        profile_photo_url,
-      },
-    });
-  }, []);
+  const handleFormSubmit = React.useCallback(
+    (data: FormValues) => {
+      const { placeQuery, ...restValues } = data;
+      //TODO fill with real user data
+      const {
+        id = undefined,
+        name = undefined,
+        username = undefined,
+        profile_photo_url = undefined,
+      } = { ...userData };
+      mutate({
+        ...restValues,
+        creator_id: id,
+      });
+    },
+    [userData, mutate]
+  );
 
   const handleFormError = React.useCallback(
     (error: any) => console.log(error),
@@ -300,7 +295,13 @@ const CreateActivityScreen = () => {
       {activeStep <= 5 && (
         <DotsMobileStepper activeStep={activeStep} containerSx={{ p: 0 }} />
       )}
-      <PageWrapper sxOverrides={{ alignItems: "center", px: 3 }}>
+      <PageWrapper
+        sxOverrides={{
+          alignItems: "center",
+          px: 3,
+          bgcolor: palette.background.default,
+        }}
+      >
         <form
           style={{
             display: "flex",

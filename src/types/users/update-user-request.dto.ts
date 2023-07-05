@@ -4,9 +4,9 @@ export interface IUpdateUserRequestDto {
   username?: any;
   email?: string;
   name?: string;
-  profile_photo_url?: string;
+  profile_photo_url?: string | null;
   about_me?: string;
   location?: ILocation | null;
   birthdate?: Date | null;
-  instagram?: string;
+  instagram?: string | null;
 }

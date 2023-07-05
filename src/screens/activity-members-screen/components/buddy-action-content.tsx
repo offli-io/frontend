@@ -1,37 +1,37 @@
-import { IconButton, Box, Menu, MenuItem, Typography } from '@mui/material'
-import Fade from '@mui/material/Fade'
-import MoreHorizIcon from '@mui/icons-material/MoreHoriz'
-import React from 'react'
-import StarIcon from '@mui/icons-material/Star'
-import PersonOffIcon from '@mui/icons-material/PersonOff'
-import { ActivityMembersActionTypeDto } from '../../../types/common/activity-members-action-type.dto'
+import { IconButton, Box, Menu, MenuItem, Typography } from "@mui/material";
+import Fade from "@mui/material/Fade";
+import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
+import React from "react";
+import StarIcon from "@mui/icons-material/Star";
+import PersonOffIcon from "@mui/icons-material/PersonOff";
+import { ActivityMembersActionTypeDto } from "../../../types/common/activity-members-action-type.dto";
 
 interface IBuddyActionContentProps {
-  userId?: string
+  userId?: number;
   onActionClick?: (
     actionType: ActivityMembersActionTypeDto,
-    userId?: string
-  ) => void
+    userId?: number
+  ) => void;
 }
 
 export const BuddyActionContent: React.FC<IBuddyActionContentProps> = ({
   userId,
   onActionClick,
 }) => {
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
-  const open = Boolean(anchorEl)
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget)
-  }
+    setAnchorEl(event.currentTarget);
+  };
 
   const handleClose = () => {
-    setAnchorEl(null)
-  }
+    setAnchorEl(null);
+  };
 
   const handleMenuItemClick = (type: ActivityMembersActionTypeDto) => {
-    onActionClick?.(type, userId)
-    setAnchorEl(null)
-  }
+    onActionClick?.(type, userId);
+    setAnchorEl(null);
+  };
 
   return (
     <Box>
@@ -41,7 +41,7 @@ export const BuddyActionContent: React.FC<IBuddyActionContentProps> = ({
       <Menu
         id="fade-menu"
         MenuListProps={{
-          'aria-labelledby': 'fade-button',
+          "aria-labelledby": "fade-button",
         }}
         anchorEl={anchorEl}
         open={open}
@@ -57,9 +57,9 @@ export const BuddyActionContent: React.FC<IBuddyActionContentProps> = ({
         >
           <Box
             sx={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
             }}
           >
             <IconButton sx={{ mr: 0.5, pl: 0 }}>
@@ -72,7 +72,7 @@ export const BuddyActionContent: React.FC<IBuddyActionContentProps> = ({
           onClick={() => handleMenuItemClick(ActivityMembersActionTypeDto.KICK)}
           sx={{ px: 2 }}
         >
-          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+          <Box sx={{ display: "flex", alignItems: "center" }}>
             <IconButton sx={{ mr: 0.5, pl: 0 }}>
               <PersonOffIcon color="error" />
             </IconButton>
@@ -81,5 +81,5 @@ export const BuddyActionContent: React.FC<IBuddyActionContentProps> = ({
         </MenuItem>
       </Menu>
     </Box>
-  )
-}
+  );
+};

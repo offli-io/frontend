@@ -1,16 +1,22 @@
 import React from "react";
 
-import { Button, Typography, SxProps } from "@mui/material";
-import { Link, useLocation, useParams } from "react-router-dom";
-import { ApplicationLocations } from "../types/common/applications-locations.dto";
+import {
+  Button,
+  ButtonProps,
+  CircularProgress,
+  SxProps,
+  Typography,
+} from "@mui/material";
+import { Link } from "react-router-dom";
 
-interface IProps {
+interface IProps extends ButtonProps {
   type?: "button" | "reset" | "submit" | undefined;
   text: string;
   sx?: SxProps;
   onClick?: () => void;
   href?: string;
   disabled?: boolean;
+  isLoading?: boolean;
 }
 
 const ActionButton: React.FC<IProps> = ({
@@ -20,6 +26,8 @@ const ActionButton: React.FC<IProps> = ({
   onClick,
   href,
   disabled,
+  isLoading,
+  ...rest
 }) => {
   return (
     <Button
@@ -35,8 +43,13 @@ const ActionButton: React.FC<IProps> = ({
       }}
       type={type}
       onClick={onClick}
-      disabled={disabled}
+      data-testid="action-button"
+      disabled={isLoading}
+      {...rest}
     >
+      {isLoading ? (
+        <CircularProgress size={20} color="primary" sx={{ mr: 1.5 }} />
+      ) : null}
       {href ? (
         <Link to={href!} style={{ textDecoration: "none" }}>
           <Typography

@@ -1,8 +1,6 @@
-import * as React from "react";
-import TextField from "@mui/material/TextField";
-import Autocomplete, { AutocompleteProps } from "@mui/material/Autocomplete";
-import { Box, Chip, CircularProgress, SxProps } from "@mui/material";
+import { Box, Chip, CircularProgress, Typography } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
+import * as React from "react";
 import { getPredefinedPhotos } from "../../../api/activities/requests";
 
 interface ITimePickerProps {
@@ -14,8 +12,9 @@ const OffliGallery: React.FC<ITimePickerProps> = ({
   tags,
   onPictureSelect,
 }) => {
-  const { data, isLoading } = useQuery(["predefined-photos", tags], () =>
-    getPredefinedPhotos(tags)
+  const { data: { data: { pictures = [] } = {} } = {}, isLoading } = useQuery(
+    ["predefined-photos", tags],
+    () => getPredefinedPhotos(tags)
   );
   return (
     <Box>
@@ -33,7 +32,7 @@ const OffliGallery: React.FC<ITimePickerProps> = ({
         >
           <CircularProgress color="primary" />
         </Box>
-      ) : (
+      ) : pictures?.length > 0 ? (
         <Box
           sx={{
             display: "grid",
@@ -43,7 +42,7 @@ const OffliGallery: React.FC<ITimePickerProps> = ({
             my: 4,
           }}
         >
-          {data?.data?.pictures?.map(({ picture }) => (
+          {pictures.map(({ picture }) => (
             <Box
               sx={{
                 maxWidth: "100%",
@@ -52,10 +51,24 @@ const OffliGallery: React.FC<ITimePickerProps> = ({
               }}
               onClick={() => picture && onPictureSelect(picture)}
               key={picture}
+              data-testid="offli-gallery-img-btn"
             >
               <img src={picture} style={{ maxWidth: "100%" }} alt="gallery" />
             </Box>
           ))}
+        </Box>
+      ) : (
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            my: 2,
+          }}
+        >
+          <Typography sx={{ color: (theme) => theme?.palette?.text?.primary }}>
+            There are no available pre-defined pictures
+          </Typography>
         </Box>
       )}
     </Box>

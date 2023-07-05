@@ -1,4 +1,7 @@
-import React from "react";
+import AddRoundedIcon from "@mui/icons-material/AddRounded";
+import FavoriteIcon from "@mui/icons-material/Favorite";
+import OfflineBoltIcon from "@mui/icons-material/OfflineBolt";
+import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import {
   Box,
   CircularProgress,
@@ -6,10 +9,7 @@ import {
   IconButton,
   Typography,
 } from "@mui/material";
-import OfflineBoltIcon from "@mui/icons-material/OfflineBolt";
-import FavoriteIcon from "@mui/icons-material/Favorite";
-import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
-import AddRoundedIcon from "@mui/icons-material/AddRounded";
+import React from "react";
 
 interface IProps {
   participatedNum?: number;
@@ -33,10 +33,11 @@ const ProfileStatistics: React.FC<IProps> = ({
       sx={{
         width: "100%",
         borderRadius: "15px",
-        backgroundColor: "#E4E3FF",
+        // backgroundColor: "#E4E3FF",
         paddingBottom: "5%",
         marginTop: "1%",
       }}
+      data-testid="profile-statistics-grid"
     >
       {isLoading ? (
         <Box
@@ -59,8 +60,8 @@ const ProfileStatistics: React.FC<IProps> = ({
                   display: "flex",
                   alignItems: "center",
                   flexDirection: "column",
-                  // padding: '5%',
                 }}
+                data-testid="participated-statistics"
               >
                 <IconButton color="primary">
                   <OfflineBoltIcon sx={{ fontSize: 30 }} />
@@ -83,8 +84,8 @@ const ProfileStatistics: React.FC<IProps> = ({
                   display: "flex",
                   alignItems: "center",
                   flexDirection: "column",
-                  // padding: '5%',
                 }}
+                data-testid="enjoyed-statistics"
               >
                 <IconButton color="primary">
                   <FavoriteIcon sx={{ fontSize: 30 }} />
@@ -106,8 +107,8 @@ const ProfileStatistics: React.FC<IProps> = ({
                   display: "flex",
                   alignItems: "center",
                   flexDirection: "column",
-                  // padding: '5%',
                 }}
+                data-testid="created-statistics"
               >
                 <IconButton color="primary" sx={{ padding: "2%" }}>
                   <AddRoundedIcon sx={{ fontSize: 40 }} />
@@ -130,8 +131,8 @@ const ProfileStatistics: React.FC<IProps> = ({
                   display: "flex",
                   alignItems: "center",
                   flexDirection: "column",
-                  // padding: '5%',
                 }}
+                data-testid="new-buddies-statistics"
               >
                 <IconButton color="primary">
                   <PeopleAltIcon sx={{ fontSize: 30 }} />

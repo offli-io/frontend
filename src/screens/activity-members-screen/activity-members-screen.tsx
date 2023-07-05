@@ -37,7 +37,7 @@ export const ActivityMembersScreen: React.FC = () => {
   //TODO change for activity hook
   const { data, isLoading } = useQuery(
     ["activity", id],
-    () => getActivity<IActivityRestDto>({ id }),
+    () => getActivity<IActivityRestDto>({ id: Number(id) }),
     {
       enabled: !!id,
     }
@@ -50,7 +50,7 @@ export const ActivityMembersScreen: React.FC = () => {
 
   const { mutate: sendKickPersonFromActivity } = useMutation(
     ["kick-person"],
-    (personId?: string) => kickUserFromActivity(String(id), String(personId)),
+    (personId?: number) => kickUserFromActivity(Number(id), Number(personId)),
     {
       onSuccess: (data, variables) => {
         // setInvitedBuddies([...invitedBuddies, variables?.id])
@@ -75,7 +75,7 @@ export const ActivityMembersScreen: React.FC = () => {
   }, [queryStringDebounced, data?.data]);
 
   const handleActionClick = React.useCallback(
-    (type?: ActivityMembersActionTypeDto, userId?: string) => {
+    (type?: ActivityMembersActionTypeDto, userId?: number) => {
       switch (type) {
         case ActivityMembersActionTypeDto.KICK:
           return sendKickPersonFromActivity(userId);

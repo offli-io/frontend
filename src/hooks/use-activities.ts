@@ -6,7 +6,7 @@ export const useActivities = <T>({
   id,
   text,
   tag,
-}: { id?: string; text?: string; tag?: string[] } = {}) => {
+}: { id?: number; text?: string; tag?: string[] } = {}) => {
   const { enqueueSnackbar } = useSnackbar();
   const { data, isLoading } = useQuery(
     ["activities", id, text, tag],

@@ -18,7 +18,7 @@ export const PrivateRoutes = () => {
 
   React.useEffect(() => {
     if (!userInfo && !!userIdFromStorage) {
-      setUserInfo && setUserInfo({ id: userIdFromStorage });
+      setUserInfo && setUserInfo({ id: Number(userIdFromStorage) });
     }
   });
 

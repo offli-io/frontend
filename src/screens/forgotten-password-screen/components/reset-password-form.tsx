@@ -82,19 +82,18 @@ const ResetPasswordForm: React.FC<IResetPasswordFormProps> = ({
         </Typography>
         <Typography variant="h2">your password</Typography>
       </Box>
-
       <Typography sx={{ mb: 2 }}>
         We will send you verification code on your email, which will help us
         verify you.
       </Typography>
-
       <Controller
         name="email"
         control={control}
         render={({ field, fieldState: { error } }) => (
           <TextField
-            autoFocus
+            // autoFocus
             {...field}
+            data-testid="email-input"
             placeholder="Email"
             error={!!error}
             helperText={error?.message}
@@ -103,18 +102,12 @@ const ResetPasswordForm: React.FC<IResetPasswordFormProps> = ({
         )}
       />
 
-      {/* <TextField
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        label="Email"
-        sx={{ width: "100%", mb: 2 }}
-      /> */}
-
       <OffliButton
         variant="contained"
         type="submit"
         sx={{ width: "50%", alignSelf: "end" }}
         isLoading={isLoading}
+        data-testid="reset-password-btn"
       >
         Send
       </OffliButton>

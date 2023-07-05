@@ -3,7 +3,7 @@ import { DEFAULT_DEV_URL } from "../../assets/config";
 import { INotificationDto } from "../../types/notifications/notification.dto";
 import { INotificationsResponse } from "../../types/notifications/notifications-response.dto";
 
-export const getNotifications = (userId: string) => {
+export const getNotifications = (userId: number) => {
   const CancelToken = axios.CancelToken;
   const source = CancelToken.source();
 
@@ -12,14 +12,14 @@ export const getNotifications = (userId: string) => {
     {
       cancelToken: source?.token,
       params: {
-        user_id: userId,
+        userId,
       },
     }
   );
   return promise;
 };
 
-export const markNotificationAsSeen = (notificationId: string) => {
+export const markNotificationAsSeen = (notificationId: number) => {
   const CancelToken = axios.CancelToken;
   const source = CancelToken.source();
 

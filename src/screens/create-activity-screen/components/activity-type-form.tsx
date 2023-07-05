@@ -1,17 +1,17 @@
+import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import {
   Box,
   CircularProgress,
   IconButton,
-  TextField,
   Typography,
+  useTheme,
 } from "@mui/material";
+import { useQuery } from "@tanstack/react-query";
 import React from "react";
-import { Controller, UseFormReturn } from "react-hook-form";
+import { UseFormReturn } from "react-hook-form";
+import { getPredefinedTags } from "../../../api/activities/requests";
 import LabeledTile from "../../../components/labeled-tile";
 import OffliButton from "../../../components/offli-button";
-import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
-import { getPredefinedTags } from "../../../api/activities/requests";
-import { useQuery } from "@tanstack/react-query";
 
 interface IActivityTypeFormProps {
   onNextClicked: () => void;
@@ -19,23 +19,13 @@ interface IActivityTypeFormProps {
   methods: UseFormReturn;
 }
 
-const activityTypes = [
-  "Sports and drinks",
-  "Relax",
-  "Cinema",
-  "Food",
-  "Music",
-  "Nature",
-  "Adrenaline",
-  "Charitable",
-];
-
 export const ActivityTypeForm: React.FC<IActivityTypeFormProps> = ({
   onNextClicked,
   onBackClicked,
   methods,
 }) => {
   const { control, setValue, watch } = methods;
+  const { palette } = useTheme();
 
   const tags: string[] = watch("tags") ?? [];
 
@@ -71,7 +61,9 @@ export const ActivityTypeForm: React.FC<IActivityTypeFormProps> = ({
           <Typography variant="h2" sx={{ mr: 1, color: "primary.main" }}>
             Choose
           </Typography>
-          <Typography variant="h2">category</Typography>
+          <Typography variant="h2" sx={{ color: palette.text.primary }}>
+            category
+          </Typography>
         </Box>
         <Typography variant="subtitle2">
           You can pick none, or more categories
@@ -97,41 +89,46 @@ export const ActivityTypeForm: React.FC<IActivityTypeFormProps> = ({
           >
             <CircularProgress color="primary" />
           </Box>
-        ) : (
-          tiles?.map(({ title, picture }, index) => (
+        ) : tiles?.length > 0 ? (
+          tiles?.map(({ title, picture_url }, index) => (
             <LabeledTile
               key={index}
               title={title}
               onClick={handleTileClick}
+              selected={tags?.includes(title)}
               sx={{
                 width: "42%",
                 mb: 2,
               }}
-              imageUrl={picture}
+              imageUrl={picture_url}
             />
           ))
+        ) : (
+          <Box sx={{ mt: 4, mb: 10 }}>
+            <Typography
+              sx={{ color: palette.text.primary, textAlign: "center" }}
+            >
+              Unfortunately there are no pre-defined categories to use
+            </Typography>
+          </Box>
         )}
-        {/* <LabeledTile title="Sports and drinks" onClick={handleTileClick} />
-        <LabeledTile title="Relax" sx={{ ml: 3 }} onClick={handleTileClick} /> */}
       </Box>
 
       <Box
         sx={{ width: "100%", display: "flex", justifyContent: "space-between" }}
       >
-        <IconButton onClick={onBackClicked} color="primary">
+        <IconButton
+          onClick={onBackClicked}
+          color="primary"
+          data-testid="back-btn"
+        >
           <ArrowBackIosNewIcon />
         </IconButton>
-        {/* <OffliButton
-          onClick={onBackClicked}
-          sx={{ width: '40%' }}
-          variant="text"
-        >
-          Back
-        </OffliButton> */}
+
         <OffliButton
           onClick={onNextClicked}
           sx={{ width: "40%" }}
-          //disabled={!formState.isValid}
+          data-testid="next-btn"
         >
           Next
         </OffliButton>

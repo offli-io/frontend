@@ -53,7 +53,7 @@ const AddBuddiesScreen = () => {
 
   const { mutate: sendDeleteBuddy } = useMutation(
     ["delete-buddy"],
-    (id?: string) => deleteBuddy(userInfo?.id, id),
+    (id?: number) => deleteBuddy(userInfo?.id, id),
     {
       onSuccess: (data, variables) => {
         //TODO what to invalidate, and where to navigate after success
@@ -79,7 +79,7 @@ const AddBuddiesScreen = () => {
 
   const { mutate: sendAddBuddy, isLoading: isAddBuddyLoading } = useMutation(
     ["add-buddy"],
-    (id?: string) => addBuddy(userInfo?.id, id),
+    (id?: number) => addBuddy(userInfo?.id, id),
     {
       onSuccess: (data, variables) => {
         //TODO what to invalidate, and where to navigate after success
@@ -104,7 +104,7 @@ const AddBuddiesScreen = () => {
   );
 
   const handleBuddyActionClick = React.useCallback(
-    (type?: BuddyActionTypeEnum, userId?: string) => {
+    (type?: BuddyActionTypeEnum, userId?: number) => {
       switch (type) {
         case BuddyActionTypeEnum.PROFILE:
           toggleDrawer({ open: false, content: undefined });
@@ -146,7 +146,6 @@ const AddBuddiesScreen = () => {
 
   return (
     <>
-      <BackHeader title="Find new buddies" to={from} />
       <Box sx={{ mx: 1.5, height: "100%" }}>
         <TextField
           autoFocus
