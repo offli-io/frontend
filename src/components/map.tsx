@@ -106,7 +106,7 @@ const Map: React.FC<ILabeledTileProps> = ({
   const handleMarkerClick = (activity: IActivity) => {
     toggleDrawer({
       open: true,
-      content: <MapDetail />,
+      content: <MapDetail activity={activity} />,
     });
   };
 
