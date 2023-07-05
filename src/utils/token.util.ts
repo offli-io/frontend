@@ -18,9 +18,10 @@ export const setRefreshToken = (refreshToken?: string) => {
 
 export const getGoogleUrl = (from?: "login" | "register") => {
   const rootUrl = `https://accounts.google.com/o/oauth2/v2/auth`;
+  const currentUrl = window.location.href.split("/").slice(0, -1).join("/");
 
   const options = {
-    redirect_uri: `https://localhost:3000/${from}/`,
+    redirect_uri: `${currentUrl}/${from}/`,
     client_id: CLIENT_ID as string,
     access_type: "offline",
     response_type: "code",

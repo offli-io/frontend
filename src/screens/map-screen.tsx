@@ -16,8 +16,9 @@ interface ILocation {
 const MapScreen = <T extends unknown>() => {
   const { activityId } = useParams();
   const { data: { data = {} } = {}, isLoading } = useActivities<T>({
-    id: activityId ? Number(activityId) : -1,
+    id: activityId ? Number(activityId) : undefined,
   });
+
   const location = useLocation();
   const state = location?.state as ICustomizedLocationStateDto;
   const { from = "" } = state;

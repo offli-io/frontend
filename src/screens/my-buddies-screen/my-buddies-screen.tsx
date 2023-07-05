@@ -157,7 +157,6 @@ const MyBuddiesScreen = () => {
 
   return (
     <>
-      {/* <BackHeader title="Buddies" to={from} /> */}
       <Box sx={{ mx: 1.5, height: "100%" }}>
         {!data || (data?.data?.length === 0 && currentSearch?.length === 0) ? (
           <NoBuddiesScreen />
