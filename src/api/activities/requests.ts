@@ -1,7 +1,7 @@
 import axios from "axios";
 import qs from "qs";
 import { DEFAULT_DEV_URL } from "../../assets/config";
-import { ActivityInviteStateEnum } from "../../types/activities/activity-invite-state-enum.dto";
+import { ActivitiyParticipantStateEnum } from "../../types/activities/activity-participant-state-enum.dto";
 import {
   IActivity,
   IActivitySearchParams,
@@ -17,8 +17,6 @@ import {
 } from "../../types/activities/place-external-api.dto";
 import { IPredefinedPictureDto } from "../../types/activities/predefined-picture.dto";
 import { IPredefinedTagDto } from "../../types/activities/predefined-tag.dto";
-import { IFileFormDataRequestDto } from "../../types/activities/file-form-data-request.dto";
-import { ActivitiyParticipantStateEnum } from "../../types/activities/activity-participant-state-enum.dto";
 
 export const getActivities = async ({
   queryFunctionContext,

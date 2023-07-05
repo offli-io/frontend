@@ -57,8 +57,8 @@ const LabeledTile: React.FC<ILabeledTileProps> = ({
             position: "absolute",
             left: 0,
             top: 0,
-            zIndex: -1,
             opacity: selected ? 0.8 : 0.6,
+            objectFit: "contain",
           }}
         ></img>
         <Box sx={{ position: "absolute", bottom: 10, left: 0, width: "60%" }}>
