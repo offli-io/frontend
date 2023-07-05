@@ -30,7 +30,7 @@ import { IActivityListRestDto } from "../types/activities/activity-list-rest.dto
 import { IActivityRestDto } from "../types/activities/activity-rest.dto";
 import AuthenticationMethodScreen from "../screens/authentication-method-screen";
 import ForgottenPasswordScreen from "../screens/forgotten-password-screen/forgotten-password-screen";
-import EditActivityScreen from "../screens/edit-activity-screen/edit-activity-screen";
+// import EditActivityScreen from "../screens/edit-activity-screen/edit-activity-screen";
 import ChooseUsernameGooglePage from "../screens/choose-username-google-page";
 import ChooseLocationScreen from "../screens/choose-location-screen";
 import AddBuddyScreen from "../screens/add-buddies-screen/add-buddies-screen";
@@ -125,10 +125,7 @@ const Routes = () => {
           path={`${ApplicationLocations.ACTIVITY_ID}/:id/members`}
           element={<ActivityMembersScreen />}
         />
-        <Route
-          path={`${ApplicationLocations.EDIT_ACTIVITY}/:id`}
-          element={<EditActivityScreen />}
-        />
+
         <Route
           path={ApplicationLocations.CREATE}
           element={<CreateActivityScreen />}

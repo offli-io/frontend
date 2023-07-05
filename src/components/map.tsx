@@ -19,7 +19,6 @@ import { LatLng, LatLngTuple, Icon } from "leaflet";
 import { IActivity } from "../types/activities/activity.dto";
 import PlaceIcon from "@mui/icons-material/Place";
 import { DrawerContext } from "../assets/theme/drawer-provider";
-import ActivityDetailsScreenLayout from "../screens/activity-details-screen/components/activity-details-screen-layout";
 import PowerSettingsNewIcon from "@mui/icons-material/PowerSettingsNew";
 
 import offliMarker from "../assets/img/offli-icon.svg";
