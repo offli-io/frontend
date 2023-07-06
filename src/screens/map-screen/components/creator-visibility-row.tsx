@@ -63,18 +63,19 @@ export const CreatorVisibilityRow: React.FC<IProps> = ({
             flexDirection: "row",
             alignItems: "center",
             justifyContent: "flex-start",
+            color: "grey",
           }}
         >
           {visibility === ActivityVisibilityEnum.private ? (
             <>
-              <LockIcon sx={{ mr: 0.5 }} />
+              <LockIcon sx={{ mr: 0.5, fontSize: 18 }} />
               <Typography variant="subtitle1" align="left">
                 Private
               </Typography>
             </>
           ) : (
             <>
-              <LockOpenIcon sx={{ mr: 0.5 }} />
+              <LockOpenIcon sx={{ mr: 0.5, fontSize: 18 }} />
               <Typography variant="subtitle1" align="left">
                 Public
               </Typography>

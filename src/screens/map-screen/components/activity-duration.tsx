@@ -21,20 +21,20 @@ const TextBox = styled(Box)(() => ({
 }));
 
 interface IProps {
-  description?: string;
+  duration?: string;
 }
 
-const AdditionalDescription: React.FC<IProps> = ({ description }) => {
+const ActivityDuration: React.FC<IProps> = ({ duration }) => {
   return (
     <MainBox>
       <Typography variant="h3" align="left">
         Additional description
       </Typography>
       <TextBox>
-        <Typography variant="subtitle1">{description}</Typography>
+        <Typography variant="subtitle1">{duration}</Typography>
       </TextBox>
     </MainBox>
   );
 };
 
-export default AdditionalDescription;
+export default ActivityDuration;

@@ -8,7 +8,8 @@ const MainBox = styled(Box)(() => ({
   flexDirection: "row",
   alignItems: "center",
   justifyContent: "flex-start",
-  marginBottom: 5,
+  marginBottom: "2%",
+  marginLeft: "1%",
 }));
 
 interface IProps {

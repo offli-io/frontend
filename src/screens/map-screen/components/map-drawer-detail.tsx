@@ -8,6 +8,9 @@ import ActivityTags from "../../activity-details-screen/components/activity-tags
 import { CreatorVisibilityRow } from "./creator-visibility-row";
 import BasicInformation from "./basic-information";
 import AdditionalDescription from "./additional-description";
+import { getTimeDifference } from "../utils/get-time-difference";
+import ActivityDuration from "./activity-duration";
+import CreatedTimestamp from "./created-timestamp";
 
 interface IProps {
   activityId?: number;
@@ -30,6 +33,17 @@ const MapDrawerDetail: React.FC<IProps> = ({ activityId }) => {
 
   const participantsNum = `${activity?.count_confirmed}/${activity?.limit}`;
 
+  const timeStampFrom = Date.parse(activity?.datetime_from!.toString());
+  const dateTimeFrom = new Date(timeStampFrom);
+  const timeStampUntil = Date.parse(activity?.datetime_until!.toString());
+  const dateTimeUntil = new Date(timeStampUntil);
+  const timeStampCreatedAt = Date.parse(activity?.datetime_until!.toString());
+  const dateTimeCreatedAt = new Date(timeStampCreatedAt);
+
+  const { durationHours, durationMinutes } = getTimeDifference(
+    dateTimeFrom,
+    dateTimeUntil
+  ); // useMemo??
   return (
     <MainBox>
       <Typography
@@ -40,7 +54,9 @@ const MapDrawerDetail: React.FC<IProps> = ({ activityId }) => {
       </Typography>
       <ActivityDetailTiles
         participantsNum={participantsNum}
-        dateTime={activity?.datetime_from?.toString()}
+        dateTime={dateTimeFrom.toLocaleString("de", {
+          timeStyle: "short",
+        })}
         // distance={activity?.}
         price={activity?.price}
       />
@@ -59,13 +75,34 @@ const MapDrawerDetail: React.FC<IProps> = ({ activityId }) => {
       />
       <BasicInformation
         locationName={activity?.location?.name}
-        dateTime={activity?.datetime_from?.toLocaleString("en-GB", {
-          timeZone: "UTC",
-        })}
+        // dateTime={`${dateTimeFrom.toLocaleString("de", {
+        //   hour12: false,
+        //   dateStyle: "short",
+        //   timeStyle: "short",
+        // })}`}
+        dateTime={`${dateTimeFrom?.toLocaleString("de", {
+          hour12: false,
+          dateStyle: "short",
+          timeStyle: "short",
+        })} - ${dateTimeUntil?.toLocaleString("de", {
+          hour12: false,
+          dateStyle: "short",
+          timeStyle: "short",
+        })}`}
         price={activity?.price}
         participantsNum={participantsNum}
       />
-      <AdditionalDescription />
+      <AdditionalDescription description={activity?.description} />
+      <ActivityDuration
+        duration={`${durationHours} hours, ${durationMinutes} minutes`}
+      />
+      <CreatedTimestamp
+        timestamp={`${dateTimeCreatedAt?.toLocaleString("de", {
+          hour12: false,
+          dateStyle: "short",
+          timeStyle: "short",
+        })}`}
+      />
     </MainBox>
   );
 };

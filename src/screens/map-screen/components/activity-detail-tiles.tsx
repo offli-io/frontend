@@ -64,9 +64,7 @@ const ActivityDetailTiles: React.FC<IProps> = ({
           <CalendarTodayIcon sx={{ fontSize: 22 }} />
         </IconButton>
         <StyledText align="center" variant="subtitle1">
-          {`${dateTime?.split("T")[1].split(":")[0]}:${
-            dateTime?.split("T")[1].split(":")[1]
-          }`}
+          {dateTime}
         </StyledText>
       </StyledBox>
       <StyledBox>
