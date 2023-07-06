@@ -16,6 +16,7 @@ const ActivityTags: React.FC<IProps> = ({ tags }) => {
         justifyContent: "space-evenly",
         my: 2,
         px: 3,
+        flexWrap: "wrap",
         // overflowWrap: "wrap",
       }}
     >
@@ -24,10 +25,12 @@ const ActivityTags: React.FC<IProps> = ({ tags }) => {
           label={tag}
           key={index}
           sx={{
-            p: 2.5,
+            p: 2,
             borderRadius: "10px",
             fontSize: "14px",
             textTransform: "capitalize",
+            mx: 1,
+            my: 0.5,
           }}
           color="primary"
         />

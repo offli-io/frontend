@@ -69,8 +69,7 @@ const MapDrawerDetail: React.FC<IProps> = ({ activityId }) => {
         src={activity?.title_picture_url}
         alt="activity_title_photo"
         style={{
-          width: "100%",
-          height: "20%",
+          width: "100vw",
         }}
       />
       <BasicInformation

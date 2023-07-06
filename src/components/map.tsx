@@ -137,7 +137,15 @@ const Map: React.FC<ILabeledTileProps> = ({
                   click: () => handleMarkerClick(id),
                 }}
               >
-                <Popup>{title}</Popup>
+                <Popup>
+                  <Typography
+                    variant="h6"
+                    align="center"
+                    sx={{ overflowWrap: "break-word" }}
+                  >
+                    {title}
+                  </Typography>
+                </Popup>
               </Marker>
             )
         )}

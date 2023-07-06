@@ -22,7 +22,6 @@ const StyledBox = styled(Box)(() => ({
   // paddingTop: "2%",
   // paddingBottom: "2%",
   padding: "1% 4%",
-  // maxWidth: "45vw",
 }));
 
 const StyledText = styled(Typography)(() => ({
@@ -44,10 +43,11 @@ const ActivityDetailTiles: React.FC<IProps> = ({
     <Box
       sx={{
         width: "90%",
+        height: "10px",
         display: "flex",
         flex: 1,
         flexDirection: "row",
-        alignItems: "center",
+        alignItems: "stretch",
         justifyContent: "space-evenly",
       }}
     >

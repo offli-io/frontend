@@ -31,7 +31,9 @@ const BasicInformation: React.FC<IProps> = ({
 }) => {
   return (
     <MainBox>
-      <Typography variant="h3">Basic information</Typography>
+      <Typography variant="h3" sx={{ mb: 1 }}>
+        Basic information
+      </Typography>
       <IconInformationRow icon={RoomIcon} text={locationName} />
       <IconInformationRow icon={CalendarTodayIcon} text={dateTime} />
       <IconInformationRow icon={MonetizationOnIcon} text={price} />
