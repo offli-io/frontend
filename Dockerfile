@@ -1,28 +1,32 @@
+# BUILD STAGE
+FROM node:16-alpine as build
 
-# ==== CONFIGURE =====
-# Use a Node 16 base image
-FROM node:16-alpine 
-# Set the working directory to /app inside the container
 WORKDIR /app
-# Copy app files
-COPY . .
-# ==== BUILD =====
-# Install dependencies (npm ci makes sure the exact versions in the lockfile gets installed)
-RUN npm ci 
 
-
-ARG REACT_APP_BASE_URL
-
-ENV REACT_APP_API_URL=${REACT_APP_BASE_URL}
-
-#ENV REACT_APP_API_URL=http://localhost:5000
+# Install dependencies
+COPY package.json .
+COPY package-lock.json .
+RUN npm ci
 
 # Build the app
+COPY tsconfig.json .
+COPY public ./public
+COPY src ./src
 RUN npm run build
-# ==== RUN =======
-# Set the env to "production"   
-ENV NODE_ENV production
-# Expose the port on which the app will be running (3000 is the default that `serve` uses)
+
+
+# PROD STAGE
+FROM nginx:stable-alpine
+
+# Copy static app from build stage
+COPY --from=build /app/build /usr/share/nginx/html
+
+# Add config for nginx and start script
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY start.sh ./
+
+RUN chmod +x start.sh
+
 EXPOSE 3000
-# Start the app
+
 ENTRYPOINT [ "./start.sh" ]
