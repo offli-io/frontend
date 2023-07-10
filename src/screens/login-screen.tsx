@@ -51,7 +51,6 @@ const LoginScreen: React.FC = () => {
   const queryParameters = new URLSearchParams(window.location.search);
   const authorizationCode = queryParameters.get("code");
 
-  console.log(process.env.REACT_APP_API_URL);
   const handleClickShowPassword = () => setShowPassword(!showPassword);
 
   const { control, handleSubmit, watch, formState } = useForm<FormValues>({

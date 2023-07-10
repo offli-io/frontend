@@ -245,7 +245,9 @@ const ActivitiesScreen = () => {
           mb: 1,
         }}
       >
-        <Typography variant="h5">Explore</Typography>
+        <Typography variant="h5" sx={{ color: palette?.text?.primary }}>
+          Explore
+        </Typography>
         <OffliButton
           variant="text"
           sx={{
