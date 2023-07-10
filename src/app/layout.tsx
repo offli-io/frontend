@@ -14,7 +14,7 @@ interface ILayoutProps {
   children?: React.ReactNode;
 }
 
-const NOT_EXACT_UNALLOWED_URLS = [
+export const NOT_EXACT_UNALLOWED_URLS = [
   "/request",
   "/map/",
   "/profile/buddy",
@@ -53,22 +53,10 @@ export const Layout: React.FC<ILayoutProps> = ({ children }) => {
   React.useEffect(() => {
     if (
       [
-        ApplicationLocations.SETTINGS,
-        ApplicationLocations.EDIT_PROFILE,
-        // ApplicationLocations.SEARCH,
+        // locations where we want to hide header
         ApplicationLocations.CHOOSE_LOCATION,
-        ApplicationLocations.MAP,
-        ApplicationLocations.BUDDIES,
-        ApplicationLocations.ADD_BUDDIES,
         ApplicationLocations.CHOOSE_USERNAME_GOOGLE,
-        ApplicationLocations.SEARCH,
-        //ApplicationLocations.NOTIFICATIONS,
-        // `${ApplicationLocations.PROFILE}/request`,
-        // `${ApplicationLocations.ACTIVITIES}/request`,
-      ].includes(location?.pathname as ApplicationLocations) ||
-      NOT_EXACT_UNALLOWED_URLS?.some((item) =>
-        location?.pathname.includes(item)
-      )
+      ].includes(location?.pathname as ApplicationLocations)
     ) {
       setDisplayHeader(false);
     } else {
@@ -103,9 +91,7 @@ export const Layout: React.FC<ILayoutProps> = ({ children }) => {
         }}
       >
         {/* TODO backHeader and diusplayheader better naming */}
-        {stateToken && (
-          <OffliHeader sx={{ width: "100%" }} backHeader={!displayHeader} />
-        )}
+        {stateToken && displayHeader && <OffliHeader sx={{ width: "100%" }} />}
         <Box
           sx={{
             width: "100%",

@@ -44,6 +44,7 @@ import { useUsers } from "../../hooks/use-users";
 import { useParticipantActivities } from "../../hooks/use-participant-activities";
 import { useUser } from "../../hooks/use-user";
 import { LocationContext } from "../../app/providers/location-provider";
+import MapIcon from "@mui/icons-material/Map";
 
 const ActivitiesScreen = () => {
   const { userInfo, isFirstTimeLogin, setIsFirstTimeLogin } = React.useContext(
@@ -244,12 +245,7 @@ const ActivitiesScreen = () => {
           mb: 1,
         }}
       >
-        <Typography
-          variant="h5"
-          sx={{ fontSize: 24, color: palette?.text?.primary }}
-        >
-          Explore
-        </Typography>
+        <Typography variant="h5">Explore</Typography>
         <OffliButton
           variant="text"
           sx={{
@@ -258,8 +254,9 @@ const ActivitiesScreen = () => {
             justifyContent: "flex-start",
             overflow: "hidden",
             whiteSpace: "nowrap",
+            fontWeight: "bold",
           }}
-          startIcon={<PlaceIcon sx={{ fontSize: "1.4rem" }} />}
+          startIcon={<PlaceIcon sx={{ fontSize: "1.4rem", mr: -0.5 }} />}
           onClick={handleLocationSelect}
           data-test-id="current-location-btn"
         >
@@ -296,14 +293,21 @@ const ActivitiesScreen = () => {
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
-                  <SearchIcon sx={{ fontSize: "1.2rem" }} />
+                  <SearchIcon sx={{ fontSize: "1.5rem", color: "#4A148C" }} />{" "}
                 </InputAdornment>
               ),
             }}
             sx={{
               "& input::placeholder": {
                 fontSize: 14,
+                color: "#4A148C",
+                fontWeight: "bold",
+                opacity: 1,
+                pl: 1,
               },
+              "& fieldset": { border: "none" },
+              backgroundColor: "rgba(74, 20, 140, 0.18)",
+              borderRadius: "10px",
             }}
             data-testid="activities-search-input"
             // onChange={(e) => setValue("placeQuery", e.target.value)}
@@ -332,7 +336,8 @@ const ActivitiesScreen = () => {
                   justifyContent: "space-between",
                   alignItems: "center",
                   width: "100%",
-                  mb: 1,
+                  mb: 1.5,
+                  mt: 1,
                 }}
               >
                 <Typography variant="h5" sx={{ color: palette?.text?.primary }}>
@@ -395,7 +400,7 @@ const ActivitiesScreen = () => {
                   }
                   data-testid="see-map-btn"
                 >
-                  See map
+                  Show on Map
                 </OffliButton>
               </Box>
               <Box

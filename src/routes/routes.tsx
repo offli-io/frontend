@@ -1,14 +1,15 @@
-import { Route, Routes as BaseRoutes } from "react-router-dom";
+import { Routes as BaseRoutes, Route } from "react-router-dom";
 import { PrivateRoutes } from "../components/private-routes";
-import ActivitiesScreen from "../screens/my-activities-screen/my-activities-screen";
+import ActivityDetailsScreen from "../screens/activity-details-screen/activity-details-screen";
 import ChatScreen from "../screens/chat-screen";
 import CreateActivityScreen from "../screens/create-activity-screen/create-activity-screen";
 import EditProfileScreen from "../screens/edit-profile-screen/edit-profile-screen";
 import LoadingScreen from "../screens/loading-screen";
-import LoginOrRegisterScreen from "../screens/login-or-register";
 import LoginScreen from "../screens/login-screen";
+import ActivitiesScreen from "../screens/my-activities-screen/my-activities-screen";
 import MyBuddiesScreen from "../screens/my-buddies-screen/my-buddies-screen";
 import NewPasswordScreen from "../screens/new-password-screen";
+import NotificationsScreen from "../screens/notifications-screen/notifications-screen";
 import PickUsernamePhotoScreen from "../screens/pick-username-photo-screen";
 import ProfileScreen from "../screens/profile-screen/profile-screen";
 import RegistrationScreen from "../screens/registration-screen";
@@ -17,24 +18,20 @@ import SearchScreen from "../screens/search-screen/search-screen";
 import SelectProfilePictureScreen from "../screens/select-picture-screen";
 import SettingsScreen from "../screens/settings-screen/settings-screen";
 import TestScreen from "../screens/test-screen";
-import VerificationScreen from "../screens/verification-screen";
+import VerificationScreen from "../screens/verification-screen/verification-screen";
 import WelcomeScreen from "../screens/welcome-screen";
-import { ApplicationLocations } from "../types/common/applications-locations.dto";
-import { getAuthToken } from "../utils/token.util";
-import ActivityDetailsScreen from "../screens/activity-details-screen/activity-details-screen";
-import NotificationsScreen from "../screens/notifications-screen/notifications-screen";
 
+import { ApplicationLocations } from "../types/common/applications-locations.dto";
 import { ActivityMembersScreen } from "../screens/activity-members-screen/activity-members-screen";
+import AddBuddiesScreen from "../screens/add-buddies-screen/add-buddies-screen";
+import AuthenticationMethodScreen from "../screens/authentication-method-screen";
+import ChooseLocationScreen from "../screens/choose-location-screen";
+import ChooseUsernameGooglePage from "../screens/choose-username-google-page";
+import ForgottenPasswordScreen from "../screens/forgotten-password-screen/forgotten-password-screen";
 import MapScreen from "../screens/map-screen";
+import { ProfileEntryTypeEnum } from "../screens/profile-screen/types/profile-entry-type";
 import { IActivityListRestDto } from "../types/activities/activity-list-rest.dto";
 import { IActivityRestDto } from "../types/activities/activity-rest.dto";
-import AuthenticationMethodScreen from "../screens/authentication-method-screen";
-import ForgottenPasswordScreen from "../screens/forgotten-password-screen/forgotten-password-screen";
-import ChooseUsernameGooglePage from "../screens/choose-username-google-page";
-import ChooseLocationScreen from "../screens/choose-location-screen";
-import AddBuddyScreen from "../screens/add-buddies-screen/add-buddies-screen";
-import AddBuddiesScreen from "../screens/add-buddies-screen/add-buddies-screen";
-import { ProfileEntryTypeEnum } from "../screens/profile-screen/types/profile-entry-type";
 
 const Routes = () => {
   return (
