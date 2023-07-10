@@ -17,11 +17,11 @@ const ActivityCard: React.FC<IProps> = ({ activity, onPress, ...rest }) => {
   return (
     <Box
       sx={{
-        width: "96%",
+        width: "99%",
         height: 200,
         marginTop: "2%",
         marginBottom: "2%",
-        borderRadius: "10px",
+        borderRadius: "12px",
         backgroundImage: `url(${activity?.title_picture_url})`,
         // backgroundImage: `url(${activity?.title_picture})`,
         backgroundPosition: "center",
@@ -43,14 +43,14 @@ const ActivityCard: React.FC<IProps> = ({ activity, onPress, ...rest }) => {
       <Box
         sx={{
           width: "100%",
-          backgroundColor: "rgba(0,0,0,.15)",
+          backgroundColor: "rgba(0,0,0,.8)",
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
           padding: "3% 3% 2% 3%",
-          borderBottomLeftRadius: "10px",
-          borderBottomRightRadius: "10px",
-          backdropFilter: "blur(0.7px)",
+          borderBottomLeftRadius: "12px",
+          borderBottomRightRadius: "12px",
+          backdropFilter: "blur(2px)",
           // position: 'absolute',
           // bottom: 0,
         }}
@@ -60,7 +60,6 @@ const ActivityCard: React.FC<IProps> = ({ activity, onPress, ...rest }) => {
             maxWidth: 250,
             whiteSpace: "nowrap",
             overflow: "hidden",
-            color: "white",
           }}
         >
           <Typography
@@ -81,7 +80,6 @@ const ActivityCard: React.FC<IProps> = ({ activity, onPress, ...rest }) => {
                 fontweight: 200,
                 fontSize: 11,
                 lineHeight: 1.1,
-                color: "white",
               }}
             >
               {activity?.location?.name}
@@ -93,7 +91,6 @@ const ActivityCard: React.FC<IProps> = ({ activity, onPress, ...rest }) => {
               flexDirection: "row",
               alignItems: "center",
               justifyContent: "flex-start",
-              mt: 0.4,
             }}
           >
             <Box>
@@ -113,10 +110,9 @@ const ActivityCard: React.FC<IProps> = ({ activity, onPress, ...rest }) => {
                   sx={{
                     fontWeight: 200,
                     lineHeight: 1.1,
-                    color: "white",
                   }}
                 >
-                  {activity?.count_confirmed}/{activity?.limit}
+                  {activity?.participants?.length}/{activity?.limit}
                 </Typography>
               ) : (
                 <Typography variant="subtitle2">
@@ -153,7 +149,6 @@ const ActivityCard: React.FC<IProps> = ({ activity, onPress, ...rest }) => {
                 fontSize: "12px",
                 fontWeight: "lighter",
                 letterSpacing: 0,
-                color: "white",
               }}
             >
               September
@@ -166,7 +161,6 @@ const ActivityCard: React.FC<IProps> = ({ activity, onPress, ...rest }) => {
                 fontSize: "20px",
                 fontWeight: 200,
                 lineHeight: 1.1,
-                color: "white",
               }}
             >
               17:00
