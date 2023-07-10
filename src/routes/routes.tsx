@@ -35,7 +35,6 @@ import ChooseLocationScreen from "../screens/choose-location-screen";
 import AddBuddyScreen from "../screens/add-buddies-screen/add-buddies-screen";
 import AddBuddiesScreen from "../screens/add-buddies-screen/add-buddies-screen";
 import { ProfileEntryTypeEnum } from "../screens/profile-screen/types/profile-entry-type";
-import { EditActivityScreen } from "../screens/edit-activity-screen/edit-activity-screen";
 
 const Routes = () => {
   return (
