@@ -13,7 +13,6 @@ import ActivityDetailsGrid from "./components/activity-details-grid";
 import ActivityDescriptionTags from "./components/activity-description-tags";
 import ActivityCreatorDuration from "./components/activity-creator-duration";
 import { useUser } from "../../hooks/use-user";
-import { ActivityVisibilityEnum } from "../../types/activities/activity-visibility-enum.dto";
 
 interface IProps {
   type: "detail" | "request";
@@ -81,7 +80,7 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
               color: "grey",
             }}
           >
-            {activity?.visibility === ActivityVisibilityEnum.private ? (
+            {activity?.visibility === "private" ? (
               <>
                 <LockIcon sx={{ fontSize: "18px", mr: 0.5 }} />
                 <Typography variant="subtitle1" align="left">

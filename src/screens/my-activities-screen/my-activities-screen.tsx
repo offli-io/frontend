@@ -31,7 +31,6 @@ import ActivityCard from "../../components/activity-card";
 import OffliButton from "../../components/offli-button";
 import SearchIcon from "@mui/icons-material/Search";
 import PlaceIcon from "@mui/icons-material/Place";
-import MapIcon from "@mui/icons-material/Map";
 import {
   IActivity,
   IPerson,
@@ -245,7 +244,12 @@ const ActivitiesScreen = () => {
           mb: 1,
         }}
       >
-        <Typography variant="h5">Explore</Typography>
+        <Typography
+          variant="h5"
+          sx={{ fontSize: 24, color: palette?.text?.primary }}
+        >
+          Explore
+        </Typography>
         <OffliButton
           variant="text"
           sx={{
@@ -254,9 +258,8 @@ const ActivitiesScreen = () => {
             justifyContent: "flex-start",
             overflow: "hidden",
             whiteSpace: "nowrap",
-            fontWeight: "bold",
           }}
-          startIcon={<PlaceIcon sx={{ fontSize: "1.4rem", mr: -0.5 }} />}
+          startIcon={<PlaceIcon sx={{ fontSize: "1.4rem" }} />}
           onClick={handleLocationSelect}
           data-test-id="current-location-btn"
         >
@@ -293,21 +296,14 @@ const ActivitiesScreen = () => {
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
-                  <SearchIcon sx={{ fontSize: "1.5rem", color: "#4A148C" }} />
+                  <SearchIcon sx={{ fontSize: "1.2rem" }} />
                 </InputAdornment>
               ),
             }}
             sx={{
               "& input::placeholder": {
                 fontSize: 14,
-                color: "#4A148C",
-                fontWeight: "bold",
-                opacity: 1,
-                pl: 1,
               },
-              "& fieldset": { border: "none" },
-              backgroundColor: "rgba(74, 20, 140, 0.18)",
-              borderRadius: "10px",
             }}
             data-testid="activities-search-input"
             // onChange={(e) => setValue("placeQuery", e.target.value)}
@@ -336,18 +332,17 @@ const ActivitiesScreen = () => {
                   justifyContent: "space-between",
                   alignItems: "center",
                   width: "100%",
-                  mb: 1.5,
-                  mt: 1,
+                  mb: 1,
                 }}
               >
                 <Typography variant="h5">Your upcoming this week</Typography>
-                {/* <OffliButton
+                <OffliButton
                   variant="text"
                   sx={{ fontSize: 16 }}
                   data-testid="see-all-activities-btn"
                 >
                   See all
-                </OffliButton> */}
+                </OffliButton>
               </Box>
               <Box
                 sx={{
@@ -395,9 +390,8 @@ const ActivitiesScreen = () => {
                     })
                   }
                   data-testid="see-map-btn"
-                  // startIcon={<MapIcon sx={{ fontSize: "1.4rem", mr: -0.5 }} />}
                 >
-                  Show on Map
+                  See map
                 </OffliButton>
               </Box>
               <Box

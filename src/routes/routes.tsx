@@ -25,7 +25,7 @@ import ActivityDetailsScreen from "../screens/activity-details-screen/activity-d
 import NotificationsScreen from "../screens/notifications-screen/notifications-screen";
 
 import { ActivityMembersScreen } from "../screens/activity-members-screen/activity-members-screen";
-import MapScreen from "../screens/map-screen/map-screen";
+import MapScreen from "../screens/map-screen";
 import { IActivityListRestDto } from "../types/activities/activity-list-rest.dto";
 import { IActivityRestDto } from "../types/activities/activity-rest.dto";
 import AuthenticationMethodScreen from "../screens/authentication-method-screen";
@@ -35,7 +35,6 @@ import ChooseLocationScreen from "../screens/choose-location-screen";
 import AddBuddyScreen from "../screens/add-buddies-screen/add-buddies-screen";
 import AddBuddiesScreen from "../screens/add-buddies-screen/add-buddies-screen";
 import { ProfileEntryTypeEnum } from "../screens/profile-screen/types/profile-entry-type";
-import EditActivityScreen from "../screens/edit-activity-screen/edit-activity-screen";
 
 const Routes = () => {
   return (

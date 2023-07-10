@@ -19,7 +19,6 @@ const NOT_EXACT_UNALLOWED_URLS = [
   "/map/",
   "/profile/buddy",
   "/profile/user",
-  "/edit-activity/",
 ];
 
 export const Layout: React.FC<ILayoutProps> = ({ children }) => {
@@ -56,7 +55,6 @@ export const Layout: React.FC<ILayoutProps> = ({ children }) => {
       [
         ApplicationLocations.SETTINGS,
         ApplicationLocations.EDIT_PROFILE,
-        ApplicationLocations.EDIT_ACTIVITY,
         // ApplicationLocations.SEARCH,
         ApplicationLocations.CHOOSE_LOCATION,
         ApplicationLocations.MAP,

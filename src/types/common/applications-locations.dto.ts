@@ -22,7 +22,6 @@ export enum ApplicationLocations {
   CHOOSE_LOCATION = "/choose-location",
   ACTIVITY_ID = "/activity",
   ACTIVITY_INVITE = "/activities/request",
-  EDIT_ACTIVITY = "/edit-activity",
   CREATE = "/create",
   SEARCH = "/search",
   MAP = "/map",
