@@ -17,7 +17,7 @@ import SearchScreen from "../screens/search-screen/search-screen";
 import SelectProfilePictureScreen from "../screens/select-picture-screen";
 import SettingsScreen from "../screens/settings-screen/settings-screen";
 import TestScreen from "../screens/test-screen";
-import VerificationScreen from "../screens/verification-screen";
+import VerificationScreen from "../screens/verification-screen/verification-screen";
 import WelcomeScreen from "../screens/welcome-screen";
 import { ApplicationLocations } from "../types/common/applications-locations.dto";
 import { getAuthToken } from "../utils/token.util";

@@ -3,27 +3,56 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import React from "react";
 import ReactInputVerificationCode from "react-input-verification-code";
 import { useNavigate } from "react-router-dom";
-import { verifyCodeAndRetrieveUserId } from "../api/users/requests";
-import OffliButton from "../components/offli-button";
-import { ApplicationLocations } from "../types/common/applications-locations.dto";
+import { verifyCodeAndRetrieveUserId } from "../../api/users/requests";
+import OffliButton from "../../components/offli-button";
+import { ApplicationLocations } from "../../types/common/applications-locations.dto";
 import { useSnackbar } from "notistack";
-import { AuthenticationContext } from "../assets/theme/authentication-provider";
+import { AuthenticationContext } from "../../assets/theme/authentication-provider";
 import {
   IEmailPassword,
   IUsername,
   IUsernamePassword,
-} from "../types/users/user.dto";
-import OffliBackButton from "../components/offli-back-button";
-import { loginUser, resendCode } from "../api/auth/requests";
+} from "../../types/users/user.dto";
+import OffliBackButton from "../../components/offli-back-button";
+import { loginUser, resendCode } from "../../api/auth/requests";
+import OTPInput from "./components/otp-input";
 
 interface LoginValues {
   username: string;
   password: string;
 }
 
+const otpStyle = {
+  // width: "75%",
+  // heigth: "50px",
+  // display: "flex",
+  // alignItems: "center",
+  // justifyContent: "center",
+  // margin: "auto",
+};
+
 const VerificationScreen = () => {
   const [verificationCode, setVerificationCode] = React.useState<string>("");
   const [userId, setUserId] = React.useState<string>("");
+
+  const [{ otp, numInputs, placeholder, inputType }, setConfig] =
+    React.useState({
+      otp: "",
+      numInputs: 6,
+      placeholder: "",
+      inputType: "number" as const,
+    });
+
+  const [otpDisabled, setOptDisabled] = React.useState<boolean>(false);
+
+  const handleOTPChange = (otp: string) => {
+    setConfig((prevConfig) => ({ ...prevConfig, otp }));
+    if (otp?.length === numInputs) {
+      // setOptDisabled(true);
+      verifyCodeMutation.mutate(otp);
+    }
+  };
+
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
@@ -134,14 +163,18 @@ const VerificationScreen = () => {
         Take a look for the verification code we just sent you to{" "}
         <b>{precreatedEmailPassword?.email}</b>.
       </Typography>
-      <Typography variant="subtitle2" sx={{ ml: -25, mb: 1 }}>
+      <Typography variant="subtitle2" sx={{ ml: -18, mb: 1 }}>
         Confirmation code
       </Typography>
-      <ReactInputVerificationCode
-        autoFocus
-        placeholder=""
-        length={6}
-        onCompleted={(value) => handleOnCompleted(value)}
+      <OTPInput
+        numInputs={numInputs}
+        onChange={handleOTPChange}
+        value={otp}
+        placeholder={placeholder}
+        inputType={inputType}
+        renderInput={(props) => <input {...props} />}
+        shouldAutoFocus
+        // otpDisabled={otpDisabled}
       />
       <Box sx={{ display: "flex", mr: -15, alignItems: "center" }}>
         <Typography variant="subtitle2">No email?</Typography>
