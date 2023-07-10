@@ -18,8 +18,6 @@ import {
 import { LatLng, LatLngTuple } from "leaflet";
 import { IActivity } from "../types/activities/activity.dto";
 import PlaceIcon from "@mui/icons-material/Place";
-import { DrawerContext } from "../assets/theme/drawer-provider";
-import MapDrawerDetail from "../screens/map-screen/components/map-drawer-detail";
 
 // function LocationMarker() {
 //   const [position, setPosition] = React.useState<LatLng | null>(null);
@@ -101,15 +99,6 @@ const Map: React.FC<ILabeledTileProps> = ({
     currentLocation &&
     ([currentLocation.latitude, currentLocation.longitude] as LatLngTuple);
 
-  const { toggleDrawer } = React.useContext(DrawerContext);
-
-  const handleMarkerClick = (activityId?: number) => {
-    toggleDrawer({
-      open: true,
-      content: <MapDrawerDetail activityId={activityId} />,
-    });
-  };
-
   return (
     <Box sx={{ width: "100%", height: "100%", position: "fixed" }}>
       <MapContainer
@@ -132,20 +121,8 @@ const Map: React.FC<ILabeledTileProps> = ({
                   location?.coordinates?.lat ?? position[0],
                   location?.coordinates?.lon ?? position[1],
                 ]}
-                // position={latLonTuple ?? position}
-                eventHandlers={{
-                  click: () => handleMarkerClick(id),
-                }}
               >
-                <Popup>
-                  <Typography
-                    variant="h6"
-                    align="center"
-                    sx={{ overflowWrap: "break-word" }}
-                  >
-                    {title}
-                  </Typography>
-                </Popup>
+                <Popup>{title}</Popup>
               </Marker>
             )
         )}

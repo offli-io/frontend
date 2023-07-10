@@ -252,7 +252,6 @@
 
 //   return (
 //     <>
-//       <BackHeader title="Edit Activity" to={from} />
 //       <PageWrapper>
 //         <Box
 //           sx={{
