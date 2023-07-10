@@ -1,5 +1,12 @@
 import React from "react";
-import { Box, Card, IconButton, SxProps, Typography } from "@mui/material";
+import {
+  Box,
+  Card,
+  IconButton,
+  SxProps,
+  Typography,
+  useTheme,
+} from "@mui/material";
 import { IActivity, IPersonExtended } from "../types/activities/activity.dto";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import LockIcon from "@mui/icons-material/Lock";
@@ -34,11 +41,13 @@ const ActivitySearchCard: React.FC<IMyActivityCardProps> = ({
   ...rest
 }) => {
   //TODO maybe in later use also need some refactoring
+  const { palette } = useTheme();
   const { action, handlers } = useLongPress();
   const { userInfo } = React.useContext(AuthenticationContext);
   const { data: { data = {} } = {} } = useUser({
     id: userInfo?.id,
   });
+  const myLocation = data?.location?.coordinates;
 
   return (
     <Box
@@ -74,14 +83,29 @@ const ActivitySearchCard: React.FC<IMyActivityCardProps> = ({
       >
         <Box sx={{ display: "flex" }}>
           <Box>
-            <Typography variant="h6" sx={{ fontWeight: "bold" }}>
+            <Typography
+              variant="h6"
+              sx={{ fontWeight: "bold", color: palette?.text?.primary }}
+            >
               {activity?.title}
             </Typography>
-            <Typography sx={{ fontSize: 12, lineHeight: 1.2 }}>
+            <Typography
+              sx={{
+                fontSize: 12,
+                lineHeight: 1.2,
+                color: palette?.text?.primary,
+              }}
+            >
               {activity?.location?.name}
             </Typography>
 
-            <Typography sx={{ fontSize: 12, lineHeight: 1.2 }}>
+            <Typography
+              sx={{
+                fontSize: 12,
+                lineHeight: 1.2,
+                color: palette?.text?.primary,
+              }}
+            >
               {format(
                 (activity?.datetime_from
                   ? new Date(activity?.datetime_from)
@@ -93,33 +117,34 @@ const ActivitySearchCard: React.FC<IMyActivityCardProps> = ({
         </Box>
         <Box sx={{ display: "flex", gap: 2, mt: 1 }}>
           <Box sx={{ display: "flex", alignItems: "center" }}>
-            <NearMeIcon sx={{ fontSize: 18, mr: 0.5 }} />
-            <Typography sx={{ fontSize: 12 }}>
-              {`${calculateDistance(activity?.location?.coordinates, {
-                lon: 25.2,
-                lat: -75.25,
-              })} km`}
+            <NearMeIcon
+              sx={{ fontSize: 18, mr: 0.5, color: palette?.text?.primary }}
+            />
+            <Typography sx={{ fontSize: 12, color: palette?.text?.primary }}>
+              {`${calculateDistance(
+                activity?.location?.coordinates,
+                myLocation
+              )} km`}
             </Typography>
           </Box>
           <Box sx={{ display: "flex", alignItems: "center" }}>
-            <PeopleAltIcon sx={{ fontSize: 18, mr: 0.5 }} />
-            <Typography sx={{ fontSize: 12 }}>
+            <PeopleAltIcon
+              sx={{ fontSize: 18, mr: 0.5, color: palette?.text?.primary }}
+            />
+            <Typography sx={{ fontSize: 12, color: palette?.text?.primary }}>
               {`${activity?.participants?.length ?? 0}/${activity?.limit}`}
             </Typography>
           </Box>
           <Box sx={{ display: "flex", alignItems: "center" }}>
-            <MonetizationOnIcon sx={{ fontSize: 18, mr: 0.5 }} />
-            <Typography sx={{ fontSize: 12 }}>
+            <MonetizationOnIcon
+              sx={{ fontSize: 18, mr: 0.5, color: palette?.text?.primary }}
+            />
+            <Typography sx={{ fontSize: 12, color: palette?.text?.primary }}>
               {`${activity?.price}`}
             </Typography>
           </Box>
         </Box>
       </Box>
-      {/* <Box>
-        <IconButton onClick={() => console.log("join activity")}>
-          <AddCircleOutlineIcon color="primary" />
-        </IconButton>
-      </Box> */}
     </Box>
   );
 };

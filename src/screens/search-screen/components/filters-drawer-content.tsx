@@ -1,26 +1,23 @@
-import React from "react";
 import {
   Box,
   Chip,
   CircularProgress,
   FormControl,
   FormControlLabel,
-  FormLabel,
   Radio,
   RadioGroup,
   Typography,
 } from "@mui/material";
-import OffliButton from "../../../components/offli-button";
-import { useActivities } from "../../../hooks/use-activities";
-import { IActivityRestDto } from "../../../types/activities/activity-rest.dto";
-import { RadioGroupDataDefinitionsEnum } from "../utils/radio-group-data-definitions";
+import React from "react";
 import {
   ICarouselItem,
   MobileCarousel,
 } from "../../../components/mobile-carousel";
-import { generateDateSlots } from "../../create-activity-screen/components/date-time-form";
+import OffliButton from "../../../components/offli-button";
 import { useTags } from "../../../hooks/use-tags";
+import { generateDateSlots } from "../../create-activity-screen/components/date-time-form";
 import { IFiltersDto } from "../types/filters.dto";
+import { RadioGroupDataDefinitionsEnum } from "../utils/radio-group-data-definitions";
 
 export interface IFiltersDrawerContentProps {
   filters?: IFiltersDto;
@@ -103,6 +100,12 @@ const FiltersDrawerContent: React.FC<IFiltersDrawerContentProps> = ({
       });
   }, []);
 
+  React.useEffect(() => {
+    if (filters?.tags) {
+      setSelectedTags(filters?.tags);
+    }
+  }, [filters?.tags, setSelectedTags]);
+
   return (
     <Box sx={{ display: "flex", flexDirection: "column", mx: 1.5 }}>
       <Box>
@@ -137,6 +140,7 @@ const FiltersDrawerContent: React.FC<IFiltersDrawerContentProps> = ({
             items={dateOptions}
             onItemSelect={handleDateSelect}
             onSlotAdd={handleDateAdd}
+            sx={{ py: "8px !important" }}
           />
         </Box>
       </Box>

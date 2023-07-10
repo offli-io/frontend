@@ -54,10 +54,13 @@ const SearchScreen = () => {
 
   const isTag = queryStringDebounced?.includes("tag");
 
+  console.log(filters);
+
   const { data: activitiesData, isLoading: areActivitiesLoading } =
     useActivities<IActivityListRestDto>({
       text: isTag ? undefined : queryStringDebounced,
-      tag: isTag ? [queryStringDebounced.slice(4)] : undefined,
+      tag: filters?.tags,
+      date: filters?.date?.dateValue,
     });
 
   const handleApplyFilters = React.useCallback(
@@ -91,24 +94,10 @@ const SearchScreen = () => {
         <FilterListIcon />
       </IconButton>
     );
-  }, []);
+  }, [toggleFilters, filters]);
 
   return (
     <>
-      {/* <BackHeader
-        title="Search activities"
-        sx={{ mb: 2 }}
-        to={ApplicationLocations.ACTIVITIES}
-        headerRightContent={
-          <IconButton
-            onClick={toggleFilters}
-            color={!!filters ? "primary" : undefined}
-            data-testid="toggle-filters-btn"
-          >
-            <FilterListIcon />
-          </IconButton>
-        }
-      /> */}
       <Box sx={{ px: 1.5, boxSizing: "border-box" }}>
         <Box
           sx={{

@@ -245,7 +245,9 @@ const ActivitiesScreen = () => {
           mb: 1,
         }}
       >
-        <Typography variant="h5">Explore</Typography>
+        <Typography variant="h5" sx={{ color: palette?.text?.primary }}>
+          Explore
+        </Typography>
         <OffliButton
           variant="text"
           sx={{
@@ -340,7 +342,9 @@ const ActivitiesScreen = () => {
                   mt: 1,
                 }}
               >
-                <Typography variant="h5">Your upcoming this week</Typography>
+                <Typography variant="h5" sx={{ color: palette?.text?.primary }}>
+                  Your upcoming this week
+                </Typography>
                 <OffliButton
                   variant="text"
                   sx={{ fontSize: 16 }}
@@ -383,7 +387,9 @@ const ActivitiesScreen = () => {
                   width: "100%",
                 }}
               >
-                <Typography variant="h5">Near you</Typography>
+                <Typography variant="h5" sx={{ color: palette?.text?.primary }}>
+                  Near you
+                </Typography>
                 <OffliButton
                   variant="text"
                   sx={{ fontSize: 16 }}

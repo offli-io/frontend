@@ -1,5 +1,12 @@
 import * as React from "react";
-import { Card, Typography, Box, IconButton, useTheme } from "@mui/material";
+import {
+  Card,
+  Typography,
+  Box,
+  IconButton,
+  useTheme,
+  SxProps,
+} from "@mui/material";
 import { MobileDatePicker } from "@mui/x-date-pickers";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import { format } from "date-fns";
@@ -20,6 +27,7 @@ interface IMobileCarouselProps {
   onItemSelect?: (item: ICarouselItem) => void;
   onSlotAdd?: (addedDate: any) => void;
   onDuplicateEntry?: (addedDate: any) => void;
+  sx?: SxProps;
 }
 
 export const MobileCarousel: React.FC<IMobileCarouselProps> = ({
@@ -28,8 +36,10 @@ export const MobileCarousel: React.FC<IMobileCarouselProps> = ({
   onItemSelect,
   onSlotAdd,
   onDuplicateEntry,
+  sx,
 }) => {
   const { palette } = useTheme();
+
   const handleDatePick = React.useCallback(
     (date: Date | null) => {
       if (!date) {
@@ -61,6 +71,7 @@ export const MobileCarousel: React.FC<IMobileCarouselProps> = ({
     },
     [onSlotAdd, onDuplicateEntry, items]
   );
+
   return (
     <>
       {title && (
@@ -89,7 +100,7 @@ export const MobileCarousel: React.FC<IMobileCarouselProps> = ({
             key={item.id}
             sx={{
               minWidth: 100,
-              height: 50,
+              maxHeight: 50,
               bgcolor: (theme) =>
                 item?.selected ? theme.palette.primary.main : "transparent",
               display: "flex",
@@ -97,6 +108,7 @@ export const MobileCarousel: React.FC<IMobileCarouselProps> = ({
               alignItems: "center",
               justifyContent: "center",
               mr: 1,
+              ...sx,
             }}
             onClick={() => onItemSelect?.(item)}
             data-testid="mobile-carousel-item"
