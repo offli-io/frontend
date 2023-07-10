@@ -89,7 +89,7 @@ function App() {
               </Box>
             </CustomizationProvider>
           </LocalizationProvider>
-          <ReactQueryDevtools initialIsOpen={false} />
+          {/* <ReactQueryDevtools initialIsOpen={false} /> */}
           {/* 
       Nemozme pouzit query devtooly lebo to pada s tym ze sa na pozadi vytvaraju 2 instancie query client providera
       vid - https://github.com/TanStack/query/issues/1936

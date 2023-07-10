@@ -1,3 +1,4 @@
+import { IUpdateActivityRequestDto } from "./../../types/activities/update-activity-request.dto";
 import axios from "axios";
 import qs from "qs";
 import { DEFAULT_DEV_URL } from "../../assets/config";
@@ -419,10 +420,6 @@ export const acceptActivityInvitation = (
     }
   );
 
-  //   queryFunctionContext?.signal?.addEventListener('abort', () => {
-  //     source.cancel('Query was cancelled by React Query')
-  //   })
-
   return promise;
 };
 
@@ -458,10 +455,6 @@ export const uploadActivityPhoto = (formData?: FormData) => {
       cancelToken: source?.token,
     }
   );
-
-  //   queryFunctionContext?.signal?.addEventListener('abort', () => {
-  //     source.cancel('Query was cancelled by React Query')
-  //   })
 
   return promise;
 };
