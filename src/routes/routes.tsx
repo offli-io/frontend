@@ -20,6 +20,7 @@ import SettingsScreen from "../screens/settings-screen/settings-screen";
 import TestScreen from "../screens/test-screen";
 import VerificationScreen from "../screens/verification-screen/verification-screen";
 import WelcomeScreen from "../screens/welcome-screen";
+
 import { ApplicationLocations } from "../types/common/applications-locations.dto";
 import { ActivityMembersScreen } from "../screens/activity-members-screen/activity-members-screen";
 import AddBuddiesScreen from "../screens/add-buddies-screen/add-buddies-screen";

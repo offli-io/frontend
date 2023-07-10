@@ -17,6 +17,7 @@ import {
 } from "../../types/activities/place-external-api.dto";
 import { IPredefinedPictureDto } from "../../types/activities/predefined-picture.dto";
 import { IPredefinedTagDto } from "../../types/activities/predefined-tag.dto";
+import { IUpdateActivityRequestDto } from "./../../types/activities/update-activity-request.dto";
 
 export const getActivities = async ({
   queryFunctionContext,

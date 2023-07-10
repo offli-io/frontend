@@ -1,9 +1,12 @@
+import { Box } from "@mui/material";
+import React from "react";
 import { useLocation, useParams } from "react-router-dom";
-import Map from "../components/map";
-import { useActivities } from "../hooks/use-activities";
-import { IActivityListRestDto } from "../types/activities/activity-list-rest.dto";
-import { IActivityRestDto } from "../types/activities/activity-rest.dto";
-import { ICustomizedLocationStateDto } from "../types/common/customized-location-state.dto";
+import BackHeader from "../../components/back-header";
+import Map from "../../components/map";
+import { useActivities } from "../../hooks/use-activities";
+import { IActivityListRestDto } from "../../types/activities/activity-list-rest.dto";
+import { IActivityRestDto } from "../../types/activities/activity-rest.dto";
+import { ICustomizedLocationStateDto } from "../../types/common/customized-location-state.dto";
 
 interface ILocation {
   lat: number;

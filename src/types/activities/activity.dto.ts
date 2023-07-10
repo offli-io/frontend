@@ -36,7 +36,6 @@ export interface IActivityLimit {
   activated: boolean;
   max_participants: number;
 }
-
 export interface IActivity {
   id?: number;
   participants?: IPerson[];
@@ -53,6 +52,14 @@ export interface IActivity {
   //TODO mozne nejake enumy na "public/private"
   visibility?: ActivityVisibilityEnum | string;
   limit?: number;
+  creator?: IPerson;
+  canceled?: boolean;
+  count_confirmed?: number;
+  count_invited?: number;
+  count_rejected?: number;
+  created_at?: string;
+  modified_at?: string;
+  participant_status?: string;
 }
 
 export interface IActivitySearchParams {
