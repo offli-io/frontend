@@ -12,13 +12,13 @@ import { HEADER_HEIGHT } from "../../utils/common-constants";
 import BackHeader from "./components/back-header";
 import { mapPathnameToHeaderTitle } from "./utils/header-utils";
 import { ICustomizedLocationStateDto } from "../../types/common/customized-location-state.dto";
+import { NOT_EXACT_UNALLOWED_URLS } from "../../app/layout";
 
 interface IProps {
-  backHeader?: boolean;
   sx?: SxProps;
 }
 
-const OffliHeader: React.FC<IProps> = ({ sx, backHeader }) => {
+const OffliHeader: React.FC<IProps> = ({ sx }) => {
   const location = useLocation();
   const from = (location?.state as ICustomizedLocationStateDto)?.from;
   const navigate = useNavigate();
@@ -38,6 +38,25 @@ const OffliHeader: React.FC<IProps> = ({ sx, backHeader }) => {
     },
   };
 
+  const displayBackHeader = React.useMemo(
+    () =>
+      [
+        ApplicationLocations.SETTINGS,
+        ApplicationLocations.EDIT_PROFILE,
+        ApplicationLocations.EDIT_ACTIVITY,
+        ApplicationLocations.CHOOSE_LOCATION,
+        ApplicationLocations.MAP,
+        ApplicationLocations.BUDDIES,
+        ApplicationLocations.ADD_BUDDIES,
+        ApplicationLocations.CHOOSE_USERNAME_GOOGLE,
+        ApplicationLocations.SEARCH,
+      ].includes(location?.pathname as ApplicationLocations) ||
+      NOT_EXACT_UNALLOWED_URLS?.some((item) =>
+        location?.pathname.includes(item)
+      ),
+    [location]
+  );
+
   return (
     <Box
       ref={headerRef}
@@ -54,7 +73,7 @@ const OffliHeader: React.FC<IProps> = ({ sx, backHeader }) => {
         ...sx,
       }}
     >
-      {backHeader ? (
+      {displayBackHeader ? (
         <BackHeader
           title={mapPathnameToHeaderTitle(
             location?.pathname as ApplicationLocations
