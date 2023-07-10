@@ -43,7 +43,6 @@ const OffliHeader: React.FC<IProps> = ({ sx }) => {
       [
         ApplicationLocations.SETTINGS,
         ApplicationLocations.EDIT_PROFILE,
-        ApplicationLocations.EDIT_ACTIVITY,
         ApplicationLocations.CHOOSE_LOCATION,
         ApplicationLocations.MAP,
         ApplicationLocations.BUDDIES,
