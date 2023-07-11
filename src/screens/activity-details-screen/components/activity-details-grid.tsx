@@ -68,7 +68,6 @@ const ActivityDetailsGrid: React.FC<IProps> = ({ activity }) => {
           to={`${ApplicationLocations.ACTIVITY_ID}/${activity?.id}/members`}
           style={{ textDecoration: "none" }}
         >
-          {" "}
           <Typography align="center" variant="subtitle2">
             show participants
           </Typography>
@@ -96,15 +95,15 @@ const ActivityDetailsGrid: React.FC<IProps> = ({ activity }) => {
         <IconButton color="primary">
           <RoomIcon sx={{ fontSize: 30 }} />
         </IconButton>
-        <Link to={""} style={{ textDecoration: "none" }}>
-          <Typography
-            align="center"
-            variant="subtitle2"
-            onClick={handleShowOnMap}
-          >
-            show on map
-          </Typography>{" "}
-        </Link>
+        {/* <Link to={""} style={{ textDecoration: "none" }}> */}
+        <Typography
+          align="center"
+          variant="subtitle2"
+          onClick={handleShowOnMap}
+        >
+          show on map
+        </Typography>
+        {/* </Link> */}
         <StyledText align="center" variant="subtitle1">
           {/* Miletičova 17, Bratislava */}
           {activity?.location?.name}

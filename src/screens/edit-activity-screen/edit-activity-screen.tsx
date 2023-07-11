@@ -549,4 +549,10 @@
 // };
 // export default EditActivityScreen;
 
-export const EditActivityScreen = () => null;
+import React from "react";
+
+const EditActivityScreen = () => {
+  return <div>edit-activity-screen</div>;
+};
+
+export default EditActivityScreen;

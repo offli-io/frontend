@@ -16,6 +16,7 @@ const CORE_ACTIONS = [
   ActivityActionsTypeEnumDto.MORE_INFORMATION,
   ActivityActionsTypeEnumDto.ACTIVITY_MEMBERS,
   ActivityActionsTypeEnumDto.MAP,
+  ActivityActionsTypeEnumDto.EDIT,
 ];
 
 export const useActivityMenuItems = ({
