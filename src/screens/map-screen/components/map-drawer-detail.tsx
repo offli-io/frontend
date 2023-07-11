@@ -105,13 +105,14 @@ const MapDrawerDetail: React.FC<IProps> = ({ activityId }) => {
               price={activity?.price}
             />
             <ActivityTags tags={activity?.tags} />
-            {activity?.creator && (
+            {activity?.creator ? (
               <CreatorVisibilityRow
                 creator={activity?.creator}
                 visibility={activity?.visibility}
               />
-            )}
-
+            ) : null}
+            {/* <React.Suspense fallback={<div>Loading ...</div>}> */}
+            {/* TODO handle lazy image loading */}
             <img
               src={activity?.title_picture_url}
               alt="activity_title_photo"
@@ -119,6 +120,7 @@ const MapDrawerDetail: React.FC<IProps> = ({ activityId }) => {
                 width: "100%",
               }}
             />
+            {/* </React.Suspense> */}
             <BasicInformation
               locationName={activity?.location?.name}
               dateTime={
@@ -131,14 +133,14 @@ const MapDrawerDetail: React.FC<IProps> = ({ activityId }) => {
               price={activity?.price}
               participantsNum={participantsNum}
             />
-            {activity?.description && (
+            {activity?.description ? (
               <AdditionalDescription description={activity?.description} />
-            )}
-            {(durationHours || durationMinutes) && (
+            ) : null}
+            {durationHours || durationMinutes ? (
               <ActivityDuration
                 duration={`${durationHours} hours, ${durationMinutes} minutes`}
               />
-            )}
+            ) : null}
 
             <CreatedTimestamp
               timestamp={

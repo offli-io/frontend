@@ -20,6 +20,7 @@ import { IActivity } from "../types/activities/activity.dto";
 import PlaceIcon from "@mui/icons-material/Place";
 import { DrawerContext } from "../assets/theme/drawer-provider";
 import MapDrawerDetail from "../screens/map-screen/components/map-drawer-detail";
+import { CustomizationContext } from "../assets/theme/customization-provider";
 
 // function LocationMarker() {
 //   const [position, setPosition] = React.useState<LatLng | null>(null);
@@ -84,6 +85,7 @@ const Map: React.FC<ILabeledTileProps> = ({
   const [currentLocation, setCurrentLocation] = React.useState<
     GeolocationCoordinates | undefined
   >();
+  const { mode } = React.useContext(CustomizationContext);
 
   React.useEffect(() => {
     navigator.geolocation.getCurrentPosition(function (position) {
@@ -119,9 +121,11 @@ const Map: React.FC<ILabeledTileProps> = ({
         style={{ width: "100%", height: "100%", position: "relative" }}
       >
         <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+          attribution='<a href="http://jawg.io" title="Tiles Courtesy of Jawg Maps" target="_blank">&copy; <b>Jawg</b>Maps</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           // url="https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png"
-          url="https://{s}.tile.jawg.io/jawg-sunny/{z}/{x}/{y}{r}.png?access-token=dY2cc1f9EUuag5geOpQB30R31VnRRhl7O401y78cM0NWSvzLf7irQSUGfA4m7Va5"
+          url={`https://{s}.tile.jawg.io/jawg-${
+            mode === "light" ? "sunny" : "dark"
+          }/{z}/{x}/{y}{r}.png?access-token=dY2cc1f9EUuag5geOpQB30R31VnRRhl7O401y78cM0NWSvzLf7irQSUGfA4m7Va5`}
         />
         {activities?.map(
           ({ title = "Activity", location = null, id } = {}) =>
