@@ -47,7 +47,7 @@ const ActivityDetailTiles: React.FC<IProps> = ({
         display: "flex",
         flex: 1,
         flexDirection: "row",
-        alignItems: "center",
+        alignItems: "stretch",
         justifyContent: "space-evenly",
         pt: 1,
       }}
