@@ -1,16 +1,19 @@
+import { Typography } from "@mui/material";
+import { Box, styled } from "@mui/system";
+import { format } from "date-fns";
+import { sk } from "date-fns/esm/locale";
 import React from "react";
 import { useActivities } from "../../../hooks/use-activities";
 import { IActivityRestDto } from "../../../types/activities/activity-rest.dto";
-import { Box, styled } from "@mui/system";
-import { Typography } from "@mui/material";
-import ActivityDetailTiles from "./activity-detail-tiles";
+import { DATE_TIME_FORMAT } from "../../../utils/common-constants";
 import ActivityTags from "../../activity-details-screen/components/activity-tags";
-import { CreatorVisibilityRow } from "./creator-visibility-row";
-import BasicInformation from "./basic-information";
-import AdditionalDescription from "./additional-description";
 import { getTimeDifference } from "../utils/get-time-difference";
+import ActivityDetailTiles from "./activity-detail-tiles";
 import ActivityDuration from "./activity-duration";
+import AdditionalDescription from "./additional-description";
+import BasicInformation from "./basic-information";
 import CreatedTimestamp from "./created-timestamp";
+import { CreatorVisibilityRow } from "./creator-visibility-row";
 
 interface IProps {
   activityId?: number;
@@ -33,17 +36,22 @@ const MapDrawerDetail: React.FC<IProps> = ({ activityId }) => {
 
   const participantsNum = `${activity?.count_confirmed}/${activity?.limit}`;
 
-  const timeStampFrom = Date.parse(activity?.datetime_from!.toString());
-  const dateTimeFrom = new Date(timeStampFrom);
-  const timeStampUntil = Date.parse(activity?.datetime_until!.toString());
-  const dateTimeUntil = new Date(timeStampUntil);
-  const timeStampCreatedAt = Date.parse(activity?.datetime_until!.toString());
-  const dateTimeCreatedAt = new Date(timeStampCreatedAt);
+  // const timeStampFrom = Date.parse(activity?.datetime_from!.toString());
+  const dateTimeFrom = activity?.datetime_from
+    ? new Date(activity?.datetime_from)
+    : null;
+  // const timeStampUntil = Date.parse(activity?.datetime_until!.toString());
+  const dateTimeUntil = activity?.datetime_until
+    ? new Date(activity?.datetime_until)
+    : null;
+  // const timeStampCreatedAt = Date.parse(activity?.datetime_until!.toString());
+  const dateTimeCreatedAt = new Date();
 
-  const { durationHours, durationMinutes } = getTimeDifference(
-    dateTimeFrom,
-    dateTimeUntil
-  ); // useMemo??
+  const timeDifference = getTimeDifference(dateTimeFrom, dateTimeUntil); // useMemo??
+
+  const durationMinutes = timeDifference?.durationMinutes;
+  const durationHours = timeDifference?.durationHours;
+
   return (
     <MainBox>
       <Typography
@@ -54,9 +62,11 @@ const MapDrawerDetail: React.FC<IProps> = ({ activityId }) => {
       </Typography>
       <ActivityDetailTiles
         participantsNum={participantsNum}
-        dateTime={dateTimeFrom.toLocaleString("de", {
-          timeStyle: "short",
-        })}
+        dateTime={
+          dateTimeFrom
+            ? format(dateTimeFrom, DATE_TIME_FORMAT, { locale: sk })
+            : "-"
+        }
         // distance={activity?.}
         price={activity?.price}
       />
@@ -74,20 +84,13 @@ const MapDrawerDetail: React.FC<IProps> = ({ activityId }) => {
       />
       <BasicInformation
         locationName={activity?.location?.name}
-        // dateTime={`${dateTimeFrom.toLocaleString("de", {
-        //   hour12: false,
-        //   dateStyle: "short",
-        //   timeStyle: "short",
-        // })}`}
-        dateTime={`${dateTimeFrom?.toLocaleString("de", {
-          hour12: false,
-          dateStyle: "short",
-          timeStyle: "short",
-        })} - ${dateTimeUntil?.toLocaleString("de", {
-          hour12: false,
-          dateStyle: "short",
-          timeStyle: "short",
-        })}`}
+        dateTime={
+          dateTimeFrom && dateTimeUntil
+            ? `${format(dateTimeFrom, DATE_TIME_FORMAT, {
+                locale: sk,
+              })} - ${format(dateTimeUntil, DATE_TIME_FORMAT, { locale: sk })}`
+            : "-"
+        }
         price={activity?.price}
         participantsNum={participantsNum}
       />

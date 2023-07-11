@@ -1,4 +1,10 @@
-export function getTimeDifference(dateTimeFrom: Date, dateTimeUntil: Date) {
+export function getTimeDifference(
+  dateTimeFrom: Date | null,
+  dateTimeUntil: Date | null
+) {
+  if (!dateTimeFrom || !dateTimeUntil) {
+    return null;
+  }
   // get total seconds between the times
   var delta = Math.abs(dateTimeUntil.getTime() - dateTimeFrom.getTime()) / 1000;
 
