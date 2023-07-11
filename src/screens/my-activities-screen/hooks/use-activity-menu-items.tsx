@@ -1,15 +1,10 @@
 import { ActivityActionsTypeEnumDto } from "../../../types/common/activity-actions-type-enum.dto";
-import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
-import PersonAddAltIcon from "@mui/icons-material/PersonAddAlt";
-import MenuIcon from "@mui/icons-material/Menu";
-import LogoutIcon from "@mui/icons-material/Logout";
-import LoginIcon from "@mui/icons-material/Login";
-import PublicIcon from "@mui/icons-material/Public";
-import { ActivityActionsDefinitions } from "../components/activity-actions-definitions";
+import { useActivityActionsDefinitions } from "./use-activity-action-definitions";
 
 export interface IUseActivityMenuItemsProps {
   isCreator?: boolean;
   isParticipant?: boolean;
+  contrastText?: boolean;
 }
 
 const CORE_ACTIONS = [
@@ -21,8 +16,10 @@ const CORE_ACTIONS = [
 export const useActivityMenuItems = ({
   isCreator,
   isParticipant,
+  contrastText,
 }: IUseActivityMenuItemsProps) => {
-  return ActivityActionsDefinitions?.filter((menuItem) => {
+  const actionDefinitions = useActivityActionsDefinitions({ contrastText });
+  return actionDefinitions.filter((menuItem) => {
     if (CORE_ACTIONS.includes(menuItem?.type)) {
       return menuItem;
     }

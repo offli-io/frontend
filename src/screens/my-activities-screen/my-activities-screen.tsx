@@ -161,7 +161,11 @@ const ActivitiesScreen = () => {
             ),
           });
         case ActivityActionsTypeEnumDto.MORE_INFORMATION:
-          return navigate(`${ApplicationLocations.ACTIVITY_ID}/${activityId}`);
+          return navigate(`${ApplicationLocations.ACTIVITY_ID}/${activityId}`, {
+            state: {
+              from: ApplicationLocations.ACTIVITIES,
+            },
+          });
         case ActivityActionsTypeEnumDto.MAP:
           return navigate(`${ApplicationLocations.MAP}/${activityId}`, {
             state: {

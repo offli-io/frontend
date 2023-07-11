@@ -52,7 +52,8 @@ const OffliHeader: React.FC<IProps> = ({ sx }) => {
       ].includes(location?.pathname as ApplicationLocations) ||
       NOT_EXACT_UNALLOWED_URLS?.some((item) =>
         location?.pathname.includes(item)
-      ),
+      ) ||
+      location.pathname.includes(ApplicationLocations.ACTIVITY_ID),
     [location]
   );
 

@@ -13,7 +13,6 @@ export enum ApplicationLocations {
   BUDDY_REQUEST = "/profile/request",
   BUDDY_PROFILE = "/profile/buddy",
   EDIT_PROFILE = "/edit-profile",
-  //todo
   EDIT_ACTIVITY = "/idk",
   SETTINGS = "/settings",
   BUDDIES = "/buddies",

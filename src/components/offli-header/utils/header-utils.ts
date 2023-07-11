@@ -19,6 +19,10 @@ export const mapPathnameToHeaderTitle = (pathname?: ApplicationLocations) => {
     return "Buddy profile";
   }
 
+  if (pathname?.startsWith(ApplicationLocations.ACTIVITY_ID)) {
+    return "Activity detail";
+  }
+
   switch (pathname) {
     case ApplicationLocations.EDIT_PROFILE:
       return "Edit profile";
