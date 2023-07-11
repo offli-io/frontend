@@ -1,6 +1,6 @@
 import React from "react";
 
-import { SwipeableDrawer, Box } from "@mui/material";
+import { SwipeableDrawer, Box, Paper } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
 interface IDrawerData {
@@ -40,10 +40,10 @@ export const DrawerProvider = ({ children }: { children: React.ReactNode }) => {
         open={Boolean(drawerData?.open)}
         onOpen={() => console.log("wtf")}
         onClose={() => {
-          drawerData?.onClose && drawerData?.onClose();
+          drawerData?.onClose?.();
           toggleDrawer({ open: false, content: undefined });
         }}
-        // disableDiscovery
+        disableDiscovery
         disableSwipeToOpen
         sx={{
           "& .MuiPaper-root": {
@@ -55,8 +55,15 @@ export const DrawerProvider = ({ children }: { children: React.ReactNode }) => {
           },
         }}
       >
-        <Puller />
-        {drawerData?.content}
+        <Box
+          style={{
+            // height: "400px", // Specify the desired height for the drawer
+            overflow: "auto", // Enable scrolling for overflowing content
+          }}
+        >
+          <Puller />
+          {drawerData?.content}
+        </Box>
       </SwipeableDrawer>
     </DrawerContext.Provider>
   );

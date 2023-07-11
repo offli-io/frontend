@@ -21,11 +21,15 @@ interface IProps {
 
 const MainBox = styled(Box)(() => ({
   width: "100%",
-  display: "flex",
-  flexDirection: "column",
-  alignItems: "center",
-  justifyContent: "center",
-  padding: "0 !important",
+  position: "relative",
+  borderTopLeftRadius: 8,
+  borderTopRightRadius: 8,
+  visibility: "visible",
+  right: 0,
+  left: 0,
+  height: 450,
+  // display: "flex",
+  // flexDirection: "column",
 }));
 
 const MapDrawerDetail: React.FC<IProps> = ({ activityId }) => {
