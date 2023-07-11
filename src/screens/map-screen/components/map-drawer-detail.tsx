@@ -1,4 +1,4 @@
-import { Typography } from "@mui/material";
+import { CircularProgress, Typography } from "@mui/material";
 import { Box, styled } from "@mui/system";
 import { format } from "date-fns";
 import { sk } from "date-fns/esm/locale";
@@ -14,6 +14,7 @@ import AdditionalDescription from "./additional-description";
 import BasicInformation from "./basic-information";
 import CreatedTimestamp from "./created-timestamp";
 import { CreatorVisibilityRow } from "./creator-visibility-row";
+import userPlaceholder from "../../../assets/img/user-placeholder.svg";
 
 interface IProps {
   activityId?: number;
@@ -33,7 +34,7 @@ const MainBox = styled(Box)(() => ({
 }));
 
 const MapDrawerDetail: React.FC<IProps> = ({ activityId }) => {
-  const { data: { data: { activity = {} } = {} } = {} } =
+  const { data: { data: { activity = {} } = {} } = {}, isLoading } =
     useActivities<IActivityRestDto>({
       id: activityId,
     });
@@ -57,76 +58,103 @@ const MapDrawerDetail: React.FC<IProps> = ({ activityId }) => {
   const durationHours = timeDifference?.durationHours;
 
   return (
-    <MainBox>
-      <Box
-        sx={{
-          width: "95%",
-          display: "flex",
-          flexDirection: "column",
-          alignContent: "center",
-          // flexWrap: "wrap",
-          justifyContent: "center",
-          ml: 0.5,
-        }}
-      >
-        <Typography
-          variant="h2"
+    <>
+      {isLoading ? (
+        <Box
           sx={{
-            maxWidth: "80%",
-            textAlign: "center",
-            marginBottom: "10px",
-            margin: "auto",
+            width: "100%",
+            my: 4,
+            display: "flex",
+            justifyContent: "center",
           }}
         >
-          {activity?.title}
-        </Typography>
-        <ActivityDetailTiles
-          participantsNum={participantsNum}
-          dateTime={
-            dateTimeFrom
-              ? format(dateTimeFrom, TIME_FORMAT, { locale: sk })
-              : "-"
-          }
-          // distance={activity?.}
-          price={activity?.price}
-        />
-        <ActivityTags tags={activity?.tags} />
-        <CreatorVisibilityRow
-          creator={activity?.creator}
-          visibility={activity?.visibility}
-        />
-        <img
-          src={activity?.title_picture_url}
-          alt="activity_title_photo"
-          style={{
-            width: "100%",
-          }}
-        />
-        <BasicInformation
-          locationName={activity?.location?.name}
-          dateTime={
-            dateTimeFrom
-              ? `${format(dateTimeFrom, DATE_TIME_FORMAT, {
-                  locale: sk,
-                })}`
-              : "-"
-          }
-          price={activity?.price}
-          participantsNum={participantsNum}
-        />
-        <AdditionalDescription description={activity?.description} />
-        <ActivityDuration
-          duration={`${durationHours} hours, ${durationMinutes} minutes`}
-        />
-        <CreatedTimestamp
-          timestamp={`${dateTimeCreatedAt?.toLocaleString("de", {
-            hour12: false,
-            dateStyle: "short",
-            timeStyle: "short",
-          })}`}
-        />
-      </Box>
-    </MainBox>
+          <CircularProgress />
+        </Box>
+      ) : (
+        <MainBox>
+          <Box
+            sx={{
+              width: "95%",
+              display: "flex",
+              flexDirection: "column",
+              alignContent: "center",
+              // flexWrap: "wrap",
+              justifyContent: "center",
+              ml: 0.5,
+            }}
+          >
+            <Typography
+              variant="h2"
+              sx={{
+                maxWidth: "80%",
+                textAlign: "center",
+                marginBottom: "10px",
+                margin: "auto",
+              }}
+            >
+              {activity?.title}
+            </Typography>
+            <ActivityDetailTiles
+              participantsNum={participantsNum}
+              dateTime={
+                dateTimeFrom
+                  ? format(dateTimeFrom, TIME_FORMAT, { locale: sk })
+                  : "-"
+              }
+              // distance={activity?.}
+              price={activity?.price}
+            />
+            <ActivityTags tags={activity?.tags} />
+            {activity?.creator ? (
+              <CreatorVisibilityRow
+                creator={activity?.creator}
+                visibility={activity?.visibility}
+              />
+            ) : null}
+            {/* <React.Suspense fallback={<div>Loading ...</div>}> */}
+            {/* TODO handle lazy image loading */}
+            <img
+              src={activity?.title_picture_url}
+              alt="activity_title_photo"
+              style={{
+                width: "100%",
+              }}
+            />
+            {/* </React.Suspense> */}
+            <BasicInformation
+              locationName={activity?.location?.name}
+              dateTime={
+                dateTimeFrom
+                  ? `${format(dateTimeFrom, DATE_TIME_FORMAT, {
+                      locale: sk,
+                    })}`
+                  : "-"
+              }
+              price={activity?.price}
+              participantsNum={participantsNum}
+            />
+            {activity?.description ? (
+              <AdditionalDescription description={activity?.description} />
+            ) : null}
+            {durationHours || durationMinutes ? (
+              <ActivityDuration
+                duration={`${durationHours} hours, ${durationMinutes} minutes`}
+              />
+            ) : null}
+
+            <CreatedTimestamp
+              timestamp={
+                dateTimeCreatedAt
+                  ? `${format(dateTimeCreatedAt, DATE_TIME_FORMAT, {
+                      locale: sk,
+                    })}`
+                  : "-"
+              }
+            />
+          </Box>
+        </MainBox>
+      )}
+    </>
   );
 };
 

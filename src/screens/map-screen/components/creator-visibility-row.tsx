@@ -5,6 +5,7 @@ import { Box } from "@mui/system";
 import LockIcon from "@mui/icons-material/Lock";
 import LockOpenIcon from "@mui/icons-material/LockOpen";
 import { Typography } from "@mui/material";
+import userPlaceholder from "../../../assets/img/user-placeholder.svg";
 
 interface IProps {
   creator?: IPerson;
@@ -44,7 +45,7 @@ export const CreatorVisibilityRow: React.FC<IProps> = ({
           }}
         >
           <img
-            src={creator?.profile_photo_url}
+            src={creator?.profile_photo_url ?? userPlaceholder}
             alt="profile"
             style={{
               height: "25px",
@@ -53,8 +54,7 @@ export const CreatorVisibilityRow: React.FC<IProps> = ({
             }}
           />
           <Typography variant="subtitle1" align="left" sx={{ ml: 0.3 }}>
-            {/* {creator?.name} */}
-            Aaaaaaaaaaaaaa
+            {creator?.username ?? "User"}
           </Typography>
         </Box>
         <Box

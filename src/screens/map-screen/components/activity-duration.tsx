@@ -28,7 +28,7 @@ const ActivityDuration: React.FC<IProps> = ({ duration }) => {
   return (
     <MainBox>
       <Typography variant="h3" align="left">
-        Additional description
+        Duration
       </Typography>
       <TextBox>
         <Typography variant="subtitle1">{duration}</Typography>
