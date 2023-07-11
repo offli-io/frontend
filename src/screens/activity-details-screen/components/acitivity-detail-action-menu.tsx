@@ -1,4 +1,10 @@
-import { Chip, Fade, IconButton, Popper } from "@mui/material";
+import {
+  Chip,
+  ClickAwayListener,
+  Fade,
+  IconButton,
+  Popper,
+} from "@mui/material";
 import { Box } from "@mui/system";
 import React from "react";
 import MenuIcon from "@mui/icons-material/Menu";
@@ -26,29 +32,31 @@ const ActivityDetailActionMenu: React.FC<IProps> = ({ onMenuItemClick }) => {
   };
 
   return (
-    <div>
-      <IconButton
-        // aria-describedby={id}
-        color="primary"
-        data-testid="toggle-activity-menu-btn"
-        onClick={handleClick}
-      >
-        <MenuIcon />
-      </IconButton>
-      <Popper open={open} anchorEl={anchorEl} transition>
-        {({ TransitionProps }) => (
-          <Fade {...TransitionProps} timeout={350}>
-            <Box sx={{ p: 1.5, border: 1, bgcolor: "rgba(0, 0, 0, 0.8)" }}>
-              <ActivityActions
-                activity={data?.data?.activity}
-                onActionClick={(action) => console.log(action)}
-                contrastText
-              />
-            </Box>
-          </Fade>
-        )}
-      </Popper>
-    </div>
+    <ClickAwayListener onClickAway={() => setOpen(false)}>
+      <div>
+        <IconButton
+          // aria-describedby={id}
+          color="primary"
+          data-testid="toggle-activity-menu-btn"
+          onClick={handleClick}
+        >
+          <MenuIcon />
+        </IconButton>
+        <Popper open={open} anchorEl={anchorEl} transition>
+          {({ TransitionProps }) => (
+            <Fade {...TransitionProps} timeout={350}>
+              <Box sx={{ p: 1.5, border: 1, bgcolor: "rgba(0, 0, 0, 0.8)" }}>
+                <ActivityActions
+                  activity={data?.data?.activity}
+                  onActionClick={(action) => console.log(action)}
+                  contrastText
+                />
+              </Box>
+            </Fade>
+          )}
+        </Popper>
+      </div>
+    </ClickAwayListener>
   );
 };
 
