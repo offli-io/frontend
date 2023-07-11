@@ -43,7 +43,7 @@ const ActivityCard: React.FC<IProps> = ({ activity, onPress, ...rest }) => {
       <Box
         sx={{
           width: "100%",
-          backgroundColor: "rgba(0,0,0,.15)",
+          backgroundColor: "rgba(0,0,0,.3)",
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
@@ -119,7 +119,7 @@ const ActivityCard: React.FC<IProps> = ({ activity, onPress, ...rest }) => {
                 </Typography>
               ) : (
                 <Typography variant="subtitle2">
-                  {activity?.participants?.length} 0
+                  {activity?.count_confirmed} 0
                 </Typography>
               )}
             </Box>

@@ -8,10 +8,13 @@ import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import RoomIcon from "@mui/icons-material/Room";
 import MonetizationOnIcon from "@mui/icons-material/MonetizationOn";
 import MoneyOffIcon from "@mui/icons-material/MoneyOff";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { IActivity } from "../../../types/activities/activity.dto";
 import { ApplicationLocations } from "../../../types/common/applications-locations.dto";
 import { ICustomizedLocationStateDto } from "../../../types/common/customized-location-state.dto";
+import { format } from "date-fns";
+import { DATE_TIME_FORMAT } from "../../../utils/common-constants";
+import OffliButton from "../../../components/offli-button";
 
 interface IProps {
   activity?: IActivity;
@@ -29,15 +32,18 @@ const StyledBox = styled(Box)(() => ({
 }));
 
 const StyledText = styled(Typography)(() => ({
-  lineHeight: 1.2,
-  padding: "3%",
-  width: "70%",
-  inlineSize: "90%",
-  overflowWrap: "break-word",
+  display: "block",
+  width: "80%",
+  textOverflow: "ellipsis",
+  wordWrap: "break-word",
+  overflow: "hidden",
+  maxHeight: "2.8rem",
+  lineHeight: "1.4rem",
 }));
 
 const ActivityDetailsGrid: React.FC<IProps> = ({ activity }) => {
   const navigate = useNavigate();
+  const { pathname } = useLocation();
   // const from = (location?.state as ICustomizedLocationStateDto)?.from;
 
   const handleShowOnMap = () => {
@@ -62,68 +68,79 @@ const ActivityDetailsGrid: React.FC<IProps> = ({ activity }) => {
     >
       <StyledBox>
         <IconButton color="primary">
-          <PeopleAltIcon sx={{ fontSize: 30 }} />
+          <PeopleAltIcon sx={{ fontSize: 26 }} />
         </IconButton>
-        <Link
-          to={`${ApplicationLocations.ACTIVITY_ID}/${activity?.id}/members`}
-          style={{ textDecoration: "none" }}
+        <OffliButton
+          onClick={() =>
+            navigate(
+              `${ApplicationLocations.ACTIVITY_ID}/${activity?.id}/members`
+            )
+          }
+          variant="text"
+          size="small"
+          sx={{ textDecoration: "none", fontSize: 16, p: 0, m: 0 }}
         >
-          {" "}
-          <Typography align="center" variant="subtitle2">
-            show participants
-          </Typography>
-        </Link>
+          Show participants
+        </OffliButton>
         <StyledText align="center" variant="subtitle1">
-          {/* 1/5 */}
-          {activity?.participants?.length}/{activity?.limit}
+          {activity?.count_confirmed}/{activity?.limit}
         </StyledText>
       </StyledBox>
       <StyledBox>
         <IconButton color="primary">
           <CalendarTodayIcon sx={{ fontSize: 26 }} />
         </IconButton>
-        <Link to={""} style={{ textDecoration: "none" }}>
-          <Typography align="center" variant="subtitle2">
-            add to calendar
-          </Typography>
-        </Link>
+        <OffliButton
+          onClick={() => console.log("add to calendar")}
+          variant="text"
+          size="small"
+          sx={{ textDecoration: "none", fontSize: 16, p: 0, m: 0 }}
+        >
+          Add to calendar
+        </OffliButton>
+
         <StyledText align="center" variant="subtitle1">
-          {/* 15. September 2022 19:00 */}
-          {activity?.datetime_from?.toString()}
+          {activity?.datetime_from
+            ? format(new Date(activity?.datetime_from), DATE_TIME_FORMAT)
+            : "-"}
         </StyledText>
       </StyledBox>
       <StyledBox>
         <IconButton color="primary">
-          <RoomIcon sx={{ fontSize: 30 }} />
+          <RoomIcon sx={{ fontSize: 26 }} />
         </IconButton>
-        <Link to={""} style={{ textDecoration: "none" }}>
-          <Typography
-            align="center"
-            variant="subtitle2"
-            onClick={handleShowOnMap}
-          >
-            show on map
-          </Typography>{" "}
-        </Link>
+        <OffliButton
+          onClick={() =>
+            navigate(`${ApplicationLocations.MAP}/${activity?.id}`, {
+              state: {
+                from: pathname,
+              },
+            })
+          }
+          variant="text"
+          size="small"
+          sx={{ textDecoration: "none", fontSize: 16, p: 0, m: 0 }}
+        >
+          Show on map
+        </OffliButton>
         <StyledText align="center" variant="subtitle1">
-          {/* Miletičova 17, Bratislava */}
           {activity?.location?.name}
         </StyledText>
       </StyledBox>
       <StyledBox>
         <IconButton color="primary">
-          {/* {price === "free" ? ():()} */}
-          {/* MoneyOffIcon */}
-          <MonetizationOnIcon sx={{ fontSize: 30 }} />
+          <MonetizationOnIcon sx={{ fontSize: 26 }} />
         </IconButton>
-        <Link to={""} style={{ textDecoration: "none" }}>
-          <Typography align="center" variant="subtitle2">
-            initial price
-          </Typography>
-        </Link>
+        <OffliButton
+          onClick={() => console.log("show on map")}
+          variant="text"
+          size="small"
+          sx={{ textDecoration: "none", fontSize: 16, p: 0, m: 0 }}
+        >
+          Initial price
+        </OffliButton>
         <StyledText align="center" variant="subtitle1">
-          {/* Free */}
-          {activity?.price}
+          {activity?.price ?? "-"}
         </StyledText>
       </StyledBox>
     </Box>

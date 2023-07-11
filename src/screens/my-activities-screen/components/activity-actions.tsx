@@ -5,6 +5,8 @@ import MenuItem from "../../../components/menu-item";
 import { IActivity } from "../../../types/activities/activity.dto";
 import { ActivityActionsTypeEnumDto } from "../../../types/common/activity-actions-type-enum.dto";
 import { useActivityMenuItems } from "../hooks/use-activity-menu-items";
+import { getActivityParticipants } from "../../../api/activities/requests";
+import { useQuery } from "@tanstack/react-query";
 
 export interface IActivityActionsProps {
   onActionClick?: (
@@ -22,7 +24,19 @@ const ActivityActions: React.FC<IActivityActionsProps> = ({
 }) => {
   const { userInfo } = React.useContext(AuthenticationContext);
   const isCreator = activity?.creator_id === userInfo?.id;
-  const isParticipant = !!activity?.participants?.find(
+
+  const {
+    data: { data: { participants = [] } = {} } = {},
+    isLoading: areActivityParticipantsLoading,
+  } = useQuery(
+    ["activity-participants", activity?.id],
+    () => getActivityParticipants({ activityId: Number(activity?.id) }),
+    {
+      enabled: !!activity?.id,
+    }
+  );
+
+  const isParticipant = !!participants?.find(
     (participant) => participant?.id === userInfo?.id
   );
 

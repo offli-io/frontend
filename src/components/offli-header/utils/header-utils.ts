@@ -23,6 +23,11 @@ export const mapPathnameToHeaderTitle = (pathname?: ApplicationLocations) => {
     return "Activity detail";
   }
 
+  // assuming there is ID behind the slash TODO in the future better handling of these paths
+  if (pathname?.startsWith(`${ApplicationLocations.MAP}/`)) {
+    return "Activity location";
+  }
+
   switch (pathname) {
     case ApplicationLocations.EDIT_PROFILE:
       return "Edit profile";

@@ -132,7 +132,7 @@ const ActivitySearchCard: React.FC<IMyActivityCardProps> = ({
               sx={{ fontSize: 18, mr: 0.5, color: palette?.text?.primary }}
             />
             <Typography sx={{ fontSize: 12, color: palette?.text?.primary }}>
-              {`${activity?.participants?.length ?? 0}/${activity?.limit}`}
+              {`${activity?.count_confirmed ?? 0}/${activity?.limit}`}
             </Typography>
           </Box>
           <Box sx={{ display: "flex", alignItems: "center" }}>

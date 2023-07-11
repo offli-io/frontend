@@ -9,6 +9,7 @@ import {
 } from "@tanstack/react-query";
 import {
   getActivity,
+  getActivityParticipants,
   getBuddies,
   inviteBuddy,
   kickUserFromActivity,
@@ -42,6 +43,16 @@ export const ActivityMembersScreen: React.FC = () => {
       enabled: !!id,
     }
   );
+  const {
+    data: { data: { participants = [] } = {} } = {},
+    isLoading: areActivityParticipantsLoading,
+  } = useQuery(
+    ["activity-participants", id],
+    () => getActivityParticipants({ activityId: Number(id) }),
+    {
+      enabled: !!id,
+    }
+  );
 
   const [queryString, setQueryString] = React.useState<string | undefined>();
   const [queryStringDebounced] = useDebounce(queryString, 100);
@@ -65,13 +76,13 @@ export const ActivityMembersScreen: React.FC = () => {
   //TODO now filtering is done on FE -> move to BE when capacity is available
   const activityMembers = React.useMemo(() => {
     if (queryStringDebounced) {
-      return (data?.data?.activity?.participants ?? [])?.filter((participant) =>
+      return participants?.filter((participant) =>
         participant?.username
           ?.toLowerCase()
           .includes(queryStringDebounced.toLowerCase())
       );
     }
-    return data?.data?.activity?.participants ?? [];
+    return participants;
   }, [queryStringDebounced, data?.data]);
 
   const handleActionClick = React.useCallback(
@@ -115,7 +126,7 @@ export const ActivityMembersScreen: React.FC = () => {
           // }}
           placeholder="Type username"
         />
-        {(data?.data?.activity?.participants ?? [])?.length < 1 ? (
+        {(data?.data?.activity?.count_confirmed ?? 0) < 1 ? (
           <Box
             sx={{
               height: 100,
