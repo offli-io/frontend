@@ -11,3 +11,4 @@ export const ALLOWED_PHOTO_EXTENSIONS = ["png", "jpg", "jpeg", "svg"];
 export const PALETTE_MODE = "palette_mode";
 
 export const DATE_TIME_FORMAT = "dd. MM. yyyy HH:mm";
+export const TIME_FORMAT = "HH:mm";

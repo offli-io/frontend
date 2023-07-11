@@ -5,7 +5,7 @@ import { sk } from "date-fns/esm/locale";
 import React from "react";
 import { useActivities } from "../../../hooks/use-activities";
 import { IActivityRestDto } from "../../../types/activities/activity-rest.dto";
-import { DATE_TIME_FORMAT } from "../../../utils/common-constants";
+import { DATE_TIME_FORMAT, TIME_FORMAT } from "../../../utils/common-constants";
 import ActivityTags from "../../activity-details-screen/components/activity-tags";
 import { getTimeDifference } from "../utils/get-time-difference";
 import ActivityDetailTiles from "./activity-detail-tiles";
@@ -58,57 +58,74 @@ const MapDrawerDetail: React.FC<IProps> = ({ activityId }) => {
 
   return (
     <MainBox>
-      <Typography
-        variant="h2"
-        sx={{ maxWidth: "80%", textAlign: "center", flex: 1, mb: 1.5 }}
-      >
-        {activity?.title}
-      </Typography>
-      <ActivityDetailTiles
-        participantsNum={participantsNum}
-        dateTime={
-          dateTimeFrom
-            ? format(dateTimeFrom, DATE_TIME_FORMAT, { locale: sk })
-            : "-"
-        }
-        // distance={activity?.}
-        price={activity?.price}
-      />
-      <ActivityTags tags={activity?.tags} />
-      <CreatorVisibilityRow
-        creator={activity?.creator}
-        visibility={activity?.visibility}
-      />
-      <img
-        src={activity?.title_picture_url}
-        alt="activity_title_photo"
-        style={{
-          width: "100vw",
+      <Box
+        sx={{
+          width: "95%",
+          display: "flex",
+          flexDirection: "column",
+          alignContent: "center",
+          // flexWrap: "wrap",
+          justifyContent: "center",
+          ml: 0.5,
         }}
-      />
-      <BasicInformation
-        locationName={activity?.location?.name}
-        dateTime={
-          dateTimeFrom && dateTimeUntil
-            ? `${format(dateTimeFrom, DATE_TIME_FORMAT, {
-                locale: sk,
-              })} - ${format(dateTimeUntil, DATE_TIME_FORMAT, { locale: sk })}`
-            : "-"
-        }
-        price={activity?.price}
-        participantsNum={participantsNum}
-      />
-      <AdditionalDescription description={activity?.description} />
-      <ActivityDuration
-        duration={`${durationHours} hours, ${durationMinutes} minutes`}
-      />
-      <CreatedTimestamp
-        timestamp={`${dateTimeCreatedAt?.toLocaleString("de", {
-          hour12: false,
-          dateStyle: "short",
-          timeStyle: "short",
-        })}`}
-      />
+      >
+        <Typography
+          variant="h2"
+          sx={{
+            maxWidth: "80%",
+            textAlign: "center",
+            marginBottom: "10px",
+            margin: "auto",
+          }}
+        >
+          {activity?.title}
+        </Typography>
+        <ActivityDetailTiles
+          participantsNum={participantsNum}
+          dateTime={
+            dateTimeFrom
+              ? format(dateTimeFrom, TIME_FORMAT, { locale: sk })
+              : "-"
+          }
+          // distance={activity?.}
+          price={activity?.price}
+        />
+        <ActivityTags tags={activity?.tags} />
+        <CreatorVisibilityRow
+          creator={activity?.creator}
+          visibility={activity?.visibility}
+        />
+        <img
+          src={activity?.title_picture_url}
+          alt="activity_title_photo"
+          style={{
+            width: "100%",
+          }}
+        />
+        <BasicInformation
+          locationName={activity?.location?.name}
+          dateTime={
+            dateTimeFrom
+              ? `${format(dateTimeFrom, DATE_TIME_FORMAT, {
+                  locale: sk,
+                })}`
+              : "-"
+          }
+          price={activity?.price}
+          participantsNum={participantsNum}
+        />
+        <AdditionalDescription description={activity?.description} />
+        <ActivityDuration
+          duration={`${durationHours} hours, ${durationMinutes} minutes`}
+        />
+        <CreatedTimestamp
+          timestamp={`${dateTimeCreatedAt?.toLocaleString("de", {
+            hour12: false,
+            dateStyle: "short",
+            timeStyle: "short",
+          })}`}
+        />
+      </Box>
     </MainBox>
   );
 };

@@ -42,13 +42,14 @@ const ActivityDetailTiles: React.FC<IProps> = ({
   return (
     <Box
       sx={{
-        width: "90%",
+        // width: "90%",
         height: "10px",
         display: "flex",
         flex: 1,
         flexDirection: "row",
-        alignItems: "stretch",
+        alignItems: "center",
         justifyContent: "space-evenly",
+        pt: 1,
       }}
     >
       <StyledBox>
