@@ -1,10 +1,9 @@
+import { Box } from "@mui/material";
 import React from "react";
-import { Box, Switch } from "@mui/material";
-import { ActivityActionsTypeEnumDto } from "../../../types/common/activity-actions-type-enum.dto";
-import { ActivityActionsDefinitions } from "./activity-actions-definitions";
+import { AuthenticationContext } from "../../../assets/theme/authentication-provider";
 import MenuItem from "../../../components/menu-item";
 import { IActivity } from "../../../types/activities/activity.dto";
-import { AuthenticationContext } from "../../../assets/theme/authentication-provider";
+import { ActivityActionsTypeEnumDto } from "../../../types/common/activity-actions-type-enum.dto";
 import { useActivityMenuItems } from "../hooks/use-activity-menu-items";
 
 export interface IActivityActionsProps {
@@ -13,11 +12,13 @@ export interface IActivityActionsProps {
     activityId?: number
   ) => void;
   activity?: IActivity;
+  contrastText?: boolean;
 }
 
 const ActivityActions: React.FC<IActivityActionsProps> = ({
   onActionClick,
   activity,
+  contrastText,
 }) => {
   const { userInfo } = React.useContext(AuthenticationContext);
   const isCreator = activity?.creator_id === userInfo?.id;
@@ -28,6 +29,7 @@ const ActivityActions: React.FC<IActivityActionsProps> = ({
   const menuItems = useActivityMenuItems({
     isCreator,
     isParticipant,
+    contrastText,
   });
 
   return (
@@ -50,6 +52,7 @@ const ActivityActions: React.FC<IActivityActionsProps> = ({
           onMenuItemClick={() =>
             onActionClick?.(actionDefinition?.type, activity?.id)
           }
+          contrastText={contrastText}
         />
       ))}
     </Box>

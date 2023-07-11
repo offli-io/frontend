@@ -1,4 +1,4 @@
-import { Box, Typography, Chip } from "@mui/material";
+import { Box, Typography, Chip, IconButton } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import React from "react";
 import { useLocation, useParams } from "react-router-dom";
@@ -14,6 +14,9 @@ import ActivityDescriptionTags from "./components/activity-description-tags";
 import ActivityCreatorDuration from "./components/activity-creator-duration";
 import { useUser } from "../../hooks/use-user";
 import { ActivityVisibilityEnum } from "../../types/activities/activity-visibility-enum.dto";
+import MenuIcon from "@mui/icons-material/Menu";
+import { HeaderContext } from "../../app/providers/header-provider";
+import ActivityDetailActionMenu from "./components/acitivity-detail-action-menu";
 
 interface IProps {
   type: "detail" | "request";
@@ -23,6 +26,7 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
   const { id } = useParams();
   const location = useLocation();
   const from = (location?.state as ICustomizedLocationStateDto)?.from;
+  const { setHeaderRightContent } = React.useContext(HeaderContext);
 
   const { data } = useQuery(
     ["activity", id],
@@ -37,6 +41,10 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
   const { data: { data: activityCreator } = {}, isLoading } = useUser({
     id: activity?.creator_id,
   });
+
+  React.useEffect(() => {
+    setHeaderRightContent(<ActivityDetailActionMenu />);
+  }, []);
 
   return (
     <>
