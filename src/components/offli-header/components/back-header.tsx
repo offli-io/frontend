@@ -27,24 +27,26 @@ const BackHeader: React.FC<IBackHeaderProps> = ({
   const { headerRightContent, setHeaderRightContent } =
     React.useContext(HeaderContext);
   const toParsed = to?.split("/");
+  //why was this done?
+  //BIG TODO
   const fromLocation = toParsed && `/${toParsed[toParsed?.length - 1]}`;
 
   const handleBackNavigation = React.useCallback(() => {
-    if (!fromLocation) {
+    if (!to) {
       return;
     }
     // edge cases when there is double navigation via header (e.g. BUDDIES -> ADD_BUDDY screens)
     if (
-      fromLocation === ApplicationLocations.BUDDIES &&
+      to === ApplicationLocations.BUDDIES &&
       location === ApplicationLocations.ADD_BUDDIES
     ) {
-      return navigate(fromLocation, {
+      return navigate(to, {
         state: {
           from: ApplicationLocations.PROFILE,
         },
       });
     }
-    navigate(fromLocation);
+    navigate(to);
   }, [fromLocation, location, navigate]);
 
   React.useEffect(() => {

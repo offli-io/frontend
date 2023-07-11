@@ -44,6 +44,8 @@ const StyledText = styled(Typography)(() => ({
 const ActivityDetailsGrid: React.FC<IProps> = ({ activity }) => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
+
+  console.log(pathname)
   // const from = (location?.state as ICustomizedLocationStateDto)?.from;
 
   const handleShowOnMap = () => {
