@@ -32,7 +32,7 @@ export const CreatorVisibilityRow: React.FC<IProps> = ({
           alignItems: "center",
           justifyContent: "space-between",
           width: "95%",
-          mt: 1,
+          // mt: 1,
         }}
       >
         <Box
