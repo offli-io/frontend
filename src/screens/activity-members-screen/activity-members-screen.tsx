@@ -1,33 +1,26 @@
-import { Box, CircularProgress, TextField, Typography } from "@mui/material";
-import React from "react";
-import BuddyItem from "../../components/buddy-item";
+import SearchIcon from "@mui/icons-material/Search";
 import {
-  QueryClient,
-  useMutation,
-  useQuery,
-  useQueryClient,
-} from "@tanstack/react-query";
+  Box,
+  CircularProgress,
+  InputAdornment,
+  TextField,
+  Typography,
+} from "@mui/material";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useSnackbar } from "notistack";
+import React from "react";
+import { useParams } from "react-router-dom";
+import { useDebounce } from "use-debounce";
 import {
   getActivity,
   getActivityParticipants,
-  getBuddies,
-  inviteBuddy,
   kickUserFromActivity,
-  uninviteBuddy,
 } from "../../api/activities/requests";
-import { IPerson } from "../../types/activities/activity.dto";
-import { useDebounce } from "use-debounce";
-import { useSnackbar } from "notistack";
 import { AuthenticationContext } from "../../assets/theme/authentication-provider";
-import { useParams } from "react-router-dom";
-import { BuddyActionContent } from "./components/buddy-action-content";
-import { ActivityMembersActionTypeDto } from "../../types/common/activity-members-action-type.dto";
+import BuddyItem from "../../components/buddy-item";
 import { IActivityRestDto } from "../../types/activities/activity-rest.dto";
-
-// interface IActivityTypeFormProps {
-//   //   onNextClicked: () => void
-//   //   methods: UseFormReturn
-// }
+import { ActivityMembersActionTypeDto } from "../../types/common/activity-members-action-type.dto";
+import { BuddyActionContent } from "./components/buddy-action-content";
 
 export const ActivityMembersScreen: React.FC = () => {
   const { userInfo } = React.useContext(AuthenticationContext);
@@ -99,32 +92,45 @@ export const ActivityMembersScreen: React.FC = () => {
     []
   );
 
+  const anySearchResults = [...(activityMembers ?? [])]?.length > 0;
+
   return (
     <Box sx={{ px: 2 }}>
-      <Box sx={{ display: "flex", mb: 3, mt: 2 }}>
-        <Typography sx={{ fontWeight: "bold" }} variant="h4">
-          Activity members
-        </Typography>
-      </Box>
       <Box
         sx={{
           display: "flex",
           flexWrap: "wrap",
           justifyContent: "space-between",
           width: "100%",
+          mt: 2,
         }}
       >
         <TextField
-          // TODO idk if this is really needed and not anti-pattern
-          //autoFocus
           value={queryString}
           onChange={(e) => setQueryString(e.target.value)}
-          sx={{ width: "100%" }}
-          label="Search within activity members"
-          // InputProps={{
-          //   startAdornment: <SearchIcon />,
-          // }}
-          placeholder="Type username"
+          // label="Search among activity members"
+          placeholder="Search among activity members"
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <SearchIcon sx={{ fontSize: "1.5rem", color: "#4A148C" }} />{" "}
+              </InputAdornment>
+            ),
+          }}
+          sx={{
+            width: "100%",
+            "& input::placeholder": {
+              fontSize: 14,
+              color: "#4A148C",
+              fontWeight: "bold",
+              opacity: 1,
+              pl: 1,
+            },
+            "& fieldset": { border: "none" },
+            backgroundColor: "rgba(74, 20, 140, 0.18)",
+            borderRadius: "10px",
+          }}
+          data-testid="activities-search-input"
         />
         {(data?.data?.activity?.count_confirmed ?? 0) < 1 ? (
           <Box
@@ -146,20 +152,20 @@ export const ActivityMembersScreen: React.FC = () => {
         ) : (
           <Box
             sx={{
-              height: 300,
               width: "100%",
               overflowY: "auto",
               overflowX: "hidden",
               my: 3,
+              py: 3,
               borderTop: "1px solid lightgrey",
-              borderBottom: "1px solid lightgrey",
+              borderBottom: anySearchResults ? "1px solid lightgrey" : "unset",
             }}
           >
             {isLoading ? (
               <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
                 <CircularProgress color="primary" />
               </Box>
-            ) : (
+            ) : anySearchResults ? (
               activityMembers.map((member) => (
                 <BuddyItem
                   key={member?.id}
@@ -172,6 +178,15 @@ export const ActivityMembersScreen: React.FC = () => {
                   }
                 />
               ))
+            ) : (
+              // <Box sx={{ display: 'flex', alignItems: 'center'}}>
+              <Typography
+                variant="subtitle2"
+                sx={{ textAlign: "center", my: 4 }}
+              >
+                No members found
+              </Typography>
+              // </Box>
             )}
           </Box>
         )}

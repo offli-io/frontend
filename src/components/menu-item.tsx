@@ -23,6 +23,7 @@ interface ILabeledDividerProps {
   icon?: React.ReactElement;
   headerRight?: React.ReactElement;
   contrastText?: boolean;
+  disabled?: boolean;
 }
 
 const MenuItem: React.FC<ILabeledDividerProps> = ({
@@ -32,11 +33,13 @@ const MenuItem: React.FC<ILabeledDividerProps> = ({
   icon,
   headerRight,
   contrastText,
+  disabled,
   ...rest
 }) => {
+  //TODO refactor this to Button component
   return (
     <Box
-      onClick={() => onMenuItemClick && onMenuItemClick(type)}
+      onClick={() => !disabled && onMenuItemClick?.(type)}
       sx={{
         display: "flex",
         flexDirection: "row",

@@ -1,8 +1,11 @@
 import { Box, Typography, Chip, IconButton } from "@mui/material";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import React from "react";
-import { useLocation, useParams } from "react-router-dom";
-import { getActivity } from "../../api/activities/requests";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
+import {
+  changeActivityParticipantStatus,
+  getActivity,
+} from "../../api/activities/requests";
 import BackHeader from "../../components/back-header";
 import { PageWrapper } from "../../components/page-wrapper";
 import { IActivityRestDto } from "../../types/activities/activity-rest.dto";
@@ -17,6 +20,11 @@ import { ActivityVisibilityEnum } from "../../types/activities/activity-visibili
 import MenuIcon from "@mui/icons-material/Menu";
 import { HeaderContext } from "../../app/providers/header-provider";
 import ActivityDetailActionMenu from "./components/acitivity-detail-action-menu";
+import { ActivityActionsTypeEnumDto } from "../../types/common/activity-actions-type-enum.dto";
+import { ApplicationLocations } from "../../types/common/applications-locations.dto";
+import { ActivityInviteStateEnum } from "../../types/activities/activity-invite-state-enum.dto";
+import { AuthenticationContext } from "../../assets/theme/authentication-provider";
+import { useSnackbar } from "notistack";
 
 interface IProps {
   type: "detail" | "request";
@@ -24,9 +32,14 @@ interface IProps {
 
 const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const location = useLocation();
-  const from = (location?.state as ICustomizedLocationStateDto)?.from;
+  const from =
+    (location?.state as ICustomizedLocationStateDto)?.from ??
+    ApplicationLocations.ACTIVITIES;
   const { setHeaderRightContent } = React.useContext(HeaderContext);
+  const { userInfo } = React.useContext(AuthenticationContext);
+  const { enqueueSnackbar } = useSnackbar();
 
   const { data } = useQuery(
     ["activity", id],
@@ -42,8 +55,49 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
     id: activity?.creator_id,
   });
 
+  const { mutate: sendJoinActivity } = useMutation(
+    ["join-activity"],
+    () =>
+      changeActivityParticipantStatus(Number(id), {
+        id: Number(userInfo?.id),
+        status: ActivityInviteStateEnum.CONFIRMED,
+      }),
+    {
+      onSuccess: () => {
+        enqueueSnackbar("You have successfully joined the activity", {
+          variant: "success",
+        });
+        navigate(ApplicationLocations.ACTIVITIES);
+        // setInvitedBuddies([...invitedBuddies, Number(buddy?.id)]);
+      },
+      onError: (error) => {
+        enqueueSnackbar("Failed to join activity", { variant: "error" });
+      },
+    }
+  );
+
+  const handleMenuItemClick = React.useCallback(
+    (action?: ActivityActionsTypeEnumDto) => {
+      switch (action) {
+        case ActivityActionsTypeEnumDto.ACTIVITY_MEMBERS:
+          return navigate(ApplicationLocations.ACTIVITIES);
+        case ActivityActionsTypeEnumDto.MAP:
+          return navigate(`${ApplicationLocations.MAP}/${id}`, {
+            state: { from: location?.pathname },
+          });
+        case ActivityActionsTypeEnumDto.JOIN:
+          return sendJoinActivity();
+        default:
+          return;
+      }
+    },
+    [sendJoinActivity, navigate]
+  );
+
   React.useEffect(() => {
-    setHeaderRightContent(<ActivityDetailActionMenu />);
+    setHeaderRightContent(
+      <ActivityDetailActionMenu onMenuItemClick={handleMenuItemClick} />
+    );
   }, []);
 
   return (
@@ -52,7 +106,7 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
         sx={{
           width: "100%",
           height: "50%",
-          backgroundImage: `url(${require("../../assets/img/dune.webp")})`,
+          backgroundImage: `url(${activity?.title_picture_url})`,
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat",
           backgroundSize: "cover",

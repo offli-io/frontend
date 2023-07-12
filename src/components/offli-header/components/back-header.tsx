@@ -22,7 +22,6 @@ const BackHeader: React.FC<IBackHeaderProps> = ({
   //   headerRightContent,
 }) => {
   const location = useLocation().pathname;
-  const [notificationNumber] = useState(5);
   const navigate = useNavigate();
   const { headerRightContent, setHeaderRightContent } =
     React.useContext(HeaderContext);
@@ -46,7 +45,26 @@ const BackHeader: React.FC<IBackHeaderProps> = ({
         },
       });
     }
-    navigate(to);
+    if (
+      to === ApplicationLocations.ACTIVITY_DETAIL &&
+      location.startsWith(ApplicationLocations.MAP)
+    ) {
+      return navigate(to, {
+        state: {
+          from: ApplicationLocations.ACTIVITIES,
+        },
+      });
+    }
+    if (location.startsWith(ApplicationLocations.ACTIVITY_DETAIL)) {
+      return navigate(ApplicationLocations.ACTIVITIES);
+    }
+    //idk if this state passing is ok
+    // I dont want to always loop between 2 back routes
+    navigate(to, {
+      state: {
+        from: location,
+      },
+    });
   }, [fromLocation, location, navigate]);
 
   React.useEffect(() => {

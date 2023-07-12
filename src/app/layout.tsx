@@ -10,6 +10,7 @@ import BackHeader from "../components/back-header";
 import { useUsers } from "../hooks/use-users";
 import { IPersonExtended } from "../types/activities/activity.dto";
 import { useUser } from "../hooks/use-user";
+import { HeaderContext } from "./providers/header-provider";
 interface ILayoutProps {
   children?: React.ReactNode;
 }
@@ -23,6 +24,8 @@ export const NOT_EXACT_UNALLOWED_URLS = [
 
 export const Layout: React.FC<ILayoutProps> = ({ children }) => {
   const { stateToken, userInfo } = React.useContext(AuthenticationContext);
+  const { setHeaderRightContent } = React.useContext(HeaderContext);
+
   const location = useLocation();
   const navigate = useNavigate();
   const { palette } = useTheme();
@@ -36,6 +39,11 @@ export const Layout: React.FC<ILayoutProps> = ({ children }) => {
   });
 
   const isBuddyRequest = location?.pathname?.includes("/profile/request");
+
+  React.useEffect(() => {
+    //reset the header right content on route changes, in the future might be subject to change
+    setHeaderRightContent(null);
+  }, [location]);
 
   React.useEffect(() => {
     if (!!data && !data?.username && stateToken) {

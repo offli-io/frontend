@@ -328,7 +328,7 @@ export const getPredefinedTags = () => {
   return promise;
 };
 
-export const inviteBuddy = (
+export const changeActivityParticipantStatus = (
   activityId: number,
   userInfo: ICreateActivityParticipantRequestDto
 ) => {

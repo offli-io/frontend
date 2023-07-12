@@ -1,29 +1,29 @@
-import {
-  Chip,
-  ClickAwayListener,
-  Fade,
-  IconButton,
-  Popper,
-} from "@mui/material";
+import MenuIcon from "@mui/icons-material/Menu";
+import { ClickAwayListener, Fade, IconButton, Popper } from "@mui/material";
 import { Box } from "@mui/system";
 import React from "react";
-import MenuIcon from "@mui/icons-material/Menu";
-import OffliButton from "../../../components/offli-button";
-import ActivityActions from "../../my-activities-screen/components/activity-actions";
 import { useParams } from "react-router-dom";
 import { useActivities } from "../../../hooks/use-activities";
 import { IActivityRestDto } from "../../../types/activities/activity-rest.dto";
+import { ActivityActionsTypeEnumDto } from "../../../types/common/activity-actions-type-enum.dto";
+import ActivityActions from "../../my-activities-screen/components/activity-actions";
 
 interface IProps {
-  onMenuItemClick?: () => void;
+  onMenuItemClick?: (action?: ActivityActionsTypeEnumDto) => void;
 }
 
 const ActivityDetailActionMenu: React.FC<IProps> = ({ onMenuItemClick }) => {
   const [open, setOpen] = React.useState(false);
-  const { id } = useParams();
+
+
+  // cant use useParams() hook because this Provider is outside <Router> context
+  const pathnameArray = window.location.href.split('/')
+  const activityId = pathnameArray[pathnameArray.length - 1]
   const { data, isLoading } = useActivities<IActivityRestDto>({
-    id: Number(id),
+    id: Number(activityId),
   });
+
+
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -48,7 +48,7 @@ const ActivityDetailActionMenu: React.FC<IProps> = ({ onMenuItemClick }) => {
               <Box sx={{ p: 1.5, border: 1, bgcolor: "rgba(0, 0, 0, 0.8)" }}>
                 <ActivityActions
                   activity={data?.data?.activity}
-                  onActionClick={(action) => console.log(action)}
+                  onActionClick={onMenuItemClick}
                   contrastText
                 />
               </Box>
