@@ -80,7 +80,11 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
     (action?: ActivityActionsTypeEnumDto) => {
       switch (action) {
         case ActivityActionsTypeEnumDto.ACTIVITY_MEMBERS:
-          return navigate(ApplicationLocations.ACTIVITIES);
+          return navigate(ApplicationLocations.ACTIVITY_MEMBERS, {
+            state: {
+              from: location?.pathname,
+            },
+          });
         case ActivityActionsTypeEnumDto.MAP:
           return navigate(`${ApplicationLocations.MAP}/${id}`, {
             state: { from: location?.pathname },

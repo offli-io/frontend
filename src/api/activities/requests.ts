@@ -452,7 +452,7 @@ export const sendBuddyRequest = (userId?: number, buddy_to_be_id?: number) => {
   return promise;
 };
 
-export const uploadActivityPhoto = (formData?: FormData) => {
+export const uploadFile = (formData?: FormData) => {
   const CancelToken = axios.CancelToken;
   const source = CancelToken.source();
 

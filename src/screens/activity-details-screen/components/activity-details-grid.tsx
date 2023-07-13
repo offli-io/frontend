@@ -45,7 +45,6 @@ const ActivityDetailsGrid: React.FC<IProps> = ({ activity }) => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
 
-  console.log(pathname);
   // const from = (location?.state as ICustomizedLocationStateDto)?.from;
 
   const handleShowOnMap = () => {
@@ -74,7 +73,14 @@ const ActivityDetailsGrid: React.FC<IProps> = ({ activity }) => {
         </IconButton>
         <OffliButton
           onClick={() =>
-            navigate(`${ApplicationLocations.ACTIVITY_MEMBERS}/${activity?.id}`)
+            navigate(
+              `${ApplicationLocations.ACTIVITY_MEMBERS}/${activity?.id}`,
+              {
+                state: {
+                  from: pathname,
+                },
+              }
+            )
           }
           variant="text"
           size="small"

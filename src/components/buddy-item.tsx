@@ -1,5 +1,5 @@
-import { Box, styled, Typography } from "@mui/material";
-import logo from "../assets/img/profilePicture.jpg";
+import { Box, styled, Typography, useTheme } from "@mui/material";
+import logo from "../assets/img/user-placeholder.svg";
 import React from "react";
 import { IPerson } from "../types/activities/activity.dto";
 
@@ -10,13 +10,6 @@ interface IBuddyItemProps {
   onClick?: (buddy?: IPerson) => void;
 }
 
-const StyledImage = styled((props: any) => <img {...props} alt="Buddy item" />)`
-  height: 40px;
-  width: 40px;
-  backgroundcolor: #c9c9c9;
-  border-radius: 50%;
-`;
-
 const BuddyItem: React.FC<IBuddyItemProps> = ({
   children,
   buddy,
@@ -24,6 +17,7 @@ const BuddyItem: React.FC<IBuddyItemProps> = ({
   onClick,
   ...rest
 }) => {
+  const { shadows } = useTheme();
   return (
     <Box
       onClick={() => onClick?.(buddy)}
@@ -38,10 +32,16 @@ const BuddyItem: React.FC<IBuddyItemProps> = ({
       }}
       {...rest}
     >
-      <Box sx={{ display: "flex", alignItems: "center" }}>
-        <StyledImage
+      <Box sx={{ display: "flex", alignItems: "center", ml: 1 }}>
+        <img
           src={buddy?.profile_photo_url ?? logo}
-          alt="profile picture"
+          alt="profile"
+          style={{
+            height: 40,
+            width: 40,
+            borderRadius: "50%",
+            boxShadow: shadows?.[3],
+          }}
         />
         <Typography sx={{ ml: 2, color: "black" }}>
           {buddy?.username}

@@ -1,9 +1,9 @@
 import { yupResolver } from "@hookform/resolvers/yup";
+import AddIcon from "@mui/icons-material/Add";
 import {
   Autocomplete,
-  Badge,
   Box,
-  IconButton,
+  Modal,
   TextField,
   Typography,
   useTheme,
@@ -13,27 +13,34 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useSnackbar } from "notistack";
 import React, { useEffect } from "react";
+import Cropper from "react-easy-crop";
 import { Controller, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { useDebounce } from "use-debounce";
 import * as yup from "yup";
-import { getLocationFromQueryFetch } from "../../api/activities/requests";
+import {
+  getLocationFromQueryFetch,
+  uploadFile,
+} from "../../api/activities/requests";
 import { updateProfileInfo } from "../../api/users/requests";
+import userPlaceholder from "../../assets/img/user-placeholder.svg";
 import { AuthenticationContext } from "../../assets/theme/authentication-provider";
-import BackHeader from "../../components/back-header";
+import { DrawerContext } from "../../assets/theme/drawer-provider";
 import OffliButton from "../../components/offli-button";
 import { PageWrapper } from "../../components/page-wrapper";
 import { useUser } from "../../hooks/use-user";
 import { ILocation } from "../../types/activities/location.dto";
 import { ApplicationLocations } from "../../types/common/applications-locations.dto";
+import {
+  ALLOWED_PHOTO_EXTENSIONS,
+  MAX_FILE_SIZE,
+} from "../../utils/common-constants";
 import { mapExternalApiOptions } from "../../utils/map-location-value.util";
-import userPlaceholder from "../../assets/img/user-placeholder.svg";
-import AddIcon from "@mui/icons-material/Add";
-import { DrawerContext } from "../../assets/theme/drawer-provider";
-import { getMatchingProperties } from "./utils/get-matching-properties.util";
+import getCroppedImg from "../create-activity-screen/utils/crop-utils";
 import ProfilePhotoActions, {
   ProfilePhotoActionsEnum,
 } from "./components/profile-photo-actions";
+import { getMatchingProperties } from "./utils/get-matching-properties.util";
 
 export interface IEditProfile {
   username?: string;
@@ -73,6 +80,12 @@ const EditProfileScreen: React.FC = () => {
   const queryClient = useQueryClient();
   const { enqueueSnackbar } = useSnackbar();
   const { toggleDrawer } = React.useContext(DrawerContext);
+  const hiddenFileInput = React.useRef<HTMLInputElement | null>(null);
+  const [localImageFile, setLocalImageFile] = React.useState<any>();
+  const [crop, setCrop] = React.useState({ x: 0, y: 0 });
+  const [zoom, setZoom] = React.useState(1);
+  const [croppedAreaPixels, setCroppedAreaPixels] = React.useState(null);
+  const [croppedImage, setCroppedImage] = React.useState<any>(null);
 
   const { mutate: sendUpdateProfile, isLoading: isSubmitting } = useMutation(
     ["update-profile-info"],
@@ -89,7 +102,11 @@ const EditProfileScreen: React.FC = () => {
         //   variables?.type,
         //   variables?.properties?.user?.id ?? variables?.properties?.activity?.id
         // )
-
+        //close drawer mby from upload pictures
+        toggleDrawer({
+          open: false,
+          content: undefined,
+        });
         queryClient.invalidateQueries(["user"]);
         enqueueSnackbar("Your personal information was successfully updated", {
           variant: "success",
@@ -141,6 +158,27 @@ const EditProfileScreen: React.FC = () => {
     }
   );
 
+  const { mutate: sendUploadProfilePhoto, isLoading } = useMutation(
+    ["activity-photo-upload"],
+    (formData?: FormData) => uploadFile(formData),
+    {
+      onSuccess: (data) => {
+        // Dont display 2 snackbars (1 is already displayed when profile is updated)
+        // enqueueSnackbar("Your profile photo has been successfully uploaded", {
+        //   variant: "success",
+        // });
+        setLocalImageFile(null);
+        sendUpdateProfile({ profile_photo_url: data?.data?.url });
+        queryClient.invalidateQueries(["user"]);
+      },
+      onError: (error) => {
+        enqueueSnackbar("Failed to upload profile photo", {
+          variant: "error",
+        });
+      },
+    }
+  );
+
   useEffect(() => {
     // alebo setValue ak bude resetu kurovat
 
@@ -164,9 +202,16 @@ const EditProfileScreen: React.FC = () => {
 
   const handleProfilePhotoAction = React.useCallback(
     (action?: ProfilePhotoActionsEnum) => {
-      console.log(action);
+      switch (action) {
+        case ProfilePhotoActionsEnum.SELECT_FROM_DEVICE:
+          return hiddenFileInput?.current?.click();
+        case ProfilePhotoActionsEnum.REMOVE_PICTURE:
+          return sendUpdateProfile({ profile_photo_url: null });
+        default:
+          return;
+      }
     },
-    []
+    [hiddenFileInput]
   );
 
   const handlePictureClick = React.useCallback(() => {
@@ -176,9 +221,122 @@ const EditProfileScreen: React.FC = () => {
     });
   }, [toggleDrawer]);
 
+  const handleFileUpload = React.useCallback(
+    async (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e?.target?.files?.[0];
+      if (!file) {
+        return;
+      }
+      if (file.size > MAX_FILE_SIZE) {
+        enqueueSnackbar("File is too large", { variant: "error" });
+        return;
+      }
+
+      // check file format
+      const fileExtension = file.name.split(".").pop();
+      if (fileExtension && !ALLOWED_PHOTO_EXTENSIONS.includes(fileExtension)) {
+        enqueueSnackbar("Unsupported file format", { variant: "error" });
+        return;
+      }
+      setLocalImageFile(URL.createObjectURL(file));
+    },
+    []
+  );
+
+  const handleCloseModal = React.useCallback(() => {
+    setLocalImageFile(null);
+  }, []);
+
+  const onCropComplete = React.useCallback(
+    (croppedArea: any, croppedAreaPixels: any) => {
+      setCroppedAreaPixels(croppedAreaPixels);
+    },
+    []
+  );
+
+  const submitCroppedPhoto = React.useCallback(async () => {
+    try {
+      const croppedImage: any = await getCroppedImg(
+        localImageFile,
+        croppedAreaPixels
+      );
+      if (!!croppedImage) {
+        const formData = new FormData();
+        // we now only have string from createObjectURL, now we need to resolve it
+        // Creates a 'blob:nodedata:...' URL string that represents the given <Blob> object and can be used to retrieve the Blob later.
+        let blobImage = await fetch(croppedImage).then((r) => r.blob());
+        formData.append("file", blobImage, "Idk.jpg");
+        sendUploadProfilePhoto(formData);
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }, [croppedAreaPixels]);
+
   return (
     <>
       <PageWrapper>
+        <Modal
+          aria-labelledby="modal-title"
+          aria-describedby="modal-description"
+          open={!!localImageFile}
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            backdropFilter: "blur(4px)", // Add backdrop filter to blur the background
+            // zIndex: theme.zIndex.modal + 1,
+          }}
+          onClose={handleCloseModal}
+        >
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              // backgroundColor: (theme) => theme.palette.background.paper,
+              // boxShadow: (theme) => theme.shadows[5],
+              outline: "none",
+              width: "90%",
+            }}
+          >
+            <Box
+              sx={{
+                position: "relative",
+                height: 400,
+                width: "90%",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+              }}
+            >
+              <Box sx={{ position: "relative", height: 350, width: "100%" }}>
+                <Cropper
+                  image={localImageFile}
+                  crop={crop}
+                  zoom={zoom}
+                  aspect={3 / 3}
+                  onCropChange={setCrop}
+                  onCropComplete={onCropComplete}
+                  onZoomChange={setZoom}
+                  style={{
+                    containerStyle: {
+                      color: "transparent",
+                    },
+                  }}
+                  cropShape="round"
+                />
+              </Box>
+              <OffliButton
+                sx={{ mt: 4, width: "80%" }}
+                onClick={submitCroppedPhoto}
+              >
+                Crop
+              </OffliButton>
+            </Box>
+          </Box>
+        </Modal>
         <Box
           sx={{
             // mt: (HEADER_HEIGHT + 16) / 12,
@@ -189,6 +347,15 @@ const EditProfileScreen: React.FC = () => {
             width: "100%",
           }}
         >
+          {/* Hidden input for photo upload */}
+          <input
+            onChange={handleFileUpload}
+            type="file"
+            style={{ display: "none" }}
+            ref={hiddenFileInput}
+            // setting empty string to always fire onChange event on input even when selecting same pictures 2 times in a row
+            value={""}
+          />
           <Box sx={{ position: "relative" }} onClick={handlePictureClick}>
             <img
               src={data?.profile_photo_url ?? userPlaceholder}

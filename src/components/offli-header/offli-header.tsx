@@ -106,7 +106,7 @@ const OffliHeader: React.FC<IProps> = ({ sx }) => {
               onClick={() => {
                 navigate(ApplicationLocations.NOTIFICATIONS, {
                   state: {
-                    from: window.location.href,
+                    from: location?.pathname,
                   },
                 });
               }}
@@ -131,7 +131,7 @@ const OffliHeader: React.FC<IProps> = ({ sx }) => {
               onClick={() => {
                 navigate(ApplicationLocations.SETTINGS, {
                   state: {
-                    from: window.location.href,
+                    from: location?.pathname,
                   },
                 });
               }}
