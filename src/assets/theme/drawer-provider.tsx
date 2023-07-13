@@ -32,6 +32,18 @@ export const DrawerProvider = ({ children }: { children: React.ReactNode }) => {
     open: false,
   });
 
+  // React.useEffect(() => {
+  //   // hide drawer when route changes
+  //   // cant do because window.location.href is not updated somehow -> I think it is evaluated in the time function is called
+  //   // and not in any other time(for example upon re-render)
+  //   if (!!window.location.href) {
+  //     toggleDrawer({
+  //       open: false,
+  //       content: undefined,
+  //     });
+  //   }
+  // }, [window.location.href]);
+
   return (
     <DrawerContext.Provider value={{ toggleDrawer }}>
       {children}

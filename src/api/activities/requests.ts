@@ -18,6 +18,7 @@ import {
 import { IPredefinedPictureDto } from "../../types/activities/predefined-picture.dto";
 import { IPredefinedTagDto } from "../../types/activities/predefined-tag.dto";
 import { IUpdateActivityRequestDto } from "./../../types/activities/update-activity-request.dto";
+import { IListParticipantsResponseDto } from "../../types/activities/list-participants-response.dto";
 
 export const getActivities = async ({
   queryFunctionContext,
@@ -327,7 +328,7 @@ export const getPredefinedTags = () => {
   return promise;
 };
 
-export const inviteBuddy = (
+export const changeActivityParticipantStatus = (
   activityId: number,
   userInfo: ICreateActivityParticipantRequestDto
 ) => {
@@ -451,7 +452,7 @@ export const sendBuddyRequest = (userId?: number, buddy_to_be_id?: number) => {
   return promise;
 };
 
-export const uploadActivityPhoto = (formData?: FormData) => {
+export const uploadFile = (formData?: FormData) => {
   const CancelToken = axios.CancelToken;
   const source = CancelToken.source();
 
@@ -466,6 +467,31 @@ export const uploadActivityPhoto = (formData?: FormData) => {
   //   queryFunctionContext?.signal?.addEventListener('abort', () => {
   //     source.cancel('Query was cancelled by React Query')
   //   })
+
+  return promise;
+};
+
+export const getActivityParticipants = ({
+  activityId,
+}: // searchParams,
+{
+  activityId: number;
+  // searchParams?: IActivitySearchParams | undefined;
+}) => {
+  const CancelToken = axios.CancelToken;
+  const source = CancelToken.source();
+
+  const promise = axios.get<IListParticipantsResponseDto>(
+    `${DEFAULT_DEV_URL}/activities/${activityId}/participants`,
+    {
+      // params: searchParams,
+      cancelToken: source?.token,
+    }
+  );
+
+  // queryFunctionContext?.signal?.addEventListener("abort", () => {
+  //   source.cancel("Query was cancelled by React Query");
+  // });
 
   return promise;
 };

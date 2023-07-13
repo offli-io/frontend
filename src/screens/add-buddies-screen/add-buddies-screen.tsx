@@ -210,18 +210,20 @@ const AddBuddiesScreen = () => {
                   <CircularProgress color="primary" />
                 </Box>
               ) : (
-                data?.map((user: IPersonExtended) => (
-                  <BuddyItem
-                    key={user?.id}
-                    buddy={user}
-                    onClick={(_user) => handleBuddyActionsClick(_user)}
-                    actionContent={
-                      <IconButton>
-                        <MoreHorizIcon />
-                      </IconButton>
-                    }
-                  />
-                ))
+                data
+                  ?.filter((user) => user?.id !== userInfo?.id)
+                  ?.map((user: IPersonExtended) => (
+                    <BuddyItem
+                      key={user?.id}
+                      buddy={user}
+                      onClick={(_user) => handleBuddyActionsClick(_user)}
+                      actionContent={
+                        <IconButton>
+                          <MoreHorizIcon />
+                        </IconButton>
+                      }
+                    />
+                  ))
               )}
             </Box>
           )}

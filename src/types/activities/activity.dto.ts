@@ -38,7 +38,6 @@ export interface IActivityLimit {
 }
 export interface IActivity {
   id?: number;
-  participants?: IPerson[];
   title?: string;
   description?: string;
   price?: string;

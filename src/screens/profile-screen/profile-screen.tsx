@@ -3,26 +3,19 @@ import LocationOnIcon from "@mui/icons-material/LocationOn";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import { Box, IconButton, Typography, useTheme } from "@mui/material";
 import React from "react";
-
-import { useMutation } from "@tanstack/react-query";
 import { useSnackbar } from "notistack";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { acceptBuddyInvitation } from "../../api/users/requests";
+import userPlaceholder from "../../assets/img/user-placeholder.svg";
 import { AuthenticationContext } from "../../assets/theme/authentication-provider";
 import ActionButton from "../../components/action-button";
-import BackHeader from "../../components/back-header";
 import OffliButton from "../../components/offli-button";
 import { PageWrapper } from "../../components/page-wrapper";
 import ProfileGallery from "../../components/profile-gallery";
 import ProfileStatistics from "../../components/profile-statistics";
-import { useUsers } from "../../hooks/use-users";
+import { useUser } from "../../hooks/use-user";
 import { ApplicationLocations } from "../../types/common/applications-locations.dto";
 import { ICustomizedLocationStateDto } from "../../types/common/customized-location-state.dto";
-import { IPersonExtended } from "../../types/activities/activity.dto";
-import { useUser } from "../../hooks/use-user";
 import { ProfileEntryTypeEnum } from "./types/profile-entry-type";
-import { generateBackHeaderTitle } from "./utils/profile-screen-utils";
-import userPlaceholder from "../../assets/img/user-placeholder.svg";
 
 interface IProfileScreenProps {
   type: ProfileEntryTypeEnum;
@@ -100,8 +93,8 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
             src={data?.profile_photo_url ?? userPlaceholder}
             alt="profile"
             style={{
-              height: "70px",
-              width: "70px",
+              height: 90,
+              aspectRatio: 1,
               borderRadius: "50%",
               // backgroundColor: theme?.palette?.inactive as string,
               // border: '2px solid primary.main', //nejde pica

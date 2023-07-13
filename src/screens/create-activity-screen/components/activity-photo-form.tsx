@@ -18,7 +18,7 @@ import {
 } from "../../../utils/common-constants";
 import { getAuthToken } from "../../../utils/token.util";
 import OffliGallery from "./offli-gallery";
-import { uploadActivityPhoto } from "../../../api/activities/requests";
+import { uploadFile } from "../../../api/activities/requests";
 import getCroppedImg from "../utils/crop-utils";
 
 interface IActivityPhotoFormProps {
@@ -83,7 +83,7 @@ export const ActivityPhotoForm: React.FC<IActivityPhotoFormProps> = ({
 
   const { mutate: sendUploadActivityPhoto, isLoading } = useMutation(
     ["activity-photo-upload"],
-    (formData?: FormData) => uploadActivityPhoto(formData),
+    (formData?: FormData) => uploadFile(formData),
     {
       onSuccess: (data) => {
         enqueueSnackbar("Your photo has been successfully uploaded", {

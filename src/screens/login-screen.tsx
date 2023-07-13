@@ -164,6 +164,7 @@ const LoginScreen: React.FC = () => {
               window.location.href = getGoogleUrl("login");
             }}
             sx={{ mb: 1 }}
+            disabled={isLoading}
           >
             Sign in with Google
           </OffliButton>

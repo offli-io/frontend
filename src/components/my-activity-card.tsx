@@ -68,7 +68,7 @@ const MyActivityCard: React.FC<IMyActivityCardProps> = ({
         <Box sx={{ display: "flex", alignItems: "center" }}>
           <PeopleAltIcon sx={{ fontSize: "1.2rem" }} />
           <Typography variant="body1" sx={{ ml: 1 }}>
-            {`${activity?.participants?.length ?? 0} / ${activity?.limit ?? 0}`}
+            {`${activity?.count_confirmed ?? 0} / ${activity?.limit ?? 0}`}
           </Typography>
         </Box>
       </Box>

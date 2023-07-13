@@ -53,7 +53,8 @@ const OffliHeader: React.FC<IProps> = ({ sx }) => {
       NOT_EXACT_UNALLOWED_URLS?.some((item) =>
         location?.pathname.includes(item)
       ) ||
-      location.pathname.includes(ApplicationLocations.ACTIVITY_ID),
+      location.pathname.includes(ApplicationLocations.ACTIVITY_DETAIL) ||
+      location.pathname.includes(ApplicationLocations.ACTIVITY_MEMBERS),
     [location]
   );
 
@@ -105,7 +106,7 @@ const OffliHeader: React.FC<IProps> = ({ sx }) => {
               onClick={() => {
                 navigate(ApplicationLocations.NOTIFICATIONS, {
                   state: {
-                    from: window.location.href,
+                    from: location?.pathname,
                   },
                 });
               }}
@@ -130,7 +131,7 @@ const OffliHeader: React.FC<IProps> = ({ sx }) => {
               onClick={() => {
                 navigate(ApplicationLocations.SETTINGS, {
                   state: {
-                    from: window.location.href,
+                    from: location?.pathname,
                   },
                 });
               }}
