@@ -47,7 +47,8 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
 
   const handleIGAuthorize = () => {
     window.location.href =
-      "https://api.instagram.com/oauth/authorize?client_id=738841197888411&redirect_uri=https://localhost:3000/profile/&scope=user_profile,user_media&response_type=code";
+      // "https://api.instagram.com/oauth/authorize?client_id=738841197888411&redirect_uri=https://localhost:3000/profile/&scope=user_profile,user_media&response_type=code";
+      "https://api.instagram.com/oauth/authorize?client_id=1317539042184854&redirect_uri=https://localhost:3000/profile/&scope=user_profile,user_media&response_type=code";
   };
 
   // redirect URI should be proper offli address that should read instagram code
@@ -176,7 +177,13 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
           <ActionButton
             text="Edit profile"
             sx={{ mt: 2 }}
-            onClick={() => navigate(ApplicationLocations.EDIT_PROFILE)}
+            onClick={() =>
+              navigate(ApplicationLocations.EDIT_PROFILE, {
+                state: {
+                  from: ApplicationLocations.PROFILE,
+                },
+              })
+            }
           />
         )}
         <Box
