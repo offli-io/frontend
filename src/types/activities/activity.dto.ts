@@ -25,6 +25,7 @@ export interface IPersonExtended {
   birthdate?: Date | null;
   location?: ILocation | null;
   instagram?: string;
+  instagram_photos?: string[];
 }
 
 export interface IActivityLocation {

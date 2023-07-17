@@ -47,7 +47,7 @@ export interface IEditProfile {
   about_me?: string;
   location?: ILocation | null;
   birthdate?: Date | null;
-  instagram?: string | null;
+  // instagram?: string | null;
   placeQuery?: string;
   profile_photo_url?: string | null;
 }
@@ -70,7 +70,7 @@ const schema: () => yup.SchemaOf<IEditProfile> = () =>
       .nullable(true),
     birthdate: yup.date().nullable(true).notRequired(),
     placeQuery: yup.string().notRequired(),
-    instagram: yup.string().nullable(true).notRequired(),
+    // instagram: yup.string().nullable(true).notRequired(),
     profile_photo_url: yup.string().notRequired().nullable(true),
   });
 
@@ -142,7 +142,7 @@ const EditProfileScreen: React.FC = () => {
       // location: "",
       birthdate: null,
       location: null,
-      instagram: "",
+      // instagram: "",
     },
     resolver: yupResolver(schema()),
     mode: "onChange",
@@ -187,7 +187,7 @@ const EditProfileScreen: React.FC = () => {
       about_me: data?.about_me ?? "",
       birthdate: (data?.birthdate as Date) ?? null,
       location: data?.location ?? null,
-      instagram: data?.instagram,
+      // instagram: data?.instagram,
       profile_photo_url: data?.profile_photo_url,
     });
   }, [data]);
@@ -549,7 +549,7 @@ const EditProfileScreen: React.FC = () => {
                   )}
                 />
               </LocalizationProvider>
-              <Controller
+              {/* <Controller
                 name="instagram"
                 control={control}
                 render={({ field, fieldState: { error } }) => (
@@ -569,7 +569,7 @@ const EditProfileScreen: React.FC = () => {
                     />
                   </>
                 )}
-              />
+              /> */}
             </Box>
             <OffliButton
               type="submit"

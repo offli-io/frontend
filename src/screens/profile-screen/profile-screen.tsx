@@ -2,13 +2,14 @@ import InstagramIcon from "@mui/icons-material/Instagram";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import { Box, IconButton, Typography, useTheme } from "@mui/material";
-import React from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useSnackbar } from "notistack";
+import React from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { connectInstagram } from "../../api/users/requests";
 import userPlaceholder from "../../assets/img/user-placeholder.svg";
 import { AuthenticationContext } from "../../assets/theme/authentication-provider";
 import ActionButton from "../../components/action-button";
-import OffliButton from "../../components/offli-button";
 import { PageWrapper } from "../../components/page-wrapper";
 import ProfileGallery from "../../components/profile-gallery";
 import ProfileStatistics from "../../components/profile-statistics";
@@ -22,9 +23,8 @@ interface IProfileScreenProps {
 }
 
 const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
-  const { userInfo, setUserInfo, setInstagramCode } = React.useContext(
-    AuthenticationContext
-  );
+  const { userInfo } = React.useContext(AuthenticationContext);
+  const queryClient = useQueryClient();
   const { palette } = useTheme();
   const location = useLocation();
   const navigate = useNavigate();
@@ -39,23 +39,41 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
     id: id ? Number(id) : userInfo?.id,
   });
 
+  const { isLoading: isConnectingInstagram, mutate: sendConnectInstagram } =
+    useMutation(
+      ["instagram-connection"],
+      (code?: string) => connectInstagram(Number(userInfo?.id), String(code)),
+      {
+        onSuccess: () => {
+          //params destruction
+          // const url = new URL(window.location.href);
+          // url.searchParams.delete
+          //this doesn't work -> will have to redirect I guess
+          enqueueSnackbar(
+            "Your instagram account has been successfully connected",
+            { variant: "success" }
+          );
+          queryClient.invalidateQueries(["user"]);
+          //didnt even notice the refresh -> this might work
+          window.history.pushState(
+            {},
+            document.title,
+            window.location.pathname
+          );
+        },
+        onError: () => {
+          enqueueSnackbar("Failed to connect your instagram account", {
+            variant: "error",
+          });
+        },
+      }
+    );
+
   React.useEffect(() => {
-    if (instagramCode) {
-      setInstagramCode(instagramCode);
+    if (instagramCode && userInfo?.id) {
+      sendConnectInstagram(instagramCode);
     }
-  }, [instagramCode, setInstagramCode]);
-
-  const handleIGAuthorize = () => {
-    window.location.href =
-      "https://api.instagram.com/oauth/authorize?client_id=738841197888411&redirect_uri=https://localhost:3000/profile/&scope=user_profile,user_media&response_type=code";
-  };
-
-  // redirect URI should be proper offli address that should read instagram code
-  // https://api.instagram.com/oauth/authorize
-  // ?client_id=738841197888411
-  // &redirect_uri=https://terapartners.sk/
-  // &scope=user_profile,user_media
-  // &response_type=code
+  }, [instagramCode, userInfo?.id]);
 
   return (
     <>
@@ -167,8 +185,7 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
                 color: palette?.text?.primary,
               }}
             >
-              {data?.about_me ??
-                "I am student at FIIT STU. I like adventures and meditation. There is always time for a beer. Cheers."}
+              {data?.about_me}
             </Typography>
           )}
         </Box>
@@ -176,7 +193,13 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
           <ActionButton
             text="Edit profile"
             sx={{ mt: 2 }}
-            onClick={() => navigate(ApplicationLocations.EDIT_PROFILE)}
+            onClick={() =>
+              navigate(ApplicationLocations.EDIT_PROFILE, {
+                state: {
+                  from: ApplicationLocations.PROFILE,
+                },
+              })
+            }
           />
         )}
         <Box
@@ -226,27 +249,33 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
               Photos
             </Typography>
           </Box>
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "flex-end",
-              justifyContent: "center",
-            }}
-          >
-            <IconButton color="primary" sx={{ padding: 0 }}>
-              <InstagramIcon />
-            </IconButton>
-            <Typography
-              align="left"
-              variant="subtitle1"
-              sx={{ ml: 0.5, mt: 3, color: "primary.main", fontWeight: "bold" }}
+          {data?.instagram ? (
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "flex-end",
+                justifyContent: "center",
+              }}
             >
-              {data?.username}
-            </Typography>
-          </Box>
+              <IconButton color="primary" sx={{ padding: 0 }}>
+                <InstagramIcon />
+              </IconButton>
+              <Typography
+                align="left"
+                variant="subtitle1"
+                sx={{
+                  ml: 0.5,
+                  mt: 3,
+                  color: "primary.main",
+                  fontWeight: "bold",
+                }}
+              >
+                {data?.username}
+              </Typography>
+            </Box>
+          ) : null}
         </Box>
-        <ProfileGallery />
-        <OffliButton onClick={handleIGAuthorize}>Authorize ig</OffliButton>
+        <ProfileGallery photoUrls={data?.instagram_photos} />
       </PageWrapper>
     </>
   );

@@ -165,3 +165,22 @@ export const addBuddy = (userId?: number, buddyId?: number) => {
 
   return promise;
 };
+
+export const connectInstagram = (userId?: number, authCode?: string) => {
+  const CancelToken = axios.CancelToken;
+  const source = CancelToken.source();
+
+  const promise = axios.post(
+    `${DEFAULT_DEV_URL}/instagram/${userId}/media`,
+    { authCode },
+    {
+      cancelToken: source?.token,
+    }
+  );
+
+  //   queryFunctionContext?.signal?.addEventListener('abort', () => {
+  //     source.cancel('Query was cancelled by React Query')
+  //   })
+
+  return promise;
+};

@@ -1,32 +1,72 @@
 import React from "react";
-import { Box, Grid } from "@mui/material";
+import { Box, Grid, Typography } from "@mui/material";
 import ProfilePicture from "../assets/img/profilePicture.jpg";
+import OffliButton from "./offli-button";
+import InstagramIcon from "@mui/icons-material/Instagram";
 
-const ProfileGallery: React.FC = () => {
-  const arr = [0, 1, 2, 3];
+interface IProfileGalleryProps {
+  photoUrls?: string[];
+}
+
+const ProfileGallery: React.FC<IProfileGalleryProps> = ({ photoUrls }) => {
+  const handleConnectInstagram = React.useCallback(() => {
+    window.location.href =
+      // "https://api.instagram.com/oauth/authorize?client_id=738841197888411&redirect_uri=https://localhost:3000/profile/&scope=user_profile,user_media&response_type=code";
+      "https://api.instagram.com/oauth/authorize?client_id=1317539042184854&redirect_uri=https://localhost:3000/profile/&scope=user_profile,user_media&response_type=code";
+  }, []);
+
   return (
     <Box>
-      <Grid
-        container
-        rowSpacing={0.1}
-        columnSpacing={0.1}
-        sx={{ width: "90%", margin: "auto" }}
+      <Box
+        sx={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))",
+          gap: 1.5,
+          p: 2,
+        }}
       >
-        {arr.map((a) => {
-          return (
-            <Grid item xs={6} key={a}>
+        {[...(photoUrls ?? [])]?.length > 0 ? (
+          photoUrls?.map((photo) => {
+            return (
               <img
-                src={ProfilePicture}
+                src={photo}
                 alt="profile"
                 style={{
-                  height: "38vw",
-                  borderRadius: 12,
+                  width: "100%",
+                  height: "auto",
+                  objectFit: "cover",
+                  borderRadius: 10,
+                  alignSelf: "center",
+                  // height: "100%",
+                  // borderRadius: 12,
                 }}
               />
-            </Grid>
-          );
-        })}
-      </Grid>
+            );
+          })
+        ) : (
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <Typography variant="subtitle1" sx={{ textAlign: "center" }}>
+              You have not connected your instagram account yet
+            </Typography>
+            <OffliButton
+              onClick={handleConnectInstagram}
+              size="small"
+              variant="outlined"
+              sx={{ fontSize: 16, mt: 2 }}
+              startIcon={<InstagramIcon />}
+            >
+              Connect instagram
+            </OffliButton>
+          </Box>
+        )}
+      </Box>
     </Box>
   );
 };
