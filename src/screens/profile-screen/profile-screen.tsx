@@ -45,11 +45,21 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
       (code?: string) => connectInstagram(Number(userInfo?.id), String(code)),
       {
         onSuccess: () => {
+          //params destruction
+          // const url = new URL(window.location.href);
+          // url.searchParams.delete
+          //this doesn't work -> will have to redirect I guess
           enqueueSnackbar(
             "Your instagram account has been successfully connected",
             { variant: "success" }
           );
           queryClient.invalidateQueries(["user"]);
+          //didnt even notice the refresh -> this might work
+          window.history.pushState(
+            {},
+            document.title,
+            window.location.pathname
+          );
         },
         onError: () => {
           enqueueSnackbar("Failed to connect your instagram account", {
