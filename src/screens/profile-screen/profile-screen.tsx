@@ -270,7 +270,7 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
                   fontWeight: "bold",
                 }}
               >
-                {data?.username}
+                {data?.instagram}
               </Typography>
             </Box>
           ) : null}
