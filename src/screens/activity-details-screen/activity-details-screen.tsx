@@ -1,5 +1,5 @@
 import { Box, Typography, Chip, IconButton } from "@mui/material";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import React from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import {
@@ -40,6 +40,7 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
   const { setHeaderRightContent } = React.useContext(HeaderContext);
   const { userInfo } = React.useContext(AuthenticationContext);
   const { enqueueSnackbar } = useSnackbar();
+  const queryClient = useQueryClient();
 
   const { data } = useQuery(
     ["activity", id],
@@ -68,6 +69,7 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
           variant: "success",
         });
         navigate(ApplicationLocations.ACTIVITIES);
+        queryClient.invalidateQueries(["activities"]);
         // setInvitedBuddies([...invitedBuddies, Number(buddy?.id)]);
       },
       onError: (error) => {

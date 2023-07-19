@@ -75,6 +75,16 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
     }
   }, [instagramCode, userInfo?.id]);
 
+  const isOtherProfile = React.useMemo(
+    () =>
+      [
+        ProfileEntryTypeEnum.REQUEST,
+        ProfileEntryTypeEnum.BUDDY,
+        ProfileEntryTypeEnum.USER_PROFILE,
+      ].includes(type),
+    [type]
+  );
+
   return (
     <>
       {/* {[
@@ -231,25 +241,26 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
           />
         </Box>
 
-        <Box
-          sx={{
-            width: "90%",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            mb: 1,
-          }}
-        >
-          <Box sx={{ mt: 3 }}>
-            <Typography
-              align="left"
-              variant="h5"
-              sx={{ color: palette?.text?.primary }}
-            >
-              Photos
-            </Typography>
-          </Box>
-          {data?.instagram ? (
+        {data?.instagram ? (
+          <Box
+            sx={{
+              width: "90%",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              mb: 1,
+            }}
+          >
+            <Box sx={{ mt: 3 }}>
+              <Typography
+                align="left"
+                variant="h5"
+                sx={{ color: palette?.text?.primary }}
+              >
+                Photos
+              </Typography>
+            </Box>
+
             <Box
               sx={{
                 display: "flex",
@@ -273,9 +284,11 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
                 {data?.instagram}
               </Typography>
             </Box>
-          ) : null}
-        </Box>
-        <ProfileGallery photoUrls={data?.instagram_photos} />
+          </Box>
+        ) : null}
+        {!isOtherProfile ? (
+          <ProfileGallery photoUrls={data?.instagram_photos} />
+        ) : null}
       </PageWrapper>
     </>
   );
