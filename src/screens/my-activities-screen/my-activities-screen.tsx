@@ -307,12 +307,12 @@ const ActivitiesScreen = () => {
               "& input::placeholder": {
                 fontSize: 14,
                 color: "#4A148C",
-                fontWeight: "bold",
+                fontWeight: 400,
                 opacity: 1,
                 pl: 1,
               },
               "& fieldset": { border: "none" },
-              backgroundColor: "rgba(74, 20, 140, 0.18)",
+              backgroundColor: ({ palette }) => palette?.primary?.light,
               borderRadius: "10px",
             }}
             data-testid="activities-search-input"

@@ -1,6 +1,7 @@
 import SearchIcon from "@mui/icons-material/Search";
 import {
   Box,
+  Chip,
   CircularProgress,
   InputAdornment,
   TextField,
@@ -9,33 +10,33 @@ import {
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useSnackbar } from "notistack";
 import React from "react";
-import { useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useDebounce } from "use-debounce";
 import {
-  getActivity,
   getActivityParticipants,
   kickUserFromActivity,
 } from "../../api/activities/requests";
 import { AuthenticationContext } from "../../assets/theme/authentication-provider";
 import BuddyItem from "../../components/buddy-item";
+import { useActivities } from "../../hooks/use-activities";
 import { IActivityRestDto } from "../../types/activities/activity-rest.dto";
 import { ActivityMembersActionTypeDto } from "../../types/common/activity-members-action-type.dto";
 import { BuddyActionContent } from "./components/buddy-action-content";
+import { ApplicationLocations } from "../../types/common/applications-locations.dto";
 
 export const ActivityMembersScreen: React.FC = () => {
   const { userInfo } = React.useContext(AuthenticationContext);
   const [invitedBuddies, setInvitedBuddies] = React.useState<string[]>([]);
   const { enqueueSnackbar } = useSnackbar();
   const { id } = useParams();
+  const navigate = useNavigate();
+  const { pathname } = useLocation();
 
-  //TODO change for activity hook
-  const { data, isLoading } = useQuery(
-    ["activity", id],
-    () => getActivity<IActivityRestDto>({ id: Number(id) }),
-    {
-      enabled: !!id,
-    }
-  );
+  const { data: { data: { activity = {} } = {} } = {}, isLoading } =
+    useActivities<IActivityRestDto>({
+      id: id ? Number(id) : undefined,
+    });
+
   const {
     data: { data: { participants = [] } = {} } = {},
     isLoading: areActivityParticipantsLoading,
@@ -57,7 +58,10 @@ export const ActivityMembersScreen: React.FC = () => {
     (personId?: number) => kickUserFromActivity(Number(id), Number(personId)),
     {
       onSuccess: (data, variables) => {
-        // setInvitedBuddies([...invitedBuddies, variables?.id])
+        enqueueSnackbar("User has been successfully kicked from activity", {
+          variant: "success",
+        });
+        queryClient.invalidateQueries(["activity-participants", id]);
         queryClient.invalidateQueries(["activity", id]);
       },
       onError: (error) => {
@@ -76,7 +80,7 @@ export const ActivityMembersScreen: React.FC = () => {
       );
     }
     return participants;
-  }, [queryStringDebounced, data?.data]);
+  }, [queryStringDebounced, activity, participants]);
 
   const handleActionClick = React.useCallback(
     (type?: ActivityMembersActionTypeDto, userId?: number) => {
@@ -92,7 +96,34 @@ export const ActivityMembersScreen: React.FC = () => {
     []
   );
 
+  // const isCreator = activity?.creator?.id === userInfo?.id;
   const anySearchResults = [...(activityMembers ?? [])]?.length > 0;
+
+  const renderActionContent = React.useCallback(
+    (memberId?: number) => {
+      if (memberId === activity?.creator?.id) {
+        if (memberId !== userInfo?.id) {
+          <BuddyActionContent
+            userId={memberId}
+            onActionClick={handleActionClick}
+          />;
+        }
+        return (
+          <Chip
+            label="Creator"
+            sx={{
+              ml: 1,
+              bgcolor: ({ palette }) => palette?.primary?.light,
+              color: ({ palette }) => palette?.primary?.main,
+            }}
+          />
+        );
+      } else {
+        return null;
+      }
+    },
+    [userInfo?.id, handleActionClick, activity]
+  );
 
   return (
     <Box sx={{ px: 2 }}>
@@ -127,12 +158,12 @@ export const ActivityMembersScreen: React.FC = () => {
               pl: 1,
             },
             "& fieldset": { border: "none" },
-            backgroundColor: "rgba(74, 20, 140, 0.18)",
+            backgroundColor: ({ palette }) => palette?.primary?.light,
             borderRadius: "10px",
           }}
           data-testid="activities-search-input"
         />
-        {(data?.data?.activity?.count_confirmed ?? 0) < 1 ? (
+        {(activity?.count_confirmed ?? 0) < 1 ? (
           <Box
             sx={{
               height: 100,
@@ -170,11 +201,16 @@ export const ActivityMembersScreen: React.FC = () => {
                 <BuddyItem
                   key={member?.id}
                   buddy={member}
-                  actionContent={
-                    <BuddyActionContent
-                      userId={member?.id}
-                      onActionClick={handleActionClick}
-                    />
+                  actionContent={renderActionContent(member?.id)}
+                  onClick={() =>
+                    navigate(
+                      `${ApplicationLocations.USER_PROFILE}/${member?.id}`,
+                      {
+                        state: {
+                          from: pathname,
+                        },
+                      }
+                    )
                   }
                 />
               ))

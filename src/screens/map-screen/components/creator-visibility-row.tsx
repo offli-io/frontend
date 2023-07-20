@@ -53,7 +53,7 @@ export const CreatorVisibilityRow: React.FC<IProps> = ({
               borderRadius: "50%",
             }}
           />
-          <Typography variant="subtitle1" align="left" sx={{ ml: 0.3 }}>
+          <Typography variant="subtitle1" align="left" sx={{ ml: 1 }}>
             {creator?.username ?? "User"}
           </Typography>
         </Box>

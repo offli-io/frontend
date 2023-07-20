@@ -21,6 +21,7 @@ import PlaceIcon from "@mui/icons-material/Place";
 import { DrawerContext } from "../assets/theme/drawer-provider";
 import MapDrawerDetail from "../screens/map-screen/components/map-drawer-detail";
 import { CustomizationContext } from "../assets/theme/customization-provider";
+import markerIcon from "../assets/img/location-marker.svg";
 
 // function LocationMarker() {
 //   const [position, setPosition] = React.useState<LatLng | null>(null);
@@ -70,6 +71,12 @@ interface ILabeledTileProps {
   onClick?: (title: string) => void;
   centerPosition?: GeolocationCoordinates;
 }
+
+const offliMarkerIcon = new L.Icon({
+  iconUrl: markerIcon,
+  iconSize: [45, 45], // Adjust the size of the icon as needed
+  iconAnchor: [22.5, 22.5],
+});
 
 // bratislava position
 const position = [48.1486, 17.1077] as LatLngTuple;
@@ -139,6 +146,7 @@ const Map: React.FC<ILabeledTileProps> = ({
                 eventHandlers={{
                   click: () => handleMarkerClick(id),
                 }}
+                icon={offliMarkerIcon}
               >
                 <Popup>
                   <Typography
@@ -152,7 +160,7 @@ const Map: React.FC<ILabeledTileProps> = ({
               </Marker>
             )
         )}
-        <Marker position={latLonTuple ?? position}>
+        <Marker position={latLonTuple ?? position} icon={offliMarkerIcon}>
           <Popup>You are here</Popup>
         </Marker>
         <RecenterAutomatically
