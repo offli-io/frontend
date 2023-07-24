@@ -20,7 +20,7 @@ const BuddyItem: React.FC<IBuddyItemProps> = ({
   const { shadows } = useTheme();
   return (
     <Box
-      onClick={() => !actionContent && onClick?.(buddy)}
+      onClick={() => onClick?.(buddy)}
       sx={{
         display: "flex",
         flexDirection: "row",

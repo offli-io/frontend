@@ -93,7 +93,7 @@ const LoginScreen: React.FC = () => {
           navigate(ApplicationLocations.ACTIVITIES);
         },
         onError: (error) => {
-          enqueueSnackbar("Registration with google failed", {
+          enqueueSnackbar("Login with google failed", {
             variant: "error",
           });
         },

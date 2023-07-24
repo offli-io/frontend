@@ -17,6 +17,9 @@ import { useUser } from "../../hooks/use-user";
 import { ApplicationLocations } from "../../types/common/applications-locations.dto";
 import { ICustomizedLocationStateDto } from "../../types/common/customized-location-state.dto";
 import { ProfileEntryTypeEnum } from "./types/profile-entry-type";
+import OffliButton from "../../components/offli-button";
+import { useToggleBuddyRequest } from "./hooks/use-toggle-buddy-request";
+import { BuddyRequestActionEnum } from "../../types/users/buddy-request-action-enum.dto";
 
 interface IProfileScreenProps {
   type: ProfileEntryTypeEnum;
@@ -34,6 +37,8 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
   const queryParameters = new URLSearchParams(window.location.search);
   const instagramCode = queryParameters.get("code");
   console.log(instagramCode);
+
+  const { handleToggleBuddyRequest } = useToggleBuddyRequest();
 
   const { data: { data = {} } = {}, isLoading } = useUser({
     id: id ? Number(id) : userInfo?.id,
@@ -84,6 +89,20 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
       ].includes(type),
     [type]
   );
+
+  const onBuddyRequestAccept = React.useCallback(() => {
+    handleToggleBuddyRequest({
+      buddyToBeId: Number(id),
+      status: BuddyRequestActionEnum.CONFIRM,
+    });
+  }, [handleToggleBuddyRequest, id]);
+
+  const onBuddyRequestDecline = React.useCallback(() => {
+    handleToggleBuddyRequest({
+      buddyToBeId: Number(id),
+      status: BuddyRequestActionEnum.REJECT,
+    });
+  }, [handleToggleBuddyRequest, id]);
 
   return (
     <>
@@ -212,6 +231,30 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
             }
           />
         )}
+        {type === ProfileEntryTypeEnum.REQUEST ? (
+          <Box
+            sx={{
+              display: "flex",
+              width: "100%",
+              justifyContent: "center",
+              mt: 2.5,
+            }}
+          >
+            <OffliButton
+              sx={{ fontSize: 14, width: "45%", mr: 2 }}
+              onClick={onBuddyRequestAccept}
+            >
+              Accept request
+            </OffliButton>
+            <OffliButton
+              sx={{ fontSize: 14, px: 3 }}
+              variant="outlined"
+              onClick={onBuddyRequestDecline}
+            >
+              Decline
+            </OffliButton>
+          </Box>
+        ) : null}
         <Box
           sx={{
             width: "90%",
