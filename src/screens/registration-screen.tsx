@@ -1,34 +1,32 @@
-import React from "react";
+import GoogleIcon from "@mui/icons-material/Google";
 import {
   Box,
-  Typography,
-  TextField,
-  InputAdornment,
   IconButton,
+  InputAdornment,
+  TextField,
+  Typography,
 } from "@mui/material";
+import React from "react";
 import OffliButton from "../components/offli-button";
-import GoogleIcon from "@mui/icons-material/Google";
 
-import { Controller, useForm } from "react-hook-form";
-import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useNavigate, useParams } from "react-router-dom";
-import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import VisibilityIcon from "@mui/icons-material/Visibility";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import RemoveCircleIcon from "@mui/icons-material/RemoveCircle";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { Controller, useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
+import * as yup from "yup";
+import { checkIfEmailAlreadyTaken } from "../api/users/requests";
 import LabeledDivider from "../components/labeled-divider";
-import { useQueryClient, useMutation, useQuery } from "@tanstack/react-query";
-import { checkIfEmailAlreadyTaken, preCreateUser } from "../api/users/requests";
 
-import { ApplicationLocations } from "../types/common/applications-locations.dto";
-import { IEmailPassword } from "../types/users/user.dto";
-import { CLIENT_ID } from "../utils/common-constants";
-import { getBearerToken, registerViaGoogle } from "../api/auth/requests";
 import { useSnackbar } from "notistack";
-import { getGoogleUrl } from "../utils/token.util";
-import OffliBackButton from "../components/offli-back-button";
+import { registerViaGoogle } from "../api/auth/requests";
 import { AuthenticationContext } from "../assets/theme/authentication-provider";
+import OffliBackButton from "../components/offli-back-button";
+import { useGoogleAuthorization } from "../hooks/use-google-authorization";
+import { ApplicationLocations } from "../types/common/applications-locations.dto";
+import { GoogleAuthCodeFromEnumDto } from "../types/google/google-auth-code-from-enum.dto";
+import { IEmailPassword } from "../types/users/user.dto";
 
 const schema: () => yup.SchemaOf<IEmailPassword> = () =>
   yup.object({
@@ -50,12 +48,16 @@ const schema: () => yup.SchemaOf<IEmailPassword> = () =>
 export const RegistrationScreen: React.FC = () => {
   const [showPassword, setShowPassword] = React.useState(false);
   const [email, setEmail] = React.useState<string | undefined>();
-  const queryParameters = new URLSearchParams(window.location.search);
-  const authorizationCode = queryParameters.get("code");
   const { enqueueSnackbar } = useSnackbar();
   const { setUserInfo, setStateToken } = React.useContext(
     AuthenticationContext
   );
+
+  const abortControllerRef = React.useRef<AbortController | null>(null);
+
+  const { googleToken, handleGoogleAuthorization } = useGoogleAuthorization({
+    from: GoogleAuthCodeFromEnumDto.REGISTER,
+  });
 
   const queryClient = useQueryClient();
   const navigate = useNavigate();
@@ -68,35 +70,18 @@ export const RegistrationScreen: React.FC = () => {
     }
   );
 
-  const { mutate: sendGetBearerToken } = useMutation(
-    ["google-registration"],
-    (authorizationCode?: string) =>
-      getBearerToken(authorizationCode, "register"),
-    {
-      onSuccess: (data, params) => {
-        data?.data?.access_token &&
-          sendRegisterViaGoogle(data?.data?.access_token);
-        // setStateToken(data?.data?.token?.access_token ?? null);
-        // !!setUserInfo && setUserInfo({ id: data?.data?.user_id });
-        // data?.data?.user_id &&
-        //   localStorage.setItem("userId", data?.data?.user_id);
-        // navigate(ApplicationLocations.ACTIVITIES);
-      },
-      onError: (error) => {
-        // enqueueSnackbar("Registration with google failed", {
-        //   variant: "error",
-        // });
-        //TODO debug why there are 2 requests
-      },
-    }
-  );
-
   const { mutate: sendRegisterViaGoogle } = useMutation(
     ["google-registration"],
-    (authorizationCode?: string) => registerViaGoogle(authorizationCode),
+    (authorizationCode?: string) => {
+      abortControllerRef.current = new AbortController();
+      return registerViaGoogle(
+        authorizationCode,
+        abortControllerRef?.current?.signal
+      );
+    },
     {
       onSuccess: (data, params) => {
-        enqueueSnackbar("You account has been successfully registered", {
+        enqueueSnackbar("Your account has been successfully registered", {
           variant: "success",
         });
         setStateToken(data?.data?.token?.access_token ?? null);
@@ -128,10 +113,10 @@ export const RegistrationScreen: React.FC = () => {
   // console.log(formState?.errors)
 
   React.useEffect(() => {
-    if (authorizationCode) {
-      sendGetBearerToken(authorizationCode);
+    if (googleToken) {
+      sendRegisterViaGoogle(googleToken);
     }
-  }, [authorizationCode]);
+  }, [googleToken]);
 
   const isEmailInUse = Object.keys(formState?.errors)?.length !== 0;
 
@@ -177,17 +162,10 @@ export const RegistrationScreen: React.FC = () => {
           >
             Your offline life.
           </Typography>
-          {/* <Box
-          sx={{
-            mb: 1,
-          }}
-          id="signIn"
-        ></Box> */}
+
           <OffliButton
             startIcon={<GoogleIcon />}
-            onClick={() => {
-              window.location.href = getGoogleUrl("register");
-            }}
+            onClick={handleGoogleAuthorization}
             sx={{ mb: 1 }}
           >
             Sign up with Google
@@ -218,20 +196,6 @@ export const RegistrationScreen: React.FC = () => {
                   //disabled={methodSelectionDisabled}
                   sx={{ width: "80%", mb: 2 }}
                   onBlur={(event) => setEmail(event.target.value)}
-                  // InputProps={{
-                  //   endAdornment: (
-                  //     <InputAdornment position="end">
-                  //       <IconButton>
-                  //         {renderEmailIcon()}
-                  //         {/* {emailValidity ? (
-                  //           <CheckCircleIcon sx={{ color: 'green' }} />
-                  //         ) : (
-                  //           <RemoveCircleIcon sx={{ color: 'red' }} />
-                  //         )} */}
-                  //       </IconButton>
-                  //     </InputAdornment>
-                  //   ),
-                  // }}
                 />
               )}
             />

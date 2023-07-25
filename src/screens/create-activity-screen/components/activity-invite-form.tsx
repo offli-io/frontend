@@ -6,6 +6,7 @@ import { UseFormReturn } from "react-hook-form";
 import { useDebounce } from "use-debounce";
 import {
   changeActivityParticipantStatus,
+  changeParticipantStatus,
   getBuddies,
   uninviteBuddy,
 } from "../../../api/activities/requests";
@@ -46,13 +47,13 @@ export const ActivityInviteForm: React.FC<IActivityTypeFormProps> = ({
   );
 
   const { mutate: sendInviteBuddy } = useMutation(
-    ["invite-person"],
+    ["invite-participant"],
     (buddy?: IPerson) =>
-      changeActivityParticipantStatus(Number(activityId?.id), {
-        id: Number(buddy?.id),
-        invited_by: userInfo?.id,
-        status: ActivityInviteStateEnum.INVITED,
-      }),
+      changeParticipantStatus(
+        Number(activityId?.id),
+        Number(buddy?.id),
+        ActivityInviteStateEnum.INVITED
+      ),
     {
       onSuccess: (data, buddy) => {
         setInvitedBuddies([...invitedBuddies, Number(buddy?.id)]);

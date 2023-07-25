@@ -7,6 +7,7 @@ import { IConfirmResetPasswordDto } from "../../types/auth/confirm-reset-passwor
 import { ICheckResetPasswordVerificationCodeRequest } from "../../types/auth/check-reset-password-verification-code-request.dto";
 import { IGoogleLoginRequestDto } from "../../types/auth/google-login-request.dto";
 import { CLIENT_ID } from "../../utils/common-constants";
+import { GoogleAuthCodeFromEnumDto } from "../../types/google/google-auth-code-from-enum.dto";
 
 export const refreshTokenSetup = (res: any) => {
   const refreshTiming = (res.tokenObj.expires_in || 3600 - 5 * 60) * 1000;
@@ -27,7 +28,7 @@ export const loginUser = (values: ILoginRequestDto) => {
   return promise;
 };
 
-export const loginViaGoogle = (accessToken?: string) => {
+export const loginViaGoogle = (accessToken?: string, signal?: AbortSignal) => {
   const CancelToken = axios.CancelToken;
   const source = CancelToken.source();
 
@@ -38,11 +39,24 @@ export const loginViaGoogle = (accessToken?: string) => {
       cancelToken: source?.token,
     }
   );
+
+  signal?.addEventListener("abort", () => {
+    source.cancel("Query was cancelled by React Query");
+  });
   return promise;
 };
 
-export const getBearerToken = (code?: string, type?: "login" | "register") => {
-  const currentUrl = window.location.href.split("/").slice(0, -1).join("/");
+export const getBearerToken = (
+  code: string,
+  from: GoogleAuthCodeFromEnumDto
+) => {
+  const currentUrl =
+    // [
+    //   GoogleAuthCodeFromEnumDto.LOGIN,
+    //   GoogleAuthCodeFromEnumDto.REGISTER,
+    // ]?.includes(from);
+    // ? window.location.href
+    window.location.href.split("/").slice(0, -1).join("/");
 
   const promise = axios.post("https://www.googleapis.com/oauth2/v4/token", {
     client_id: CLIENT_ID,
@@ -50,12 +64,50 @@ export const getBearerToken = (code?: string, type?: "login" | "register") => {
     code,
     grant_type: "authorization_code",
     redirect_uri: `${currentUrl}/`,
+    // redirect_uri: "https://localhost:3000/activity/detail/9/",
   });
 
   return promise;
 };
 
-export const registerViaGoogle = async (accessToken?: string) => {
+export const getGoogleAuthCode = (
+  from: GoogleAuthCodeFromEnumDto,
+  state?: any
+) => {
+  const rootUrl = `https://accounts.google.com/o/oauth2/v2/auth`;
+  // for now there is not change in current url only when activity detail ->
+  // we need to add state to google request
+  const currentUrl = [
+    GoogleAuthCodeFromEnumDto.LOGIN,
+    GoogleAuthCodeFromEnumDto.REGISTER,
+  ]?.includes(from)
+    ? window.location.href
+    : window.location.href.split("/").slice(0, -1).join("/");
+
+  const options = {
+    redirect_uri: `${currentUrl}/`,
+    // redirect_uri: "https://localhost:3000/activity/detail/9/",
+    client_id: CLIENT_ID as string,
+    access_type: "offline",
+    response_type: "code",
+    prompt: "consent",
+    scope: [
+      "https://www.googleapis.com/auth/userinfo.profile",
+      "https://www.googleapis.com/auth/userinfo.email",
+      ...(from === GoogleAuthCodeFromEnumDto.ACTIVITY_DETAIL
+        ? ["https://www.googleapis.com/auth/calendar"]
+        : []),
+    ].join(" "),
+    ...(!!state ? { state } : {}),
+  };
+  const qs = new URLSearchParams(options);
+  return `${rootUrl}?${qs.toString()}`;
+};
+
+export const registerViaGoogle = async (
+  accessToken?: string,
+  signal?: AbortSignal
+) => {
   const CancelToken = axios.CancelToken;
   const source = CancelToken.source();
 
@@ -66,6 +118,11 @@ export const registerViaGoogle = async (accessToken?: string) => {
       cancelToken: source?.token,
     }
   );
+
+  signal?.addEventListener("abort", () => {
+    source.cancel("Query was cancelled by React Query");
+  });
+
   return promise;
 };
 
@@ -110,6 +167,7 @@ export const checkVerificationCode = (
       cancelToken: source?.token,
     }
   );
+
   return promise;
 };
 
