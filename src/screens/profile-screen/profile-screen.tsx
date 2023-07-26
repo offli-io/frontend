@@ -38,7 +38,8 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
   const instagramCode = queryParameters.get("code");
   console.log(instagramCode);
 
-  const { handleToggleBuddyRequest } = useToggleBuddyRequest();
+  const { handleToggleBuddyRequest, isTogglingBuddyRequest } =
+    useToggleBuddyRequest();
 
   const { data: { data = {} } = {}, isLoading } = useUser({
     id: id ? Number(id) : userInfo?.id,
@@ -103,6 +104,15 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
       status: BuddyRequestActionEnum.REJECT,
     });
   }, [handleToggleBuddyRequest, id]);
+
+  const displayStatistics = React.useMemo(() => {
+    return (
+      (data?.enjoyed_together_last_month_count ?? 0) > 0 ||
+      (data?.activities_created_last_month_count ?? 0) ||
+      (data?.activities_participated_last_month_count ?? 0) ||
+      (data?.new_buddies_last_month_count ?? 0) > 0
+    );
+  }, [data]);
 
   return (
     <>
@@ -243,6 +253,7 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
             <OffliButton
               sx={{ fontSize: 14, width: "45%", mr: 2 }}
               onClick={onBuddyRequestAccept}
+              isLoading={isTogglingBuddyRequest}
             >
               Accept request
             </OffliButton>
@@ -250,39 +261,42 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
               sx={{ fontSize: 14, px: 3 }}
               variant="outlined"
               onClick={onBuddyRequestDecline}
+              isLoading={isTogglingBuddyRequest}
             >
               Decline
             </OffliButton>
           </Box>
         ) : null}
-        <Box
-          sx={{
-            width: "90%",
-          }}
-        >
-          <Typography
-            align="left"
-            variant="h5"
-            sx={{ mt: 3, color: palette?.text?.primary }}
+        {displayStatistics ? (
+          <Box
+            sx={{
+              width: "90%",
+            }}
           >
-            This month
-          </Typography>
-          <ProfileStatistics
-            participatedNum={data?.activities_participated_last_month_count}
-            enjoyedNum={data?.enjoyed_together_last_month_count}
-            createdNum={
-              type === ProfileEntryTypeEnum.PROFILE
-                ? data?.activities_created_last_month_count
-                : undefined
-            }
-            metNum={
-              type === ProfileEntryTypeEnum.PROFILE
-                ? data?.new_buddies_last_month_count
-                : undefined
-            }
-            isLoading={isLoading}
-          />
-        </Box>
+            <Typography
+              align="left"
+              variant="h5"
+              sx={{ mt: 3, color: palette?.text?.primary }}
+            >
+              This month
+            </Typography>
+            <ProfileStatistics
+              participatedNum={data?.activities_participated_last_month_count}
+              enjoyedNum={data?.enjoyed_together_last_month_count}
+              createdNum={
+                type === ProfileEntryTypeEnum.PROFILE
+                  ? data?.activities_created_last_month_count
+                  : undefined
+              }
+              metNum={
+                type === ProfileEntryTypeEnum.PROFILE
+                  ? data?.new_buddies_last_month_count
+                  : undefined
+              }
+              isLoading={isLoading}
+            />
+          </Box>
+        ) : null}
 
         {data?.instagram ? (
           <Box

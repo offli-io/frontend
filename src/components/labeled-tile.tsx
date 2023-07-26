@@ -67,6 +67,8 @@ const LabeledTile: React.FC<ILabeledTileProps> = ({
               color: "primary.main",
               fontSize: 14,
               fontWeight: "bold",
+              textShadow: ({ palette }) =>
+                `2px 2px 2px ${palette?.primary?.light}`,
             }}
           >
             {title}
