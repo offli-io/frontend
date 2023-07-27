@@ -96,6 +96,7 @@ const NotificationRequest: React.FC<INotificationRequestProps> = ({
                 notification?.properties?.user?.profile_photo_url ??
                 userPlaceholder
               }
+              alt="profile"
             />
 
             <Typography
