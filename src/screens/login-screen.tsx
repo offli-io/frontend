@@ -16,18 +16,15 @@ import { useSnackbar } from "notistack";
 import { Controller, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import * as yup from "yup";
-import {
-  getBearerToken,
-  loginUser,
-  loginViaGoogle,
-} from "../api/auth/requests";
+import { loginUser, loginViaGoogle } from "../api/auth/requests";
 import { AuthenticationContext } from "../assets/theme/authentication-provider";
 import LabeledDivider from "../components/labeled-divider";
 import Logo from "../components/logo";
 import OffliBackButton from "../components/offli-back-button";
 import OffliButton from "../components/offli-button";
+import { useGoogleAuthorization } from "../hooks/use-google-authorization";
 import { ApplicationLocations } from "../types/common/applications-locations.dto";
-import { getGoogleUrl } from "../utils/token.util";
+import { GoogleAuthCodeFromEnumDto } from "../types/google/google-auth-code-from-enum.dto";
 
 export interface FormValues {
   username: string;
@@ -47,9 +44,10 @@ const LoginScreen: React.FC = () => {
   );
   const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
-
-  const queryParameters = new URLSearchParams(window.location.search);
-  const authorizationCode = queryParameters.get("code");
+  const { googleToken, handleGoogleAuthorization } = useGoogleAuthorization({
+    from: GoogleAuthCodeFromEnumDto.LOGIN,
+  });
+  const abortControllerRef = React.useRef<AbortController | null>(null);
 
   const handleClickShowPassword = () => setShowPassword(!showPassword);
 
@@ -62,26 +60,16 @@ const LoginScreen: React.FC = () => {
     mode: "onChange",
   });
 
-  const { mutate: sendGetBearerToken } = useMutation(
-    ["bearer-token"],
-    (authorizationCode?: string) => getBearerToken(authorizationCode, "login"),
-    {
-      onSuccess: (data, params) => {
-        data?.data?.access_token &&
-          sendLoginViaGoogle(data?.data?.access_token);
-      },
-      onError: (error) => {
-        enqueueSnackbar("Failed to get Google Bearer token", {
-          variant: "error",
-        });
-      },
-    }
-  );
-
   const { isLoading: isGoogleLoginLoading, mutate: sendLoginViaGoogle } =
     useMutation(
       ["google-login"],
-      (authorizationCode?: string) => loginViaGoogle(authorizationCode),
+      (authorizationCode?: string) => {
+        abortControllerRef.current = new AbortController();
+        return loginViaGoogle(
+          authorizationCode,
+          abortControllerRef?.current?.signal
+        );
+      },
       {
         onSuccess: (data, params) => {
           setStateToken(data?.data?.token?.access_token ?? null);
@@ -93,7 +81,7 @@ const LoginScreen: React.FC = () => {
           navigate(ApplicationLocations.ACTIVITIES);
         },
         onError: (error) => {
-          enqueueSnackbar("Registration with google failed", {
+          enqueueSnackbar("Login with google failed", {
             variant: "error",
           });
         },
@@ -127,10 +115,10 @@ const LoginScreen: React.FC = () => {
   );
 
   React.useEffect(() => {
-    if (authorizationCode) {
-      sendGetBearerToken(authorizationCode);
+    if (googleToken) {
+      sendLoginViaGoogle(googleToken);
     }
-  }, [authorizationCode]);
+  }, [googleToken]);
 
   return (
     <>
@@ -160,9 +148,7 @@ const LoginScreen: React.FC = () => {
         >
           <OffliButton
             startIcon={<GoogleIcon />}
-            onClick={() => {
-              window.location.href = getGoogleUrl("login");
-            }}
+            onClick={handleGoogleAuthorization}
             sx={{ mb: 1 }}
             disabled={isLoading}
           >

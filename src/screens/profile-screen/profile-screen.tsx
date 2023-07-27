@@ -17,6 +17,9 @@ import { useUser } from "../../hooks/use-user";
 import { ApplicationLocations } from "../../types/common/applications-locations.dto";
 import { ICustomizedLocationStateDto } from "../../types/common/customized-location-state.dto";
 import { ProfileEntryTypeEnum } from "./types/profile-entry-type";
+import OffliButton from "../../components/offli-button";
+import { useToggleBuddyRequest } from "./hooks/use-toggle-buddy-request";
+import { BuddyRequestActionEnum } from "../../types/users/buddy-request-action-enum.dto";
 
 interface IProfileScreenProps {
   type: ProfileEntryTypeEnum;
@@ -34,6 +37,9 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
   const queryParameters = new URLSearchParams(window.location.search);
   const instagramCode = queryParameters.get("code");
   console.log(instagramCode);
+
+  const { handleToggleBuddyRequest, isTogglingBuddyRequest } =
+    useToggleBuddyRequest();
 
   const { data: { data = {} } = {}, isLoading } = useUser({
     id: id ? Number(id) : userInfo?.id,
@@ -74,6 +80,39 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
       sendConnectInstagram(instagramCode);
     }
   }, [instagramCode, userInfo?.id]);
+
+  const isOtherProfile = React.useMemo(
+    () =>
+      [
+        ProfileEntryTypeEnum.REQUEST,
+        ProfileEntryTypeEnum.BUDDY,
+        ProfileEntryTypeEnum.USER_PROFILE,
+      ].includes(type),
+    [type]
+  );
+
+  const onBuddyRequestAccept = React.useCallback(() => {
+    handleToggleBuddyRequest({
+      buddyToBeId: Number(id),
+      status: BuddyRequestActionEnum.CONFIRM,
+    });
+  }, [handleToggleBuddyRequest, id]);
+
+  const onBuddyRequestDecline = React.useCallback(() => {
+    handleToggleBuddyRequest({
+      buddyToBeId: Number(id),
+      status: BuddyRequestActionEnum.REJECT,
+    });
+  }, [handleToggleBuddyRequest, id]);
+
+  const displayStatistics = React.useMemo(() => {
+    return (
+      (data?.enjoyed_together_last_month_count ?? 0) > 0 ||
+      (data?.activities_created_last_month_count ?? 0) ||
+      (data?.activities_participated_last_month_count ?? 0) ||
+      (data?.new_buddies_last_month_count ?? 0) > 0
+    );
+  }, [data]);
 
   return (
     <>
@@ -202,54 +241,83 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
             }
           />
         )}
-        <Box
-          sx={{
-            width: "90%",
-          }}
-        >
-          <Typography
-            align="left"
-            variant="h5"
-            sx={{ mt: 3, color: palette?.text?.primary }}
+        {type === ProfileEntryTypeEnum.REQUEST ? (
+          <Box
+            sx={{
+              display: "flex",
+              width: "100%",
+              justifyContent: "center",
+              mt: 2.5,
+            }}
           >
-            This month
-          </Typography>
-          <ProfileStatistics
-            participatedNum={data?.activities_participated_last_month_count}
-            enjoyedNum={data?.enjoyed_together_last_month_count}
-            createdNum={
-              type === ProfileEntryTypeEnum.PROFILE
-                ? data?.activities_created_last_month_count
-                : undefined
-            }
-            metNum={
-              type === ProfileEntryTypeEnum.PROFILE
-                ? data?.new_buddies_last_month_count
-                : undefined
-            }
-            isLoading={isLoading}
-          />
-        </Box>
-
-        <Box
-          sx={{
-            width: "90%",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            mb: 1,
-          }}
-        >
-          <Box sx={{ mt: 3 }}>
+            <OffliButton
+              sx={{ fontSize: 14, width: "45%", mr: 2 }}
+              onClick={onBuddyRequestAccept}
+              isLoading={isTogglingBuddyRequest}
+            >
+              Accept request
+            </OffliButton>
+            <OffliButton
+              sx={{ fontSize: 14, px: 3 }}
+              variant="outlined"
+              onClick={onBuddyRequestDecline}
+              isLoading={isTogglingBuddyRequest}
+            >
+              Decline
+            </OffliButton>
+          </Box>
+        ) : null}
+        {displayStatistics ? (
+          <Box
+            sx={{
+              width: "90%",
+            }}
+          >
             <Typography
               align="left"
               variant="h5"
-              sx={{ color: palette?.text?.primary }}
+              sx={{ mt: 3, color: palette?.text?.primary }}
             >
-              Photos
+              This month
             </Typography>
+            <ProfileStatistics
+              participatedNum={data?.activities_participated_last_month_count}
+              enjoyedNum={data?.enjoyed_together_last_month_count}
+              createdNum={
+                type === ProfileEntryTypeEnum.PROFILE
+                  ? data?.activities_created_last_month_count
+                  : undefined
+              }
+              metNum={
+                type === ProfileEntryTypeEnum.PROFILE
+                  ? data?.new_buddies_last_month_count
+                  : undefined
+              }
+              isLoading={isLoading}
+            />
           </Box>
-          {data?.instagram ? (
+        ) : null}
+
+        {data?.instagram ? (
+          <Box
+            sx={{
+              width: "90%",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              mb: 1,
+            }}
+          >
+            <Box sx={{ mt: 3 }}>
+              <Typography
+                align="left"
+                variant="h5"
+                sx={{ color: palette?.text?.primary }}
+              >
+                Photos
+              </Typography>
+            </Box>
+
             <Box
               sx={{
                 display: "flex",
@@ -273,9 +341,11 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
                 {data?.instagram}
               </Typography>
             </Box>
-          ) : null}
-        </Box>
-        <ProfileGallery photoUrls={data?.instagram_photos} />
+          </Box>
+        ) : null}
+        {!isOtherProfile ? (
+          <ProfileGallery photoUrls={data?.instagram_photos} />
+        ) : null}
       </PageWrapper>
     </>
   );

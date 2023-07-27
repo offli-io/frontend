@@ -1,30 +1,33 @@
-import { Box, Typography, Chip, IconButton } from "@mui/material";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import LockIcon from "@mui/icons-material/Lock";
+import LockOpenIcon from "@mui/icons-material/LockOpen";
+import { Box, Typography } from "@mui/material";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useSnackbar } from "notistack";
 import React from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import {
+  addActivityToCalendar,
   changeActivityParticipantStatus,
   getActivity,
 } from "../../api/activities/requests";
-import BackHeader from "../../components/back-header";
-import { PageWrapper } from "../../components/page-wrapper";
-import { IActivityRestDto } from "../../types/activities/activity-rest.dto";
-import { ICustomizedLocationStateDto } from "../../types/common/customized-location-state.dto";
-import LockIcon from "@mui/icons-material/Lock";
-import LockOpenIcon from "@mui/icons-material/LockOpen";
-import ActivityDetailsGrid from "./components/activity-details-grid";
-import ActivityDescriptionTags from "./components/activity-description-tags";
-import ActivityCreatorDuration from "./components/activity-creator-duration";
-import { useUser } from "../../hooks/use-user";
-import { ActivityVisibilityEnum } from "../../types/activities/activity-visibility-enum.dto";
-import MenuIcon from "@mui/icons-material/Menu";
 import { HeaderContext } from "../../app/providers/header-provider";
-import ActivityDetailActionMenu from "./components/acitivity-detail-action-menu";
+import { AuthenticationContext } from "../../assets/theme/authentication-provider";
+import { useGoogleAuthorization } from "../../hooks/use-google-authorization";
+import { useUser } from "../../hooks/use-user";
+import { ActivityInviteStateEnum } from "../../types/activities/activity-invite-state-enum.dto";
+import { IActivityRestDto } from "../../types/activities/activity-rest.dto";
+import { ActivityVisibilityEnum } from "../../types/activities/activity-visibility-enum.dto";
 import { ActivityActionsTypeEnumDto } from "../../types/common/activity-actions-type-enum.dto";
 import { ApplicationLocations } from "../../types/common/applications-locations.dto";
-import { ActivityInviteStateEnum } from "../../types/activities/activity-invite-state-enum.dto";
-import { AuthenticationContext } from "../../assets/theme/authentication-provider";
-import { useSnackbar } from "notistack";
+import { ICustomizedLocationStateDto } from "../../types/common/customized-location-state.dto";
+import { GoogleAuthCodeFromEnumDto } from "../../types/google/google-auth-code-from-enum.dto";
+import ActivityDetailActionMenu from "./components/acitivity-detail-action-menu";
+import ActivityCreatorDuration from "./components/activity-creator-duration";
+import ActivityDescriptionTags from "./components/activity-description-tags";
+import ActivityDetailsGrid, {
+  IGridAction,
+} from "./components/activity-details-grid";
+import { convertDateToUTC } from "./utils/convert-date-to-utc";
 
 interface IProps {
   type: "detail" | "request";
@@ -40,6 +43,14 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
   const { setHeaderRightContent } = React.useContext(HeaderContext);
   const { userInfo } = React.useContext(AuthenticationContext);
   const { enqueueSnackbar } = useSnackbar();
+  const queryClient = useQueryClient();
+  const abortControllerRef = React.useRef<AbortController | null>(null);
+
+  const { googleToken, handleGoogleAuthorization, state } =
+    useGoogleAuthorization({
+      from: GoogleAuthCodeFromEnumDto.ACTIVITY_DETAIL,
+      state: JSON.stringify({ id }),
+    });
 
   const { data } = useQuery(
     ["activity", id],
@@ -68,6 +79,7 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
           variant: "success",
         });
         navigate(ApplicationLocations.ACTIVITIES);
+        queryClient.invalidateQueries(["activities"]);
         // setInvitedBuddies([...invitedBuddies, Number(buddy?.id)]);
       },
       onError: (error) => {
@@ -75,6 +87,50 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
       },
     }
   );
+
+  const { mutate: sendAddActivityToCalendar } = useMutation(
+    ["add-event-to-calendar"],
+    (token: string) => {
+      abortControllerRef.current = new AbortController();
+
+      const start = convertDateToUTC(
+        data?.data?.activity?.datetime_from as string
+      );
+      const end = convertDateToUTC(
+        data?.data?.activity?.datetime_until as string
+      );
+
+      return addActivityToCalendar(
+        Number(userInfo?.id),
+        {
+          name: data?.data?.activity?.title as string,
+          start,
+          end,
+          token: token as string,
+        },
+        abortControllerRef?.current?.signal
+      );
+    },
+    {
+      onSuccess: () => {
+        enqueueSnackbar(
+          "Activity has been successfully added to your Google calendar",
+          {
+            variant: "success",
+          }
+        );
+      },
+      onError: (error) => {
+        enqueueSnackbar("Failed to join activity", { variant: "error" });
+      },
+    }
+  );
+
+  React.useEffect(() => {
+    if (googleToken && data?.data?.activity) {
+      sendAddActivityToCalendar(googleToken);
+    }
+  }, [googleToken, data?.data?.activity]);
 
   const handleMenuItemClick = React.useCallback(
     (action?: ActivityActionsTypeEnumDto) => {
@@ -102,7 +158,27 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
     setHeaderRightContent(
       <ActivityDetailActionMenu onMenuItemClick={handleMenuItemClick} />
     );
-  }, []);
+  }, [handleMenuItemClick, setHeaderRightContent]);
+
+  React.useEffect(() => {
+    if (state) {
+      navigate(`${ApplicationLocations.ACTIVITY_DETAIL}/${state?.id}`, {
+        state: { from: ApplicationLocations.ACTIVITIES },
+      });
+    }
+  }, [state]);
+
+  const handleGridClick = React.useCallback(
+    (action: IGridAction) => {
+      switch (action) {
+        case IGridAction.GOOGLE_CALENDAR:
+          return handleGoogleAuthorization();
+        default:
+          return;
+      }
+    },
+    [handleGoogleAuthorization]
+  );
 
   return (
     <>
@@ -164,7 +240,10 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
             )}
           </Box>
         </Box>
-        <ActivityDetailsGrid activity={activity} />
+        <ActivityDetailsGrid
+          activity={activity}
+          onActionClick={handleGridClick}
+        />
         <ActivityDescriptionTags
           description={activity?.description}
           tags={activity?.tags!}

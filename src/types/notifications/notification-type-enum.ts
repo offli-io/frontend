@@ -1,4 +1,4 @@
 export enum NotificationTypeEnum {
-  ACTIVITY_INV = 'activity_inv',
-  BUDDY_INV = 'buddy_inv',
+  ACTIVITY_REQ = "activity_inv",
+  BUDDY_REQ = "buddy_req",
 }

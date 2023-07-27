@@ -45,17 +45,17 @@ const NotificationsScreen = () => {
 
   const navigateBasedOnType = React.useCallback(
     (type?: NotificationTypeEnum, id?: number) => {
-      if (type === NotificationTypeEnum.ACTIVITY_INV) {
+      if (type === NotificationTypeEnum.ACTIVITY_REQ) {
         return navigate(`${ApplicationLocations.ACTIVITIES}/request/${id}`, {
           state: {
-            from: window.location.href,
+            from: location?.pathname,
           },
         });
       }
-      if (type === NotificationTypeEnum.BUDDY_INV) {
+      if (type === NotificationTypeEnum.BUDDY_REQ) {
         return navigate(`${ApplicationLocations.PROFILE}/request/${id}`, {
           state: {
-            from: window.location.href,
+            from: location?.pathname,
           },
         });
       }

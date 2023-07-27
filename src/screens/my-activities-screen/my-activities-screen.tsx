@@ -307,12 +307,12 @@ const ActivitiesScreen = () => {
               "& input::placeholder": {
                 fontSize: 14,
                 color: "#4A148C",
-                fontWeight: "bold",
+                fontWeight: 400,
                 opacity: 1,
                 pl: 1,
               },
               "& fieldset": { border: "none" },
-              backgroundColor: "rgba(74, 20, 140, 0.18)",
+              backgroundColor: ({ palette }) => palette?.primary?.light,
               borderRadius: "10px",
             }}
             data-testid="activities-search-input"
@@ -349,13 +349,13 @@ const ActivitiesScreen = () => {
                 <Typography variant="h5" sx={{ color: palette?.text?.primary }}>
                   Your upcoming this week
                 </Typography>
-                <OffliButton
+                {/* <OffliButton
                   variant="text"
                   sx={{ fontSize: 16 }}
                   data-testid="see-all-activities-btn"
                 >
                   See all
-                </OffliButton>
+                </OffliButton> */}
               </Box>
               <Box
                 sx={{

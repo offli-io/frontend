@@ -86,10 +86,8 @@ const MapDrawerDetail: React.FC<IProps> = ({ activityId }) => {
             <Typography
               variant="h2"
               sx={{
-                maxWidth: "80%",
                 textAlign: "center",
-                marginBottom: "10px",
-                margin: "auto",
+                my: 1,
               }}
             >
               {activity?.title}

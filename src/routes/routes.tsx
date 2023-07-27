@@ -112,6 +112,10 @@ const Routes = () => {
           element={<ChooseUsernameGooglePage />}
         />
         <Route
+          path={`${ApplicationLocations.ACTIVITY_DETAIL}`}
+          element={<ActivityDetailsScreen type="detail" />}
+        />
+        <Route
           path={`${ApplicationLocations.ACTIVITY_DETAIL}/:id`}
           element={<ActivityDetailsScreen type="detail" />}
         />

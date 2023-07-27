@@ -1,3 +1,4 @@
+import { GoogleAuthCodeFromEnumDto } from "../types/google/google-auth-code-from-enum.dto";
 import { CLIENT_ID } from "./common-constants";
 
 export const getAuthToken = (): string | null => {
@@ -14,24 +15,4 @@ export const getRefreshToken = (): string | null => {
 
 export const setRefreshToken = (refreshToken?: string) => {
   !!refreshToken && localStorage.setItem("refresh_token", refreshToken);
-};
-
-export const getGoogleUrl = (from?: "login" | "register") => {
-  const rootUrl = `https://accounts.google.com/o/oauth2/v2/auth`;
-  const currentUrl = window.location.href.split("/").slice(0, -1).join("/");
-
-  const options = {
-    redirect_uri: `${currentUrl}/${from}/`,
-    client_id: CLIENT_ID as string,
-    access_type: "offline",
-    response_type: "code",
-    prompt: "consent",
-    scope: [
-      "https://www.googleapis.com/auth/userinfo.profile",
-      "https://www.googleapis.com/auth/userinfo.email",
-    ].join(" "),
-    // state: from,
-  };
-  const qs = new URLSearchParams(options);
-  return `${rootUrl}?${qs.toString()}`;
 };

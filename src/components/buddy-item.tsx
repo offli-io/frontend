@@ -6,7 +6,7 @@ import { IPerson } from "../types/activities/activity.dto";
 interface IBuddyItemProps {
   buddy: IPerson;
   children?: React.ReactElement;
-  actionContent?: React.ReactElement;
+  actionContent?: React.ReactNode;
   onClick?: (buddy?: IPerson) => void;
 }
 
@@ -32,7 +32,15 @@ const BuddyItem: React.FC<IBuddyItemProps> = ({
       }}
       {...rest}
     >
-      <Box sx={{ display: "flex", alignItems: "center", ml: 1 }}>
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          ml: 1,
+          maxWidth: "90%",
+          overflow: "hidden",
+        }}
+      >
         <img
           src={buddy?.profile_photo_url ?? logo}
           alt="profile"

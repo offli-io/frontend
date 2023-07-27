@@ -15,9 +15,18 @@ import { ICustomizedLocationStateDto } from "../../../types/common/customized-lo
 import { format } from "date-fns";
 import { DATE_TIME_FORMAT } from "../../../utils/common-constants";
 import OffliButton from "../../../components/offli-button";
+import { useMutation } from "@tanstack/react-query";
+import { addActivityToCalendar } from "../../../api/activities/requests";
+import { AuthenticationContext } from "../../../assets/theme/authentication-provider";
+import { useSnackbar } from "notistack";
+
+export enum IGridAction {
+  GOOGLE_CALENDAR = "GOOGLE_CALENDAR",
+}
 
 interface IProps {
   activity?: IActivity;
+  onActionClick?: (action: IGridAction) => void;
 }
 
 const StyledBox = styled(Box)(() => ({
@@ -41,9 +50,11 @@ const StyledText = styled(Typography)(() => ({
   lineHeight: "1.4rem",
 }));
 
-const ActivityDetailsGrid: React.FC<IProps> = ({ activity }) => {
+const ActivityDetailsGrid: React.FC<IProps> = ({ activity, onActionClick }) => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
+  const { userInfo } = React.useContext(AuthenticationContext);
+  const { enqueueSnackbar } = useSnackbar();
 
   // const from = (location?.state as ICustomizedLocationStateDto)?.from;
 
@@ -97,7 +108,7 @@ const ActivityDetailsGrid: React.FC<IProps> = ({ activity }) => {
           <CalendarTodayIcon sx={{ fontSize: 26 }} />
         </IconButton>
         <OffliButton
-          onClick={() => console.log("add to calendar")}
+          onClick={() => onActionClick?.(IGridAction.GOOGLE_CALENDAR)}
           variant="text"
           size="small"
           sx={{ textDecoration: "none", fontSize: 16, p: 0, m: 0 }}

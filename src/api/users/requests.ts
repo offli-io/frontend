@@ -5,6 +5,7 @@ import {
   IEmailUsernamePassword,
   IEmailVerificationCode,
 } from "../../types/users/user.dto";
+import { BuddyRequestActionEnum } from "../../types/users/buddy-request-action-enum.dto";
 
 export const preCreateUser = async (values: IEmailUsernamePassword) => {
   const CancelToken = axios.CancelToken;
@@ -117,6 +118,29 @@ export const rejectBuddyInvitation = (
     `${DEFAULT_DEV_URL}/users/${userId}/buddies`,
     //define DTO on FE
     { status: "Rejected" },
+    {
+      cancelToken: source?.token,
+    }
+  );
+
+  //   queryFunctionContext?.signal?.addEventListener('abort', () => {
+  //     source.cancel('Query was cancelled by React Query')
+  //   })
+
+  return promise;
+};
+
+export const toggleBuddyInvitation = (
+  userId?: number,
+  buddyToBeId?: number,
+  status?: BuddyRequestActionEnum
+) => {
+  const CancelToken = axios.CancelToken;
+  const source = CancelToken.source();
+
+  const promise = axios.patch(
+    `${DEFAULT_DEV_URL}/users/${userId}/buddies/${buddyToBeId}`,
+    { status },
     {
       cancelToken: source?.token,
     }
