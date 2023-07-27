@@ -27,6 +27,7 @@ import ActivityDescriptionTags from "./components/activity-description-tags";
 import ActivityDetailsGrid, {
   IGridAction,
 } from "./components/activity-details-grid";
+import { convertDateToUTC } from "./utils/convert-date-to-utc";
 
 interface IProps {
   type: "detail" | "request";
@@ -92,14 +93,19 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
     (token: string) => {
       abortControllerRef.current = new AbortController();
 
+      const start = convertDateToUTC(
+        data?.data?.activity?.datetime_from as string
+      );
+      const end = convertDateToUTC(
+        data?.data?.activity?.datetime_until as string
+      );
+
       return addActivityToCalendar(
         Number(userInfo?.id),
         {
           name: data?.data?.activity?.title as string,
-          start: "2023-7-26T18:00:00+02:00",
-          end: "2023-7-26T19:00:00+02:00",
-          // end: data?.data?.activity?.datetime_until as string,
-          // start: data?.data?.activity?.datetime_from as string,
+          start,
+          end,
           token: token as string,
         },
         abortControllerRef?.current?.signal
@@ -107,12 +113,12 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
     },
     {
       onSuccess: () => {
-        enqueueSnackbar("You have successfully joined the activity", {
-          variant: "success",
-        });
-        navigate(ApplicationLocations.ACTIVITIES);
-        queryClient.invalidateQueries(["activities"]);
-        // setInvitedBuddies([...invitedBuddies, Number(buddy?.id)]);
+        enqueueSnackbar(
+          "Activity has been successfully added to your Google calendar",
+          {
+            variant: "success",
+          }
+        );
       },
       onError: (error) => {
         enqueueSnackbar("Failed to join activity", { variant: "error" });
@@ -152,7 +158,15 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
     setHeaderRightContent(
       <ActivityDetailActionMenu onMenuItemClick={handleMenuItemClick} />
     );
-  }, []);
+  }, [handleMenuItemClick, setHeaderRightContent]);
+
+  React.useEffect(() => {
+    if (state) {
+      navigate(`${ApplicationLocations.ACTIVITY_DETAIL}/${state?.id}`, {
+        state: { from: ApplicationLocations.ACTIVITIES },
+      });
+    }
+  }, [state]);
 
   const handleGridClick = React.useCallback(
     (action: IGridAction) => {

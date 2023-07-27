@@ -1,6 +1,6 @@
 export interface ICreateGoogleEventWithTokenRequestDto {
-  start: string;
-  end: string;
+  start: string | null;
+  end: string | null;
   name: string;
   token: string;
 }

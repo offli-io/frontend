@@ -148,6 +148,8 @@ const Map: React.FC<ILabeledTileProps> = ({
                 }}
                 icon={offliMarkerIcon}
               >
+                {/* 
+                Maybe omit popup because activity detail will be displayed with drawer
                 <Popup>
                   <Typography
                     variant="h6"
@@ -156,7 +158,7 @@ const Map: React.FC<ILabeledTileProps> = ({
                   >
                     {title}
                   </Typography>
-                </Popup>{" "}
+                </Popup>{" "} */}
               </Marker>
             )
         )}

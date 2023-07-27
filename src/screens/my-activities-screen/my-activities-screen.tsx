@@ -349,13 +349,13 @@ const ActivitiesScreen = () => {
                 <Typography variant="h5" sx={{ color: palette?.text?.primary }}>
                   Your upcoming this week
                 </Typography>
-                <OffliButton
+                {/* <OffliButton
                   variant="text"
                   sx={{ fontSize: 16 }}
                   data-testid="see-all-activities-btn"
                 >
                   See all
-                </OffliButton>
+                </OffliButton> */}
               </Box>
               <Box
                 sx={{
