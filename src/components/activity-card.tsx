@@ -6,6 +6,7 @@ import useLongPress from "../hooks/use-long-press";
 import { IActivity } from "../types/activities/activity.dto";
 import { format, getDay, getHours, getMonth, getTime } from "date-fns";
 import { TIME_FORMAT } from "../utils/common-constants";
+import { CustomizationContext } from "../assets/theme/customization-provider";
 
 interface IProps {
   activity?: IActivity;
@@ -16,6 +17,7 @@ const ActivityCard: React.FC<IProps> = ({ activity, onPress, ...rest }) => {
   //TODO maybe in later use also need some refactoring
   const { action, handlers } = useLongPress();
   const { shadows } = useTheme();
+  const { mode } = React.useContext(CustomizationContext);
 
   const startDate = activity?.datetime_from
     ? new Date(activity?.datetime_from)
@@ -78,8 +80,13 @@ const ActivityCard: React.FC<IProps> = ({ activity, onPress, ...rest }) => {
               fontWeight: "bold",
               lineHeight: 1,
               color: ({ palette }) => palette?.text?.primary,
-              textShadow: ({ palette }) =>
-                `1px 1px 1px ${palette?.primary?.light}`,
+              ...(mode === "light" ? { filter: "invert(100%)" } : {}),
+              ...(mode === "light"
+                ? {
+                    textShadow: ({ palette }) =>
+                      `1px 1px 1px ${palette?.primary?.light}`,
+                  }
+                : {}),
             }}
           >
             {activity?.title}
@@ -91,6 +98,7 @@ const ActivityCard: React.FC<IProps> = ({ activity, onPress, ...rest }) => {
                 fontSize: 12,
                 fontWeight: "bold",
                 color: ({ palette }) => palette?.text?.primary,
+                ...(mode === "light" ? { filter: "invert(100%)" } : {}),
                 my: 0.5,
               }}
             >
@@ -110,6 +118,7 @@ const ActivityCard: React.FC<IProps> = ({ activity, onPress, ...rest }) => {
               sx={{
                 fontSize: 14,
                 color: ({ palette }) => palette?.text?.primary,
+                ...(mode === "light" ? { filter: "invert(100%)" } : {}),
               }}
             />
             <PeopleAltIcon
@@ -118,14 +127,17 @@ const ActivityCard: React.FC<IProps> = ({ activity, onPress, ...rest }) => {
                 ml: 1,
                 mr: 0.5,
                 color: ({ palette }) => palette?.text?.primary,
+                ...(mode === "light" ? { filter: "invert(100%)" } : {}),
               }}
             />
             {activity?.limit ? (
               <Typography
                 sx={{
                   fontSize: 16,
+                  // fontWeight: "bold",
                   lineHeight: 1,
                   color: ({ palette }) => palette?.text?.primary,
+                  ...(mode === "light" ? { filter: "invert(100%)" } : {}),
                 }}
               >
                 {activity?.count_confirmed}/{activity?.limit}{" "}
@@ -134,8 +146,10 @@ const ActivityCard: React.FC<IProps> = ({ activity, onPress, ...rest }) => {
               <Typography
                 sx={{
                   fontSize: 16,
+                  // fontWeight: "bold",
                   lineHeight: 1,
                   color: ({ palette }) => palette?.text?.primary,
+                  ...(mode === "light" ? { filter: "invert(100%)" } : {}),
                 }}
               >
                 {activity?.count_confirmed} 0
@@ -157,6 +171,7 @@ const ActivityCard: React.FC<IProps> = ({ activity, onPress, ...rest }) => {
                 lineHeight: 1,
                 fontWeight: "bold",
                 color: ({ palette }) => palette?.text?.primary,
+                ...(mode === "light" ? { filter: "invert(100%)" } : {}),
               }}
             >
               {startDate ? getDay(startDate) : "-"}
@@ -171,6 +186,7 @@ const ActivityCard: React.FC<IProps> = ({ activity, onPress, ...rest }) => {
                 fontWeight: "bold",
                 my: 0.5,
                 color: ({ palette }) => palette?.text?.primary,
+                ...(mode === "light" ? { filter: "invert(100%)" } : {}),
               }}
             >
               {startDate ? format(startDate, "MMMM") : "-"}
@@ -183,6 +199,7 @@ const ActivityCard: React.FC<IProps> = ({ activity, onPress, ...rest }) => {
                 lineHeight: 1,
                 fontWeight: "semi-bold",
                 color: ({ palette }) => palette?.text?.primary,
+                ...(mode === "light" ? { filter: "invert(100%)" } : {}),
               }}
             >
               {startDate ? format(startDate, TIME_FORMAT) : "-"}
