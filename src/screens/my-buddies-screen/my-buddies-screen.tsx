@@ -37,6 +37,7 @@ import {
   getBuddies,
   getRecommendedBuddies,
 } from "../../api/activities/requests";
+import Loader from "../../components/loader";
 
 const MyBuddiesScreen = () => {
   const navigate = useNavigate();
@@ -158,7 +159,10 @@ const MyBuddiesScreen = () => {
   return (
     <>
       <Box sx={{ mx: 1.5, height: "100%" }}>
-        {!data || (data?.data?.length === 0 && currentSearch?.length === 0) ? (
+        {isLoading ? (
+          <Loader />
+        ) : !data ||
+          (data?.data?.length === 0 && currentSearch?.length === 0) ? (
           <NoBuddiesScreen />
         ) : (
           <>
