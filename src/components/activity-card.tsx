@@ -51,15 +51,17 @@ const ActivityCard: React.FC<IProps> = ({ activity, onPress, ...rest }) => {
       <Box
         sx={{
           width: "100%",
-          backgroundColor: "rgba(0,0,0,.5)",
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
           padding: "3% 3% 2% 3%",
           borderBottomLeftRadius: "10px",
           borderBottomRightRadius: "10px",
-          backdropFilter: "blur(0.7px)", // position: 'absolute',
-          // bottom: 0,
+          // this was before useing background gradient -> maybe use it for that if decided
+          // backgroundColor: "rgba(0,0,0,.5)",
+          // backdropFilter: "blur(0.7px)", // position: 'absolute',
+          background:
+            "linear-gradient(to top, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0))",
         }}
       >
         <Box
