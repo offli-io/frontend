@@ -1,6 +1,6 @@
 import LockIcon from "@mui/icons-material/Lock";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, useTheme } from "@mui/material";
 import React from "react";
 import useLongPress from "../hooks/use-long-press";
 import { IActivity } from "../types/activities/activity.dto";
@@ -15,6 +15,7 @@ interface IProps {
 const ActivityCard: React.FC<IProps> = ({ activity, onPress, ...rest }) => {
   //TODO maybe in later use also need some refactoring
   const { action, handlers } = useLongPress();
+  const { shadows } = useTheme();
 
   const startDate = activity?.datetime_from
     ? new Date(activity?.datetime_from)
@@ -36,6 +37,7 @@ const ActivityCard: React.FC<IProps> = ({ activity, onPress, ...rest }) => {
         display: "flex",
         alignItems: "flex-end",
         color: "white",
+        boxShadow: shadows[4],
       }}
       onClick={() => onPress(activity)}
       data-testid="activity-card"
