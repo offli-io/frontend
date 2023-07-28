@@ -20,6 +20,7 @@ import { ProfileEntryTypeEnum } from "./types/profile-entry-type";
 import OffliButton from "../../components/offli-button";
 import { useToggleBuddyRequest } from "./hooks/use-toggle-buddy-request";
 import { BuddyRequestActionEnum } from "../../types/users/buddy-request-action-enum.dto";
+import { deleteNotification } from "../../api/notifications/requests";
 
 interface IProfileScreenProps {
   type: ProfileEntryTypeEnum;
@@ -34,6 +35,7 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
   const from = (location?.state as ICustomizedLocationStateDto)?.from;
   const { id } = useParams();
   const { enqueueSnackbar } = useSnackbar();
+  const abortControllerRef = React.useRef<AbortController | null>(null);
   const queryParameters = new URLSearchParams(window.location.search);
   const instagramCode = queryParameters.get("code");
   console.log(instagramCode);
