@@ -32,9 +32,7 @@ export const ActivityPhotoForm: React.FC<IActivityPhotoFormProps> = ({
 }) => {
   const { control, formState, watch, setValue } = methods;
   const { toggleDrawer } = React.useContext(DrawerContext);
-  const onImageSelect = (e: BaseSyntheticEvent) => {
-    console.log(e.target.files);
-  };
+  const [isImageUploading, setIsImageUploading] = React.useState(false);
   const token = getAuthToken();
   const { enqueueSnackbar } = useSnackbar();
   const { palette } = useTheme();
@@ -86,6 +84,7 @@ export const ActivityPhotoForm: React.FC<IActivityPhotoFormProps> = ({
     (formData?: FormData) => uploadFile(formData),
     {
       onSuccess: (data) => {
+        setIsImageUploading(false);
         enqueueSnackbar("Your photo has been successfully uploaded", {
           variant: "success",
         });
@@ -93,6 +92,7 @@ export const ActivityPhotoForm: React.FC<IActivityPhotoFormProps> = ({
         setValue("title_picture_url", data?.data?.url);
       },
       onError: (error) => {
+        setIsImageUploading(false);
         enqueueSnackbar("Failed to upload activity photo", {
           variant: "error",
         });
@@ -123,6 +123,8 @@ export const ActivityPhotoForm: React.FC<IActivityPhotoFormProps> = ({
   );
 
   const showCroppedImage = React.useCallback(async () => {
+    setIsImageUploading(true);
+
     try {
       const croppedImage: any = await getCroppedImg(
         localFile,
@@ -138,6 +140,8 @@ export const ActivityPhotoForm: React.FC<IActivityPhotoFormProps> = ({
         sendUploadActivityPhoto(formData);
       }
     } catch (e) {
+      setIsImageUploading(false);
+
       console.error(e);
     }
   }, [croppedAreaPixels]);
@@ -207,6 +211,7 @@ export const ActivityPhotoForm: React.FC<IActivityPhotoFormProps> = ({
             <OffliButton
               sx={{ mt: 4, width: "80%" }}
               onClick={showCroppedImage}
+              isLoading={isImageUploading}
             >
               Crop
             </OffliButton>
