@@ -9,6 +9,7 @@ import {
   addActivityToCalendar,
   changeActivityParticipantStatus,
   getActivity,
+  getActivityParticipants,
 } from "../../api/activities/requests";
 import { HeaderContext } from "../../app/providers/header-provider";
 import { AuthenticationContext } from "../../assets/theme/authentication-provider";
@@ -28,6 +29,8 @@ import ActivityDetailsGrid, {
   IGridAction,
 } from "./components/activity-details-grid";
 import { convertDateToUTC } from "./utils/convert-date-to-utc";
+import OffliButton from "../../components/offli-button";
+import { IParticipantDto } from "../../types/activities/list-participants-response.dto";
 
 interface IProps {
   type: "detail" | "request";
@@ -60,33 +63,45 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
     }
   );
 
+  const {
+    data: { data: { participants = null } = {} } = {},
+    isLoading: areActivityParticipantsLoading,
+  } = useQuery(
+    ["activity-participants", id],
+    () => getActivityParticipants({ activityId: Number(id) }),
+    {
+      enabled: !!id,
+    }
+  );
+
   const activity = data?.data?.activity;
 
   const { data: { data: activityCreator } = {}, isLoading } = useUser({
     id: activity?.creator_id,
   });
 
-  const { mutate: sendJoinActivity } = useMutation(
-    ["join-activity"],
-    () =>
-      changeActivityParticipantStatus(Number(id), {
-        id: Number(userInfo?.id),
-        status: ActivityInviteStateEnum.CONFIRMED,
-      }),
-    {
-      onSuccess: () => {
-        enqueueSnackbar("You have successfully joined the activity", {
-          variant: "success",
-        });
-        navigate(ApplicationLocations.ACTIVITIES);
-        queryClient.invalidateQueries(["activities"]);
-        // setInvitedBuddies([...invitedBuddies, Number(buddy?.id)]);
-      },
-      onError: (error) => {
-        enqueueSnackbar("Failed to join activity", { variant: "error" });
-      },
-    }
-  );
+  const { mutate: sendJoinActivity, isLoading: isJoiningActivity } =
+    useMutation(
+      ["join-activity"],
+      () =>
+        changeActivityParticipantStatus(Number(id), {
+          id: Number(userInfo?.id),
+          status: ActivityInviteStateEnum.CONFIRMED,
+        }),
+      {
+        onSuccess: () => {
+          enqueueSnackbar("You have successfully joined the activity", {
+            variant: "success",
+          });
+          navigate(ApplicationLocations.ACTIVITIES);
+          queryClient.invalidateQueries(["activities"]);
+          // setInvitedBuddies([...invitedBuddies, Number(buddy?.id)]);
+        },
+        onError: (error) => {
+          enqueueSnackbar("Failed to join activity", { variant: "error" });
+        },
+      }
+    );
 
   const { mutate: sendAddActivityToCalendar } = useMutation(
     ["add-event-to-calendar"],
@@ -180,6 +195,13 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
     [handleGoogleAuthorization]
   );
 
+  const displayJoinButton = React.useMemo(
+    () =>
+      !!participants &&
+      !participants?.some(({ id }: IParticipantDto) => id === userInfo?.id),
+    [participants, userInfo?.id]
+  );
+
   return (
     <>
       <Box
@@ -209,13 +231,13 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
-            mt: 1.5,
+            my: 1.5,
           }}
         >
           <Typography variant="h5" align="left">
             Basic Information
           </Typography>
-          <Box
+          {/* <Box
             sx={{
               display: "flex",
               alignItems: "center",
@@ -238,7 +260,17 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
                 </Typography>
               </>
             )}
-          </Box>
+          </Box> */}
+          {displayJoinButton ? (
+            <OffliButton
+              size="small"
+              sx={{ fontSize: 16, width: "30%" }}
+              onClick={() => sendJoinActivity()}
+              isLoading={isJoiningActivity}
+            >
+              Join
+            </OffliButton>
+          ) : null}
         </Box>
         <ActivityDetailsGrid
           activity={activity}
