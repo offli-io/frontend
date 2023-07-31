@@ -44,8 +44,6 @@ import { useDebounce } from "use-debounce";
 import { mapLocationValue } from "../../utils/map-location-value.util";
 import { ILocation } from "../../types/activities/location.dto";
 
-interface IProps {}
-
 interface IEditActivity {
   title: string;
   location?: ILocation | null;
@@ -97,7 +95,7 @@ const schema: () => yup.SchemaOf<IEditActivity> = () =>
     placeQuery: yup.string().notRequired(),
   });
 
-const EditActivityScreen: React.FC<IProps> = () => {
+const EditActivityScreen: React.FC = () => {
   const { id } = useParams();
   const location = useLocation();
   const theme = useTheme();
@@ -105,7 +103,6 @@ const EditActivityScreen: React.FC<IProps> = () => {
   const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
 
-  const from = (location?.state as ICustomizedLocationStateDto)?.from;
   const lodash = require("lodash"); // to create array within given range easily
 
   const [categoryTags, setCategoryTags] = useState<ICategoryTag[]>([]); /// TODO dat prec | null
