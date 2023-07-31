@@ -25,8 +25,6 @@ COPY --from=build /app/build /usr/share/nginx/html
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 COPY start.sh ./
 
-RUN chmod +x start.sh
-
 EXPOSE 3000
 
 ENTRYPOINT [ "./start.sh" ]

@@ -1,4 +1,5 @@
-import React from "react";
+import PlaceIcon from "@mui/icons-material/Place";
+import SearchIcon from "@mui/icons-material/Search";
 import {
   Autocomplete,
   Box,
@@ -8,43 +9,33 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
-import MyActivityCard from "../../components/my-activity-card";
-import { PageWrapper } from "../../components/page-wrapper";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useSnackbar } from "notistack";
+import React from "react";
+import { useNavigate } from "react-router-dom";
 import {
-  getActivity,
-  inviteBuddy,
+  changeActivityParticipantStatus,
   removePersonFromActivity,
 } from "../../api/activities/requests";
+import { LocationContext } from "../../app/providers/location-provider";
 import { AuthenticationContext } from "../../assets/theme/authentication-provider";
 import { DrawerContext } from "../../assets/theme/drawer-provider";
-import ActivityActions from "./components/activity-actions";
-import { ActivityActionsTypeEnumDto } from "../../types/common/activity-actions-type-enum.dto";
-import { useNavigate } from "react-router-dom";
-import { ApplicationLocations } from "../../types/common/applications-locations.dto";
-import ActivityLeaveConfirmation from "./components/activity-leave-confirmation";
-import { useSnackbar } from "notistack";
-import { useActivities } from "../../hooks/use-activities";
-import { IActivityListRestDto } from "../../types/activities/activity-list-rest.dto";
-import Map from "../../components/map";
 import ActivityCard from "../../components/activity-card";
+import MyActivityCard from "../../components/my-activity-card";
 import OffliButton from "../../components/offli-button";
-import SearchIcon from "@mui/icons-material/Search";
-import PlaceIcon from "@mui/icons-material/Place";
-import {
-  IActivity,
-  IPerson,
-  IPersonExtended,
-} from "../../types/activities/activity.dto";
-import FirstTimeLoginContent from "./components/first-time-login-content";
-import { SetLocationContent } from "./components/set-location-content";
-import { ILocation } from "../../types/activities/location.dto";
-import { ActivityInviteStateEnum } from "../../types/activities/activity-invite-state-enum.dto";
-import { useUsers } from "../../hooks/use-users";
+import { PageWrapper } from "../../components/page-wrapper";
+import { useActivities } from "../../hooks/use-activities";
 import { useParticipantActivities } from "../../hooks/use-participant-activities";
 import { useUser } from "../../hooks/use-user";
-import { LocationContext } from "../../app/providers/location-provider";
-import MapIcon from "@mui/icons-material/Map";
+import { ActivityInviteStateEnum } from "../../types/activities/activity-invite-state-enum.dto";
+import { IActivityListRestDto } from "../../types/activities/activity-list-rest.dto";
+import { IActivity } from "../../types/activities/activity.dto";
+import { ActivityActionsTypeEnumDto } from "../../types/common/activity-actions-type-enum.dto";
+import { ApplicationLocations } from "../../types/common/applications-locations.dto";
+import ActivityActions from "./components/activity-actions";
+import ActivityLeaveConfirmation from "./components/activity-leave-confirmation";
+import FirstTimeLoginContent from "./components/first-time-login-content";
+import { SetLocationContent } from "./components/set-location-content";
 
 const ActivitiesScreen = () => {
   const { userInfo, isFirstTimeLogin, setIsFirstTimeLogin } = React.useContext(
@@ -90,8 +81,8 @@ const ActivitiesScreen = () => {
         username = undefined,
         profile_photo_url = undefined,
       } = { ...userData };
-      return inviteBuddy(activityId ?? -1, {
-        id,
+      return changeActivityParticipantStatus(Number(activityId), {
+        id: Number(id),
         name,
         username,
         status: ActivityInviteStateEnum.CONFIRMED,
@@ -147,7 +138,12 @@ const ActivitiesScreen = () => {
       switch (action) {
         case ActivityActionsTypeEnumDto.ACTIVITY_MEMBERS:
           return navigate(
-            `${ApplicationLocations.ACTIVITY_ID}/${activityId}/members`
+            `${ApplicationLocations.ACTIVITY_MEMBERS}/${activityId}`,
+            {
+              state: {
+                from: ApplicationLocations.ACTIVITIES,
+              },
+            }
           );
         case ActivityActionsTypeEnumDto.LEAVE:
           return toggleDrawer({
@@ -161,7 +157,14 @@ const ActivitiesScreen = () => {
             ),
           });
         case ActivityActionsTypeEnumDto.MORE_INFORMATION:
-          return navigate(`${ApplicationLocations.ACTIVITY_ID}/${activityId}`);
+          return navigate(
+            `${ApplicationLocations.ACTIVITY_DETAIL}/${activityId}`,
+            {
+              state: {
+                from: ApplicationLocations.ACTIVITIES,
+              },
+            }
+          );
         case ActivityActionsTypeEnumDto.MAP:
           return navigate(`${ApplicationLocations.MAP}/${activityId}`, {
             state: {
@@ -275,6 +278,7 @@ const ActivitiesScreen = () => {
           {location?.name ?? "No location found"}
         </OffliButton>
       </Box>
+      {/* {TODO Outsource autocomplete} */}
       <Autocomplete
         options={[]}
         forcePopupIcon={false}
@@ -313,12 +317,12 @@ const ActivitiesScreen = () => {
               "& input::placeholder": {
                 fontSize: 14,
                 color: "#4A148C",
-                fontWeight: "bold",
+                fontWeight: 400,
                 opacity: 1,
                 pl: 1,
               },
               "& fieldset": { border: "none" },
-              backgroundColor: "rgba(74, 20, 140, 0.18)",
+              backgroundColor: ({ palette }) => palette?.primary?.light,
               borderRadius: "10px",
             }}
             data-testid="activities-search-input"
@@ -355,13 +359,13 @@ const ActivitiesScreen = () => {
                 <Typography variant="h5" sx={{ color: palette?.text?.primary }}>
                   Your upcoming this week
                 </Typography>
-                <OffliButton
+                {/* <OffliButton
                   variant="text"
                   sx={{ fontSize: 16 }}
                   data-testid="see-all-activities-btn"
                 >
                   See all
-                </OffliButton>
+                </OffliButton> */}
               </Box>
               <Box
                 sx={{

@@ -1,6 +1,6 @@
 {
   "name": "offli",
-  "version": "0.1.41",
+  "version": "0.1.50",
   "private": true,
   "homepage": "http://localhost:3000/",
   "dependencies": {
@@ -107,7 +107,7 @@
     "@typescript-eslint/eslint-plugin": "^5.48.1",
     "@typescript-eslint/parser": "^5.48.1",
     "dotenv": "^16.0.3",
-    "eslint": "^8.31.0",
+    "eslint": "^8.45.0",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-import": "^2.26.0",

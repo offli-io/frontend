@@ -113,7 +113,11 @@ const Routes = () => {
           element={<ChooseUsernameGooglePage />}
         />
         <Route
-          path={`${ApplicationLocations.ACTIVITY_ID}/:id`}
+          path={`${ApplicationLocations.ACTIVITY_DETAIL}`}
+          element={<ActivityDetailsScreen type="detail" />}
+        />
+        <Route
+          path={`${ApplicationLocations.ACTIVITY_DETAIL}/:id`}
           element={<ActivityDetailsScreen type="detail" />}
         />
         <Route
@@ -121,7 +125,7 @@ const Routes = () => {
           element={<ActivityDetailsScreen type="request" />}
         />
         <Route
-          path={`${ApplicationLocations.ACTIVITY_ID}/:id/members`}
+          path={`${ApplicationLocations.ACTIVITY_MEMBERS}/:id`}
           element={<ActivityMembersScreen />}
         />
         <Route

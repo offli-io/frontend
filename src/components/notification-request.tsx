@@ -1,11 +1,13 @@
-import { Box, Divider, styled, Typography } from "@mui/material";
-import logo from "../assets/img/profilePicture.jpg";
+import { Box, Divider, styled, Typography, useTheme } from "@mui/material";
+import userPlaceholder from "../assets/img/user-placeholder.svg";
 import React from "react";
 import { INotificationDto } from "../types/notifications/notification.dto";
 import { useUsers } from "../hooks/use-users";
-import { differenceInHours } from "date-fns";
+import { differenceInHours, format } from "date-fns";
 import { IPersonExtended } from "../types/activities/activity.dto";
 import { useUser } from "../hooks/use-user";
+import { DATE_TIME_FORMAT } from "../utils/common-constants";
+import { NotificationTypeEnum } from "../types/notifications/notification-type-enum";
 
 interface INotificationRequestProps {
   notification: INotificationDto;
@@ -26,17 +28,28 @@ const NotificationRequest: React.FC<INotificationRequestProps> = ({
   notification,
   onClick,
 }) => {
-  const { data: { data = {} } = {}, isLoading } = useUser({
-    id: notification?.user_id,
-  });
-
+  const { shadows } = useTheme();
   const hourDifference = React.useCallback(() => {
     if (notification?.timestamp) {
-      const unixDate = new Date(notification.timestamp);
-      return `${differenceInHours(new Date(), unixDate)} h`;
+      const unixDate = new Date(notification.timestamp * 1000);
+      const hourDifference = differenceInHours(new Date(), unixDate);
+      return hourDifference >= 1 ? `${hourDifference} h` : "just now";
     }
     return undefined;
   }, [notification?.timestamp]);
+
+  // console.log(
+  //   format(new Date(`${notification?.timestamp}` * 1000), DATE_TIME_FORMAT)
+  // );
+  const generateNotificationMessage = React.useCallback(() => {
+    if (notification?.type === NotificationTypeEnum.BUDDY_REQ) {
+      return `${notification?.properties?.user?.username} sent you request to become buddies`;
+    }
+    if (notification?.type === NotificationTypeEnum.ACTIVITY_REQ) {
+      return `${notification?.properties?.user?.username} invited you to join activity`;
+    }
+    return "";
+  }, [notification]);
 
   return (
     <>
@@ -52,38 +65,62 @@ const NotificationRequest: React.FC<INotificationRequestProps> = ({
           width: "100%",
         }}
       >
-        <Box sx={{ display: "flex", alignItems: "center" }}>
-          <Box
-            sx={{
-              backgroundColor: (theme) =>
-                notification?.seen ? "transparent" : theme.palette.primary.main,
-              height: 10,
-              width: 13,
-              borderRadius: 5,
-              mr: 1.5,
-            }}
-          />
-          <StyledImage src={data?.profile_photo_url ?? logo} />
-          <Box sx={{ display: "flex", flexDirection: "column" }}>
+        <Box
+          sx={{
+            display: "grid",
+            gridTemplateColumns: "4fr 1fr",
+            alignItems: "center",
+          }}
+        >
+          <Box sx={{ display: "flex", alignItems: "center" }}>
+            {!notification?.seen ? (
+              <Box
+                sx={{
+                  backgroundColor: ({ palette }) => palette.primary.main,
+                  height: 10,
+                  minWidth: 10,
+                  borderRadius: 5,
+                  mr: 1.5,
+                }}
+              />
+            ) : null}
+
+            <img
+              style={{
+                height: 35,
+                borderRadius: "50%",
+                // border: `2px solid ${palette?.primary?.main}`,
+                boxShadow: shadows[5],
+              }}
+              src={
+                notification?.properties?.user?.profile_photo_url ??
+                userPlaceholder
+              }
+              alt="profile"
+            />
+
             <Typography
               sx={{
                 ml: 2,
                 color: "black",
                 fontWeight: notification?.seen ? "normal" : "bold",
               }}
+              variant="subtitle1"
             >
-              {notification?.message}
-            </Typography>
-            <Typography
-              sx={{
-                ml: 2,
-                color: (theme) => theme.palette.inactiveFont.main,
-                fontSize: "0.8rem",
-              }}
-            >
-              {hourDifference()}
+              {generateNotificationMessage()}
             </Typography>
           </Box>
+          <Typography
+            sx={{
+              ml: 2,
+              color: (theme) => theme.palette.inactiveFont.main,
+              fontSize: "0.8rem",
+              textAlign: "end",
+            }}
+          >
+            {hourDifference()}
+          </Typography>
+          {/* </Box> */}
         </Box>
       </Box>
       <Divider sx={{ width: "100%" }} />

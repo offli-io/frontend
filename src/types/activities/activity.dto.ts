@@ -25,6 +25,7 @@ export interface IPersonExtended {
   birthdate?: Date | null;
   location?: ILocation | null;
   instagram?: string;
+  instagram_photos?: string[];
 }
 
 export interface IActivityLocation {
@@ -38,7 +39,6 @@ export interface IActivityLimit {
 }
 export interface IActivity {
   id?: number;
-  participants?: IPerson[];
   title?: string;
   description?: string;
   price?: string;

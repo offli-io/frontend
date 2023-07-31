@@ -1,4 +1,3 @@
-import AddAPhotoIcon from "@mui/icons-material/AddAPhoto";
 import CollectionsIcon from "@mui/icons-material/Collections";
 import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 import { Box } from "@mui/material";
@@ -18,11 +17,12 @@ export enum ProfilePhotoActionsEnum {
 
 const ProfilePhotoActionDefinitions: IDrawerActionsType<ProfilePhotoActionsEnum>[] =
   [
-    {
-      label: "Take a new picture",
-      type: ProfilePhotoActionsEnum.TAKE_PICTURE,
-      icon: <AddAPhotoIcon color="primary" />,
-    },
+    // TODO idk if this option is somehow different from one below
+    // {
+    //   label: "Take a new picture",
+    //   type: ProfilePhotoActionsEnum.TAKE_PICTURE,
+    //   icon: <AddAPhotoIcon color="primary" />,
+    // },
     {
       label: "Select from your device",
       type: ProfilePhotoActionsEnum.SELECT_FROM_DEVICE,

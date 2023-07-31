@@ -5,6 +5,7 @@ import {
   IEmailUsernamePassword,
   IEmailVerificationCode,
 } from "../../types/users/user.dto";
+import { BuddyRequestActionEnum } from "../../types/users/buddy-request-action-enum.dto";
 
 export const preCreateUser = async (values: IEmailUsernamePassword) => {
   const CancelToken = axios.CancelToken;
@@ -129,6 +130,29 @@ export const rejectBuddyInvitation = (
   return promise;
 };
 
+export const toggleBuddyInvitation = (
+  userId?: number,
+  buddyToBeId?: number,
+  status?: BuddyRequestActionEnum
+) => {
+  const CancelToken = axios.CancelToken;
+  const source = CancelToken.source();
+
+  const promise = axios.patch(
+    `${DEFAULT_DEV_URL}/users/${userId}/buddies/${buddyToBeId}`,
+    { status },
+    {
+      cancelToken: source?.token,
+    }
+  );
+
+  //   queryFunctionContext?.signal?.addEventListener('abort', () => {
+  //     source.cancel('Query was cancelled by React Query')
+  //   })
+
+  return promise;
+};
+
 export const deleteBuddy = (userId?: number, idToDelete?: number) => {
   const CancelToken = axios.CancelToken;
   const source = CancelToken.source();
@@ -154,6 +178,25 @@ export const addBuddy = (userId?: number, buddyId?: number) => {
   const promise = axios.patch(
     `${DEFAULT_DEV_URL}/users/${userId}/buddies/${buddyId}`,
     { status: "Pending" },
+    {
+      cancelToken: source?.token,
+    }
+  );
+
+  //   queryFunctionContext?.signal?.addEventListener('abort', () => {
+  //     source.cancel('Query was cancelled by React Query')
+  //   })
+
+  return promise;
+};
+
+export const connectInstagram = (userId?: number, authCode?: string) => {
+  const CancelToken = axios.CancelToken;
+  const source = CancelToken.source();
+
+  const promise = axios.post(
+    `${DEFAULT_DEV_URL}/instagram/${userId}/media`,
+    { authCode },
     {
       cancelToken: source?.token,
     }

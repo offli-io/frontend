@@ -40,7 +40,7 @@ const createCustomizationTheme = (mode: PaletteMode = "light") => {
       },
     },
     typography: {
-      fontFamily: "Karla",
+      fontFamily: "Roboto",
     },
     components: {
       MuiOutlinedInput: {
@@ -68,31 +68,32 @@ const createCustomizationTheme = (mode: PaletteMode = "light") => {
       MuiTypography: {
         styleOverrides: {
           root: {
-            fontFamily: "Karla",
+            fontFamily: "Roboto",
           },
           h1: {
             fontSize: 32,
             fontWeight: "bold",
-            fontFamily: "nunito",
+            fontFamily: "Nunito",
           },
           h2: {
             fontSize: 24,
             fontWeight: "bold",
-            fontFamily: "nunito",
+            fontFamily: "Nunito",
           },
           h3: {
             fontSize: 20,
             fontWeight: "bold",
-            fontFamily: "nunito",
+            fontFamily: "Nunito",
           },
           h4: {
             fontSize: 20,
             fontWeight: "600",
-            fontFamily: "nunito",
+            fontFamily: "Nunito",
           },
           h5: {
             fontSize: 18,
             fontWeight: "bold",
+            fontFamily: "Nunito",
           },
           h6: {
             fontSize: 16,

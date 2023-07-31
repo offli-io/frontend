@@ -18,6 +18,9 @@ import {
 import { IPredefinedPictureDto } from "../../types/activities/predefined-picture.dto";
 import { IPredefinedTagDto } from "../../types/activities/predefined-tag.dto";
 import { IUpdateActivityRequestDto } from "./../../types/activities/update-activity-request.dto";
+import { IListParticipantsResponseDto } from "../../types/activities/list-participants-response.dto";
+import { ActivityInviteStateEnum } from "../../types/activities/activity-invite-state-enum.dto";
+import { ICreateGoogleEventWithTokenRequestDto } from "../../types/activities/create-google-event-with-token-request.dto";
 
 export const getActivities = async ({
   queryFunctionContext,
@@ -327,7 +330,7 @@ export const getPredefinedTags = () => {
   return promise;
 };
 
-export const inviteBuddy = (
+export const changeActivityParticipantStatus = (
   activityId: number,
   userInfo: ICreateActivityParticipantRequestDto
 ) => {
@@ -337,6 +340,29 @@ export const inviteBuddy = (
   const promise = axios.post(
     `${DEFAULT_DEV_URL}/activities/${activityId}/participants`,
     userInfo,
+    {
+      cancelToken: source?.token,
+    }
+  );
+
+  //   queryFunctionContext?.signal?.addEventListener('abort', () => {
+  //     source.cancel('Query was cancelled by React Query')
+  //   })
+
+  return promise;
+};
+
+export const changeParticipantStatus = (
+  activityId: number,
+  participantId: number,
+  status: ActivityInviteStateEnum
+) => {
+  const CancelToken = axios.CancelToken;
+  const source = CancelToken.source();
+
+  const promise = axios.patch(
+    `${DEFAULT_DEV_URL}/activities/${activityId}/participants/${participantId}`,
+    { status },
     {
       cancelToken: source?.token,
     }
@@ -451,7 +477,7 @@ export const sendBuddyRequest = (userId?: number, buddy_to_be_id?: number) => {
   return promise;
 };
 
-export const uploadActivityPhoto = (formData?: FormData) => {
+export const uploadFile = (formData?: FormData) => {
   const CancelToken = axios.CancelToken;
   const source = CancelToken.source();
 
@@ -466,6 +492,54 @@ export const uploadActivityPhoto = (formData?: FormData) => {
   //   queryFunctionContext?.signal?.addEventListener('abort', () => {
   //     source.cancel('Query was cancelled by React Query')
   //   })
+
+  return promise;
+};
+
+export const getActivityParticipants = ({
+  activityId,
+}: // searchParams,
+{
+  activityId: number;
+  // searchParams?: IActivitySearchParams | undefined;
+}) => {
+  const CancelToken = axios.CancelToken;
+  const source = CancelToken.source();
+
+  const promise = axios.get<IListParticipantsResponseDto>(
+    `${DEFAULT_DEV_URL}/activities/${activityId}/participants`,
+    {
+      // params: searchParams,
+      cancelToken: source?.token,
+    }
+  );
+
+  // queryFunctionContext?.signal?.addEventListener("abort", () => {
+  //   source.cancel("Query was cancelled by React Query");
+  // });
+
+  return promise;
+};
+
+export const addActivityToCalendar = (
+  userId: number,
+  values: ICreateGoogleEventWithTokenRequestDto,
+  signal?: AbortSignal
+) => {
+  const CancelToken = axios.CancelToken;
+  const source = CancelToken.source();
+
+  const promise = axios.post(
+    `${DEFAULT_DEV_URL}/google/events/${userId}`,
+    values,
+    {
+      cancelToken: source?.token,
+    }
+  );
+
+  signal?.addEventListener("abort", () => {
+    source.cancel("Query was cancelled by React Query");
+  });
 
   return promise;
 };

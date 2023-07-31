@@ -1,0 +1,54 @@
+import React from "react";
+import { GoogleAuthCodeFromEnumDto } from "../types/google/google-auth-code-from-enum.dto";
+import { useMutation } from "@tanstack/react-query";
+import { getBearerToken, getGoogleAuthCode } from "../api/auth/requests";
+import { useSnackbar } from "notistack";
+
+interface IUseGoogleAuthorizationProps {
+  from: GoogleAuthCodeFromEnumDto;
+  state?: any;
+}
+
+export const useGoogleAuthorization = ({
+  from,
+  state,
+}: IUseGoogleAuthorizationProps) => {
+  const [googleToken, setGoogleToken] = React.useState<string | null>(null);
+  const { enqueueSnackbar } = useSnackbar();
+
+  const { mutate: sendGetBearerToken } = useMutation(
+    ["bearer-token"],
+    (authorizationCode: string) => getBearerToken(authorizationCode, from),
+    {
+      onSuccess: (data, params) => {
+        data?.data?.access_token && setGoogleToken(data?.data?.access_token);
+      },
+      onError: (error) => {
+        enqueueSnackbar("Failed to get Google Bearer token", {
+          variant: "error",
+        });
+      },
+    }
+  );
+
+  const queryParameters = new URLSearchParams(window.location.search);
+  const authorizationCode = queryParameters.get("code");
+  const paramsState = queryParameters.get("state");
+  const paramsStateParsed = paramsState ? JSON.parse(paramsState) : null;
+
+  const handleGoogleAuthorization = React.useCallback(() => {
+    window.location.href = getGoogleAuthCode(from, state);
+  }, []);
+
+  React.useEffect(() => {
+    if (authorizationCode) {
+      sendGetBearerToken(authorizationCode);
+    }
+  }, [authorizationCode]);
+
+  return {
+    googleToken,
+    handleGoogleAuthorization,
+    state: paramsStateParsed,
+  };
+};

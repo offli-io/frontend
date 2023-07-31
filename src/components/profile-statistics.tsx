@@ -10,6 +10,7 @@ import {
   Typography,
 } from "@mui/material";
 import React from "react";
+import { useParams } from "react-router-dom";
 
 interface IProps {
   participatedNum?: number;
@@ -26,6 +27,7 @@ const ProfileStatistics: React.FC<IProps> = ({
   metNum,
   isLoading,
 }) => {
+  const { id } = useParams();
   return (
     <Grid
       container
@@ -53,7 +55,7 @@ const ProfileStatistics: React.FC<IProps> = ({
         </Box>
       ) : (
         <>
-          {participatedNum && (
+          {participatedNum ? (
             <Grid item xs={6}>
               <Box
                 sx={{
@@ -71,13 +73,13 @@ const ProfileStatistics: React.FC<IProps> = ({
                   variant="subtitle2"
                   sx={{ lineHeight: 1.2 }}
                 >
-                  You participated in <br />{" "}
-                  <b>{participatedNum} activities!</b>
+                  {!!id ? "Participated " : "You participated "}
+                  in <br /> <b>{participatedNum} activities!</b>
                 </Typography>
               </Box>
             </Grid>
-          )}
-          {enjoyedNum && (
+          ) : null}
+          {enjoyedNum ? (
             <Grid item xs={6}>
               <Box
                 sx={{
@@ -99,8 +101,8 @@ const ProfileStatistics: React.FC<IProps> = ({
                 </Typography>
               </Box>
             </Grid>
-          )}
-          {createdNum && (
+          ) : null}
+          {createdNum ? (
             <Grid item xs={6}>
               <Box
                 sx={{
@@ -118,13 +120,13 @@ const ProfileStatistics: React.FC<IProps> = ({
                   variant="subtitle2"
                   sx={{ lineHeight: 1.2 }}
                 >
-                  You created <br />
+                  {!!id ? "Created " : "You created "} <br />
                   <b>{createdNum} activities.</b>
                 </Typography>
               </Box>
             </Grid>
-          )}
-          {metNum && (
+          ) : null}
+          {metNum ? (
             <Grid item xs={6}>
               <Box
                 sx={{
@@ -142,12 +144,13 @@ const ProfileStatistics: React.FC<IProps> = ({
                   variant="subtitle2"
                   sx={{ lineHeight: 1.2 }}
                 >
-                  You`ve met <br />
+                  {!!id ? "Met " : "You`ve met "}
+                  <br />
                   <b>{metNum} new buddies!</b>
                 </Typography>
               </Box>
             </Grid>
-          )}
+          ) : null}
         </>
       )}
     </Grid>

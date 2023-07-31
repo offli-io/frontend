@@ -23,7 +23,7 @@ export const mapLocationToNavigatorValue = (location: ApplicationLocations) => {
       [
         ApplicationLocations.SEARCH,
         ApplicationLocations.MAP,
-        ApplicationLocations.ACTIVITY_ID,
+        ApplicationLocations.ACTIVITY_DETAIL,
       ].includes(location)
     ) {
       return ApplicationLocations.ACTIVITIES;

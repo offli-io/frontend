@@ -1,9 +1,12 @@
 import LockIcon from "@mui/icons-material/Lock";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, useTheme } from "@mui/material";
 import React from "react";
 import useLongPress from "../hooks/use-long-press";
 import { IActivity } from "../types/activities/activity.dto";
+import { format, getDay, getHours, getMonth, getTime } from "date-fns";
+import { TIME_FORMAT } from "../utils/common-constants";
+import { CustomizationContext } from "../assets/theme/customization-provider";
 
 interface IProps {
   activity?: IActivity;
@@ -13,6 +16,12 @@ interface IProps {
 const ActivityCard: React.FC<IProps> = ({ activity, onPress, ...rest }) => {
   //TODO maybe in later use also need some refactoring
   const { action, handlers } = useLongPress();
+  const { shadows } = useTheme();
+  const { mode } = React.useContext(CustomizationContext);
+
+  const startDate = activity?.datetime_from
+    ? new Date(activity?.datetime_from)
+    : null;
 
   return (
     <Box
@@ -30,6 +39,7 @@ const ActivityCard: React.FC<IProps> = ({ activity, onPress, ...rest }) => {
         display: "flex",
         alignItems: "flex-end",
         color: "white",
+        boxShadow: shadows[4],
       }}
       onClick={() => onPress(activity)}
       data-testid="activity-card"
@@ -43,15 +53,17 @@ const ActivityCard: React.FC<IProps> = ({ activity, onPress, ...rest }) => {
       <Box
         sx={{
           width: "100%",
-          backgroundColor: "rgba(0,0,0,.15)",
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
           padding: "3% 3% 2% 3%",
           borderBottomLeftRadius: "10px",
           borderBottomRightRadius: "10px",
-          backdropFilter: "blur(0.7px)", // position: 'absolute',
-          // bottom: 0,
+          // this was before useing background gradient -> maybe use it for that if decided
+          // backgroundColor: "rgba(0,0,0,.5)",
+          // backdropFilter: "blur(0.7px)", // position: 'absolute',
+          background:
+            "linear-gradient(to top, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0))",
         }}
       >
         <Box
@@ -63,24 +75,31 @@ const ActivityCard: React.FC<IProps> = ({ activity, onPress, ...rest }) => {
           }}
         >
           <Typography
-            variant="h4"
             sx={{
-              textTransform: "uppercase",
-              fontWeight: 400,
+              fontSize: 22,
+              fontWeight: "bold",
               lineHeight: 1,
-              mb: 0.5,
+              color: ({ palette }) => palette?.text?.primary,
+              ...(mode === "light" ? { filter: "invert(100%)" } : {}),
+              ...(mode === "light"
+                ? {
+                    textShadow: ({ palette }) =>
+                      `1px 1px 1px ${palette?.primary?.light}`,
+                  }
+                : {}),
             }}
           >
             {activity?.title}
           </Typography>
           {activity?.location?.name && (
             <Typography
-              variant="subtitle2"
               sx={{
-                fontweight: 200,
-                fontSize: 11,
-                lineHeight: 1.1,
-                color: "white",
+                lineHeight: 1,
+                fontSize: 12,
+                fontWeight: "bold",
+                color: ({ palette }) => palette?.text?.primary,
+                ...(mode === "light" ? { filter: "invert(100%)" } : {}),
+                my: 0.5,
               }}
             >
               {activity?.location?.name}
@@ -95,34 +114,47 @@ const ActivityCard: React.FC<IProps> = ({ activity, onPress, ...rest }) => {
               mt: 0.4,
             }}
           >
-            <Box>
-              <LockIcon sx={{ fontSize: "14px" }} />
-            </Box>
-            <Box
+            <LockIcon
               sx={{
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "center",
+                fontSize: 14,
+                color: ({ palette }) => palette?.text?.primary,
+                ...(mode === "light" ? { filter: "invert(100%)" } : {}),
               }}
-            >
-              <PeopleAltIcon sx={{ fontSize: "16px", ml: 1.5, mr: 0.5 }} />
-              {activity?.limit ? (
-                <Typography
-                  variant="subtitle2"
-                  sx={{
-                    fontWeight: 200,
-                    lineHeight: 1.1,
-                    color: "white",
-                  }}
-                >
-                  {activity?.count_confirmed}/{activity?.limit}{" "}
-                </Typography>
-              ) : (
-                <Typography variant="subtitle2">
-                  {activity?.participants?.length} 0
-                </Typography>
-              )}
-            </Box>
+            />
+            <PeopleAltIcon
+              sx={{
+                fontSize: 14,
+                ml: 1,
+                mr: 0.5,
+                color: ({ palette }) => palette?.text?.primary,
+                ...(mode === "light" ? { filter: "invert(100%)" } : {}),
+              }}
+            />
+            {activity?.limit ? (
+              <Typography
+                sx={{
+                  fontSize: 16,
+                  // fontWeight: "bold",
+                  lineHeight: 1,
+                  color: ({ palette }) => palette?.text?.primary,
+                  ...(mode === "light" ? { filter: "invert(100%)" } : {}),
+                }}
+              >
+                {activity?.count_confirmed}/{activity?.limit}{" "}
+              </Typography>
+            ) : (
+              <Typography
+                sx={{
+                  fontSize: 16,
+                  // fontWeight: "bold",
+                  lineHeight: 1,
+                  color: ({ palette }) => palette?.text?.primary,
+                  ...(mode === "light" ? { filter: "invert(100%)" } : {}),
+                }}
+              >
+                {activity?.count_confirmed} 0
+              </Typography>
+            )}
           </Box>
         </Box>
         <Box
@@ -134,41 +166,43 @@ const ActivityCard: React.FC<IProps> = ({ activity, onPress, ...rest }) => {
         >
           <Box>
             <Typography
-              variant="h6"
               sx={{
-                fontSize: "24px",
-                my: 0.5,
+                fontSize: 22,
                 lineHeight: 1,
+                fontWeight: "bold",
+                color: ({ palette }) => palette?.text?.primary,
+                ...(mode === "light" ? { filter: "invert(100%)" } : {}),
               }}
             >
-              20
+              {startDate ? getDay(startDate) : "-"}
             </Typography>
           </Box>
           <Box>
             <Typography
-              variant="subtitle2"
               sx={{
                 lineHeight: 1,
-                fontSize: "12px",
-                fontWeight: "lighter",
+                fontSize: 12,
                 letterSpacing: 0,
-                color: "white",
+                fontWeight: "bold",
+                my: 0.5,
+                color: ({ palette }) => palette?.text?.primary,
+                ...(mode === "light" ? { filter: "invert(100%)" } : {}),
               }}
             >
-              September
+              {startDate ? format(startDate, "MMMM") : "-"}
             </Typography>
           </Box>
           <Box>
             <Typography
-              variant="subtitle2"
               sx={{
-                fontSize: "20px",
-                fontWeight: 200,
-                lineHeight: 1.1,
-                color: "white",
+                fontSize: 22,
+                lineHeight: 1,
+                fontWeight: "semi-bold",
+                color: ({ palette }) => palette?.text?.primary,
+                ...(mode === "light" ? { filter: "invert(100%)" } : {}),
               }}
             >
-              17:00
+              {startDate ? format(startDate, TIME_FORMAT) : "-"}
             </Typography>
           </Box>
         </Box>
@@ -178,102 +212,3 @@ const ActivityCard: React.FC<IProps> = ({ activity, onPress, ...rest }) => {
 };
 
 export default ActivityCard;
-
-//some old code
-// <Box
-//   sx={{
-//     width: "99%",
-//     height: "20rem",
-//     marginTop: "2%",
-//     marginBottom: "5%",
-//   }}
-//   onClick={() => onPress(activity?.id)}
-//   // {...handlers}
-//   // onTouchStart={() => {
-//   //   const timer = setTimeout(() => onLongPress(), 500)
-//   // }}
-//   // onTouchEnd={() => clearTimeout(timer)}
-// >
-//   <Box
-//     sx={{
-//       width: "100%",
-//       height: "80%",
-//       // backgroundImage: `url(${require('../assets/img/dune_small.png')})`,
-//       backgroundImage: `url(${activity?.title_picture})`,
-//       backgroundPosition: "center",
-//       backgroundRepeat: "no-repeat",
-//       backgroundSize: "cover",
-//       display: "flex",
-//       alignItems: "flex-end",
-//       justifyContent: "center",
-//       borderRadius: "12px",
-//     }}
-//   >
-//     <Box
-//       sx={{
-//         width: "100%",
-//         display: "flex",
-//         alignItems: "center",
-//         justifyContent: "space-between",
-//         mb: 0.8,
-//       }}
-//     >
-//       {activity?.limit ? (
-//         <TransparentChip
-//           text={`${activity?.participants?.length}/${activity?.limit}`}
-//           Icon={<PeopleAltIcon sx={{ fontSize: "22px" }} />}
-//         />
-//       ) : (
-//         <TransparentChip
-//           text={`${activity?.participants?.length}`}
-//           Icon={<PeopleAltIcon sx={{ fontSize: "22px" }} />}
-//         />
-//       )}
-
-//       <TransparentChip
-//         text={activity?.price}
-//         Icon={<AttachMoneyIcon sx={{ fontSize: "22px" }} />}
-//       />
-//       {activity?.visibility === ActivityVisibilityEnum.public ? (
-//         <TransparentChip
-//           text={activity?.visibility}
-//           Icon={<LockOpenIcon sx={{ fontSize: "22px" }} />}
-//         />
-//       ) : (
-//         <TransparentChip
-//           text={activity?.visibility}
-//           Icon={<LockIcon sx={{ fontSize: "22px" }} />}
-//         />
-//       )}
-//     </Box>
-//   </Box>
-//   <Box sx={{ ml: 1, mt: 1 }}>
-//     <Typography
-//       variant="h4"
-//       sx={{
-//         textTransform: "uppercase",
-//         // fontWeight: 400,
-//         lineHeight: 1.2,
-//       }}
-//     >
-//       {activity?.title}
-//     </Typography>
-//     <Typography
-//       variant="subtitle1"
-//       sx={{
-//         lineHeight: 1.3,
-//       }}
-//     >
-//       {/* {activity?.datetime} ???? */}
-//       September 15th 19:00
-//     </Typography>
-//     <Typography
-//       variant="subtitle1"
-//       sx={{
-//         lineHeight: 1.2,
-//       }}
-//     >
-//       {activity?.location?.name}
-//     </Typography>
-//   </Box>
-// </Box>

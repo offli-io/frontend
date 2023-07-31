@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Card, SxProps, Typography } from "@mui/material";
+import { Box, Card, SxProps, Typography, useTheme } from "@mui/material";
 import { IActivity } from "../types/activities/activity.dto";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import LockIcon from "@mui/icons-material/Lock";
@@ -25,25 +25,17 @@ const MyActivityCard: React.FC<IMyActivityCardProps> = ({
 }) => {
   //TODO maybe in later use also need some refactoring
   const { action, handlers } = useLongPress();
+  const { shadows } = useTheme();
 
   return (
     <Card
       sx={{
-        // width: "95%",
         minWidth: 300,
-        // height: 70,
-        // marginTop: "2%",
-        // marginBottom: "2%",
-        // borderRadius: "12px",
-        // display: "flex",
-        // alignItems: "flex-end",
-        // color: "white",
         display: "grid",
         gridTemplateColumns: "3fr 1fr",
-        //justifyContent: "space-between",
         boxSizing: "border-box",
-        boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)",
-        borderRadius: 1,
+        boxShadow: shadows[3],
+        py: 1.5,
         px: 2,
         mb: 2,
         mr: 2,
@@ -56,19 +48,42 @@ const MyActivityCard: React.FC<IMyActivityCardProps> = ({
       <Box
         sx={{
           height: "100%",
-          // maxWidth: 250,
           whiteSpace: "nowrap",
           overflow: "hidden",
         }}
       >
-        <Typography variant="h5">{activity?.title ?? "Title"}</Typography>
-        <Typography variant="subtitle2">
+        <Typography
+          sx={{
+            fontSize: 18,
+            fontWeight: "bold",
+            lineHeight: 1,
+            color: ({ palette }) => palette?.text?.primary,
+          }}
+        >
+          {activity?.title ?? "Title"}
+        </Typography>
+        <Typography
+          sx={{
+            fontSize: 14,
+            // fontWeight: "bold",
+            lineHeight: 1,
+            color: ({ palette }) => palette?.text?.primary,
+            my: 0.75,
+          }}
+        >
           {activity?.location?.name ?? "Location"}
         </Typography>
         <Box sx={{ display: "flex", alignItems: "center" }}>
-          <PeopleAltIcon sx={{ fontSize: "1.2rem" }} />
-          <Typography variant="body1" sx={{ ml: 1 }}>
-            {`${activity?.participants?.length ?? 0} / ${activity?.limit ?? 0}`}
+          <PeopleAltIcon sx={{ fontSize: 16 }} />
+          <Typography
+            sx={{
+              ml: 1,
+              fontSize: 16,
+              lineHeight: 1,
+              color: ({ palette }) => palette?.text?.primary,
+            }}
+          >
+            {`${activity?.count_confirmed ?? 0} / ${activity?.limit ?? 0}`}
           </Typography>
         </Box>
       </Box>
@@ -80,7 +95,14 @@ const MyActivityCard: React.FC<IMyActivityCardProps> = ({
           justifyContent: "center",
         }}
       >
-        <Typography variant="h5" sx={{ fontSize: 24 }}>
+        <Typography
+          sx={{
+            fontSize: 18,
+            // fontWeight: "bold",
+            lineHeight: 1,
+            color: ({ palette }) => palette?.text?.primary,
+          }}
+        >
           {format(
             (activity?.datetime_from
               ? new Date(activity?.datetime_from)
@@ -88,7 +110,14 @@ const MyActivityCard: React.FC<IMyActivityCardProps> = ({
             "dd"
           )}
         </Typography>
-        <Typography variant="subtitle2" sx={{ fontSize: 12 }}>
+        <Typography
+          sx={{
+            fontSize: 14,
+            lineHeight: 1,
+            color: ({ palette }) => palette?.text?.primary,
+            my: 0.75,
+          }}
+        >
           {format(
             (activity?.datetime_from
               ? new Date(activity?.datetime_from)
@@ -96,7 +125,14 @@ const MyActivityCard: React.FC<IMyActivityCardProps> = ({
             "LLLL"
           )}
         </Typography>
-        <Typography variant="body1" sx={{ fontSize: 18 }}>
+        <Typography
+          sx={{
+            fontSize: 16,
+            // fontWeight: "bold",
+            lineHeight: 1,
+            color: ({ palette }) => palette?.text?.primary,
+          }}
+        >
           {format(
             (activity?.datetime_from
               ? new Date(activity?.datetime_from)

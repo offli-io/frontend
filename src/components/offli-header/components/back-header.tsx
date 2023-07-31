@@ -22,29 +22,49 @@ const BackHeader: React.FC<IBackHeaderProps> = ({
   //   headerRightContent,
 }) => {
   const location = useLocation().pathname;
-  const [notificationNumber] = useState(5);
   const navigate = useNavigate();
   const { headerRightContent, setHeaderRightContent } =
     React.useContext(HeaderContext);
   const toParsed = to?.split("/");
+  //why was this done?
+  //BIG TODO
   const fromLocation = toParsed && `/${toParsed[toParsed?.length - 1]}`;
 
   const handleBackNavigation = React.useCallback(() => {
-    if (!fromLocation) {
+    if (!to) {
       return;
     }
     // edge cases when there is double navigation via header (e.g. BUDDIES -> ADD_BUDDY screens)
     if (
-      fromLocation === ApplicationLocations.BUDDIES &&
+      to === ApplicationLocations.BUDDIES &&
       location === ApplicationLocations.ADD_BUDDIES
     ) {
-      return navigate(fromLocation, {
+      return navigate(to, {
         state: {
           from: ApplicationLocations.PROFILE,
         },
       });
     }
-    navigate(fromLocation);
+    if (
+      to === ApplicationLocations.ACTIVITY_DETAIL &&
+      location.startsWith(ApplicationLocations.MAP)
+    ) {
+      return navigate(to, {
+        state: {
+          from: ApplicationLocations.ACTIVITIES,
+        },
+      });
+    }
+    if (location.startsWith(ApplicationLocations.ACTIVITY_DETAIL)) {
+      return navigate(ApplicationLocations.ACTIVITIES);
+    }
+    //idk if this state passing is ok
+    // I dont want to always loop between 2 back routes
+    navigate(to, {
+      state: {
+        from: location,
+      },
+    });
   }, [fromLocation, location, navigate]);
 
   React.useEffect(() => {

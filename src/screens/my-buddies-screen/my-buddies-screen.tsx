@@ -158,7 +158,8 @@ const MyBuddiesScreen = () => {
   return (
     <>
       <Box sx={{ mx: 1.5, height: "100%" }}>
-        {!data || (data?.data?.length === 0 && currentSearch?.length === 0) ? (
+        {(!data || (data?.data?.length === 0 && currentSearch?.length === 0)) &&
+        !isLoading ? (
           <NoBuddiesScreen />
         ) : (
           <>
@@ -255,7 +256,7 @@ const MyBuddiesScreen = () => {
                   <Typography
                     sx={{ color: (theme) => theme.palette.inactive.main }}
                   >
-                    No activity members
+                    No buddies found
                   </Typography>
                 </Box>
               ) : (

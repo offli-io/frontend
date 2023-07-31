@@ -2,36 +2,32 @@ import InstagramIcon from "@mui/icons-material/Instagram";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import { Box, IconButton, Typography, useTheme } from "@mui/material";
-import React from "react";
-
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useSnackbar } from "notistack";
+import React from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { acceptBuddyInvitation } from "../../api/users/requests";
+import { connectInstagram } from "../../api/users/requests";
+import userPlaceholder from "../../assets/img/user-placeholder.svg";
 import { AuthenticationContext } from "../../assets/theme/authentication-provider";
 import ActionButton from "../../components/action-button";
-import BackHeader from "../../components/back-header";
-import OffliButton from "../../components/offli-button";
 import { PageWrapper } from "../../components/page-wrapper";
 import ProfileGallery from "../../components/profile-gallery";
 import ProfileStatistics from "../../components/profile-statistics";
-import { useUsers } from "../../hooks/use-users";
+import { useUser } from "../../hooks/use-user";
 import { ApplicationLocations } from "../../types/common/applications-locations.dto";
 import { ICustomizedLocationStateDto } from "../../types/common/customized-location-state.dto";
-import { IPersonExtended } from "../../types/activities/activity.dto";
-import { useUser } from "../../hooks/use-user";
 import { ProfileEntryTypeEnum } from "./types/profile-entry-type";
-import { generateBackHeaderTitle } from "./utils/profile-screen-utils";
-import userPlaceholder from "../../assets/img/user-placeholder.svg";
+import OffliButton from "../../components/offli-button";
+import { useToggleBuddyRequest } from "./hooks/use-toggle-buddy-request";
+import { BuddyRequestActionEnum } from "../../types/users/buddy-request-action-enum.dto";
 
 interface IProfileScreenProps {
   type: ProfileEntryTypeEnum;
 }
 
 const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
-  const { userInfo, setUserInfo, setInstagramCode } = React.useContext(
-    AuthenticationContext
-  );
+  const { userInfo } = React.useContext(AuthenticationContext);
+  const queryClient = useQueryClient();
   const { palette } = useTheme();
   const location = useLocation();
   const navigate = useNavigate();
@@ -42,27 +38,81 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
   const instagramCode = queryParameters.get("code");
   console.log(instagramCode);
 
+  const { handleToggleBuddyRequest, isTogglingBuddyRequest } =
+    useToggleBuddyRequest();
+
   const { data: { data = {} } = {}, isLoading } = useUser({
     id: id ? Number(id) : userInfo?.id,
   });
 
+  const { isLoading: isConnectingInstagram, mutate: sendConnectInstagram } =
+    useMutation(
+      ["instagram-connection"],
+      (code?: string) => connectInstagram(Number(userInfo?.id), String(code)),
+      {
+        onSuccess: () => {
+          //params destruction
+          // const url = new URL(window.location.href);
+          // url.searchParams.delete
+          //this doesn't work -> will have to redirect I guess
+          enqueueSnackbar(
+            "Your instagram account has been successfully connected",
+            { variant: "success" }
+          );
+          queryClient.invalidateQueries(["user"]);
+          //didnt even notice the refresh -> this might work
+          window.history.pushState(
+            {},
+            document.title,
+            window.location.pathname
+          );
+        },
+        onError: () => {
+          enqueueSnackbar("Failed to connect your instagram account", {
+            variant: "error",
+          });
+        },
+      }
+    );
+
   React.useEffect(() => {
-    if (instagramCode) {
-      setInstagramCode(instagramCode);
+    if (instagramCode && userInfo?.id) {
+      sendConnectInstagram(instagramCode);
     }
-  }, [instagramCode, setInstagramCode]);
+  }, [instagramCode, userInfo?.id]);
 
-  const handleIGAuthorize = () => {
-    window.location.href =
-      "https://api.instagram.com/oauth/authorize?client_id=738841197888411&redirect_uri=https://localhost:3000/profile/&scope=user_profile,user_media&response_type=code";
-  };
+  const isOtherProfile = React.useMemo(
+    () =>
+      [
+        ProfileEntryTypeEnum.REQUEST,
+        ProfileEntryTypeEnum.BUDDY,
+        ProfileEntryTypeEnum.USER_PROFILE,
+      ].includes(type),
+    [type]
+  );
 
-  // redirect URI should be proper offli address that should read instagram code
-  // https://api.instagram.com/oauth/authorize
-  // ?client_id=738841197888411
-  // &redirect_uri=https://terapartners.sk/
-  // &scope=user_profile,user_media
-  // &response_type=code
+  const onBuddyRequestAccept = React.useCallback(() => {
+    handleToggleBuddyRequest({
+      buddyToBeId: Number(id),
+      status: BuddyRequestActionEnum.CONFIRM,
+    });
+  }, [handleToggleBuddyRequest, id]);
+
+  const onBuddyRequestDecline = React.useCallback(() => {
+    handleToggleBuddyRequest({
+      buddyToBeId: Number(id),
+      status: BuddyRequestActionEnum.REJECT,
+    });
+  }, [handleToggleBuddyRequest, id]);
+
+  const displayStatistics = React.useMemo(() => {
+    return (
+      (data?.enjoyed_together_last_month_count ?? 0) > 0 ||
+      (data?.activities_created_last_month_count ?? 0) ||
+      (data?.activities_participated_last_month_count ?? 0) ||
+      (data?.new_buddies_last_month_count ?? 0) > 0
+    );
+  }, [data]);
 
   return (
     <>
@@ -100,8 +150,8 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
             src={data?.profile_photo_url ?? userPlaceholder}
             alt="profile"
             style={{
-              height: "70px",
-              width: "70px",
+              height: 90,
+              aspectRatio: 1,
               borderRadius: "50%",
               // backgroundColor: theme?.palette?.inactive as string,
               // border: '2px solid primary.main', //nejde pica
@@ -174,8 +224,7 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
                 color: palette?.text?.primary,
               }}
             >
-              {data?.about_me ??
-                "I am student at FIIT STU. I like adventures and meditation. There is always time for a beer. Cheers."}
+              {data?.about_me}
             </Typography>
           )}
         </Box>
@@ -183,77 +232,120 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
           <ActionButton
             text="Edit profile"
             sx={{ mt: 2 }}
-            onClick={() => navigate(ApplicationLocations.EDIT_PROFILE)}
+            onClick={() =>
+              navigate(ApplicationLocations.EDIT_PROFILE, {
+                state: {
+                  from: ApplicationLocations.PROFILE,
+                },
+              })
+            }
           />
         )}
-        <Box
-          sx={{
-            width: "90%",
-          }}
-        >
-          <Typography
-            align="left"
-            variant="h5"
-            sx={{ mt: 3, color: palette?.text?.primary }}
-          >
-            This month
-          </Typography>
-          <ProfileStatistics
-            participatedNum={data?.activities_participated_last_month_count}
-            enjoyedNum={data?.enjoyed_together_last_month_count}
-            createdNum={
-              type === ProfileEntryTypeEnum.PROFILE
-                ? data?.activities_created_last_month_count
-                : undefined
-            }
-            metNum={
-              type === ProfileEntryTypeEnum.PROFILE
-                ? data?.new_buddies_last_month_count
-                : undefined
-            }
-            isLoading={isLoading}
-          />
-        </Box>
-
-        <Box
-          sx={{
-            width: "90%",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            mb: 1,
-          }}
-        >
-          <Box sx={{ mt: 3 }}>
-            <Typography
-              align="left"
-              variant="h5"
-              sx={{ color: palette?.text?.primary }}
-            >
-              Photos
-            </Typography>
-          </Box>
+        {type === ProfileEntryTypeEnum.REQUEST ? (
           <Box
             sx={{
               display: "flex",
-              alignItems: "flex-end",
+              width: "100%",
               justifyContent: "center",
+              mt: 2.5,
             }}
           >
-            <IconButton color="primary" sx={{ padding: 0 }}>
-              <InstagramIcon />
-            </IconButton>
+            <OffliButton
+              sx={{ fontSize: 14, width: "45%", mr: 2 }}
+              onClick={onBuddyRequestAccept}
+              isLoading={isTogglingBuddyRequest}
+            >
+              Accept request
+            </OffliButton>
+            <OffliButton
+              sx={{ fontSize: 14, px: 3 }}
+              variant="outlined"
+              onClick={onBuddyRequestDecline}
+              isLoading={isTogglingBuddyRequest}
+            >
+              Decline
+            </OffliButton>
+          </Box>
+        ) : null}
+        {displayStatistics ? (
+          <Box
+            sx={{
+              width: "90%",
+            }}
+          >
             <Typography
               align="left"
-              variant="subtitle1"
-              sx={{ ml: 0.5, mt: 3, color: "primary.main", fontWeight: "bold" }}
+              variant="h5"
+              sx={{ mt: 3, color: palette?.text?.primary }}
             >
-              {data?.username}
+              This month
             </Typography>
+            <ProfileStatistics
+              participatedNum={data?.activities_participated_last_month_count}
+              enjoyedNum={data?.enjoyed_together_last_month_count}
+              createdNum={
+                type === ProfileEntryTypeEnum.PROFILE
+                  ? data?.activities_created_last_month_count
+                  : undefined
+              }
+              metNum={
+                type === ProfileEntryTypeEnum.PROFILE
+                  ? data?.new_buddies_last_month_count
+                  : undefined
+              }
+              isLoading={isLoading}
+            />
           </Box>
-        </Box>
-        <ProfileGallery />
-        <OffliButton onClick={handleIGAuthorize}>Authorize ig</OffliButton>
+        ) : null}
+
+        {data?.instagram ? (
+          <Box
+            sx={{
+              width: "90%",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              mb: 1,
+            }}
+          >
+            <Box sx={{ mt: 3 }}>
+              <Typography
+                align="left"
+                variant="h5"
+                sx={{ color: palette?.text?.primary }}
+              >
+                Photos
+              </Typography>
+            </Box>
+
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "flex-end",
+                justifyContent: "center",
+              }}
+            >
+              <IconButton color="primary" sx={{ padding: 0 }}>
+                <InstagramIcon />
+              </IconButton>
+              <Typography
+                align="left"
+                variant="subtitle1"
+                sx={{
+                  ml: 0.5,
+                  mt: 3,
+                  color: "primary.main",
+                  fontWeight: "bold",
+                }}
+              >
+                {data?.instagram}
+              </Typography>
+            </Box>
+          </Box>
+        ) : null}
+        {!isOtherProfile ? (
+          <ProfileGallery photoUrls={data?.instagram_photos} />
+        ) : null}
       </PageWrapper>
     </>
   );
