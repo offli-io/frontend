@@ -114,7 +114,7 @@ const EditActivityScreen: React.FC = () => {
       id: Number(id),
     });
 
-  console.log(activity);
+  // console.log(activity);
 
   const {
     control,
@@ -177,7 +177,6 @@ const EditActivityScreen: React.FC = () => {
   const handleChipClick = (index: number, title: string) => {
     if (categoryTags) {
       var newTagsArr = [...categoryTags];
-
       newTagsArr[index].active = !newTagsArr[index].active;
       setCategoryTags(newTagsArr);
     }
