@@ -31,6 +31,9 @@ import ActivityDetailsGrid, {
 import { convertDateToUTC } from "./utils/convert-date-to-utc";
 import OffliButton from "../../components/offli-button";
 import { IParticipantDto } from "../../types/activities/list-participants-response.dto";
+import { format } from "date-fns";
+import { DATE_TIME_FORMAT } from "../../utils/common-constants";
+import { getTimeDifference } from "../map-screen/utils/get-time-difference";
 
 interface IProps {
   type: "detail" | "request";
@@ -75,10 +78,6 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
   );
 
   const activity = data?.data?.activity;
-
-  const { data: { data: activityCreator } = {}, isLoading } = useUser({
-    id: activity?.creator_id,
-  });
 
   const { mutate: sendJoinActivity, isLoading: isJoiningActivity } =
     useMutation(
@@ -202,6 +201,19 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
     [participants, userInfo?.id]
   );
 
+  const dateTimeFrom = activity?.datetime_from
+    ? new Date(activity?.datetime_from)
+    : null;
+
+  const dateTimeUntil = activity?.datetime_until
+    ? new Date(activity?.datetime_until)
+    : null;
+
+  const timeDifference = getTimeDifference(dateTimeFrom, dateTimeUntil); // useMemo??
+
+  const durationMinutes = timeDifference?.durationMinutes;
+  const durationHours = timeDifference?.durationHours;
+
   return (
     <>
       <Box
@@ -281,10 +293,14 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
           tags={activity?.tags!}
         />
         <ActivityCreatorDuration
-          creator={activityCreator}
+          creator={data?.data?.activity?.creator}
           // duration={activity?.tags!}
-          duration="3 hours"
-          createdDateTime="22.01.2023 5:16 PM"
+          duration={`${durationHours} hours, ${durationMinutes} minutes`}
+          createdDateTime={
+            activity?.created_at
+              ? format(new Date(activity?.created_at), DATE_TIME_FORMAT)
+              : "-"
+          }
         />
         {/* <Box
           sx={{

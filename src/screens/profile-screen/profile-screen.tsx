@@ -269,6 +269,32 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
             </OffliButton>
           </Box>
         ) : null}
+                {type === ProfileEntryTypeEnum.REQUEST ? (
+          <Box
+            sx={{
+              display: "flex",
+              width: "100%",
+              justifyContent: "center",
+              mt: 2.5,
+            }}
+          >
+            <OffliButton
+              sx={{ fontSize: 14, width: "45%", mr: 2 }}
+              onClick={onBuddyRequestAccept}
+              isLoading={isTogglingBuddyRequest}
+            >
+              Accept request
+            </OffliButton>
+            <OffliButton
+              sx={{ fontSize: 14, px: 3 }}
+              variant="outlined"
+              onClick={onBuddyRequestDecline}
+              isLoading={isTogglingBuddyRequest}
+            >
+              Decline
+            </OffliButton>
+          </Box>
+        ) : null}
         {displayStatistics ? (
           <Box
             sx={{

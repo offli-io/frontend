@@ -99,10 +99,15 @@ const ActivityDetailsGrid: React.FC<IProps> = ({ activity, onActionClick }) => {
               }
             )
           }
-          // variant="text"
+          variant="text"
           // endIcon={<PeopleAltIcon sx={{ fontSize: 26 }} />}
           size="small"
-          sx={{ textDecoration: "none", fontSize: 15, my: 1 }}
+          sx={{
+            textDecoration: "none",
+            fontSize: 15,
+            my: 0.5,
+            // fontWeight: "500",
+          }}
         >
           Show participants
         </OffliButton>
@@ -119,9 +124,14 @@ const ActivityDetailsGrid: React.FC<IProps> = ({ activity, onActionClick }) => {
         </Typography> */}
         <OffliButton
           onClick={() => onActionClick?.(IGridAction.GOOGLE_CALENDAR)}
-          // variant="text"
+          variant="text"
           size="small"
-          sx={{ textDecoration: "none", fontSize: 15, my: 1 }}
+          sx={{
+            textDecoration: "none",
+            fontSize: 15,
+            my: 0.5,
+            // fontWeight: "700",
+          }}
           // endIcon={<CalendarTodayIcon />}
         >
           Add to calendar
@@ -150,7 +160,13 @@ const ActivityDetailsGrid: React.FC<IProps> = ({ activity, onActionClick }) => {
           }
           // endIcon={<RoomIcon sx={{ fontSize: 26 }} />}
           size="small"
-          sx={{ textDecoration: "none", fontSize: 15, my: 1 }}
+          variant="text"
+          sx={{
+            textDecoration: "none",
+            fontSize: 15,
+            my: 0.5,
+            // fontWeight: "400",
+          }}
         >
           Show on map
         </OffliButton>
@@ -168,10 +184,15 @@ const ActivityDetailsGrid: React.FC<IProps> = ({ activity, onActionClick }) => {
 
         <OffliButton
           onClick={() => console.log("show on map")}
-          // variant="text"
+          variant="text"
           // endIcon={<MonetizationOnIcon sx={{ fontSize: 26 }} />}
           size="small"
-          sx={{ textDecoration: "none", fontSize: 15, my: 1 }}
+          sx={{
+            textDecoration: "none",
+            fontSize: 15,
+            my: 0.5,
+            // fontWeight: "bold",
+          }}
         >
           Initial price
         </OffliButton>

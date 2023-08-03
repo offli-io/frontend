@@ -57,7 +57,7 @@ export interface IActivity {
   count_confirmed?: number;
   count_invited?: number;
   count_rejected?: number;
-  created_at?: string;
+  created_at?: Date;
   modified_at?: string;
   participant_status?: string;
 }
