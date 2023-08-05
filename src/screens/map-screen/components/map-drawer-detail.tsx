@@ -112,7 +112,7 @@ const MapDrawerDetail: React.FC<IProps> = ({ activityId }) => {
             {/* <React.Suspense fallback={<div>Loading ...</div>}> */}
             {/* TODO handle lazy image loading */}
             <img
-              src={activity?.title_picture_url}
+              src={activity?.title_picture}
               alt="activity_title_photo"
               style={{
                 width: "100%",

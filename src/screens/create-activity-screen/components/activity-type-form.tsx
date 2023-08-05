@@ -90,17 +90,18 @@ export const ActivityTypeForm: React.FC<IActivityTypeFormProps> = ({
             <CircularProgress color="primary" />
           </Box>
         ) : tiles?.length > 0 ? (
-          tiles?.map(({ title, picture_url }, index) => (
+          tiles?.map((tag, index) => (
             <LabeledTile
               key={index}
-              title={title}
+              title={tag}
               onClick={handleTileClick}
-              selected={tags?.includes(title)}
+              selected={tags?.includes(tag)}
               sx={{
                 width: "42%",
                 mb: 2,
               }}
-              imageUrl={picture_url}
+              //TODO construct URL
+              imageUrl={`offli-dev.${tag}`}
             />
           ))
         ) : (

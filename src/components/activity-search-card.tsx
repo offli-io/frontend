@@ -68,7 +68,7 @@ const ActivitySearchCard: React.FC<IMyActivityCardProps> = ({
     >
       <Box sx={{ p: 0.5, mr: 1 }}>
         <img
-          src={activity?.title_picture_url ?? activityPlaceholderImage}
+          src={activity?.title_picture ?? activityPlaceholderImage}
           alt="activity_image"
           style={{ height: 80, borderRadius: 10 }}
         />

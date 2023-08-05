@@ -42,7 +42,7 @@ export interface FormValues {
   // public?: boolean
   //repeated?: ActivityRepetitionOptionsEnum | string
   price?: ActivityPriceOptionsEnum | string;
-  title_picture_url?: string;
+  title_picture?: string;
   placeQuery?: string;
   visibility?: ActivityVisibilityEnum;
   limit?: number;
@@ -107,7 +107,7 @@ const schema: (activeStep: number) => yup.SchemaOf<FormValues> = (
       activeStep === 4
         ? yup.number().required().defined()
         : yup.number().notRequired(),
-    title_picture_url: yup.string().notRequired(),
+    title_picture: yup.string().notRequired(),
     placeQuery: yup.string().notRequired(),
     description: yup.string().notRequired(),
     visibility: yup

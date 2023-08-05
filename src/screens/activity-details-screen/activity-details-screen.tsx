@@ -220,7 +220,7 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
         sx={{
           width: "100%",
           height: "50%",
-          backgroundImage: `url(${activity?.title_picture_url})`,
+          backgroundImage: `url(${activity?.title_picture})`,
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat",
           backgroundSize: "cover",

@@ -31,7 +31,7 @@ const ActivityCard: React.FC<IProps> = ({ activity, onPress, ...rest }) => {
         marginTop: "2%",
         marginBottom: "2%",
         borderRadius: "10px",
-        backgroundImage: `url(${activity?.title_picture_url})`,
+        backgroundImage: `url(${activity?.title_picture})`,
         // backgroundImage: `url(${activity?.title_picture})`,
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",

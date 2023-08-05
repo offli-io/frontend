@@ -205,36 +205,3 @@ const ActivityDetailsGrid: React.FC<IProps> = ({ activity, onActionClick }) => {
 };
 
 export default ActivityDetailsGrid;
-
-// Alternate grid version
-{
-  /* <StyledBox>
-// {/* <IconButton color="primary">
-//   <PeopleAltIcon sx={{ fontSize: 26 }} />
-// </IconButton> */
-}
-// <Typography variant="h5" sx={{ mb: 1 }}>
-//   Who?
-// </Typography>
-
-// <OffliButton
-//   onClick={() =>
-//     navigate(
-//       `${ApplicationLocations.ACTIVITY_MEMBERS}/${activity?.id}`,
-//       {
-//         state: {
-//           from: pathname,
-//         },
-//       }
-//     )
-//   }
-//   endIcon={<PeopleAltIcon sx={{ fontSize: 26 }} />}
-//   size="small"
-//   sx={{ textDecoration: "none", fontSize: 15, mb: 1 }}
-// >
-//   Show participants
-// </OffliButton>
-// <StyledText align="center" variant="subtitle1">
-//   {activity?.count_confirmed}/{activity?.limit}
-// </StyledText>
-// </StyledBox> */}

@@ -168,7 +168,8 @@ const EditProfileScreen: React.FC = () => {
         //   variant: "success",
         // });
         setLocalImageFile(null);
-        sendUpdateProfile({ profile_photo_url: data?.data?.url });
+        //TODO construct server url
+        sendUpdateProfile({ profile_photo_url: data?.data?.fileName });
         queryClient.invalidateQueries(["user"]);
       },
       onError: (error) => {
