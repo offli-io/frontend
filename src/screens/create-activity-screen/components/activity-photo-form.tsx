@@ -38,7 +38,7 @@ export const ActivityPhotoForm: React.FC<IActivityPhotoFormProps> = ({
   const { palette } = useTheme();
   const tags = watch("tags");
   const hiddenFileInput = React.useRef<HTMLInputElement | null>(null);
-  const selectedPhoto = watch("title_picture_url");
+  const selectedPhoto = watch("title_picture");
   // const [crop, setCrop] = React.useState<any>({
   //   unit: "%", // Can be 'px' or '%'
   //   width: 100,
@@ -70,7 +70,7 @@ export const ActivityPhotoForm: React.FC<IActivityPhotoFormProps> = ({
           <OffliGallery
             tags={tags}
             onPictureSelect={(url) => {
-              setValue("title_picture_url", url);
+              setValue("title_picture", url);
               toggleDrawer({ open: false, content: undefined });
             }}
           />
@@ -89,7 +89,8 @@ export const ActivityPhotoForm: React.FC<IActivityPhotoFormProps> = ({
           variant: "success",
         });
         setLocalFile(null);
-        setValue("title_picture_url", data?.data?.url);
+        //TODO construct server url
+        setValue("title_picture", data?.data?.fileName);
       },
       onError: (error) => {
         setIsImageUploading(false);
@@ -152,7 +153,7 @@ export const ActivityPhotoForm: React.FC<IActivityPhotoFormProps> = ({
 
   const handleResetSelectedPhoto = React.useCallback(() => {
     setCroppedImage(null);
-    setValue("title_picture_url", undefined);
+    setValue("title_picture", undefined);
   }, [setValue]);
 
   return (
@@ -294,7 +295,7 @@ export const ActivityPhotoForm: React.FC<IActivityPhotoFormProps> = ({
         ) : (
           <>
             <Controller
-              name="title_picture_url"
+              name="title_picture"
               control={control}
               render={({ field: { ref, ...field }, fieldState: { error } }) => {
                 return (

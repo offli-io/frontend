@@ -159,14 +159,12 @@ const FiltersDrawerContent: React.FC<IFiltersDrawerContentProps> = ({
             <Box sx={{ mx: 0.5 }}>
               {data?.data?.tags.map((tag) => (
                 <Chip
-                  label={tag?.title}
-                  key={tag?.title}
+                  label={tag}
+                  key={tag}
                   sx={{ m: 1 }}
                   color="primary"
-                  variant={
-                    selectedTags.includes(tag?.title) ? "filled" : "outlined"
-                  }
-                  onClick={() => handleTagClick(tag?.title)}
+                  variant={selectedTags.includes(tag) ? "filled" : "outlined"}
+                  onClick={() => handleTagClick(tag)}
                 />
               ))}
             </Box>

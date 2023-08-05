@@ -42,7 +42,7 @@ export interface IActivity {
   title?: string;
   description?: string;
   price?: string;
-  title_picture_url?: string;
+  title_picture?: string;
   creator_id?: number;
   datetime_from?: Date | string;
   datetime_until?: Date | string;
