@@ -12,10 +12,8 @@ const OffliGallery: React.FC<ITimePickerProps> = ({
   tags,
   onPictureSelect,
 }) => {
-  const { data: { data: { pictures = [] } = {} } = {}, isLoading } = useQuery(
-    ["predefined-photos", tags],
-    () => getPredefinedPhotos(tags)
-  );
+  const { data: { data: { pictures = [], count = 0 } = {} } = {}, isLoading } =
+    useQuery(["predefined-photos", tags], () => getPredefinedPhotos(tags));
   return (
     <Box>
       {tags?.map((tag) => (
@@ -32,7 +30,7 @@ const OffliGallery: React.FC<ITimePickerProps> = ({
         >
           <CircularProgress color="primary" />
         </Box>
-      ) : pictures?.length > 0 ? (
+      ) : count > 0 ? (
         <Box
           sx={{
             display: "grid",
@@ -42,18 +40,18 @@ const OffliGallery: React.FC<ITimePickerProps> = ({
             my: 4,
           }}
         >
-          {pictures.map(({ picture }) => (
+          {pictures.map(({ url }, index) => (
             <Box
               sx={{
                 maxWidth: "100%",
                 m: 0.5,
                 boxShadow: "1px 3px 2px #ccc",
               }}
-              onClick={() => picture && onPictureSelect(picture)}
-              key={picture}
+              onClick={() => url && onPictureSelect(url)}
+              key={`predefined_picture_${url}`}
               data-testid="offli-gallery-img-btn"
             >
-              <img src={picture} style={{ maxWidth: "100%" }} alt="gallery" />
+              <img src={url} style={{ maxWidth: "100%" }} alt="gallery" />
             </Box>
           ))}
         </Box>

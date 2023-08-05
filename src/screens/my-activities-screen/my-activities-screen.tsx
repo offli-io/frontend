@@ -212,6 +212,8 @@ const ActivitiesScreen = () => {
     [filteredActivities]
   );
 
+  console.log(process.env.REACT_APP_API_URL);
+
   const handleLocationSelect = React.useCallback(() => {
     toggleDrawer({
       open: true,

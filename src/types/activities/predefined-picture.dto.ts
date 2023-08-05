@@ -1,4 +1,9 @@
+export interface IPredefinedPictureResponseDto {
+  pictures?: IPredefinedPictureDto[];
+  count?: number;
+}
+
 export interface IPredefinedPictureDto {
-  picture?: string
-  tags?: string[]
+  url?: string;
+  tags?: string[];
 }

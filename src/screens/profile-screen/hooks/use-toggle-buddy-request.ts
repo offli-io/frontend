@@ -6,6 +6,7 @@ import { AuthenticationContext } from "../../../assets/theme/authentication-prov
 import { BuddyRequestActionEnum } from "../../../types/users/buddy-request-action-enum.dto";
 import { useLocation, useNavigate } from "react-router-dom";
 import { ICustomizedLocationStateDto } from "../../../types/common/customized-location-state.dto";
+import { deleteNotification } from "../../../api/notifications/requests";
 
 interface IToggleBuddyRequestValues {
   status?: BuddyRequestActionEnum;
@@ -19,7 +20,34 @@ export const useToggleBuddyRequest = () => {
   const { userInfo } = React.useContext(AuthenticationContext);
   const location = useLocation();
   const from = (location?.state as ICustomizedLocationStateDto)?.from;
+  const notificationId = (
+    location?.state as ICustomizedLocationStateDto & { notificationId?: number }
+  )?.notificationId;
+
   const navigate = useNavigate();
+
+  const { mutate: sendDeleteNotification } = useMutation(
+    ["mark-notification"],
+    () => {
+      abortControllerRef.current = new AbortController();
+      return deleteNotification(
+        Number(notificationId),
+        abortControllerRef.current?.signal
+      );
+    },
+    {
+      onSuccess: (data, variables) => {
+        queryClient.invalidateQueries(["notifications"]);
+        from && navigate(from);
+      },
+      onError: () => {
+        from && navigate(from);
+        enqueueSnackbar("Failed to delete notification", {
+          variant: "error",
+        });
+      },
+    }
+  );
 
   const { mutate: sendToggleBuddyRequest, isLoading: isTogglingBuddyRequest } =
     useMutation(
@@ -40,7 +68,7 @@ export const useToggleBuddyRequest = () => {
               variant: "success",
             });
             queryClient.invalidateQueries(["buddies"]);
-            from && navigate(from);
+            sendDeleteNotification();
           }
         },
         onError: (error, variables) => {

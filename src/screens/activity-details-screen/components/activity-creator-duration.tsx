@@ -1,6 +1,7 @@
 import { Typography, Box, Chip } from "@mui/material";
 import React from "react";
 import { IPerson } from "../../../types/activities/activity.dto";
+import userPlaceholder from "../../../assets/img/user-placeholder.svg";
 
 interface IProps {
   creator?: IPerson;
@@ -24,8 +25,12 @@ const ActivityCreatorDuration: React.FC<IProps> = ({
           px: 1,
         }}
       >
-        <Box>
-          <Typography variant="h5" align="left" sx={{ fontSize: "14px" }}>
+        <Box sx={{ mb: 1 }}>
+          <Typography
+            variant="h5"
+            align="left"
+            sx={{ fontSize: "14px", mb: 0.5 }}
+          >
             Activity Creator
           </Typography>
           <Box
@@ -36,7 +41,7 @@ const ActivityCreatorDuration: React.FC<IProps> = ({
             }}
           >
             <img
-              src={creator?.profile_photo_url}
+              src={creator?.profile_photo_url ?? userPlaceholder}
               alt="profile"
               style={{
                 height: "25px",
@@ -49,12 +54,16 @@ const ActivityCreatorDuration: React.FC<IProps> = ({
               align="left"
               sx={{ fontSize: "11px", ml: 0.3 }}
             >
-              {creator?.name}
+              {creator?.username}
             </Typography>
           </Box>
         </Box>
-        <Box>
-          <Typography variant="h5" align="left" sx={{ fontSize: "14px" }}>
+        <Box sx={{ mb: 1 }}>
+          <Typography
+            variant="h5"
+            align="left"
+            sx={{ fontSize: "14px", mb: 0.5 }}
+          >
             Duration
           </Typography>
           <Box

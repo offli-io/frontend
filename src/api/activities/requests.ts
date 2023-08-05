@@ -15,7 +15,10 @@ import {
   IPlaceExternalApiDto,
   IPlaceExternalApiFetchDto,
 } from "../../types/activities/place-external-api.dto";
-import { IPredefinedPictureDto } from "../../types/activities/predefined-picture.dto";
+import {
+  IPredefinedPictureDto,
+  IPredefinedPictureResponseDto,
+} from "../../types/activities/predefined-picture.dto";
 import { IPredefinedTagDto } from "../../types/activities/predefined-tag.dto";
 import { IUpdateActivityRequestDto } from "./../../types/activities/update-activity-request.dto";
 import { IListParticipantsResponseDto } from "../../types/activities/list-participants-response.dto";
@@ -397,7 +400,7 @@ export const getPredefinedPhotos = (tag?: string[]) => {
   const CancelToken = axios.CancelToken;
   const source = CancelToken.source();
 
-  const promise = axios.get<{ pictures: IPredefinedPictureDto[] }>(
+  const promise = axios.get<IPredefinedPictureResponseDto>(
     `${DEFAULT_DEV_URL}/predefined/pictures`,
     {
       cancelToken: source?.token,

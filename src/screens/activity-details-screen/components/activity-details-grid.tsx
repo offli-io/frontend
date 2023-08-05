@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Grid, IconButton, Typography, styled } from "@mui/material";
+import { Box, Card, Grid, IconButton, Typography, styled } from "@mui/material";
 import OfflineBoltIcon from "@mui/icons-material/OfflineBolt";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
@@ -29,25 +29,27 @@ interface IProps {
   onActionClick?: (action: IGridAction) => void;
 }
 
-const StyledBox = styled(Box)(() => ({
+const StyledBox = styled(Card)(() => ({
   display: "flex",
   alignItems: "center",
   flexDirection: "column",
   borderRadius: "10px",
-  backgroundColor: "#E4E3FF",
-  paddingTop: "2%",
+  // backgroundColor: "#E4E3FF",
+  paddingTop: "4%",
   paddingBottom: "2%",
-  maxWidth: "45vw",
+  marginBottom: "16px",
+  // maxWidth: "45vw",
 }));
 
 const StyledText = styled(Typography)(() => ({
   display: "block",
-  width: "80%",
+  width: "90%",
   textOverflow: "ellipsis",
   wordWrap: "break-word",
   overflow: "hidden",
-  maxHeight: "2.8rem",
+  maxHeight: "1.4rem",
   lineHeight: "1.4rem",
+  fontWeight: "bold",
 }));
 
 const ActivityDetailsGrid: React.FC<IProps> = ({ activity, onActionClick }) => {
@@ -79,9 +81,13 @@ const ActivityDetailsGrid: React.FC<IProps> = ({ activity, onActionClick }) => {
       }}
     >
       <StyledBox>
-        <IconButton color="primary">
+        <IconButton color="primary" sx={{ p: 0 }}>
           <PeopleAltIcon sx={{ fontSize: 26 }} />
         </IconButton>
+        {/* <Typography variant="h5" sx={{ mb: 1 }}>
+          Who?
+        </Typography> */}
+
         <OffliButton
           onClick={() =>
             navigate(
@@ -94,8 +100,14 @@ const ActivityDetailsGrid: React.FC<IProps> = ({ activity, onActionClick }) => {
             )
           }
           variant="text"
+          // endIcon={<PeopleAltIcon sx={{ fontSize: 26 }} />}
           size="small"
-          sx={{ textDecoration: "none", fontSize: 16, p: 0, m: 0 }}
+          sx={{
+            textDecoration: "none",
+            fontSize: 15,
+            my: 0.5,
+            // fontWeight: "500",
+          }}
         >
           Show participants
         </OffliButton>
@@ -104,14 +116,23 @@ const ActivityDetailsGrid: React.FC<IProps> = ({ activity, onActionClick }) => {
         </StyledText>
       </StyledBox>
       <StyledBox>
-        <IconButton color="primary">
+        <IconButton color="primary" sx={{ p: 0 }}>
           <CalendarTodayIcon sx={{ fontSize: 26 }} />
         </IconButton>
+        {/* <Typography variant="h5" sx={{ mb: 1 }}>
+          When?
+        </Typography> */}
         <OffliButton
           onClick={() => onActionClick?.(IGridAction.GOOGLE_CALENDAR)}
           variant="text"
           size="small"
-          sx={{ textDecoration: "none", fontSize: 16, p: 0, m: 0 }}
+          sx={{
+            textDecoration: "none",
+            fontSize: 15,
+            my: 0.5,
+            // fontWeight: "700",
+          }}
+          // endIcon={<CalendarTodayIcon />}
         >
           Add to calendar
         </OffliButton>
@@ -123,9 +144,12 @@ const ActivityDetailsGrid: React.FC<IProps> = ({ activity, onActionClick }) => {
         </StyledText>
       </StyledBox>
       <StyledBox>
-        <IconButton color="primary">
+        <IconButton color="primary" sx={{ p: 0 }}>
           <RoomIcon sx={{ fontSize: 26 }} />
         </IconButton>
+        {/* <Typography variant="h5" sx={{ mb: 1 }}>
+          Where?
+        </Typography> */}
         <OffliButton
           onClick={() =>
             navigate(`${ApplicationLocations.MAP}/${activity?.id}`, {
@@ -134,9 +158,15 @@ const ActivityDetailsGrid: React.FC<IProps> = ({ activity, onActionClick }) => {
               },
             })
           }
-          variant="text"
+          // endIcon={<RoomIcon sx={{ fontSize: 26 }} />}
           size="small"
-          sx={{ textDecoration: "none", fontSize: 16, p: 0, m: 0 }}
+          variant="text"
+          sx={{
+            textDecoration: "none",
+            fontSize: 15,
+            my: 0.5,
+            // fontWeight: "400",
+          }}
         >
           Show on map
         </OffliButton>
@@ -145,14 +175,24 @@ const ActivityDetailsGrid: React.FC<IProps> = ({ activity, onActionClick }) => {
         </StyledText>
       </StyledBox>
       <StyledBox>
-        <IconButton color="primary">
+        <IconButton color="primary" sx={{ p: 0 }}>
           <MonetizationOnIcon sx={{ fontSize: 26 }} />
         </IconButton>
+        {/* <Typography variant="h5" sx={{ mb: 1 }}>
+          How much?
+        </Typography> */}
+
         <OffliButton
           onClick={() => console.log("show on map")}
           variant="text"
+          // endIcon={<MonetizationOnIcon sx={{ fontSize: 26 }} />}
           size="small"
-          sx={{ textDecoration: "none", fontSize: 16, p: 0, m: 0 }}
+          sx={{
+            textDecoration: "none",
+            fontSize: 15,
+            my: 0.5,
+            // fontWeight: "bold",
+          }}
         >
           Initial price
         </OffliButton>
@@ -165,3 +205,36 @@ const ActivityDetailsGrid: React.FC<IProps> = ({ activity, onActionClick }) => {
 };
 
 export default ActivityDetailsGrid;
+
+// Alternate grid version
+{
+  /* <StyledBox>
+// {/* <IconButton color="primary">
+//   <PeopleAltIcon sx={{ fontSize: 26 }} />
+// </IconButton> */
+}
+// <Typography variant="h5" sx={{ mb: 1 }}>
+//   Who?
+// </Typography>
+
+// <OffliButton
+//   onClick={() =>
+//     navigate(
+//       `${ApplicationLocations.ACTIVITY_MEMBERS}/${activity?.id}`,
+//       {
+//         state: {
+//           from: pathname,
+//         },
+//       }
+//     )
+//   }
+//   endIcon={<PeopleAltIcon sx={{ fontSize: 26 }} />}
+//   size="small"
+//   sx={{ textDecoration: "none", fontSize: 15, mb: 1 }}
+// >
+//   Show participants
+// </OffliButton>
+// <StyledText align="center" variant="subtitle1">
+//   {activity?.count_confirmed}/{activity?.limit}
+// </StyledText>
+// </StyledBox> */}

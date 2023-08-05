@@ -20,6 +20,7 @@ import { ProfileEntryTypeEnum } from "./types/profile-entry-type";
 import OffliButton from "../../components/offli-button";
 import { useToggleBuddyRequest } from "./hooks/use-toggle-buddy-request";
 import { BuddyRequestActionEnum } from "../../types/users/buddy-request-action-enum.dto";
+import { deleteNotification } from "../../api/notifications/requests";
 
 interface IProfileScreenProps {
   type: ProfileEntryTypeEnum;
@@ -34,6 +35,7 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
   const from = (location?.state as ICustomizedLocationStateDto)?.from;
   const { id } = useParams();
   const { enqueueSnackbar } = useSnackbar();
+  const abortControllerRef = React.useRef<AbortController | null>(null);
   const queryParameters = new URLSearchParams(window.location.search);
   const instagramCode = queryParameters.get("code");
   console.log(instagramCode);
@@ -242,6 +244,32 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
           />
         )}
         {type === ProfileEntryTypeEnum.REQUEST ? (
+          <Box
+            sx={{
+              display: "flex",
+              width: "100%",
+              justifyContent: "center",
+              mt: 2.5,
+            }}
+          >
+            <OffliButton
+              sx={{ fontSize: 14, width: "45%", mr: 2 }}
+              onClick={onBuddyRequestAccept}
+              isLoading={isTogglingBuddyRequest}
+            >
+              Accept request
+            </OffliButton>
+            <OffliButton
+              sx={{ fontSize: 14, px: 3 }}
+              variant="outlined"
+              onClick={onBuddyRequestDecline}
+              isLoading={isTogglingBuddyRequest}
+            >
+              Decline
+            </OffliButton>
+          </Box>
+        ) : null}
+                {type === ProfileEntryTypeEnum.REQUEST ? (
           <Box
             sx={{
               display: "flex",

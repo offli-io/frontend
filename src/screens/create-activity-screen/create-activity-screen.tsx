@@ -132,7 +132,7 @@ const CreateActivityScreen = () => {
     defaultValues: {
       title: "",
       description: "",
-      visibility: ActivityVisibilityEnum.private,
+      visibility: ActivityVisibilityEnum.public,
       price: ActivityPriceOptionsEnum.free,
       limit: 10,
       location: null,
