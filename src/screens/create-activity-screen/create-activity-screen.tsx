@@ -39,6 +39,7 @@ export interface FormValues {
   placeQuery?: string;
   visibility?: ActivityVisibilityEnum;
   limit?: number;
+  isActivityFree?: boolean;
 }
 
 const schema: (activeStep: number) => yup.SchemaOf<FormValues> = (
@@ -85,7 +86,16 @@ const schema: (activeStep: number) => yup.SchemaOf<FormValues> = (
         : yup.date().notRequired(),
     price:
       activeStep === 4
-        ? yup.number().defined().nullable(true)
+        ? yup
+            .number()
+            .when("isActivityFree", {
+              is: (isActivityFree?: boolean) => !!isActivityFree,
+              then: (schema) => schema.notRequired(),
+              otherwise: (schema) => schema.defined().required(),
+            })
+            .typeError(
+              "Price must be a number. Check 'free' or leave empty for free price"
+            )
         : yup.number().notRequired().nullable(true),
     limit:
       activeStep === 4
@@ -98,6 +108,7 @@ const schema: (activeStep: number) => yup.SchemaOf<FormValues> = (
       .mixed<ActivityVisibilityEnum>()
       .oneOf(Object.values(ActivityVisibilityEnum))
       .notRequired(),
+    isActivityFree: yup.bool().notRequired(),
   });
 
 const CreateActivityScreen = () => {
@@ -120,6 +131,7 @@ const CreateActivityScreen = () => {
       // price: ActivityPriceOptionsEnum.free,
       limit: 10,
       location: null,
+      isActivityFree: true,
     },
     resolver: yupResolver(schema(activeStep)),
     mode: "onChange",
@@ -149,8 +161,9 @@ const CreateActivityScreen = () => {
 
   const handleFormSubmit = React.useCallback(
     (data: FormValues) => {
-      const { placeQuery, ...restValues } = data;
+      const { placeQuery, price, isActivityFree, ...restValues } = data;
       //TODO fill with real user data
+      const finalPrice = isActivityFree ? 0 : price;
       const {
         id = undefined,
         name = undefined,
@@ -159,6 +172,7 @@ const CreateActivityScreen = () => {
       } = { ...userData };
       mutate({
         ...restValues,
+        price: finalPrice,
         creator_id: id,
       });
     },

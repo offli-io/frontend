@@ -11,6 +11,7 @@ interface ILabeledDividerProps {
   buddy: IPerson;
   children?: React.ReactElement;
   invited?: boolean;
+  isLoading?: boolean;
 }
 
 const StyledImage = styled((props: any) => (
@@ -27,6 +28,7 @@ const BuddyItemInvite: React.FC<ILabeledDividerProps> = ({
   buddy,
   onInviteClick,
   invited,
+  isLoading,
   ...rest
 }) => {
   const baseUrl = useGetApiUrl();
@@ -34,7 +36,8 @@ const BuddyItemInvite: React.FC<ILabeledDividerProps> = ({
     <Box
       //onClick={() => handleClick(checked)}
       sx={{
-        display: "flex",
+        display: "grid",
+        gridTemplateColumns: "7fr 1fr",
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "space-between",
@@ -44,7 +47,14 @@ const BuddyItemInvite: React.FC<ILabeledDividerProps> = ({
       }}
       {...rest}
     >
-      <Box sx={{ display: "flex", alignItems: "center" }}>
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          overflow: "hidden",
+          mr: 1,
+        }}
+      >
         <StyledImage
           src={
             buddy?.profile_photo
@@ -62,6 +72,7 @@ const BuddyItemInvite: React.FC<ILabeledDividerProps> = ({
         onClick={() => onInviteClick && onInviteClick(buddy)}
         variant={invited ? "outlined" : "contained"}
         data-testid="toggle-buddy-invite-btn"
+        disabled={isLoading}
       >
         {invited ? "Cancel" : "Invite"}
       </OffliButton>

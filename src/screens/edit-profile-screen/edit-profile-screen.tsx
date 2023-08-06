@@ -171,7 +171,7 @@ const EditProfileScreen: React.FC = () => {
         // });
         setLocalImageFile(null);
         //TODO construct server url
-        sendUpdateProfile({ profile_photo: data?.data?.fileName });
+        sendUpdateProfile({ profile_photo: data?.data?.filename });
         queryClient.invalidateQueries(["user"]);
       },
       onError: (error) => {

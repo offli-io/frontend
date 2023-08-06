@@ -20,6 +20,7 @@ import { getAuthToken } from "../../../utils/token.util";
 import OffliGallery from "./offli-gallery";
 import { uploadFile } from "../../../api/activities/requests";
 import getCroppedImg from "../utils/crop-utils";
+import { useGetApiUrl } from "../../../hooks/use-get-api-url";
 
 interface IActivityPhotoFormProps {
   methods: UseFormReturn;
@@ -33,12 +34,13 @@ export const ActivityPhotoForm: React.FC<IActivityPhotoFormProps> = ({
   const { control, formState, watch, setValue } = methods;
   const { toggleDrawer } = React.useContext(DrawerContext);
   const [isImageUploading, setIsImageUploading] = React.useState(false);
-  const token = getAuthToken();
+  const baseUrl = useGetApiUrl();
   const { enqueueSnackbar } = useSnackbar();
   const { palette } = useTheme();
   const tags = watch("tags");
   const hiddenFileInput = React.useRef<HTMLInputElement | null>(null);
   const selectedPhoto = watch("title_picture");
+
   // const [crop, setCrop] = React.useState<any>({
   //   unit: "%", // Can be 'px' or '%'
   //   width: 100,
@@ -49,6 +51,8 @@ export const ActivityPhotoForm: React.FC<IActivityPhotoFormProps> = ({
   //   // aspect: 16 / 9,
   // });
   // const [croppedImage, setCroppedImage] = React.useState(null);
+
+  console.log(selectedPhoto);
   const [localFile, setLocalFile] = React.useState<any>();
   const [crop, setCrop] = React.useState({ x: 0, y: 0 });
   const [zoom, setZoom] = React.useState(1);
@@ -90,7 +94,7 @@ export const ActivityPhotoForm: React.FC<IActivityPhotoFormProps> = ({
         });
         setLocalFile(null);
         //TODO construct server url
-        setValue("title_picture", data?.data?.fileName);
+        setValue("title_picture", `${baseUrl}/files/${data?.data?.filename}`);
       },
       onError: (error) => {
         setIsImageUploading(false);
