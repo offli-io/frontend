@@ -40,7 +40,6 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
   const queryParameters = new URLSearchParams(window.location.search);
   const instagramCode = queryParameters.get("code");
   const baseUrl = useGetApiUrl();
-  console.log(instagramCode);
 
   const { handleToggleBuddyRequest, isTogglingBuddyRequest } =
     useToggleBuddyRequest();

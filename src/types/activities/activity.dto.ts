@@ -41,7 +41,7 @@ export interface IActivity {
   id?: number;
   title?: string;
   description?: string;
-  price?: string;
+  price?: number | null;
   title_picture?: string;
   creator_id?: number;
   datetime_from?: Date | string;
