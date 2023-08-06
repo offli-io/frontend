@@ -8,6 +8,7 @@ import { IPersonExtended } from "../types/activities/activity.dto";
 import { useUser } from "../hooks/use-user";
 import { DATE_TIME_FORMAT } from "../utils/common-constants";
 import { NotificationTypeEnum } from "../types/notifications/notification-type-enum";
+import { useGetApiUrl } from "../hooks/use-get-api-url";
 
 interface INotificationRequestProps {
   notification: INotificationDto;
@@ -29,6 +30,7 @@ const NotificationRequest: React.FC<INotificationRequestProps> = ({
   onClick,
 }) => {
   const { shadows } = useTheme();
+  const baseUrl = useGetApiUrl();
   const hourDifference = React.useCallback(() => {
     if (notification?.timestamp) {
       const unixDate = new Date(notification.timestamp * 1000);
@@ -93,8 +95,9 @@ const NotificationRequest: React.FC<INotificationRequestProps> = ({
                 boxShadow: shadows[5],
               }}
               src={
-                notification?.properties?.user?.profile_photo_url ??
-                userPlaceholder
+                notification?.properties?.user?.profile_photo
+                  ? `${baseUrl}/files/${notification?.properties?.user?.profile_photo}`
+                  : userPlaceholder
               }
               alt="profile"
             />

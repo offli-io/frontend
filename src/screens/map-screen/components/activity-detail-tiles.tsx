@@ -10,7 +10,7 @@ interface IProps {
   participantsNum?: string;
   dateTime?: string;
   distance?: string;
-  price?: string;
+  price?: number | null;
 }
 
 const StyledBox = styled(Card)(() => ({

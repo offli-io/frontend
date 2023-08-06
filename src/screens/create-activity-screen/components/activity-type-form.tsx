@@ -101,7 +101,7 @@ export const ActivityTypeForm: React.FC<IActivityTypeFormProps> = ({
                 mb: 2,
               }}
               //TODO construct URL
-              imageUrl={`offli-dev.${tag}`}
+              imageUrl={`${process.env.REACT_APP_API_URL}/predefined/tags/${tag}`}
             />
           ))
         ) : (

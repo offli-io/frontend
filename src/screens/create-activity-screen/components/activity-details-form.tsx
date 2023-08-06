@@ -1,6 +1,8 @@
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import {
   Box,
+  Checkbox,
+  FormControlLabel,
   FormLabel,
   IconButton,
   MenuItem,
@@ -123,20 +125,37 @@ export const ActivityDetailsForm: React.FC<IPlaceFormProps> = ({
                 name="price"
                 control={control}
                 render={({ field, fieldState: { error } }) => (
-                  <TextField
-                    {...field}
-                    id="outlined-select-currency"
-                    select
-                    sx={{ width: "100%", mb: 5 }}
-                    label="Any fees?"
-                    data-testid="price-input"
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      mb: 5,
+                      width: "100%",
+                    }}
                   >
-                    {Object.values(ActivityPriceOptionsEnum).map((option) => (
-                      <MenuItem key={option} value={option}>
-                        {option}
-                      </MenuItem>
-                    ))}
-                  </TextField>
+                    <TextField
+                      {...field}
+                      id="outlined-select-currency"
+                      // sx={{ width: "100%", mb: 5 }}
+                      label="Any fees?"
+                      data-testid="price-input"
+                      error={!!error}
+                      helperText={error?.message}
+                      sx={{ width: "100%" }}
+                    />
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          checked={field?.value ?? false}
+                          onChange={() => field?.onChange(null)}
+                          data-testid="same-end-date-checkbox"
+                          // sx={{ mr: 2 }}
+                        />
+                      }
+                      label="Free"
+                      sx={{ color: palette?.text?.primary, ml: 2 }}
+                    />
+                  </Box>
                 )}
               />
 

@@ -5,14 +5,14 @@ export interface IPerson {
   id?: number;
   name?: string;
   username?: string;
-  profile_photo_url?: string;
+  profile_photo?: string;
 }
 
 export interface IPersonExtended {
   id?: number;
   username?: string;
   name?: string;
-  profile_photo_url?: string;
+  profile_photo?: string;
   buddies?: IPerson[] | null;
   buddies_count?: number;
   activities?: string[] | null;
@@ -41,7 +41,7 @@ export interface IActivity {
   id?: number;
   title?: string;
   description?: string;
-  price?: string;
+  price?: number | null;
   title_picture?: string;
   creator_id?: number;
   datetime_from?: Date | string;

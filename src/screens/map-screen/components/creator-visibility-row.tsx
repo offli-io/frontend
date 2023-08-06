@@ -6,6 +6,7 @@ import LockIcon from "@mui/icons-material/Lock";
 import LockOpenIcon from "@mui/icons-material/LockOpen";
 import { Typography } from "@mui/material";
 import userPlaceholder from "../../../assets/img/user-placeholder.svg";
+import { useGetApiUrl } from "../../../hooks/use-get-api-url";
 
 interface IProps {
   creator?: IPerson;
@@ -16,6 +17,8 @@ export const CreatorVisibilityRow: React.FC<IProps> = ({
   creator,
   visibility,
 }) => {
+  const baseUrl = useGetApiUrl();
+
   return (
     <Box
       sx={{
@@ -45,7 +48,11 @@ export const CreatorVisibilityRow: React.FC<IProps> = ({
           }}
         >
           <img
-            src={creator?.profile_photo_url ?? userPlaceholder}
+            src={
+              creator?.profile_photo
+                ? `${baseUrl}/files/${creator?.profile_photo}`
+                : userPlaceholder
+            }
             alt="profile"
             style={{
               height: "25px",

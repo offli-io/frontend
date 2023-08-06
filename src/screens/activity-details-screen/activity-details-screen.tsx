@@ -34,6 +34,7 @@ import { IParticipantDto } from "../../types/activities/list-participants-respon
 import { format } from "date-fns";
 import { DATE_TIME_FORMAT } from "../../utils/common-constants";
 import { getTimeDifference } from "../map-screen/utils/get-time-difference";
+import { useGetApiUrl } from "../../hooks/use-get-api-url";
 
 interface IProps {
   type: "detail" | "request";
@@ -50,6 +51,7 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
   const { userInfo } = React.useContext(AuthenticationContext);
   const { enqueueSnackbar } = useSnackbar();
   const queryClient = useQueryClient();
+  const baseUrl = useGetApiUrl();
   const abortControllerRef = React.useRef<AbortController | null>(null);
 
   const { googleToken, handleGoogleAuthorization, state } =
@@ -220,7 +222,7 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
         sx={{
           width: "100%",
           height: "50%",
-          backgroundImage: `url(${activity?.title_picture})`,
+          backgroundImage: `url(${baseUrl}/files/${activity?.title_picture})`,
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat",
           backgroundSize: "cover",

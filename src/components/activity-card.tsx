@@ -7,6 +7,7 @@ import { IActivity } from "../types/activities/activity.dto";
 import { format, getDay, getHours, getMonth, getTime } from "date-fns";
 import { TIME_FORMAT } from "../utils/common-constants";
 import { CustomizationContext } from "../assets/theme/customization-provider";
+import { useGetApiUrl } from "../hooks/use-get-api-url";
 
 interface IProps {
   activity?: IActivity;
@@ -18,6 +19,7 @@ const ActivityCard: React.FC<IProps> = ({ activity, onPress, ...rest }) => {
   const { action, handlers } = useLongPress();
   const { shadows } = useTheme();
   const { mode } = React.useContext(CustomizationContext);
+  const baseUrl = useGetApiUrl();
 
   const startDate = activity?.datetime_from
     ? new Date(activity?.datetime_from)
@@ -31,7 +33,7 @@ const ActivityCard: React.FC<IProps> = ({ activity, onPress, ...rest }) => {
         marginTop: "2%",
         marginBottom: "2%",
         borderRadius: "10px",
-        backgroundImage: `url(${activity?.title_picture})`,
+        backgroundImage: `url(${baseUrl}/files/${activity?.title_picture})`,
         // backgroundImage: `url(${activity?.title_picture})`,
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",

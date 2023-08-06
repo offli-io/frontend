@@ -3,6 +3,7 @@ import { Box, Grid, Typography, useTheme } from "@mui/material";
 import ProfilePicture from "../assets/img/profilePicture.jpg";
 import OffliButton from "./offli-button";
 import InstagramIcon from "@mui/icons-material/Instagram";
+import { useGetApiUrl } from "../hooks/use-get-api-url";
 
 interface IProfileGalleryProps {
   photoUrls?: string[];
@@ -16,6 +17,7 @@ const ProfileGallery: React.FC<IProfileGalleryProps> = ({ photoUrls }) => {
       `https://api.instagram.com/oauth/authorize?client_id=1317539042184854&redirect_uri=${window.location.href}/&scope=user_profile,user_media&response_type=code`;
   }, []);
 
+  const baseUrl = useGetApiUrl();
   const firstSplittedPhotos: string[] = [];
   const secondSplittedPhotos: string[] = [];
 
@@ -41,7 +43,7 @@ const ProfileGallery: React.FC<IProfileGalleryProps> = ({ photoUrls }) => {
             <Box>
               {firstSplittedPhotos?.map((photo) => (
                 <img
-                  src={photo}
+                  src={`${baseUrl}/files/${photo}`}
                   alt="profile"
                   style={{
                     width: "100%",
@@ -58,7 +60,7 @@ const ProfileGallery: React.FC<IProfileGalleryProps> = ({ photoUrls }) => {
             <Box>
               {secondSplittedPhotos?.map((photo) => (
                 <img
-                  src={photo}
+                  src={`${baseUrl}/files/${photo}`}
                   alt="profile"
                   style={{
                     width: "100%",

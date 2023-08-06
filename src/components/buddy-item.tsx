@@ -1,7 +1,8 @@
 import { Box, styled, Typography, useTheme } from "@mui/material";
-import logo from "../assets/img/user-placeholder.svg";
+import userPlaceholder from "../assets/img/user-placeholder.svg";
 import React from "react";
 import { IPerson } from "../types/activities/activity.dto";
+import { useGetApiUrl } from "../hooks/use-get-api-url";
 
 interface IBuddyItemProps {
   buddy: IPerson;
@@ -18,6 +19,8 @@ const BuddyItem: React.FC<IBuddyItemProps> = ({
   ...rest
 }) => {
   const { shadows } = useTheme();
+  const baseUrl = useGetApiUrl();
+
   return (
     <Box
       onClick={() => onClick?.(buddy)}
@@ -42,7 +45,11 @@ const BuddyItem: React.FC<IBuddyItemProps> = ({
         }}
       >
         <img
-          src={buddy?.profile_photo_url ?? logo}
+          src={
+            buddy?.profile_photo
+              ? `${baseUrl}/files/${buddy?.profile_photo}`
+              : userPlaceholder
+          }
           alt="profile"
           style={{
             height: 40,

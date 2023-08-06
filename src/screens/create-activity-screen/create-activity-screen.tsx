@@ -1,34 +1,28 @@
-import React from "react";
-import { Box, useTheme } from "@mui/material";
-import { PageWrapper } from "../../components/page-wrapper";
-import { NameForm } from "./components/name-form";
-import { PlaceForm } from "./components/place-form";
-import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { Box, useTheme } from "@mui/material";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useSnackbar } from "notistack";
+import React from "react";
+import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 import * as yup from "yup";
+import { createActivity } from "../../api/activities/requests";
+import { AuthenticationContext } from "../../assets/theme/authentication-provider";
 import OffliButton from "../../components/offli-button";
+import { PageWrapper } from "../../components/page-wrapper";
+import DotsMobileStepper from "../../components/stepper";
+import { useUser } from "../../hooks/use-user";
+import { ActivityVisibilityEnum } from "../../types/activities/activity-visibility-enum.dto";
 import { ILocation } from "../../types/activities/location.dto";
+import { ApplicationLocations } from "../../types/common/applications-locations.dto";
+import ActivityCreatedScreen from "../static-screens/activity-created-screen";
+import { ActivityDetailsForm } from "./components/activity-details-form";
+import { ActivityInviteForm } from "./components/activity-invite-form";
+import { ActivityPhotoForm } from "./components/activity-photo-form";
 import { ActivityTypeForm } from "./components/activity-type-form";
 import { DateTimeForm } from "./components/date-time-form";
-import {
-  ActivityPriceOptionsEnum,
-  ActivityRepetitionOptionsEnum,
-} from "../../types/common/types";
-import { ActivityInviteForm } from "./components/activity-invite-form";
-import { ActivityDetailsForm } from "./components/activity-details-form";
-import { ActivityPhotoForm } from "./components/activity-photo-form";
-import { ActivityVisibilityEnum } from "../../types/activities/activity-visibility-enum.dto";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createActivity } from "../../api/activities/requests";
-import { useSnackbar } from "notistack";
-import { IPerson, IPersonExtended } from "../../types/activities/activity.dto";
-import ActivityCreatedScreen from "../static-screens/activity-created-screen";
-import { useNavigate } from "react-router-dom";
-import { ApplicationLocations } from "../../types/common/applications-locations.dto";
-import { AuthenticationContext } from "../../assets/theme/authentication-provider";
-import DotsMobileStepper from "../../components/stepper";
-import { useUsers } from "../../hooks/use-users";
-import { useUser } from "../../hooks/use-user";
+import { NameForm } from "./components/name-form";
+import { PlaceForm } from "./components/place-form";
 
 export interface FormValues {
   title?: string;
@@ -38,10 +32,9 @@ export interface FormValues {
   //todo alter keys
   datetime_from?: Date;
   datetime_until?: Date;
-
   // public?: boolean
   //repeated?: ActivityRepetitionOptionsEnum | string
-  price?: ActivityPriceOptionsEnum | string;
+  price?: number | null;
   title_picture?: string;
   placeQuery?: string;
   visibility?: ActivityVisibilityEnum;
@@ -92,17 +85,8 @@ const schema: (activeStep: number) => yup.SchemaOf<FormValues> = (
         : yup.date().notRequired(),
     price:
       activeStep === 4
-        ? yup
-            .mixed<ActivityPriceOptionsEnum>()
-            .oneOf(Object.values(ActivityPriceOptionsEnum))
-            .defined()
-            .required()
-            .default(ActivityPriceOptionsEnum.free)
-        : yup
-            .mixed<ActivityPriceOptionsEnum>()
-            .oneOf(Object.values(ActivityPriceOptionsEnum))
-            .notRequired(),
-
+        ? yup.number().defined().nullable(true)
+        : yup.number().notRequired().nullable(true),
     limit:
       activeStep === 4
         ? yup.number().required().defined()
@@ -133,7 +117,7 @@ const CreateActivityScreen = () => {
       title: "",
       description: "",
       visibility: ActivityVisibilityEnum.public,
-      price: ActivityPriceOptionsEnum.free,
+      // price: ActivityPriceOptionsEnum.free,
       limit: 10,
       location: null,
     },
@@ -171,7 +155,7 @@ const CreateActivityScreen = () => {
         id = undefined,
         name = undefined,
         username = undefined,
-        profile_photo_url = undefined,
+        profile_photo = undefined,
       } = { ...userData };
       mutate({
         ...restValues,

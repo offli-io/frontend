@@ -121,16 +121,22 @@ const MyBuddiesScreen = () => {
     }
   );
 
+  const navigateToBuddyProfile = React.useCallback(
+    (userId?: number) =>
+      navigate(`${ApplicationLocations.PROFILE}/buddy/${userId}`, {
+        state: {
+          from: ApplicationLocations.BUDDIES,
+        },
+      }),
+    [navigate]
+  );
+
   const handleBuddyActionClick = React.useCallback(
     (type?: BuddyActionTypeEnum, userId?: number) => {
       switch (type) {
         case BuddyActionTypeEnum.PROFILE:
           toggleDrawer({ open: false, content: undefined });
-          return navigate(`${ApplicationLocations.PROFILE}/buddy/${userId}`, {
-            state: {
-              from: ApplicationLocations.BUDDIES,
-            },
-          });
+          return navigateToBuddyProfile(userId);
         case BuddyActionTypeEnum.REMOVE:
           return sendDeleteBuddy(userId);
         default:
@@ -284,11 +290,15 @@ const MyBuddiesScreen = () => {
                         buddy={buddy}
                         actionContent={
                           <IconButton
-                            onClick={() => handleBuddyActionsClick(buddy)}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleBuddyActionsClick(buddy);
+                            }}
                           >
                             <MoreHorizIcon />
                           </IconButton>
                         }
+                        onClick={(buddy) => navigateToBuddyProfile(buddy?.id)}
                       />
                     ))
                   )}
