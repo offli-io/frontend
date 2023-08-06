@@ -36,8 +36,9 @@ const NotificationsScreen = () => {
         queryClient.invalidateQueries(["notifications"]);
         navigateBasedOnType(
           variables?.type,
-          variables?.properties?.user?.id ??
-            variables?.properties?.activity?.id,
+          variables?.type === NotificationTypeEnum.ACTIVITY_REQ
+            ? variables?.properties?.activity?.id
+            : variables?.properties?.user?.id,
           variables?.id
         );
       },
@@ -77,8 +78,9 @@ const NotificationsScreen = () => {
       return notification?.seen
         ? navigateBasedOnType(
             notification?.type,
-            notification?.properties?.user?.id ??
-              notification?.properties?.activity?.id,
+            notification?.type === NotificationTypeEnum.ACTIVITY_REQ
+              ? notification?.properties?.activity?.id
+              : notification?.properties?.user?.id,
             notification?.id
           )
         : sendMarkNotification(notification);

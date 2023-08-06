@@ -23,6 +23,7 @@ import { IUpdateActivityRequestDto } from "./../../types/activities/update-activ
 import { IListParticipantsResponseDto } from "../../types/activities/list-participants-response.dto";
 import { ActivityInviteStateEnum } from "../../types/activities/activity-invite-state-enum.dto";
 import { ICreateGoogleEventWithTokenRequestDto } from "../../types/activities/create-google-event-with-token-request.dto";
+import { IActivityInviteValuesDto } from "../../types/activities/activity-invite-values.dto";
 
 export const getActivities = async ({
   queryFunctionContext,
@@ -377,6 +378,24 @@ export const changeParticipantStatus = (
   return promise;
 };
 
+export const inviteBuddyToActivity = (
+  activityId: number,
+  values: IActivityInviteValuesDto
+) => {
+  const CancelToken = axios.CancelToken;
+  const source = CancelToken.source();
+
+  const promise = axios.post(`/activities/${activityId}/participants`, values, {
+    cancelToken: source?.token,
+  });
+
+  //   queryFunctionContext?.signal?.addEventListener('abort', () => {
+  //     source.cancel('Query was cancelled by React Query')
+  //   })
+
+  return promise;
+};
+
 export const uninviteBuddy = (activityId: number, userId: number) => {
   const CancelToken = axios.CancelToken;
   const source = CancelToken.source();
@@ -483,7 +502,7 @@ export const uploadFile = (formData?: FormData) => {
   const CancelToken = axios.CancelToken;
   const source = CancelToken.source();
 
-  const promise = axios.post<{ fileName?: string }>(
+  const promise = axios.post<{ filename?: string }>(
     `${DEFAULT_DEV_URL}/files`,
     formData,
     {
