@@ -3,6 +3,7 @@ import logo from "../assets/img/profilePicture.jpg";
 import React from "react";
 import OffliButton from "./offli-button";
 import { IPerson } from "../types/activities/activity.dto";
+import { useGetApiUrl } from "../hooks/use-get-api-url";
 
 interface ILabeledDividerProps {
   imageSource?: string;
@@ -28,6 +29,7 @@ const BuddyItemInvite: React.FC<ILabeledDividerProps> = ({
   invited,
   ...rest
 }) => {
+  const baseUrl = useGetApiUrl();
   return (
     <Box
       //onClick={() => handleClick(checked)}
@@ -44,7 +46,11 @@ const BuddyItemInvite: React.FC<ILabeledDividerProps> = ({
     >
       <Box sx={{ display: "flex", alignItems: "center" }}>
         <StyledImage
-          src={buddy?.profile_photo_url ?? logo}
+          src={
+            buddy?.profile_photo
+              ? `${baseUrl}/files/${buddy?.profile_photo}`
+              : logo
+          }
           alt="profile picture"
         />
         <Typography sx={{ ml: 2, color: "black" }}>

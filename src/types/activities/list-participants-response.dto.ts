@@ -9,6 +9,6 @@ export interface IParticipantDto {
   id: number;
   name: string;
   username: string;
-  profile_photo_url: string;
+  profile_photo: string;
   status: string;
 }

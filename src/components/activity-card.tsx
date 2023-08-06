@@ -23,6 +23,8 @@ const ActivityCard: React.FC<IProps> = ({ activity, onPress, ...rest }) => {
     ? new Date(activity?.datetime_from)
     : null;
 
+  console.log(window.env);
+
   return (
     <Box
       sx={{
@@ -31,7 +33,7 @@ const ActivityCard: React.FC<IProps> = ({ activity, onPress, ...rest }) => {
         marginTop: "2%",
         marginBottom: "2%",
         borderRadius: "10px",
-        backgroundImage: `url(${activity?.title_picture})`,
+        backgroundImage: `url(${process.env.REACT_APP_API_URL}/${activity?.title_picture})`,
         // backgroundImage: `url(${activity?.title_picture})`,
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",

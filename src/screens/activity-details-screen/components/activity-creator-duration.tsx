@@ -2,6 +2,7 @@ import { Typography, Box, Chip } from "@mui/material";
 import React from "react";
 import { IPerson } from "../../../types/activities/activity.dto";
 import userPlaceholder from "../../../assets/img/user-placeholder.svg";
+import { useGetApiUrl } from "../../../hooks/use-get-api-url";
 
 interface IProps {
   creator?: IPerson;
@@ -14,6 +15,7 @@ const ActivityCreatorDuration: React.FC<IProps> = ({
   duration,
   createdDateTime,
 }) => {
+  const baseUrl = useGetApiUrl();
   return (
     <>
       <Box
@@ -41,7 +43,11 @@ const ActivityCreatorDuration: React.FC<IProps> = ({
             }}
           >
             <img
-              src={creator?.profile_photo_url ?? userPlaceholder}
+              src={
+                creator?.profile_photo
+                  ? `${baseUrl}/files/${creator?.profile_photo}`
+                  : userPlaceholder
+              }
               alt="profile"
               style={{
                 height: "25px",

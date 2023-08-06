@@ -171,7 +171,7 @@ const CreateActivityScreen = () => {
         id = undefined,
         name = undefined,
         username = undefined,
-        profile_photo_url = undefined,
+        profile_photo = undefined,
       } = { ...userData };
       mutate({
         ...restValues,

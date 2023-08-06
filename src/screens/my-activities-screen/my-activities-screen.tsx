@@ -79,14 +79,14 @@ const ActivitiesScreen = () => {
         id = undefined,
         name = undefined,
         username = undefined,
-        profile_photo_url = undefined,
+        profile_photo = undefined,
       } = { ...userData };
       return changeActivityParticipantStatus(Number(activityId), {
         id: Number(id),
         name,
         username,
         status: ActivityInviteStateEnum.CONFIRMED,
-        profile_photo_url,
+        profile_photo,
       });
     },
 

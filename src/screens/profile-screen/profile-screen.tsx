@@ -21,6 +21,7 @@ import OffliButton from "../../components/offli-button";
 import { useToggleBuddyRequest } from "./hooks/use-toggle-buddy-request";
 import { BuddyRequestActionEnum } from "../../types/users/buddy-request-action-enum.dto";
 import { deleteNotification } from "../../api/notifications/requests";
+import { useGetApiUrl } from "../../hooks/use-get-api-url";
 
 interface IProfileScreenProps {
   type: ProfileEntryTypeEnum;
@@ -38,6 +39,7 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
   const abortControllerRef = React.useRef<AbortController | null>(null);
   const queryParameters = new URLSearchParams(window.location.search);
   const instagramCode = queryParameters.get("code");
+  const baseUrl = useGetApiUrl();
   console.log(instagramCode);
 
   const { handleToggleBuddyRequest, isTogglingBuddyRequest } =
@@ -149,7 +151,11 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
           <img
             // todo add default picture in case of missing photo
             // src={data?.data?.profilePhotoUrl}
-            src={data?.profile_photo_url ?? userPlaceholder}
+            src={
+              data?.profile_photo
+                ? `${baseUrl}/files/${data?.profile_photo}`
+                : userPlaceholder
+            }
             alt="profile"
             style={{
               height: 90,
@@ -269,7 +275,7 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
             </OffliButton>
           </Box>
         ) : null}
-                {type === ProfileEntryTypeEnum.REQUEST ? (
+        {type === ProfileEntryTypeEnum.REQUEST ? (
           <Box
             sx={{
               display: "flex",
