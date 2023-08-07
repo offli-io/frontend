@@ -45,6 +45,7 @@ const MyBuddiesScreen = () => {
   const { enqueueSnackbar } = useSnackbar();
   const { userInfo } = React.useContext(AuthenticationContext);
   const location = useLocation();
+  const queryClient = useQueryClient();
   const from =
     (location?.state as ICustomizedLocationStateDto)?.from ??
     ApplicationLocations.PROFILE;
@@ -81,8 +82,9 @@ const MyBuddiesScreen = () => {
         //   variables?.properties?.user?.id ?? variables?.properties?.activity?.id
         // )
         toggleDrawer({ open: false, content: undefined });
+        //TODO invalidate only my data
+        queryClient.invalidateQueries(["user"]);
         invalidateBuddies();
-
         enqueueSnackbar("Buddy was successfully deleted", {
           variant: "success",
         });

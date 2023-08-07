@@ -1,7 +1,7 @@
 import axios from "axios";
 import qs from "qs";
 import { DEFAULT_DEV_URL } from "../../assets/config";
-import { ActivitiyParticipantStateEnum } from "../../types/activities/activity-participant-state-enum.dto";
+import { ActivitiyParticipantStatusEnum } from "../../types/activities/activity-participant-status-enum.dto";
 import {
   IActivity,
   IActivitySearchParams,
@@ -94,7 +94,7 @@ export const getParticipantActivities = ({
     {
       params: {
         participantId,
-        participantStatus: ActivitiyParticipantStateEnum.CONFIRMED,
+        participantStatus: ActivitiyParticipantStatusEnum.CONFIRMED,
       },
       // params: {
       //   text,

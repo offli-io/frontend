@@ -55,7 +55,8 @@ const BuddyItem: React.FC<IBuddyItemProps> = ({
             height: 40,
             width: 40,
             borderRadius: "50%",
-            boxShadow: shadows?.[3],
+            boxShadow: shadows?.[2],
+            margin: 1,
           }}
         />
         <Typography sx={{ ml: 2, color: "black" }}>

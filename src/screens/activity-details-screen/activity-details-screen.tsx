@@ -35,6 +35,7 @@ import { format } from "date-fns";
 import { DATE_TIME_FORMAT } from "../../utils/common-constants";
 import { getTimeDifference } from "../map-screen/utils/get-time-difference";
 import { useGetApiUrl } from "../../hooks/use-get-api-url";
+import { ActivitiyParticipantStatusEnum } from "../../types/activities/activity-participant-status-enum.dto";
 
 interface IProps {
   type: "detail" | "request";
@@ -199,7 +200,11 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
   const displayJoinButton = React.useMemo(
     () =>
       !!participants &&
-      !participants?.some(({ id }: IParticipantDto) => id === userInfo?.id),
+      participants?.some(
+        ({ id, status }: IParticipantDto) =>
+          id === userInfo?.id &&
+          status === ActivitiyParticipantStatusEnum.INVITED
+      ),
     [participants, userInfo?.id]
   );
 
@@ -237,7 +242,11 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
           margin: "auto",
         }}
       >
-        <Typography variant="h2" align="left">
+        <Typography
+          variant="h2"
+          align="left"
+          sx={{ overflow: "hidden", wordWrap: "break-word" }}
+        >
           {activity?.title}
         </Typography>
         <Box
@@ -304,32 +313,7 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
               : "-"
           }
         />
-        {/* <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            mt: 3,
-          }}
-        >
-          <Box>
-            <Typography variant="h5" align="left" sx={{ fontSize: "14px" }}>
-              Activity Creator
-            </Typography>
-            <Typography
-              variant="subtitle1"
-              align="left"
-              sx={{ fontSize: "11px" }}
-            >
-              {activity?.creator?.name}
-            </Typography>
-          </Box>
-          <Box>sdsdsd</Box>
-        </Box> */}
       </Box>
-
-      {/* ) : null} */}
-      {/* </PageWrapper> */}
     </>
   );
 };

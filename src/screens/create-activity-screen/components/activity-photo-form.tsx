@@ -94,7 +94,7 @@ export const ActivityPhotoForm: React.FC<IActivityPhotoFormProps> = ({
         });
         setLocalFile(null);
         //TODO construct server url
-        setValue("title_picture", `${baseUrl}/files/${data?.data?.filename}`);
+        setValue("title_picture", data?.data?.filename);
       },
       onError: (error) => {
         setIsImageUploading(false);
@@ -276,7 +276,7 @@ export const ActivityPhotoForm: React.FC<IActivityPhotoFormProps> = ({
             }}
           >
             <img
-              src={selectedPhoto}
+              src={`${baseUrl}/files/${selectedPhoto}`}
               alt="cropped"
               style={{
                 width: 280,
