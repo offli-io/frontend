@@ -20,14 +20,16 @@ const ActivityCreatorDuration: React.FC<IProps> = ({
     <>
       <Box
         sx={{
-          display: "flex",
-          alignItems: "flex-start",
-          justifyContent: "space-between",
+          display: "grid",
+          gridTemplateColumns: "7fr 3fr",
+          gap: 2,
+          alignItems: "center",
+          // justifyContent: "space-between",
           mt: 3,
           px: 1,
         }}
       >
-        <Box sx={{ mb: 1 }}>
+        <Box sx={{ mb: 1, overflow: "hidden" }}>
           <Typography
             variant="h5"
             align="left"
@@ -58,13 +60,13 @@ const ActivityCreatorDuration: React.FC<IProps> = ({
             <Typography
               variant="subtitle1"
               align="left"
-              sx={{ fontSize: "11px", ml: 0.3 }}
+              sx={{ fontSize: "11px", ml: 1 }}
             >
               {creator?.username}
             </Typography>
           </Box>
         </Box>
-        <Box sx={{ mb: 1 }}>
+        <Box sx={{ mb: 1, overflow: "hidden" }}>
           <Typography
             variant="h5"
             align="left"

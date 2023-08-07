@@ -49,7 +49,7 @@ const StyledText = styled(Typography)(() => ({
   overflow: "hidden",
   maxHeight: "1.4rem",
   lineHeight: "1.4rem",
-  fontWeight: "bold",
+  // fontWeight: "bold",
 }));
 
 const ActivityDetailsGrid: React.FC<IProps> = ({ activity, onActionClick }) => {
@@ -105,7 +105,7 @@ const ActivityDetailsGrid: React.FC<IProps> = ({ activity, onActionClick }) => {
           sx={{
             textDecoration: "none",
             fontSize: 15,
-            my: 0.5,
+            mt: 0.5,
             // fontWeight: "500",
           }}
         >
@@ -129,7 +129,7 @@ const ActivityDetailsGrid: React.FC<IProps> = ({ activity, onActionClick }) => {
           sx={{
             textDecoration: "none",
             fontSize: 15,
-            my: 0.5,
+            mt: 0.5,
             // fontWeight: "700",
           }}
           // endIcon={<CalendarTodayIcon />}
@@ -164,7 +164,7 @@ const ActivityDetailsGrid: React.FC<IProps> = ({ activity, onActionClick }) => {
           sx={{
             textDecoration: "none",
             fontSize: 15,
-            my: 0.5,
+            mt: 0.5,
             // fontWeight: "400",
           }}
         >
@@ -190,7 +190,7 @@ const ActivityDetailsGrid: React.FC<IProps> = ({ activity, onActionClick }) => {
           sx={{
             textDecoration: "none",
             fontSize: 15,
-            my: 0.5,
+            mt: 0.5,
             // fontWeight: "bold",
           }}
         >

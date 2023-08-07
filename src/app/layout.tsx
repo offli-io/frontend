@@ -39,6 +39,7 @@ export const Layout: React.FC<ILayoutProps> = ({ children }) => {
   });
 
   const isBuddyRequest = location?.pathname?.includes("/profile/request");
+  const isUserProfile = location?.pathname?.includes("/profile/user");
 
   React.useEffect(() => {
     //reset the header right content on route changes, in the future might be subject to change
@@ -110,9 +111,10 @@ export const Layout: React.FC<ILayoutProps> = ({ children }) => {
         >
           <Routes />
         </Box>
-        {stateToken && displayBottomNavigator && !isBuddyRequest && (
-          <BottomNavigator sx={{ height: "100%" }} />
-        )}
+        {stateToken &&
+          displayBottomNavigator &&
+          !isBuddyRequest &&
+          !isUserProfile && <BottomNavigator sx={{ height: "100%" }} />}
       </Box>
     </>
   );

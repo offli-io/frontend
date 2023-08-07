@@ -1,4 +1,11 @@
-import { Box, Button, Checkbox, styled, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Checkbox,
+  styled,
+  Typography,
+  useTheme,
+} from "@mui/material";
 import logo from "../assets/img/profilePicture.jpg";
 import React from "react";
 import OffliButton from "./offli-button";
@@ -31,6 +38,7 @@ const BuddyItemInvite: React.FC<ILabeledDividerProps> = ({
   isLoading,
   ...rest
 }) => {
+  const { shadows } = useTheme();
   const baseUrl = useGetApiUrl();
   return (
     <Box
@@ -55,20 +63,26 @@ const BuddyItemInvite: React.FC<ILabeledDividerProps> = ({
           mr: 1,
         }}
       >
-        <StyledImage
+        <img
           src={
             buddy?.profile_photo
               ? `${baseUrl}/files/${buddy?.profile_photo}`
               : logo
           }
-          alt="profile picture"
+          style={{
+            margin: 0.5,
+            height: 40,
+            borderRadius: "50%",
+            boxShadow: shadows?.[2],
+          }}
+          alt="profile"
         />
         <Typography sx={{ ml: 2, color: "black" }}>
           {buddy?.username}
         </Typography>
       </Box>
       <OffliButton
-        sx={{ height: 30, fontSize: 16 }}
+        sx={{ height: 30, fontSize: 16, mr: 2 }}
         onClick={() => onInviteClick && onInviteClick(buddy)}
         variant={invited ? "outlined" : "contained"}
         data-testid="toggle-buddy-invite-btn"

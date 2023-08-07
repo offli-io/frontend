@@ -39,6 +39,7 @@ const BuddySuggestCard: React.FC<ILabeledDividerProps> = ({
         alignItems: "center",
         justifyContent: "center",
         minWidth: 110,
+        overflow: "hidden",
         mx: 1,
       }}
     >
@@ -50,7 +51,15 @@ const BuddySuggestCard: React.FC<ILabeledDividerProps> = ({
         }
         alt="profile picture"
       />
-      <Typography variant="h6" sx={{ m: 1 }}>
+      <Typography
+        sx={{
+          fontSize: 14,
+          m: 1,
+          width: "100%",
+          wordWrap: "break-word",
+          textAlign: "center",
+        }}
+      >
         {buddy?.username}
       </Typography>
       <OffliButton
