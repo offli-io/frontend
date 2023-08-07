@@ -22,6 +22,7 @@ import { useToggleBuddyRequest } from "./hooks/use-toggle-buddy-request";
 import { BuddyRequestActionEnum } from "../../types/users/buddy-request-action-enum.dto";
 import { deleteNotification } from "../../api/notifications/requests";
 import { useGetApiUrl } from "../../hooks/use-get-api-url";
+import { useSendBuddyRequest } from "./hooks/use-send-buddy-request";
 
 interface IProfileScreenProps {
   type: ProfileEntryTypeEnum;
@@ -43,6 +44,8 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
 
   const { handleToggleBuddyRequest, isTogglingBuddyRequest } =
     useToggleBuddyRequest();
+  const { handleSendBuddyRequest, isSendingBuddyRequest } =
+    useSendBuddyRequest();
 
   const { data: { data = {} } = {}, isLoading } = useUser({
     id: id ? Number(id) : userInfo?.id,
@@ -274,7 +277,7 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
             </OffliButton>
           </Box>
         ) : null}
-        {type === ProfileEntryTypeEnum.REQUEST ? (
+        {type === ProfileEntryTypeEnum.USER_PROFILE ? (
           <Box
             sx={{
               display: "flex",
@@ -284,19 +287,11 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
             }}
           >
             <OffliButton
-              sx={{ fontSize: 14, width: "45%", mr: 2 }}
-              onClick={onBuddyRequestAccept}
+              sx={{ fontSize: 14, width: "50%" }}
+              onClick={() => handleSendBuddyRequest(Number(id))}
               isLoading={isTogglingBuddyRequest}
             >
-              Accept request
-            </OffliButton>
-            <OffliButton
-              sx={{ fontSize: 14, px: 3 }}
-              variant="outlined"
-              onClick={onBuddyRequestDecline}
-              isLoading={isTogglingBuddyRequest}
-            >
-              Decline
+              Add buddy
             </OffliButton>
           </Box>
         ) : null}
