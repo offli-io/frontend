@@ -335,13 +335,14 @@ export const getPredefinedTags = () => {
 
 export const changeActivityParticipantStatus = (
   activityId: number,
+  userId: number,
   userInfo: ICreateActivityParticipantRequestDto
 ) => {
   const CancelToken = axios.CancelToken;
   const source = CancelToken.source();
 
-  const promise = axios.post(
-    `${DEFAULT_DEV_URL}/activities/${activityId}/participants`,
+  const promise = axios.put(
+    `${DEFAULT_DEV_URL}/activities/${activityId}/participants/${userId}`,
     userInfo,
     {
       cancelToken: source?.token,

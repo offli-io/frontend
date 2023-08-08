@@ -1,27 +1,19 @@
+import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import {
   Box,
   Checkbox,
-  Divider,
   FormControlLabel,
   IconButton,
-  MenuItem,
-  TextField,
   Typography,
   useTheme,
 } from "@mui/material";
 import React from "react";
 import { Controller, UseFormReturn } from "react-hook-form";
+import { MobileCarousel } from "../../../components/mobile-carousel";
 import OffliButton from "../../../components/offli-button";
-import { MobileDatePicker } from "@mui/x-date-pickers/MobileDatePicker";
-import { format, add } from "date-fns";
 import TimePicker from "../../../components/time-picker";
-import { ActivityRepetitionOptionsEnum } from "../../../types/common/types";
-import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
-import { getNearestTime } from "../../../utils/nearest-tine.util";
-import {
-  ICarouselItem,
-  MobileCarousel,
-} from "../../../components/mobile-carousel";
+import { generateDateSlots } from "../utils/generate-date-slots.util";
+import { generateOptionsOrder } from "../utils/generate-options-order.util";
 
 interface IDateTimeForm {
   onNextClicked: () => void;
@@ -30,48 +22,6 @@ interface IDateTimeForm {
   methods: UseFormReturn;
 }
 
-const timeSlots = Array.from(new Array(24 * 2)).map(
-  (_, index) =>
-    `${index < 20 ? "0" : ""}${Math.floor(index / 2)}:${
-      index % 2 === 0 ? "00" : "30"
-    }`
-);
-
-const generateOptionsOrder = (type: "from" | "until") => {
-  const currentHour = new Date().getHours();
-  //new Date().getHours() + type === 'from' ? 1 : 2
-  const time = `${currentHour}:00`;
-  const index = timeSlots?.indexOf(time);
-  return timeSlots.slice(index).concat(timeSlots.slice(0, index));
-};
-
-//todo oursource into util functions
-export const generateDateSlots: (
-  isFirstSelected?: boolean
-) => ICarouselItem[] = (isFirstSelected?: boolean) => {
-  const dateSlots = [] as ICarouselItem[];
-  for (let i = 0; i < 5; i++) {
-    const date = add(new Date(), {
-      days: i,
-    });
-    dateSlots.push({
-      dateValue: date,
-      title: format(date, "EEEE").slice(0, 3),
-      description: format(date, "dd.MM.yyyy"),
-      disabled: false,
-      selected: isFirstSelected ? i === 0 : false,
-      id: `date_slot_${format(date, "dd.MM.yyyy")}`,
-    });
-  }
-  return dateSlots;
-};
-
-function roundMinutes(date: Date) {
-  date.setHours(date.getHours() + Math.round(date.getMinutes() / 60));
-  date.setMinutes(0, 0, 0); // Resets also seconds and milliseconds
-
-  return date;
-}
 interface ITimeValues {
   from?: string;
   until?: string;
@@ -84,45 +34,12 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
 }) => {
   const { control, formState, watch, setValue } = methods;
   const { palette } = useTheme();
-  const currentStartDate = watch("datetime_from");
-  const currentEndDate = watch("datetime_until");
   const [date, setDate] = React.useState({
     fromOptions: generateDateSlots(),
     untilOptions: generateDateSlots(),
   });
-
-  const [timeValues, setTimeValues] = React.useState<ITimeValues>({
-    from: "",
-    until: "",
-  });
-
   const [sameEndDate, setSameEndDate] = React.useState(true);
 
-  const handleTimeChange = React.useCallback(
-    (type: "datetime_from" | "datetime_until", value: string | null) => {
-      if (value) {
-        const timeSplit = value.split(":");
-        const _date = currentStartDate
-          ? new Date(currentStartDate)
-          : new Date();
-        _date.setHours(Number(timeSplit[0]), Number(timeSplit[1]), 0);
-
-        setValue(type, _date);
-        if (!currentStartDate) {
-          const _fromOptions = date?.fromOptions?.map((item, index) =>
-            index === 0 ? { ...item, selected: true } : item
-          );
-          setDate((options) => ({
-            ...options,
-            fromOptions: _fromOptions,
-          }));
-        }
-      }
-    },
-    [setValue, watch, currentStartDate, currentStartDate, date]
-  );
-
-  console.log(watch("datetime_from"));
   const isFormValid = !!watch("datetime_from") && !!watch("datetime_until");
 
   React.useEffect(() => {
@@ -134,18 +51,27 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
         setValue("datetime_until", selectedDate?.dateValue);
       }
     }
-  }, [date?.fromOptions]);
+  }, [date?.fromOptions, sameEndDate]);
+
+  React.useEffect(() => {
+    const selectedDate = date?.untilOptions?.find((item) => item.selected);
+    if (!sameEndDate) {
+      setValue("datetime_until", selectedDate?.dateValue);
+    }
+  }, [date?.untilOptions]);
 
   const handleItemSelect = React.useCallback(
     (type: "from" | "until", id?: string) => {
+      //if time has been already selected just append selected time
       if (type === "from") {
         const itemIndex: any = date.fromOptions?.findIndex(
           (_item) => _item.id === id
         );
         const _fromOptions = date.fromOptions.map((item) => ({
-          ...item,
+          ...{ ...item },
           selected: false,
         }));
+
         _fromOptions[itemIndex] = {
           ..._fromOptions[itemIndex],
           selected: true,
@@ -189,11 +115,29 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
     [date]
   );
 
+  const handleSameDateCheckboxCheck = React.useCallback(() => {
+    setSameEndDate((previousValue) => !previousValue);
+    const _untilOptions = date?.untilOptions.map((item) => ({
+      ...item,
+      selected: false,
+    }));
+    setDate((_dates) => ({
+      ..._dates,
+      untilOptions: _untilOptions,
+    }));
+  }, [date?.untilOptions]);
+
+  const fromTimeValue = watch("timeFrom");
+  const untilTimeValue = watch("timeUntil");
+
   const isTimeSelected =
-    timeValues?.from &&
-    timeValues?.from !== "" &&
-    timeValues?.until &&
-    timeValues?.until !== "";
+    !!fromTimeValue &&
+    fromTimeValue !== "" &&
+    !!untilTimeValue &&
+    untilTimeValue !== "";
+
+  console.log(watch("datetime_from"));
+  console.log(watch("datetime_until"));
 
   return (
     <Box
@@ -228,10 +172,7 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
           control={
             <Checkbox
               checked={sameEndDate}
-              onChange={() => {
-                setValue("datetime_until", watch("datetime_from"));
-                setSameEndDate((previousValue) => !previousValue);
-              }}
+              onChange={handleSameDateCheckboxCheck}
               data-testid="same-end-date-checkbox"
             />
           }
@@ -261,20 +202,28 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
             alignItems: "center",
           }}
         >
-          <TimePicker
-            label="From"
-            sx={{ width: "40%", mr: 2 }}
-            onChange={(value: string | null) => {
-              setTimeValues((previousValues) => ({
-                ...previousValues,
-                from: value ?? undefined,
-              }));
-              handleTimeChange("datetime_from", value);
-            }}
-            options={generateOptionsOrder("from")}
-            value={timeValues?.from}
-            data-testid="activitiy-from-time-picker"
+          <Controller
+            name="timeFrom"
+            control={control}
+            render={({ field: { value, onChange }, fieldState: { error } }) => (
+              <TimePicker
+                value={value}
+                onChange={onChange}
+                label="From"
+                sx={{ width: "40%", mr: 2 }}
+                // onChange={(value: string | null) => {
+                //   setTimeValues((previousValues) => ({
+                //     ...previousValues,
+                //     from: value ?? undefined,
+                //   }));
+                //   handleTimeChange("datetime_from", value);
+                // }}
+                options={generateOptionsOrder("from")}
+                data-testid="activitiy-from-time-picker"
+              />
+            )}
           />
+
           <Typography
             sx={{
               fontWeight: 200,
@@ -285,18 +234,26 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
             -
           </Typography>
 
-          <TimePicker
-            label="To"
-            sx={{ width: "40%", ml: 2 }}
-            onChange={(value: string | null) => {
-              setTimeValues((previousValues) => ({
-                ...previousValues,
-                until: value ?? undefined,
-              }));
-              handleTimeChange("datetime_until", value);
-            }}
-            options={generateOptionsOrder("until")}
-            data-testid="activitiy-to-time-picker"
+          <Controller
+            name="timeUntil"
+            control={control}
+            render={({ field: { value, onChange }, fieldState: { error } }) => (
+              <TimePicker
+                value={value}
+                onChange={onChange}
+                label="Until"
+                sx={{ width: "40%", ml: 2 }}
+                // onChange={(value: string | null) => {
+                //   setTimeValues((previousValues) => ({
+                //     ...previousValues,
+                //     until: value ?? undefined,
+                //   }));
+                //   handleTimeChange("datetime_until", value);
+                // }}
+                options={generateOptionsOrder("until")}
+                data-testid="activitiy-to-time-picker"
+              />
+            )}
           />
         </Box>
       </Box>
