@@ -9,12 +9,13 @@ import { ICustomizedLocationStateDto } from "../../../types/common/customized-lo
 import { deleteNotification } from "../../../api/notifications/requests";
 import { sendBuddyRequest } from "../../../api/activities/requests";
 
-interface IToggleBuddyRequestValues {
-  status?: BuddyRequestActionEnum;
-  buddyToBeId?: number;
+interface IUseSendBuddyRequestProps {
+  onSuccess?: () => void;
 }
 
-export const useSendBuddyRequest = () => {
+export const useSendBuddyRequest = ({
+  onSuccess,
+}: IUseSendBuddyRequestProps = {}) => {
   const { enqueueSnackbar } = useSnackbar();
   const queryClient = useQueryClient();
   const abortControllerRef = React.useRef<AbortController | null>(null);
@@ -31,17 +32,14 @@ export const useSendBuddyRequest = () => {
       (userId?: number) => sendBuddyRequest(userInfo?.id, Number(userId)),
       {
         onSuccess: (data, variables) => {
-          //TODO what to invalidate, and where to navigate after success
-          // queryClient.invalidateQueries(['notifications'])
-          // navigateBasedOnType(
-          //   variables?.type,
-          //   variables?.properties?.user?.id ?? variables?.properties?.activity?.id
-          // )
-          // queryClient.invalidateQueries(["notifications"]);
           enqueueSnackbar("Buddy request successfully sent", {
             variant: "success",
           });
-          navigate(from as To);
+          if (!!onSuccess) {
+            onSuccess?.();
+          } else {
+            navigate(from as To);
+          }
         },
         onError: () => {
           enqueueSnackbar("Failed to send buddy request", {
