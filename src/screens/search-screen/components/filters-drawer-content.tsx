@@ -15,7 +15,7 @@ import {
 } from "../../../components/mobile-carousel";
 import OffliButton from "../../../components/offli-button";
 import { useTags } from "../../../hooks/use-tags";
-import { generateDateSlots } from "../../create-activity-screen/components/date-time-form";
+import { generateDateSlots } from "../../create-activity-screen/utils/generate-date-slots.util";
 import { IFiltersDto } from "../types/filters.dto";
 import { RadioGroupDataDefinitionsEnum } from "../utils/radio-group-data-definitions";
 

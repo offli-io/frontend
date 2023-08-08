@@ -23,6 +23,7 @@ import { ActivityTypeForm } from "./components/activity-type-form";
 import { DateTimeForm } from "./components/date-time-form";
 import { NameForm } from "./components/name-form";
 import { PlaceForm } from "./components/place-form";
+import { setHours, setMinutes } from "date-fns";
 
 export interface FormValues {
   title?: string;
@@ -40,6 +41,8 @@ export interface FormValues {
   visibility?: ActivityVisibilityEnum;
   limit?: number;
   isActivityFree?: boolean;
+  timeFrom?: string | null;
+  timeUntil?: string | null;
 }
 
 const schema: (activeStep: number) => yup.SchemaOf<FormValues> = (
@@ -109,6 +112,14 @@ const schema: (activeStep: number) => yup.SchemaOf<FormValues> = (
       .oneOf(Object.values(ActivityVisibilityEnum))
       .notRequired(),
     isActivityFree: yup.bool().notRequired(),
+    timeFrom:
+      activeStep === 3
+        ? yup.string().defined().required().nullable(true)
+        : yup.string().notRequired().nullable(true),
+    timeUntil:
+      activeStep === 3
+        ? yup.string().defined().required().nullable(true)
+        : yup.string().notRequired().nullable(true),
   });
 
 const CreateActivityScreen = () => {
@@ -132,6 +143,8 @@ const CreateActivityScreen = () => {
       limit: 10,
       location: null,
       isActivityFree: true,
+      timeFrom: null,
+      timeUntil: null,
     },
     resolver: yupResolver(schema(activeStep)),
     mode: "onChange",
@@ -164,14 +177,29 @@ const CreateActivityScreen = () => {
       const { placeQuery, price, isActivityFree, ...restValues } = data;
       //TODO fill with real user data
       const finalPrice = isActivityFree ? 0 : price;
-      const {
-        id = undefined,
-        name = undefined,
-        username = undefined,
-        profile_photo = undefined,
-      } = { ...userData };
+      const { id = undefined } = { ...userData };
+
+      // handle time values in from and until datetime
+      const fromTimeValues = data?.timeFrom?.split(":");
+      const dateTimeFrom = data?.datetime_from
+        ? setMinutes(
+            setHours(data?.datetime_from, Number(fromTimeValues?.[0])),
+            Number(fromTimeValues?.[1])
+          )
+        : undefined;
+
+      const untilTimeValues = data?.timeUntil?.split(":");
+      const dateTimeUntil = data?.datetime_until
+        ? setMinutes(
+            setHours(data?.datetime_until, Number(untilTimeValues?.[0])),
+            Number(untilTimeValues?.[1])
+          )
+        : undefined;
+
       mutate({
         ...restValues,
+        datetime_from: dateTimeFrom,
+        datetime_until: dateTimeUntil,
         price: finalPrice,
         creator_id: id,
       });

@@ -52,7 +52,6 @@ export const ActivityPhotoForm: React.FC<IActivityPhotoFormProps> = ({
   // });
   // const [croppedImage, setCroppedImage] = React.useState(null);
 
-  console.log(selectedPhoto);
   const [localFile, setLocalFile] = React.useState<any>();
   const [crop, setCrop] = React.useState({ x: 0, y: 0 });
   const [zoom, setZoom] = React.useState(1);

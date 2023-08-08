@@ -21,7 +21,6 @@ const BottomNavigator: React.FC<IBottomNavigatorProps> = ({ sx }) => {
   const [value, setValue] = React.useState<ApplicationLocations>(
     ApplicationLocations.ACTIVITIES
   );
-  const [isActionRequired, setIsActionRequired] = React.useState(false);
   const { userInfo } = React.useContext(AuthenticationContext);
   const { mode } = React.useContext(CustomizationContext);
 
@@ -33,15 +32,6 @@ const BottomNavigator: React.FC<IBottomNavigatorProps> = ({ sx }) => {
 
   const isUserProfile = location?.pathname?.includes("/profile/user");
 
-  React.useEffect(() => {
-    setValue(location?.pathname as ApplicationLocations);
-    if (location?.pathname.includes("/request") || isUserProfile) {
-      setIsActionRequired(true);
-    } else {
-      setIsActionRequired(false);
-    }
-  }, [location]);
-
   return (
     <Paper
       sx={{
@@ -51,11 +41,6 @@ const BottomNavigator: React.FC<IBottomNavigatorProps> = ({ sx }) => {
         right: 0,
         width: "100%",
         height: HEADER_HEIGHT,
-        ...(isActionRequired && {
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }),
         bgcolor: palette?.background?.default,
 
         // boxShadow: 15,
