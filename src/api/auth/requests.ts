@@ -48,8 +48,11 @@ export const loginViaGoogle = (accessToken?: string, signal?: AbortSignal) => {
 
 export const getBearerToken = (
   code: string,
-  from: GoogleAuthCodeFromEnumDto
+  from: GoogleAuthCodeFromEnumDto,
+  signal?: AbortSignal
 ) => {
+  const CancelToken = axios.CancelToken;
+  const source = CancelToken.source();
   const currentUrl =
     // [
     //   GoogleAuthCodeFromEnumDto.LOGIN,
@@ -58,13 +61,23 @@ export const getBearerToken = (
     // ? window.location.href
     window.location.href.split("/").slice(0, -1).join("/");
 
-  const promise = axios.post("https://www.googleapis.com/oauth2/v4/token", {
-    client_id: CLIENT_ID,
-    client_secret: "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",
-    code,
-    grant_type: "authorization_code",
-    redirect_uri: `${currentUrl}/`,
-    // redirect_uri: "https://localhost:3000/activity/detail/9/",
+  const promise = axios.post(
+    "https://www.googleapis.com/oauth2/v4/token",
+    {
+      client_id: CLIENT_ID,
+      client_secret: "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",
+      code,
+      grant_type: "authorization_code",
+      redirect_uri: `${currentUrl}/`,
+      // redirect_uri: "https://localhost:3000/activity/detail/9/",
+    },
+    {
+      cancelToken: source?.token,
+    }
+  );
+
+  signal?.addEventListener("abort", () => {
+    source.cancel("Query was cancelled by React Query");
   });
 
   return promise;

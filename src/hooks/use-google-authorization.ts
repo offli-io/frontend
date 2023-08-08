@@ -15,10 +15,18 @@ export const useGoogleAuthorization = ({
 }: IUseGoogleAuthorizationProps) => {
   const [googleToken, setGoogleToken] = React.useState<string | null>(null);
   const { enqueueSnackbar } = useSnackbar();
+  const abortControllerRef = React.useRef<AbortController | null>(null);
 
-  const { mutate: sendGetBearerToken } = useMutation(
+  const { mutate: sendGetBearerToken, isLoading } = useMutation(
     ["bearer-token"],
-    (authorizationCode: string) => getBearerToken(authorizationCode, from),
+    (authorizationCode: string) => {
+      abortControllerRef.current = new AbortController();
+      return getBearerToken(
+        authorizationCode,
+        from,
+        abortControllerRef?.current?.signal
+      );
+    },
     {
       onSuccess: (data, params) => {
         data?.data?.access_token && setGoogleToken(data?.data?.access_token);
@@ -50,5 +58,6 @@ export const useGoogleAuthorization = ({
     googleToken,
     handleGoogleAuthorization,
     state: paramsStateParsed,
+    isLoading,
   };
 };

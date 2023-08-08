@@ -86,8 +86,7 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
     useMutation(
       ["join-activity"],
       () =>
-        changeActivityParticipantStatus(Number(id), {
-          id: Number(userInfo?.id),
+        changeActivityParticipantStatus(Number(id), Number(userInfo?.id), {
           status: ActivityInviteStateEnum.CONFIRMED,
         }),
       {

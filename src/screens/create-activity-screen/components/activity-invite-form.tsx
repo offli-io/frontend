@@ -5,8 +5,6 @@ import React from "react";
 import { UseFormReturn } from "react-hook-form";
 import { useDebounce } from "use-debounce";
 import {
-  changeActivityParticipantStatus,
-  changeParticipantStatus,
   getBuddies,
   inviteBuddyToActivity,
   uninviteBuddy,
