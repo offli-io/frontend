@@ -37,6 +37,7 @@ import {
   getBuddies,
   getRecommendedBuddies,
 } from "../../api/activities/requests";
+import { useSendBuddyRequest } from "../profile-screen/hooks/use-send-buddy-request";
 
 const MyBuddiesScreen = () => {
   const navigate = useNavigate();
@@ -53,11 +54,19 @@ const MyBuddiesScreen = () => {
     text: currentSearch,
   });
 
+  const { handleSendBuddyRequest, isSendingBuddyRequest } = useSendBuddyRequest(
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(["recommended-buddies"]);
+      },
+    }
+  );
+
   const {
     data: recommendedBuddiesData,
     isLoading: areBuddiesRecommendationsLoading,
   } = useQuery(
-    ["buddies", userInfo?.id],
+    ["recommended-buddies", userInfo?.id],
     () => getRecommendedBuddies(userInfo?.id ?? -1),
     {
       onError: () => {
@@ -91,32 +100,6 @@ const MyBuddiesScreen = () => {
       },
       onError: () => {
         enqueueSnackbar("Failed to delete buddy", {
-          variant: "error",
-        });
-      },
-    }
-  );
-
-  const { mutate: sendAddBuddy, isLoading: isAddBuddyLoading } = useMutation(
-    ["add-buddy"],
-    (id?: number) => addBuddy(userInfo?.id, id),
-    {
-      onSuccess: (data, variables) => {
-        //TODO what to invalidate, and where to navigate after success
-        // queryClient.invalidateQueries(['notifications'])
-        // navigateBasedOnType(
-        //   variables?.type,
-        //   variables?.properties?.user?.id ?? variables?.properties?.activity?.id
-        // )
-        // toggleDrawer({ open: false, content: undefined });
-        invalidateBuddies();
-
-        enqueueSnackbar("Buddy request was sent", {
-          variant: "success",
-        });
-      },
-      onError: () => {
-        enqueueSnackbar("Failed to add new buddy", {
           variant: "error",
         });
       },
@@ -236,8 +219,10 @@ const MyBuddiesScreen = () => {
                       <BuddySuggestCard
                         key={buddy?.id}
                         buddy={buddy}
-                        onAddBuddyClick={(buddy) => sendAddBuddy(buddy?.id)}
-                        isLoading={isAddBuddyLoading}
+                        onAddBuddyClick={(buddy) =>
+                          handleSendBuddyRequest(buddy?.id)
+                        }
+                        isLoading={isSendingBuddyRequest}
                       />
                     </>
                   ))}
