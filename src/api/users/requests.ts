@@ -6,6 +6,7 @@ import {
   IEmailVerificationCode,
 } from "../../types/users/user.dto";
 import { BuddyRequestActionEnum } from "../../types/users/buddy-request-action-enum.dto";
+import { IBuddyStateResponseDto } from "../../types/users/buddy-state-response.dto";
 
 export const preCreateUser = async (values: IEmailUsernamePassword) => {
   const CancelToken = axios.CancelToken;
@@ -58,6 +59,20 @@ export const checkIfUsernameAlreadyTaken = async (username?: string) => {
 
   const promise = axios.get<boolean>(
     `${DEFAULT_DEV_URL}/registration/users/${username}`,
+    {
+      // params: searchParams,
+      cancelToken: source?.token,
+    }
+  );
+  return promise;
+};
+
+export const getBuddyState = (id: number, buddyId: number) => {
+  const CancelToken = axios.CancelToken;
+  const source = CancelToken.source();
+
+  const promise = axios.get<IBuddyStateResponseDto>(
+    `${DEFAULT_DEV_URL}/users/${id}/buddies/${buddyId}`,
     {
       // params: searchParams,
       cancelToken: source?.token,

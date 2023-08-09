@@ -13,7 +13,13 @@ interface IToggleBuddyRequestValues {
   buddyToBeId?: number;
 }
 
-export const useToggleBuddyRequest = () => {
+interface IUseToggleBuddyRequestProps {
+  onSuccess?: () => void;
+}
+
+export const useToggleBuddyRequest = ({
+  onSuccess,
+}: IUseToggleBuddyRequestProps = {}) => {
   const { enqueueSnackbar } = useSnackbar();
   const queryClient = useQueryClient();
   const abortControllerRef = React.useRef<AbortController | null>(null);
@@ -63,11 +69,25 @@ export const useToggleBuddyRequest = () => {
       },
       {
         onSuccess: (data, variables) => {
+          queryClient.invalidateQueries(["buddies"]);
+          queryClient.invalidateQueries(["buddy-state"]);
+
           if (variables?.status === BuddyRequestActionEnum.CONFIRM) {
             enqueueSnackbar("You have successfully added user as your buddy", {
               variant: "success",
             });
-            queryClient.invalidateQueries(["buddies"]);
+          }
+
+          if (variables?.status === BuddyRequestActionEnum.REJECT) {
+            enqueueSnackbar("You have successfully declined buddy request", {
+              variant: "success",
+            });
+          }
+
+          if (!!onSuccess) {
+            onSuccess?.();
+          } else {
+            // TODO we can be accepting from users search not only from notifications
             sendDeleteNotification();
           }
         },

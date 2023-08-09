@@ -255,7 +255,7 @@ const MyBuddiesScreen = () => {
               ) : (
                 <Box
                   sx={{
-                    height: 300,
+                    // height: 300,
                     width: "100%",
                     overflowY: "auto",
                     overflowX: "hidden",

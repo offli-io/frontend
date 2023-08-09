@@ -7,9 +7,13 @@ import { useGetApiUrl } from "../hooks/use-get-api-url";
 
 interface IProfileGalleryProps {
   photoUrls?: string[];
+  isOtherProfile?: boolean;
 }
 
-const ProfileGallery: React.FC<IProfileGalleryProps> = ({ photoUrls }) => {
+const ProfileGallery: React.FC<IProfileGalleryProps> = ({
+  photoUrls,
+  isOtherProfile,
+}) => {
   const { shadows } = useTheme();
   const handleConnectInstagram = React.useCallback(() => {
     window.location.href =
@@ -76,7 +80,7 @@ const ProfileGallery: React.FC<IProfileGalleryProps> = ({ photoUrls }) => {
             </Box>
           </>
         </Box>
-      ) : (
+      ) : !isOtherProfile ? (
         <Box
           sx={{
             display: "flex",
@@ -98,7 +102,7 @@ const ProfileGallery: React.FC<IProfileGalleryProps> = ({ photoUrls }) => {
             Connect instagram
           </OffliButton>
         </Box>
-      )}
+      ) : null}
     </Box>
   );
 };
