@@ -32,7 +32,6 @@ import {
 } from "../../utils/activities-constants";
 import ActionButton from "../../components/action-button";
 import { useTags } from "../../hooks/use-tags";
-import { IPredefinedTagDto } from "../../types/activities/predefined-tag.dto";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useSnackbar } from "notistack";
 import { ApplicationLocations } from "../../types/common/applications-locations.dto";
@@ -51,7 +50,7 @@ interface IEditActivity {
   endDateTime: Date | string;
   isPrivate: boolean;
   maxAttendance: number;
-  price: string;
+  price?: number;
   additionalDesc: string;
   placeQuery?: string;
 }
@@ -80,7 +79,7 @@ const schema: () => yup.SchemaOf<IEditActivity> = () =>
       .number()
       .defined()
       .required("Please enter How many people can attend"),
-    price: yup.string().defined().required("Please enter the Price"),
+    price: yup.number().defined().required("Please enter the Price"),
     additionalDesc: yup
       .string()
       .defined()
@@ -131,7 +130,7 @@ const EditActivityScreen: React.FC = () => {
       endDateTime: new Date(), // TODO: pridava 2 hodiny kvoli timezone
       isPrivate: true,
       maxAttendance: MAX_ACTIVITY_ATTENDANCE,
-      price: "",
+      price: 0,
       additionalDesc: "",
     },
     resolver: yupResolver(schema()),
@@ -215,16 +214,16 @@ const EditActivityScreen: React.FC = () => {
       }
     }
 
-    reset({
-      title: activity?.title,
-      location: activity?.location,
-      startDateTime: dateTimeFrom?.toString(),
-      endDateTime: dateTimeUntil?.toString(),
-      isPrivate: isPrivateA,
-      maxAttendance: activity?.limit,
-      price: activity?.price,
-      additionalDesc: activity?.description,
-    });
+    // reset({
+    //   title: activity?.title,
+    //   location: activity?.location,
+    //   startDateTime: dateTimeFrom?.toString(),
+    //   endDateTime: dateTimeUntil?.toString(),
+    //   isPrivate: isPrivateA,
+    //   maxAttendance: activity?.limit,
+    //   price: activity?.price,
+    //   additionalDesc: activity?.description,
+    // });
   }, [activity]);
 
   // const { mutate: sendUpdateActivity } = useMutation(
@@ -297,7 +296,7 @@ const EditActivityScreen: React.FC = () => {
           <img
             onClick={() => console.log("change profile photo")}
             // todo add default picture in case of missing photo
-            src={activity?.title_picture_url}
+            src={activity?.title_picture}
             alt="profile"
             style={{
               height: "100px",
