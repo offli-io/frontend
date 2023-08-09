@@ -15,6 +15,7 @@ import {
   useMap,
   useMapEvents,
 } from "react-leaflet";
+import MarkerClusterGroup from "react-leaflet-cluster";
 import { LatLng, LatLngTuple } from "leaflet";
 import { IActivity } from "../types/activities/activity.dto";
 import PlaceIcon from "@mui/icons-material/Place";
@@ -134,21 +135,22 @@ const Map: React.FC<ILabeledTileProps> = ({
             mode === "light" ? "sunny" : "dark"
           }/{z}/{x}/{y}{r}.png?access-token=dY2cc1f9EUuag5geOpQB30R31VnRRhl7O401y78cM0NWSvzLf7irQSUGfA4m7Va5`}
         />
-        {activities?.map(
-          ({ title = "Activity", location = null, id } = {}) =>
-            location?.coordinates && (
-              <Marker
-                key={`activity_${id}`}
-                position={[
-                  location?.coordinates?.lat ?? position[0],
-                  location?.coordinates?.lon ?? position[1],
-                ]}
-                eventHandlers={{
-                  click: () => handleMarkerClick(id),
-                }}
-                icon={offliMarkerIcon}
-              >
-                {/* 
+        <MarkerClusterGroup chunkedLoading>
+          {activities?.map(
+            ({ title = "Activity", location = null, id } = {}) =>
+              location?.coordinates && (
+                <Marker
+                  key={`activity_${id}`}
+                  position={[
+                    location?.coordinates?.lat ?? position[0],
+                    location?.coordinates?.lon ?? position[1],
+                  ]}
+                  eventHandlers={{
+                    click: () => handleMarkerClick(id),
+                  }}
+                  icon={offliMarkerIcon}
+                >
+                  {/* 
                 Maybe omit popup because activity detail will be displayed with drawer
                 <Popup>
                   <Typography
@@ -159,20 +161,25 @@ const Map: React.FC<ILabeledTileProps> = ({
                     {title}
                   </Typography>
                 </Popup>{" "} */}
-              </Marker>
-            )
-        )}
-        <Marker position={latLonTuple ?? position} icon={offliMarkerIcon}>
-          <Popup>You are here</Popup>
-        </Marker>
-        <RecenterAutomatically
-          lat={
-            isSingleActivity ? latLonTupleSingle[0] : currentLocation?.latitude
-          }
-          lon={
-            isSingleActivity ? latLonTupleSingle[1] : currentLocation?.longitude
-          }
-        />
+                </Marker>
+              )
+          )}
+          <Marker position={latLonTuple ?? position} icon={offliMarkerIcon}>
+            <Popup>You are here</Popup>
+          </Marker>
+          <RecenterAutomatically
+            lat={
+              isSingleActivity
+                ? latLonTupleSingle[0]
+                : currentLocation?.latitude
+            }
+            lon={
+              isSingleActivity
+                ? latLonTupleSingle[1]
+                : currentLocation?.longitude
+            }
+          />
+        </MarkerClusterGroup>
       </MapContainer>
     </Box>
   );
