@@ -12,6 +12,7 @@ import { UseFormReturn } from "react-hook-form";
 import { getPredefinedTags } from "../../../api/activities/requests";
 import LabeledTile from "../../../components/labeled-tile";
 import OffliButton from "../../../components/offli-button";
+import { useGetApiUrl } from "../../../hooks/use-get-api-url";
 
 interface IActivityTypeFormProps {
   onNextClicked: () => void;
@@ -26,6 +27,7 @@ export const ActivityTypeForm: React.FC<IActivityTypeFormProps> = ({
 }) => {
   const { control, setValue, watch } = methods;
   const { palette } = useTheme();
+  const baseUrl = useGetApiUrl();
 
   const tags: string[] = watch("tags") ?? [];
 
@@ -90,17 +92,18 @@ export const ActivityTypeForm: React.FC<IActivityTypeFormProps> = ({
             <CircularProgress color="primary" />
           </Box>
         ) : tiles?.length > 0 ? (
-          tiles?.map(({ title, picture_url }, index) => (
+          tiles?.map((tag, index) => (
             <LabeledTile
               key={index}
-              title={title}
+              title={tag}
               onClick={handleTileClick}
-              selected={tags?.includes(title)}
+              selected={tags?.includes(tag)}
               sx={{
                 width: "42%",
                 mb: 2,
               }}
-              imageUrl={picture_url}
+              //TODO construct URL
+              imageUrl={`${baseUrl}/predefined/tags/${tag}`}
             />
           ))
         ) : (

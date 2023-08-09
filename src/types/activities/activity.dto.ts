@@ -5,14 +5,14 @@ export interface IPerson {
   id?: number;
   name?: string;
   username?: string;
-  profile_photo_url?: string;
+  profile_photo?: string;
 }
 
 export interface IPersonExtended {
   id?: number;
   username?: string;
   name?: string;
-  profile_photo_url?: string;
+  profile_photo?: string;
   buddies?: IPerson[] | null;
   buddies_count?: number;
   activities?: string[] | null;
@@ -41,8 +41,8 @@ export interface IActivity {
   id?: number;
   title?: string;
   description?: string;
-  price?: string;
-  title_picture_url?: string;
+  price?: number | null;
+  title_picture?: string;
   creator_id?: number;
   datetime_from?: Date | string;
   datetime_until?: Date | string;
@@ -57,7 +57,7 @@ export interface IActivity {
   count_confirmed?: number;
   count_invited?: number;
   count_rejected?: number;
-  created_at?: string;
+  created_at?: Date;
   modified_at?: string;
   participant_status?: string;
 }

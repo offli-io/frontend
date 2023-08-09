@@ -73,20 +73,11 @@ const ActivitiesScreen = () => {
   );
 
   const { mutate: sendJoinActivity } = useMutation(
-    ["invite-person"],
+    ["join-activity-response"],
     (activityId?: number) => {
-      const {
-        id = undefined,
-        name = undefined,
-        username = undefined,
-        profile_photo_url = undefined,
-      } = { ...userData };
-      return changeActivityParticipantStatus(Number(activityId), {
-        id: Number(id),
-        name,
-        username,
+      const { id = undefined } = { ...userData };
+      return changeActivityParticipantStatus(Number(activityId), Number(id), {
         status: ActivityInviteStateEnum.CONFIRMED,
-        profile_photo_url,
       });
     },
 

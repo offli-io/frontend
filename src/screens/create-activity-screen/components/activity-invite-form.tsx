@@ -5,9 +5,8 @@ import React from "react";
 import { UseFormReturn } from "react-hook-form";
 import { useDebounce } from "use-debounce";
 import {
-  changeActivityParticipantStatus,
-  changeParticipantStatus,
   getBuddies,
+  inviteBuddyToActivity,
   uninviteBuddy,
 } from "../../../api/activities/requests";
 import { AuthenticationContext } from "../../../assets/theme/authentication-provider";
@@ -46,14 +45,14 @@ export const ActivityInviteForm: React.FC<IActivityTypeFormProps> = ({
     }
   );
 
-  const { mutate: sendInviteBuddy } = useMutation(
+  const { mutate: sendInviteBuddy, isLoading: isInviting } = useMutation(
     ["invite-participant"],
     (buddy?: IPerson) =>
-      changeParticipantStatus(
-        Number(activityId?.id),
-        Number(buddy?.id),
-        ActivityInviteStateEnum.INVITED
-      ),
+      inviteBuddyToActivity(Number(activityId?.id), {
+        id: Number(buddy?.id),
+        status: ActivityInviteStateEnum.INVITED,
+        invited_by_id: Number(userInfo?.id),
+      }),
     {
       onSuccess: (data, buddy) => {
         setInvitedBuddies([...invitedBuddies, Number(buddy?.id)]);
@@ -64,7 +63,7 @@ export const ActivityInviteForm: React.FC<IActivityTypeFormProps> = ({
     }
   );
 
-  const { mutate: sendUninviteBuddy } = useMutation(
+  const { mutate: sendUninviteBuddy, isLoading: isUninviting } = useMutation(
     ["uninvite-person"],
     (buddyId?: number) =>
       uninviteBuddy(Number(activityId?.id), Number(buddyId)),
@@ -156,6 +155,7 @@ export const ActivityInviteForm: React.FC<IActivityTypeFormProps> = ({
                   onInviteClick={handleBuddyInviteClick}
                   buddy={buddy}
                   invited={invitedBuddies?.includes(Number(buddy?.id))}
+                  isLoading={isInviting || isUninviting}
                 />
               ))
             )}

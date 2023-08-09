@@ -1,7 +1,7 @@
 import axios from "axios";
 import qs from "qs";
 import { DEFAULT_DEV_URL } from "../../assets/config";
-import { ActivitiyParticipantStateEnum } from "../../types/activities/activity-participant-state-enum.dto";
+import { ActivitiyParticipantStatusEnum } from "../../types/activities/activity-participant-status-enum.dto";
 import {
   IActivity,
   IActivitySearchParams,
@@ -15,12 +15,15 @@ import {
   IPlaceExternalApiDto,
   IPlaceExternalApiFetchDto,
 } from "../../types/activities/place-external-api.dto";
-import { IPredefinedPictureDto } from "../../types/activities/predefined-picture.dto";
-import { IPredefinedTagDto } from "../../types/activities/predefined-tag.dto";
+import {
+  IPredefinedPictureDto,
+  IPredefinedPictureResponseDto,
+} from "../../types/activities/predefined-picture.dto";
 import { IUpdateActivityRequestDto } from "./../../types/activities/update-activity-request.dto";
 import { IListParticipantsResponseDto } from "../../types/activities/list-participants-response.dto";
 import { ActivityInviteStateEnum } from "../../types/activities/activity-invite-state-enum.dto";
 import { ICreateGoogleEventWithTokenRequestDto } from "../../types/activities/create-google-event-with-token-request.dto";
+import { IActivityInviteValuesDto } from "../../types/activities/activity-invite-values.dto";
 
 export const getActivities = async ({
   queryFunctionContext,
@@ -91,7 +94,7 @@ export const getParticipantActivities = ({
     {
       params: {
         participantId,
-        participantStatus: ActivitiyParticipantStateEnum.CONFIRMED,
+        participantStatus: ActivitiyParticipantStatusEnum.CONFIRMED,
       },
       // params: {
       //   text,
@@ -338,7 +341,7 @@ export const getPredefinedTags = () => {
   const CancelToken = axios.CancelToken;
   const source = CancelToken.source();
 
-  const promise = axios.get<{ tags: IPredefinedTagDto[] }>(
+  const promise = axios.get<{ tags: string[] }>(
     `${DEFAULT_DEV_URL}/predefined/tags`,
     {
       cancelToken: source?.token,
@@ -354,13 +357,14 @@ export const getPredefinedTags = () => {
 
 export const changeActivityParticipantStatus = (
   activityId: number,
+  userId: number,
   userInfo: ICreateActivityParticipantRequestDto
 ) => {
   const CancelToken = axios.CancelToken;
   const source = CancelToken.source();
 
-  const promise = axios.post(
-    `${DEFAULT_DEV_URL}/activities/${activityId}/participants`,
+  const promise = axios.put(
+    `${DEFAULT_DEV_URL}/activities/${activityId}/participants/${userId}`,
     userInfo,
     {
       cancelToken: source?.token,
@@ -397,6 +401,24 @@ export const changeParticipantStatus = (
   return promise;
 };
 
+export const inviteBuddyToActivity = (
+  activityId: number,
+  values: IActivityInviteValuesDto
+) => {
+  const CancelToken = axios.CancelToken;
+  const source = CancelToken.source();
+
+  const promise = axios.post(`/activities/${activityId}/participants`, values, {
+    cancelToken: source?.token,
+  });
+
+  //   queryFunctionContext?.signal?.addEventListener('abort', () => {
+  //     source.cancel('Query was cancelled by React Query')
+  //   })
+
+  return promise;
+};
+
 export const uninviteBuddy = (activityId: number, userId: number) => {
   const CancelToken = axios.CancelToken;
   const source = CancelToken.source();
@@ -419,7 +441,7 @@ export const getPredefinedPhotos = (tag?: string[]) => {
   const CancelToken = axios.CancelToken;
   const source = CancelToken.source();
 
-  const promise = axios.get<{ pictures: IPredefinedPictureDto[] }>(
+  const promise = axios.get<IPredefinedPictureResponseDto>(
     `${DEFAULT_DEV_URL}/predefined/pictures`,
     {
       cancelToken: source?.token,
@@ -503,7 +525,7 @@ export const uploadFile = (formData?: FormData) => {
   const CancelToken = axios.CancelToken;
   const source = CancelToken.source();
 
-  const promise = axios.post<{ url?: string }>(
+  const promise = axios.post<{ filename?: string }>(
     `${DEFAULT_DEV_URL}/files`,
     formData,
     {

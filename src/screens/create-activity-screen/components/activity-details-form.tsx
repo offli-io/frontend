@@ -1,9 +1,10 @@
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import {
   Box,
+  Checkbox,
+  FormControlLabel,
   FormLabel,
   IconButton,
-  MenuItem,
   Switch,
   TextField,
   Typography,
@@ -13,7 +14,6 @@ import React from "react";
 import { Controller, UseFormReturn } from "react-hook-form";
 import OffliButton from "../../../components/offli-button";
 import { ActivityVisibilityEnum } from "../../../types/activities/activity-visibility-enum.dto";
-import { ActivityPriceOptionsEnum } from "../../../types/common/types";
 
 interface IPlaceFormProps {
   onNextClicked: () => void;
@@ -26,7 +26,7 @@ export const ActivityDetailsForm: React.FC<IPlaceFormProps> = ({
   onBackClicked,
   methods,
 }) => {
-  const { control, formState } = methods;
+  const { control, formState, setValue, watch } = methods;
   const { palette } = useTheme();
 
   return (
@@ -119,26 +119,72 @@ export const ActivityDetailsForm: React.FC<IPlaceFormProps> = ({
                 )}
               />
 
-              <Controller
-                name="price"
-                control={control}
-                render={({ field, fieldState: { error } }) => (
-                  <TextField
-                    {...field}
-                    id="outlined-select-currency"
-                    select
-                    sx={{ width: "100%", mb: 5 }}
-                    label="Any fees?"
-                    data-testid="price-input"
-                  >
-                    {Object.values(ActivityPriceOptionsEnum).map((option) => (
-                      <MenuItem key={option} value={option}>
-                        {option}
-                      </MenuItem>
-                    ))}
-                  </TextField>
-                )}
-              />
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  mb: 5,
+                  width: "100%",
+                }}
+              >
+                <Controller
+                  name="price"
+                  control={control}
+                  render={({ field, fieldState: { error } }) => (
+                    <TextField
+                      {...field}
+                      id="outlined-select-currency"
+                      // sx={{ width: "100%", mb: 5 }}
+                      value={field?.value ?? ""}
+                      label="Any fees?"
+                      data-testid="price-input"
+                      error={!!error}
+                      helperText={error?.message}
+                      sx={{ width: "100%" }}
+                      onChange={(e) => {
+                        const value = e?.target?.value;
+                        if (value?.length > 0) {
+                          setValue("isActivityFree", false);
+                        }
+                        field?.onChange(value);
+                      }}
+                      onBlur={(e) => {
+                        if (e?.target?.value?.length === 0) {
+                          field?.onChange(0);
+                        }
+                      }}
+                      type="number"
+                    />
+                  )}
+                />
+
+                <Controller
+                  name="isActivityFree"
+                  control={control}
+                  render={({
+                    field: { value, onChange, ...field },
+                    fieldState: { error },
+                  }) => (
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          checked={value}
+                          onChange={(e) => {
+                            if (e?.target?.checked) {
+                              setValue("price", 0);
+                            }
+                            onChange(e?.target?.checked ? true : false);
+                          }}
+                          data-testid="same-end-date-checkbox"
+                          // sx={{ mr: 2 }}
+                        />
+                      }
+                      label="Free"
+                      sx={{ color: palette?.text?.primary, ml: 2 }}
+                    ></FormControlLabel>
+                  )}
+                />
+              </Box>
 
               {/* 
               TODO FOR v2 maybe

@@ -1,3 +1,5 @@
+import { ActivitiyParticipantStatusEnum } from "./activity-participant-status-enum.dto";
+
 export interface IListParticipantsResponseDto {
   success: boolean;
   errors: string[];
@@ -9,6 +11,6 @@ export interface IParticipantDto {
   id: number;
   name: string;
   username: string;
-  profile_photo_url: string;
-  status: string;
+  profile_photo: string;
+  status: ActivitiyParticipantStatusEnum;
 }

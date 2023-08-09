@@ -41,6 +41,7 @@ import ProfilePhotoActions, {
   ProfilePhotoActionsEnum,
 } from "./components/profile-photo-actions";
 import { getMatchingProperties } from "./utils/get-matching-properties.util";
+import { useGetApiUrl } from "../../hooks/use-get-api-url";
 
 export interface IEditProfile {
   username?: string;
@@ -49,7 +50,7 @@ export interface IEditProfile {
   birthdate?: Date | null;
   // instagram?: string | null;
   placeQuery?: string;
-  profile_photo_url?: string | null;
+  profile_photo?: string | null;
 }
 
 const schema: () => yup.SchemaOf<IEditProfile> = () =>
@@ -71,7 +72,7 @@ const schema: () => yup.SchemaOf<IEditProfile> = () =>
     birthdate: yup.date().nullable(true).notRequired(),
     placeQuery: yup.string().notRequired(),
     // instagram: yup.string().nullable(true).notRequired(),
-    profile_photo_url: yup.string().notRequired().nullable(true),
+    profile_photo: yup.string().notRequired().nullable(true),
   });
 
 const EditProfileScreen: React.FC = () => {
@@ -86,6 +87,7 @@ const EditProfileScreen: React.FC = () => {
   const [zoom, setZoom] = React.useState(1);
   const [croppedAreaPixels, setCroppedAreaPixels] = React.useState(null);
   const [croppedImage, setCroppedImage] = React.useState<any>(null);
+  const baseUrl = useGetApiUrl();
 
   const { mutate: sendUpdateProfile, isLoading: isSubmitting } = useMutation(
     ["update-profile-info"],
@@ -168,7 +170,8 @@ const EditProfileScreen: React.FC = () => {
         //   variant: "success",
         // });
         setLocalImageFile(null);
-        sendUpdateProfile({ profile_photo_url: data?.data?.url });
+        //TODO construct server url
+        sendUpdateProfile({ profile_photo: data?.data?.filename });
         queryClient.invalidateQueries(["user"]);
       },
       onError: (error) => {
@@ -188,7 +191,7 @@ const EditProfileScreen: React.FC = () => {
       birthdate: (data?.birthdate as Date) ?? null,
       location: data?.location ?? null,
       // instagram: data?.instagram,
-      profile_photo_url: data?.profile_photo_url,
+      profile_photo: data?.profile_photo,
     });
   }, [data]);
 
@@ -206,7 +209,7 @@ const EditProfileScreen: React.FC = () => {
         case ProfilePhotoActionsEnum.SELECT_FROM_DEVICE:
           return hiddenFileInput?.current?.click();
         case ProfilePhotoActionsEnum.REMOVE_PICTURE:
-          return sendUpdateProfile({ profile_photo_url: null });
+          return sendUpdateProfile({ profile_photo: null });
         default:
           return;
       }
@@ -358,7 +361,11 @@ const EditProfileScreen: React.FC = () => {
           />
           <Box sx={{ position: "relative" }} onClick={handlePictureClick}>
             <img
-              src={data?.profile_photo_url ?? userPlaceholder}
+              src={
+                data?.profile_photo
+                  ? `${baseUrl}/files/${data?.profile_photo}`
+                  : userPlaceholder
+              }
               alt="profile"
               style={{
                 height: "70px",

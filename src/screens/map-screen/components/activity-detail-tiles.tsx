@@ -1,4 +1,4 @@
-import { IconButton, Typography } from "@mui/material";
+import { Card, IconButton, Typography } from "@mui/material";
 import { Box, styled } from "@mui/system";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
@@ -10,18 +10,19 @@ interface IProps {
   participantsNum?: string;
   dateTime?: string;
   distance?: string;
-  price?: string;
+  price?: number | null;
 }
 
-const StyledBox = styled(Box)(() => ({
+const StyledBox = styled(Card)(() => ({
   display: "flex",
   alignItems: "center",
   flexDirection: "column",
   borderRadius: "10px",
-  backgroundColor: "#E4E3FF",
+  // backgroundColor: "#E4E3FF",
   // paddingTop: "2%",
   // paddingBottom: "2%",
-  padding: "1% 4%",
+  // padding: "1% 4%",
+  padding: 0,
 }));
 
 const StyledText = styled(Typography)(() => ({

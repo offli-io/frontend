@@ -1,34 +1,29 @@
-import React from "react";
-import { Box, useTheme } from "@mui/material";
-import { PageWrapper } from "../../components/page-wrapper";
-import { NameForm } from "./components/name-form";
-import { PlaceForm } from "./components/place-form";
-import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { Box, useTheme } from "@mui/material";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useSnackbar } from "notistack";
+import React from "react";
+import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 import * as yup from "yup";
+import { createActivity } from "../../api/activities/requests";
+import { AuthenticationContext } from "../../assets/theme/authentication-provider";
 import OffliButton from "../../components/offli-button";
+import { PageWrapper } from "../../components/page-wrapper";
+import DotsMobileStepper from "../../components/stepper";
+import { useUser } from "../../hooks/use-user";
+import { ActivityVisibilityEnum } from "../../types/activities/activity-visibility-enum.dto";
 import { ILocation } from "../../types/activities/location.dto";
+import { ApplicationLocations } from "../../types/common/applications-locations.dto";
+import ActivityCreatedScreen from "../static-screens/activity-created-screen";
+import { ActivityDetailsForm } from "./components/activity-details-form";
+import { ActivityInviteForm } from "./components/activity-invite-form";
+import { ActivityPhotoForm } from "./components/activity-photo-form";
 import { ActivityTypeForm } from "./components/activity-type-form";
 import { DateTimeForm } from "./components/date-time-form";
-import {
-  ActivityPriceOptionsEnum,
-  ActivityRepetitionOptionsEnum,
-} from "../../types/common/types";
-import { ActivityInviteForm } from "./components/activity-invite-form";
-import { ActivityDetailsForm } from "./components/activity-details-form";
-import { ActivityPhotoForm } from "./components/activity-photo-form";
-import { ActivityVisibilityEnum } from "../../types/activities/activity-visibility-enum.dto";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createActivity } from "../../api/activities/requests";
-import { useSnackbar } from "notistack";
-import { IPerson, IPersonExtended } from "../../types/activities/activity.dto";
-import ActivityCreatedScreen from "../static-screens/activity-created-screen";
-import { useNavigate } from "react-router-dom";
-import { ApplicationLocations } from "../../types/common/applications-locations.dto";
-import { AuthenticationContext } from "../../assets/theme/authentication-provider";
-import DotsMobileStepper from "../../components/stepper";
-import { useUsers } from "../../hooks/use-users";
-import { useUser } from "../../hooks/use-user";
+import { NameForm } from "./components/name-form";
+import { PlaceForm } from "./components/place-form";
+import { setHours, setMinutes } from "date-fns";
 
 export interface FormValues {
   title?: string;
@@ -38,14 +33,16 @@ export interface FormValues {
   //todo alter keys
   datetime_from?: Date;
   datetime_until?: Date;
-
   // public?: boolean
   //repeated?: ActivityRepetitionOptionsEnum | string
-  price?: ActivityPriceOptionsEnum | string;
-  title_picture_url?: string;
+  price?: number | null;
+  title_picture?: string;
   placeQuery?: string;
   visibility?: ActivityVisibilityEnum;
   limit?: number;
+  isActivityFree?: boolean;
+  timeFrom?: string | null;
+  timeUntil?: string | null;
 }
 
 const schema: (activeStep: number) => yup.SchemaOf<FormValues> = (
@@ -93,27 +90,36 @@ const schema: (activeStep: number) => yup.SchemaOf<FormValues> = (
     price:
       activeStep === 4
         ? yup
-            .mixed<ActivityPriceOptionsEnum>()
-            .oneOf(Object.values(ActivityPriceOptionsEnum))
-            .defined()
-            .required()
-            .default(ActivityPriceOptionsEnum.free)
-        : yup
-            .mixed<ActivityPriceOptionsEnum>()
-            .oneOf(Object.values(ActivityPriceOptionsEnum))
-            .notRequired(),
-
+            .number()
+            .when("isActivityFree", {
+              is: (isActivityFree?: boolean) => !!isActivityFree,
+              then: (schema) => schema.notRequired(),
+              otherwise: (schema) => schema.defined().required(),
+            })
+            .typeError(
+              "Price must be a number. Check 'free' or leave empty for free price"
+            )
+        : yup.number().notRequired().nullable(true),
     limit:
       activeStep === 4
         ? yup.number().required().defined()
         : yup.number().notRequired(),
-    title_picture_url: yup.string().notRequired(),
+    title_picture: yup.string().notRequired(),
     placeQuery: yup.string().notRequired(),
     description: yup.string().notRequired(),
     visibility: yup
       .mixed<ActivityVisibilityEnum>()
       .oneOf(Object.values(ActivityVisibilityEnum))
       .notRequired(),
+    isActivityFree: yup.bool().notRequired(),
+    timeFrom:
+      activeStep === 3
+        ? yup.string().defined().required().nullable(true)
+        : yup.string().notRequired().nullable(true),
+    timeUntil:
+      activeStep === 3
+        ? yup.string().defined().required().nullable(true)
+        : yup.string().notRequired().nullable(true),
   });
 
 const CreateActivityScreen = () => {
@@ -132,10 +138,13 @@ const CreateActivityScreen = () => {
     defaultValues: {
       title: "",
       description: "",
-      visibility: ActivityVisibilityEnum.private,
-      price: ActivityPriceOptionsEnum.free,
+      visibility: ActivityVisibilityEnum.public,
+      // price: ActivityPriceOptionsEnum.free,
       limit: 10,
       location: null,
+      isActivityFree: true,
+      timeFrom: null,
+      timeUntil: null,
     },
     resolver: yupResolver(schema(activeStep)),
     mode: "onChange",
@@ -165,16 +174,33 @@ const CreateActivityScreen = () => {
 
   const handleFormSubmit = React.useCallback(
     (data: FormValues) => {
-      const { placeQuery, ...restValues } = data;
+      const { placeQuery, price, isActivityFree, ...restValues } = data;
       //TODO fill with real user data
-      const {
-        id = undefined,
-        name = undefined,
-        username = undefined,
-        profile_photo_url = undefined,
-      } = { ...userData };
+      const finalPrice = isActivityFree ? 0 : price;
+      const { id = undefined } = { ...userData };
+
+      // handle time values in from and until datetime
+      const fromTimeValues = data?.timeFrom?.split(":");
+      const dateTimeFrom = data?.datetime_from
+        ? setMinutes(
+            setHours(data?.datetime_from, Number(fromTimeValues?.[0])),
+            Number(fromTimeValues?.[1])
+          )
+        : undefined;
+
+      const untilTimeValues = data?.timeUntil?.split(":");
+      const dateTimeUntil = data?.datetime_until
+        ? setMinutes(
+            setHours(data?.datetime_until, Number(untilTimeValues?.[0])),
+            Number(untilTimeValues?.[1])
+          )
+        : undefined;
+
       mutate({
         ...restValues,
+        datetime_from: dateTimeFrom,
+        datetime_until: dateTimeUntil,
+        price: finalPrice,
         creator_id: id,
       });
     },

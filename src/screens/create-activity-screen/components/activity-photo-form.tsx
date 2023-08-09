@@ -20,6 +20,7 @@ import { getAuthToken } from "../../../utils/token.util";
 import OffliGallery from "./offli-gallery";
 import { uploadFile } from "../../../api/activities/requests";
 import getCroppedImg from "../utils/crop-utils";
+import { useGetApiUrl } from "../../../hooks/use-get-api-url";
 
 interface IActivityPhotoFormProps {
   methods: UseFormReturn;
@@ -32,15 +33,14 @@ export const ActivityPhotoForm: React.FC<IActivityPhotoFormProps> = ({
 }) => {
   const { control, formState, watch, setValue } = methods;
   const { toggleDrawer } = React.useContext(DrawerContext);
-  const onImageSelect = (e: BaseSyntheticEvent) => {
-    console.log(e.target.files);
-  };
-  const token = getAuthToken();
+  const [isImageUploading, setIsImageUploading] = React.useState(false);
+  const baseUrl = useGetApiUrl();
   const { enqueueSnackbar } = useSnackbar();
   const { palette } = useTheme();
   const tags = watch("tags");
   const hiddenFileInput = React.useRef<HTMLInputElement | null>(null);
-  const selectedPhoto = watch("title_picture_url");
+  const selectedPhoto = watch("title_picture");
+
   // const [crop, setCrop] = React.useState<any>({
   //   unit: "%", // Can be 'px' or '%'
   //   width: 100,
@@ -51,6 +51,7 @@ export const ActivityPhotoForm: React.FC<IActivityPhotoFormProps> = ({
   //   // aspect: 16 / 9,
   // });
   // const [croppedImage, setCroppedImage] = React.useState(null);
+
   const [localFile, setLocalFile] = React.useState<any>();
   const [crop, setCrop] = React.useState({ x: 0, y: 0 });
   const [zoom, setZoom] = React.useState(1);
@@ -72,7 +73,7 @@ export const ActivityPhotoForm: React.FC<IActivityPhotoFormProps> = ({
           <OffliGallery
             tags={tags}
             onPictureSelect={(url) => {
-              setValue("title_picture_url", url);
+              setValue("title_picture", url);
               toggleDrawer({ open: false, content: undefined });
             }}
           />
@@ -86,13 +87,16 @@ export const ActivityPhotoForm: React.FC<IActivityPhotoFormProps> = ({
     (formData?: FormData) => uploadFile(formData),
     {
       onSuccess: (data) => {
+        setIsImageUploading(false);
         enqueueSnackbar("Your photo has been successfully uploaded", {
           variant: "success",
         });
         setLocalFile(null);
-        setValue("title_picture_url", data?.data?.url);
+        //TODO construct server url
+        setValue("title_picture", data?.data?.filename);
       },
       onError: (error) => {
+        setIsImageUploading(false);
         enqueueSnackbar("Failed to upload activity photo", {
           variant: "error",
         });
@@ -123,6 +127,8 @@ export const ActivityPhotoForm: React.FC<IActivityPhotoFormProps> = ({
   );
 
   const showCroppedImage = React.useCallback(async () => {
+    setIsImageUploading(true);
+
     try {
       const croppedImage: any = await getCroppedImg(
         localFile,
@@ -138,6 +144,8 @@ export const ActivityPhotoForm: React.FC<IActivityPhotoFormProps> = ({
         sendUploadActivityPhoto(formData);
       }
     } catch (e) {
+      setIsImageUploading(false);
+
       console.error(e);
     }
   }, [croppedAreaPixels]);
@@ -148,7 +156,7 @@ export const ActivityPhotoForm: React.FC<IActivityPhotoFormProps> = ({
 
   const handleResetSelectedPhoto = React.useCallback(() => {
     setCroppedImage(null);
-    setValue("title_picture_url", undefined);
+    setValue("title_picture", undefined);
   }, [setValue]);
 
   return (
@@ -207,6 +215,7 @@ export const ActivityPhotoForm: React.FC<IActivityPhotoFormProps> = ({
             <OffliButton
               sx={{ mt: 4, width: "80%" }}
               onClick={showCroppedImage}
+              isLoading={isImageUploading}
             >
               Crop
             </OffliButton>
@@ -266,7 +275,7 @@ export const ActivityPhotoForm: React.FC<IActivityPhotoFormProps> = ({
             }}
           >
             <img
-              src={selectedPhoto}
+              src={`${baseUrl}/files/${selectedPhoto}`}
               alt="cropped"
               style={{
                 width: 280,
@@ -289,7 +298,7 @@ export const ActivityPhotoForm: React.FC<IActivityPhotoFormProps> = ({
         ) : (
           <>
             <Controller
-              name="title_picture_url"
+              name="title_picture"
               control={control}
               render={({ field: { ref, ...field }, fieldState: { error } }) => {
                 return (

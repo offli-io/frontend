@@ -9,6 +9,7 @@ import {
   addActivityToCalendar,
   changeActivityParticipantStatus,
   getActivity,
+  getActivityParticipants,
 } from "../../api/activities/requests";
 import { HeaderContext } from "../../app/providers/header-provider";
 import { AuthenticationContext } from "../../assets/theme/authentication-provider";
@@ -28,6 +29,13 @@ import ActivityDetailsGrid, {
   IGridAction,
 } from "./components/activity-details-grid";
 import { convertDateToUTC } from "./utils/convert-date-to-utc";
+import OffliButton from "../../components/offli-button";
+import { IParticipantDto } from "../../types/activities/list-participants-response.dto";
+import { format } from "date-fns";
+import { DATE_TIME_FORMAT } from "../../utils/common-constants";
+import { getTimeDifference } from "../map-screen/utils/get-time-difference";
+import { useGetApiUrl } from "../../hooks/use-get-api-url";
+import { ActivitiyParticipantStatusEnum } from "../../types/activities/activity-participant-status-enum.dto";
 
 interface IProps {
   type: "detail" | "request";
@@ -44,6 +52,7 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
   const { userInfo } = React.useContext(AuthenticationContext);
   const { enqueueSnackbar } = useSnackbar();
   const queryClient = useQueryClient();
+  const baseUrl = useGetApiUrl();
   const abortControllerRef = React.useRef<AbortController | null>(null);
 
   const { googleToken, handleGoogleAuthorization, state } =
@@ -60,33 +69,40 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
     }
   );
 
-  const activity = data?.data?.activity;
-
-  const { data: { data: activityCreator } = {}, isLoading } = useUser({
-    id: activity?.creator_id,
-  });
-
-  const { mutate: sendJoinActivity } = useMutation(
-    ["join-activity"],
-    () =>
-      changeActivityParticipantStatus(Number(id), {
-        id: Number(userInfo?.id),
-        status: ActivityInviteStateEnum.CONFIRMED,
-      }),
+  const {
+    data: { data: { participants = null } = {} } = {},
+    isLoading: areActivityParticipantsLoading,
+  } = useQuery(
+    ["activity-participants", id],
+    () => getActivityParticipants({ activityId: Number(id) }),
     {
-      onSuccess: () => {
-        enqueueSnackbar("You have successfully joined the activity", {
-          variant: "success",
-        });
-        navigate(ApplicationLocations.ACTIVITIES);
-        queryClient.invalidateQueries(["activities"]);
-        // setInvitedBuddies([...invitedBuddies, Number(buddy?.id)]);
-      },
-      onError: (error) => {
-        enqueueSnackbar("Failed to join activity", { variant: "error" });
-      },
+      enabled: !!id,
     }
   );
+
+  const activity = data?.data?.activity;
+
+  const { mutate: sendJoinActivity, isLoading: isJoiningActivity } =
+    useMutation(
+      ["join-activity"],
+      () =>
+        changeActivityParticipantStatus(Number(id), Number(userInfo?.id), {
+          status: ActivityInviteStateEnum.CONFIRMED,
+        }),
+      {
+        onSuccess: () => {
+          enqueueSnackbar("You have successfully joined the activity", {
+            variant: "success",
+          });
+          navigate(ApplicationLocations.ACTIVITIES);
+          queryClient.invalidateQueries(["activities"]);
+          // setInvitedBuddies([...invitedBuddies, Number(buddy?.id)]);
+        },
+        onError: (error) => {
+          enqueueSnackbar("Failed to join activity", { variant: "error" });
+        },
+      }
+    );
 
   const { mutate: sendAddActivityToCalendar } = useMutation(
     ["add-event-to-calendar"],
@@ -180,13 +196,37 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
     [handleGoogleAuthorization]
   );
 
+  const displayJoinButton = React.useMemo(
+    () =>
+      !!participants &&
+      participants?.some(
+        ({ id, status }: IParticipantDto) =>
+          id === userInfo?.id &&
+          status === ActivitiyParticipantStatusEnum.INVITED
+      ),
+    [participants, userInfo?.id]
+  );
+
+  const dateTimeFrom = activity?.datetime_from
+    ? new Date(activity?.datetime_from)
+    : null;
+
+  const dateTimeUntil = activity?.datetime_until
+    ? new Date(activity?.datetime_until)
+    : null;
+
+  const timeDifference = getTimeDifference(dateTimeFrom, dateTimeUntil); // useMemo??
+
+  const durationMinutes = timeDifference?.durationMinutes;
+  const durationHours = timeDifference?.durationHours;
+
   return (
     <>
       <Box
         sx={{
           width: "100%",
           height: "50%",
-          backgroundImage: `url(${activity?.title_picture_url})`,
+          backgroundImage: `url(${baseUrl}/files/${activity?.title_picture})`,
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat",
           backgroundSize: "cover",
@@ -201,7 +241,11 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
           margin: "auto",
         }}
       >
-        <Typography variant="h2" align="left">
+        <Typography
+          variant="h2"
+          align="left"
+          sx={{ overflow: "hidden", wordWrap: "break-word" }}
+        >
           {activity?.title}
         </Typography>
         <Box
@@ -209,13 +253,13 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
-            mt: 1.5,
+            my: 1.5,
           }}
         >
           <Typography variant="h5" align="left">
             Basic Information
           </Typography>
-          <Box
+          {/* <Box
             sx={{
               display: "flex",
               alignItems: "center",
@@ -238,7 +282,17 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
                 </Typography>
               </>
             )}
-          </Box>
+          </Box> */}
+          {displayJoinButton ? (
+            <OffliButton
+              size="small"
+              sx={{ fontSize: 16, width: "30%" }}
+              onClick={() => sendJoinActivity()}
+              isLoading={isJoiningActivity}
+            >
+              Join
+            </OffliButton>
+          ) : null}
         </Box>
         <ActivityDetailsGrid
           activity={activity}
@@ -249,37 +303,16 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
           tags={activity?.tags!}
         />
         <ActivityCreatorDuration
-          creator={activityCreator}
+          creator={data?.data?.activity?.creator}
           // duration={activity?.tags!}
-          duration="3 hours"
-          createdDateTime="22.01.2023 5:16 PM"
+          duration={`${durationHours} hours, ${durationMinutes} minutes`}
+          createdDateTime={
+            activity?.created_at
+              ? format(new Date(activity?.created_at), DATE_TIME_FORMAT)
+              : "-"
+          }
         />
-        {/* <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            mt: 3,
-          }}
-        >
-          <Box>
-            <Typography variant="h5" align="left" sx={{ fontSize: "14px" }}>
-              Activity Creator
-            </Typography>
-            <Typography
-              variant="subtitle1"
-              align="left"
-              sx={{ fontSize: "11px" }}
-            >
-              {activity?.creator?.name}
-            </Typography>
-          </Box>
-          <Box>sdsdsd</Box>
-        </Box> */}
       </Box>
-
-      {/* ) : null} */}
-      {/* </PageWrapper> */}
     </>
   );
 };

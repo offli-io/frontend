@@ -3,6 +3,7 @@ import personPlaceholderImage from "../assets/img/person-placeholder-image.svg";
 import React from "react";
 import { IPerson } from "../types/activities/activity.dto";
 import OffliButton from "./offli-button";
+import { useGetApiUrl } from "../hooks/use-get-api-url";
 
 interface ILabeledDividerProps {
   buddy: IPerson;
@@ -25,6 +26,8 @@ const BuddySuggestCard: React.FC<ILabeledDividerProps> = ({
   isLoading,
   ...rest
 }) => {
+  const baseUrl = useGetApiUrl();
+
   return (
     <Box
       sx={{
@@ -36,14 +39,27 @@ const BuddySuggestCard: React.FC<ILabeledDividerProps> = ({
         alignItems: "center",
         justifyContent: "center",
         minWidth: 110,
+        overflow: "hidden",
         mx: 1,
       }}
     >
       <StyledImage
-        src={buddy?.profile_photo_url ?? personPlaceholderImage}
+        src={
+          buddy?.profile_photo
+            ? `${baseUrl}/files/${buddy?.profile_photo}`
+            : personPlaceholderImage
+        }
         alt="profile picture"
       />
-      <Typography variant="h6" sx={{ m: 1 }}>
+      <Typography
+        sx={{
+          fontSize: 14,
+          m: 1,
+          width: "100%",
+          wordWrap: "break-word",
+          textAlign: "center",
+        }}
+      >
         {buddy?.username}
       </Typography>
       <OffliButton

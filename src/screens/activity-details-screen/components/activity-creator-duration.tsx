@@ -1,6 +1,8 @@
 import { Typography, Box, Chip } from "@mui/material";
 import React from "react";
 import { IPerson } from "../../../types/activities/activity.dto";
+import userPlaceholder from "../../../assets/img/user-placeholder.svg";
+import { useGetApiUrl } from "../../../hooks/use-get-api-url";
 
 interface IProps {
   creator?: IPerson;
@@ -13,19 +15,26 @@ const ActivityCreatorDuration: React.FC<IProps> = ({
   duration,
   createdDateTime,
 }) => {
+  const baseUrl = useGetApiUrl();
   return (
     <>
       <Box
         sx={{
-          display: "flex",
-          alignItems: "flex-start",
-          justifyContent: "space-between",
+          display: "grid",
+          gridTemplateColumns: "7fr 3fr",
+          gap: 2,
+          alignItems: "center",
+          // justifyContent: "space-between",
           mt: 3,
           px: 1,
         }}
       >
-        <Box>
-          <Typography variant="h5" align="left" sx={{ fontSize: "14px" }}>
+        <Box sx={{ mb: 1, overflow: "hidden" }}>
+          <Typography
+            variant="h5"
+            align="left"
+            sx={{ fontSize: "14px", mb: 0.5 }}
+          >
             Activity Creator
           </Typography>
           <Box
@@ -36,7 +45,11 @@ const ActivityCreatorDuration: React.FC<IProps> = ({
             }}
           >
             <img
-              src={creator?.profile_photo_url}
+              src={
+                creator?.profile_photo
+                  ? `${baseUrl}/files/${creator?.profile_photo}`
+                  : userPlaceholder
+              }
               alt="profile"
               style={{
                 height: "25px",
@@ -47,14 +60,18 @@ const ActivityCreatorDuration: React.FC<IProps> = ({
             <Typography
               variant="subtitle1"
               align="left"
-              sx={{ fontSize: "11px", ml: 0.3 }}
+              sx={{ fontSize: "11px", ml: 1 }}
             >
-              {creator?.name}
+              {creator?.username}
             </Typography>
           </Box>
         </Box>
-        <Box>
-          <Typography variant="h5" align="left" sx={{ fontSize: "14px" }}>
+        <Box sx={{ mb: 1, overflow: "hidden" }}>
+          <Typography
+            variant="h5"
+            align="left"
+            sx={{ fontSize: "14px", mb: 0.5 }}
+          >
             Duration
           </Typography>
           <Box

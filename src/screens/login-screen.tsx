@@ -44,7 +44,11 @@ const LoginScreen: React.FC = () => {
   );
   const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
-  const { googleToken, handleGoogleAuthorization } = useGoogleAuthorization({
+  const {
+    googleToken,
+    handleGoogleAuthorization,
+    isLoading: isGoogleAuthorizationLoading,
+  } = useGoogleAuthorization({
     from: GoogleAuthCodeFromEnumDto.LOGIN,
   });
   const abortControllerRef = React.useRef<AbortController | null>(null);
@@ -150,7 +154,7 @@ const LoginScreen: React.FC = () => {
             startIcon={<GoogleIcon />}
             onClick={handleGoogleAuthorization}
             sx={{ mb: 1 }}
-            disabled={isLoading}
+            disabled={isLoading || isGoogleAuthorizationLoading}
           >
             Sign in with Google
           </OffliButton>
@@ -213,7 +217,7 @@ const LoginScreen: React.FC = () => {
           data-testid="submit-btn"
           sx={{ width: "80%", mb: 5 }}
           type="submit"
-          isLoading={isLoading}
+          isLoading={isLoading || isGoogleAuthorizationLoading}
           disabled={!formState?.isValid}
         >
           Login

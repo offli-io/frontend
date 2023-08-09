@@ -19,7 +19,7 @@ const MainBox = styled(Box)(() => ({
 interface IProps {
   locationName?: string;
   dateTime?: string;
-  price?: string;
+  price?: number | null;
   participantsNum?: string;
 }
 
@@ -36,7 +36,10 @@ const BasicInformation: React.FC<IProps> = ({
       </Typography>
       <IconInformationRow icon={RoomIcon} text={locationName} />
       <IconInformationRow icon={CalendarTodayIcon} text={dateTime} />
-      <IconInformationRow icon={MonetizationOnIcon} text={price} />
+      <IconInformationRow
+        icon={MonetizationOnIcon}
+        text={price ? String(price) : "free"}
+      />
       <IconInformationRow icon={PeopleAltIcon} text={participantsNum} />
     </MainBox>
   );

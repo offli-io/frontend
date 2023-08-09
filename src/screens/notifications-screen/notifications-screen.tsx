@@ -10,7 +10,10 @@ import NotificationRequest from "../../components/notification-request";
 import { INotificationDto } from "../../types/notifications/notification.dto";
 import { NotificationTypeEnum } from "../../types/notifications/notification-type-enum";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { markNotificationAsSeen } from "../../api/notifications/requests";
+import {
+  deleteNotification,
+  markNotificationAsSeen,
+} from "../../api/notifications/requests";
 import { useSnackbar } from "notistack";
 import { ICustomizedLocationStateDto } from "../../types/common/customized-location-state.dto";
 
@@ -22,6 +25,7 @@ const NotificationsScreen = () => {
   const { data } = useNotifications(userInfo?.id);
   const { enqueueSnackbar } = useSnackbar();
   const queryClient = useQueryClient();
+  const abortControllerRef = React.useRef<AbortController | null>(null);
 
   const { mutate: sendMarkNotification } = useMutation(
     ["mark-notification"],
@@ -32,7 +36,10 @@ const NotificationsScreen = () => {
         queryClient.invalidateQueries(["notifications"]);
         navigateBasedOnType(
           variables?.type,
-          variables?.properties?.user?.id ?? variables?.properties?.activity?.id
+          variables?.type === NotificationTypeEnum.ACTIVITY_REQ
+            ? variables?.properties?.activity?.id
+            : variables?.properties?.user?.id,
+          variables?.id
         );
       },
       onError: () => {
@@ -44,11 +51,12 @@ const NotificationsScreen = () => {
   );
 
   const navigateBasedOnType = React.useCallback(
-    (type?: NotificationTypeEnum, id?: number) => {
+    (type?: NotificationTypeEnum, id?: number, notificationId?: number) => {
       if (type === NotificationTypeEnum.ACTIVITY_REQ) {
         return navigate(`${ApplicationLocations.ACTIVITIES}/request/${id}`, {
           state: {
             from: location?.pathname,
+            notificationId,
           },
         });
       }
@@ -56,6 +64,7 @@ const NotificationsScreen = () => {
         return navigate(`${ApplicationLocations.PROFILE}/request/${id}`, {
           state: {
             from: location?.pathname,
+            notificationId,
           },
         });
       }
@@ -69,8 +78,10 @@ const NotificationsScreen = () => {
       return notification?.seen
         ? navigateBasedOnType(
             notification?.type,
-            notification?.properties?.user?.id ??
-              notification?.properties?.activity?.id
+            notification?.type === NotificationTypeEnum.ACTIVITY_REQ
+              ? notification?.properties?.activity?.id
+              : notification?.properties?.user?.id,
+            notification?.id
           )
         : sendMarkNotification(notification);
     },

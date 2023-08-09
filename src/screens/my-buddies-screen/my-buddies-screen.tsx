@@ -37,6 +37,7 @@ import {
   getBuddies,
   getRecommendedBuddies,
 } from "../../api/activities/requests";
+import { useSendBuddyRequest } from "../profile-screen/hooks/use-send-buddy-request";
 
 const MyBuddiesScreen = () => {
   const navigate = useNavigate();
@@ -45,6 +46,7 @@ const MyBuddiesScreen = () => {
   const { enqueueSnackbar } = useSnackbar();
   const { userInfo } = React.useContext(AuthenticationContext);
   const location = useLocation();
+  const queryClient = useQueryClient();
   const from =
     (location?.state as ICustomizedLocationStateDto)?.from ??
     ApplicationLocations.PROFILE;
@@ -52,11 +54,19 @@ const MyBuddiesScreen = () => {
     text: currentSearch,
   });
 
+  const { handleSendBuddyRequest, isSendingBuddyRequest } = useSendBuddyRequest(
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(["recommended-buddies"]);
+      },
+    }
+  );
+
   const {
     data: recommendedBuddiesData,
     isLoading: areBuddiesRecommendationsLoading,
   } = useQuery(
-    ["buddies", userInfo?.id],
+    ["recommended-buddies", userInfo?.id],
     () => getRecommendedBuddies(userInfo?.id ?? -1),
     {
       onError: () => {
@@ -81,8 +91,9 @@ const MyBuddiesScreen = () => {
         //   variables?.properties?.user?.id ?? variables?.properties?.activity?.id
         // )
         toggleDrawer({ open: false, content: undefined });
+        //TODO invalidate only my data
+        queryClient.invalidateQueries(["user"]);
         invalidateBuddies();
-
         enqueueSnackbar("Buddy was successfully deleted", {
           variant: "success",
         });
@@ -95,30 +106,14 @@ const MyBuddiesScreen = () => {
     }
   );
 
-  const { mutate: sendAddBuddy, isLoading: isAddBuddyLoading } = useMutation(
-    ["add-buddy"],
-    (id?: number) => addBuddy(userInfo?.id, id),
-    {
-      onSuccess: (data, variables) => {
-        //TODO what to invalidate, and where to navigate after success
-        // queryClient.invalidateQueries(['notifications'])
-        // navigateBasedOnType(
-        //   variables?.type,
-        //   variables?.properties?.user?.id ?? variables?.properties?.activity?.id
-        // )
-        // toggleDrawer({ open: false, content: undefined });
-        invalidateBuddies();
-
-        enqueueSnackbar("Buddy request was sent", {
-          variant: "success",
-        });
-      },
-      onError: () => {
-        enqueueSnackbar("Failed to add new buddy", {
-          variant: "error",
-        });
-      },
-    }
+  const navigateToBuddyProfile = React.useCallback(
+    (userId?: number) =>
+      navigate(`${ApplicationLocations.PROFILE}/buddy/${userId}`, {
+        state: {
+          from: ApplicationLocations.BUDDIES,
+        },
+      }),
+    [navigate]
   );
 
   const handleBuddyActionClick = React.useCallback(
@@ -126,11 +121,7 @@ const MyBuddiesScreen = () => {
       switch (type) {
         case BuddyActionTypeEnum.PROFILE:
           toggleDrawer({ open: false, content: undefined });
-          return navigate(`${ApplicationLocations.PROFILE}/buddy/${userId}`, {
-            state: {
-              from: ApplicationLocations.BUDDIES,
-            },
-          });
+          return navigateToBuddyProfile(userId);
         case BuddyActionTypeEnum.REMOVE:
           return sendDeleteBuddy(userId);
         default:
@@ -228,8 +219,10 @@ const MyBuddiesScreen = () => {
                       <BuddySuggestCard
                         key={buddy?.id}
                         buddy={buddy}
-                        onAddBuddyClick={(buddy) => sendAddBuddy(buddy?.id)}
-                        isLoading={isAddBuddyLoading}
+                        onAddBuddyClick={(buddy) =>
+                          handleSendBuddyRequest(buddy?.id)
+                        }
+                        isLoading={isSendingBuddyRequest}
                       />
                     </>
                   ))}
@@ -262,7 +255,7 @@ const MyBuddiesScreen = () => {
               ) : (
                 <Box
                   sx={{
-                    height: 300,
+                    // height: 300,
                     width: "100%",
                     overflowY: "auto",
                     overflowX: "hidden",
@@ -284,11 +277,15 @@ const MyBuddiesScreen = () => {
                         buddy={buddy}
                         actionContent={
                           <IconButton
-                            onClick={() => handleBuddyActionsClick(buddy)}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleBuddyActionsClick(buddy);
+                            }}
                           >
                             <MoreHorizIcon />
                           </IconButton>
                         }
+                        onClick={(buddy) => navigateToBuddyProfile(buddy?.id)}
                       />
                     ))
                   )}

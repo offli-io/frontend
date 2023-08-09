@@ -1,8 +1,16 @@
-import { Box, Button, Checkbox, styled, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Checkbox,
+  styled,
+  Typography,
+  useTheme,
+} from "@mui/material";
 import logo from "../assets/img/profilePicture.jpg";
 import React from "react";
 import OffliButton from "./offli-button";
 import { IPerson } from "../types/activities/activity.dto";
+import { useGetApiUrl } from "../hooks/use-get-api-url";
 
 interface ILabeledDividerProps {
   imageSource?: string;
@@ -10,6 +18,7 @@ interface ILabeledDividerProps {
   buddy: IPerson;
   children?: React.ReactElement;
   invited?: boolean;
+  isLoading?: boolean;
 }
 
 const StyledImage = styled((props: any) => (
@@ -26,13 +35,17 @@ const BuddyItemInvite: React.FC<ILabeledDividerProps> = ({
   buddy,
   onInviteClick,
   invited,
+  isLoading,
   ...rest
 }) => {
+  const { shadows } = useTheme();
+  const baseUrl = useGetApiUrl();
   return (
     <Box
       //onClick={() => handleClick(checked)}
       sx={{
-        display: "flex",
+        display: "grid",
+        gridTemplateColumns: "7fr 1fr",
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "space-between",
@@ -42,20 +55,38 @@ const BuddyItemInvite: React.FC<ILabeledDividerProps> = ({
       }}
       {...rest}
     >
-      <Box sx={{ display: "flex", alignItems: "center" }}>
-        <StyledImage
-          src={buddy?.profile_photo_url ?? logo}
-          alt="profile picture"
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          overflow: "hidden",
+          mr: 1,
+        }}
+      >
+        <img
+          src={
+            buddy?.profile_photo
+              ? `${baseUrl}/files/${buddy?.profile_photo}`
+              : logo
+          }
+          style={{
+            margin: 0.5,
+            height: 40,
+            borderRadius: "50%",
+            boxShadow: shadows?.[2],
+          }}
+          alt="profile"
         />
         <Typography sx={{ ml: 2, color: "black" }}>
           {buddy?.username}
         </Typography>
       </Box>
       <OffliButton
-        sx={{ height: 30, fontSize: 16 }}
+        sx={{ height: 30, fontSize: 16, mr: 2 }}
         onClick={() => onInviteClick && onInviteClick(buddy)}
         variant={invited ? "outlined" : "contained"}
         data-testid="toggle-buddy-invite-btn"
+        disabled={isLoading}
       >
         {invited ? "Cancel" : "Invite"}
       </OffliButton>

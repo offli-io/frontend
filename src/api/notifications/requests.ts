@@ -1,6 +1,5 @@
 import axios from "axios";
 import { DEFAULT_DEV_URL } from "../../assets/config";
-import { INotificationDto } from "../../types/notifications/notification.dto";
 import { INotificationsResponse } from "../../types/notifications/notifications-response.dto";
 
 export const getNotifications = (userId: number) => {
@@ -30,5 +29,26 @@ export const markNotificationAsSeen = (notificationId: number) => {
       cancelToken: source?.token,
     }
   );
+  return promise;
+};
+
+export const deleteNotification = (
+  notificationId: number,
+  signal: AbortSignal
+) => {
+  const CancelToken = axios.CancelToken;
+  const source = CancelToken.source();
+
+  const promise = axios.delete<void>(
+    `${DEFAULT_DEV_URL}/notifications/${notificationId}`,
+    {
+      cancelToken: source?.token,
+    }
+  );
+
+  signal?.addEventListener("abort", () => {
+    source.cancel("Query was cancelled by React Query");
+  });
+
   return promise;
 };

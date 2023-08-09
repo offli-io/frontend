@@ -55,7 +55,7 @@ const ProfileStatistics: React.FC<IProps> = ({
         </Box>
       ) : (
         <>
-          {participatedNum ? (
+          {participatedNum || !id ? (
             <Grid item xs={6}>
               <Box
                 sx={{
@@ -79,7 +79,7 @@ const ProfileStatistics: React.FC<IProps> = ({
               </Box>
             </Grid>
           ) : null}
-          {enjoyedNum ? (
+          {enjoyedNum || !id ? (
             <Grid item xs={6}>
               <Box
                 sx={{
@@ -102,7 +102,7 @@ const ProfileStatistics: React.FC<IProps> = ({
               </Box>
             </Grid>
           ) : null}
-          {createdNum ? (
+          {createdNum || !id ? (
             <Grid item xs={6}>
               <Box
                 sx={{
@@ -126,7 +126,7 @@ const ProfileStatistics: React.FC<IProps> = ({
               </Box>
             </Grid>
           ) : null}
-          {metNum ? (
+          {metNum || !id ? (
             <Grid item xs={6}>
               <Box
                 sx={{
