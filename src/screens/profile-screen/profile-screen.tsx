@@ -2,11 +2,11 @@ import InstagramIcon from "@mui/icons-material/Instagram";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import { Box, IconButton, Typography, useTheme } from "@mui/material";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useSnackbar } from "notistack";
 import React from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { connectInstagram } from "../../api/users/requests";
+import { connectInstagram, getBuddyState } from "../../api/users/requests";
 import userPlaceholder from "../../assets/img/user-placeholder.svg";
 import { AuthenticationContext } from "../../assets/theme/authentication-provider";
 import ActionButton from "../../components/action-button";
@@ -23,6 +23,8 @@ import { BuddyRequestActionEnum } from "../../types/users/buddy-request-action-e
 import { deleteNotification } from "../../api/notifications/requests";
 import { useGetApiUrl } from "../../hooks/use-get-api-url";
 import { useSendBuddyRequest } from "./hooks/use-send-buddy-request";
+import { BuddyStateEnum } from "../../types/users/buddy-state-enum.dto";
+import { generateBuddyActionButtonLabel } from "./utils/generate-buddy-action-button-label.util";
 
 interface IProfileScreenProps {
   type: ProfileEntryTypeEnum;
@@ -43,9 +45,15 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
   const baseUrl = useGetApiUrl();
 
   const { handleToggleBuddyRequest, isTogglingBuddyRequest } =
-    useToggleBuddyRequest();
-  const { handleSendBuddyRequest, isSendingBuddyRequest } =
-    useSendBuddyRequest();
+    useToggleBuddyRequest({
+      onSuccess:
+        type === ProfileEntryTypeEnum.REQUEST
+          ? undefined
+          : () => navigate(ApplicationLocations.BUDDIES),
+    });
+  const { handleSendBuddyRequest, isSendingBuddyRequest } = useSendBuddyRequest(
+    { onSuccess: () => queryClient.invalidateQueries(["buddy-state"]) }
+  );
 
   const { data: { data = {} } = {}, isLoading } = useUser({
     id: id ? Number(id) : userInfo?.id,
@@ -81,12 +89,6 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
       }
     );
 
-  React.useEffect(() => {
-    if (instagramCode && userInfo?.id) {
-      sendConnectInstagram(instagramCode);
-    }
-  }, [instagramCode, userInfo?.id]);
-
   const isOtherProfile = React.useMemo(
     () =>
       [
@@ -96,6 +98,39 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
       ].includes(type),
     [type]
   );
+
+  const {
+    data: {
+      data: {
+        state: buddyState = null,
+        senderId = null,
+        receiverId = null,
+      } = {},
+    } = {},
+    isLoading: isBuddyStateLoading,
+  } = useQuery(
+    ["buddy-state", userInfo?.id, id],
+    () => getBuddyState(Number(userInfo?.id), Number(id)),
+    {
+      onError: () => {
+        //some generic toast for every hook
+        enqueueSnackbar(`Failed to load activit${id ? "y" : "ies"}`, {
+          variant: "error",
+        });
+      },
+      enabled:
+        [
+          ProfileEntryTypeEnum.REQUEST,
+          ProfileEntryTypeEnum.USER_PROFILE,
+        ].includes(type) && !!id,
+    }
+  );
+
+  React.useEffect(() => {
+    if (instagramCode && userInfo?.id) {
+      sendConnectInstagram(instagramCode);
+    }
+  }, [instagramCode, userInfo?.id]);
 
   const onBuddyRequestAccept = React.useCallback(() => {
     handleToggleBuddyRequest({
@@ -120,19 +155,26 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
     );
   }, [data]);
 
+  const handleBuddyRequest = React.useCallback(() => {
+    // don't need to check sender id because when I have already sent buddy request button is disabled
+    if (buddyState === BuddyStateEnum.PENDING) {
+      return onBuddyRequestAccept();
+    }
+
+    handleSendBuddyRequest(Number(id));
+  }, [buddyState, onBuddyRequestAccept, handleSendBuddyRequest]);
+
+  const actionButtonDisabled = React.useMemo(
+    () =>
+      // buddy request sent by you
+      (buddyState === BuddyStateEnum.PENDING && senderId === userInfo?.id) ||
+      //or declined buddy request
+      buddyState === BuddyStateEnum.BLOCKED,
+    [buddyState, senderId, userInfo?.id]
+  );
+
   return (
     <>
-      {/* {[
-        ProfileEntryTypeEnum.REQUEST,
-        ProfileEntryTypeEnum.BUDDY,
-        ProfileEntryTypeEnum.USER_PROFILE,
-      ].includes(type) && (
-        <BackHeader
-          title={generateBackHeaderTitle(type)}
-          sx={{ mb: 2 }}
-          to={from}
-        />
-      )} */}
       <PageWrapper>
         <Box
           sx={{
@@ -251,7 +293,10 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
             }
           />
         )}
-        {type === ProfileEntryTypeEnum.REQUEST ? (
+        {[
+          ProfileEntryTypeEnum.REQUEST,
+          ProfileEntryTypeEnum.USER_PROFILE,
+        ].includes(type) ? (
           <Box
             sx={{
               display: "flex",
@@ -261,23 +306,34 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
             }}
           >
             <OffliButton
+              color={
+                buddyState === BuddyStateEnum.BLOCKED ? "error" : "primary"
+              }
               sx={{ fontSize: 14, width: "45%", mr: 2 }}
-              onClick={onBuddyRequestAccept}
+              onClick={handleBuddyRequest}
               isLoading={isTogglingBuddyRequest}
+              disabled={actionButtonDisabled}
             >
-              Accept request
+              {generateBuddyActionButtonLabel(
+                buddyState,
+                userInfo?.id,
+                senderId
+              )}
             </OffliButton>
-            <OffliButton
-              sx={{ fontSize: 14, px: 3 }}
-              variant="outlined"
-              onClick={onBuddyRequestDecline}
-              isLoading={isTogglingBuddyRequest}
-            >
-              Decline
-            </OffliButton>
+            {receiverId === userInfo?.id &&
+            buddyState === BuddyStateEnum.PENDING ? (
+              <OffliButton
+                sx={{ fontSize: 14, px: 3 }}
+                variant="outlined"
+                onClick={onBuddyRequestDecline}
+                isLoading={isTogglingBuddyRequest}
+              >
+                Decline
+              </OffliButton>
+            ) : null}
           </Box>
         ) : null}
-        {type === ProfileEntryTypeEnum.USER_PROFILE ? (
+        {/* {type === ProfileEntryTypeEnum.USER_PROFILE ? (
           <Box
             sx={{
               display: "flex",
@@ -288,13 +344,21 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
           >
             <OffliButton
               sx={{ fontSize: 14, width: "50%" }}
-              onClick={() => handleSendBuddyRequest(Number(id))}
+              onClick={handleBuddyRequest}
               isLoading={isTogglingBuddyRequest}
+              disabled={
+                buddyState === BuddyStateEnum.PENDING &&
+                senderId === userInfo?.id
+              }
             >
-              Add buddy
+              {generateBuddyActionButtonLabel(
+                buddyState,
+                userInfo?.id,
+                senderId
+              )}
             </OffliButton>
           </Box>
-        ) : null}
+        ) : null} */}
         {displayStatistics ? (
           <Box
             sx={{
@@ -371,9 +435,11 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
             </Box>
           </Box>
         ) : null}
-        {!isOtherProfile ? (
-          <ProfileGallery photoUrls={data?.instagram_photos} />
-        ) : null}
+
+        <ProfileGallery
+          isOtherProfile={isOtherProfile}
+          photoUrls={data?.instagram_photos}
+        />
       </PageWrapper>
     </>
   );
