@@ -32,6 +32,7 @@ import MapScreen from "../screens/map-screen";
 import { ProfileEntryTypeEnum } from "../screens/profile-screen/types/profile-entry-type";
 import { IActivityListRestDto } from "../types/activities/activity-list-rest.dto";
 import { IActivityRestDto } from "../types/activities/activity-rest.dto";
+import { ActivityInviteScreen } from "../screens/activity-invite-screen/activity-invite-screen";
 
 const Routes = () => {
   return (
@@ -126,6 +127,10 @@ const Routes = () => {
         <Route
           path={`${ApplicationLocations.ACTIVITY_MEMBERS}/:id`}
           element={<ActivityMembersScreen />}
+        />
+        <Route
+          path={`${ApplicationLocations.ACTIVITY_INVITE_MEMBERS}/:id`}
+          element={<ActivityInviteScreen />}
         />
         <Route
           path={ApplicationLocations.CREATE}

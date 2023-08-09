@@ -381,14 +381,19 @@ export const changeParticipantStatus = (
 
 export const inviteBuddyToActivity = (
   activityId: number,
+  buddyId: number,
   values: IActivityInviteValuesDto
 ) => {
   const CancelToken = axios.CancelToken;
   const source = CancelToken.source();
 
-  const promise = axios.post(`/activities/${activityId}/participants`, values, {
-    cancelToken: source?.token,
-  });
+  const promise = axios.put(
+    `/activities/${activityId}/participants/${buddyId}`,
+    values,
+    {
+      cancelToken: source?.token,
+    }
+  );
 
   //   queryFunctionContext?.signal?.addEventListener('abort', () => {
   //     source.cancel('Query was cancelled by React Query')

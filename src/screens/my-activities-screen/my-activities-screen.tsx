@@ -164,6 +164,15 @@ const ActivitiesScreen = () => {
           });
         case ActivityActionsTypeEnumDto.JOIN:
           return sendJoinActivity(activityId);
+        case ActivityActionsTypeEnumDto.INVITE:
+          return navigate(
+            `${ApplicationLocations.ACTIVITY_INVITE_MEMBERS}/${activityId}`,
+            {
+              state: {
+                from: ApplicationLocations.ACTIVITIES,
+              },
+            }
+          );
         default:
           return console.log(action);
       }

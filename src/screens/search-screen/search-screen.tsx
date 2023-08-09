@@ -54,8 +54,6 @@ const SearchScreen = () => {
 
   const isTag = queryStringDebounced?.includes("tag");
 
-  console.log(filters);
-
   const { data: activitiesData, isLoading: areActivitiesLoading } =
     useActivities<IActivityListRestDto>({
       text: isTag ? undefined : queryStringDebounced,
@@ -156,16 +154,18 @@ const SearchScreen = () => {
               <ActivitySearchCard
                 key={activity?.id}
                 activity={activity}
-                onPress={(act) => console.log(act)}
+                onPress={({ id } = {}) =>
+                  navigate(`${ApplicationLocations.ACTIVITY_DETAIL}/${id}`, {
+                    state: {
+                      from: ApplicationLocations.SEARCH,
+                    },
+                  })
+                }
               />
               <Divider sx={{ mb: 1 }} />
             </>
           ))
         )}
-        {/* 
-      <Button onClick={() => addEventToCalendar("thefaston@gmail.com", event)}>
-        Create calendar Event
-      </Button> */}
       </Box>
     </>
   );
