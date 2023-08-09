@@ -44,6 +44,7 @@
     "react-image-crop": "^10.1.5",
     "react-input-verification-code": "^1.0.2",
     "react-leaflet": "^4.2.0",
+    "react-leaflet-cluster": "^2.1.0",
     "react-router-dom": "^6.3.0",
     "react-scripts": "5.0.1",
     "react-time-picker": "^5.0.0",
