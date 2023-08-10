@@ -1,24 +1,10 @@
-import { Box, CardActionArea, DividerProps, SxProps } from "@mui/material";
-import logo from "../assets/img/gym.svg";
-import L from "leaflet";
+import { Box, SxProps } from "@mui/material";
+import L, { LatLngTuple } from "leaflet";
 import React from "react";
-import Card from "@mui/material/Card";
-import CardActions from "@mui/material/CardActions";
-import CardContent from "@mui/material/CardContent";
-import Button from "@mui/material/Button";
-import Typography from "@mui/material/Typography";
-import {
-  MapContainer,
-  Marker,
-  Popup,
-  TileLayer,
-  useMap,
-  useMapEvents,
-} from "react-leaflet";
+import { MapContainer, Marker, Popup, TileLayer, useMap } from "react-leaflet";
 import MarkerClusterGroup from "react-leaflet-cluster";
-import { LatLng, LatLngTuple } from "leaflet";
-import { IActivity } from "../types/activities/activity.dto";
-import PlaceIcon from "@mui/icons-material/Place";
+import markerIcon from "../assets/img/location-marker.svg";
+import { CustomizationContext } from "../assets/theme/customization-provider";
 import { DrawerContext } from "../assets/theme/drawer-provider";
 import MapDrawerDetail from "../screens/map-screen/components/map-drawer-detail";
 import { CustomizationContext } from "../assets/theme/customization-provider";
@@ -48,6 +34,7 @@ import wavePeople from "../assets/img/here-icon.svg";
 //   iconSize: new L.Point(60, 75),
 //   className: "leaflet-div-icon",
 // });
+import { IActivity } from "../types/activities/activity.dto";
 import { IMapViewActivityDto } from "../types/activities/mapview-activities.dto";
 
 const RecenterAutomatically = ({
@@ -70,7 +57,7 @@ interface ILabeledTileProps {
   title?: string;
   imageUrl?: string;
   sx?: SxProps;
-  activities?: IMapViewActivityDto[];
+  activities?: IActivity | IMapViewActivityDto[];
   onClick?: (title: string) => void;
   centerPosition?: GeolocationCoordinates;
 }
@@ -109,11 +96,19 @@ const Map: React.FC<ILabeledTileProps> = ({
     });
   }, []);
 
-  const isSingleActivity = activities?.length === 1;
-  const latLonTupleSingle = [
-    activities?.[0]?.lat ?? position[0],
-    activities?.[0]?.lon ?? position[1],
-  ];
+  const isSingleActivity = !Array.isArray(activities);
+  const latLonTupleSingle = React.useMemo(() => {
+    if (isSingleActivity) {
+      return [
+        activities?.location?.coordinates?.lat ?? position[0],
+        activities?.location?.coordinates?.lon ?? position[1],
+      ];
+    }
+    return [
+      (activities?.[0] as IMapViewActivityDto)?.lat ?? position[0],
+      (activities?.[0] as IMapViewActivityDto)?.lon ?? position[1],
+    ];
+  }, [activities, isSingleActivity]);
 
   const latLonTuple =
     currentLocation &&
@@ -144,18 +139,32 @@ const Map: React.FC<ILabeledTileProps> = ({
           }/{z}/{x}/{y}{r}.png?access-token=dY2cc1f9EUuag5geOpQB30R31VnRRhl7O401y78cM0NWSvzLf7irQSUGfA4m7Va5`}
         />
         <MarkerClusterGroup chunkedLoading>
-          {activities?.map(
-            ({ id, lat, lon }) =>
-              id && (
-                <Marker
-                  key={`activity_${id}`}
-                  position={[lat ?? position[0], lon ?? position[1]]}
-                  eventHandlers={{
-                    click: () => handleMarkerClick(id),
-                  }}
-                  icon={offliMarkerIcon}
-                ></Marker>
-              )
+          {isSingleActivity ? (
+            <Marker
+              // key={`activity_${id}`}
+              position={[
+                latLonTupleSingle[0] ?? position[0],
+                latLonTupleSingle[1] ?? position[1],
+              ]}
+              eventHandlers={{
+                click: () => handleMarkerClick(activities?.id),
+              }}
+              icon={offliMarkerIcon}
+            ></Marker>
+          ) : (
+            activities?.map(
+              ({ id, lat, lon }) =>
+                id && (
+                  <Marker
+                    key={`activity_${id}`}
+                    position={[lat ?? position[0], lon ?? position[1]]}
+                    eventHandlers={{
+                      click: () => handleMarkerClick(id),
+                    }}
+                    icon={offliMarkerIcon}
+                  ></Marker>
+                )
+            )
           )}
           <Marker position={latLonTuple ?? position} icon={peopleIcon}>
             <Popup>You are here</Popup>

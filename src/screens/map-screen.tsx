@@ -14,27 +14,34 @@ interface ILocation {
 
 const MapScreen = <T extends unknown>() => {
   const { activityId } = useParams();
-  // const { data: { data = {} } = {}, isLoading } = useActivities<T>({
-  //   id: activityId ? Number(activityId) : undefined,
-  // });
 
-  const { data: { data } = {}, isLoading } = useQuery(
-    ["mapview-activities"],
-    () => getMapviewActivities(),
-    { enabled: !activityId }
+  const { data: { data = {} } = {}, isLoading } = useActivities<T>(
+    {
+      id: activityId ? Number(activityId) : undefined,
+    },
+    {
+      enabled: !!activityId,
+    }
   );
+
+  const {
+    data: { data: mapViewData } = {},
+    isLoading: areMapViewActivitiesLoading,
+  } = useQuery(["mapview-activities"], () => getMapviewActivities(), {
+    enabled: !activityId,
+  });
 
   const location = useLocation();
   const state = location?.state as ICustomizedLocationStateDto;
   const { from = "" } = state;
 
-  // const activityData = !!activityId
-  //   ? [(data as IActivityRestDto)?.activity]
-  //   : (data as IActivityListRestDto)?.activities;
+  const activityData = !!activityId
+    ? (data as IActivityRestDto)?.activity
+    : mapViewData?.activities;
 
   return (
     <>
-      <Map activities={data?.activities} />
+      <Map activities={activityData} />
     </>
   );
 };
