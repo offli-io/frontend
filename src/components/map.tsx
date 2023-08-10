@@ -123,23 +123,12 @@ const Map: React.FC<ILabeledTileProps> = ({
                     click: () => handleMarkerClick(id),
                   }}
                   icon={offliMarkerIcon}
-                >
-                  {/* 
-                Maybe omit popup because activity detail will be displayed with drawer
-                <Popup>
-                  <Typography
-                    variant="h6"
-                    align="center"
-                    sx={{ overflowWrap: "break-word" }}
-                  >
-                    {title}
-                  </Typography>
-                </Popup>{" "} */}
-                </Marker>
+                ></Marker>
               )
           )}
           <Marker position={latLonTuple ?? position} icon={offliMarkerIcon}>
             <Popup>You are here</Popup>
+            {/* TODO: custom Person marker instead of text "you are here" */}
           </Marker>
           <RecenterAutomatically
             lat={

@@ -1,6 +1,6 @@
-import { IActivity } from './activity.dto'
+import { IActivity } from "./activity.dto";
 
 export interface IActivityListRestDto {
-  activities: IActivity[]
-  count: number
+  activities: IActivity[];
+  count: number;
 }
