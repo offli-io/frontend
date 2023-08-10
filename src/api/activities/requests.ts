@@ -52,11 +52,15 @@ export const getActivity = <T>({
   text,
   tag,
   date,
+  limit,
+  offset,
 }: {
   id?: number;
   text?: string;
   tag?: string[];
   date?: Date | null;
+  limit?: number;
+  offset?: number;
 }) => {
   const promise = axios.get<T>(
     `${DEFAULT_DEV_URL}/activities${id ? `/${id}` : ""}`,
@@ -65,6 +69,8 @@ export const getActivity = <T>({
         text,
         tag,
         date,
+        limit,
+        offset,
       },
       paramsSerializer: (params) => {
         return qs.stringify(params, { arrayFormat: "repeat" });

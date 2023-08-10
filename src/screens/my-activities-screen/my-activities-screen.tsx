@@ -36,6 +36,7 @@ import ActivityActions from "./components/activity-actions";
 import ActivityLeaveConfirmation from "./components/activity-leave-confirmation";
 import FirstTimeLoginContent from "./components/first-time-login-content";
 import { SetLocationContent } from "./components/set-location-content";
+import { LayoutContext } from "../../app/layout";
 
 const ActivitiesScreen = () => {
   const { userInfo, isFirstTimeLogin, setIsFirstTimeLogin } = React.useContext(
@@ -43,11 +44,15 @@ const ActivitiesScreen = () => {
   );
   const { location, setLocation } = React.useContext(LocationContext);
   const { toggleDrawer } = React.useContext(DrawerContext);
+  const { contentDivRef } = React.useContext(LayoutContext);
+
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
   const queryClient = useQueryClient();
   const [isSearchFocused, setIsSearchFocused] = React.useState(false);
   const { palette } = useTheme();
+  const [activeOffset, setActiveOffset] = React.useState(0);
+  const [activeLimit, setActiveLimit] = React.useState(10);
 
   //TODO either call it like this or set user info once useUsers request in layout.tsx got Promise resolved
   const { data: { data: userData = {} } = {} } = useUser({
@@ -55,13 +60,17 @@ const ActivitiesScreen = () => {
   });
 
   const { data: { data: { activities = [] } = {} } = {}, isLoading } =
-    useActivities<IActivityListRestDto>();
+    useActivities<IActivityListRestDto>({
+      limit: activeLimit,
+      offset: activeOffset,
+    });
 
   const {
     data: { data = {} } = {},
     isLoading: areParticipantActivitiesLoading,
     invalidate: invalidateParticipantActivities,
   } = useParticipantActivities({ participantId: userInfo?.id });
+  const [scrollPosition, setScrollPosition] = React.useState(0);
 
   const participantActivites = data?.activities ?? [];
 
@@ -236,6 +245,36 @@ const ActivitiesScreen = () => {
         onClose: () => setIsFirstTimeLogin?.(false),
       });
   }, [isFirstTimeLogin, toggleDrawer]);
+
+  // contentDivRef?.current?.scrollTo(0, 500);
+
+  const handleScroll = React.useCallback(() => {
+    if (contentDivRef?.current) {
+      const { scrollTop, scrollHeight, clientHeight } = contentDivRef.current;
+      if (scrollTop + clientHeight === scrollHeight) {
+        // This will be triggered after hitting the last element.
+        // API call should be made here while implementing pagination.
+        // setActiveOffset((activeOffset) => activeOffset + 1);
+        // setScrollPosition(scrollHeight);
+        contentDivRef?.current?.scrollTo(0, scrollHeight - 200);
+        // window.scrollTo(0, scrollHeight - 200);
+        // setActiveLimit((activeLimit) => activeLimit + 10);
+        console.log("refetch");
+      }
+    }
+  }, [contentDivRef?.current]);
+
+  window.scrollTo(0, 600);
+
+  React.useLayoutEffect(() => {
+    window.scrollTo(0, scrollPosition);
+  }, [scrollPosition]);
+
+  React.useEffect(() => {
+    contentDivRef?.current?.addEventListener("scroll", handleScroll);
+    return () =>
+      contentDivRef?.current?.removeEventListener("scroll", handleScroll);
+  }, []);
 
   return (
     <PageWrapper sxOverrides={{ px: 2 }}>

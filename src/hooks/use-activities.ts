@@ -7,11 +7,20 @@ export const useActivities = <T>({
   text,
   tag,
   date,
-}: { id?: number; text?: string; tag?: string[]; date?: Date | null } = {}) => {
+  limit,
+  offset,
+}: {
+  id?: number;
+  text?: string;
+  tag?: string[];
+  date?: Date | null;
+  limit?: number;
+  offset?: number;
+} = {}) => {
   const { enqueueSnackbar } = useSnackbar();
   const { data, isLoading } = useQuery(
-    ["activities", id, text, tag, date],
-    () => getActivity<T>({ id, text, tag, date }),
+    ["activities", id, text, tag, date, limit, offset],
+    () => getActivity<T>({ id, text, tag, date, limit, offset }),
     {
       onError: () => {
         //some generic toast for every hook
