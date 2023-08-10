@@ -24,6 +24,7 @@ import { IListParticipantsResponseDto } from "../../types/activities/list-partic
 import { ActivityInviteStateEnum } from "../../types/activities/activity-invite-state-enum.dto";
 import { ICreateGoogleEventWithTokenRequestDto } from "../../types/activities/create-google-event-with-token-request.dto";
 import { IActivityInviteValuesDto } from "../../types/activities/activity-invite-values.dto";
+import { IMapViewActivitiesResponseDto } from "../../types/activities/mapview-activities.dto";
 
 export const getActivities = async ({
   queryFunctionContext,
@@ -321,6 +322,24 @@ export const getPredefinedTags = () => {
 
   const promise = axios.get<{ tags: string[] }>(
     `${DEFAULT_DEV_URL}/predefined/tags`,
+    {
+      cancelToken: source?.token,
+    }
+  );
+
+  // queryFunctionContext?.signal?.addEventListener('abort', () => {
+  //   source.cancel('Query was cancelled by React Query')
+  // })
+
+  return promise;
+};
+
+export const getMapviewActivities = () => {
+  const CancelToken = axios.CancelToken;
+  const source = CancelToken.source();
+
+  const promise = axios.get<IMapViewActivitiesResponseDto>(
+    `${DEFAULT_DEV_URL}/mapview/activities?lon=-180&lat=-90&maxLon=180&maxLat=90`,
     {
       cancelToken: source?.token,
     }

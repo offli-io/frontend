@@ -23,30 +23,7 @@ import { DrawerContext } from "../assets/theme/drawer-provider";
 import MapDrawerDetail from "../screens/map-screen/components/map-drawer-detail";
 import { CustomizationContext } from "../assets/theme/customization-provider";
 import markerIcon from "../assets/img/location-marker.svg";
-
-// function LocationMarker() {
-//   const [position, setPosition] = React.useState<LatLng | null>(null);
-//   const map = useMa({
-//     click() {
-//       map.locate();
-//     },
-//     locationfound(e) {
-//       setPosition(e.latlng);
-//       map.flyTo(e.latlng, map.getZoom());
-//     },
-//   });
-
-// const iconPerson = new L.Icon({
-//   iconUrl: require("../img/marker-pin-person.svg"),
-//   iconRetinaUrl: require("../img/marker-pin-person.svg"),
-//   // iconAnchor: null,
-//   // popupAnchor: null,
-//   // shadowUrl: null,
-//   // shadowSize: null,
-//   // shadowAnchor: null,
-//   iconSize: new L.Point(60, 75),
-//   className: "leaflet-div-icon",
-// });
+import { IMapViewActivityDto } from "../types/activities/mapview-activities.dto";
 
 const RecenterAutomatically = ({
   lat,
@@ -68,7 +45,7 @@ interface ILabeledTileProps {
   title?: string;
   imageUrl?: string;
   sx?: SxProps;
-  activities?: IActivity[];
+  activities?: IMapViewActivityDto[];
   onClick?: (title: string) => void;
   centerPosition?: GeolocationCoordinates;
 }
@@ -103,8 +80,8 @@ const Map: React.FC<ILabeledTileProps> = ({
 
   const isSingleActivity = activities?.length === 1;
   const latLonTupleSingle = [
-    activities?.[0]?.location?.coordinates?.lat ?? position[0],
-    activities?.[0]?.location?.coordinates?.lon ?? position[1],
+    activities?.[0]?.lat ?? position[0],
+    activities?.[0]?.lon ?? position[1],
   ];
 
   const latLonTuple =
@@ -137,14 +114,11 @@ const Map: React.FC<ILabeledTileProps> = ({
         />
         <MarkerClusterGroup chunkedLoading>
           {activities?.map(
-            ({ title = "Activity", location = null, id } = {}) =>
-              location?.coordinates && (
+            ({ id, lat, lon }) =>
+              id && (
                 <Marker
                   key={`activity_${id}`}
-                  position={[
-                    location?.coordinates?.lat ?? position[0],
-                    location?.coordinates?.lon ?? position[1],
-                  ]}
+                  position={[lat ?? position[0], lon ?? position[1]]}
                   eventHandlers={{
                     click: () => handleMarkerClick(id),
                   }}
