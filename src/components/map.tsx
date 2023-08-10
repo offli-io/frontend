@@ -48,6 +48,7 @@ import wavePeople from "../assets/img/here-icon.svg";
 //   iconSize: new L.Point(60, 75),
 //   className: "leaflet-div-icon",
 // });
+import { IMapViewActivityDto } from "../types/activities/mapview-activities.dto";
 
 const RecenterAutomatically = ({
   lat,
@@ -69,7 +70,7 @@ interface ILabeledTileProps {
   title?: string;
   imageUrl?: string;
   sx?: SxProps;
-  activities?: IActivity[];
+  activities?: IMapViewActivityDto[];
   onClick?: (title: string) => void;
   centerPosition?: GeolocationCoordinates;
 }
@@ -110,8 +111,8 @@ const Map: React.FC<ILabeledTileProps> = ({
 
   const isSingleActivity = activities?.length === 1;
   const latLonTupleSingle = [
-    activities?.[0]?.location?.coordinates?.lat ?? position[0],
-    activities?.[0]?.location?.coordinates?.lon ?? position[1],
+    activities?.[0]?.lat ?? position[0],
+    activities?.[0]?.lon ?? position[1],
   ];
 
   const latLonTuple =
@@ -144,14 +145,11 @@ const Map: React.FC<ILabeledTileProps> = ({
         />
         <MarkerClusterGroup chunkedLoading>
           {activities?.map(
-            ({ title = "Activity", location = null, id } = {}) =>
-              location?.coordinates && (
+            ({ id, lat, lon }) =>
+              id && (
                 <Marker
                   key={`activity_${id}`}
-                  position={[
-                    location?.coordinates?.lat ?? position[0],
-                    location?.coordinates?.lon ?? position[1],
-                  ]}
+                  position={[lat ?? position[0], lon ?? position[1]]}
                   eventHandlers={{
                     click: () => handleMarkerClick(id),
                   }}
