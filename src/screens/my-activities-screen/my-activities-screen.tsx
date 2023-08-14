@@ -63,6 +63,8 @@ const ActivitiesScreen = () => {
     useActivities<IActivityListRestDto>({
       limit: activeLimit,
       offset: activeOffset,
+      lon: location?.coordinates?.lon,
+      lat: location?.coordinates?.lat,
     });
 
   const {

@@ -9,6 +9,8 @@ export const useActivities = <T>({
   date,
   limit,
   offset,
+  lon,
+  lat,
 }: {
   id?: number;
   text?: string;
@@ -16,11 +18,13 @@ export const useActivities = <T>({
   date?: Date | null;
   limit?: number;
   offset?: number;
+  lon?: number;
+  lat?: number;
 } = {}) => {
   const { enqueueSnackbar } = useSnackbar();
   const { data, isLoading } = useQuery(
-    ["activities", id, text, tag, date, limit, offset],
-    () => getActivity<T>({ id, text, tag, date, limit, offset }),
+    ["activities", id, text, tag, date, limit, offset, lat, lon],
+    () => getActivity<T>({ id, text, tag, date, limit, offset, lon, lat }),
     {
       onError: () => {
         //some generic toast for every hook
