@@ -24,6 +24,7 @@ export const PageWrapper: React.FC<IPageWrapperProps> = ({
         //pb: (HEADER_HEIGHT + 16) / 8,
         ...sxOverrides,
       }}
+      onScroll={() => console.log("scroll")}
     >
       {children}
     </Box>

@@ -24,6 +24,8 @@ import { IListParticipantsResponseDto } from "../../types/activities/list-partic
 import { ActivityInviteStateEnum } from "../../types/activities/activity-invite-state-enum.dto";
 import { ICreateGoogleEventWithTokenRequestDto } from "../../types/activities/create-google-event-with-token-request.dto";
 import { IActivityInviteValuesDto } from "../../types/activities/activity-invite-values.dto";
+import { IActivityRestDto } from "../../types/activities/activity-rest.dto";
+import { IActivityListRestDto } from "../../types/activities/activity-list-rest.dto";
 
 export const getActivities = async ({
   queryFunctionContext,
@@ -47,16 +49,66 @@ export const getActivities = async ({
   return promise;
 };
 
-export const getActivity = <T>({
-  id,
-  text,
-  tag,
-  date,
+export const getActivitiesPromiseResolved = async ({
+  limit,
+  offset,
+  lon,
+  lat,
+  sort,
 }: {
   id?: number;
   text?: string;
   tag?: string[];
   date?: Date | null;
+  limit?: number;
+  offset?: number;
+  lon?: number;
+  lat?: number;
+  sort?: string;
+}) => {
+  const CancelToken = axios.CancelToken;
+  const source = CancelToken.source();
+
+  const response = await axios.get<IActivityListRestDto>(
+    `${DEFAULT_DEV_URL}/activities`,
+    {
+      // params: searchParams,
+      cancelToken: source?.token,
+      params: {
+        lat,
+        lon,
+        limit: 10,
+        offset,
+        sort,
+      },
+    }
+  );
+
+  // queryFunctionContext?.signal?.addEventListener("abort", () => {
+  //   source.cancel("Query was cancelled by React Query");
+  // });
+
+  return response?.data?.activities;
+};
+
+export const getActivity = <T>({
+  id,
+  text,
+  tag,
+  date,
+  limit,
+  offset,
+  lon,
+  lat,
+}: {
+  id?: number;
+  text?: string;
+  tag?: string[];
+  date?: Date | null;
+  limit?: number;
+  offset?: number;
+  lon?: number;
+  lat?: number;
 }) => {
   const promise = axios.get<T>(
     `${DEFAULT_DEV_URL}/activities${id ? `/${id}` : ""}`,
@@ -65,6 +117,10 @@ export const getActivity = <T>({
         text,
         tag,
         date,
+        limit,
+        offset,
+        lon,
+        lat,
       },
       paramsSerializer: (params) => {
         return qs.stringify(params, { arrayFormat: "repeat" });
@@ -381,14 +437,19 @@ export const changeParticipantStatus = (
 
 export const inviteBuddyToActivity = (
   activityId: number,
+  buddyId: number,
   values: IActivityInviteValuesDto
 ) => {
   const CancelToken = axios.CancelToken;
   const source = CancelToken.source();
 
-  const promise = axios.post(`/activities/${activityId}/participants`, values, {
-    cancelToken: source?.token,
-  });
+  const promise = axios.put(
+    `/activities/${activityId}/participants/${buddyId}`,
+    values,
+    {
+      cancelToken: source?.token,
+    }
+  );
 
   //   queryFunctionContext?.signal?.addEventListener('abort', () => {
   //     source.cancel('Query was cancelled by React Query')

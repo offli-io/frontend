@@ -26,6 +26,7 @@ import MonetizationOnIcon from "@mui/icons-material/MonetizationOn";
 import { LatLngTuple } from "leaflet";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import { useUser } from "../hooks/use-user";
+import { useGetApiUrl } from "../hooks/use-get-api-url";
 
 interface IMyActivityCardProps {
   activity?: IActivity;
@@ -41,7 +42,8 @@ const ActivitySearchCard: React.FC<IMyActivityCardProps> = ({
   ...rest
 }) => {
   //TODO maybe in later use also need some refactoring
-  const { palette } = useTheme();
+  const baseUrl = useGetApiUrl();
+  const { palette, shadows } = useTheme();
   const { action, handlers } = useLongPress();
   const { userInfo } = React.useContext(AuthenticationContext);
   const { data: { data = {} } = {} } = useUser({
@@ -68,9 +70,13 @@ const ActivitySearchCard: React.FC<IMyActivityCardProps> = ({
     >
       <Box sx={{ p: 0.5, mr: 1 }}>
         <img
-          src={activity?.title_picture ?? activityPlaceholderImage}
+          src={
+            activity?.title_picture
+              ? `${baseUrl}/files/${activity?.title_picture}`
+              : activityPlaceholderImage
+          }
           alt="activity_image"
-          style={{ height: 80, borderRadius: 10 }}
+          style={{ height: 80, borderRadius: 10, boxShadow: shadows[2] }}
         />
       </Box>
       <Box
@@ -79,13 +85,17 @@ const ActivitySearchCard: React.FC<IMyActivityCardProps> = ({
           flexDirection: "column",
           justifyContent: "center",
           width: "100%",
+          overflow: "hidden",
         }}
       >
         <Box sx={{ display: "flex" }}>
           <Box>
             <Typography
               variant="h6"
-              sx={{ fontWeight: "bold", color: palette?.text?.primary }}
+              sx={{
+                fontWeight: "bold",
+                color: palette?.text?.primary,
+              }}
             >
               {activity?.title}
             </Typography>

@@ -69,6 +69,7 @@ const NotificationRequest: React.FC<INotificationRequestProps> = ({
       >
         <Box
           sx={{
+            width: "100%",
             display: "grid",
             gridTemplateColumns: "4fr 1fr",
             alignItems: "center",

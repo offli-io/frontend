@@ -22,73 +22,62 @@ export const CreatorVisibilityRow: React.FC<IProps> = ({
   return (
     <Box
       sx={{
-        display: "flex",
-        width: "100%",
+        display: "grid",
         alignItems: "center",
-        flexDirection: "column",
-        flex: 1,
-        mb: 1,
+        gridTemplateColumns: "8fr 2fr",
+        mb: 1.5,
       }}
     >
       <Box
         sx={{
           display: "flex",
+          flexDirection: "row",
           alignItems: "center",
-          justifyContent: "space-between",
-          width: "95%",
-          // mt: 1,
+          overflow: "hidden",
+          mr: 2,
         }}
       >
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "flex-start",
+        <img
+          src={
+            creator?.profile_photo
+              ? `${baseUrl}/files/${creator?.profile_photo}`
+              : userPlaceholder
+          }
+          alt="profile"
+          style={{
+            height: "25px",
+            width: "25px",
+            borderRadius: "50%",
           }}
-        >
-          <img
-            src={
-              creator?.profile_photo
-                ? `${baseUrl}/files/${creator?.profile_photo}`
-                : userPlaceholder
-            }
-            alt="profile"
-            style={{
-              height: "25px",
-              width: "25px",
-              borderRadius: "50%",
-            }}
-          />
-          <Typography variant="subtitle1" align="left" sx={{ ml: 1 }}>
-            {creator?.username ?? "User"}
-          </Typography>
-        </Box>
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "flex-start",
-            color: "grey",
-          }}
-        >
-          {visibility === ActivityVisibilityEnum.private ? (
-            <>
-              <LockIcon sx={{ mr: 0.5, fontSize: 18 }} />
-              <Typography variant="subtitle1" align="left">
-                Private
-              </Typography>
-            </>
-          ) : (
-            <>
-              <LockOpenIcon sx={{ mr: 0.5, fontSize: 18 }} />
-              <Typography variant="subtitle1" align="left">
-                Public
-              </Typography>
-            </>
-          )}
-        </Box>
+        />
+        <Typography variant="subtitle1" align="left" sx={{ ml: 1 }}>
+          {creator?.username ?? "User"}
+        </Typography>
+      </Box>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "flex-start",
+          color: "grey",
+        }}
+      >
+        {visibility === ActivityVisibilityEnum.private ? (
+          <>
+            <LockIcon sx={{ mr: 0.5, fontSize: 18 }} />
+            <Typography variant="subtitle1" align="left">
+              Private
+            </Typography>
+          </>
+        ) : (
+          <>
+            <LockOpenIcon sx={{ mr: 0.5, fontSize: 18 }} />
+            <Typography variant="subtitle1" align="left">
+              Public
+            </Typography>
+          </>
+        )}
       </Box>
     </Box>
   );

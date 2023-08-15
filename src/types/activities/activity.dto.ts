@@ -59,7 +59,7 @@ export interface IActivity {
   count_rejected?: number;
   created_at?: Date;
   modified_at?: string;
-  participant_status?: string;
+  participant_status?: string | null;
 }
 
 export interface IActivitySearchParams {

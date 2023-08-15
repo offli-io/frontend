@@ -67,7 +67,7 @@ const ActivityActions: React.FC<IActivityActionsProps> = ({
               label={actionDefinition?.label}
               type={actionDefinition?.type}
               icon={actionDefinition?.icon}
-              key={`activity_action_${actionDefinition?.type}`}
+              key={`activity_action_${index}_${actionDefinition?.type}`}
               //temporary solution just add bolean if next icon should be displayed
               headerRight={<></>}
               onMenuItemClick={() =>

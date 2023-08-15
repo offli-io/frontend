@@ -123,8 +123,18 @@ export const SetLocationContent: React.FC<IPlaceFormProps> = ({
   }, [coords]);
 
   return (
-    <>
-      <Box sx={{ display: "flex", width: "100%", alignItems: "flex-end" }}>
+    <Box
+      sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}
+    >
+      <Box
+        sx={{
+          display: "flex",
+          width: "100%",
+          alignItems: "flex-end",
+          justifyContent: "center",
+          mt: 2,
+        }}
+      >
         <Box
           sx={{
             display: "flex",
@@ -148,6 +158,7 @@ export const SetLocationContent: React.FC<IPlaceFormProps> = ({
         variant="text"
         sx={{
           fontSize: 16,
+          alignContent: "center",
           mt: 2,
         }}
         startIcon={<PlaceIcon />}
@@ -159,7 +170,7 @@ export const SetLocationContent: React.FC<IPlaceFormProps> = ({
           display: "flex",
           flexDirection: "column",
           width: "100%",
-          alignItems: "flex-start",
+          alignItems: "center",
           mt: 2,
           px: 2,
           boxSizing: "border-box",
@@ -198,13 +209,13 @@ export const SetLocationContent: React.FC<IPlaceFormProps> = ({
         />
         <OffliButton
           startIcon={<NearMeIcon />}
-          sx={{ width: "100%", my: 4 }}
+          sx={{ width: "90%", my: 4, fontSize: 16 }}
           onClick={handleUseCurrentLocation}
           disabled={!coords}
         >
           Use my current location
         </OffliButton>
       </Box>
-    </>
+    </Box>
   );
 };

@@ -3,8 +3,12 @@ import { Box, styled } from "@mui/system";
 import { format } from "date-fns";
 import { sk } from "date-fns/esm/locale";
 import React from "react";
+import { AuthenticationContext } from "../../../assets/theme/authentication-provider";
 import { useActivities } from "../../../hooks/use-activities";
+import { useGetApiUrl } from "../../../hooks/use-get-api-url";
+import { useUser } from "../../../hooks/use-user";
 import { IActivityRestDto } from "../../../types/activities/activity-rest.dto";
+import { calculateDistance } from "../../../utils/calculate-distance.util";
 import { DATE_TIME_FORMAT, TIME_FORMAT } from "../../../utils/common-constants";
 import ActivityTags from "../../activity-details-screen/components/activity-tags";
 import { getTimeDifference } from "../utils/get-time-difference";
@@ -14,7 +18,6 @@ import AdditionalDescription from "./additional-description";
 import BasicInformation from "./basic-information";
 import CreatedTimestamp from "./created-timestamp";
 import { CreatorVisibilityRow } from "./creator-visibility-row";
-import userPlaceholder from "../../../assets/img/user-placeholder.svg";
 
 interface IProps {
   activityId?: number;
@@ -29,27 +32,29 @@ const MainBox = styled(Box)(() => ({
   right: 0,
   left: 0,
   height: 450,
-  // display: "flex",
-  // flexDirection: "column",
 }));
 
 const MapDrawerDetail: React.FC<IProps> = ({ activityId }) => {
+  const { userInfo } = React.useContext(AuthenticationContext);
   const { data: { data: { activity = {} } = {} } = {}, isLoading } =
     useActivities<IActivityRestDto>({
       id: activityId,
     });
 
+  const { data: { data = {} } = {} } = useUser({
+    id: userInfo?.id,
+  });
+  const myLocation = data?.location?.coordinates;
+  const baseUrl = useGetApiUrl();
+
   const participantsNum = `${activity?.count_confirmed}/${activity?.limit}`;
 
-  // const timeStampFrom = Date.parse(activity?.datetime_from!.toString());
   const dateTimeFrom = activity?.datetime_from
     ? new Date(activity?.datetime_from)
     : null;
-  // const timeStampUntil = Date.parse(activity?.datetime_until!.toString());
   const dateTimeUntil = activity?.datetime_until
     ? new Date(activity?.datetime_until)
     : null;
-  // const timeStampCreatedAt = Date.parse(activity?.datetime_until!.toString());
   const dateTimeCreatedAt = new Date();
 
   const timeDifference = getTimeDifference(dateTimeFrom, dateTimeUntil); // useMemo??
@@ -81,6 +86,8 @@ const MapDrawerDetail: React.FC<IProps> = ({ activityId }) => {
               // flexWrap: "wrap",
               justifyContent: "center",
               ml: 0.5,
+              wordWrap: "break-word",
+              overflow: "hidden",
             }}
           >
             <Typography
@@ -100,6 +107,10 @@ const MapDrawerDetail: React.FC<IProps> = ({ activityId }) => {
                   : "-"
               }
               // distance={activity?.}
+              distance={calculateDistance(
+                activity?.location?.coordinates,
+                myLocation
+              )}
               price={activity?.price}
             />
             <ActivityTags tags={activity?.tags} />
@@ -109,16 +120,19 @@ const MapDrawerDetail: React.FC<IProps> = ({ activityId }) => {
                 visibility={activity?.visibility}
               />
             ) : null}
-            {/* <React.Suspense fallback={<div>Loading ...</div>}> */}
-            {/* TODO handle lazy image loading */}
+
             <img
-              src={activity?.title_picture}
+              src={
+                activity?.title_picture
+                  ? `${baseUrl}/files/${activity?.title_picture}`
+                  : //TODO add activity placeholder
+                    ""
+              }
               alt="activity_title_photo"
               style={{
                 width: "100%",
               }}
             />
-            {/* </React.Suspense> */}
             <BasicInformation
               locationName={activity?.location?.name}
               dateTime={

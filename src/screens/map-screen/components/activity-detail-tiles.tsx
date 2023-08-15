@@ -1,15 +1,15 @@
-import { Card, IconButton, Typography } from "@mui/material";
-import { Box, styled } from "@mui/system";
-import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
-import NearMeIcon from "@mui/icons-material/NearMe";
 import MonetizationOnIcon from "@mui/icons-material/MonetizationOn";
+import NearMeIcon from "@mui/icons-material/NearMe";
+import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
+import { Card, Typography } from "@mui/material";
+import { Box, styled } from "@mui/system";
 import React from "react";
 
 interface IProps {
   participantsNum?: string;
   dateTime?: string;
-  distance?: string;
+  distance?: number | null;
   price?: number | null;
 }
 
@@ -18,19 +18,14 @@ const StyledBox = styled(Card)(() => ({
   alignItems: "center",
   flexDirection: "column",
   borderRadius: "10px",
-  // backgroundColor: "#E4E3FF",
-  // paddingTop: "2%",
-  // paddingBottom: "2%",
-  // padding: "1% 4%",
+  margin: 8,
   padding: 0,
+  width: "100%",
 }));
 
 const StyledText = styled(Typography)(() => ({
   lineHeight: 1.2,
-  padding: "3%",
-  width: "70%",
-  inlineSize: "90%",
-  // overflowWrap: "break-word",
+  marginTop: 8,
 }));
 
 const ActivityDetailTiles: React.FC<IProps> = ({
@@ -39,11 +34,9 @@ const ActivityDetailTiles: React.FC<IProps> = ({
   distance,
   price,
 }) => {
-  // const time = new Date(dateTime?.toString()).getTime()
   return (
     <Box
       sx={{
-        // width: "90%",
         height: "10px",
         display: "flex",
         flex: 1,
@@ -54,34 +47,25 @@ const ActivityDetailTiles: React.FC<IProps> = ({
       }}
     >
       <StyledBox>
-        <IconButton color="primary">
-          <PeopleAltIcon sx={{ fontSize: 22 }} />
-        </IconButton>
+        <PeopleAltIcon sx={{ fontSize: 22 }} color="primary" />
         <StyledText align="center" variant="subtitle1">
           {participantsNum}
         </StyledText>
       </StyledBox>
       <StyledBox>
-        <IconButton color="primary">
-          <CalendarTodayIcon sx={{ fontSize: 22 }} />
-        </IconButton>
+        <CalendarTodayIcon sx={{ fontSize: 22 }} color="primary" />
         <StyledText align="center" variant="subtitle1">
           {dateTime}
         </StyledText>
       </StyledBox>
       <StyledBox>
-        <IconButton color="primary" sx={{ width: "auto" }}>
-          <NearMeIcon sx={{ fontSize: 24 }} />
-        </IconButton>
+        <NearMeIcon sx={{ fontSize: 22 }} color="primary" />
         <StyledText align="center" variant="subtitle1">
-          {/* {distance} */}
-          1.4km
+          {distance ? `${distance} km` : "-"}
         </StyledText>
       </StyledBox>
       <StyledBox>
-        <IconButton color="primary">
-          <MonetizationOnIcon sx={{ fontSize: 24 }} />
-        </IconButton>
+        <MonetizationOnIcon sx={{ fontSize: 22 }} color="primary" />
         <StyledText align="center" variant="subtitle1">
           {price}
         </StyledText>
