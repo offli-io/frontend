@@ -9,12 +9,18 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+  useInfiniteQuery,
+  useMutation,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { useSnackbar } from "notistack";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import {
   changeActivityParticipantStatus,
+  getActivities,
+  getActivitiesPromiseResolved,
   removePersonFromActivity,
 } from "../../api/activities/requests";
 import { LocationContext } from "../../app/providers/location-provider";
@@ -37,8 +43,10 @@ import ActivityLeaveConfirmation from "./components/activity-leave-confirmation"
 import FirstTimeLoginContent from "./components/first-time-login-content";
 import { SetLocationContent } from "./components/set-location-content";
 import { LayoutContext } from "../../app/layout";
+import { useInView } from "react-intersection-observer";
 
 const ActivitiesScreen = () => {
+  const { ref, inView } = useInView();
   const { userInfo, isFirstTimeLogin, setIsFirstTimeLogin } = React.useContext(
     AuthenticationContext
   );
@@ -59,13 +67,34 @@ const ActivitiesScreen = () => {
     id: userInfo?.id,
   });
 
-  const { data: { data: { activities = [] } = {} } = {}, isLoading } =
-    useActivities<IActivityListRestDto>({
-      limit: activeLimit,
-      offset: activeOffset,
-      lon: location?.coordinates?.lon,
-      lat: location?.coordinates?.lat,
-    });
+  const {
+    data: paginatedActivitiesData,
+    isSuccess,
+    hasNextPage,
+    fetchNextPage,
+    isFetchingNextPage,
+  } = useInfiniteQuery(
+    ["paged-activities", location],
+    ({ pageParam = 0 }) =>
+      getActivitiesPromiseResolved({
+        offset: pageParam,
+        lon: location?.coordinates?.lon,
+        lat: location?.coordinates?.lat,
+        sort: "nearest",
+      }),
+    {
+      getNextPageParam: (lastPage, allPages) => {
+        const nextPage: number = allPages?.length + 1;
+        return nextPage;
+      },
+      select: (data) => ({
+        pages: data?.pages?.map((page) =>
+          page?.filter((activity) => activity?.participant_status === null)
+        ),
+        pageParams: [...data.pageParams],
+      }),
+    }
+  );
 
   const {
     data: { data = {} } = {},
@@ -76,12 +105,13 @@ const ActivitiesScreen = () => {
 
   const participantActivites = data?.activities ?? [];
 
-  const filteredActivities = activities?.filter(
-    (activity) =>
-      !participantActivites?.some(
-        (participantActivity) => participantActivity?.id === activity?.id
-      )
-  );
+  const allActivities = React.useMemo(() => {
+    let activities: IActivity[] = [];
+    paginatedActivitiesData?.pages?.forEach((page) => {
+      activities = [...activities, ...page];
+    });
+    return activities;
+  }, [paginatedActivitiesData]);
 
   const { mutate: sendJoinActivity } = useMutation(
     ["join-activity-response"],
@@ -134,6 +164,8 @@ const ActivitiesScreen = () => {
       },
     }
   );
+
+  console.log(paginatedActivitiesData);
 
   const handleActionClick = React.useCallback(
     (action?: ActivityActionsTypeEnumDto, activityId?: number) => {
@@ -215,12 +247,14 @@ const ActivitiesScreen = () => {
 
   const anyMyActivities = React.useMemo(
     () => participantActivites?.length > 0,
+    // () => true,
     [participantActivites]
   );
 
   const anyNearYouActivities = React.useMemo(
-    () => filteredActivities?.length > 0,
-    [filteredActivities]
+    () => paginatedActivitiesData?.pages?.some((page) => page?.length > 0),
+    // () => true,
+    [paginatedActivitiesData]
   );
 
   const handleLocationSelect = React.useCallback(() => {
@@ -253,7 +287,7 @@ const ActivitiesScreen = () => {
   const handleScroll = React.useCallback(() => {
     if (contentDivRef?.current) {
       const { scrollTop, scrollHeight, clientHeight } = contentDivRef.current;
-      if (scrollTop + clientHeight === scrollHeight) {
+      if (scrollTop + clientHeight === scrollHeight && !isFetchingNextPage) {
         // This will be triggered after hitting the last element.
         // API call should be made here while implementing pagination.
         // setActiveOffset((activeOffset) => activeOffset + 1);
@@ -261,16 +295,15 @@ const ActivitiesScreen = () => {
         contentDivRef?.current?.scrollTo(0, scrollHeight - 200);
         // window.scrollTo(0, scrollHeight - 200);
         // setActiveLimit((activeLimit) => activeLimit + 10);
+        fetchNextPage();
         console.log("refetch");
       }
     }
-  }, [contentDivRef?.current]);
+  }, [contentDivRef?.current, isFetchingNextPage]);
 
-  window.scrollTo(0, 600);
-
-  React.useLayoutEffect(() => {
-    window.scrollTo(0, scrollPosition);
-  }, [scrollPosition]);
+  // React.useLayoutEffect(() => {
+  //   window.scrollTo(0, scrollPosition);
+  // }, [scrollPosition]);
 
   React.useEffect(() => {
     contentDivRef?.current?.addEventListener("scroll", handleScroll);
@@ -300,7 +333,7 @@ const ActivitiesScreen = () => {
             justifyContent: "flex-start",
             overflow: "hidden",
             whiteSpace: "nowrap",
-            fontWeight: "bold",
+            // fontWeight: "bold",
           }}
           startIcon={<PlaceIcon sx={{ fontSize: "1.4rem", mr: -0.5 }} />}
           onClick={handleLocationSelect}
@@ -361,7 +394,7 @@ const ActivitiesScreen = () => {
           />
         )}
       />
-      {isLoading ? (
+      {areParticipantActivitiesLoading ? (
         <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
           <CircularProgress color="primary" />
         </Box>
@@ -422,56 +455,71 @@ const ActivitiesScreen = () => {
               </Box>
             </>
           )}
-          {anyNearYouActivities && (
-            <>
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  width: "100%",
-                }}
+          {/* {anyNearYouActivities && ( */}
+          <>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                width: "100%",
+              }}
+            >
+              <Typography variant="h5" sx={{ color: palette?.text?.primary }}>
+                Near you
+              </Typography>
+              <OffliButton
+                variant="text"
+                sx={{ fontSize: 16 }}
+                onClick={() =>
+                  navigate(ApplicationLocations.MAP, {
+                    state: {
+                      from: ApplicationLocations.ACTIVITIES,
+                    },
+                  })
+                }
+                data-testid="see-map-btn"
               >
-                <Typography variant="h5" sx={{ color: palette?.text?.primary }}>
-                  Near you
-                </Typography>
-                <OffliButton
-                  variant="text"
-                  sx={{ fontSize: 16 }}
-                  onClick={() =>
-                    navigate(ApplicationLocations.MAP, {
-                      state: {
-                        from: ApplicationLocations.ACTIVITIES,
-                      },
-                    })
-                  }
-                  data-testid="see-map-btn"
-                >
-                  Show on Map
-                </OffliButton>
-              </Box>
-              <Box
-                sx={{
-                  // height: "100vh",
-                  width: "100vw",
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  justifyContent: "flex-start",
-                }}
-              >
-                {filteredActivities?.map((activity) => {
-                  return (
+                Show on Map
+              </OffliButton>
+            </Box>
+            <Box
+              // ref={ref}
+              sx={{
+                // height: "100vh",
+                width: "100vw",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "flex-start",
+                // overflow: "auto",
+              }}
+            >
+              {paginatedActivitiesData?.pages?.map((group, i) => (
+                <React.Fragment key={i}>
+                  {group?.map((activity) => (
                     <ActivityCard
                       key={activity?.id}
                       activity={activity}
                       onPress={openActivityActions}
                     />
-                  );
-                })}
-              </Box>
-            </>
-          )}
+                  ))}
+                  {isFetchingNextPage ? (
+                    <Box
+                      sx={{
+                        display: "flex",
+                        justifyContent: "center",
+                        my: 4,
+                      }}
+                    >
+                      <CircularProgress color="primary" />
+                    </Box>
+                  ) : null}
+                </React.Fragment>
+              ))}
+            </Box>
+          </>
+          {/* )} */}
         </>
       )}
     </PageWrapper>

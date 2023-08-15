@@ -11,6 +11,8 @@ import { useUsers } from "../hooks/use-users";
 import { IPersonExtended } from "../types/activities/activity.dto";
 import { useUser } from "../hooks/use-user";
 import { HeaderContext } from "./providers/header-provider";
+import { useInView } from "react-intersection-observer";
+
 interface ILayoutProps {
   children?: React.ReactNode;
 }
@@ -117,7 +119,7 @@ export const Layout: React.FC<ILayoutProps> = ({ children }) => {
           sx={{
             width: "100%",
             height: "100%",
-            overflow: "scroll",
+            overflow: "auto",
             bgcolor: palette.background.default,
           }}
         >
