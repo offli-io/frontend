@@ -38,6 +38,7 @@ import {
   getRecommendedBuddies,
 } from "../../api/activities/requests";
 import { useSendBuddyRequest } from "../profile-screen/hooks/use-send-buddy-request";
+import AddBuddiesContent from "./components/add-buddies-content";
 
 const MyBuddiesScreen = () => {
   const navigate = useNavigate();
@@ -146,6 +147,13 @@ const MyBuddiesScreen = () => {
     [toggleDrawer]
   );
 
+  const handleAddBuddies = React.useCallback(() => {
+    toggleDrawer({
+      open: true,
+      content: <AddBuddiesContent navigate={navigate} />,
+    });
+  }, [toggleDrawer]);
+
   return (
     <>
       <Box sx={{ mx: 1.5, height: "100%" }}>
@@ -190,13 +198,7 @@ const MyBuddiesScreen = () => {
 
               <IconButton
                 sx={{ fontSize: 14, ml: 1 }}
-                onClick={() =>
-                  navigate(ApplicationLocations.ADD_BUDDIES, {
-                    state: {
-                      from: ApplicationLocations.BUDDIES,
-                    },
-                  })
-                }
+                onClick={handleAddBuddies}
               >
                 <PersonAddIcon color="primary" />
               </IconButton>

@@ -80,6 +80,7 @@ const ActivitiesScreen = () => {
         offset: pageParam,
         lon: location?.coordinates?.lon,
         lat: location?.coordinates?.lat,
+        participantId: Number(userInfo?.id),
         sort: "nearest",
       }),
     {

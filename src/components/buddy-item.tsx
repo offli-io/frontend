@@ -39,7 +39,7 @@ const BuddyItem: React.FC<IBuddyItemProps> = ({
         sx={{
           display: "flex",
           alignItems: "center",
-          ml: 1,
+          mx: 1,
           maxWidth: "90%",
           overflow: "hidden",
         }}

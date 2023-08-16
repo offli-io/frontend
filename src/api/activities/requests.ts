@@ -55,6 +55,7 @@ export const getActivitiesPromiseResolved = async ({
   lon,
   lat,
   sort,
+  participantId,
 }: {
   id?: number;
   text?: string;
@@ -65,6 +66,7 @@ export const getActivitiesPromiseResolved = async ({
   lon?: number;
   lat?: number;
   sort?: string;
+  participantId?: number;
 }) => {
   const CancelToken = axios.CancelToken;
   const source = CancelToken.source();
@@ -80,6 +82,7 @@ export const getActivitiesPromiseResolved = async ({
         limit: 10,
         offset,
         sort,
+        participantId,
       },
     }
   );
@@ -95,7 +98,7 @@ export const getActivity = <T>({
   id,
   text,
   tag,
-  date,
+  datetimeFrom,
   limit,
   offset,
   lon,
@@ -104,7 +107,7 @@ export const getActivity = <T>({
   id?: number;
   text?: string;
   tag?: string[];
-  date?: Date | null;
+  datetimeFrom?: Date | null;
   limit?: number;
   offset?: number;
   lon?: number;
@@ -116,7 +119,7 @@ export const getActivity = <T>({
       params: {
         text,
         tag,
-        date,
+        datetimeFrom,
         limit,
         offset,
         lon,

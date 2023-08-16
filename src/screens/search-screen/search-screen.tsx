@@ -58,7 +58,7 @@ const SearchScreen = () => {
     useActivities<IActivityListRestDto>({
       text: isTag ? undefined : queryStringDebounced,
       tag: filters?.tags,
-      date: filters?.date?.dateValue,
+      datetimeFrom: filters?.date?.dateValue,
     });
 
   const handleApplyFilters = React.useCallback(
@@ -69,6 +69,8 @@ const SearchScreen = () => {
     },
     []
   );
+
+  //TODO custom date year not working
 
   const toggleFilters = React.useCallback(() => {
     toggleDrawer({

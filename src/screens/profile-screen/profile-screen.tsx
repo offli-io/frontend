@@ -169,7 +169,8 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
       // buddy request sent by you
       (buddyState === BuddyStateEnum.PENDING && senderId === userInfo?.id) ||
       //or declined buddy request
-      buddyState === BuddyStateEnum.BLOCKED,
+      buddyState === BuddyStateEnum.BLOCKED ||
+      buddyState === BuddyStateEnum.CONFIRMED,
     [buddyState, senderId, userInfo?.id]
   );
 
