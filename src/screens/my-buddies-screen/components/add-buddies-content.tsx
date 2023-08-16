@@ -119,14 +119,13 @@ const AddBuddiesContent: React.FC<IAddBuddiesContentProps> = ({ navigate }) => {
       sx={{ mx: 1.5, height: 450, position: "relative", overflow: "hidden" }}
     >
       <TextField
-        autoFocus
         sx={{
           width: "100%",
           display: "flex",
           justifyContent: "center",
           "& .MuiOutlinedInput-root": {
             pr: 0,
-            boxShadow: shadows[2],
+            boxShadow: shadows[1],
           },
           "& input::placeholder": {
             fontSize: 14,

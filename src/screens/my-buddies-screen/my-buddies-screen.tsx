@@ -159,15 +159,25 @@ const MyBuddiesScreen = () => {
       <Box sx={{ mx: 1.5, height: "100%" }}>
         {(!data || (data?.data?.length === 0 && currentSearch?.length === 0)) &&
         !isLoading ? (
-          <NoBuddiesScreen />
+          <NoBuddiesScreen onAddBuddiesClick={handleAddBuddies} />
         ) : (
-          <>
+          <Box
+            sx={{
+              overflow: "hidden",
+              position: "relative",
+              height: "100%",
+              zIndex: 555,
+            }}
+          >
             <Box
               sx={{
                 width: "100%",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
+                position: "sticky",
+                top: 0,
+                zIndex: 555,
               }}
             >
               <TextField
@@ -231,14 +241,20 @@ const MyBuddiesScreen = () => {
                 </Box>
               </Box>
             )}
-            <Box>
+            <Box
+              sx={{
+                height: "100%",
+                overflow: "auto",
+                "::-webkit-scrollbar": { display: "none" },
+              }}
+            >
               <Typography variant="h5" sx={{ mt: 2, mb: 1 }}>
                 Your buddies
               </Typography>
               {(data?.data ?? [])?.length < 1 ? (
                 <Box
                   sx={{
-                    height: 100,
+                    height: "100%",
                     width: "100%",
                     // my: 3,
                     display: "flex",
@@ -257,13 +273,11 @@ const MyBuddiesScreen = () => {
               ) : (
                 <Box
                   sx={{
-                    // height: 300,
+                    height: "100%",
                     width: "100%",
                     overflowY: "auto",
-                    overflowX: "hidden",
-                    // my: 3,
-                    // borderTop: "1px solid lightgrey",
-                    // borderBottom: "1px solid lightgrey",
+                    "::-webkit-scrollbar": { display: "none" },
+                    mb: 10,
                   }}
                 >
                   {isLoading ? (
@@ -294,7 +308,7 @@ const MyBuddiesScreen = () => {
                 </Box>
               )}
             </Box>
-          </>
+          </Box>
         )}
       </Box>
     </>

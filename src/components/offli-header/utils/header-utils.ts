@@ -41,8 +41,6 @@ export const mapPathnameToHeaderTitle = (pathname?: ApplicationLocations) => {
       return "Edit profile";
     case ApplicationLocations.BUDDIES:
       return "Buddies";
-    case ApplicationLocations.ADD_BUDDIES:
-      return "Find new buddies";
     case ApplicationLocations.SEARCH:
       return "Search activities";
     case ApplicationLocations.SETTINGS:

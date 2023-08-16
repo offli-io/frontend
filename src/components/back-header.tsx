@@ -46,16 +46,16 @@ const BackHeader: React.FC<IBackHeaderProps> = ({
       return;
     }
     // edge cases when there is double navigation via header (e.g. BUDDIES -> ADD_BUDDY screens)
-    if (
-      fromLocation === ApplicationLocations.BUDDIES &&
-      location === ApplicationLocations.ADD_BUDDIES
-    ) {
-      return navigate(fromLocation, {
-        state: {
-          from: ApplicationLocations.PROFILE,
-        },
-      });
-    }
+    // if (
+    //   fromLocation === ApplicationLocations.BUDDIES &&
+    //   location === ApplicationLocations.ADD_BUDDIES
+    // ) {
+    //   return navigate(fromLocation, {
+    //     state: {
+    //       from: ApplicationLocations.PROFILE,
+    //     },
+    //   });
+    // }
     navigate(fromLocation);
   }, [fromLocation, location, navigate]);
 

@@ -20,10 +20,8 @@ import SettingsScreen from "../screens/settings-screen/settings-screen";
 import TestScreen from "../screens/test-screen";
 import VerificationScreen from "../screens/verification-screen/verification-screen";
 import WelcomeScreen from "../screens/welcome-screen";
-
-import { ApplicationLocations } from "../types/common/applications-locations.dto";
+import { ActivityInviteScreen } from "../screens/activity-invite-screen/activity-invite-screen";
 import { ActivityMembersScreen } from "../screens/activity-members-screen/activity-members-screen";
-import AddBuddiesScreen from "../screens/add-buddies-screen/add-buddies-screen";
 import AuthenticationMethodScreen from "../screens/authentication-method-screen";
 import ChooseLocationScreen from "../screens/choose-location-screen";
 import ChooseUsernameGooglePage from "../screens/choose-username-google-page";
@@ -32,7 +30,7 @@ import MapScreen from "../screens/map-screen";
 import { ProfileEntryTypeEnum } from "../screens/profile-screen/types/profile-entry-type";
 import { IActivityListRestDto } from "../types/activities/activity-list-rest.dto";
 import { IActivityRestDto } from "../types/activities/activity-rest.dto";
-import { ActivityInviteScreen } from "../screens/activity-invite-screen/activity-invite-screen";
+import { ApplicationLocations } from "../types/common/applications-locations.dto";
 
 const Routes = () => {
   return (
@@ -158,10 +156,7 @@ const Routes = () => {
           path={ApplicationLocations.BUDDIES}
           element={<MyBuddiesScreen />}
         />
-        <Route
-          path={ApplicationLocations.ADD_BUDDIES}
-          element={<AddBuddiesScreen />}
-        />
+
         <Route path={ApplicationLocations.CHAT} element={<ChatScreen />} />
       </Route>
     </BaseRoutes>
