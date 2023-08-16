@@ -290,15 +290,15 @@ export const createActivity = async (values: IActivity) => {
 };
 
 export const getUsers = ({ username }: { username?: string }) => {
-  const CancelToken = axios.CancelToken;
-  const source = CancelToken.source();
+  // const CancelToken = axios.CancelToken;
+  // const source = CancelToken.source();
   const validUsername = username ?? localStorage.getItem("username");
 
   const promise = axios.get<IPersonExtended[]>(`${DEFAULT_DEV_URL}/users`, {
     params: {
       username: username ? validUsername : undefined,
     },
-    cancelToken: source?.token,
+    // cancelToken: source?.token,
   });
   // .then((response) => {
   //   const { data } = response;

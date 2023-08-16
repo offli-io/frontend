@@ -1,4 +1,4 @@
-import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
+import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import SearchIcon from "@mui/icons-material/Search";
 import {
   Box,
@@ -9,28 +9,23 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
+import { useQueryClient } from "@tanstack/react-query";
+import { useSnackbar } from "notistack";
 import React from "react";
 import { NavigateFunction } from "react-router-dom";
-import BuddyItem from "../../../components/buddy-item";
-import { ApplicationLocations } from "../../../types/common/applications-locations.dto";
-// import BuddyActions from "./components/buddy-actions";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useSnackbar } from "notistack";
-import { addBuddy } from "../../../api/users/requests";
+import { useDebounce } from "use-debounce";
 import { AuthenticationContext } from "../../../assets/theme/authentication-provider";
+import { DrawerContext } from "../../../assets/theme/drawer-provider";
+import BuddyItem from "../../../components/buddy-item";
+import { useBuddies } from "../../../hooks/use-buddies";
 import { useUsers } from "../../../hooks/use-users";
-import PersonAddIcon from "@mui/icons-material/PersonAdd";
-
 import {
   IPerson,
   IPersonExtended,
 } from "../../../types/activities/activity.dto";
-import { useDebounce } from "use-debounce";
-import { useBuddies } from "../../../hooks/use-buddies";
-import { isBuddy } from "../utils/is-buddy.util";
-import { DrawerContext } from "../../../assets/theme/drawer-provider";
+import { ApplicationLocations } from "../../../types/common/applications-locations.dto";
 import { useSendBuddyRequest } from "../../profile-screen/hooks/use-send-buddy-request";
-// import BuddySuggestCard from "../../components/buddy-suggest-card";
+import { isBuddy } from "../utils/is-buddy.util";
 
 interface IAddBuddiesContentProps {
   navigate?: NavigateFunction;
@@ -41,7 +36,7 @@ const AddBuddiesContent: React.FC<IAddBuddiesContentProps> = ({ navigate }) => {
   const { enqueueSnackbar } = useSnackbar();
   const { userInfo } = React.useContext(AuthenticationContext);
   const { shadows } = useTheme();
-  const [usernameDebounced] = useDebounce(username, 250);
+  const [usernameDebounced] = useDebounce(username, 150);
   const { toggleDrawer } = React.useContext(DrawerContext);
 
   //TODO polish this avoid erorrs that cause whole application down
@@ -62,32 +57,6 @@ const AddBuddiesContent: React.FC<IAddBuddiesContentProps> = ({ navigate }) => {
 
   const { data: { data: buddies = [] } = {}, isLoading: areBuddiesLoading } =
     useBuddies();
-
-  //   const { mutate: sendDeleteBuddy } = useMutation(
-  //     ["delete-buddy"],
-  //     (id?: number) => deleteBuddy(userInfo?.id, id),
-  //     {
-  //       onSuccess: (data, variables) => {
-  //         //TODO what to invalidate, and where to navigate after success
-  //         // queryClient.invalidateQueries(['notifications'])
-  //         // navigateBasedOnType(
-  //         //   variables?.type,
-  //         //   variables?.properties?.user?.id ?? variables?.properties?.activity?.id
-  //         // )
-  //         toggleDrawer({ open: false, content: undefined });
-  //         // invalidateBuddies();
-
-  //         enqueueSnackbar("Buddy was successfully deleted", {
-  //           variant: "success",
-  //         });
-  //       },
-  //       onError: () => {
-  //         enqueueSnackbar("Failed to delete buddy", {
-  //           variant: "error",
-  //         });
-  //       },
-  //     }
-  //   );
 
   const handleBuddyActionsClick = React.useCallback(
     (buddy?: IPerson) => {
@@ -151,7 +120,7 @@ const AddBuddiesContent: React.FC<IAddBuddiesContentProps> = ({ navigate }) => {
       />
 
       <Box sx={{ overflowY: "auto", height: "100%" }}>
-        {(data ?? [])?.length < 1 ? (
+        {(data ?? [])?.length < 1 && !isLoading ? (
           <Box
             sx={{
               height: 100,
@@ -160,8 +129,6 @@ const AddBuddiesContent: React.FC<IAddBuddiesContentProps> = ({ navigate }) => {
               display: "flex",
               justifyContent: "center",
               alignItems: "center",
-              // borderTop: "1px solid lightgrey",
-              // borderBottom: "1px solid lightgrey",
             }}
           >
             <Typography sx={{ color: (theme) => theme.palette.inactive.main }}>
@@ -173,9 +140,6 @@ const AddBuddiesContent: React.FC<IAddBuddiesContentProps> = ({ navigate }) => {
             sx={{
               height: 300,
               width: "100%",
-              // my: 3,
-              // borderTop: "1px solid lightgrey",
-              // borderBottom: "1px solid lightgrey",
             }}
           >
             {isLoading ? (
