@@ -13,7 +13,7 @@ export const useUsers = ({ username }: { username?: string }) => {
         //some generic toast for every hook
         enqueueSnackbar("Failed to load users", { variant: "error" });
       },
-      enabled: !!username,
+      // enabled: !!username,
     }
   );
 

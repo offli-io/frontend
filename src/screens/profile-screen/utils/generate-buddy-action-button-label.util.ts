@@ -15,5 +15,9 @@ export const generateBuddyActionButtonLabel = (
   if (buddyState === BuddyStateEnum.BLOCKED) {
     return "Rejected";
   }
+
+  if (buddyState === BuddyStateEnum.CONFIRMED) {
+    return "Buddies";
+  }
   return "Add buddy";
 };

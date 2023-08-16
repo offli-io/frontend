@@ -18,6 +18,7 @@ import axios from "axios";
 import jwt_decode from "jwt-decode";
 import { LocationProvider } from "./app/providers/location-provider";
 import { HeaderProvider } from "./app/providers/header-provider";
+import { BrowserRouter } from "react-router-dom";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -75,26 +76,28 @@ function App() {
           </Button>
         )}
       >
-        <AuthenticationProvider>
-          <LocalizationProvider dateAdapter={AdapterDateFns}>
-            <CustomizationProvider>
-              <Box sx={{ height: "100vh", overflow: "hidden" }}>
-                <HeaderProvider>
-                  <DrawerProvider>
-                    <LocationProvider>
-                      <Router />
-                    </LocationProvider>
-                  </DrawerProvider>
-                </HeaderProvider>
-              </Box>
-            </CustomizationProvider>
-          </LocalizationProvider>
-          <ReactQueryDevtools initialIsOpen={false} />
-          {/* 
+        <BrowserRouter>
+          <AuthenticationProvider>
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
+              <CustomizationProvider>
+                <Box sx={{ height: "100vh", overflow: "hidden" }}>
+                  <HeaderProvider>
+                    <DrawerProvider>
+                      <LocationProvider>
+                        <Router />
+                      </LocationProvider>
+                    </DrawerProvider>
+                  </HeaderProvider>
+                </Box>
+              </CustomizationProvider>
+            </LocalizationProvider>
+            <ReactQueryDevtools initialIsOpen={false} />
+            {/* 
       Nemozme pouzit query devtooly lebo to pada s tym ze sa na pozadi vytvaraju 2 instancie query client providera
       vid - https://github.com/TanStack/query/issues/1936
       <ReactQueryDevtools initialIsOpen={false} /> */}
-        </AuthenticationProvider>
+          </AuthenticationProvider>
+        </BrowserRouter>
       </SnackbarProvider>
     </QueryClientProvider>
   );

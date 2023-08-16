@@ -9,9 +9,7 @@ const Router: React.FC = (): ReactElement => {
 
   return (
     <Suspense fallback={<LoadingScreen />}>
-      <BrowserRouter>
-        <Layout />
-      </BrowserRouter>
+      <Layout />
     </Suspense>
   );
 };
