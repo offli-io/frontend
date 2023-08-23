@@ -1,8 +1,11 @@
+import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import SearchIcon from "@mui/icons-material/Search";
+import StarIcon from "@mui/icons-material/Star";
 import {
   Box,
   Chip,
   CircularProgress,
+  IconButton,
   InputAdornment,
   TextField,
   Typography,
@@ -18,17 +21,16 @@ import {
   uninviteBuddy,
 } from "../../api/activities/requests";
 import { AuthenticationContext } from "../../assets/theme/authentication-provider";
+import { DrawerContext } from "../../assets/theme/drawer-provider";
 import BuddyItem from "../../components/buddy-item";
 import { useActivities } from "../../hooks/use-activities";
-import { IActivityRestDto } from "../../types/activities/activity-rest.dto";
-import { ActivityMembersActionTypeDto } from "../../types/common/activity-members-action-type.dto";
-import { BuddyActionContent } from "./components/buddy-action-content";
-import { ApplicationLocations } from "../../types/common/applications-locations.dto";
-import BuddyItemInvite from "../../components/buddy-item-invite";
-import { IParticipantDto } from "../../types/activities/list-participants-response.dto";
 import { ActivitiyParticipantStatusEnum } from "../../types/activities/activity-participant-status-enum.dto";
-import StarIcon from "@mui/icons-material/Star";
-import { DrawerContext } from "../../assets/theme/drawer-provider";
+import { IActivityRestDto } from "../../types/activities/activity-rest.dto";
+import { IParticipantDto } from "../../types/activities/list-participants-response.dto";
+import { ActivityMembersActionTypeDto } from "../../types/common/activity-members-action-type.dto";
+import { ApplicationLocations } from "../../types/common/applications-locations.dto";
+import { BuddyActionContent } from "./components/buddy-action-content";
+import SearchBuddiesContent from "./components/search-buddies-content";
 
 export const ActivityMembersScreen: React.FC = () => {
   const { userInfo } = React.useContext(AuthenticationContext);
@@ -197,6 +199,14 @@ export const ActivityMembersScreen: React.FC = () => {
     [userInfo?.id, handleActionClick, activity, isCreator]
   );
 
+  const handleAddBuddies = React.useCallback(() => {
+    //TODO how to display invite button??
+    toggleDrawer({
+      open: true,
+      content: <SearchBuddiesContent navigate={navigate} />,
+    });
+  }, [toggleDrawer]);
+
   return (
     <Box sx={{ px: 2 }}>
       <Box
@@ -208,33 +218,49 @@ export const ActivityMembersScreen: React.FC = () => {
           mt: 2,
         }}
       >
-        <TextField
-          value={queryString}
-          onChange={(e) => setQueryString(e.target.value)}
-          // label="Search among activity members"
-          placeholder="Search among activity members"
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <SearchIcon sx={{ fontSize: "1.5rem", color: "#4A148C" }} />{" "}
-              </InputAdornment>
-            ),
-          }}
+        <Box
           sx={{
             width: "100%",
-            "& input::placeholder": {
-              fontSize: 14,
-              color: "#4A148C",
-              fontWeight: "bold",
-              opacity: 1,
-              pl: 1,
-            },
-            "& fieldset": { border: "none" },
-            backgroundColor: ({ palette }) => palette?.primary?.light,
-            borderRadius: "10px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            position: "sticky",
+            top: 0,
+            zIndex: 555,
           }}
-          data-testid="activities-search-input"
-        />
+        >
+          <TextField
+            value={queryString}
+            onChange={(e) => setQueryString(e.target.value)}
+            // label="Search among activity members"
+            placeholder="Search among activity members"
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon sx={{ fontSize: "1.5rem", color: "#4A148C" }} />{" "}
+                </InputAdornment>
+              ),
+            }}
+            sx={{
+              width: "100%",
+              "& input::placeholder": {
+                fontSize: 14,
+                color: "#4A148C",
+                fontWeight: "bold",
+                opacity: 1,
+                pl: 1,
+              },
+              "& fieldset": { border: "none" },
+              backgroundColor: ({ palette }) => palette?.primary?.light,
+              borderRadius: "10px",
+            }}
+            data-testid="activities-search-input"
+          />
+
+          <IconButton sx={{ fontSize: 14, ml: 1 }} onClick={handleAddBuddies}>
+            <PersonAddIcon color="primary" />
+          </IconButton>
+        </Box>
         {(activity?.count_confirmed ?? 0) < 1 ? (
           <Box
             sx={{
