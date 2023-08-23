@@ -9,6 +9,7 @@ import { getActivityParticipants } from "../../../api/activities/requests";
 import { useQuery } from "@tanstack/react-query";
 import { ActivityVisibilityEnum } from "../../../types/activities/activity-visibility-enum.dto";
 import Loader from "../../../components/loader";
+import { ActivitiyParticipantStatusEnum } from "../../../types/activities/activity-participant-status-enum.dto";
 
 export interface IActivityActionsProps {
   onActionClick?: (
@@ -25,21 +26,12 @@ const ActivityActions: React.FC<IActivityActionsProps> = ({
   contrastText,
 }) => {
   const { userInfo } = React.useContext(AuthenticationContext);
+
   const isCreator = activity?.creator?.id === userInfo?.id;
-
-  const {
-    data: { data: { participants = [] } = {} } = {},
-    isLoading: areActivityParticipantsLoading,
-  } = useQuery(
-    ["activity-participants", activity?.id],
-    () => getActivityParticipants({ activityId: Number(activity?.id) }),
-    {
-      enabled: !!activity?.id,
-    }
-  );
-
-  const isParticipant = !!participants?.find(
-    (participant) => participant?.id === userInfo?.id
+  const isParticipant = React.useMemo(
+    () =>
+      activity?.participant_status === ActivitiyParticipantStatusEnum.CONFIRMED,
+    [activity]
   );
 
   const menuItems = useActivityMenuItems({
@@ -52,37 +44,30 @@ const ActivityActions: React.FC<IActivityActionsProps> = ({
   return (
     <Box
       sx={{
-        // display: 'flex',
-        // flexDirection: 'column',
         width: "100%",
-        // height: '100vh',
       }}
     >
-      {areActivityParticipantsLoading ? (
-        <Loader />
-      ) : (
-        menuItems?.map((actionDefinition, index) => (
-          <>
-            <MenuItem
-              label={actionDefinition?.label}
-              type={actionDefinition?.type}
-              icon={actionDefinition?.icon}
-              key={`activity_action_${index}_${actionDefinition?.type}`}
-              //temporary solution just add bolean if next icon should be displayed
-              headerRight={<></>}
-              onMenuItemClick={() =>
-                onActionClick?.(actionDefinition?.type, activity?.id)
-              }
-              contrastText={contrastText}
+      {menuItems?.map((actionDefinition, index) => (
+        <>
+          <MenuItem
+            label={actionDefinition?.label}
+            type={actionDefinition?.type}
+            icon={actionDefinition?.icon}
+            key={`activity_action_${index}_${actionDefinition?.type}`}
+            //temporary solution just add bolean if next icon should be displayed
+            headerRight={<></>}
+            onMenuItemClick={() =>
+              onActionClick?.(actionDefinition?.type, activity?.id)
+            }
+            contrastText={contrastText}
+          />
+          {index !== menuItems?.length - 1 ? (
+            <Divider
+              sx={{ bgcolor: ({ palette }) => palette?.inactive?.main }}
             />
-            {index !== menuItems?.length - 1 ? (
-              <Divider
-                sx={{ bgcolor: ({ palette }) => palette?.inactive?.main }}
-              />
-            ) : null}
-          </>
-        ))
-      )}
+          ) : null}
+        </>
+      ))}
     </Box>
   );
 };

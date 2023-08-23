@@ -15,6 +15,7 @@ import { useDebounce } from "use-debounce";
 import {
   getActivityParticipants,
   kickUserFromActivity,
+  uninviteBuddy,
 } from "../../api/activities/requests";
 import { AuthenticationContext } from "../../assets/theme/authentication-provider";
 import BuddyItem from "../../components/buddy-item";
@@ -76,15 +77,34 @@ export const ActivityMembersScreen: React.FC = () => {
     (personId?: number) => kickUserFromActivity(Number(id), Number(personId)),
     {
       onSuccess: (data, variables) => {
+        toggleDrawer({ open: false });
         enqueueSnackbar("User has been successfully kicked from activity", {
           variant: "success",
         });
         queryClient.invalidateQueries(["activity-participants", id]);
         queryClient.invalidateQueries(["activity", id]);
-        toggleDrawer({ open: false });
       },
       onError: (error) => {
         enqueueSnackbar("Failed to kick user", { variant: "error" });
+      },
+    }
+  );
+
+  const { mutate: sendUninviteBuddy, isLoading: isUninviting } = useMutation(
+    ["uninvite-person"],
+    (buddyId?: number) => uninviteBuddy(Number(id), Number(buddyId)),
+    {
+      onSuccess: (data, buddyId) => {
+        toggleDrawer({ open: false });
+
+        queryClient.invalidateQueries(["activity-participants"]);
+        // const _buddies = invitedBuddies?.filter((buddy) => buddy !== buddyId);
+        // setInvitedBuddies(_buddies);
+      },
+      onError: (error) => {
+        enqueueSnackbar("Failed to cancel invite for user", {
+          variant: "error",
+        });
       },
     }
   );
@@ -108,6 +128,8 @@ export const ActivityMembersScreen: React.FC = () => {
           return sendKickPersonFromActivity(userId);
         case ActivityMembersActionTypeDto.PROMOTE:
           return console.log("call promote with id");
+        case ActivityMembersActionTypeDto.UNINVITE:
+          return sendUninviteBuddy(userId);
         default:
           return;
       }
@@ -253,6 +275,7 @@ export const ActivityMembersScreen: React.FC = () => {
                   buddy={member}
                   actionContent={renderActionContent(member)}
                   onClick={() =>
+                    member?.id !== userInfo?.id &&
                     navigate(
                       `${ApplicationLocations.USER_PROFILE}/${member?.id}`,
                       {

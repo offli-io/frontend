@@ -1,3 +1,4 @@
+import { ActivitiyParticipantStatusEnum } from "./activity-participant-status-enum.dto";
 import { ActivityVisibilityEnum } from "./activity-visibility-enum.dto";
 import { ILocation } from "./location.dto";
 
@@ -58,7 +59,7 @@ export interface IActivity {
   count_rejected?: number;
   created_at?: Date;
   modified_at?: string;
-  participant_status?: string | null;
+  participant_status?: ActivitiyParticipantStatusEnum | null;
 }
 
 export interface IActivitySearchParams {

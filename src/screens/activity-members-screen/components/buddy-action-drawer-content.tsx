@@ -63,7 +63,7 @@ export const BuddyActionDrawerContent: React.FC<IBuddyActionContentProps> = ({
       {userStatus === ActivitiyParticipantStatusEnum.INVITED ? (
         <MenuItem
           onClick={(e) =>
-            onActionClick?.(ActivityMembersActionTypeDto.KICK, userId)
+            onActionClick?.(ActivityMembersActionTypeDto.UNINVITE, userId)
           }
           sx={{ px: 2 }}
         >
