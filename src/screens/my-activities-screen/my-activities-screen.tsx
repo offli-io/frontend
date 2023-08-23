@@ -81,7 +81,10 @@ const ActivitiesScreen = () => {
         lon: location?.coordinates?.lon,
         lat: location?.coordinates?.lat,
         participantId: Number(userInfo?.id),
-        sort: "nearest",
+        sort:
+          location?.coordinates?.lon && location?.coordinates?.lat
+            ? "nearest"
+            : undefined,
       }),
     {
       getNextPageParam: (lastPage, allPages) => {

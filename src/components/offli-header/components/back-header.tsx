@@ -45,6 +45,17 @@ const BackHeader: React.FC<IBackHeaderProps> = ({
         },
       });
     }
+
+    if (
+      to.startsWith(ApplicationLocations.ACTIVITY_MEMBERS) &&
+      location.startsWith(ApplicationLocations.USER_PROFILE)
+    ) {
+      return navigate(to, {
+        state: {
+          from: ApplicationLocations.ACTIVITIES,
+        },
+      });
+    }
     if (location.startsWith(ApplicationLocations.ACTIVITY_DETAIL)) {
       return navigate(ApplicationLocations.ACTIVITIES);
     }

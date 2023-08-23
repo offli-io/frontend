@@ -43,7 +43,6 @@ export interface IActivity {
   description?: string;
   price?: number | null;
   title_picture?: string;
-  creator_id?: number;
   datetime_from?: Date | string;
   datetime_until?: Date | string;
   location?: ILocation | null;

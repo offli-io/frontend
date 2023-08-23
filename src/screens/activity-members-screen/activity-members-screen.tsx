@@ -23,6 +23,11 @@ import { IActivityRestDto } from "../../types/activities/activity-rest.dto";
 import { ActivityMembersActionTypeDto } from "../../types/common/activity-members-action-type.dto";
 import { BuddyActionContent } from "./components/buddy-action-content";
 import { ApplicationLocations } from "../../types/common/applications-locations.dto";
+import BuddyItemInvite from "../../components/buddy-item-invite";
+import { IParticipantDto } from "../../types/activities/list-participants-response.dto";
+import { ActivitiyParticipantStatusEnum } from "../../types/activities/activity-participant-status-enum.dto";
+import StarIcon from "@mui/icons-material/Star";
+import { DrawerContext } from "../../assets/theme/drawer-provider";
 
 export const ActivityMembersScreen: React.FC = () => {
   const { userInfo } = React.useContext(AuthenticationContext);
@@ -30,6 +35,7 @@ export const ActivityMembersScreen: React.FC = () => {
   const { enqueueSnackbar } = useSnackbar();
   const { id } = useParams();
   const navigate = useNavigate();
+  const { toggleDrawer } = React.useContext(DrawerContext);
   const { pathname } = useLocation();
 
   const { data: { data: { activity = {} } = {} } = {}, isLoading } =
@@ -45,6 +51,18 @@ export const ActivityMembersScreen: React.FC = () => {
     () => getActivityParticipants({ activityId: Number(id) }),
     {
       enabled: !!id,
+      // sort to have creator on the top
+      select: (data) => ({
+        ...data,
+        data: {
+          ...data?.data,
+          participants: [
+            ...data?.data?.participants?.sort((participant) =>
+              participant?.id === activity?.creator?.id ? -1 : 1
+            ),
+          ],
+        },
+      }),
     }
   );
 
@@ -63,6 +81,7 @@ export const ActivityMembersScreen: React.FC = () => {
         });
         queryClient.invalidateQueries(["activity-participants", id]);
         queryClient.invalidateQueries(["activity", id]);
+        toggleDrawer({ open: false });
       },
       onError: (error) => {
         enqueueSnackbar("Failed to kick user", { variant: "error" });
@@ -96,33 +115,64 @@ export const ActivityMembersScreen: React.FC = () => {
     []
   );
 
-  // const isCreator = activity?.creator?.id === userInfo?.id;
+  const isCreator = React.useMemo(
+    () => activity?.creator?.id === userInfo?.id,
+    [activity, userInfo?.id]
+  );
   const anySearchResults = [...(activityMembers ?? [])]?.length > 0;
 
+  const generateChipLabel = React.useCallback(() => {}, []);
+
   const renderActionContent = React.useCallback(
-    (memberId?: number) => {
-      if (memberId === activity?.creator?.id) {
-        if (memberId !== userInfo?.id) {
+    (member: IParticipantDto): React.ReactNode => {
+      // if creator is opening "Activity members"
+      if (isCreator && member?.id !== userInfo?.id) {
+        return (
           <BuddyActionContent
-            userId={memberId}
+            userId={member?.id}
+            userStatus={member?.status}
             onActionClick={handleActionClick}
-          />;
-        }
+          />
+        );
+      } else if (member?.status !== ActivitiyParticipantStatusEnum.CONFIRMED) {
+        return (
+          <Chip
+            label={
+              member?.status === ActivitiyParticipantStatusEnum.INVITED
+                ? "Invited"
+                : "Rejected"
+            }
+            sx={{
+              ml: 1,
+              bgcolor: ({ palette }) =>
+                member?.status === ActivitiyParticipantStatusEnum.INVITED
+                  ? palette?.primary?.light
+                  : palette?.error?.main,
+              color: ({ palette }) => palette?.primary?.main,
+            }}
+          />
+        );
+      } else if (
+        member?.status === ActivitiyParticipantStatusEnum.CONFIRMED &&
+        member?.id === activity?.creator?.id
+      ) {
         return (
           <Chip
             label="Creator"
             sx={{
               ml: 1,
+              px: 0.5,
               bgcolor: ({ palette }) => palette?.primary?.light,
               color: ({ palette }) => palette?.primary?.main,
             }}
+            icon={<StarIcon color="primary" sx={{ fontSize: 18 }} />}
           />
         );
       } else {
         return null;
       }
     },
-    [userInfo?.id, handleActionClick, activity]
+    [userInfo?.id, handleActionClick, activity, isCreator]
   );
 
   return (
@@ -201,7 +251,7 @@ export const ActivityMembersScreen: React.FC = () => {
                 <BuddyItem
                   key={member?.id}
                   buddy={member}
-                  actionContent={renderActionContent(member?.id)}
+                  actionContent={renderActionContent(member)}
                   onClick={() =>
                     navigate(
                       `${ApplicationLocations.USER_PROFILE}/${member?.id}`,

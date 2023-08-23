@@ -25,7 +25,7 @@ const ActivityActions: React.FC<IActivityActionsProps> = ({
   contrastText,
 }) => {
   const { userInfo } = React.useContext(AuthenticationContext);
-  const isCreator = activity?.creator_id === userInfo?.id;
+  const isCreator = activity?.creator?.id === userInfo?.id;
 
   const {
     data: { data: { participants = [] } = {} } = {},
