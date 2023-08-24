@@ -12,6 +12,7 @@ import { IPersonExtended } from "../types/activities/activity.dto";
 import { useUser } from "../hooks/use-user";
 import { HeaderContext } from "./providers/header-provider";
 import { useInView } from "react-intersection-observer";
+import { getAuthToken } from "../utils/token.util";
 
 interface ILayoutProps {
   children?: React.ReactNode;
@@ -34,7 +35,11 @@ export const NOT_EXACT_UNALLOWED_URLS = [
 ];
 
 export const Layout: React.FC<ILayoutProps> = ({ children }) => {
-  const { stateToken, userInfo } = React.useContext(AuthenticationContext);
+  const { stateToken, userInfo, setStateToken, setUserInfo } = React.useContext(
+    AuthenticationContext
+  );
+  const token = getAuthToken();
+  const userIdFromStorage = localStorage.getItem("userId");
   const { setHeaderRightContent } = React.useContext(HeaderContext);
   const contentDivRef = React.useRef<HTMLDivElement | null>(null);
 
@@ -97,6 +102,14 @@ export const Layout: React.FC<ILayoutProps> = ({ children }) => {
       setDisplayBottomNavigator(true);
     }
   }, [location]);
+
+  React.useEffect(() => {
+    if (!!token && !!userIdFromStorage) {
+      setStateToken(token);
+      setUserInfo?.({ id: Number(userIdFromStorage) });
+      navigate(ApplicationLocations.ACTIVITIES);
+    }
+  }, [token]);
 
   return (
     <LayoutContext.Provider value={{ contentDivRef }}>
