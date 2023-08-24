@@ -111,7 +111,6 @@ const ChooseUsernameGooglePage = () => {
           control={control}
           render={({ field, fieldState: { error } }) => (
             <TextField
-              autoFocus
               {...field}
               //label="Username"
               placeholder="Username"

@@ -87,7 +87,6 @@ const ResetPasswordScreen = () => {
           control={control}
           render={({ field, fieldState: { error } }) => (
             <TextField
-              autoFocus
               {...field}
               placeholder="Email alebo mobil"
               error={!!error}

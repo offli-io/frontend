@@ -108,7 +108,6 @@ const SearchScreen = () => {
           }}
         >
           <TextField
-            autoFocus
             sx={{
               width: "100%",
               display: "flex",

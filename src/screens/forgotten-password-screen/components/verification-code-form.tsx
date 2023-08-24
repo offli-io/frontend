@@ -82,7 +82,6 @@ const VerificationCodeForm: React.FC<IVerificationCodeFormProps> = ({
         Confirmation code
       </Typography>
       <ReactInputVerificationCode
-        autoFocus
         placeholder=""
         length={6}
         onCompleted={(value) =>
