@@ -93,22 +93,7 @@ export const useActivityActionsDefinitions = ({
         />
       ),
     },
-    {
-      type: ActivityActionsTypeEnumDto.INVITE,
-      label: "Invite",
-      icon: (
-        <PersonAddAltIcon
-          sx={{
-            color: palette?.text?.primary,
-            ...(contrastText
-              ? {
-                  filter: "invert(100%)",
-                }
-              : {}),
-          }}
-        />
-      ),
-    },
+
     {
       type: ActivityActionsTypeEnumDto.LEAVE,
       label: "Leave",

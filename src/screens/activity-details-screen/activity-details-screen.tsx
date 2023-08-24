@@ -95,6 +95,7 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
             variant: "success",
           });
           navigate(ApplicationLocations.ACTIVITIES);
+          queryClient.invalidateQueries(["paged-activities"]);
           queryClient.invalidateQueries(["activities"]);
           // setInvitedBuddies([...invitedBuddies, Number(buddy?.id)]);
         },

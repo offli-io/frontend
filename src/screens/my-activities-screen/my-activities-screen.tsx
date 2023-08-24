@@ -81,7 +81,10 @@ const ActivitiesScreen = () => {
         lon: location?.coordinates?.lon,
         lat: location?.coordinates?.lat,
         participantId: Number(userInfo?.id),
-        sort: "nearest",
+        sort:
+          location?.coordinates?.lon && location?.coordinates?.lat
+            ? "nearest"
+            : undefined,
       }),
     {
       getNextPageParam: (lastPage, allPages) => {
@@ -208,15 +211,6 @@ const ActivitiesScreen = () => {
           });
         case ActivityActionsTypeEnumDto.JOIN:
           return sendJoinActivity(activityId);
-        case ActivityActionsTypeEnumDto.INVITE:
-          return navigate(
-            `${ApplicationLocations.ACTIVITY_INVITE_MEMBERS}/${activityId}`,
-            {
-              state: {
-                from: ApplicationLocations.ACTIVITIES,
-              },
-            }
-          );
         default:
           return console.log(action);
       }

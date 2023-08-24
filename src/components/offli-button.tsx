@@ -1,13 +1,13 @@
-import { Button, ButtonProps } from '@mui/material'
-import LoadingButton from '@mui/lab/LoadingButton'
+import { Button, ButtonProps } from "@mui/material";
+import LoadingButton from "@mui/lab/LoadingButton";
 
 interface IOffliButtonProps extends ButtonProps {
-  disabled?: boolean
-  isLoading?: boolean
-  onClick?: () => void
-  children: React.ReactElement | string
-  type?: 'submit' | 'button' | 'reset'
-  to?: string
+  disabled?: boolean;
+  isLoading?: boolean;
+  onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  children: React.ReactElement | string;
+  type?: "submit" | "button" | "reset";
+  to?: string;
 }
 
 const OffliButton: React.FC<IOffliButtonProps> = ({
@@ -31,7 +31,7 @@ const OffliButton: React.FC<IOffliButtonProps> = ({
     >
       {children}
     </LoadingButton>
-  )
-}
+  );
+};
 
-export default OffliButton
+export default OffliButton;
