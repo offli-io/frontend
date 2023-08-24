@@ -77,10 +77,9 @@ const LoginScreen: React.FC = () => {
       {
         onSuccess: (data, params) => {
           setStateToken(data?.data?.token?.access_token ?? null);
-          !!setUserInfo &&
-            setUserInfo({
-              id: data?.data?.user_id,
-            });
+          setUserInfo?.({
+            id: data?.data?.user_id,
+          });
           localStorage.setItem("userId", String(data?.data?.user_id));
           navigate(ApplicationLocations.ACTIVITIES);
         },

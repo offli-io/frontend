@@ -48,8 +48,7 @@ export const ActivityInviteForm: React.FC<IActivityTypeFormProps> = ({
   const { mutate: sendInviteBuddy, isLoading: isInviting } = useMutation(
     ["invite-participant"],
     (buddy?: IPerson) =>
-      inviteBuddyToActivity(Number(activityId?.id), {
-        id: Number(buddy?.id),
+      inviteBuddyToActivity(Number(activityId?.id), Number(buddy?.id), {
         status: ActivityInviteStateEnum.INVITED,
         invited_by_id: Number(userInfo?.id),
       }),

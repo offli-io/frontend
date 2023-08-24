@@ -74,8 +74,8 @@ const ActivityDetailsGrid: React.FC<IProps> = ({ activity, onActionClick }) => {
         display: "grid",
         gridTemplateColumns: "1fr 1fr",
         gridAutoFlow: "row",
-        rowGap: "7px",
-        columnGap: "5px",
+        rowGap: 0.5,
+        columnGap: 2,
         ml: 0.2,
         mt: 0.5,
       }}

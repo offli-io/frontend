@@ -1,3 +1,4 @@
+import { ActivitiyParticipantStatusEnum } from "./activity-participant-status-enum.dto";
 import { ActivityVisibilityEnum } from "./activity-visibility-enum.dto";
 import { ILocation } from "./location.dto";
 
@@ -43,7 +44,6 @@ export interface IActivity {
   description?: string;
   price?: number | null;
   title_picture?: string;
-  creator_id?: number;
   datetime_from?: Date | string;
   datetime_until?: Date | string;
   location?: ILocation | null;
@@ -59,7 +59,7 @@ export interface IActivity {
   count_rejected?: number;
   created_at?: Date;
   modified_at?: string;
-  participant_status?: string;
+  participant_status?: ActivitiyParticipantStatusEnum | null;
 }
 
 export interface IActivitySearchParams {

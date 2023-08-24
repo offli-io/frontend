@@ -14,7 +14,6 @@ export const mapLocationToNavigatorValue = (location: ApplicationLocations) => {
       [
         ApplicationLocations.EDIT_PROFILE,
         ApplicationLocations.BUDDIES,
-        ApplicationLocations.ADD_BUDDIES,
       ].includes(location)
     ) {
       return ApplicationLocations.PROFILE;

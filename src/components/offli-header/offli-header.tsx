@@ -46,7 +46,6 @@ const OffliHeader: React.FC<IProps> = ({ sx }) => {
         ApplicationLocations.CHOOSE_LOCATION,
         ApplicationLocations.MAP,
         ApplicationLocations.BUDDIES,
-        ApplicationLocations.ADD_BUDDIES,
         ApplicationLocations.CHOOSE_USERNAME_GOOGLE,
         ApplicationLocations.SEARCH,
       ].includes(location?.pathname as ApplicationLocations) ||
@@ -54,7 +53,8 @@ const OffliHeader: React.FC<IProps> = ({ sx }) => {
         location?.pathname.includes(item)
       ) ||
       location.pathname.includes(ApplicationLocations.ACTIVITY_DETAIL) ||
-      location.pathname.includes(ApplicationLocations.ACTIVITY_MEMBERS),
+      location.pathname.includes(ApplicationLocations.ACTIVITY_MEMBERS) ||
+      location.pathname.includes(ApplicationLocations.ACTIVITY_INVITE_MEMBERS),
     [location]
   );
 

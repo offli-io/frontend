@@ -124,7 +124,7 @@ const PickUsernamePhotoScreen = () => {
           control={control}
           render={({ field, fieldState: { error } }) => (
             <TextField
-              autoFocus
+              // autoFocus
               {...field}
               //label="Username"
               placeholder="Username"

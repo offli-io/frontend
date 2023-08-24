@@ -1,6 +1,3 @@
-import { GoogleAuthCodeFromEnumDto } from "../types/google/google-auth-code-from-enum.dto";
-import { CLIENT_ID } from "./common-constants";
-
 export const getAuthToken = (): string | null => {
   return localStorage.getItem("token");
 };

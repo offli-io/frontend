@@ -1,6 +1,6 @@
 {
   "name": "offli",
-  "version": "0.1.58",
+  "version": "0.1.63",
   "private": true,
   "homepage": "http://localhost:3000/",
   "dependencies": {
@@ -43,9 +43,12 @@
     "react-hook-form": "^7.33.0",
     "react-image-crop": "^10.1.5",
     "react-input-verification-code": "^1.0.2",
+    "react-intersection-observer": "^9.5.2",
     "react-leaflet": "^4.2.0",
+    "react-leaflet-cluster": "^2.1.0",
     "react-router-dom": "^6.3.0",
     "react-scripts": "5.0.1",
+    "react-swipeable": "^7.0.1",
     "react-time-picker": "^5.0.0",
     "styled-components": "^5.3.6",
     "throttle-debounce": "^5.0.0",
@@ -103,6 +106,7 @@
   "devDependencies": {
     "@types/google.accounts": "0.0.2",
     "@types/leaflet": "^1.9.0",
+    "@types/react-swipeable-views": "^0.13.2",
     "@types/throttle-debounce": "^5.0.0",
     "@typescript-eslint/eslint-plugin": "^5.48.1",
     "@typescript-eslint/parser": "^5.48.1",

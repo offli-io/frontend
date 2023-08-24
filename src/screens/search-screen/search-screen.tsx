@@ -54,13 +54,11 @@ const SearchScreen = () => {
 
   const isTag = queryStringDebounced?.includes("tag");
 
-  console.log(filters);
-
   const { data: activitiesData, isLoading: areActivitiesLoading } =
     useActivities<IActivityListRestDto>({
       text: isTag ? undefined : queryStringDebounced,
       tag: filters?.tags,
-      date: filters?.date?.dateValue,
+      datetimeFrom: filters?.date?.dateValue,
     });
 
   const handleApplyFilters = React.useCallback(
@@ -71,6 +69,8 @@ const SearchScreen = () => {
     },
     []
   );
+
+  //TODO custom date year not working
 
   const toggleFilters = React.useCallback(() => {
     toggleDrawer({
@@ -156,16 +156,18 @@ const SearchScreen = () => {
               <ActivitySearchCard
                 key={activity?.id}
                 activity={activity}
-                onPress={(act) => console.log(act)}
+                onPress={({ id } = {}) =>
+                  navigate(`${ApplicationLocations.ACTIVITY_DETAIL}/${id}`, {
+                    state: {
+                      from: ApplicationLocations.SEARCH,
+                    },
+                  })
+                }
               />
               <Divider sx={{ mb: 1 }} />
             </>
           ))
         )}
-        {/* 
-      <Button onClick={() => addEventToCalendar("thefaston@gmail.com", event)}>
-        Create calendar Event
-      </Button> */}
       </Box>
     </>
   );

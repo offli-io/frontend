@@ -27,6 +27,10 @@ export const mapPathnameToHeaderTitle = (pathname?: ApplicationLocations) => {
     return "Activity members";
   }
 
+  if (pathname?.startsWith(ApplicationLocations.ACTIVITY_INVITE_MEMBERS)) {
+    return "Invite buddies";
+  }
+
   // assuming there is ID behind the slash TODO in the future better handling of these paths
   if (pathname?.startsWith(`${ApplicationLocations.MAP}/`)) {
     return "Activity location";
@@ -37,8 +41,6 @@ export const mapPathnameToHeaderTitle = (pathname?: ApplicationLocations) => {
       return "Edit profile";
     case ApplicationLocations.BUDDIES:
       return "Buddies";
-    case ApplicationLocations.ADD_BUDDIES:
-      return "Find new buddies";
     case ApplicationLocations.SEARCH:
       return "Search activities";
     case ApplicationLocations.SETTINGS:

@@ -11,9 +11,21 @@ import { useUsers } from "../hooks/use-users";
 import { IPersonExtended } from "../types/activities/activity.dto";
 import { useUser } from "../hooks/use-user";
 import { HeaderContext } from "./providers/header-provider";
+import { useInView } from "react-intersection-observer";
+import { getAuthToken } from "../utils/token.util";
+
 interface ILayoutProps {
   children?: React.ReactNode;
 }
+
+interface ILayoutContext {
+  contentDivRef?: React.MutableRefObject<HTMLDivElement | null>;
+  onScroll?: () => void;
+}
+
+export const LayoutContext = React.createContext<ILayoutContext>(
+  {} as ILayoutContext
+);
 
 export const NOT_EXACT_UNALLOWED_URLS = [
   "/request",
@@ -23,8 +35,13 @@ export const NOT_EXACT_UNALLOWED_URLS = [
 ];
 
 export const Layout: React.FC<ILayoutProps> = ({ children }) => {
-  const { stateToken, userInfo } = React.useContext(AuthenticationContext);
+  const { stateToken, userInfo, setStateToken, setUserInfo } = React.useContext(
+    AuthenticationContext
+  );
+  const token = getAuthToken();
+  const userIdFromStorage = localStorage.getItem("userId");
   const { setHeaderRightContent } = React.useContext(HeaderContext);
+  const contentDivRef = React.useRef<HTMLDivElement | null>(null);
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -86,8 +103,20 @@ export const Layout: React.FC<ILayoutProps> = ({ children }) => {
     }
   }, [location]);
 
+  React.useEffect(() => {
+    if (
+      !!token &&
+      !!userIdFromStorage &&
+      ["/", "/login", "/register"].includes(location?.pathname)
+    ) {
+      setStateToken(token);
+      setUserInfo?.({ id: Number(userIdFromStorage) });
+      navigate(ApplicationLocations.ACTIVITIES);
+    }
+  }, [token]);
+
   return (
-    <>
+    <LayoutContext.Provider value={{ contentDivRef }}>
       <Box
         sx={{
           width: "100%",
@@ -102,10 +131,12 @@ export const Layout: React.FC<ILayoutProps> = ({ children }) => {
         {/* TODO backHeader and diusplayheader better naming */}
         {stateToken && displayHeader && <OffliHeader sx={{ width: "100%" }} />}
         <Box
+          ref={contentDivRef}
+          // onScroll={onscroll}
           sx={{
             width: "100%",
             height: "100%",
-            overflow: "scroll",
+            overflow: "auto",
             bgcolor: palette.background.default,
           }}
         >
@@ -116,6 +147,6 @@ export const Layout: React.FC<ILayoutProps> = ({ children }) => {
           !isBuddyRequest &&
           !isUserProfile && <BottomNavigator sx={{ height: "100%" }} />}
       </Box>
-    </>
+    </LayoutContext.Provider>
   );
 };
