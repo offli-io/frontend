@@ -1,64 +1,95 @@
-import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import SearchIcon from "@mui/icons-material/Search";
 import {
   Box,
   CircularProgress,
-  IconButton,
   InputAdornment,
   TextField,
   Typography,
   useTheme,
 } from "@mui/material";
-import { useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useSnackbar } from "notistack";
 import React from "react";
-import { NavigateFunction } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useDebounce } from "use-debounce";
+import {
+  getActivityParticipants,
+  inviteBuddyToActivity,
+} from "../../../api/activities/requests";
 import { AuthenticationContext } from "../../../assets/theme/authentication-provider";
 import { DrawerContext } from "../../../assets/theme/drawer-provider";
 import BuddyItem from "../../../components/buddy-item";
 import { useBuddies } from "../../../hooks/use-buddies";
-import { useUsers } from "../../../hooks/use-users";
 import {
   IPerson,
   IPersonExtended,
 } from "../../../types/activities/activity.dto";
 import { ApplicationLocations } from "../../../types/common/applications-locations.dto";
-import { useSendBuddyRequest } from "../../profile-screen/hooks/use-send-buddy-request";
+import { isAlreadyParticipant } from "../../../utils/person.util";
 import { isBuddy } from "../../my-buddies-screen/utils/is-buddy.util";
+import { useSendBuddyRequest } from "../../profile-screen/hooks/use-send-buddy-request";
+import OffliButton from "../../../components/offli-button";
+import { ActivityInviteStateEnum } from "../../../types/activities/activity-invite-state-enum.dto";
 
 interface IAddBuddiesContentProps {
-  navigate?: NavigateFunction;
+  activityId?: number;
 }
 
 const SearchBuddiesContent: React.FC<IAddBuddiesContentProps> = ({
-  navigate,
+  activityId,
 }) => {
   const [username, setUsername] = React.useState("");
   const { enqueueSnackbar } = useSnackbar();
   const { userInfo } = React.useContext(AuthenticationContext);
   const { shadows } = useTheme();
+  const navigate = useNavigate();
+
   const [usernameDebounced] = useDebounce(username, 150);
   const { toggleDrawer } = React.useContext(DrawerContext);
 
-  //TODO polish this avoid erorrs that cause whole application down
-  const { data: { data = [] } = {}, isLoading } = useUsers({
-    username: usernameDebounced,
-  });
-
   const queryClient = useQueryClient();
 
-  const { handleSendBuddyRequest, isSendingBuddyRequest } = useSendBuddyRequest(
+  const {
+    data: { data: { participants = [] } = {} } = {},
+    isLoading: areActivityParticipantsLoading,
+  } = useQuery(["activity-participants", activityId], () =>
+    getActivityParticipants({ activityId: Number(activityId) })
+  );
+
+  const { data: { data: buddies = [] } = {}, isLoading: areBuddiesLoading } =
+    useBuddies({
+      text: usernameDebounced,
+      // select: (data) => ({
+      //   ...data,
+      //   data: data?.data?.filter(
+      //     (buddy) => !isAlreadyParticipant(participants, buddy)
+      //   ),
+      // }),
+    });
+
+  const { mutate: sendInviteBuddy, isLoading: isInviting } = useMutation(
+    ["invite-participant"],
+    (buddy?: IPerson) =>
+      inviteBuddyToActivity(Number(activityId), Number(buddy?.id), {
+        status: ActivityInviteStateEnum.INVITED,
+        invited_by_id: Number(userInfo?.id),
+      }),
     {
-      onSuccess: () => {
-        queryClient.invalidateQueries(["buddy-state"]);
-        queryClient.invalidateQueries(["buddies"]);
+      onSuccess: (data, buddy) => {
+        queryClient.invalidateQueries(["activity-participants"]);
+        // setInvitedBuddies([...invitedBuddies, Number(buddy?.id)]);
+      },
+      onError: (error) => {
+        enqueueSnackbar("Failed to invite user", { variant: "error" });
       },
     }
   );
 
-  const { data: { data: buddies = [] } = {}, isLoading: areBuddiesLoading } =
-    useBuddies();
+  const invitableBuddies = React.useMemo(
+    () =>
+      buddies?.filter?.((buddy) => !isAlreadyParticipant(participants, buddy)),
+    [buddies, participants]
+  );
 
   const handleBuddyActionsClick = React.useCallback(
     (buddy?: IPerson) => {
@@ -77,13 +108,16 @@ const SearchBuddiesContent: React.FC<IAddBuddiesContentProps> = ({
     [toggleDrawer]
   );
 
-  const handleAddBuddy = React.useCallback(
-    (e: React.MouseEvent<HTMLButtonElement>, user?: IPerson) => {
+  const handleBuddyInviteClick = React.useCallback(
+    (e: React.MouseEvent<HTMLButtonElement>, user: IPerson) => {
       e.stopPropagation();
-      handleSendBuddyRequest(user?.id);
+      sendInviteBuddy(user);
     },
-    [handleSendBuddyRequest]
+    [sendInviteBuddy]
   );
+
+  const isLoading =
+    areBuddiesLoading || areActivityParticipantsLoading || isInviting;
 
   return (
     <Box
@@ -122,7 +156,7 @@ const SearchBuddiesContent: React.FC<IAddBuddiesContentProps> = ({
       />
 
       <Box sx={{ overflowY: "auto", height: "100%" }}>
-        {(data ?? [])?.length < 1 && !isLoading ? (
+        {invitableBuddies?.length < 1 && !isLoading ? (
           <Box
             sx={{
               height: 100,
@@ -149,22 +183,21 @@ const SearchBuddiesContent: React.FC<IAddBuddiesContentProps> = ({
                 <CircularProgress color="primary" />
               </Box>
             ) : (
-              data
-                ?.filter((user) => user?.id !== userInfo?.id)
-                ?.map((user: IPersonExtended) => (
-                  <BuddyItem
-                    key={user?.id}
-                    buddy={user}
-                    onClick={(_user) => handleBuddyActionsClick(_user)}
-                    actionContent={
-                      isBuddy(buddies, user?.id) ? null : (
-                        <IconButton onClick={(e) => handleAddBuddy(e, user)}>
-                          <PersonAddIcon color="primary" />
-                        </IconButton>
-                      )
-                    }
-                  />
-                ))
+              invitableBuddies?.map((user: IPersonExtended) => (
+                <BuddyItem
+                  key={user?.id}
+                  buddy={user}
+                  actionContent={
+                    <OffliButton
+                      sx={{ fontSize: 16 }}
+                      size="small"
+                      onClick={(e) => handleBuddyInviteClick(e, user)}
+                    >
+                      Invite
+                    </OffliButton>
+                  }
+                />
+              ))
             )}
           </Box>
         )}

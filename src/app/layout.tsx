@@ -104,7 +104,11 @@ export const Layout: React.FC<ILayoutProps> = ({ children }) => {
   }, [location]);
 
   React.useEffect(() => {
-    if (!!token && !!userIdFromStorage) {
+    if (
+      !!token &&
+      !!userIdFromStorage &&
+      ["/", "/login", "/register"].includes(location?.pathname)
+    ) {
       setStateToken(token);
       setUserInfo?.({ id: Number(userIdFromStorage) });
       navigate(ApplicationLocations.ACTIVITIES);

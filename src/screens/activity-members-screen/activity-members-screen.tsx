@@ -7,6 +7,8 @@ import {
   CircularProgress,
   IconButton,
   InputAdornment,
+  Tab,
+  Tabs,
   TextField,
   Typography,
 } from "@mui/material";
@@ -31,6 +33,12 @@ import { ActivityMembersActionTypeDto } from "../../types/common/activity-member
 import { ApplicationLocations } from "../../types/common/applications-locations.dto";
 import { BuddyActionContent } from "./components/buddy-action-content";
 import SearchBuddiesContent from "./components/search-buddies-content";
+import { useSwipeable } from "react-swipeable";
+
+enum ITabs {
+  CONFIRMED = "CONFIRMED",
+  INVITED = "INVITED",
+}
 
 export const ActivityMembersScreen: React.FC = () => {
   const { userInfo } = React.useContext(AuthenticationContext);
@@ -40,6 +48,15 @@ export const ActivityMembersScreen: React.FC = () => {
   const navigate = useNavigate();
   const { toggleDrawer } = React.useContext(DrawerContext);
   const { pathname } = useLocation();
+  const [activeTab, setActiveTab] = React.useState<ITabs>(ITabs.CONFIRMED);
+
+  const handlers = useSwipeable({
+    onSwiped: (eventData) => console.log("User Swiped!", eventData),
+    onSwipedRight: () =>
+      activeTab === ITabs.INVITED && setActiveTab(ITabs.CONFIRMED),
+    onSwipedLeft: () =>
+      activeTab === ITabs.CONFIRMED && setActiveTab(ITabs.INVITED),
+  });
 
   const { data: { data: { activity = {} } = {} } = {}, isLoading } =
     useActivities<IActivityRestDto>({
@@ -120,8 +137,12 @@ export const ActivityMembersScreen: React.FC = () => {
           .includes(queryStringDebounced.toLowerCase())
       );
     }
-    return participants;
-  }, [queryStringDebounced, activity, participants]);
+    return participants?.filter((participant) =>
+      activeTab === ITabs.CONFIRMED
+        ? participant?.status === ActivitiyParticipantStatusEnum.CONFIRMED
+        : participant?.status === ActivitiyParticipantStatusEnum.INVITED
+    );
+  }, [queryStringDebounced, activity, participants, activeTab]);
 
   const handleActionClick = React.useCallback(
     (type?: ActivityMembersActionTypeDto, userId?: number) => {
@@ -203,9 +224,13 @@ export const ActivityMembersScreen: React.FC = () => {
     //TODO how to display invite button??
     toggleDrawer({
       open: true,
-      content: <SearchBuddiesContent navigate={navigate} />,
+      content: <SearchBuddiesContent activityId={Number(id)} />,
     });
-  }, [toggleDrawer]);
+  }, [toggleDrawer, id]);
+
+  const handleTabChange = (event: React.SyntheticEvent, newValue: ITabs) => {
+    setActiveTab(newValue);
+  };
 
   return (
     <Box sx={{ px: 2 }}>
@@ -256,75 +281,92 @@ export const ActivityMembersScreen: React.FC = () => {
             }}
             data-testid="activities-search-input"
           />
-
-          <IconButton sx={{ fontSize: 14, ml: 1 }} onClick={handleAddBuddies}>
-            <PersonAddIcon color="primary" />
-          </IconButton>
+          {isCreator ? (
+            <IconButton sx={{ fontSize: 14, ml: 1 }} onClick={handleAddBuddies}>
+              <PersonAddIcon color="primary" />
+            </IconButton>
+          ) : null}
         </Box>
-        {(activity?.count_confirmed ?? 0) < 1 ? (
-          <Box
-            sx={{
-              height: 100,
-              width: "100%",
-              my: 3,
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              borderTop: "1px solid lightgrey",
-              borderBottom: "1px solid lightgrey",
-            }}
+
+        <Box sx={{ width: "100%" }} {...handlers}>
+          <Tabs
+            value={activeTab}
+            onChange={handleTabChange}
+            aria-label="basic tabs example"
+            variant="fullWidth"
           >
-            <Typography sx={{ color: (theme) => theme.palette.inactive.main }}>
-              No activity members
-            </Typography>
-          </Box>
-        ) : (
-          <Box
-            sx={{
-              width: "100%",
-              overflowY: "auto",
-              overflowX: "hidden",
-              my: 3,
-              py: 3,
-              borderTop: "1px solid lightgrey",
-              borderBottom: anySearchResults ? "1px solid lightgrey" : "unset",
-            }}
-          >
-            {isLoading ? (
-              <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
-                <CircularProgress color="primary" />
-              </Box>
-            ) : anySearchResults ? (
-              activityMembers.map((member) => (
-                <BuddyItem
-                  key={member?.id}
-                  buddy={member}
-                  actionContent={renderActionContent(member)}
-                  onClick={() =>
-                    member?.id !== userInfo?.id &&
-                    navigate(
-                      `${ApplicationLocations.USER_PROFILE}/${member?.id}`,
-                      {
-                        state: {
-                          from: pathname,
-                        },
-                      }
-                    )
-                  }
-                />
-              ))
-            ) : (
-              // <Box sx={{ display: 'flex', alignItems: 'center'}}>
+            <Tab label="Confirmed" value={ITabs.CONFIRMED} />
+            <Tab label="Invited" value={ITabs.INVITED} />
+          </Tabs>
+          {(activity?.count_confirmed ?? 0) < 1 ? (
+            <Box
+              sx={{
+                height: 100,
+                width: "100%",
+                my: 3,
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                borderTop: "1px solid lightgrey",
+                borderBottom: "1px solid lightgrey",
+              }}
+            >
               <Typography
-                variant="subtitle2"
-                sx={{ textAlign: "center", my: 4 }}
+                sx={{ color: (theme) => theme.palette.inactive.main }}
               >
-                No members found
+                No activity members
               </Typography>
-              // </Box>
-            )}
-          </Box>
-        )}
+            </Box>
+          ) : (
+            <Box
+              sx={{
+                width: "100%",
+                overflowY: "auto",
+                overflowX: "hidden",
+                my: 3,
+                py: 3,
+                borderTop: "1px solid lightgrey",
+                borderBottom: anySearchResults
+                  ? "1px solid lightgrey"
+                  : "unset",
+              }}
+            >
+              {isLoading ? (
+                <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
+                  <CircularProgress color="primary" />
+                </Box>
+              ) : anySearchResults ? (
+                activityMembers.map((member) => (
+                  <BuddyItem
+                    key={member?.id}
+                    buddy={member}
+                    actionContent={renderActionContent(member)}
+                    onClick={() =>
+                      member?.id !== userInfo?.id &&
+                      navigate(
+                        `${ApplicationLocations.USER_PROFILE}/${member?.id}`,
+                        {
+                          state: {
+                            from: pathname,
+                          },
+                        }
+                      )
+                    }
+                  />
+                ))
+              ) : (
+                // <Box sx={{ display: 'flex', alignItems: 'center'}}>
+                <Typography
+                  variant="subtitle2"
+                  sx={{ textAlign: "center", my: 4 }}
+                >
+                  No members found
+                </Typography>
+                // </Box>
+              )}
+            </Box>
+          )}
+        </Box>
       </Box>
     </Box>
   );

@@ -3,7 +3,6 @@ export enum ActivityActionsTypeEnumDto {
   ACTIVITY_MEMBERS = "ACTIVITY_MEMBERS",
   MAP = "MAP",
   DISMISS = "DISMISS",
-  INVITE = "INVITE",
   LEAVE = "LEAVE",
   JOIN = "JOIN",
   EDIT = "EDIT",
