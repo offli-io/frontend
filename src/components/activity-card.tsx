@@ -28,8 +28,6 @@ const ActivityCard: React.FC<IProps> = ({
   const baseUrl = useGetApiUrl();
   const { action, handlers } = useLongPress();
 
-  console.log(action);
-
   React.useEffect(() => {
     if (action) {
       onLongPress?.(activity);

@@ -9,23 +9,32 @@ import useLongPress from "../hooks/use-long-press";
 import TransparentChip from "./transparent-chip";
 import { ActivityVisibilityEnum } from "../types/activities/activity-visibility-enum.dto";
 import { format } from "date-fns";
+import OffliButton from "./offli-button";
 
 interface IMyActivityCardProps {
   activity?: IActivity;
   // onLongPress: (activityId: string) => void;
   onPress: (activity?: IActivity) => void;
+  onLongPress: (activity?: IActivity) => void;
   sx?: SxProps;
 }
 
 const MyActivityCard: React.FC<IMyActivityCardProps> = ({
   activity,
   onPress,
+  onLongPress,
   sx,
   ...rest
 }) => {
   //TODO maybe in later use also need some refactoring
   const { action, handlers } = useLongPress();
   const { shadows } = useTheme();
+
+  React.useEffect(() => {
+    if (action) {
+      onLongPress?.(activity);
+    }
+  }, [action, onLongPress]);
 
   return (
     <Card
@@ -41,6 +50,7 @@ const MyActivityCard: React.FC<IMyActivityCardProps> = ({
         mr: 2,
         ...sx,
       }}
+      {...handlers}
       onClick={() => onPress(activity)}
       data-testid="my-activitiy-card"
       {...rest}
