@@ -1,16 +1,9 @@
-import {
-  Box,
-  Button,
-  Checkbox,
-  styled,
-  Typography,
-  useTheme,
-} from "@mui/material";
-import logo from "../assets/img/profilePicture.jpg";
+import { Box, Typography, useTheme } from "@mui/material";
 import React from "react";
-import OffliButton from "./offli-button";
-import { IPerson } from "../types/activities/activity.dto";
+import logo from "../assets/img/profilePicture.jpg";
 import { useGetApiUrl } from "../hooks/use-get-api-url";
+import { IPerson } from "../types/activities/activity.dto";
+import OffliButton from "./offli-button";
 
 interface ILabeledDividerProps {
   imageSource?: string;
@@ -20,15 +13,6 @@ interface ILabeledDividerProps {
   invited?: boolean;
   isLoading?: boolean;
 }
-
-const StyledImage = styled((props: any) => (
-  <img {...props} alt="Buddy item invite" />
-))`
-  height: 40px;
-  width: 40px;
-  backgroundcolor: #c9c9c9;
-  border-radius: 50%;
-`;
 
 const BuddyItemInvite: React.FC<ILabeledDividerProps> = ({
   children,

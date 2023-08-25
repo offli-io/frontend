@@ -439,7 +439,15 @@ const ActivitiesScreen = () => {
                     <MyActivityCard
                       key={activity?.id}
                       activity={activity}
-                      onPress={openActivityActions}
+                      onPress={() =>
+                        navigate(
+                          `${ApplicationLocations.ACTIVITY_DETAIL}/${activity?.id}`,
+                          {
+                            state: { from: ApplicationLocations.ACTIVITIES },
+                          }
+                        )
+                      }
+                      onLongPress={openActivityActions}
                       sx={{
                         minWidth:
                           participantActivites?.length <= 1 ? "100%" : "80%",
@@ -496,7 +504,15 @@ const ActivitiesScreen = () => {
                     <ActivityCard
                       key={activity?.id}
                       activity={activity}
-                      onPress={openActivityActions}
+                      onPress={() =>
+                        navigate(
+                          `${ApplicationLocations.ACTIVITY_DETAIL}/${activity?.id}`,
+                          {
+                            state: { from: ApplicationLocations.ACTIVITIES },
+                          }
+                        )
+                      }
+                      onLongPress={openActivityActions}
                     />
                   ))}
                   {isFetchingNextPage ? (

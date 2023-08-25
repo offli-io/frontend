@@ -1,57 +1,57 @@
-import React from 'react'
+import React from "react";
 import {
   Box,
   Typography,
   TextField,
   InputAdornment,
   IconButton,
-} from '@mui/material'
-import BackButton from '../components/back-button'
-import { Controller, useForm } from 'react-hook-form'
-import * as yup from 'yup'
-import { yupResolver } from '@hookform/resolvers/yup'
-import OffliButton from '../components/offli-button'
-import VisibilityOffIcon from '@mui/icons-material/VisibilityOff'
-import VisibilityIcon from '@mui/icons-material/Visibility'
+} from "@mui/material";
+import BackButton from "../components/back-button";
+import { Controller, useForm } from "react-hook-form";
+import * as yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
+import OffliButton from "../components/offli-button";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
+import VisibilityIcon from "@mui/icons-material/Visibility";
 // import ErrorIcon from '@mui/icons-material/Error'
-import { ApplicationLocations } from '../types/common/applications-locations.dto'
+import { ApplicationLocations } from "../types/common/applications-locations.dto";
 
 export interface FormValues {
-  password: string
+  password: string;
 }
 
 const schema: () => yup.SchemaOf<FormValues> = () =>
   yup.object({
     password: yup.string().defined().required(),
-  })
+  });
 
 const NewPasswordScreen = () => {
-  const [showPassword, setShowPassword] = React.useState(false)
+  const [showPassword, setShowPassword] = React.useState(false);
 
-  const handleClickShowPassword = () => setShowPassword(!showPassword)
+  const handleClickShowPassword = () => setShowPassword(!showPassword);
 
   const { control, handleSubmit } = useForm<FormValues>({
     defaultValues: {
-      password: '',
+      password: "",
     },
     resolver: yupResolver(schema()),
-    mode: 'onChange',
-  })
+    mode: "onChange",
+  });
 
   const handleFormSubmit = React.useCallback(
     (values: FormValues) => console.log(values),
     []
-  )
+  );
 
   return (
-    <form onSubmit={handleSubmit(handleFormSubmit)} style={{ height: '100%' }}>
+    <form onSubmit={handleSubmit(handleFormSubmit)} style={{ height: "100%" }}>
       <Box
         sx={{
-          height: '100vh',
-          width: '100vw',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
+          height: "100vh",
+          width: "100vw",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
           //   justifyContent: 'center',
         }}
       >
@@ -62,20 +62,19 @@ const NewPasswordScreen = () => {
             mt: 20,
             mb: 4,
 
-            display: 'flex',
+            display: "flex",
             flex: 1,
           }}
         >
-          New <Box sx={{ color: 'primary.main' }}>&nbsp;password</Box>
+          New <Box sx={{ color: "primary.main" }}>&nbsp;password</Box>
         </Typography>
         <Controller
           name="password"
           control={control}
           render={({ field, fieldState: { error } }) => (
             <TextField
-              autoFocus
               {...field}
-              type={showPassword ? 'text' : 'password'}
+              type={showPassword ? "text" : "password"}
               placeholder="New password"
               error={!!error}
               // helperText={
@@ -83,7 +82,7 @@ const NewPasswordScreen = () => {
               //   t(`value.${nextStep?.authenticationType}.placeholder`)
               // }
               //disabled={methodSelectionDisabled}
-              sx={{ mb: 4, width: '70%', flex: 3 }}
+              sx={{ mb: 4, width: "70%", flex: 3 }}
               InputProps={{
                 endAdornment: (
                   <InputAdornment position="end">
@@ -109,13 +108,13 @@ const NewPasswordScreen = () => {
         <OffliButton
           variant="contained"
           type="submit"
-          sx={{ width: '80%', mb: 5 }}
+          sx={{ width: "80%", mb: 5 }}
         >
           Reset password
         </OffliButton>
       </Box>
     </form>
-  )
-}
+  );
+};
 
-export default NewPasswordScreen
+export default NewPasswordScreen;
