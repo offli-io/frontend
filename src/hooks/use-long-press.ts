@@ -1,57 +1,57 @@
-import React from 'react'
+import React from "react";
 
 export default function useLongPress() {
-  const [action, setAction] = React.useState<string | undefined>()
+  const [action, setAction] = React.useState<string | undefined>();
 
-  const timerRef = React.useRef<any>()
-  const isLongPress = React.useRef<boolean>()
+  const timerRef = React.useRef<any>();
+  const isLongPress = React.useRef<boolean>();
 
   function startPressTimer() {
-    isLongPress.current = false
+    isLongPress.current = false;
     timerRef.current = setTimeout(() => {
-      isLongPress.current = true
-      setAction('longpress')
-    }, 500)
+      isLongPress.current = true;
+      setAction("longpress");
+    }, 500);
   }
 
   function handleOnClick() {
-    console.log('handleOnClick')
+    console.log("handleOnClick");
     if (isLongPress.current) {
-      console.log('Is long press - not continuing.')
-      return
+      console.log("Is long press - not continuing.");
+      return;
     }
-    setAction('click')
+    setAction("click");
   }
 
   function handleOnMouseDown() {
-    console.log('handleOnMouseDown')
-    startPressTimer()
+    console.log("handleOnMouseDown");
+    startPressTimer();
   }
 
   function handleOnMouseUp() {
-    console.log('handleOnMouseUp')
-    clearTimeout(timerRef.current)
+    console.log("handleOnMouseUp");
+    clearTimeout(timerRef.current);
   }
 
   function handleOnTouchStart() {
-    console.log('handleOnTouchStart')
-    startPressTimer()
+    console.log("handleOnTouchStart");
+    startPressTimer();
   }
 
   function handleOnTouchEnd() {
-    if (action === 'longpress') return
-    console.log('handleOnTouchEnd')
-    clearTimeout(timerRef.current)
+    if (action === "longpress") return;
+    console.log("handleOnTouchEnd");
+    clearTimeout(timerRef.current);
   }
 
   return {
     action,
     handlers: {
-      onClick: handleOnClick,
+      // onClick: handleOnClick,
       onMouseDown: handleOnMouseDown,
       onMouseUp: handleOnMouseUp,
       onTouchStart: handleOnTouchStart,
       onTouchEnd: handleOnTouchEnd,
     },
-  }
+  };
 }
