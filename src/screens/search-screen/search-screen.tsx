@@ -22,28 +22,6 @@ import FiltersDrawerContent from "./components/filters-drawer-content";
 import { IFiltersDto } from "./types/filters.dto";
 import { HeaderContext } from "../../app/providers/header-provider";
 
-const event = {
-  summary: "Test event Offli",
-  location: "",
-  start: {
-    dateTime: "2022-12-18T09:00:00-07:00",
-    timeZone: "America/Los_Angeles",
-  },
-  end: {
-    dateTime: "2022-12-18T17:00:00-07:00",
-    timeZone: "America/Los_Angeles",
-  },
-  // recurrence: ['RRULE:FREQ=DAILY;COUNT=2'],
-  attendees: [],
-  reminders: {
-    useDefault: false,
-    overrides: [
-      { method: "email", minutes: 24 * 60 },
-      { method: "popup", minutes: 10 },
-    ],
-  },
-};
-
 const SearchScreen = () => {
   const navigate = useNavigate();
   const [currentSearch, setCurrentSearch] = React.useState("");
@@ -51,6 +29,7 @@ const SearchScreen = () => {
   const [filters, setFilters] = React.useState<IFiltersDto | undefined>();
   const { toggleDrawer } = React.useContext(DrawerContext);
   const { setHeaderRightContent } = React.useContext(HeaderContext);
+  const isFirstVisitRender = React.useRef(true);
 
   const isTag = queryStringDebounced?.includes("tag");
 
@@ -84,7 +63,8 @@ const SearchScreen = () => {
     });
   }, [filters, handleApplyFilters]);
 
-  React.useEffect(() => {
+  React.useLayoutEffect(() => {
+    // if(isFirstVisitRender) {}
     setHeaderRightContent(
       <IconButton
         onClick={toggleFilters}
@@ -94,7 +74,7 @@ const SearchScreen = () => {
         <FilterListIcon />
       </IconButton>
     );
-  }, [toggleFilters, filters]);
+  }, [toggleFilters, filters, setHeaderRightContent]);
 
   return (
     <>

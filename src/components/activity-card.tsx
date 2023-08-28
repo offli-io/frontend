@@ -26,13 +26,15 @@ const ActivityCard: React.FC<IProps> = ({
   const { shadows } = useTheme();
   const { mode } = React.useContext(CustomizationContext);
   const baseUrl = useGetApiUrl();
-  const { action, handlers } = useLongPress();
+  const { action, handlers } = useLongPress({
+    onLongPress: () => onLongPress?.(activity),
+  });
 
-  React.useEffect(() => {
-    if (action) {
-      onLongPress?.(activity);
-    }
-  }, [action, onLongPress]);
+  // React.useEffect(() => {
+  //   if (action) {
+  //     onLongPress?.(activity);
+  //   }
+  // }, [action, onLongPress]);
 
   const startDate = activity?.datetime_from
     ? new Date(activity?.datetime_from)
