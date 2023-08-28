@@ -60,11 +60,7 @@ const ActivityCard: React.FC<IProps> = ({
       data-testid="activity-card"
       {...handlers}
       onClick={() => onPress(activity)}
-      // {...handlers}
-      // onTouchStart={() => {
-      //   const timer = setTimeout(() => onLongPress(), 500);
-      // }}
-      // onTouchEnd={() => clearTimeout(timer)}
+      color="inherit"
       {...rest}
     >
       <Box
@@ -86,7 +82,9 @@ const ActivityCard: React.FC<IProps> = ({
       >
         <Box
           sx={{
-            // maxWidth: 250,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "flex-start",
             width: "100%",
             whiteSpace: "nowrap",
             overflow: "hidden",
