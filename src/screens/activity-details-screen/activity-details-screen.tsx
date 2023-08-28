@@ -1,6 +1,8 @@
 import LockIcon from "@mui/icons-material/Lock";
 import LockOpenIcon from "@mui/icons-material/LockOpen";
-import { Box, Typography } from "@mui/material";
+import MenuIcon from "@mui/icons-material/Menu";
+
+import { Box, IconButton, Typography } from "@mui/material";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useSnackbar } from "notistack";
 import React from "react";
@@ -36,6 +38,10 @@ import { DATE_TIME_FORMAT } from "../../utils/common-constants";
 import { getTimeDifference } from "../map-screen/utils/get-time-difference";
 import { useGetApiUrl } from "../../hooks/use-get-api-url";
 import { ActivitiyParticipantStatusEnum } from "../../types/activities/activity-participant-status-enum.dto";
+import { DrawerContext } from "assets/theme/drawer-provider";
+import ActivityActions from "screens/my-activities-screen/components/activity-actions";
+import { PARTICIPANT_ACTIVITIES_QUERY_KEY } from "hooks/use-participant-activities";
+import { ACTIVITIES_QUERY_KEY, useActivities } from "hooks/use-activities";
 
 interface IProps {
   type: "detail" | "request";
@@ -48,6 +54,7 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
   const from =
     (location?.state as ICustomizedLocationStateDto)?.from ??
     ApplicationLocations.ACTIVITIES;
+  const { toggleDrawer } = React.useContext(DrawerContext);
   const { setHeaderRightContent } = React.useContext(HeaderContext);
   const { userInfo } = React.useContext(AuthenticationContext);
   const { enqueueSnackbar } = useSnackbar();
@@ -61,13 +68,18 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
       state: JSON.stringify({ id }),
     });
 
-  const { data } = useQuery(
-    ["activity", id],
-    () => getActivity<IActivityRestDto>({ id: Number(id) }),
-    {
-      enabled: !!id,
-    }
-  );
+  const { data, isLoading } = useActivities<IActivityRestDto>({
+    id: id ? Number(id) : undefined,
+    participantId: userInfo?.id,
+  });
+
+  // const { data } = useQuery(
+  //   ["activity", id],
+  //   () => getActivity<IActivityRestDto>({ id: Number(id) }),
+  //   {
+  //     enabled: !!id,
+  //   }
+  // );
 
   const {
     data: { data: { participants = null } = {} } = {},
@@ -96,7 +108,11 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
           });
           navigate(ApplicationLocations.ACTIVITIES);
           queryClient.invalidateQueries(["paged-activities"]);
-          queryClient.invalidateQueries(["activities"]);
+          queryClient.invalidateQueries(["activity", id]);
+          queryClient.invalidateQueries(["activity-participants", id]);
+          queryClient.invalidateQueries([ACTIVITIES_QUERY_KEY]);
+          queryClient.invalidateQueries([PARTICIPANT_ACTIVITIES_QUERY_KEY]);
+
           // setInvitedBuddies([...invitedBuddies, Number(buddy?.id)]);
         },
         onError: (error) => {
@@ -171,9 +187,29 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
     [sendJoinActivity, navigate]
   );
 
+  const handleActivityActionsCLick = React.useCallback(() => {
+    toggleDrawer({
+      open: true,
+      content: (
+        <ActivityActions
+          activity={data?.data?.activity}
+          onActionClick={handleMenuItemClick}
+        />
+      ),
+    });
+  }, [toggleDrawer, handleMenuItemClick, activity]);
+
   React.useEffect(() => {
     setHeaderRightContent(
-      <ActivityDetailActionMenu onMenuItemClick={handleMenuItemClick} />
+      <IconButton
+        // aria-describedby={id}
+        color="primary"
+        data-testid="toggle-activity-menu-btn"
+        onClick={handleActivityActionsCLick}
+      >
+        <MenuIcon />
+      </IconButton>
+      // <ActivityDetailActionMenu onMenuItemClick={handleMenuItemClick} />
     );
   }, [handleMenuItemClick, setHeaderRightContent]);
 
@@ -199,13 +235,15 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
 
   const displayJoinButton = React.useMemo(
     () =>
-      !!participants &&
-      participants?.some(
-        ({ id, status }: IParticipantDto) =>
-          id === userInfo?.id &&
-          status === ActivitiyParticipantStatusEnum.INVITED
-      ),
-    [participants, userInfo?.id]
+      (activity?.visibility === ActivityVisibilityEnum.public &&
+        activity?.participant_status === null) ||
+      (!!participants &&
+        participants?.some(
+          ({ id, status }: IParticipantDto) =>
+            id === userInfo?.id &&
+            status === ActivitiyParticipantStatusEnum.INVITED
+        )),
+    [participants, userInfo?.id, activity]
   );
 
   const dateTimeFrom = activity?.datetime_from

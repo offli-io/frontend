@@ -37,121 +37,133 @@ const MyActivityCard: React.FC<IMyActivityCardProps> = ({
   }, [action, onLongPress]);
 
   return (
-    <Card
+    <OffliButton
       sx={{
         minWidth: 300,
         display: "grid",
         gridTemplateColumns: "3fr 1fr",
         boxSizing: "border-box",
         boxShadow: shadows[3],
+        bgcolor: ({ palette }) => palette.background.default,
         py: 1.5,
-        px: 2,
+        px: 1.5,
         mb: 2,
         mr: 2,
         ...sx,
       }}
       {...handlers}
+      color="inherit"
       onClick={() => onPress(activity)}
       data-testid="my-activitiy-card"
       {...rest}
     >
-      <Box
-        sx={{
-          height: "100%",
-          whiteSpace: "nowrap",
-          overflow: "hidden",
-        }}
-      >
-        <Typography
+      <>
+        <Box
           sx={{
-            fontSize: 18,
-            fontWeight: "bold",
-            lineHeight: 1,
-            color: ({ palette }) => palette?.text?.primary,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "flex-start",
+            height: "100%",
+            whiteSpace: "nowrap",
+            overflow: "hidden",
           }}
         >
-          {activity?.title ?? "Title"}
-        </Typography>
-        <Typography
-          sx={{
-            fontSize: 14,
-            // fontWeight: "bold",
-            lineHeight: 1,
-            color: ({ palette }) => palette?.text?.primary,
-            my: 0.75,
-          }}
-        >
-          {activity?.location?.name ?? "Location"}
-        </Typography>
-        <Box sx={{ display: "flex", alignItems: "center" }}>
-          <PeopleAltIcon sx={{ fontSize: 16 }} />
           <Typography
             sx={{
-              ml: 1,
-              fontSize: 16,
+              fontSize: 18,
+              fontWeight: "bold",
               lineHeight: 1,
               color: ({ palette }) => palette?.text?.primary,
             }}
           >
-            {`${activity?.count_confirmed ?? 0} / ${activity?.limit ?? 0}`}
+            {activity?.title ?? "Title"}
+          </Typography>
+          <Typography
+            sx={{
+              fontSize: 14,
+              // fontWeight: "bold",
+              lineHeight: 1,
+              color: ({ palette }) => palette?.text?.primary,
+              my: 0.75,
+            }}
+          >
+            {activity?.location?.name ?? "Location"}
+          </Typography>
+          <Box sx={{ display: "flex", alignItems: "center" }}>
+            <PeopleAltIcon
+              sx={{
+                fontSize: 16,
+                color: ({ palette }) => palette?.text?.primary,
+              }}
+            />
+            <Typography
+              sx={{
+                ml: 1,
+                fontSize: 16,
+                lineHeight: 1,
+                color: ({ palette }) => palette?.text?.primary,
+              }}
+            >
+              {`${activity?.count_confirmed ?? 0} / ${activity?.limit ?? 0}`}
+            </Typography>
+          </Box>
+        </Box>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <Typography
+            sx={{
+              fontSize: 18,
+              // fontWeight: "bold",
+              lineHeight: 1,
+              color: ({ palette }) => palette?.text?.primary,
+            }}
+          >
+            {format(
+              (activity?.datetime_from
+                ? new Date(activity?.datetime_from)
+                : new Date()) as Date,
+              "dd"
+            )}
+          </Typography>
+          <Typography
+            sx={{
+              fontSize: 14,
+              lineHeight: 1,
+              color: ({ palette }) => palette?.text?.primary,
+              my: 0.75,
+            }}
+          >
+            {format(
+              (activity?.datetime_from
+                ? new Date(activity?.datetime_from)
+                : new Date()) as Date,
+              "LLLL"
+            )}
+          </Typography>
+          <Typography
+            sx={{
+              fontSize: 16,
+              // fontWeight: "bold",
+              lineHeight: 1,
+              color: ({ palette }) => palette?.text?.primary,
+            }}
+          >
+            {format(
+              (activity?.datetime_from
+                ? new Date(activity?.datetime_from)
+                : new Date()) as Date,
+              "HH:mm"
+            )}
           </Typography>
         </Box>
-      </Box>
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <Typography
-          sx={{
-            fontSize: 18,
-            // fontWeight: "bold",
-            lineHeight: 1,
-            color: ({ palette }) => palette?.text?.primary,
-          }}
-        >
-          {format(
-            (activity?.datetime_from
-              ? new Date(activity?.datetime_from)
-              : new Date()) as Date,
-            "dd"
-          )}
-        </Typography>
-        <Typography
-          sx={{
-            fontSize: 14,
-            lineHeight: 1,
-            color: ({ palette }) => palette?.text?.primary,
-            my: 0.75,
-          }}
-        >
-          {format(
-            (activity?.datetime_from
-              ? new Date(activity?.datetime_from)
-              : new Date()) as Date,
-            "LLLL"
-          )}
-        </Typography>
-        <Typography
-          sx={{
-            fontSize: 16,
-            // fontWeight: "bold",
-            lineHeight: 1,
-            color: ({ palette }) => palette?.text?.primary,
-          }}
-        >
-          {format(
-            (activity?.datetime_from
-              ? new Date(activity?.datetime_from)
-              : new Date()) as Date,
-            "HH:mm"
-          )}
-        </Typography>
-      </Box>
-    </Card>
+      </>
+    </OffliButton>
   );
 };
 

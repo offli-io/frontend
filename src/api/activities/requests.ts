@@ -26,6 +26,7 @@ import { ICreateGoogleEventWithTokenRequestDto } from "../../types/activities/cr
 import { IActivityInviteValuesDto } from "../../types/activities/activity-invite-values.dto";
 import { IActivityRestDto } from "../../types/activities/activity-rest.dto";
 import { IActivityListRestDto } from "../../types/activities/activity-list-rest.dto";
+import { IActivitiesParamsDto } from "types/activities/activities-params.dto";
 
 export const getActivities = async ({
   queryFunctionContext,
@@ -103,16 +104,8 @@ export const getActivity = <T>({
   offset,
   lon,
   lat,
-}: {
-  id?: number;
-  text?: string;
-  tag?: string[];
-  datetimeFrom?: Date | null;
-  limit?: number;
-  offset?: number;
-  lon?: number;
-  lat?: number;
-}) => {
+  participantId,
+}: IActivitiesParamsDto) => {
   const promise = axios.get<T>(
     `${DEFAULT_DEV_URL}/activities${id ? `/${id}` : ""}`,
     {
@@ -124,6 +117,7 @@ export const getActivity = <T>({
         offset,
         lon,
         lat,
+        participantId,
       },
       paramsSerializer: (params) => {
         return qs.stringify(params, { arrayFormat: "repeat" });

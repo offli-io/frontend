@@ -1,8 +1,9 @@
 import React from "react";
-import { Box, CircularProgress, Typography } from "@mui/material";
+import { Box, CircularProgress, Typography, useTheme } from "@mui/material";
 import OffliButton from "../../../components/offli-button";
 import { useActivities } from "../../../hooks/use-activities";
 import { IActivityRestDto } from "../../../types/activities/activity-rest.dto";
+import { useGetApiUrl } from "hooks/use-get-api-url";
 
 export interface IActivityActionsProps {
   onLeaveConfirm?: (activityId?: number) => void;
@@ -16,6 +17,8 @@ const ActivityLeaveConfirmation: React.FC<IActivityActionsProps> = ({
   activityId,
 }) => {
   //TODO if no activity display nothing
+  const baseUrl = useGetApiUrl();
+  const { palette } = useTheme();
 
   const { data, isLoading } = useActivities<IActivityRestDto>({
     id: activityId,
@@ -33,7 +36,7 @@ const ActivityLeaveConfirmation: React.FC<IActivityActionsProps> = ({
         alignItems: "center",
       }}
     >
-      <Typography variant="h4" sx={{ my: 2 }}>
+      <Typography variant="h4" sx={{ my: 2, color: palette?.text?.primary }}>
         Leaving the group
       </Typography>
 
@@ -44,13 +47,21 @@ const ActivityLeaveConfirmation: React.FC<IActivityActionsProps> = ({
           borderRadius: 35,
           boxShadow: "2px 3px 4px #ccc",
         }}
-        src={data?.data?.activity?.title_picture}
+        src={`${baseUrl}/files/${data?.data?.activity?.title_picture}`}
         alt="Activity leave"
       />
-      <Box display="flex" sx={{ my: 2 }}>
-        <Typography>Do you really want to leave</Typography>
-        <Typography sx={{ fontWeight: "bold", ml: 1 }}>
-          {data?.data?.activity?.title}
+      <Box sx={{ my: 2 }}>
+        <Typography sx={{ color: palette?.text?.primary, textAlign: "center" }}>
+          Do you really want to leave
+        </Typography>
+        <Typography
+          sx={{
+            fontWeight: "bold",
+            color: palette?.text?.primary,
+            textAlign: "center",
+          }}
+        >
+          {data?.data?.activity?.title} ?
         </Typography>
       </Box>
       <Box
@@ -58,7 +69,6 @@ const ActivityLeaveConfirmation: React.FC<IActivityActionsProps> = ({
           width: "100%",
           display: "flex",
           justifyContent: "space-evenly",
-          // mt: 4,
         }}
       >
         <OffliButton
