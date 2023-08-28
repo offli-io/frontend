@@ -30,7 +30,11 @@ import ActivityCard from "../../components/activity-card";
 import MyActivityCard from "../../components/my-activity-card";
 import OffliButton from "../../components/offli-button";
 import { PageWrapper } from "../../components/page-wrapper";
-import { useActivities } from "../../hooks/use-activities";
+import {
+  ACTIVITIES_QUERY_KEY,
+  PAGED_ACTIVITIES_QUERY_KEY,
+  useActivities,
+} from "../../hooks/use-activities";
 import { useParticipantActivities } from "../../hooks/use-participant-activities";
 import { useUser } from "../../hooks/use-user";
 import { ActivityInviteStateEnum } from "../../types/activities/activity-invite-state-enum.dto";
@@ -74,7 +78,7 @@ const ActivitiesScreen = () => {
     fetchNextPage,
     isFetchingNextPage,
   } = useInfiniteQuery(
-    ["paged-activities", location],
+    [PAGED_ACTIVITIES_QUERY_KEY, location],
     ({ pageParam = 0 }) =>
       getActivitiesPromiseResolved({
         offset: pageParam,
@@ -155,11 +159,13 @@ const ActivitiesScreen = () => {
     (activityId?: number) =>
       removePersonFromActivity({ activityId, personId: userInfo?.id }),
     {
-      onSuccess: () => {
+      onSuccess: (data, activityId) => {
         hideDrawer();
         //TODO add generic jnaming for activites / activity
-        queryClient.invalidateQueries(["activity"]);
-        queryClient.invalidateQueries(["activities"]);
+        queryClient.invalidateQueries(["activity", activityId]);
+        queryClient.invalidateQueries([ACTIVITIES_QUERY_KEY]);
+        queryClient.invalidateQueries([PAGED_ACTIVITIES_QUERY_KEY]);
+
         //invalidate queries
         //TODO display success notification?
       },
