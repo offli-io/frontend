@@ -9,7 +9,12 @@ import {
   TextField,
 } from "@mui/material";
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import {
+  URLSearchParamsInit,
+  useLocation,
+  useNavigate,
+  useSearchParams,
+} from "react-router-dom";
 import { useDebounce } from "use-debounce";
 import { DrawerContext } from "../../assets/theme/drawer-provider";
 import ActivitySearchCard from "../../components/activity-search-card";
@@ -24,12 +29,17 @@ import { HeaderContext } from "../../app/providers/header-provider";
 
 const SearchScreen = () => {
   const navigate = useNavigate();
+  let [searchParams, setSearchParams] = useSearchParams();
+  // const history = useHistory()
+  const location = useLocation();
   const [currentSearch, setCurrentSearch] = React.useState("");
   const [queryStringDebounced] = useDebounce(currentSearch, 250);
   const [filters, setFilters] = React.useState<IFiltersDto | undefined>();
   const { toggleDrawer } = React.useContext(DrawerContext);
   const { setHeaderRightContent } = React.useContext(HeaderContext);
   const isFirstVisitRender = React.useRef(true);
+  let params = new URLSearchParams(document.location.search);
+  console.log(params);
 
   const isTag = queryStringDebounced?.includes("tag");
 
@@ -37,17 +47,42 @@ const SearchScreen = () => {
     useActivities<IActivityListRestDto>({
       text: isTag ? undefined : queryStringDebounced,
       tag: filters?.tags,
-      datetimeFrom: filters?.date?.dateValue,
+      datetimeFrom: filters?.date,
     });
 
   const handleApplyFilters = React.useCallback(
     //why isn't this type infered from component signature props interface?
     (newFilters: IFiltersDto) => {
-      setFilters(newFilters);
+      console.log(newFilters);
+      const currentParams = new URLSearchParams();
+      if (newFilters?.filter) {
+        currentParams.set("filter", newFilters?.filter);
+      }
+      if (newFilters?.date) {
+        const epochTime = newFilters?.date?.getTime();
+        currentParams.set("date", String(epochTime));
+      }
+      if (newFilters?.tags && newFilters?.tags?.length > 0) {
+        newFilters.tags.forEach((tag) => currentParams.append("tags", tag));
+      }
+      setSearchParams(currentParams);
       toggleDrawer({ open: false, content: undefined });
     },
     []
   );
+
+  React.useEffect(() => {
+    const filter = searchParams?.get("filter");
+    const epochDate = searchParams?.get("date");
+    const date = epochDate ? new Date(Number(epochDate)) : null;
+    const tags = searchParams?.getAll("tags");
+    if (filter || date || (!!tags && tags?.length > 0))
+      setFilters({
+        filter: filter,
+        date: date ?? undefined,
+        tags,
+      });
+  }, [searchParams]);
 
   //TODO custom date year not working
 
@@ -63,7 +98,7 @@ const SearchScreen = () => {
     });
   }, [filters, handleApplyFilters]);
 
-  React.useLayoutEffect(() => {
+  React.useEffect(() => {
     // if(isFirstVisitRender) {}
     setHeaderRightContent(
       <IconButton
@@ -74,7 +109,7 @@ const SearchScreen = () => {
         <FilterListIcon />
       </IconButton>
     );
-  }, [toggleFilters, filters, setHeaderRightContent]);
+  }, [toggleFilters, filters, setHeaderRightContent, searchParams]);
 
   return (
     <>
