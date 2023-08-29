@@ -27,14 +27,16 @@ const MyActivityCard: React.FC<IMyActivityCardProps> = ({
   ...rest
 }) => {
   //TODO maybe in later use also need some refactoring
-  const { action, handlers } = useLongPress();
+  const { action, handlers } = useLongPress({
+    onLongPress: () => onLongPress?.(activity),
+  });
   const { shadows } = useTheme();
 
-  React.useEffect(() => {
-    if (action) {
-      onLongPress?.(activity);
-    }
-  }, [action, onLongPress]);
+  // React.useEffect(() => {
+  //   if (action) {
+  //     onLongPress?.(activity);
+  //   }
+  // }, [action, onLongPress]);
 
   return (
     <OffliButton

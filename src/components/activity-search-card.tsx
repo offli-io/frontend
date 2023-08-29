@@ -44,7 +44,6 @@ const ActivitySearchCard: React.FC<IMyActivityCardProps> = ({
   //TODO maybe in later use also need some refactoring
   const baseUrl = useGetApiUrl();
   const { palette, shadows } = useTheme();
-  const { action, handlers } = useLongPress();
   const { userInfo } = React.useContext(AuthenticationContext);
   const { data: { data = {} } = {} } = useUser({
     id: userInfo?.id,

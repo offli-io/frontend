@@ -1,7 +1,7 @@
 import { ICarouselItem } from "../../../components/mobile-carousel";
 
 export interface IFiltersDto {
-  filter?: string;
-  date?: ICarouselItem;
+  filter?: string | null;
+  date?: Date | null;
   tags?: string[];
 }

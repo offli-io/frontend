@@ -1,6 +1,10 @@
 import React from "react";
 
-export default function useLongPress() {
+export default function useLongPress({
+  onLongPress,
+}: {
+  onLongPress?: () => void;
+}) {
   const [action, setAction] = React.useState<string | undefined>();
 
   const timerRef = React.useRef<any>();
@@ -10,7 +14,8 @@ export default function useLongPress() {
     isLongPress.current = false;
     timerRef.current = setTimeout(() => {
       isLongPress.current = true;
-      setAction("longpress");
+      onLongPress?.();
+      // setAction("longpress");
     }, 500);
   }
 

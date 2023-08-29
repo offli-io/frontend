@@ -43,7 +43,9 @@ const FiltersDrawerContent: React.FC<IFiltersDrawerContentProps> = ({
     if (filters?.date) {
       setDateOptions((dateOptions) =>
         dateOptions?.map((item) => {
-          if (item?.id === filters?.date?.id) {
+          const selectedDate = filters?.date?.getDate();
+          // comparing date values since I removed ICarouselItem
+          if (item?.dateValue?.getDate() === selectedDate) {
             return { ...item, selected: true };
           } else {
             return item;
@@ -83,7 +85,7 @@ const FiltersDrawerContent: React.FC<IFiltersDrawerContentProps> = ({
     const selectedDate = dateOptions?.find((dateSlot) => dateSlot?.selected);
     onApplyFilters?.({
       filter: selectedFilter,
-      date: selectedDate,
+      date: selectedDate?.dateValue,
       tags: selectedTags?.length > 0 ? selectedTags : undefined,
     });
   }, [dateOptions, selectedFilter, selectedTags]);
@@ -107,7 +109,14 @@ const FiltersDrawerContent: React.FC<IFiltersDrawerContentProps> = ({
   }, [filters?.tags, setSelectedTags]);
 
   return (
-    <Box sx={{ display: "flex", flexDirection: "column", mx: 1.5 }}>
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        mx: 1.5,
+        maxHeight: "80vh",
+      }}
+    >
       <Box>
         <Typography variant="h4" sx={{ my: 1 }}>
           Set filters

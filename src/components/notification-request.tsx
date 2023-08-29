@@ -31,11 +31,18 @@ const NotificationRequest: React.FC<INotificationRequestProps> = ({
 }) => {
   const { shadows } = useTheme();
   const baseUrl = useGetApiUrl();
+
+  const roundDaysIfNecessarry = React.useCallback((hours: number) => {
+    return hours > 24 ? `${Math.floor(hours / 24)} days` : `${hours} hours`;
+  }, []);
+
   const hourDifference = React.useCallback(() => {
     if (notification?.timestamp) {
       const unixDate = new Date(notification.timestamp * 1000);
       const hourDifference = differenceInHours(new Date(), unixDate);
-      return hourDifference >= 1 ? `${hourDifference} h` : "just now";
+      return hourDifference >= 1
+        ? roundDaysIfNecessarry(hourDifference)
+        : "just now";
     }
     return undefined;
   }, [notification?.timestamp]);
