@@ -109,7 +109,14 @@ const FiltersDrawerContent: React.FC<IFiltersDrawerContentProps> = ({
   }, [filters?.tags, setSelectedTags]);
 
   return (
-    <Box sx={{ display: "flex", flexDirection: "column", mx: 1.5 }}>
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        mx: 1.5,
+        maxHeight: "80vh",
+      }}
+    >
       <Box>
         <Typography variant="h4" sx={{ my: 1 }}>
           Set filters

@@ -7,6 +7,7 @@ import {
   IconButton,
   InputAdornment,
   TextField,
+  Typography,
 } from "@mui/material";
 import React from "react";
 import {
@@ -36,24 +37,26 @@ const SearchScreen = () => {
   const [queryStringDebounced] = useDebounce(currentSearch, 250);
   const [filters, setFilters] = React.useState<IFiltersDto | undefined>();
   const { toggleDrawer } = React.useContext(DrawerContext);
-  const { setHeaderRightContent } = React.useContext(HeaderContext);
+  const { setHeaderRightContent, headerRightContent } =
+    React.useContext(HeaderContext);
   const isFirstVisitRender = React.useRef(true);
   let params = new URLSearchParams(document.location.search);
   console.log(params);
 
   const isTag = queryStringDebounced?.includes("tag");
 
-  const { data: activitiesData, isLoading: areActivitiesLoading } =
-    useActivities<IActivityListRestDto>({
-      text: isTag ? undefined : queryStringDebounced,
-      tag: filters?.tags,
-      datetimeFrom: filters?.date,
-    });
+  const {
+    data: { data: { activities = [] } = {} } = {},
+    isLoading: areActivitiesLoading,
+  } = useActivities<IActivityListRestDto>({
+    text: isTag ? undefined : queryStringDebounced,
+    tag: filters?.tags,
+    datetimeFrom: filters?.date,
+  });
 
   const handleApplyFilters = React.useCallback(
     //why isn't this type infered from component signature props interface?
     (newFilters: IFiltersDto) => {
-      console.log(newFilters);
       const currentParams = new URLSearchParams();
       if (newFilters?.filter) {
         currentParams.set("filter", newFilters?.filter);
@@ -65,10 +68,12 @@ const SearchScreen = () => {
       if (newFilters?.tags && newFilters?.tags?.length > 0) {
         newFilters.tags.forEach((tag) => currentParams.append("tags", tag));
       }
-      setSearchParams(currentParams);
+      setSearchParams(currentParams, {
+        state: location?.state,
+      });
       toggleDrawer({ open: false, content: undefined });
     },
-    []
+    [location]
   );
 
   React.useEffect(() => {
@@ -99,17 +104,19 @@ const SearchScreen = () => {
   }, [filters, handleApplyFilters]);
 
   React.useEffect(() => {
-    // if(isFirstVisitRender) {}
-    setHeaderRightContent(
-      <IconButton
-        onClick={toggleFilters}
-        color={!!filters ? "primary" : undefined}
-        data-testid="toggle-filters-btn"
-      >
-        <FilterListIcon />
-      </IconButton>
-    );
-  }, [toggleFilters, filters, setHeaderRightContent, searchParams]);
+    //TODO fix this not to run on every re-render but I dont know how to solve this for now
+    if (!headerRightContent) {
+      setHeaderRightContent(
+        <IconButton
+          onClick={toggleFilters}
+          color={!!filters ? "primary" : undefined}
+          data-testid="toggle-filters-btn"
+        >
+          <FilterListIcon />
+        </IconButton>
+      );
+    }
+  });
 
   return (
     <>
@@ -164,8 +171,8 @@ const SearchScreen = () => {
           <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
             <CircularProgress color="primary" />
           </Box>
-        ) : (
-          activitiesData?.data?.activities?.map((activity) => (
+        ) : activities?.length > 0 ? (
+          activities?.map((activity) => (
             <>
               <ActivitySearchCard
                 key={activity?.id}
@@ -181,6 +188,10 @@ const SearchScreen = () => {
               <Divider sx={{ mb: 1 }} />
             </>
           ))
+        ) : (
+          <Typography sx={{ textAlign: "center", mt: 4 }} variant="subtitle2">
+            No activities found
+          </Typography>
         )}
       </Box>
     </>
