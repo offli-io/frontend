@@ -19,6 +19,7 @@ import {
   IPredefinedPictureDto,
   IPredefinedPictureResponseDto,
 } from "../../types/activities/predefined-picture.dto";
+import { IPredefinedTagDto } from "../../types/activities/predefined-tag.dto";
 import { IUpdateActivityRequestDto } from "./../../types/activities/update-activity-request.dto";
 import { IListParticipantsResponseDto } from "../../types/activities/list-participants-response.dto";
 import { ActivityInviteStateEnum } from "../../types/activities/activity-invite-state-enum.dto";
@@ -372,7 +373,7 @@ export const getPredefinedTags = () => {
   const CancelToken = axios.CancelToken;
   const source = CancelToken.source();
 
-  const promise = axios.get<{ tags: string[] }>(
+  const promise = axios.get<{ tags: IPredefinedTagDto[] }>(
     `${DEFAULT_DEV_URL}/predefined/tags`,
     {
       cancelToken: source?.token,

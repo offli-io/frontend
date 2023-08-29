@@ -95,15 +95,15 @@ export const ActivityTypeForm: React.FC<IActivityTypeFormProps> = ({
           tiles?.map((tag, index) => (
             <LabeledTile
               key={index}
-              title={tag}
+              title={tag.title}
               onClick={handleTileClick}
-              selected={tags?.includes(tag)}
+              selected={tags?.includes(tag.title)}
               sx={{
                 width: "42%",
                 mb: 2,
               }}
               //TODO construct URL
-              imageUrl={`${baseUrl}/predefined/tags/${tag}`}
+              imageUrl={`${baseUrl}/predefined/tags/${tag.id}`}
             />
           ))
         ) : (
