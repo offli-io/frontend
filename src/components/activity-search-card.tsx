@@ -119,7 +119,7 @@ const ActivitySearchCard: React.FC<IMyActivityCardProps> = ({
                 (activity?.datetime_from
                   ? new Date(activity?.datetime_from)
                   : new Date()) as Date,
-                "dd:mm:yyyy , hh:mm"
+                "dd.MM.yyyy , hh:mm"
               )}
             </Typography>
           </Box>

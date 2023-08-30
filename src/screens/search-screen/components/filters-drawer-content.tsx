@@ -7,6 +7,7 @@ import {
   Radio,
   RadioGroup,
   Typography,
+  useTheme,
 } from "@mui/material";
 import React from "react";
 import {
@@ -38,6 +39,7 @@ const FiltersDrawerContent: React.FC<IFiltersDrawerContentProps> = ({
   const [selectedTags, setSelectedTags] = React.useState<string[]>(
     filters?.tags ?? []
   );
+  const theme = useTheme();
 
   React.useEffect(() => {
     if (filters?.date) {
@@ -113,7 +115,7 @@ const FiltersDrawerContent: React.FC<IFiltersDrawerContentProps> = ({
       sx={{
         display: "flex",
         flexDirection: "column",
-        mx: 1.5,
+        mx: 1,
         maxHeight: "80vh",
       }}
     >
@@ -144,12 +146,12 @@ const FiltersDrawerContent: React.FC<IFiltersDrawerContentProps> = ({
         <Typography variant="h4" sx={{ my: 1 }}>
           Select date
         </Typography>
-        <Box sx={{ mx: 1.5 }}>
+        <Box sx={{ mx: 1.5, display: "flex" }}>
           <MobileCarousel
             items={dateOptions}
             onItemSelect={handleDateSelect}
             onSlotAdd={handleDateAdd}
-            sx={{ py: "8px !important" }}
+            sx={{ py: `${theme.spacing(1)} !important` }}
           />
         </Box>
       </Box>
@@ -172,7 +174,9 @@ const FiltersDrawerContent: React.FC<IFiltersDrawerContentProps> = ({
                   key={tag.id}
                   sx={{ m: 1 }}
                   color="primary"
-                  variant={selectedTags.includes(tag.title) ? "filled" : "outlined"}
+                  variant={
+                    selectedTags.includes(tag.title) ? "filled" : "outlined"
+                  }
                   onClick={() => handleTagClick(tag.title)}
                 />
               ))}
