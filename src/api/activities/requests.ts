@@ -28,6 +28,7 @@ import { IActivityInviteValuesDto } from "../../types/activities/activity-invite
 import { IActivityRestDto } from "../../types/activities/activity-rest.dto";
 import { IActivityListRestDto } from "../../types/activities/activity-list-rest.dto";
 import { IActivitiesParamsDto } from "types/activities/activities-params.dto";
+import { IUsersParamsDto } from "types/users";
 
 export const getActivities = async ({
   queryFunctionContext,
@@ -312,7 +313,7 @@ export const getUsers = ({ username }: { username?: string }) => {
   return promise;
 };
 
-export const getUser = ({ id }: { id?: number }) => {
+export const getUser = ({ id, requestingInfoUserId }: IUsersParamsDto) => {
   const CancelToken = axios.CancelToken;
   const source = CancelToken.source();
 
@@ -320,6 +321,9 @@ export const getUser = ({ id }: { id?: number }) => {
     `${DEFAULT_DEV_URL}/users${id ? `/${id}` : ""}`,
     {
       cancelToken: source?.token,
+      params: {
+        requestingInfoUserId,
+      },
     }
   );
 
