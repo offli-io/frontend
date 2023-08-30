@@ -23,6 +23,7 @@ import { DrawerContext } from "../assets/theme/drawer-provider";
 import MapDrawerDetail from "../screens/map-screen/components/map-drawer-detail";
 import { CustomizationContext } from "../assets/theme/customization-provider";
 import markerIcon from "../assets/img/location-marker.svg";
+import wavePeople from "../assets/img/you-here.svg";
 
 // function LocationMarker() {
 //   const [position, setPosition] = React.useState<LatLng | null>(null);
@@ -75,6 +76,12 @@ interface ILabeledTileProps {
 
 const offliMarkerIcon = new L.Icon({
   iconUrl: markerIcon,
+  iconSize: [45, 45], // Adjust the size of the icon as needed
+  iconAnchor: [22.5, 22.5],
+});
+
+const peopleIcon = new L.Icon({
+  iconUrl: wavePeople,
   iconSize: [45, 45], // Adjust the size of the icon as needed
   iconAnchor: [22.5, 22.5],
 });

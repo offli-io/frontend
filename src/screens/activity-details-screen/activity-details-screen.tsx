@@ -55,7 +55,8 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
     (location?.state as ICustomizedLocationStateDto)?.from ??
     ApplicationLocations.ACTIVITIES;
   const { toggleDrawer } = React.useContext(DrawerContext);
-  const { setHeaderRightContent } = React.useContext(HeaderContext);
+  const { setHeaderRightContent, headerRightContent } =
+    React.useContext(HeaderContext);
   const { userInfo } = React.useContext(AuthenticationContext);
   const { enqueueSnackbar } = useSnackbar();
   const queryClient = useQueryClient();
@@ -200,18 +201,21 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
   }, [toggleDrawer, handleMenuItemClick, activity]);
 
   React.useEffect(() => {
-    setHeaderRightContent(
-      <IconButton
-        // aria-describedby={id}
-        color="primary"
-        data-testid="toggle-activity-menu-btn"
-        onClick={handleActivityActionsCLick}
-      >
-        <MenuIcon />
-      </IconButton>
-      // <ActivityDetailActionMenu onMenuItemClick={handleMenuItemClick} />
-    );
-  }, [handleMenuItemClick, setHeaderRightContent]);
+    //TODO this runs on every re-render but with dependencies (they wont change on page refresh)
+    if (!headerRightContent) {
+      setHeaderRightContent(
+        <IconButton
+          // aria-describedby={id}
+          color="primary"
+          data-testid="toggle-activity-menu-btn"
+          onClick={handleActivityActionsCLick}
+        >
+          <MenuIcon />
+        </IconButton>
+        // <ActivityDetailActionMenu onMenuItemClick={handleMenuItemClick} />
+      );
+    }
+  });
 
   React.useEffect(() => {
     if (state) {

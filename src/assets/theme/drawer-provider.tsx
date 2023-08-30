@@ -2,6 +2,7 @@ import React from "react";
 
 import { SwipeableDrawer, Box, Paper } from "@mui/material";
 import { styled } from "@mui/material/styles";
+import { useLocation } from "react-router-dom";
 
 interface IDrawerData {
   open?: boolean;
@@ -32,6 +33,8 @@ export const DrawerProvider = ({ children }: { children: React.ReactNode }) => {
     open: false,
   });
 
+  const { pathname } = useLocation();
+
   // React.useEffect(() => {
   //   // hide drawer when route changes
   //   // cant do because window.location.href is not updated somehow -> I think it is evaluated in the time function is called
@@ -43,6 +46,15 @@ export const DrawerProvider = ({ children }: { children: React.ReactNode }) => {
   //     });
   //   }
   // }, [window.location.href]);
+
+  React.useEffect(() => {
+    // on pathname change close the drawer
+    if (!!pathname && pathname?.length > 0) {
+      toggleDrawer({
+        open: false,
+      });
+    }
+  }, [pathname]);
 
   return (
     <DrawerContext.Provider value={{ toggleDrawer }}>

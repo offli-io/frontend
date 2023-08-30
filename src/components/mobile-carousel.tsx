@@ -142,6 +142,7 @@ export const MobileCarousel: React.FC<IMobileCarouselProps> = ({
             flexDirection: "column",
             alignItems: "center",
             justifyContent: "center",
+            ...sx,
           }}
         >
           <MobileDatePicker
