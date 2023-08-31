@@ -250,7 +250,11 @@ export const ActivityMembersScreen: React.FC = () => {
             alignItems: "center",
             justifyContent: "center",
             position: "sticky",
-            top: 0,
+            bgcolor: ({ palette }) => palette?.background?.default,
+            top: 2,
+            // pt: 2,
+            // pt: 4,
+            py: 1.5,
             zIndex: 555,
           }}
         >
