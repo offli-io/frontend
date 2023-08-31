@@ -116,7 +116,7 @@ const FiltersDrawerContent: React.FC<IFiltersDrawerContentProps> = ({
         display: "flex",
         flexDirection: "column",
         mx: 1,
-        maxHeight: "80vh",
+        maxHeight: "70vh",
       }}
     >
       <Box>
@@ -157,7 +157,9 @@ const FiltersDrawerContent: React.FC<IFiltersDrawerContentProps> = ({
       </Box>
 
       <Box>
-        <Typography variant="h4">Select tags</Typography>
+        <Typography variant="h4" sx={{ my: 1 }}>
+          Select tags
+        </Typography>
         {isLoading ? (
           <>
             <Box sx={{ display: "flex", justifyContent: "center", my: 2 }}>

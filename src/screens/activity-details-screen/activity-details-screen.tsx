@@ -274,23 +274,47 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
           backgroundRepeat: "no-repeat",
           backgroundSize: "cover",
           // backgroundImage: `linear-gradient(to top, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0)), url(${require("../assets/img/dune.webp")});`,
-          maskImage:
-            "linear-gradient(to bottom, rgba(0, 0, 0, 1) 88%, transparent 100%)",
+          // maskImage:
+          //   "linear-gradient(to bottom, rgba(0, 0, 0, 1) 90%, rgba(0, 0, 0, 0.2))",
+          // maskImage: "linear-gradient(to top, transparent 0%, white 75%)",
+
+          // background:
+          //   "linear-gradient(to top, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0))",
         }}
-      ></Box>
+      >
+        <Box
+          sx={{
+            width: "100%",
+            height: "100%",
+            display: "flex",
+            alignItems: "flex-end",
+            background:
+              "linear-gradient(to top, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0))",
+            px: 1,
+            pb: 1,
+            boxSizing: "border-box",
+          }}
+        >
+          <Typography
+            variant="h2"
+            align="left"
+            sx={{
+              overflow: "hidden",
+              wordWrap: "break-word",
+              filter: "invert(100%)",
+              textShadow: ({ palette }) => `1px 0px 1px black`,
+            }}
+          >
+            {activity?.title}
+          </Typography>
+        </Box>
+      </Box>
       <Box
         sx={{
           width: "93%",
           margin: "auto",
         }}
       >
-        <Typography
-          variant="h2"
-          align="left"
-          sx={{ overflow: "hidden", wordWrap: "break-word" }}
-        >
-          {activity?.title}
-        </Typography>
         <Box
           sx={{
             display: "flex",

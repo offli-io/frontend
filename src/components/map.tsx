@@ -23,7 +23,7 @@ import { DrawerContext } from "../assets/theme/drawer-provider";
 import MapDrawerDetail from "../screens/map-screen/components/map-drawer-detail";
 import { CustomizationContext } from "../assets/theme/customization-provider";
 import markerIcon from "../assets/img/location-marker.svg";
-import wavePeople from "../assets/img/you-here.svg";
+import wavePeople from "../assets/img/here-icon.svg";
 
 // function LocationMarker() {
 //   const [position, setPosition] = React.useState<LatLng | null>(null);
@@ -171,7 +171,7 @@ const Map: React.FC<ILabeledTileProps> = ({
                 </Marker>
               )
           )}
-          <Marker position={latLonTuple ?? position} icon={offliMarkerIcon}>
+          <Marker position={latLonTuple ?? position} icon={peopleIcon}>
             <Popup>You are here</Popup>
           </Marker>
           <RecenterAutomatically
