@@ -12,7 +12,7 @@ import OffliButton from "./offli-button";
 
 interface IProps {
   activity?: IActivity;
-  onPress: (activity?: IActivity) => void;
+  onPress?: (activity?: IActivity) => void;
   onLongPress?: (activity?: IActivity) => void;
 }
 
@@ -61,7 +61,7 @@ const ActivityCard: React.FC<IProps> = ({
       }}
       data-testid="activity-card"
       {...handlers}
-      onClick={() => onPress(activity)}
+      onClick={() => onPress?.(activity)}
       color="inherit"
       {...rest}
     >

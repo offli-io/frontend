@@ -14,8 +14,8 @@ import OffliButton from "./offli-button";
 interface IMyActivityCardProps {
   activity?: IActivity;
   // onLongPress: (activityId: string) => void;
-  onPress: (activity?: IActivity) => void;
-  onLongPress: (activity?: IActivity) => void;
+  onPress?: (activity?: IActivity) => void;
+  onLongPress?: (activity?: IActivity) => void;
   sx?: SxProps;
 }
 
@@ -55,7 +55,7 @@ const MyActivityCard: React.FC<IMyActivityCardProps> = ({
       }}
       {...handlers}
       color="inherit"
-      onClick={() => onPress(activity)}
+      onClick={() => onPress?.(activity)}
       data-testid="my-activitiy-card"
       {...rest}
     >

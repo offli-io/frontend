@@ -21,6 +21,7 @@ interface ILayoutProps {
 interface ILayoutContext {
   contentDivRef?: React.MutableRefObject<HTMLDivElement | null>;
   onScroll?: () => void;
+  isScrolling?: boolean;
 }
 
 export const LayoutContext = React.createContext<ILayoutContext>(
@@ -42,6 +43,7 @@ export const Layout: React.FC<ILayoutProps> = ({ children }) => {
   const userIdFromStorage = localStorage.getItem("userId");
   const { setHeaderRightContent } = React.useContext(HeaderContext);
   const contentDivRef = React.useRef<HTMLDivElement | null>(null);
+  const [isScrolling, setIsScrolling] = React.useState(false);
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -115,8 +117,26 @@ export const Layout: React.FC<ILayoutProps> = ({ children }) => {
     }
   }, [token]);
 
+  // let timer: any = null;
+
+  // contentDivRef?.current?.addEventListener(
+  //   "scroll",
+  //   function () {
+  //     if (timer !== null && !isScrolling) {
+  //       console.log("scroll start");
+  //       setIsScrolling(true);
+  //       clearTimeout(timer);
+  //     }
+  //     timer = setTimeout(function () {
+  //       console.log("scroll end");
+  //       setIsScrolling(false);
+  //     }, 250);
+  //   },
+  //   false
+  // );
+
   return (
-    <LayoutContext.Provider value={{ contentDivRef }}>
+    <LayoutContext.Provider value={{ contentDivRef, isScrolling }}>
       <Box
         sx={{
           width: "100%",
@@ -133,6 +153,7 @@ export const Layout: React.FC<ILayoutProps> = ({ children }) => {
         <Box
           ref={contentDivRef}
           // onScroll={onscroll}
+          // onScrollEnd={() => console.log("scroll end")}
           sx={{
             width: "100%",
             height: "100%",
