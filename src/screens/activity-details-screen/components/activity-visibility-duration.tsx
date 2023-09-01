@@ -32,7 +32,10 @@ const ActivityVisibilityDuration: React.FC<IProps> = ({
           <Typography
             variant="h5"
             align="left"
-            sx={{ fontSize: "16px", mb: 0.5 }}
+            sx={{
+              fontSize: "16px",
+              mb: 0.5,
+            }}
           >
             Activity visibility
           </Typography>
@@ -45,7 +48,10 @@ const ActivityVisibilityDuration: React.FC<IProps> = ({
             <Typography
               variant="subtitle1"
               align="left"
-              sx={{ fontSize: "14px", ml: 0.5 }}
+              sx={{
+                fontSize: "14px",
+                ml: 0.5,
+              }}
             >
               {visibility}
             </Typography>
@@ -55,7 +61,11 @@ const ActivityVisibilityDuration: React.FC<IProps> = ({
           <Typography
             variant="h5"
             align="left"
-            sx={{ fontSize: "16px", mb: 0.5, textAlign: "end" }}
+            sx={{
+              fontSize: "16px",
+              mb: 0.5,
+              textAlign: "end",
+            }}
           >
             Duration
           </Typography>
@@ -69,7 +79,9 @@ const ActivityVisibilityDuration: React.FC<IProps> = ({
             <Typography
               variant="subtitle1"
               align="left"
-              sx={{ fontSize: "14px" }}
+              sx={{
+                fontSize: "14px",
+              }}
             >
               {duration}
             </Typography>
@@ -79,7 +91,10 @@ const ActivityVisibilityDuration: React.FC<IProps> = ({
       <Typography
         variant="subtitle1"
         align="center"
-        sx={{ fontSize: "12px", mb: 1, color: "grey" }}
+        sx={{
+          fontSize: "12px",
+          mb: 1,
+        }}
       >
         Created {createdDateTime}
       </Typography>

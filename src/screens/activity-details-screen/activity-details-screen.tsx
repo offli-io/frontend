@@ -46,6 +46,8 @@ import userPlaceholder from "../../assets/img/user-placeholder.svg";
 import Icon from "@mdi/react";
 import { mdiCrown } from "@mdi/js";
 import ActivityVisibilityDuration from "./components/activity-visibility-duration";
+import { CustomizationContext } from "assets/theme/customization-provider";
+import Loader from "components/loader";
 
 interface IProps {
   type: "detail" | "request";
@@ -53,6 +55,7 @@ interface IProps {
 
 const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
   const { id } = useParams();
+  const { mode } = React.useContext(CustomizationContext);
   const navigate = useNavigate();
   const location = useLocation();
   const from =
@@ -78,6 +81,8 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
     id: id ? Number(id) : undefined,
     participantId: userInfo?.id,
   });
+
+  console.log(isLoading);
 
   // const { data } = useQuery(
   //   ["activity", id],
@@ -268,7 +273,9 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
   const durationMinutes = timeDifference?.durationMinutes;
   const durationHours = timeDifference?.durationHours;
 
-  return (
+  return isLoading ? (
+    <Loader />
+  ) : (
     <>
       <Box
         sx={{
@@ -306,8 +313,15 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
             sx={{
               overflow: "hidden",
               wordWrap: "break-word",
-              filter: "invert(100%)",
+              // filter: "invert(100%)",
               textShadow: ({ palette }) => `1px 0px 1px black`,
+              ...(mode === "light" ? { filter: "invert(100%)" } : {}),
+              ...(mode === "light"
+                ? {
+                    textShadow: ({ palette }) =>
+                      `1px 1px 1px ${palette?.primary?.light}`,
+                  }
+                : {}),
             }}
           >
             {activity?.title}
@@ -360,7 +374,13 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
               }}
             />
 
-            <Typography sx={{ ml: 1, fontSize: 16 }}>
+            <Typography
+              sx={{
+                ml: 1,
+                fontSize: 16,
+                color: ({ palette }) => palette?.text?.primary,
+              }}
+            >
               {activity?.creator?.username}
             </Typography>
           </Box>
