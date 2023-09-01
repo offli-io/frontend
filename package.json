@@ -9,6 +9,8 @@
     "@emotion/styled": "^11.9.3",
     "@font/nunito": "^1.0.3",
     "@hookform/resolvers": "^2.9.3",
+    "@mdi/js": "^7.2.96",
+    "@mdi/react": "^1.6.1",
     "@mui/icons-material": "^5.8.4",
     "@mui/joy": "^5.0.0-alpha.62",
     "@mui/lab": "^5.0.0-alpha.108",

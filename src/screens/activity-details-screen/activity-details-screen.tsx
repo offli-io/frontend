@@ -2,7 +2,7 @@ import LockIcon from "@mui/icons-material/Lock";
 import LockOpenIcon from "@mui/icons-material/LockOpen";
 import MenuIcon from "@mui/icons-material/Menu";
 
-import { Box, IconButton, Typography } from "@mui/material";
+import { Box, IconButton, Typography, useTheme } from "@mui/material";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useSnackbar } from "notistack";
 import React from "react";
@@ -25,7 +25,7 @@ import { ApplicationLocations } from "../../types/common/applications-locations.
 import { ICustomizedLocationStateDto } from "../../types/common/customized-location-state.dto";
 import { GoogleAuthCodeFromEnumDto } from "../../types/google/google-auth-code-from-enum.dto";
 import ActivityDetailActionMenu from "./components/acitivity-detail-action-menu";
-import ActivityCreatorDuration from "./components/activity-creator-duration";
+import ActivityCreatorDuration from "./components/activity-visibility-duration";
 import ActivityDescriptionTags from "./components/activity-description-tags";
 import ActivityDetailsGrid, {
   IGridAction,
@@ -42,6 +42,10 @@ import { DrawerContext } from "assets/theme/drawer-provider";
 import ActivityActions from "screens/my-activities-screen/components/activity-actions";
 import { PARTICIPANT_ACTIVITIES_QUERY_KEY } from "hooks/use-participant-activities";
 import { ACTIVITIES_QUERY_KEY, useActivities } from "hooks/use-activities";
+import userPlaceholder from "../../assets/img/user-placeholder.svg";
+import Icon from "@mdi/react";
+import { mdiCrown } from "@mdi/js";
+import ActivityVisibilityDuration from "./components/activity-visibility-duration";
 
 interface IProps {
   type: "detail" | "request";
@@ -62,6 +66,7 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
   const queryClient = useQueryClient();
   const baseUrl = useGetApiUrl();
   const abortControllerRef = React.useRef<AbortController | null>(null);
+  const { shadows, palette } = useTheme();
 
   const { googleToken, handleGoogleAuthorization, state } =
     useGoogleAuthorization({
@@ -274,23 +279,47 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
           backgroundRepeat: "no-repeat",
           backgroundSize: "cover",
           // backgroundImage: `linear-gradient(to top, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0)), url(${require("../assets/img/dune.webp")});`,
-          maskImage:
-            "linear-gradient(to bottom, rgba(0, 0, 0, 1) 88%, transparent 100%)",
+          // maskImage:
+          //   "linear-gradient(to bottom, rgba(0, 0, 0, 1) 90%, rgba(0, 0, 0, 0.2))",
+          // maskImage: "linear-gradient(to top, transparent 0%, white 75%)",
+
+          // background:
+          //   "linear-gradient(to top, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0))",
         }}
-      ></Box>
+      >
+        <Box
+          sx={{
+            width: "100%",
+            height: "100%",
+            display: "flex",
+            alignItems: "flex-end",
+            background:
+              "linear-gradient(to top, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0))",
+            px: 1,
+            pb: 1,
+            boxSizing: "border-box",
+          }}
+        >
+          <Typography
+            variant="h2"
+            align="left"
+            sx={{
+              overflow: "hidden",
+              wordWrap: "break-word",
+              filter: "invert(100%)",
+              textShadow: ({ palette }) => `1px 0px 1px black`,
+            }}
+          >
+            {activity?.title}
+          </Typography>
+        </Box>
+      </Box>
       <Box
         sx={{
           width: "93%",
           margin: "auto",
         }}
       >
-        <Typography
-          variant="h2"
-          align="left"
-          sx={{ overflow: "hidden", wordWrap: "break-word" }}
-        >
-          {activity?.title}
-        </Typography>
         <Box
           sx={{
             display: "flex",
@@ -299,33 +328,42 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
             my: 1.5,
           }}
         >
-          <Typography variant="h5" align="left">
-            Basic Information
-          </Typography>
-          {/* <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              color: "grey",
-            }}
+          <Box
+            sx={{ display: "flex", alignItems: "center", position: "relative" }}
           >
-            {activity?.visibility === ActivityVisibilityEnum.private ? (
-              <>
-                <LockIcon sx={{ fontSize: "18px", mr: 0.5 }} />
-                <Typography variant="subtitle1" align="left">
-                  Private
-                </Typography>
-              </>
-            ) : (
-              <>
-                <LockOpenIcon sx={{ fontSize: "18px", mr: 0.5 }} />
-                <Typography variant="subtitle1" align="left">
-                  Public
-                </Typography>
-              </>
-            )}
-          </Box> */}
+            <img
+              src={
+                activity?.creator?.profile_photo
+                  ? `${baseUrl}/files/${activity?.creator?.profile_photo}`
+                  : userPlaceholder
+              }
+              alt="profile"
+              style={{
+                height: 35,
+                aspectRatio: 1,
+                borderRadius: "50%",
+                boxShadow: shadows?.[2],
+                margin: 1,
+                position: "relative",
+              }}
+            />
+            <Icon
+              path={mdiCrown}
+              size={0.8}
+              style={{
+                position: "absolute",
+                left: -4,
+                top: -6,
+                fontSize: 12,
+                color: palette?.primary?.main,
+                // boxShadow: shadows[1],
+              }}
+            />
+
+            <Typography sx={{ ml: 1, fontSize: 16 }}>
+              {activity?.creator?.username}
+            </Typography>
+          </Box>
           {displayJoinButton ? (
             <OffliButton
               size="small"
@@ -341,12 +379,20 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
           activity={activity}
           onActionClick={handleGridClick}
         />
+        {/* <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+          <Typography variant="h5">Duration</Typography>
+          <Typography>
+            {`${durationHours} hours, ${durationMinutes} minutes`}
+          </Typography>
+        </Box> */}
         <ActivityDescriptionTags
           description={activity?.description}
           tags={activity?.tags!}
         />
-        <ActivityCreatorDuration
-          creator={data?.data?.activity?.creator}
+        <ActivityVisibilityDuration
+          visibility={
+            data?.data?.activity?.visibility as ActivityVisibilityEnum
+          }
           // duration={activity?.tags!}
           duration={`${durationHours} hours, ${durationMinutes} minutes`}
           createdDateTime={

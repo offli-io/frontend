@@ -233,7 +233,7 @@ export const ActivityMembersScreen: React.FC = () => {
   };
 
   return (
-    <Box sx={{ px: 2 }}>
+    <Box sx={{ px: 2, height: "100%" }} {...handlers}>
       <Box
         sx={{
           display: "flex",
@@ -250,7 +250,11 @@ export const ActivityMembersScreen: React.FC = () => {
             alignItems: "center",
             justifyContent: "center",
             position: "sticky",
-            top: 0,
+            bgcolor: ({ palette }) => palette?.background?.default,
+            top: 2,
+            // pt: 2,
+            // pt: 4,
+            py: 1.5,
             zIndex: 555,
           }}
         >
@@ -288,12 +292,13 @@ export const ActivityMembersScreen: React.FC = () => {
           ) : null}
         </Box>
 
-        <Box sx={{ width: "100%" }} {...handlers}>
+        <Box sx={{ width: "100%" }}>
           <Tabs
             value={activeTab}
             onChange={handleTabChange}
             aria-label="basic tabs example"
             variant="fullWidth"
+            sx={{ mt: 1 }}
           >
             <Tab label="Confirmed" value={ITabs.CONFIRMED} />
             <Tab label="Invited" value={ITabs.INVITED} />
@@ -307,8 +312,8 @@ export const ActivityMembersScreen: React.FC = () => {
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
-                borderTop: "1px solid lightgrey",
-                borderBottom: "1px solid lightgrey",
+                // borderTop: "1px solid lightgrey",
+                // borderBottom: "1px solid lightgrey",
               }}
             >
               <Typography
@@ -323,12 +328,12 @@ export const ActivityMembersScreen: React.FC = () => {
                 width: "100%",
                 overflowY: "auto",
                 overflowX: "hidden",
-                my: 3,
-                py: 3,
-                borderTop: "1px solid lightgrey",
-                borderBottom: anySearchResults
-                  ? "1px solid lightgrey"
-                  : "unset",
+                mt: 1,
+                pb: 3,
+                // borderTop: "1px solid lightgrey",
+                // borderBottom: anySearchResults
+                //   ? "1px solid lightgrey"
+                //   : "unset",
               }}
             >
               {isLoading ? (
