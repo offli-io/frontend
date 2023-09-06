@@ -7,8 +7,6 @@ import markerIcon from "../assets/img/location-marker.svg";
 import { CustomizationContext } from "../assets/theme/customization-provider";
 import { DrawerContext } from "../assets/theme/drawer-provider";
 import MapDrawerDetail from "../screens/map-screen/components/map-drawer-detail";
-import { CustomizationContext } from "../assets/theme/customization-provider";
-import markerIcon from "../assets/img/location-marker.svg";
 import wavePeople from "../assets/img/here-icon.svg";
 
 // function LocationMarker() {
