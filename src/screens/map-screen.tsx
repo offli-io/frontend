@@ -15,14 +15,10 @@ interface ILocation {
 const MapScreen = <T extends unknown>() => {
   const { activityId } = useParams();
 
-  const { data: { data = {} } = {}, isLoading } = useActivities<T>(
-    {
-      id: activityId ? Number(activityId) : undefined,
-    },
-    {
-      enabled: !!activityId,
-    }
-  );
+  const { data: { data = {} } = {}, isLoading } = useActivities<T>({
+    id: activityId ? Number(activityId) : undefined,
+    // enabled: !!activityId,
+  });
 
   const {
     data: { data: mapViewData } = {},
