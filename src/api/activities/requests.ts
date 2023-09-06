@@ -29,6 +29,7 @@ import { IActivityRestDto } from "../../types/activities/activity-rest.dto";
 import { IActivityListRestDto } from "../../types/activities/activity-list-rest.dto";
 import { IActivitiesParamsDto } from "types/activities/activities-params.dto";
 import { IUsersParamsDto } from "types/users";
+import { IMapViewActivitiesResponseDto } from "../../types/activities/mapview-activities.dto";
 
 export const getActivities = async ({
   queryFunctionContext,
@@ -379,6 +380,24 @@ export const getPredefinedTags = () => {
 
   const promise = axios.get<{ tags: IPredefinedTagDto[] }>(
     `${DEFAULT_DEV_URL}/predefined/tags`,
+    {
+      cancelToken: source?.token,
+    }
+  );
+
+  // queryFunctionContext?.signal?.addEventListener('abort', () => {
+  //   source.cancel('Query was cancelled by React Query')
+  // })
+
+  return promise;
+};
+
+export const getMapviewActivities = () => {
+  const CancelToken = axios.CancelToken;
+  const source = CancelToken.source();
+
+  const promise = axios.get<IMapViewActivitiesResponseDto>(
+    `${DEFAULT_DEV_URL}/mapview/activities?lon=-180&lat=-90&maxLon=180&maxLat=90`,
     {
       cancelToken: source?.token,
     }

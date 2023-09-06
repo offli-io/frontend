@@ -4,6 +4,8 @@ import { useActivities } from "../hooks/use-activities";
 import { IActivityListRestDto } from "../types/activities/activity-list-rest.dto";
 import { IActivityRestDto } from "../types/activities/activity-rest.dto";
 import { ICustomizedLocationStateDto } from "../types/common/customized-location-state.dto";
+import { useQuery } from "@tanstack/react-query";
+import { getMapviewActivities } from "../api/activities/requests";
 
 interface ILocation {
   lat: number;
@@ -12,8 +14,17 @@ interface ILocation {
 
 const MapScreen = <T extends unknown>() => {
   const { activityId } = useParams();
+
   const { data: { data = {} } = {}, isLoading } = useActivities<T>({
     id: activityId ? Number(activityId) : undefined,
+    // enabled: !!activityId,
+  });
+
+  const {
+    data: { data: mapViewData } = {},
+    isLoading: areMapViewActivitiesLoading,
+  } = useQuery(["mapview-activities"], () => getMapviewActivities(), {
+    enabled: !activityId,
   });
 
   const location = useLocation();
@@ -21,8 +32,8 @@ const MapScreen = <T extends unknown>() => {
   const { from = "" } = state;
 
   const activityData = !!activityId
-    ? [(data as IActivityRestDto)?.activity]
-    : (data as IActivityListRestDto)?.activities;
+    ? (data as IActivityRestDto)?.activity
+    : mapViewData?.activities;
 
   return (
     <>
