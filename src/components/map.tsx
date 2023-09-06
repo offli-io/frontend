@@ -7,33 +7,9 @@ import markerIcon from "../assets/img/location-marker.svg";
 import { CustomizationContext } from "../assets/theme/customization-provider";
 import { DrawerContext } from "../assets/theme/drawer-provider";
 import MapDrawerDetail from "../screens/map-screen/components/map-drawer-detail";
-import wavePeople from "../assets/img/here-icon.svg";
-
-// function LocationMarker() {
-//   const [position, setPosition] = React.useState<LatLng | null>(null);
-//   const map = useMa({
-//     click() {
-//       map.locate();
-//     },
-//     locationfound(e) {
-//       setPosition(e.latlng);
-//       map.flyTo(e.latlng, map.getZoom());
-//     },
-//   });
-
-// const iconPerson = new L.Icon({
-//   iconUrl: require("../img/marker-pin-person.svg"),
-//   iconRetinaUrl: require("../img/marker-pin-person.svg"),
-//   // iconAnchor: null,
-//   // popupAnchor: null,
-//   // shadowUrl: null,
-//   // shadowSize: null,
-//   // shadowAnchor: null,
-//   iconSize: new L.Point(60, 75),
-//   className: "leaflet-div-icon",
-// });
 import { IActivity } from "../types/activities/activity.dto";
 import { IMapViewActivityDto } from "../types/activities/mapview-activities.dto";
+import wavePeople from "../assets/img/here-icon.svg";
 
 const RecenterAutomatically = ({
   lat,

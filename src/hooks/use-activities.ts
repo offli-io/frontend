@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { UseQueryOptions, useQuery } from "@tanstack/react-query";
 import { useSnackbar } from "notistack";
 import { getActivity } from "../api/activities/requests";
 import { IActivitiesParamsDto } from "types/activities/activities-params.dto";
