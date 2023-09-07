@@ -57,6 +57,7 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
 
   const { data: { data = {} } = {}, isLoading } = useUser({
     id: id ? Number(id) : userInfo?.id,
+    requestingInfoUserId: id ? userInfo?.id : undefined,
   });
 
   const { isLoading: isConnectingInstagram, mutate: sendConnectInstagram } =
@@ -377,12 +378,18 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
               participatedNum={data?.activities_participated_last_month_count}
               enjoyedNum={data?.enjoyed_together_last_month_count}
               createdNum={
-                type === ProfileEntryTypeEnum.PROFILE
+                [
+                  ProfileEntryTypeEnum.BUDDY,
+                  ProfileEntryTypeEnum.PROFILE,
+                ].includes(type)
                   ? data?.activities_created_last_month_count
                   : undefined
               }
               metNum={
-                type === ProfileEntryTypeEnum.PROFILE
+                [
+                  ProfileEntryTypeEnum.BUDDY,
+                  ProfileEntryTypeEnum.PROFILE,
+                ].includes(type)
                   ? data?.new_buddies_last_month_count
                   : undefined
               }

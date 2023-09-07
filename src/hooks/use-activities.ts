@@ -1,6 +1,10 @@
-import { useQuery } from "@tanstack/react-query";
+import { UseQueryOptions, useQuery } from "@tanstack/react-query";
 import { useSnackbar } from "notistack";
 import { getActivity } from "../api/activities/requests";
+import { IActivitiesParamsDto } from "types/activities/activities-params.dto";
+
+export const ACTIVITIES_QUERY_KEY = "activities";
+export const PAGED_ACTIVITIES_QUERY_KEY = "paged-activities";
 
 export const useActivities = <T>({
   id,
@@ -11,21 +15,34 @@ export const useActivities = <T>({
   offset,
   lon,
   lat,
-}: {
-  id?: number;
-  text?: string;
-  tag?: string[];
-  datetimeFrom?: Date | null;
-  limit?: number;
-  offset?: number;
-  lon?: number;
-  lat?: number;
-} = {}) => {
+  participantId,
+}: IActivitiesParamsDto = {}) => {
   const { enqueueSnackbar } = useSnackbar();
   const { data, isLoading } = useQuery(
-    ["activities", id, text, tag, datetimeFrom, limit, offset, lat, lon],
+    [
+      ACTIVITIES_QUERY_KEY,
+      id,
+      text,
+      tag,
+      datetimeFrom,
+      limit,
+      offset,
+      lat,
+      lon,
+      participantId,
+    ],
     () =>
-      getActivity<T>({ id, text, tag, datetimeFrom, limit, offset, lon, lat }),
+      getActivity<T>({
+        id,
+        text,
+        tag,
+        datetimeFrom,
+        limit,
+        offset,
+        lon,
+        lat,
+        participantId,
+      }),
     {
       onError: () => {
         //some generic toast for every hook

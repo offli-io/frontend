@@ -1,12 +1,13 @@
-import { Chip } from "@mui/material";
+import { Chip, SxProps } from "@mui/material";
 import { Box } from "@mui/system";
 import React from "react";
 
 interface IProps {
   tags?: string[];
+  sx?: SxProps;
 }
 
-const ActivityTags: React.FC<IProps> = ({ tags }) => {
+const ActivityTags: React.FC<IProps> = ({ tags, sx }) => {
   return (
     <Box
       sx={{
@@ -17,6 +18,7 @@ const ActivityTags: React.FC<IProps> = ({ tags }) => {
         my: 2,
         px: 3,
         flexWrap: "wrap",
+        ...sx,
         // overflowWrap: "wrap",
       }}
     >

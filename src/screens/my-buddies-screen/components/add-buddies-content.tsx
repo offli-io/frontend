@@ -148,7 +148,10 @@ const AddBuddiesContent: React.FC<IAddBuddiesContentProps> = ({ navigate }) => {
               </Box>
             ) : (
               data
-                ?.filter((user) => user?.id !== userInfo?.id)
+                ?.filter(
+                  (user) =>
+                    user?.id !== userInfo?.id && !isBuddy(buddies, user?.id)
+                )
                 ?.map((user: IPersonExtended) => (
                   <BuddyItem
                     key={user?.id}

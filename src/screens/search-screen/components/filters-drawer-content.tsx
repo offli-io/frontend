@@ -7,6 +7,7 @@ import {
   Radio,
   RadioGroup,
   Typography,
+  useTheme,
 } from "@mui/material";
 import React from "react";
 import {
@@ -38,12 +39,15 @@ const FiltersDrawerContent: React.FC<IFiltersDrawerContentProps> = ({
   const [selectedTags, setSelectedTags] = React.useState<string[]>(
     filters?.tags ?? []
   );
+  const theme = useTheme();
 
   React.useEffect(() => {
     if (filters?.date) {
       setDateOptions((dateOptions) =>
         dateOptions?.map((item) => {
-          if (item?.id === filters?.date?.id) {
+          const selectedDate = filters?.date?.getDate();
+          // comparing date values since I removed ICarouselItem
+          if (item?.dateValue?.getDate() === selectedDate) {
             return { ...item, selected: true };
           } else {
             return item;
@@ -83,7 +87,7 @@ const FiltersDrawerContent: React.FC<IFiltersDrawerContentProps> = ({
     const selectedDate = dateOptions?.find((dateSlot) => dateSlot?.selected);
     onApplyFilters?.({
       filter: selectedFilter,
-      date: selectedDate,
+      date: selectedDate?.dateValue,
       tags: selectedTags?.length > 0 ? selectedTags : undefined,
     });
   }, [dateOptions, selectedFilter, selectedTags]);
@@ -107,7 +111,14 @@ const FiltersDrawerContent: React.FC<IFiltersDrawerContentProps> = ({
   }, [filters?.tags, setSelectedTags]);
 
   return (
-    <Box sx={{ display: "flex", flexDirection: "column", mx: 1.5 }}>
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        mx: 1,
+        maxHeight: "70vh",
+      }}
+    >
       <Box>
         <Typography variant="h4" sx={{ my: 1 }}>
           Set filters
@@ -135,18 +146,20 @@ const FiltersDrawerContent: React.FC<IFiltersDrawerContentProps> = ({
         <Typography variant="h4" sx={{ my: 1 }}>
           Select date
         </Typography>
-        <Box sx={{ mx: 1.5 }}>
+        <Box sx={{ mx: 1.5, display: "flex" }}>
           <MobileCarousel
             items={dateOptions}
             onItemSelect={handleDateSelect}
             onSlotAdd={handleDateAdd}
-            sx={{ py: "8px !important" }}
+            sx={{ py: `${theme.spacing(1)} !important` }}
           />
         </Box>
       </Box>
 
       <Box>
-        <Typography variant="h4">Select tags</Typography>
+        <Typography variant="h4" sx={{ my: 1 }}>
+          Select tags
+        </Typography>
         {isLoading ? (
           <>
             <Box sx={{ display: "flex", justifyContent: "center", my: 2 }}>
@@ -159,12 +172,14 @@ const FiltersDrawerContent: React.FC<IFiltersDrawerContentProps> = ({
             <Box sx={{ mx: 0.5 }}>
               {data?.data?.tags.map((tag) => (
                 <Chip
-                  label={tag}
-                  key={tag}
+                  label={tag.title}
+                  key={tag.id}
                   sx={{ m: 1 }}
                   color="primary"
-                  variant={selectedTags.includes(tag) ? "filled" : "outlined"}
-                  onClick={() => handleTagClick(tag)}
+                  variant={
+                    selectedTags.includes(tag.title) ? "filled" : "outlined"
+                  }
+                  onClick={() => handleTagClick(tag.title)}
                 />
               ))}
             </Box>

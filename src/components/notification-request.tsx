@@ -1,29 +1,15 @@
-import { Box, Divider, styled, Typography, useTheme } from "@mui/material";
-import userPlaceholder from "../assets/img/user-placeholder.svg";
+import { Box, Divider, Typography, useTheme } from "@mui/material";
+import { differenceInHours } from "date-fns";
 import React from "react";
-import { INotificationDto } from "../types/notifications/notification.dto";
-import { useUsers } from "../hooks/use-users";
-import { differenceInHours, format } from "date-fns";
-import { IPersonExtended } from "../types/activities/activity.dto";
-import { useUser } from "../hooks/use-user";
-import { DATE_TIME_FORMAT } from "../utils/common-constants";
-import { NotificationTypeEnum } from "../types/notifications/notification-type-enum";
+import userPlaceholder from "../assets/img/user-placeholder.svg";
 import { useGetApiUrl } from "../hooks/use-get-api-url";
+import { NotificationTypeEnum } from "../types/notifications/notification-type-enum";
+import { INotificationDto } from "../types/notifications/notification.dto";
 
 interface INotificationRequestProps {
   notification: INotificationDto;
   onClick: (notifcation: INotificationDto) => void;
 }
-
-const StyledImage = styled((props: any) => (
-  <img {...props} alt="Notification profile" />
-))`
-  height: 40px;
-  width: 40px;
-  background-color: #c9c9c9;
-  border-radius: 50%;
-  box-shadow: 1px 3px 2px #ccc;
-`;
 
 const NotificationRequest: React.FC<INotificationRequestProps> = ({
   notification,
@@ -31,11 +17,18 @@ const NotificationRequest: React.FC<INotificationRequestProps> = ({
 }) => {
   const { shadows } = useTheme();
   const baseUrl = useGetApiUrl();
+
+  const roundDaysIfNecessarry = React.useCallback((hours: number) => {
+    return hours > 24 ? `${Math.floor(hours / 24)} days` : `${hours} hours`;
+  }, []);
+
   const hourDifference = React.useCallback(() => {
     if (notification?.timestamp) {
       const unixDate = new Date(notification.timestamp * 1000);
       const hourDifference = differenceInHours(new Date(), unixDate);
-      return hourDifference >= 1 ? `${hourDifference} h` : "just now";
+      return hourDifference >= 1
+        ? roundDaysIfNecessarry(hourDifference)
+        : "just now";
     }
     return undefined;
   }, [notification?.timestamp]);

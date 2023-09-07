@@ -2,31 +2,46 @@ import LockIcon from "@mui/icons-material/Lock";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import { Box, Typography, useTheme } from "@mui/material";
 import React from "react";
-import useLongPress from "../hooks/use-long-press";
 import { IActivity } from "../types/activities/activity.dto";
 import { format, getDay, getHours, getMonth, getTime } from "date-fns";
 import { TIME_FORMAT } from "../utils/common-constants";
 import { CustomizationContext } from "../assets/theme/customization-provider";
 import { useGetApiUrl } from "../hooks/use-get-api-url";
+import useLongPress from "hooks/use-long-press";
+import OffliButton from "./offli-button";
 
 interface IProps {
   activity?: IActivity;
-  onPress: (activity?: IActivity) => void;
+  onPress?: (activity?: IActivity) => void;
+  onLongPress?: (activity?: IActivity) => void;
 }
 
-const ActivityCard: React.FC<IProps> = ({ activity, onPress, ...rest }) => {
+const ActivityCard: React.FC<IProps> = ({
+  activity,
+  onPress,
+  onLongPress,
+  ...rest
+}) => {
   //TODO maybe in later use also need some refactoring
-  const { action, handlers } = useLongPress();
   const { shadows } = useTheme();
   const { mode } = React.useContext(CustomizationContext);
   const baseUrl = useGetApiUrl();
+  const { action, handlers } = useLongPress({
+    onLongPress: () => onLongPress?.(activity),
+  });
+
+  // React.useEffect(() => {
+  //   if (action) {
+  //     onLongPress?.(activity);
+  //   }
+  // }, [action, onLongPress]);
 
   const startDate = activity?.datetime_from
     ? new Date(activity?.datetime_from)
     : null;
 
   return (
-    <Box
+    <OffliButton
       sx={{
         width: "96%",
         height: 200,
@@ -42,14 +57,12 @@ const ActivityCard: React.FC<IProps> = ({ activity, onPress, ...rest }) => {
         alignItems: "flex-end",
         color: "white",
         boxShadow: shadows[4],
+        p: 0,
       }}
-      onClick={() => onPress(activity)}
       data-testid="activity-card"
-      // {...handlers}
-      // onTouchStart={() => {
-      //   const timer = setTimeout(() => onLongPress(), 500);
-      // }}
-      // onTouchEnd={() => clearTimeout(timer)}
+      {...handlers}
+      onClick={() => onPress?.(activity)}
+      color="inherit"
       {...rest}
     >
       <Box
@@ -66,11 +79,15 @@ const ActivityCard: React.FC<IProps> = ({ activity, onPress, ...rest }) => {
           // backdropFilter: "blur(0.7px)", // position: 'absolute',
           background:
             "linear-gradient(to top, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0))",
+          boxSizing: "border-box",
         }}
       >
         <Box
           sx={{
-            maxWidth: 250,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "flex-start",
+            width: "100%",
             whiteSpace: "nowrap",
             overflow: "hidden",
             color: "white",
@@ -209,7 +226,7 @@ const ActivityCard: React.FC<IProps> = ({ activity, onPress, ...rest }) => {
           </Box>
         </Box>
       </Box>
-    </Box>
+    </OffliButton>
   );
 };
 

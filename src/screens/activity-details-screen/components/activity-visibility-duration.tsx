@@ -1,27 +1,26 @@
-import { Typography, Box, Chip } from "@mui/material";
+import LockIcon from "@mui/icons-material/Lock";
+import LockOpenIcon from "@mui/icons-material/LockOpen";
+import { Box, Typography } from "@mui/material";
 import React from "react";
-import { IPerson } from "../../../types/activities/activity.dto";
-import userPlaceholder from "../../../assets/img/user-placeholder.svg";
-import { useGetApiUrl } from "../../../hooks/use-get-api-url";
+import { ActivityVisibilityEnum } from "types/activities/activity-visibility-enum.dto";
 
 interface IProps {
-  creator?: IPerson;
+  visibility?: ActivityVisibilityEnum;
   duration?: string;
   createdDateTime?: string;
 }
 
-const ActivityCreatorDuration: React.FC<IProps> = ({
-  creator,
+const ActivityVisibilityDuration: React.FC<IProps> = ({
+  visibility,
   duration,
   createdDateTime,
 }) => {
-  const baseUrl = useGetApiUrl();
   return (
     <>
       <Box
         sx={{
           display: "grid",
-          gridTemplateColumns: "7fr 3fr",
+          gridTemplateColumns: "1fr 1fr",
           gap: 2,
           alignItems: "center",
           // justifyContent: "space-between",
@@ -33,36 +32,22 @@ const ActivityCreatorDuration: React.FC<IProps> = ({
           <Typography
             variant="h5"
             align="left"
-            sx={{ fontSize: "14px", mb: 0.5 }}
+            sx={{ fontSize: "16px", mb: 0.5 }}
           >
-            Activity Creator
+            Activity visibility
           </Typography>
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "flex-start",
-            }}
-          >
-            <img
-              src={
-                creator?.profile_photo
-                  ? `${baseUrl}/files/${creator?.profile_photo}`
-                  : userPlaceholder
-              }
-              alt="profile"
-              style={{
-                height: "25px",
-                width: "25px",
-                borderRadius: "50%",
-              }}
-            />
+          <Box sx={{ display: "flex", alignItems: "center" }}>
+            {visibility === ActivityVisibilityEnum.private ? (
+              <LockIcon sx={{ fontSize: 16 }} />
+            ) : (
+              <LockOpenIcon sx={{ fontSize: 16 }} />
+            )}
             <Typography
               variant="subtitle1"
               align="left"
-              sx={{ fontSize: "11px", ml: 1 }}
+              sx={{ fontSize: "14px", ml: 0.5 }}
             >
-              {creator?.username}
+              {visibility}
             </Typography>
           </Box>
         </Box>
@@ -70,7 +55,7 @@ const ActivityCreatorDuration: React.FC<IProps> = ({
           <Typography
             variant="h5"
             align="left"
-            sx={{ fontSize: "14px", mb: 0.5 }}
+            sx={{ fontSize: "16px", mb: 0.5, textAlign: "end" }}
           >
             Duration
           </Typography>
@@ -84,7 +69,7 @@ const ActivityCreatorDuration: React.FC<IProps> = ({
             <Typography
               variant="subtitle1"
               align="left"
-              sx={{ fontSize: "11px" }}
+              sx={{ fontSize: "14px" }}
             >
               {duration}
             </Typography>
@@ -102,4 +87,4 @@ const ActivityCreatorDuration: React.FC<IProps> = ({
   );
 };
 
-export default ActivityCreatorDuration;
+export default ActivityVisibilityDuration;

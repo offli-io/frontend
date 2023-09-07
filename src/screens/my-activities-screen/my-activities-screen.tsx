@@ -30,7 +30,11 @@ import ActivityCard from "../../components/activity-card";
 import MyActivityCard from "../../components/my-activity-card";
 import OffliButton from "../../components/offli-button";
 import { PageWrapper } from "../../components/page-wrapper";
-import { useActivities } from "../../hooks/use-activities";
+import {
+  ACTIVITIES_QUERY_KEY,
+  PAGED_ACTIVITIES_QUERY_KEY,
+  useActivities,
+} from "../../hooks/use-activities";
 import { useParticipantActivities } from "../../hooks/use-participant-activities";
 import { useUser } from "../../hooks/use-user";
 import { ActivityInviteStateEnum } from "../../types/activities/activity-invite-state-enum.dto";
@@ -52,7 +56,7 @@ const ActivitiesScreen = () => {
   );
   const { location, setLocation } = React.useContext(LocationContext);
   const { toggleDrawer } = React.useContext(DrawerContext);
-  const { contentDivRef } = React.useContext(LayoutContext);
+  const { contentDivRef, isScrolling } = React.useContext(LayoutContext);
 
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
@@ -74,7 +78,7 @@ const ActivitiesScreen = () => {
     fetchNextPage,
     isFetchingNextPage,
   } = useInfiniteQuery(
-    ["paged-activities", location],
+    [PAGED_ACTIVITIES_QUERY_KEY, location],
     ({ pageParam = 0 }) =>
       getActivitiesPromiseResolved({
         offset: pageParam,
@@ -155,11 +159,13 @@ const ActivitiesScreen = () => {
     (activityId?: number) =>
       removePersonFromActivity({ activityId, personId: userInfo?.id }),
     {
-      onSuccess: () => {
+      onSuccess: (data, activityId) => {
         hideDrawer();
         //TODO add generic jnaming for activites / activity
-        queryClient.invalidateQueries(["activity"]);
-        queryClient.invalidateQueries(["activities"]);
+        queryClient.invalidateQueries(["activity", activityId]);
+        queryClient.invalidateQueries([ACTIVITIES_QUERY_KEY]);
+        queryClient.invalidateQueries([PAGED_ACTIVITIES_QUERY_KEY]);
+
         //invalidate queries
         //TODO display success notification?
       },
@@ -168,8 +174,6 @@ const ActivitiesScreen = () => {
       },
     }
   );
-
-  console.log(paginatedActivitiesData);
 
   const handleActionClick = React.useCallback(
     (action?: ActivityActionsTypeEnumDto, activityId?: number) => {
@@ -229,17 +233,20 @@ const ActivitiesScreen = () => {
   );
 
   const openActivityActions = React.useCallback(
-    (activity?: IActivity) =>
-      toggleDrawer({
-        open: true,
-        content: (
-          <ActivityActions
-            onActionClick={handleActionClick}
-            activity={activity}
-          />
-        ),
-      }),
-    [toggleDrawer]
+    (activity?: IActivity) => {
+      if (!isScrolling) {
+        toggleDrawer({
+          open: true,
+          content: (
+            <ActivityActions
+              onActionClick={handleActionClick}
+              activity={activity}
+            />
+          ),
+        });
+      }
+    },
+    [toggleDrawer, isScrolling]
   );
 
   React.useEffect(() => {
@@ -449,7 +456,21 @@ const ActivitiesScreen = () => {
                     <MyActivityCard
                       key={activity?.id}
                       activity={activity}
-                      onPress={openActivityActions}
+                      onPress={() =>
+                        !isScrolling
+                          ? navigate(
+                              `${ApplicationLocations.ACTIVITY_DETAIL}/${activity?.id}`,
+                              {
+                                state: {
+                                  from: ApplicationLocations.ACTIVITIES,
+                                },
+                              }
+                            )
+                          : undefined
+                      }
+                      onLongPress={
+                        !isScrolling ? openActivityActions : undefined
+                      }
                       sx={{
                         minWidth:
                           participantActivites?.length <= 1 ? "100%" : "80%",
@@ -506,7 +527,21 @@ const ActivitiesScreen = () => {
                     <ActivityCard
                       key={activity?.id}
                       activity={activity}
-                      onPress={openActivityActions}
+                      onPress={() =>
+                        !isScrolling
+                          ? navigate(
+                              `${ApplicationLocations.ACTIVITY_DETAIL}/${activity?.id}`,
+                              {
+                                state: {
+                                  from: ApplicationLocations.ACTIVITIES,
+                                },
+                              }
+                            )
+                          : undefined
+                      }
+                      onLongPress={
+                        !isScrolling ? openActivityActions : undefined
+                      }
                     />
                   ))}
                   {isFetchingNextPage ? (

@@ -19,6 +19,7 @@ import {
   IPredefinedPictureDto,
   IPredefinedPictureResponseDto,
 } from "../../types/activities/predefined-picture.dto";
+import { IPredefinedTagDto } from "../../types/activities/predefined-tag.dto";
 import { IUpdateActivityRequestDto } from "./../../types/activities/update-activity-request.dto";
 import { IListParticipantsResponseDto } from "../../types/activities/list-participants-response.dto";
 import { ActivityInviteStateEnum } from "../../types/activities/activity-invite-state-enum.dto";
@@ -26,6 +27,9 @@ import { ICreateGoogleEventWithTokenRequestDto } from "../../types/activities/cr
 import { IActivityInviteValuesDto } from "../../types/activities/activity-invite-values.dto";
 import { IActivityRestDto } from "../../types/activities/activity-rest.dto";
 import { IActivityListRestDto } from "../../types/activities/activity-list-rest.dto";
+import { IActivitiesParamsDto } from "types/activities/activities-params.dto";
+import { IUsersParamsDto } from "types/users";
+import { IMapViewActivitiesResponseDto } from "../../types/activities/mapview-activities.dto";
 
 export const getActivities = async ({
   queryFunctionContext,
@@ -103,16 +107,8 @@ export const getActivity = <T>({
   offset,
   lon,
   lat,
-}: {
-  id?: number;
-  text?: string;
-  tag?: string[];
-  datetimeFrom?: Date | null;
-  limit?: number;
-  offset?: number;
-  lon?: number;
-  lat?: number;
-}) => {
+  participantId,
+}: IActivitiesParamsDto) => {
   const promise = axios.get<T>(
     `${DEFAULT_DEV_URL}/activities${id ? `/${id}` : ""}`,
     {
@@ -124,6 +120,7 @@ export const getActivity = <T>({
         offset,
         lon,
         lat,
+        participantId,
       },
       paramsSerializer: (params) => {
         return qs.stringify(params, { arrayFormat: "repeat" });
@@ -339,7 +336,7 @@ export const getUsers = ({ username }: { username?: string }) => {
   return promise;
 };
 
-export const getUser = ({ id }: { id?: number }) => {
+export const getUser = ({ id, requestingInfoUserId }: IUsersParamsDto) => {
   const CancelToken = axios.CancelToken;
   const source = CancelToken.source();
 
@@ -347,6 +344,9 @@ export const getUser = ({ id }: { id?: number }) => {
     `${DEFAULT_DEV_URL}/users${id ? `/${id}` : ""}`,
     {
       cancelToken: source?.token,
+      params: {
+        requestingInfoUserId,
+      },
     }
   );
 
@@ -400,8 +400,26 @@ export const getPredefinedTags = () => {
   const CancelToken = axios.CancelToken;
   const source = CancelToken.source();
 
-  const promise = axios.get<{ tags: string[] }>(
+  const promise = axios.get<{ tags: IPredefinedTagDto[] }>(
     `${DEFAULT_DEV_URL}/predefined/tags`,
+    {
+      cancelToken: source?.token,
+    }
+  );
+
+  // queryFunctionContext?.signal?.addEventListener('abort', () => {
+  //   source.cancel('Query was cancelled by React Query')
+  // })
+
+  return promise;
+};
+
+export const getMapviewActivities = () => {
+  const CancelToken = axios.CancelToken;
+  const source = CancelToken.source();
+
+  const promise = axios.get<IMapViewActivitiesResponseDto>(
+    `${DEFAULT_DEV_URL}/mapview/activities?lon=-180&lat=-90&maxLon=180&maxLat=90`,
     {
       cancelToken: source?.token,
     }
