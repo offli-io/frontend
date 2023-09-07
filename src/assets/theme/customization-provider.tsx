@@ -121,6 +121,14 @@ const createCustomizationTheme = (mode: PaletteMode = "light") => {
           }),
         },
       },
+      MuiCheckbox: {
+        styleOverrides: {
+          root: ({ theme }) => ({
+            color: theme?.palette?.primary?.main,
+            // ...(mode === "dark" ? { filter: "invert(100%)" } : {}),
+          }),
+        },
+      },
     },
   });
 
