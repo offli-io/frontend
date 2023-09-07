@@ -11,7 +11,7 @@ interface IFileUploadModalProps {
   onClose?: () => void;
   localFile: string;
   aspectRatio?: number;
-  cropShape?: "react" | "round";
+  cropShape?: "rect" | "round";
 }
 
 const FileUploadModal: React.FC<IFileUploadModalProps> = ({
