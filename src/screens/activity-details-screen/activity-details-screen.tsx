@@ -26,7 +26,6 @@ import { ICustomizedLocationStateDto } from "../../types/common/customized-locat
 import { GoogleAuthCodeFromEnumDto } from "../../types/google/google-auth-code-from-enum.dto";
 import ActivityDetailActionMenu from "./components/acitivity-detail-action-menu";
 import ActivityCreatorDuration from "./components/activity-visibility-duration";
-import ActivityDescriptionTags from "./components/activity-description-tags";
 import ActivityDetailsGrid, {
   IGridAction,
 } from "./components/activity-details-grid";
@@ -385,10 +384,7 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
             {`${durationHours} hours, ${durationMinutes} minutes`}
           </Typography>
         </Box> */}
-        <ActivityDescriptionTags
-          description={activity?.description}
-          tags={activity?.tags!}
-        />
+
         <ActivityVisibilityDuration
           visibility={
             data?.data?.activity?.visibility as ActivityVisibilityEnum
@@ -400,6 +396,7 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
               ? format(new Date(activity?.created_at), DATE_TIME_FORMAT)
               : "-"
           }
+          tags={activity?.tags!}
         />
       </Box>
     </>
