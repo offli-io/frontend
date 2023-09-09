@@ -97,24 +97,10 @@ const BackHeader: React.FC<IBackHeaderProps> = ({
             textTransform: "none",
           }}
         >
-          <ArrowBackIosNewIcon />
+          <ArrowBackIosNewIcon sx={{ color: "primary.main" }} />
         </IconButton>
       )}
-      <Box
-        sx={
-          {
-            // flex: 10,
-            //   display: "flex",
-            //   justifyContent: "center",
-            //   alignItems: "center",
-            //   position: "absolute",
-            //   left: "50%",
-            //   top: 22,
-            //   transform: "translate(-50%, -50%)",
-            // mr: 6,
-          }
-        }
-      >
+      <Box>
         <Typography
           variant="h4"
           sx={{ color: ({ palette }) => palette?.text.primary }}

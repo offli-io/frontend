@@ -59,6 +59,7 @@ const BottomNavigator: React.FC<IBottomNavigatorProps> = ({ sx }) => {
           margin: "auto",
           "& .Mui-selected": {
             fontSize: "12px !important",
+            // color: "primary.main",
           },
           color: palette?.background?.default,
           bgcolor: palette?.background?.default,
@@ -67,7 +68,16 @@ const BottomNavigator: React.FC<IBottomNavigatorProps> = ({ sx }) => {
       >
         <BottomNavigationAction
           label="Explore"
-          icon={<TravelExploreIcon />}
+          icon={
+            <TravelExploreIcon
+              sx={{
+                color:
+                  value === ApplicationLocations.ACTIVITIES
+                    ? "primary.main"
+                    : undefined,
+              }}
+            />
+          }
           component={Link}
           value={ApplicationLocations.ACTIVITIES}
           to={ApplicationLocations.ACTIVITIES}
@@ -78,7 +88,16 @@ const BottomNavigator: React.FC<IBottomNavigatorProps> = ({ sx }) => {
         />
         <BottomNavigationAction
           label="Create"
-          icon={<AddCircleOutlineIcon />}
+          icon={
+            <AddCircleOutlineIcon
+              sx={{
+                color:
+                  value === ApplicationLocations.CREATE
+                    ? "primary.main"
+                    : undefined,
+              }}
+            />
+          }
           component={Link}
           value={ApplicationLocations.CREATE}
           to={ApplicationLocations.CREATE}
@@ -89,7 +108,16 @@ const BottomNavigator: React.FC<IBottomNavigatorProps> = ({ sx }) => {
         />
         <BottomNavigationAction
           label="Profile"
-          icon={<AccountCircleOutlinedIcon />}
+          icon={
+            <AccountCircleOutlinedIcon
+              sx={{
+                color:
+                  value === ApplicationLocations.PROFILE
+                    ? "primary.main"
+                    : undefined,
+              }}
+            />
+          }
           component={Link}
           value={ApplicationLocations.PROFILE}
           to={ApplicationLocations.PROFILE}
