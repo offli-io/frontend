@@ -5,6 +5,11 @@ import React from "react";
 import Cropper from "react-easy-crop";
 import getCroppedImg from "../utils/crop-utils";
 
+export interface IResolution {
+  width: number;
+  height: number;
+}
+
 interface IFileUploadModalProps {
   uploadFunction?: (data?: FormData) => void;
   open?: boolean;
@@ -12,6 +17,7 @@ interface IFileUploadModalProps {
   localFile: string;
   aspectRatio?: number;
   cropShape?: "rect" | "round";
+  resizeResolution?: IResolution;
 }
 
 const FileUploadModal: React.FC<IFileUploadModalProps> = ({
@@ -20,6 +26,7 @@ const FileUploadModal: React.FC<IFileUploadModalProps> = ({
   localFile,
   aspectRatio = 1,
   cropShape = "rect",
+  resizeResolution,
   ...rest
 }) => {
   const [isImageUploading, setIsImageUploading] = React.useState(false);
@@ -47,7 +54,8 @@ const FileUploadModal: React.FC<IFileUploadModalProps> = ({
     try {
       const croppedImage: any = await getCroppedImg(
         localFile,
-        croppedAreaPixels
+        croppedAreaPixels,
+        resizeResolution
       );
       if (!!croppedImage) {
         const formData = new FormData();
@@ -116,6 +124,7 @@ const FileUploadModal: React.FC<IFileUploadModalProps> = ({
                 },
               }}
               cropShape={cropShape}
+              //   objectFit="cover"
             />
           </Box>
           <OffliButton

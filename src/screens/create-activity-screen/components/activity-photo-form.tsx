@@ -144,7 +144,7 @@ export const ActivityPhotoForm: React.FC<IActivityPhotoFormProps> = ({
               alt="cropped"
               style={{
                 width: 280,
-                aspectRatio: 4 / 3,
+                aspectRatio: 1.3,
                 border: `1px solid ${palette?.primary.main}`,
                 borderRadius: 5,
                 boxShadow: "2px 3px 3px #ccc",

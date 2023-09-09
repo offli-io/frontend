@@ -78,9 +78,10 @@ const FileUpload: React.FC<IFileUploadProps> = ({
           ref={hiddenFileInput}
           // setting empty string to always fire onChange event on input even when selecting same pictures 2 times in a row
           value={""}
+          accept="image/*"
         />
         <IconButton size="large" data-testid="upload-img-btn">
-          <AddAPhotoIcon color="primary" />
+          <AddAPhotoIcon sx={{ color: "primary.main" }} />
         </IconButton>
         <Typography sx={{ fontSize: 14, color: palette?.text?.primary }}>
           Upload from your phone

@@ -1,3 +1,5 @@
+import { IResolution } from "../components/file-upload-modal";
+
 export const createImage = (url: string) =>
   new Promise((resolve, reject) => {
     const image = new Image();
@@ -25,12 +27,24 @@ export function rotateSize(width: number, height: number, rotation: number) {
   };
 }
 
+export function fitToDesiredResolution(
+  desiredResolution: { width: number; height: number },
+  actualResolution: { width: number; height: number }
+) {
+  const coeficient = desiredResolution?.width / actualResolution?.width;
+  return {
+    width: actualResolution?.width * coeficient,
+    height: actualResolution?.height * coeficient,
+  };
+}
+
 /**
  * This function was adapted from the one in the ReadMe of https://github.com/DominicTobias/react-image-crop
  */
 export default async function getCroppedImg(
   imageSrc: string,
   pixelCrop: any,
+  resizeResolution: IResolution = { width: 800, height: 600 },
   rotation = 0,
   flip = { horizontal: false, vertical: false }
 ) {
@@ -76,17 +90,23 @@ export default async function getCroppedImg(
   croppedCanvas.width = pixelCrop.width;
   croppedCanvas.height = pixelCrop.height;
 
+  // resize to desired resolution (800 x 600 as default)
+  const { width, height } = fitToDesiredResolution(resizeResolution, {
+    width: pixelCrop.width,
+    height: pixelCrop.height,
+  });
+
   // Draw the cropped image onto the new canvas
   croppedCtx.drawImage(
     canvas,
     pixelCrop.x,
     pixelCrop.y,
-    pixelCrop.width,
-    pixelCrop.height,
+    width,
+    height,
     0,
     0,
-    pixelCrop.width,
-    pixelCrop.height
+    width,
+    height
   );
 
   // As Base64 string
