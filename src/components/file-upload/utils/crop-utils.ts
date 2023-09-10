@@ -35,6 +35,7 @@ export function fitToDesiredResolution(
   return {
     width: actualResolution?.width * coeficient,
     height: actualResolution?.height * coeficient,
+    coeficient,
   };
 }
 
@@ -86,23 +87,27 @@ export default async function getCroppedImg(
     return null;
   }
 
+  const { width, height, coeficient } = fitToDesiredResolution(
+    resizeResolution,
+    {
+      width: pixelCrop.width,
+      height: pixelCrop.height,
+    }
+  );
+
   // Set the size of the cropped canvas
-  croppedCanvas.width = pixelCrop.width;
-  croppedCanvas.height = pixelCrop.height;
+  croppedCanvas.width = width;
+  croppedCanvas.height = height;
 
   // resize to desired resolution (800 x 600 as default)
-  const { width, height } = fitToDesiredResolution(resizeResolution, {
-    width: pixelCrop.width,
-    height: pixelCrop.height,
-  });
 
   // Draw the cropped image onto the new canvas
   croppedCtx.drawImage(
     canvas,
     pixelCrop.x,
     pixelCrop.y,
-    width,
-    height,
+    pixelCrop.width,
+    pixelCrop.height,
     0,
     0,
     width,

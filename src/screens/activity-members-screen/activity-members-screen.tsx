@@ -301,7 +301,7 @@ export const ActivityMembersScreen: React.FC = () => {
           />
           {isCreator ? (
             <IconButton sx={{ fontSize: 14, ml: 1 }} onClick={handleAddBuddies}>
-              <PersonAddIcon color="primary" />
+              <PersonAddIcon sx={{ color: "primary.main" }} />
             </IconButton>
           ) : null}
         </Box>

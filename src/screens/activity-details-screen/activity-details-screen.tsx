@@ -77,20 +77,11 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
       state: JSON.stringify({ id }),
     });
 
-  const { data, isLoading } = useActivities<IActivityRestDto>({
-    id: id ? Number(id) : undefined,
-    participantId: userInfo?.id,
-  });
-
-  console.log(isLoading);
-
-  // const { data } = useQuery(
-  //   ["activity", id],
-  //   () => getActivity<IActivityRestDto>({ id: Number(id) }),
-  //   {
-  //     enabled: !!id,
-  //   }
-  // );
+  const { data: { data: { activity = undefined } = {} } = {}, isLoading } =
+    useActivities<IActivityRestDto>({
+      id: id ? Number(id) : undefined,
+      participantId: userInfo?.id,
+    });
 
   const {
     data: { data: { participants = null } = {} } = {},
@@ -102,8 +93,6 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
       enabled: !!id,
     }
   );
-
-  const activity = data?.data?.activity;
 
   const { mutate: sendJoinActivity, isLoading: isJoiningActivity } =
     useMutation(
@@ -137,17 +126,13 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
     (token: string) => {
       abortControllerRef.current = new AbortController();
 
-      const start = convertDateToUTC(
-        data?.data?.activity?.datetime_from as string
-      );
-      const end = convertDateToUTC(
-        data?.data?.activity?.datetime_until as string
-      );
+      const start = convertDateToUTC(activity?.datetime_from as string);
+      const end = convertDateToUTC(activity?.datetime_until as string);
 
       return addActivityToCalendar(
         Number(userInfo?.id),
         {
-          name: data?.data?.activity?.title as string,
+          name: activity?.title as string,
           start,
           end,
           token: token as string,
@@ -171,10 +156,10 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
   );
 
   React.useEffect(() => {
-    if (googleToken && data?.data?.activity) {
+    if (googleToken && activity) {
       sendAddActivityToCalendar(googleToken);
     }
-  }, [googleToken, data?.data?.activity]);
+  }, [googleToken, activity]);
 
   const handleMenuItemClick = React.useCallback(
     (action?: ActivityActionsTypeEnumDto) => {
@@ -191,11 +176,14 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
           });
         case ActivityActionsTypeEnumDto.JOIN:
           return sendJoinActivity();
+        case ActivityActionsTypeEnumDto.EDIT:
+          //TODO EditActivityScreen pass id?
+          return navigate(`${ApplicationLocations.EDIT_ACTIVITY}/${id}`);
         default:
           return;
       }
     },
-    [sendJoinActivity, navigate]
+    [sendJoinActivity, navigate, id]
   );
 
   const handleActivityActionsCLick = React.useCallback(() => {
@@ -203,7 +191,7 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
       open: true,
       content: (
         <ActivityActions
-          activity={data?.data?.activity}
+          activity={activity}
           onActionClick={handleMenuItemClick}
         />
       ),
@@ -410,9 +398,7 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
           tags={activity?.tags!}
         />
         <ActivityVisibilityDuration
-          visibility={
-            data?.data?.activity?.visibility as ActivityVisibilityEnum
-          }
+          visibility={activity?.visibility as ActivityVisibilityEnum}
           // duration={activity?.tags!}
           duration={`${durationHours} hours, ${durationMinutes} minutes`}
           createdDateTime={
