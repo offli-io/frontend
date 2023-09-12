@@ -11,6 +11,7 @@ import { ActivityVisibilityEnum } from "../types/activities/activity-visibility-
 import { format } from "date-fns";
 import OffliButton from "./offli-button";
 import { useGetApiUrl } from "hooks/use-get-api-url";
+import { DATE_TIME_FORMAT } from "utils/common-constants";
 
 interface IMyActivityCardProps {
   activity?: IActivity;
@@ -67,6 +68,7 @@ const MyActivityCard: React.FC<IMyActivityCardProps> = ({
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
+            maxWidth: 280,
           }}
         >
           <Box sx={{ mt: 0.5, height: 75 }}>
@@ -83,7 +85,6 @@ const MyActivityCard: React.FC<IMyActivityCardProps> = ({
               flexDirection: "column",
               alignItems: "flex-start",
               height: "100%",
-              width: "180px",
               whiteSpace: "nowrap",
               overflow: "hidden",
             }}
@@ -120,7 +121,7 @@ const MyActivityCard: React.FC<IMyActivityCardProps> = ({
                 (activity?.datetime_from
                   ? new Date(activity?.datetime_from)
                   : new Date()) as Date,
-                "dd LLLL HH:mm"
+                DATE_TIME_FORMAT
               )}
             </Typography>
           </Box>

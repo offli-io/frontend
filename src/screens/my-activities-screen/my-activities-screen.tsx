@@ -323,7 +323,10 @@ const ActivitiesScreen = () => {
           width: "100%",
           mb: 1,
         }}
-        <Typography variant="h5">Explore</Typography>
+      >
+        <Typography variant="h4" sx={{ color: palette?.text?.primary }}>
+          Explore
+        </Typography>
         <OffliButton
           variant="text"
           sx={{
@@ -334,11 +337,7 @@ const ActivitiesScreen = () => {
             whiteSpace: "nowrap",
             // fontWeight: "bold",
           }}
-          startIcon={
-            <PlaceIcon
-              sx={{ fontSize: "1.4rem", mr: -0.5, color: "primary.main" }}
-            />
-          }
+          startIcon={<PlaceIcon sx={{ fontSize: "1.4rem", mr: -0.5 }} />}
           onClick={handleLocationSelect}
           data-test-id="current-location-btn"
         >
@@ -383,7 +382,6 @@ const ActivitiesScreen = () => {
             sx={{
               "& input::placeholder": {
                 fontSize: 14,
-                //TODO theme colors
                 color: "#4A148C",
                 fontWeight: 400,
                 opacity: 1,
@@ -405,7 +403,10 @@ const ActivitiesScreen = () => {
       ) : (
         <>
           {!anyMyActivities && !anyNearYouActivities && (
-            <Typography variant="h4" sx={{ my: 6 }}>
+            <Typography
+              variant="h4"
+              sx={{ my: 6, color: palette?.text?.primary }}
+            >
               There are no activities
             </Typography>
           )}
@@ -421,8 +422,9 @@ const ActivitiesScreen = () => {
                   mt: 1,
                 }}
               >
-
-                <Typography variant="h5">Your upcoming this week</Typography>
+                <Typography variant="h4" sx={{ color: palette?.text?.primary }}>
+                  Your upcoming this week
+                </Typography>
                 {/* <OffliButton
                   variant="text"
                   sx={{ fontSize: 16 }}
@@ -435,7 +437,7 @@ const ActivitiesScreen = () => {
                 sx={{
                   display: "flex",
                   justifyContent: "space-between",
-                  gap: "15px",
+                  gap: 2,
                   overflowX: "scroll",
                   width: "100%",
                   "::-webkit-scrollbar": { display: "none" },
@@ -483,8 +485,9 @@ const ActivitiesScreen = () => {
                 mb: 1,
               }}
             >
-
-              <Typography variant="h5">Near you</Typography>
+              <Typography variant="h4" sx={{ color: palette?.text?.primary }}>
+                Near you
+              </Typography>
               <OffliButton
                 variant="text"
                 sx={{ fontSize: 16 }}
