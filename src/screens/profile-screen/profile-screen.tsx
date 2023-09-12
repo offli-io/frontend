@@ -233,7 +233,9 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
               }
               data-testid="buddies-btn"
             >
-              <PeopleAltIcon sx={{ fontSize: 18, padding: 0 }} />
+              <PeopleAltIcon
+                sx={{ fontSize: 18, padding: 0, color: "primary.main" }}
+              />
               <Typography
                 variant="subtitle1"
                 color="primary"
@@ -435,7 +437,7 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
               }}
             >
               <IconButton color="primary" sx={{ padding: 0 }}>
-                <InstagramIcon />
+                <InstagramIcon sx={{ color: "primary.main" }} />
               </IconButton>
               <Typography
                 align="left"

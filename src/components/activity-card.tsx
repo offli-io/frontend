@@ -98,7 +98,6 @@ const ActivityCard: React.FC<IProps> = ({
               fontSize: 22,
               fontWeight: "bold",
               lineHeight: 1,
-              color: ({ palette }) => palette?.text?.primary,
               ...(mode === "light" ? { filter: "invert(100%)" } : {}),
               ...(mode === "light"
                 ? {
@@ -116,7 +115,6 @@ const ActivityCard: React.FC<IProps> = ({
                 lineHeight: 1,
                 fontSize: 12,
                 fontWeight: "bold",
-                color: ({ palette }) => palette?.text?.primary,
                 ...(mode === "light" ? { filter: "invert(100%)" } : {}),
                 my: 0.5,
               }}
@@ -136,7 +134,6 @@ const ActivityCard: React.FC<IProps> = ({
             <LockIcon
               sx={{
                 fontSize: 14,
-                color: ({ palette }) => palette?.text?.primary,
                 ...(mode === "light" ? { filter: "invert(100%)" } : {}),
               }}
             />
@@ -145,7 +142,6 @@ const ActivityCard: React.FC<IProps> = ({
                 fontSize: 14,
                 ml: 1,
                 mr: 0.5,
-                color: ({ palette }) => palette?.text?.primary,
                 ...(mode === "light" ? { filter: "invert(100%)" } : {}),
               }}
             />
@@ -155,7 +151,6 @@ const ActivityCard: React.FC<IProps> = ({
                   fontSize: 16,
                   // fontWeight: "bold",
                   lineHeight: 1,
-                  color: ({ palette }) => palette?.text?.primary,
                   ...(mode === "light" ? { filter: "invert(100%)" } : {}),
                 }}
               >
@@ -167,7 +162,6 @@ const ActivityCard: React.FC<IProps> = ({
                   fontSize: 16,
                   // fontWeight: "bold",
                   lineHeight: 1,
-                  color: ({ palette }) => palette?.text?.primary,
                   ...(mode === "light" ? { filter: "invert(100%)" } : {}),
                 }}
               >
@@ -189,7 +183,6 @@ const ActivityCard: React.FC<IProps> = ({
                 fontSize: 22,
                 lineHeight: 1,
                 fontWeight: "bold",
-                color: ({ palette }) => palette?.text?.primary,
                 ...(mode === "light" ? { filter: "invert(100%)" } : {}),
               }}
             >
@@ -204,7 +197,6 @@ const ActivityCard: React.FC<IProps> = ({
                 letterSpacing: 0,
                 fontWeight: "bold",
                 my: 0.5,
-                color: ({ palette }) => palette?.text?.primary,
                 ...(mode === "light" ? { filter: "invert(100%)" } : {}),
               }}
             >
@@ -217,7 +209,6 @@ const ActivityCard: React.FC<IProps> = ({
                 fontSize: 22,
                 lineHeight: 1,
                 fontWeight: "semi-bold",
-                color: ({ palette }) => palette?.text?.primary,
                 ...(mode === "light" ? { filter: "invert(100%)" } : {}),
               }}
             >

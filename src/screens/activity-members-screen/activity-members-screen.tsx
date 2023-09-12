@@ -11,6 +11,7 @@ import {
   Tabs,
   TextField,
   Typography,
+  useTheme,
 } from "@mui/material";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useSnackbar } from "notistack";
@@ -34,6 +35,8 @@ import { ApplicationLocations } from "../../types/common/applications-locations.
 import { BuddyActionContent } from "./components/buddy-action-content";
 import SearchBuddiesContent from "./components/search-buddies-content";
 import { useSwipeable } from "react-swipeable";
+import Icon from "@mdi/react";
+import { mdiCrown } from "@mdi/js";
 
 enum ITabs {
   CONFIRMED = "CONFIRMED",
@@ -48,6 +51,7 @@ export const ActivityMembersScreen: React.FC = () => {
   const navigate = useNavigate();
   const { toggleDrawer } = React.useContext(DrawerContext);
   const { pathname } = useLocation();
+  const { palette } = useTheme();
   const [activeTab, setActiveTab] = React.useState<ITabs>(ITabs.CONFIRMED);
 
   const handlers = useSwipeable({
@@ -210,7 +214,17 @@ export const ActivityMembersScreen: React.FC = () => {
               bgcolor: ({ palette }) => palette?.primary?.light,
               color: ({ palette }) => palette?.primary?.main,
             }}
-            icon={<StarIcon color="primary" sx={{ fontSize: 18 }} />}
+            icon={
+              <Icon
+                path={mdiCrown}
+                size={0.8}
+                style={{
+                  color: palette?.primary?.main,
+                  // boxShadow: shadows[1],
+                }}
+              />
+            }
+            // <StarIcon color="primary" sx={{ fontSize: 18 }} />}
           />
         );
       } else {
@@ -287,7 +301,7 @@ export const ActivityMembersScreen: React.FC = () => {
           />
           {isCreator ? (
             <IconButton sx={{ fontSize: 14, ml: 1 }} onClick={handleAddBuddies}>
-              <PersonAddIcon color="primary" />
+              <PersonAddIcon sx={{ color: "primary.main" }} />
             </IconButton>
           ) : null}
         </Box>
