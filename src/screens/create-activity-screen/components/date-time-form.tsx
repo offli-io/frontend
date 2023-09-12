@@ -174,6 +174,11 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
               checked={sameEndDate}
               onChange={handleSameDateCheckboxCheck}
               data-testid="same-end-date-checkbox"
+              sx={{
+                "& .MuiSvgIcon-root": {
+                  color: "primary.main",
+                },
+              }}
             />
           }
           label="End date is same as start date"
@@ -266,7 +271,7 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
           color="primary"
           data-testid="back-btn"
         >
-          <ArrowBackIosNewIcon />
+          <ArrowBackIosNewIcon sx={{ color: "inherit" }} />
         </IconButton>
 
         <OffliButton
