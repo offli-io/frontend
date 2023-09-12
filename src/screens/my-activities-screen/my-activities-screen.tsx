@@ -324,7 +324,7 @@ const ActivitiesScreen = () => {
           mb: 1,
         }}
       >
-        <Typography variant="h5" sx={{ color: palette?.text?.primary }}>
+        <Typography variant="h4" sx={{ color: palette?.text?.primary }}>
           Explore
         </Typography>
         <OffliButton
@@ -418,11 +418,11 @@ const ActivitiesScreen = () => {
                   justifyContent: "space-between",
                   alignItems: "center",
                   width: "100%",
-                  mb: 1.5,
+                  mb: 2,
                   mt: 1,
                 }}
               >
-                <Typography variant="h5" sx={{ color: palette?.text?.primary }}>
+                <Typography variant="h4" sx={{ color: palette?.text?.primary }}>
                   Your upcoming this week
                 </Typography>
                 {/* <OffliButton
@@ -436,6 +436,8 @@ const ActivitiesScreen = () => {
               <Box
                 sx={{
                   display: "flex",
+                  justifyContent: "space-between",
+                  gap: "15px",
                   overflowX: "scroll",
                   width: "100%",
                   "::-webkit-scrollbar": { display: "none" },
@@ -479,9 +481,11 @@ const ActivitiesScreen = () => {
                 justifyContent: "space-between",
                 alignItems: "center",
                 width: "100%",
+                mt: 2,
+                mb: 1,
               }}
             >
-              <Typography variant="h5" sx={{ color: palette?.text?.primary }}>
+              <Typography variant="h4" sx={{ color: palette?.text?.primary }}>
                 Near you
               </Typography>
               <OffliButton

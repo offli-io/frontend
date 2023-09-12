@@ -48,6 +48,12 @@ const MyActivityCard: React.FC<IMyActivityCardProps> = ({
         boxSizing: "border-box",
         boxShadow: shadows[3],
         bgcolor: ({ palette }) => palette.background.default,
+        minWidth: "300px",
+        maxWidth: "300px",
+        wordWrap: "break-word",
+        overflow: "hidden",
+        textOverflow: "ellipsis",
+        whiteSpace: "normal",
       }}
       {...handlers}
       color="inherit"
@@ -61,10 +67,9 @@ const MyActivityCard: React.FC<IMyActivityCardProps> = ({
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
-            mt: 1,
           }}
         >
-          <Box sx={{ ml: 0.25 }}>
+          <Box sx={{ mt: 0.5, height: 75 }}>
             <img
               src={`${baseUrl}/files/${activity?.title_picture}`}
               alt="activity_picture"
@@ -73,13 +78,14 @@ const MyActivityCard: React.FC<IMyActivityCardProps> = ({
           </Box>
           <Box
             sx={{
-              ml: 3,
+              ml: 1.5,
               display: "flex",
               flexDirection: "column",
               alignItems: "flex-start",
               height: "100%",
+              width: "180px",
               whiteSpace: "nowrap",
-              overflow: "ellipsis",
+              overflow: "hidden",
             }}
           >
             <Typography
