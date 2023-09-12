@@ -82,7 +82,7 @@ const ActivityDetailsGrid: React.FC<IProps> = ({ activity, onActionClick }) => {
     >
       <StyledBox>
         <IconButton color="primary" sx={{ p: 0 }}>
-          <PeopleAltIcon sx={{ fontSize: 26 }} />
+          <PeopleAltIcon sx={{ fontSize: 26, color: "primary.main" }} />
         </IconButton>
         <OffliButton
           onClick={() =>
@@ -112,7 +112,7 @@ const ActivityDetailsGrid: React.FC<IProps> = ({ activity, onActionClick }) => {
       </StyledBox>
       <StyledBox>
         <IconButton color="primary" sx={{ p: 0 }}>
-          <CalendarTodayIcon sx={{ fontSize: 26 }} />
+          <CalendarTodayIcon sx={{ fontSize: 26, color: "primary.main" }} />
         </IconButton>
 
         <OffliButton
@@ -138,7 +138,7 @@ const ActivityDetailsGrid: React.FC<IProps> = ({ activity, onActionClick }) => {
       </StyledBox>
       <StyledBox>
         <IconButton color="primary" sx={{ p: 0 }}>
-          <RoomIcon sx={{ fontSize: 26 }} />
+          <RoomIcon sx={{ fontSize: 26, color: "primary.main" }} />
         </IconButton>
         {/* <Typography variant="h5" sx={{ mb: 1 }}>
           Where?
@@ -169,7 +169,7 @@ const ActivityDetailsGrid: React.FC<IProps> = ({ activity, onActionClick }) => {
       </StyledBox>
       <StyledBox>
         <IconButton color="primary" sx={{ p: 0 }}>
-          <MonetizationOnIcon sx={{ fontSize: 26 }} />
+          <MonetizationOnIcon sx={{ fontSize: 26, color: "primary.main" }} />
         </IconButton>
         <OffliButton
           onClick={() => console.log("show on map")}

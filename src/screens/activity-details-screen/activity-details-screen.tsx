@@ -45,6 +45,8 @@ import userPlaceholder from "../../assets/img/user-placeholder.svg";
 import Icon from "@mdi/react";
 import { mdiCrown } from "@mdi/js";
 import ActivityVisibilityDuration from "./components/activity-visibility-duration";
+import { CustomizationContext } from "assets/theme/customization-provider";
+import Loader from "components/loader";
 
 interface IProps {
   type: "detail" | "request";
@@ -52,6 +54,7 @@ interface IProps {
 
 const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
   const { id } = useParams();
+  const { mode } = React.useContext(CustomizationContext);
   const navigate = useNavigate();
   const location = useLocation();
   const from =
@@ -73,18 +76,11 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
       state: JSON.stringify({ id }),
     });
 
-  const { data, isLoading } = useActivities<IActivityRestDto>({
-    id: id ? Number(id) : undefined,
-    participantId: userInfo?.id,
-  });
-
-  // const { data } = useQuery(
-  //   ["activity", id],
-  //   () => getActivity<IActivityRestDto>({ id: Number(id) }),
-  //   {
-  //     enabled: !!id,
-  //   }
-  // );
+  const { data: { data: { activity = undefined } = {} } = {}, isLoading } =
+    useActivities<IActivityRestDto>({
+      id: id ? Number(id) : undefined,
+      participantId: userInfo?.id,
+    });
 
   const {
     data: { data: { participants = null } = {} } = {},
@@ -96,8 +92,6 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
       enabled: !!id,
     }
   );
-
-  const activity = data?.data?.activity;
 
   const { mutate: sendJoinActivity, isLoading: isJoiningActivity } =
     useMutation(
@@ -131,17 +125,13 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
     (token: string) => {
       abortControllerRef.current = new AbortController();
 
-      const start = convertDateToUTC(
-        data?.data?.activity?.datetime_from as string
-      );
-      const end = convertDateToUTC(
-        data?.data?.activity?.datetime_until as string
-      );
+      const start = convertDateToUTC(activity?.datetime_from as string);
+      const end = convertDateToUTC(activity?.datetime_until as string);
 
       return addActivityToCalendar(
         Number(userInfo?.id),
         {
-          name: data?.data?.activity?.title as string,
+          name: activity?.title as string,
           start,
           end,
           token: token as string,
@@ -165,10 +155,10 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
   );
 
   React.useEffect(() => {
-    if (googleToken && data?.data?.activity) {
+    if (googleToken && activity) {
       sendAddActivityToCalendar(googleToken);
     }
-  }, [googleToken, data?.data?.activity]);
+  }, [googleToken, activity]);
 
   const handleMenuItemClick = React.useCallback(
     (action?: ActivityActionsTypeEnumDto) => {
@@ -185,11 +175,14 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
           });
         case ActivityActionsTypeEnumDto.JOIN:
           return sendJoinActivity();
+        case ActivityActionsTypeEnumDto.EDIT:
+          //TODO EditActivityScreen pass id?
+          return navigate(`${ApplicationLocations.EDIT_ACTIVITY}/${id}`);
         default:
           return;
       }
     },
-    [sendJoinActivity, navigate]
+    [sendJoinActivity, navigate, id]
   );
 
   const handleActivityActionsCLick = React.useCallback(() => {
@@ -197,7 +190,7 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
       open: true,
       content: (
         <ActivityActions
-          activity={data?.data?.activity}
+          activity={activity}
           onActionClick={handleMenuItemClick}
         />
       ),
@@ -267,7 +260,9 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
   const durationMinutes = timeDifference?.durationMinutes;
   const durationHours = timeDifference?.durationHours;
 
-  return (
+  return isLoading ? (
+    <Loader />
+  ) : (
     <>
       <Box
         sx={{
@@ -305,8 +300,15 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
             sx={{
               overflow: "hidden",
               wordWrap: "break-word",
-              filter: "invert(100%)",
+              // filter: "invert(100%)",
               textShadow: ({ palette }) => `1px 0px 1px black`,
+              ...(mode === "light" ? { filter: "invert(100%)" } : {}),
+              ...(mode === "light"
+                ? {
+                    textShadow: ({ palette }) =>
+                      `1px 1px 1px ${palette?.primary?.light}`,
+                  }
+                : {}),
             }}
           >
             {activity?.title}
@@ -359,7 +361,13 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
               }}
             />
 
-            <Typography sx={{ ml: 1, fontSize: 16 }}>
+            <Typography
+              sx={{
+                ml: 1,
+                fontSize: 16,
+                color: ({ palette }) => palette?.text?.primary,
+              }}
+            >
               {activity?.creator?.username}
             </Typography>
           </Box>
@@ -386,9 +394,7 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
         </Box> */}
 
         <ActivityVisibilityDuration
-          visibility={
-            data?.data?.activity?.visibility as ActivityVisibilityEnum
-          }
+          visibility={activity?.visibility as ActivityVisibilityEnum}
           // duration={activity?.tags!}
           duration={`${durationHours} hours, ${durationMinutes} minutes`}
           createdDateTime={

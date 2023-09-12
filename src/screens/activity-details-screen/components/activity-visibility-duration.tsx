@@ -53,28 +53,73 @@ const ActivityVisibilityDuration: React.FC<IProps> = ({
           px: 1,
         }}
       >
-        <Typography variant="h5" align="left">
-          Additional description
-        </Typography>
-        <Box sx={{ display: "flex", alignItems: "center" }}>
-          {visibility === ActivityVisibilityEnum.private ? (
-            <LockIcon sx={{ fontSize: 16 }} />
-          ) : (
-            <LockOpenIcon sx={{ fontSize: 16 }} />
-          )}
+        <Box sx={{ mb: 1, overflow: "hidden" }}>
           <Typography
-            variant="subtitle1"
+            variant="h5"
             align="left"
-            sx={{ fontSize: "14px", ml: 0.5 }}
+            sx={{
+              fontSize: "16px",
+              mb: 0.5,
+            }}
           >
-            {visibility}
+            Activity visibility
           </Typography>
+          <Box sx={{ display: "flex", alignItems: "center" }}>
+            {visibility === ActivityVisibilityEnum.private ? (
+              <LockIcon sx={{ fontSize: 16 }} />
+            ) : (
+              <LockOpenIcon sx={{ fontSize: 16 }} />
+            )}
+            <Typography
+              variant="subtitle1"
+              align="left"
+              sx={{
+                fontSize: "14px",
+                ml: 0.5,
+              }}
+            >
+              {visibility}
+            </Typography>
+          </Box>
+        </Box>
+        <Box sx={{ mb: 1, overflow: "hidden" }}>
+          <Typography
+            variant="h5"
+            align="left"
+            sx={{
+              fontSize: "16px",
+              mb: 0.5,
+              textAlign: "end",
+            }}
+          >
+            Duration
+          </Typography>
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "flex-end",
+            }}
+          >
+            <Typography
+              variant="subtitle1"
+              align="left"
+              sx={{
+                fontSize: "14px",
+              }}
+            >
+              {duration}
+            </Typography>
+          </Box>
         </Box>
       </Box>
       <Typography
         variant="subtitle1"
         align="center"
-        sx={{ fontSize: "12px", mb: 1, color: "grey", mt: 5 }}
+        sx={{
+          fontSize: "12px",
+          mb: 1,
+        }}
       >
         Created {createdDateTime}
       </Typography>

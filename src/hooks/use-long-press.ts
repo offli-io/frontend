@@ -12,17 +12,6 @@ export default function useLongPress({
   const timerRef = React.useRef<any>();
   const isLongPress = React.useRef<boolean>();
 
-  function startPressTimer() {
-    isLongPress.current = false;
-    timerRef.current = setTimeout(() => {
-      isLongPress.current = true;
-      console.log(isScrolling);
-
-      onLongPress?.();
-      // setAction("longpress");
-    }, 500);
-  }
-
   function handleOnClick() {
     if (isLongPress.current) {
       console.log("Is long press - not continuing.");
@@ -31,8 +20,16 @@ export default function useLongPress({
     setAction("click");
   }
 
+  function startPressTimer() {
+    isLongPress.current = false;
+    timerRef.current = setTimeout(() => {
+      isLongPress.current = true;
+      console.log(isScrolling);
+      onLongPress?.();
+    }, 500);
+  }
+
   function handleOnMouseDown() {
-    console.log(isScrolling);
     startPressTimer();
   }
 

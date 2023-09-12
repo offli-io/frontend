@@ -209,7 +209,7 @@ const MyBuddiesScreen = () => {
                 sx={{ fontSize: 14, ml: 1 }}
                 onClick={handleAddBuddies}
               >
-                <PersonAddIcon color="primary" />
+                <PersonAddIcon sx={{ color: "primary.main" }} />
               </IconButton>
             </Box>
             {(recommendedBuddiesData?.data ?? [])?.length > 0 && (
