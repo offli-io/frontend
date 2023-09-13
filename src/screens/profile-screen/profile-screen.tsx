@@ -190,7 +190,7 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
         >
           <Typography
             variant="h4"
-            sx={{ mb: 2, color: palette?.text?.primary }}
+            sx={{ mb: 2, color: palette?.text?.primary, mt: "30px" }}
           >
             {data?.username}
           </Typography>
@@ -204,7 +204,7 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
             }
             alt="profile"
             style={{
-              height: 90,
+              height: 100,
               aspectRatio: 1,
               borderRadius: "50%",
               // backgroundColor: theme?.palette?.inactive as string,
@@ -219,7 +219,7 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
               color="primary"
               sx={{
                 backgroundColor: (theme) => theme.palette.primary.light,
-                mt: 2,
+                mt: 4,
                 px: 2.5,
                 py: 0.5,
                 borderRadius: "15px",
@@ -233,7 +233,9 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
               }
               data-testid="buddies-btn"
             >
-              <PeopleAltIcon sx={{ fontSize: 18, padding: 0 }} />
+              <PeopleAltIcon
+                sx={{ fontSize: 18, padding: 0, color: "primary.main" }}
+              />
               <Typography
                 variant="subtitle1"
                 color="primary"
@@ -243,7 +245,7 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
                   ml: 0.75,
                 }}
               >
-                {`Buddies (${data?.buddies?.length})`}
+                {`${data?.buddies?.length} Buddies`}
               </Typography>
             </IconButton>
           )}
@@ -258,6 +260,7 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
                 // justifyContent: 'flex-start',
               }}
             >
+              <Box sx={{display:"flex", alignItems:"center", mt: "20px"}}>
               <IconButton
                 sx={{ paddingRight: 0, color: palette?.text?.primary, mr: 1 }}
               >
@@ -266,6 +269,8 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
               <Typography sx={{ color: palette?.text.primary, maxWidth: 250 }}>
                 {data?.location?.name}
               </Typography>
+              </Box>
+              
             </Box>
           )}
           {!!data?.about_me && (
@@ -276,6 +281,7 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
                 lineHeight: 1.2,
                 width: "80%",
                 color: palette?.text?.primary,
+                mt: "20px"
               }}
             >
               {data?.about_me}
@@ -285,7 +291,7 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
         {type === ProfileEntryTypeEnum.PROFILE && (
           <ActionButton
             text="Edit profile"
-            sx={{ mt: 2 }}
+            sx={{ mt: 4 }}
             onClick={() =>
               navigate(ApplicationLocations.EDIT_PROFILE, {
                 state: {
@@ -295,6 +301,11 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
             }
           />
         )}
+        <Box sx={{display: "flex", alignSelf: "start", mt: "30px", ml: "10%", mb:"30px"}}>
+          <Typography sx={{fontWeight: "bold"}}>
+            This month
+          </Typography>
+        </Box>
         {[
           ProfileEntryTypeEnum.REQUEST,
           ProfileEntryTypeEnum.USER_PROFILE,
@@ -426,7 +437,7 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
               }}
             >
               <IconButton color="primary" sx={{ padding: 0 }}>
-                <InstagramIcon />
+                <InstagramIcon sx={{ color: "primary.main" }} />
               </IconButton>
               <Typography
                 align="left"

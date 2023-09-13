@@ -10,6 +10,8 @@ import TransparentChip from "./transparent-chip";
 import { ActivityVisibilityEnum } from "../types/activities/activity-visibility-enum.dto";
 import { format } from "date-fns";
 import OffliButton from "./offli-button";
+import { useGetApiUrl } from "hooks/use-get-api-url";
+import { DATE_TIME_FORMAT } from "utils/common-constants";
 
 interface IMyActivityCardProps {
   activity?: IActivity;
@@ -31,6 +33,7 @@ const MyActivityCard: React.FC<IMyActivityCardProps> = ({
     onLongPress: () => onLongPress?.(activity),
   });
   const { shadows } = useTheme();
+  const baseUrl = useGetApiUrl();
 
   // React.useEffect(() => {
   //   if (action) {
@@ -41,17 +44,17 @@ const MyActivityCard: React.FC<IMyActivityCardProps> = ({
   return (
     <OffliButton
       sx={{
-        minWidth: 300,
         display: "grid",
         gridTemplateColumns: "3fr 1fr",
         boxSizing: "border-box",
         boxShadow: shadows[3],
         bgcolor: ({ palette }) => palette.background.default,
-        py: 1.5,
-        px: 1.5,
-        mb: 2,
-        mr: 2,
-        ...sx,
+        minWidth: "300px",
+        maxWidth: "300px",
+        wordWrap: "break-word",
+        overflow: "hidden",
+        textOverflow: "ellipsis",
+        whiteSpace: "normal",
       }}
       {...handlers}
       color="inherit"
@@ -63,106 +66,65 @@ const MyActivityCard: React.FC<IMyActivityCardProps> = ({
         <Box
           sx={{
             display: "flex",
-            flexDirection: "column",
-            alignItems: "flex-start",
-            height: "100%",
-            whiteSpace: "nowrap",
-            overflow: "hidden",
+            justifyContent: "space-between",
+            alignItems: "center",
+            maxWidth: 280,
           }}
         >
-          <Typography
-            sx={{
-              fontSize: 18,
-              fontWeight: "bold",
-              lineHeight: 1,
-              color: ({ palette }) => palette?.text?.primary,
-            }}
-          >
-            {activity?.title ?? "Title"}
-          </Typography>
-          <Typography
-            sx={{
-              fontSize: 14,
-              // fontWeight: "bold",
-              lineHeight: 1,
-              color: ({ palette }) => palette?.text?.primary,
-              my: 0.75,
-            }}
-          >
-            {activity?.location?.name ?? "Location"}
-          </Typography>
-          <Box sx={{ display: "flex", alignItems: "center" }}>
-            <PeopleAltIcon
-              sx={{
-                fontSize: 16,
-                color: ({ palette }) => palette?.text?.primary,
-              }}
+          <Box sx={{ mt: 0.5, height: 75 }}>
+            <img
+              src={`${baseUrl}/files/${activity?.title_picture}`}
+              alt="activity_picture"
+              style={{ height: 70, width: 90, borderRadius: "10px" }}
             />
+          </Box>
+          <Box
+            sx={{
+              ml: 1.5,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "flex-start",
+              height: "100%",
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+            }}
+          >
             <Typography
               sx={{
-                ml: 1,
-                fontSize: 16,
+                fontSize: 18,
+                fontWeight: "bold",
                 lineHeight: 1,
                 color: ({ palette }) => palette?.text?.primary,
               }}
             >
-              {`${activity?.count_confirmed ?? 0} / ${activity?.limit ?? 0}`}
+              {activity?.title ?? "Title"}
+            </Typography>
+            <Typography
+              sx={{
+                fontSize: 14,
+                // fontWeight: "bold",
+                lineHeight: 1,
+                color: ({ palette }) => palette?.text?.primary,
+                my: 0.75,
+              }}
+            >
+              {activity?.location?.name ?? "Location"}
+            </Typography>
+            <Typography
+              sx={{
+                fontSize: 14,
+                lineHeight: 1,
+                color: ({ palette }) => palette?.text?.primary,
+              }}
+            >
+              {format(
+                (activity?.datetime_from
+                  ? new Date(activity?.datetime_from)
+                  : new Date()) as Date,
+                DATE_TIME_FORMAT
+              )}
             </Typography>
           </Box>
-        </Box>
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <Typography
-            sx={{
-              fontSize: 18,
-              // fontWeight: "bold",
-              lineHeight: 1,
-              color: ({ palette }) => palette?.text?.primary,
-            }}
-          >
-            {format(
-              (activity?.datetime_from
-                ? new Date(activity?.datetime_from)
-                : new Date()) as Date,
-              "dd"
-            )}
-          </Typography>
-          <Typography
-            sx={{
-              fontSize: 14,
-              lineHeight: 1,
-              color: ({ palette }) => palette?.text?.primary,
-              my: 0.75,
-            }}
-          >
-            {format(
-              (activity?.datetime_from
-                ? new Date(activity?.datetime_from)
-                : new Date()) as Date,
-              "LLLL"
-            )}
-          </Typography>
-          <Typography
-            sx={{
-              fontSize: 16,
-              // fontWeight: "bold",
-              lineHeight: 1,
-              color: ({ palette }) => palette?.text?.primary,
-            }}
-          >
-            {format(
-              (activity?.datetime_from
-                ? new Date(activity?.datetime_from)
-                : new Date()) as Date,
-              "HH:mm"
-            )}
-          </Typography>
         </Box>
       </>
     </OffliButton>

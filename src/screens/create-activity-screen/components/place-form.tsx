@@ -165,12 +165,12 @@ export const PlaceForm: React.FC<IPlaceFormProps> = ({
           color="primary"
           data-testid="back-btn"
         >
-          <ArrowBackIosNewIcon />
+          <ArrowBackIosNewIcon sx={{ color: "inherit" }} />
         </IconButton>
         <OffliButton
           onClick={onNextClicked}
           sx={{ width: "40%" }}
-          // disabled={!formState.isValid}
+          disabled={!formState.isValid}
           data-testid="next-btn"
         >
           Next

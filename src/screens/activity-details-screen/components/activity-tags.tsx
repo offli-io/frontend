@@ -25,11 +25,15 @@ const ActivityTags: React.FC<IProps> = ({ tags, sx }) => {
       {tags?.map((tag, index) => (
         <Chip
           label={tag}
+          variant="outlined"
           key={index}
           sx={{
             p: 2,
             borderRadius: "10px",
+            borderWidth: "2px",
+            border: "solid primary",
             fontSize: "14px",
+            fontWeight: "bold",
             textTransform: "capitalize",
             mx: 1,
             my: 0.5,

@@ -14,6 +14,9 @@ import React from "react";
 import { Controller, UseFormReturn } from "react-hook-form";
 import OffliButton from "../../../components/offli-button";
 import { ActivityVisibilityEnum } from "../../../types/activities/activity-visibility-enum.dto";
+import CheckBoxIcon from "@mui/icons-material/CheckBox";
+import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
+import IndeterminateCheckBoxIcon from "@mui/icons-material/IndeterminateCheckBox";
 
 interface IPlaceFormProps {
   onNextClicked: () => void;
@@ -176,12 +179,20 @@ export const ActivityDetailsForm: React.FC<IPlaceFormProps> = ({
                             onChange(e?.target?.checked ? true : false);
                           }}
                           data-testid="same-end-date-checkbox"
+                          sx={{
+                            "& .MuiSvgIcon-root": {
+                              color: "primary.main",
+                            },
+                          }}
                           // sx={{ mr: 2 }}
                         />
                       }
                       label="Free"
-                      sx={{ color: palette?.text?.primary, ml: 2 }}
-                    ></FormControlLabel>
+                      sx={{
+                        color: palette?.text?.primary,
+                        ml: 2,
+                      }}
+                    />
                   )}
                 />
               </Box>
