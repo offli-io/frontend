@@ -25,7 +25,7 @@ import "dayjs/locale/sk";
 import { IOSSwitch } from "./components/ios-switch";
 import { ActivityVisibilityEnum } from "../../types/activities/activity-visibility-enum.dto";
 import {
-  ACTIVITY_FEE_OPTIONS,
+  ACTIVITY_VISIBILITY_OPTIONS,
   MAX_ACTIVITY_ATTENDANCE,
   MAX_ACTIVITY_DESC_LENGTH,
   MIN_ACTIVITY_ATTENDANCE,
@@ -42,16 +42,18 @@ import { getLocationFromQueryFetch } from "../../api/activities/requests";
 import { useDebounce } from "use-debounce";
 import { mapLocationValue } from "../../utils/map-location-value.util";
 import { ILocation } from "../../types/activities/location.dto";
+import { useGetApiUrl } from "../../hooks/use-get-api-url";
 
 interface IEditActivity {
   title: string;
   location?: ILocation | null;
   startDateTime: Date | string;
   endDateTime: Date | string;
-  isPrivate: boolean;
+  accessibility: string;
   maxAttendance: number;
-  price?: number;
+  price: number | null;
   additionalDesc: string;
+  categoryTags: string[];
   placeQuery?: string;
 }
 
@@ -60,39 +62,39 @@ interface ICategoryTag {
   active: boolean;
 }
 
-const schema: () => yup.SchemaOf<IEditActivity> = () =>
-  yup.object({
-    title: yup.string().defined().required("Please enter the Title"),
-    location: yup
-      .object({
-        name: yup.string().defined().required(),
-        coordinates: yup.object({
-          lat: yup.number().defined().required(),
-          lon: yup.number().defined().required(),
-        }),
-      })
-      .notRequired(),
-    startDateTime: yup.date().defined().required("Please enter the Start Date"),
-    endDateTime: yup.date().defined().required("Please enter the End Date"),
-    isPrivate: yup.boolean().defined(),
-    maxAttendance: yup
-      .number()
-      .defined()
-      .required("Please enter How many people can attend"),
-    price: yup.number().defined().required("Please enter the Price"),
-    additionalDesc: yup
-      .string()
-      .defined()
-      .required("Please enter the Description"),
-    // about_me: yup.string().defined().required("Please enter your aboutMe"),
-    // location: yup.string().defined().required("Please enter your location"),
-    // birthdate: yup.date().nullable().required("Please enter your birthDate"),
-    // instagram: yup
-    //   .string()
-    //   .defined()
-    //   .required("Please enter your instagramUsername"),
-    placeQuery: yup.string().notRequired(),
-  });
+// const schema: () => yup.SchemaOf<IEditActivity> = () =>
+//   yup.object({
+//     title: yup.string().defined().required("Please enter the Title"),
+//     location: yup
+//       .object({
+//         name: yup.string().defined().required(),
+//         coordinates: yup.object({
+//           lat: yup.number().defined().required(),
+//           lon: yup.number().defined().required(),
+//         }),
+//       })
+//       .notRequired(),
+//     startDateTime: yup.date().defined().required("Please enter the Start Date"),
+//     endDateTime: yup.date().defined().required("Please enter the End Date"),
+//     accessibility: yup.boolean().defined(),
+//     maxAttendance: yup
+//       .number()
+//       .defined()
+//       .required("Please enter How many people can attend"),
+//     price: yup.number().defined().required("Please enter the Price"),
+//     additionalDesc: yup
+//       .string()
+//       .defined()
+//       .required("Please enter the Description"),
+//     // about_me: yup.string().defined().required("Please enter your aboutMe"),
+//     // location: yup.string().defined().required("Please enter your location"),
+//     // birthdate: yup.date().nullable().required("Please enter your birthDate"),
+//     // instagram: yup
+//     //   .string()
+//     //   .defined()
+//     //   .required("Please enter your instagramUsername"),
+//     placeQuery: yup.string().notRequired(),
+//   });
 
 const EditActivityScreen: React.FC = () => {
   const { id } = useParams();
@@ -101,19 +103,21 @@ const EditActivityScreen: React.FC = () => {
   const queryClient = useQueryClient();
   const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
+  const baseUrl = useGetApiUrl();
 
   const lodash = require("lodash"); // to create array within given range easily
 
   const [categoryTags, setCategoryTags] = useState<ICategoryTag[]>([]); /// TODO dat prec | null
   const [activeCategoryTags, setActiveCategoryTags] = useState<string[]>([]);
 
-  const { data: predefinedTags } = useTags();
+  const { data: { data: { tags: predefinedTags = [] } = {} } = {} } = useTags();
+
   const { data: { data: { activity = {} } = {} } = {}, isLoading } =
     useActivities<IActivityRestDto>({
       id: Number(id),
     });
 
-  // console.log(activity);
+  console.log(activity);
 
   const {
     control,
@@ -128,12 +132,13 @@ const EditActivityScreen: React.FC = () => {
       location: null,
       startDateTime: new Date(), // TODO: pridava 2 hodiny kvoli timezone
       endDateTime: new Date(), // TODO: pridava 2 hodiny kvoli timezone
-      isPrivate: true,
-      maxAttendance: MAX_ACTIVITY_ATTENDANCE,
+      // accessibility: ACTIVITY_VISIBILITY_OPTIONS.PUBLIC,
+      accessibility: "public",
+      maxAttendance: 50,
       price: 0,
       additionalDesc: "",
     },
-    resolver: yupResolver(schema()),
+    // resolver: yupResolver(schema()),
     mode: "onChange",
   });
 
@@ -147,83 +152,18 @@ const EditActivityScreen: React.FC = () => {
     }
   );
 
-  // useEffect(() => {
-  //   // if predefinedTag is included in activity tags, set tag`s active param to true and vice versa,
-  //   // also add active tags to activeCategoryTags, for easier insert of tags into PUT request
-  //   console.log("useeffect");
-
-  //   let tagsTmp: ICategoryTag[] = [];
-  //   let activeTagsTmp: string[] = [];
-  //   if (predefinedTags?.data?.tags && predefinedTags?.data?.tags?.length > 0) {
-  //     if (activity?.tags && activity?.tags?.length > 0) {
-  //       predefinedTags?.data?.tags.map((tag) => {
-  //         if (activity?.tags?.includes(tag?.title)) {
-  //           tagsTmp.push({ title: tag?.title, active: true });
-  //           activeTagsTmp.push(tag?.title);
-  //         }
-  //         if (activity?.tags?.includes(tag?.title)) {
-  //           tagsTmp.push({ title: tag?.title, active: false });
-  //         } else {
-  //           return;
-  //         }
-  //       });
-  //       setCategoryTags(tagsTmp);
-  //       setActiveCategoryTags(activeTagsTmp);
-  //     }
-  //   }
-  // }, [predefinedTags, activity]);
-
-  const handleChipClick = (index: number, title: string) => {
-    if (categoryTags) {
-      var newTagsArr = [...categoryTags];
-      newTagsArr[index].active = !newTagsArr[index].active;
-      setCategoryTags(newTagsArr);
-    }
-
-    // mozno staci len na handleSubmit dat .filter(kde sa (ne)rovna active)
-    if (activeCategoryTags) {
-      var newActiveTagsArr = [...activeCategoryTags];
-      if (activeCategoryTags.includes(title)) {
-        newActiveTagsArr = activeCategoryTags.filter(function (e) {
-          return e !== title;
-        });
-      }
-      if (!activeCategoryTags.includes(title)) {
-        newActiveTagsArr.push(title);
-      }
-      setActiveCategoryTags(newActiveTagsArr);
-    }
-  };
-
   useEffect(() => {
-    const dateTimeFrom = activity?.datetime_from
-      ? new Date(activity?.datetime_from)
-      : null;
-    const dateTimeUntil = activity?.datetime_until
-      ? new Date(activity?.datetime_until)
-      : null;
-
-    const recievedVisibility = activity?.visibility;
-    let isPrivateA = false;
-    if (recievedVisibility) {
-      if (recievedVisibility === ActivityVisibilityEnum.private) {
-        isPrivateA = true;
-      }
-      if (recievedVisibility === ActivityVisibilityEnum.public) {
-        isPrivateA = false;
-      }
-    }
-
-    // reset({
-    //   title: activity?.title,
-    //   location: activity?.location,
-    //   startDateTime: dateTimeFrom?.toString(),
-    //   endDateTime: dateTimeUntil?.toString(),
-    //   isPrivate: isPrivateA,
-    //   maxAttendance: activity?.limit,
-    //   price: activity?.price,
-    //   additionalDesc: activity?.description,
-    // });
+    reset({
+      title: activity?.title,
+      location: activity?.location,
+      startDateTime: activity?.datetime_from?.toString(),
+      endDateTime: activity?.datetime_until?.toString(),
+      accessibility: activity?.visibility,
+      maxAttendance: activity?.limit,
+      price: activity?.price,
+      additionalDesc: activity?.description,
+      categoryTags: activity?.tags,
+    });
   }, [activity]);
 
   // const { mutate: sendUpdateActivity } = useMutation(
@@ -266,7 +206,7 @@ const EditActivityScreen: React.FC = () => {
       //   location: values.location,
       //   startDateTime: values.startDateTime.toISOString(),
       //   endDateTime: values.endDateTime.toISOString(),
-      //   isPrivate: values.isPrivate,
+      //   accessibility: values.accessibility,
       //   maxAttendance: values.maxAttendance,
       //   price: values.price,
       //   additionalDesc: values.additionalDesc,
@@ -296,13 +236,14 @@ const EditActivityScreen: React.FC = () => {
           <img
             onClick={() => console.log("change profile photo")}
             // todo add default picture in case of missing photo
-            src={activity?.title_picture}
+            src={`${baseUrl}/files/${activity?.title_picture}`}
             alt="profile"
             style={{
               height: "100px",
               width: "100px",
               borderRadius: "50%",
-              //border: `3px solid ${theme.palette.primary.main}`,
+              border: `3.5px solid ${theme.palette.primary.main}`,
+              marginTop: 10,
             }}
           />
           <form
@@ -315,6 +256,10 @@ const EditActivityScreen: React.FC = () => {
             }}
             onSubmit={handleSubmit(handleFormSubmit)}
           >
+            <Typography variant="h6" sx={{ width: "95%", mt: 1 }}>
+              <b>General Info</b>
+            </Typography>
+
             <Controller
               name="title"
               control={control}
@@ -326,7 +271,7 @@ const EditActivityScreen: React.FC = () => {
                   error={!!error}
                   helperText={error?.message}
                   //disabled={methodSelectionDisabled}
-                  sx={{ width: "95%", mt: 3 }}
+                  sx={{ width: "95%", mt: 2 }}
                 />
               )}
             />
@@ -375,7 +320,8 @@ const EditActivityScreen: React.FC = () => {
                   renderInput={(params) => (
                     <TextField
                       {...params}
-                      label="Search place"
+                      label="Location"
+                      placeholder="Search for location"
                       // onChange={(e) => setValue("placeQuery", e.target.value)}
                       onChange={(e) => console.log(e.target.value)}
                     />
@@ -386,150 +332,117 @@ const EditActivityScreen: React.FC = () => {
             />
             {/* nwm ci by v LocalizationProvider mali byt Boxy a veci co sa netykaju DateTimePickeru, ked tak vyhodit */}
             <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="sk">
-              <Box
-                sx={{
-                  display: "flex",
-                  flexDirection: "row",
-                  width: "95%",
-                  mt: 3,
-                }}
-              >
-                <Box sx={{ mr: 1 }}>
-                  <Controller
-                    name="startDateTime"
-                    control={control}
-                    render={({
-                      field: { onChange, ...field },
-                      fieldState: { error },
-                    }) => (
-                      <DateTimePicker
-                        {...field}
-                        label="Start DateTime"
-                        onChange={(e) => onChange(e)}
-                        renderInput={(params) => (
-                          <TextField
-                            variant="outlined"
-                            error={!!error}
-                            helperText={error?.message}
-                            //disabled={methodSelectionDisabled}
-                            sx={{
-                              width: "100%",
-                              borderRadius: "12px",
-                              // backgroundColor: `${theme.palette.primary.light}`,
-                              fontSize: "bold",
-                              input: {
-                                color: `${theme.palette.primary.main}`,
-                                fontWeight: "bold",
-                              },
-                            }}
-                            {...params}
-                          />
-                        )}
-                      />
-                    )}
-                  />
-                </Box>
-                <Box sx={{ ml: 1 }}>
-                  <Controller
-                    name="endDateTime"
-                    control={control}
-                    render={({
-                      field: { onChange, ...field },
-                      fieldState: { error },
-                    }) => (
-                      <DateTimePicker
-                        {...field}
-                        label="End DateTime"
-                        onChange={(e) => onChange(e)}
-                        renderInput={(params) => (
-                          <TextField
-                            variant="outlined"
-                            error={!!error}
-                            helperText={error?.message}
-                            //disabled={methodSelectionDisabled}
-                            sx={{
-                              width: "100%",
-                              borderRadius: "12px",
-                              // backgroundColor: `${theme.palette.primary.light}`,
-                              // fontSize: "bold",
-                              input: {
-                                color: `${theme.palette.primary.main}`,
-                                fontWeight: "bold",
-                              },
-                            }}
-                            {...params}
-                          />
-                        )}
-                      />
-                    )}
-                  />
-                </Box>
-              </Box>
-            </LocalizationProvider>
-            <Box
-              sx={{
-                width: "95%",
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "space-between",
-                mt: 2,
-              }}
-            >
-              {/* ///////////////////////////////////////////////////////////////////////////////// ACCESIBILITY */}
-
-              <Typography variant="h6" sx={{ width: "100%", ml: 0.5 }}>
-                <b>Accessibility</b>
-              </Typography>
               <Controller
-                name="isPrivate"
+                name="startDateTime"
                 control={control}
                 render={({
-                  field: { value, onChange, ...field },
+                  field: { onChange, ...field },
                   fieldState: { error },
                 }) => (
-                  <FormControlLabel
-                    control={
-                      <IOSSwitch
-                        // {...field} // TODO: jebe error kvoli ref
-                        onChange={(e) => onChange(e.target.checked)}
-                        checked={value}
-                        sx={{ ml: 1, mr: 1.7 }}
+                  <DateTimePicker
+                    {...field}
+                    label="Start date"
+                    onChange={(e) => onChange(e)}
+                    renderInput={(params) => (
+                      <TextField
+                        variant="outlined"
+                        error={!!error}
+                        helperText={error?.message}
+                        //disabled={methodSelectionDisabled}
+                        sx={{
+                          width: "95%",
+                          mt: 3, // backgroundColor: `${theme.palette.primary.light}`,
+                          fontSize: "bold",
+                          input: {
+                            color: `${theme.palette.primary.main}`,
+                            fontWeight: "bold",
+                          },
+                        }}
+                        {...params}
                       />
-                    }
-                    labelPlacement="start"
-                    label={value ? "private" : "public"}
-                  ></FormControlLabel>
+                    )}
+                  />
                 )}
               />
-            </Box>
-            {/* ///////////////////////////////////////////////////////////////////////////////// MAX ATTENDANCE */}
-            <Controller
-              name="maxAttendance"
+              <Controller
+                name="endDateTime"
+                control={control}
+                render={({
+                  field: { onChange, ...field },
+                  fieldState: { error },
+                }) => (
+                  <DateTimePicker
+                    {...field}
+                    label="End date"
+                    onChange={(e) => onChange(e)}
+                    renderInput={(params) => (
+                      <TextField
+                        variant="outlined"
+                        error={!!error}
+                        helperText={error?.message}
+                        //disabled={methodSelectionDisabled}
+                        sx={{
+                          width: "95%",
+                          mt: 3, // backgroundColor: `${theme.palette.primary.light}`,
+                          // fontSize: "bold",
+                          input: {
+                            color: `${theme.palette.primary.main}`,
+                            fontWeight: "bold",
+                          },
+                        }}
+                        {...params}
+                      />
+                    )}
+                  />
+                )}
+              />
+            </LocalizationProvider>
+
+            {/* ///////////////////////////////////////////////////////////////////////////////// ACCESIBILITY */}
+            {/* <Controller
+              name="accessibility"
               control={control}
-              render={({ field, fieldState: { error } }) => (
+              render={({
+                field: { value, onChange, ...field },
+                fieldState: { error },
+              }) => (
                 <TextField
                   select
                   {...field}
-                  label="How many people can attend?"
+                  label="Accessibility"
                   variant="outlined"
                   error={!!error}
                   helperText={error?.message}
                   //disabled={methodSelectionDisabled}
                   sx={{ width: "95%", mt: 3 }}
                 >
-                  {lodash
-                    .range(
-                      MIN_ACTIVITY_ATTENDANCE,
-                      MAX_ACTIVITY_ATTENDANCE + 1,
-                      1
-                    )
-                    .map((item: number) => (
-                      <MenuItem key={item} value={item}>
-                        {item}
-                      </MenuItem>
-                    ))}
+                  {(
+                    Object.keys(ACTIVITY_VISIBILITY_OPTIONS) as Array<
+                      keyof typeof ACTIVITY_VISIBILITY_OPTIONS
+                    >
+                  ).map((item: string) => (
+                    <MenuItem key={item} value={item}>
+                      {item}
+                    </MenuItem>
+                  ))}
                 </TextField>
+              )}
+            /> */}
+            {/* ///////////////////////////////////////////////////////////////////////////////// MAX ATTENDANCE */}
+            <Controller
+              name="maxAttendance"
+              control={control}
+              render={({ field, fieldState: { error } }) => (
+                <TextField
+                  {...field}
+                  type="number"
+                  label="Maximal attendance"
+                  variant="outlined"
+                  error={!!error}
+                  helperText={error?.message}
+                  //disabled={methodSelectionDisabled}
+                  sx={{ width: "95%", mt: 3 }}
+                />
               )}
             />
             {/* ///////////////////////////////////////////////////////////////////////////////// PRICE */}
@@ -538,21 +451,15 @@ const EditActivityScreen: React.FC = () => {
               control={control}
               render={({ field, fieldState: { error } }) => (
                 <TextField
-                  select
+                  type="number"
                   {...field}
-                  label="Any fees?"
+                  label="Price"
                   variant="outlined"
                   error={!!error}
                   helperText={error?.message}
                   //disabled={methodSelectionDisabled}
                   sx={{ width: "95%", mt: 3 }}
-                >
-                  {ACTIVITY_FEE_OPTIONS.map((item: string) => (
-                    <MenuItem key={item} value={item}>
-                      {item}
-                    </MenuItem>
-                  ))}
-                </TextField>
+                />
               )}
             />
             {/* ///////////////////////////////////////////////////////////////////////////////// ADDITIONAL DESC */}
@@ -563,6 +470,7 @@ const EditActivityScreen: React.FC = () => {
                 <TextField
                   {...field}
                   multiline
+                  maxRows={10}
                   label="Additional description"
                   variant="outlined"
                   error={!!error}
@@ -574,33 +482,38 @@ const EditActivityScreen: React.FC = () => {
               )}
             />
             {/* ///////////////////////////////////////////////////////////////////////////////// CATEGORY / TAGS */}
-            {categoryTags && categoryTags.length > 0 && (
-              <>
-                <Typography variant="h6" sx={{ width: "100%", mt: 2 }}>
-                  <b>Category</b>
-                </Typography>
-                <Box
-                  sx={{
-                    display: "flex",
-                    flexDirection: "row",
-                    justifyContent: "center",
-                    flexWrap: "wrap",
-                    mt: 0.5,
-                  }}
-                >
-                  {categoryTags.map((tag: ICategoryTag, index) => (
-                    <Chip
-                      label={tag?.title}
-                      key={tag?.title}
-                      sx={{ mr: 0.2, borderRadius: "8px" }}
-                      color="primary"
-                      variant={tag?.active ? "filled" : "outlined"}
-                      onClick={() => handleChipClick(index, tag.title)}
-                    />
-                  ))}
-                </Box>
-              </>
-            )}
+            {predefinedTags ? (
+              <Controller
+                name="categoryTags"
+                control={control}
+                render={({ field, fieldState: { error } }) => (
+                  <Autocomplete
+                    multiple
+                    aria-multiline
+                    id="predefined-tags"
+                    options={predefinedTags}
+                    getOptionLabel={(option) => option.title}
+                    // defaultValue={[top100Films[13]]}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        variant="outlined"
+                        label="Predefined tags"
+                        error={!!error}
+                        helperText={error?.message}
+                        // InputProps={{
+                        //   style: {
+                        //     maxHeight: "auto",
+                        //   },
+                        // }}
+                        // placeholder="Predefined tags"
+                      />
+                    )}
+                    sx={{ width: "95%", mt: 3, flex: 1 }}
+                  />
+                )}
+              />
+            ) : null}
 
             {/* ///////////////////////////////////////////////////////////////////////////////// SUBMIT BTN */}
             <ActionButton
