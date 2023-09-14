@@ -313,6 +313,8 @@ const ActivitiesScreen = () => {
       contentDivRef?.current?.removeEventListener("scroll", handleScroll);
   }, []);
 
+  console.log(isScrolling);
+
   return (
     <PageWrapper sxOverrides={{ px: 2 }}>
       <Box

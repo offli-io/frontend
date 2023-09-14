@@ -119,21 +119,29 @@ export const Layout: React.FC<ILayoutProps> = ({ children }) => {
 
   let timer: any = null;
 
-  contentDivRef?.current?.addEventListener(
-    "scroll",
-    function () {
-      if (timer !== null && !isScrolling) {
-        console.log("scroll start");
-        setIsScrolling(true);
-        clearTimeout(timer);
-      }
-      timer = setTimeout(function () {
-        console.log("scroll end");
-        setIsScrolling(false);
-      }, 250);
-    },
-    false
-  );
+  // contentDivRef?.current?.addEventListener(
+  //   "scroll",
+  //   function () {
+  //     if (timer !== null && !isScrolling) {
+  //       // console.log("scroll start");
+  //       setIsScrolling(true);
+  //       clearTimeout(timer);
+  //     }
+  //     timer = setTimeout(function () {
+  //       // console.log("scroll end");
+  //       setIsScrolling(false);
+  //     }, 550);
+  //   },
+  //   true
+  // );
+
+  contentDivRef?.current?.addEventListener("scroll", function () {
+    setIsScrolling(true);
+  });
+
+  contentDivRef?.current?.addEventListener("scrollend", function () {
+    setIsScrolling(false);
+  });
 
   return (
     <LayoutContext.Provider value={{ contentDivRef, isScrolling }}>
