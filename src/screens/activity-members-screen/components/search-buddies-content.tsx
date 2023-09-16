@@ -56,16 +56,15 @@ const SearchBuddiesContent: React.FC<IAddBuddiesContentProps> = ({
     getActivityParticipants({ activityId: Number(activityId) })
   );
 
-  const { data: { data: buddies = [] } = {}, isLoading: areBuddiesLoading } =
-    useBuddies({
-      text: usernameDebounced,
-      // select: (data) => ({
-      //   ...data,
-      //   data: data?.data?.filter(
-      //     (buddy) => !isAlreadyParticipant(participants, buddy)
-      //   ),
-      // }),
-    });
+  const { buddies, isLoading: areBuddiesLoading } = useBuddies({
+    text: usernameDebounced,
+    // select: (data) => ({
+    //   ...data,
+    //   data: data?.data?.filter(
+    //     (buddy) => !isAlreadyParticipant(participants, buddy)
+    //   ),
+    // }),
+  });
 
   const { mutate: sendInviteBuddy, isLoading: isInviting } = useMutation(
     ["invite-participant"],

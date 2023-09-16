@@ -260,17 +260,18 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
                 // justifyContent: 'flex-start',
               }}
             >
-              <Box sx={{display:"flex", alignItems:"center", mt: "20px"}}>
-              <IconButton
-                sx={{ paddingRight: 0, color: palette?.text?.primary, mr: 1 }}
-              >
-                <LocationOnIcon sx={{ fontSize: 20 }} />
-              </IconButton>
-              <Typography sx={{ color: palette?.text.primary, maxWidth: 250 }}>
-                {data?.location?.name}
-              </Typography>
+              <Box sx={{ display: "flex", alignItems: "center", mt: "20px" }}>
+                <IconButton
+                  sx={{ paddingRight: 0, color: palette?.text?.primary, mr: 1 }}
+                >
+                  <LocationOnIcon sx={{ fontSize: 20 }} />
+                </IconButton>
+                <Typography
+                  sx={{ color: palette?.text.primary, maxWidth: 250 }}
+                >
+                  {data?.location?.name}
+                </Typography>
               </Box>
-              
             </Box>
           )}
           {!!data?.about_me && (
@@ -281,7 +282,7 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
                 lineHeight: 1.2,
                 width: "80%",
                 color: palette?.text?.primary,
-                mt: "20px"
+                mt: "20px",
               }}
             >
               {data?.about_me}
@@ -301,11 +302,11 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
             }
           />
         )}
-        <Box sx={{display: "flex", alignSelf: "start", mt: "30px", ml: "10%", mb:"30px"}}>
+        {/* <Box sx={{display: "flex", alignSelf: "start", mt: "30px", ml: "10%", mb:"30px"}}>
           <Typography sx={{fontWeight: "bold"}}>
             This month
           </Typography>
-        </Box>
+        </Box> */}
         {[
           ProfileEntryTypeEnum.REQUEST,
           ProfileEntryTypeEnum.USER_PROFILE,

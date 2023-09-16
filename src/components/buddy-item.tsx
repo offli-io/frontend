@@ -1,4 +1,4 @@
-import { Box, styled, Typography, useTheme } from "@mui/material";
+import { Box, styled, SxProps, Typography, useTheme } from "@mui/material";
 import userPlaceholder from "../assets/img/user-placeholder.svg";
 import React from "react";
 import { IPerson } from "../types/activities/activity.dto";
@@ -9,6 +9,7 @@ interface IBuddyItemProps {
   children?: React.ReactElement;
   actionContent?: React.ReactNode;
   onClick?: (buddy?: IPerson) => void;
+  sx?: SxProps;
 }
 
 const BuddyItem: React.FC<IBuddyItemProps> = ({
@@ -16,6 +17,7 @@ const BuddyItem: React.FC<IBuddyItemProps> = ({
   buddy,
   actionContent,
   onClick,
+  sx,
   ...rest
 }) => {
   const { shadows } = useTheme();
@@ -32,6 +34,7 @@ const BuddyItem: React.FC<IBuddyItemProps> = ({
         py: 2,
         textTransform: "none",
         width: "100%",
+        ...sx,
       }}
       {...rest}
     >
