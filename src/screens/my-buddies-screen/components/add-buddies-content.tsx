@@ -40,8 +40,11 @@ const AddBuddiesContent: React.FC<IAddBuddiesContentProps> = ({ navigate }) => {
   const { toggleDrawer } = React.useContext(DrawerContext);
 
   //TODO polish this avoid erorrs that cause whole application down
-  const { data: { data = [] } = {}, isLoading } = useUsers({
-    username: usernameDebounced,
+  const { users, isLoading } = useUsers({
+    params: {
+      username: usernameDebounced,
+      offset: 2,
+    },
   });
 
   const queryClient = useQueryClient();
@@ -55,8 +58,7 @@ const AddBuddiesContent: React.FC<IAddBuddiesContentProps> = ({ navigate }) => {
     }
   );
 
-  const { data: { data: buddies = [] } = {}, isLoading: areBuddiesLoading } =
-    useBuddies();
+  const { buddies, isLoading: areBuddiesLoading } = useBuddies();
 
   const handleBuddyActionsClick = React.useCallback(
     (buddy?: IPerson) => {
@@ -120,7 +122,7 @@ const AddBuddiesContent: React.FC<IAddBuddiesContentProps> = ({ navigate }) => {
       />
 
       <Box sx={{ overflowY: "auto", height: "100%" }}>
-        {(data ?? [])?.length < 1 && !isLoading ? (
+        {users?.length < 1 && !isLoading ? (
           <Box
             sx={{
               height: 100,
@@ -147,7 +149,7 @@ const AddBuddiesContent: React.FC<IAddBuddiesContentProps> = ({ navigate }) => {
                 <CircularProgress color="primary" />
               </Box>
             ) : (
-              data
+              users
                 ?.filter(
                   (user) =>
                     user?.id !== userInfo?.id && !isBuddy(buddies, user?.id)

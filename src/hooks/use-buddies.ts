@@ -5,12 +5,14 @@ import { getBuddies } from "../api/activities/requests";
 import { AuthenticationContext } from "../assets/theme/authentication-provider";
 import { AxiosResponse } from "axios";
 import { IPerson } from "../types/activities/activity.dto";
+import { IBuddiesResponseDto } from "types/users/buddies-response.dto";
 
 export interface IUseBuddiesProps {
   text?: string;
   select?: (
-    data: AxiosResponse<IPerson[], any>
-  ) => AxiosResponse<IPerson[], any>;
+    data: AxiosResponse<IBuddiesResponseDto, any>
+  ) => AxiosResponse<IBuddiesResponseDto, any>;
+  // select?: (data: any) => any;
 }
 
 export const useBuddies = ({ text, select }: IUseBuddiesProps = {}) => {
@@ -20,7 +22,7 @@ export const useBuddies = ({ text, select }: IUseBuddiesProps = {}) => {
 
   const invalidateBuddies = () => queryClient.invalidateQueries(["buddies"]);
 
-  const { data, isLoading } = useQuery(
+  const { data: { data: { buddies = [] } = {} } = {}, isLoading } = useQuery(
     ["buddies", userInfo?.id, text],
     () => getBuddies(Number(userInfo?.id), text),
     {
@@ -35,5 +37,5 @@ export const useBuddies = ({ text, select }: IUseBuddiesProps = {}) => {
     }
   );
 
-  return { data, isLoading, invalidateBuddies };
+  return { buddies, isLoading, invalidateBuddies };
 };

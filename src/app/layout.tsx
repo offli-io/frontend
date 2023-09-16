@@ -1,18 +1,14 @@
+import { Box, useTheme } from "@mui/material";
+import React from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { AuthenticationContext } from "../assets/theme/authentication-provider";
 import BottomNavigator from "../components/bottom-navigator/bottom-navigator";
-import React from "react";
-import Routes from "../routes/routes";
 import OffliHeader from "../components/offli-header/offli-header";
-import { useLocation, useNavigate } from "react-router-dom";
-import { Box, useTheme } from "@mui/material";
-import { ApplicationLocations } from "../types/common/applications-locations.dto";
-import BackHeader from "../components/back-header";
-import { useUsers } from "../hooks/use-users";
-import { IPersonExtended } from "../types/activities/activity.dto";
 import { useUser } from "../hooks/use-user";
-import { HeaderContext } from "./providers/header-provider";
-import { useInView } from "react-intersection-observer";
+import Routes from "../routes/routes";
+import { ApplicationLocations } from "../types/common/applications-locations.dto";
 import { getAuthToken } from "../utils/token.util";
+import { HeaderContext } from "./providers/header-provider";
 
 interface ILayoutProps {
   children?: React.ReactNode;
