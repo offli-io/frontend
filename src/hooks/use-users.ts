@@ -13,7 +13,10 @@ export const useUsers = ({
 }: IUseUsersParams) => {
   const { enqueueSnackbar } = useSnackbar();
   console.log(restParams);
-  const { data: { data: { users = [] } = {} } = {}, isLoading } = useQuery(
+  const {
+    data: { data: { users = [], buddieStates = [] } = {} } = {},
+    isLoading,
+  } = useQuery(
     ["users", username],
     () => getUsers({ username, ...restParams }),
     {
@@ -25,5 +28,5 @@ export const useUsers = ({
     }
   );
 
-  return { users, isLoading };
+  return { users, buddieStates, isLoading };
 };

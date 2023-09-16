@@ -155,7 +155,7 @@ export const toggleBuddyInvitation = (
 
   const promise = axios.patch(
     `${DEFAULT_DEV_URL}/users/${userId}/buddies/${buddyToBeId}`,
-    { status },
+    { changeToState: status },
     {
       cancelToken: source?.token,
     }
