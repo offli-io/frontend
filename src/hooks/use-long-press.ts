@@ -29,20 +29,29 @@ export default function useLongPress({
     }, 500);
   }
 
-  function handleOnMouseDown() {
+  function handleOnMouseDown(e: any) {
+    console.log(e);
+    console.log(e?.clientY);
     startPressTimer();
   }
 
-  function handleOnMouseUp() {
+  function handleOnMouseUp(e: any) {
+    console.log(e?.clientY);
+
     clearTimeout(timerRef.current);
   }
 
-  function handleOnTouchStart() {
+  function handleOnTouchStart(e: any) {
+    console.log(e);
+    console.log(e?.clientY);
+    //compare e?.changedTouches?.[0]?.clientY alebo pageY
     console.log("handleOnTouchStart");
     startPressTimer();
   }
 
-  function handleOnTouchEnd() {
+  function handleOnTouchEnd(e: any) {
+    console.log(e);
+    console.log(e?.clientY);
     if (action === "longpress") return;
     console.log("handleOnTouchEnd");
     clearTimeout(timerRef.current);

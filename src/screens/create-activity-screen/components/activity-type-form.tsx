@@ -125,7 +125,7 @@ export const ActivityTypeForm: React.FC<IActivityTypeFormProps> = ({
           color="primary"
           data-testid="back-btn"
         >
-          <ArrowBackIosNewIcon />
+          <ArrowBackIosNewIcon sx={{ color: "inherit" }} />
         </IconButton>
 
         <OffliButton

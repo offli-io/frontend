@@ -4,6 +4,11 @@ import {
   Checkbox,
   FormControlLabel,
   IconButton,
+  InputAdornment,
+  MenuItem,
+  Radio,
+  RadioGroup,
+  TextField,
   Typography,
   useTheme,
 } from "@mui/material";
@@ -14,6 +19,7 @@ import OffliButton from "../../../components/offli-button";
 import TimePicker from "../../../components/time-picker";
 import { generateDateSlots } from "../utils/generate-date-slots.util";
 import { generateOptionsOrder } from "../utils/generate-options-order.util";
+import AccessTimeIcon from "@mui/icons-material/AccessTime";
 
 interface IDateTimeForm {
   onNextClicked: () => void;
@@ -168,27 +174,139 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
           onItemSelect={(item) => handleItemSelect("from", item?.id)}
           onSlotAdd={handleDateAdd}
         />
-        <FormControlLabel
+        {/* <FormControlLabel
           control={
             <Checkbox
               checked={sameEndDate}
               onChange={handleSameDateCheckboxCheck}
               data-testid="same-end-date-checkbox"
+              sx={{
+                "& .MuiSvgIcon-root": {
+                  color: "primary.main",
+                },
+              }}
             />
           }
           label="End date is same as start date"
           sx={{ color: palette?.text?.primary }}
+        /> */}
+
+        <Controller
+          name="repeated"
+          control={control}
+          render={({ field, fieldState: { error } }) => (
+            <TextField
+              {...field}
+              id="outlined-select-currency"
+              select
+              label="Start time"
+              sx={{ width: "100%", my: 3 }}
+              variant="outlined"
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <AccessTimeIcon />
+                  </InputAdornment>
+                ),
+              }}
+            >
+              {generateOptionsOrder("from")?.map((option) => (
+                <MenuItem key={option} value={option}>
+                  {option}
+                </MenuItem>
+              ))}
+            </TextField>
+          )}
         />
 
-        {!sameEndDate && (
+        {/* <Typography
+          sx={{ my: 1, fontWeight: "bold", color: palette?.text?.primary }}
+        >
+          Duration
+        </Typography> */}
+
+        {/* <Box sx={{ display: "grid", gridTemplateColumns: "3fr 1fr", gap: 2 }}> */}
+        <Controller
+          name="title"
+          control={control}
+          render={({ field, fieldState: { error } }) => (
+            <TextField
+              {...field}
+              error={!!error}
+              type="number"
+              sx={{ width: "100%", my: 1 }}
+              label="Duration"
+              placeholder="Enter activity duration"
+              helperText={!!error && "Activity name is required"}
+              data-testid="activity-name-input"
+            />
+          )}
+        />
+
+        {/* <Controller
+            name="repeated"
+            control={control}
+            render={({ field, fieldState: { error } }) => (
+              <TextField
+                {...field}
+                id="outlined-select-currency"
+                select
+                // label="Does activity repeat?"
+                value="h"
+                variant="outlined"
+
+                // helperText="Please select your currency"
+              >
+                {["m", "h", "d"].map((option) => (
+                  <MenuItem key={option} value={option}>
+                    {option}
+                  </MenuItem>
+                ))}
+              </TextField>
+            )}
+          /> */}
+        {/* </Box> */}
+
+        <RadioGroup
+          row
+          aria-labelledby="demo-row-radio-buttons-group-label"
+          name="row-radio-buttons-group"
+          sx={{
+            justifyContent: "center",
+            mt: 1,
+            "& .MuiSvgIcon-root": {
+              color: "primary.main",
+            },
+          }}
+          color="primary.main"
+        >
+          <FormControlLabel
+            value="minutes"
+            control={<Radio />}
+            label="Minutes"
+          />
+          <FormControlLabel
+            value="hours"
+            control={<Radio color="primary" />}
+            label="Hours"
+          />
+          <FormControlLabel
+            value="days"
+            control={<Radio color="primary" />}
+            label="Days"
+          />
+        </RadioGroup>
+        {/* </Box> */}
+
+        {/* {!sameEndDate && (
           <MobileCarousel
             items={date.untilOptions}
             // title="Select end date"
             onItemSelect={(item) => handleItemSelect("until", item?.id)}
           />
-        )}
+        )} */}
 
-        <Typography
+        {/* <Typography
           sx={{ my: 2, fontWeight: "bold", color: palette?.text?.primary }}
         >
           Start time
@@ -255,7 +373,7 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
               />
             )}
           />
-        </Box>
+        </Box>*/}
       </Box>
 
       <Box
@@ -266,7 +384,7 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
           color="primary"
           data-testid="back-btn"
         >
-          <ArrowBackIosNewIcon />
+          <ArrowBackIosNewIcon sx={{ color: "inherit" }} />
         </IconButton>
 
         <OffliButton

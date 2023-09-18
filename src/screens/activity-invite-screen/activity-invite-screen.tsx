@@ -17,6 +17,7 @@ import BuddyItemInvite from "../../components/buddy-item-invite";
 import OffliButton from "../../components/offli-button";
 import { ActivityInviteStateEnum } from "../../types/activities/activity-invite-state-enum.dto";
 import { ActivitiyParticipantStatusEnum } from "../../types/activities/activity-participant-status-enum.dto";
+import { useBuddies } from "hooks/use-buddies";
 
 export const ActivityInviteScreen: React.FC = () => {
   const { userInfo } = React.useContext(AuthenticationContext);
@@ -37,16 +38,9 @@ export const ActivityInviteScreen: React.FC = () => {
       enabled: !!id,
     }
   );
-
-  const { data: buddies, isLoading } = useQuery(
-    ["buddies", userInfo?.id, queryStringDebounced],
-    // TODO Fetch with current user id
-    () => getBuddies(Number(userInfo?.id), queryStringDebounced),
-    {
-      // enabled: !!queryStringDebounced,
-      enabled: !!userInfo?.id,
-    }
-  );
+  const { buddies, isLoading } = useBuddies({
+    text: queryStringDebounced,
+  });
 
   const { mutate: sendInviteBuddy, isLoading: isInviting } = useMutation(
     ["invite-participant"],
@@ -125,7 +119,7 @@ export const ActivityInviteScreen: React.FC = () => {
         placeholder="Type buddy username"
         data-testid="activity-invite-buddies-input"
       />
-      {buddies?.data && buddies?.data?.length < 1 ? (
+      {buddies && buddies?.length < 1 ? (
         <Box
           sx={{
             height: 100,
@@ -159,7 +153,7 @@ export const ActivityInviteScreen: React.FC = () => {
               <CircularProgress color="primary" />
             </Box>
           ) : (
-            buddies?.data?.map((buddy) => (
+            buddies?.map((buddy) => (
               <BuddyItemInvite
                 key={buddy?.id}
                 onInviteClick={handleBuddyInviteClick}

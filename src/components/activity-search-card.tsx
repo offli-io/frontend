@@ -1,32 +1,15 @@
-import React from "react";
-import {
-  Box,
-  Card,
-  IconButton,
-  SxProps,
-  Typography,
-  useTheme,
-} from "@mui/material";
-import { IActivity, IPersonExtended } from "../types/activities/activity.dto";
-import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
-import LockIcon from "@mui/icons-material/Lock";
-import LockOpenIcon from "@mui/icons-material/LockOpen";
-import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
-import useLongPress from "../hooks/use-long-press";
-import TransparentChip from "./transparent-chip";
-import { ActivityVisibilityEnum } from "../types/activities/activity-visibility-enum.dto";
-import { format } from "date-fns";
 import NearMeIcon from "@mui/icons-material/NearMe";
-
-import activityPlaceholderImage from "../assets/img/activity-placeholder-image.svg";
-import { calculateDistance } from "../utils/calculate-distance.util";
-import { useUsers } from "../hooks/use-users";
-import { AuthenticationContext } from "../assets/theme/authentication-provider";
+import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
+import { Box, SxProps, Typography, useTheme } from "@mui/material";
+import { format } from "date-fns";
+import React from "react";
+import { IActivity } from "../types/activities/activity.dto";
 import MonetizationOnIcon from "@mui/icons-material/MonetizationOn";
-import { LatLngTuple } from "leaflet";
-import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
-import { useUser } from "../hooks/use-user";
+import activityPlaceholderImage from "../assets/img/activity-placeholder-image.svg";
+import { AuthenticationContext } from "../assets/theme/authentication-provider";
 import { useGetApiUrl } from "../hooks/use-get-api-url";
+import { useUser } from "../hooks/use-user";
+import { calculateDistance } from "../utils/calculate-distance.util";
 
 interface IMyActivityCardProps {
   activity?: IActivity;

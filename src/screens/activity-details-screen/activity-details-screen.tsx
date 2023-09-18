@@ -255,10 +255,14 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
     ? new Date(activity?.datetime_until)
     : null;
 
-  const timeDifference = getTimeDifference(dateTimeFrom, dateTimeUntil); // useMemo??
+  const {
+    durationHours = 0,
+    durationMinutes = 0,
+    durationDays = 0,
+  } = getTimeDifference(dateTimeFrom, dateTimeUntil) ?? {}; // useMemo??
 
-  const durationMinutes = timeDifference?.durationMinutes;
-  const durationHours = timeDifference?.durationHours;
+  // const durationMinutes = timeDifference?.durationMinutes;
+  // const durationHours = timeDifference?.durationHours;
 
   return isLoading ? (
     <Loader />
@@ -396,7 +400,9 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
         <ActivityVisibilityDuration
           visibility={activity?.visibility as ActivityVisibilityEnum}
           // duration={activity?.tags!}
-          duration={`${durationHours} hours, ${durationMinutes} minutes`}
+          duration={`${durationDays > 0 ? `${durationDays} days` : ""} ${
+            durationHours > 0 ? `${durationHours} hours` : ""
+          } ${durationMinutes > 0 ? `${durationMinutes} minutes` : ""}`}
           createdDateTime={
             activity?.created_at
               ? format(new Date(activity?.created_at), DATE_TIME_FORMAT)

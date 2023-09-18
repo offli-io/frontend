@@ -313,6 +313,8 @@ const ActivitiesScreen = () => {
       contentDivRef?.current?.removeEventListener("scroll", handleScroll);
   }, []);
 
+  console.log(isScrolling);
+
   return (
     <PageWrapper sxOverrides={{ px: 2 }}>
       <Box
@@ -337,7 +339,11 @@ const ActivitiesScreen = () => {
             whiteSpace: "nowrap",
             // fontWeight: "bold",
           }}
-          startIcon={<PlaceIcon sx={{ fontSize: "1.4rem", mr: -0.5 }} />}
+          startIcon={
+            <PlaceIcon
+              sx={{ fontSize: "1.4rem", mr: -0.5, color: "primary.main" }}
+            />
+          }
           onClick={handleLocationSelect}
           data-test-id="current-location-btn"
         >

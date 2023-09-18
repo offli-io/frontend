@@ -9,7 +9,7 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
-import { useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useSnackbar } from "notistack";
 import React from "react";
 import { NavigateFunction } from "react-router-dom";
@@ -26,6 +26,10 @@ import {
 import { ApplicationLocations } from "../../../types/common/applications-locations.dto";
 import { useSendBuddyRequest } from "../../profile-screen/hooks/use-send-buddy-request";
 import { isBuddy } from "../utils/is-buddy.util";
+import { isExistingPendingBuddyState } from "utils/person.util";
+import AddBuddiesActionContentd from "./add-buddies-action-content";
+import { BuddyRequestActionEnum } from "types/users";
+import { toggleBuddyInvitation } from "api/users/requests";
 
 interface IAddBuddiesContentProps {
   navigate?: NavigateFunction;
@@ -37,11 +41,16 @@ const AddBuddiesContent: React.FC<IAddBuddiesContentProps> = ({ navigate }) => {
   const { userInfo } = React.useContext(AuthenticationContext);
   const { shadows } = useTheme();
   const [usernameDebounced] = useDebounce(username, 150);
+  const abortControllerRef = React.useRef<AbortController | null>(null);
+
   const { toggleDrawer } = React.useContext(DrawerContext);
 
   //TODO polish this avoid erorrs that cause whole application down
-  const { data: { data = [] } = {}, isLoading } = useUsers({
-    username: usernameDebounced,
+  const { users, buddieStates, isLoading } = useUsers({
+    params: {
+      username: usernameDebounced,
+      buddyIdToCheckInBuddies: userInfo?.id,
+    },
   });
 
   const queryClient = useQueryClient();
@@ -51,12 +60,46 @@ const AddBuddiesContent: React.FC<IAddBuddiesContentProps> = ({ navigate }) => {
       onSuccess: () => {
         queryClient.invalidateQueries(["buddy-state"]);
         queryClient.invalidateQueries(["buddies"]);
+        queryClient.invalidateQueries(["users"]);
       },
     }
   );
 
-  const { data: { data: buddies = [] } = {}, isLoading: areBuddiesLoading } =
-    useBuddies();
+  const { mutate: sendAcceptBuddyRequest, isLoading: isTogglingBuddyRequest } =
+    useMutation(
+      (buddyToBeId?: number) => {
+        abortControllerRef.current = new AbortController();
+
+        return toggleBuddyInvitation(
+          userInfo?.id,
+          buddyToBeId,
+          BuddyRequestActionEnum.CONFIRM
+          //   abortControllerRef.current.signal
+        );
+      },
+      {
+        onSuccess: (data, variables) => {
+          queryClient.invalidateQueries(["buddies"]);
+          queryClient.invalidateQueries(["buddy-state"]);
+          queryClient.invalidateQueries(["users"]);
+          queryClient.invalidateQueries(["user"]);
+
+          enqueueSnackbar(
+            "You have successfully confirmed user as your buddy",
+            {
+              variant: "success",
+            }
+          );
+        },
+        onError: (error, variables) => {
+          enqueueSnackbar("Failed to add user as your buddy", {
+            variant: "error",
+          });
+        },
+      }
+    );
+
+  const { buddies, isLoading: areBuddiesLoading } = useBuddies();
 
   const handleBuddyActionsClick = React.useCallback(
     (buddy?: IPerson) => {
@@ -76,9 +119,17 @@ const AddBuddiesContent: React.FC<IAddBuddiesContentProps> = ({ navigate }) => {
   );
 
   const handleAddBuddy = React.useCallback(
-    (e: React.MouseEvent<HTMLButtonElement>, user?: IPerson) => {
+    (e: React.MouseEvent<HTMLButtonElement>, userId?: number) => {
       e.stopPropagation();
-      handleSendBuddyRequest(user?.id);
+      handleSendBuddyRequest(userId);
+    },
+    [handleSendBuddyRequest]
+  );
+
+  const handleAcceptBuddyRequest = React.useCallback(
+    (e: React.MouseEvent<HTMLButtonElement>, userId?: number) => {
+      e.stopPropagation();
+      sendAcceptBuddyRequest(userId);
     },
     [handleSendBuddyRequest]
   );
@@ -120,7 +171,7 @@ const AddBuddiesContent: React.FC<IAddBuddiesContentProps> = ({ navigate }) => {
       />
 
       <Box sx={{ overflowY: "auto", height: "100%" }}>
-        {(data ?? [])?.length < 1 && !isLoading ? (
+        {users?.length < 1 && !isLoading ? (
           <Box
             sx={{
               height: 100,
@@ -147,7 +198,7 @@ const AddBuddiesContent: React.FC<IAddBuddiesContentProps> = ({ navigate }) => {
                 <CircularProgress color="primary" />
               </Box>
             ) : (
-              data
+              users
                 ?.filter(
                   (user) =>
                     user?.id !== userInfo?.id && !isBuddy(buddies, user?.id)
@@ -158,11 +209,15 @@ const AddBuddiesContent: React.FC<IAddBuddiesContentProps> = ({ navigate }) => {
                     buddy={user}
                     onClick={(_user) => handleBuddyActionsClick(_user)}
                     actionContent={
-                      isBuddy(buddies, user?.id) ? null : (
-                        <IconButton onClick={(e) => handleAddBuddy(e, user)}>
-                          <PersonAddIcon color="primary" />
-                        </IconButton>
-                      )
+                      <AddBuddiesActionContentd
+                        buddieStates={buddieStates}
+                        userId={user?.id}
+                        onAddBuddyClick={handleAddBuddy}
+                        onAcceptBuddyRequestClick={handleAcceptBuddyRequest}
+                        isLoading={
+                          isSendingBuddyRequest || isTogglingBuddyRequest
+                        }
+                      />
                     }
                   />
                 ))
