@@ -8,6 +8,8 @@ export interface IUseUsersParams {
   params?: IUsersSearchParamsDto;
 }
 
+export const PAGED_USERS_QUERY_KEY = "paged-users";
+
 export const useUsers = ({
   params: { username, ...restParams } = {},
 }: IUseUsersParams) => {

@@ -80,14 +80,13 @@ const AddBuddiesActionContent: React.FC<IAddBuddiesActionContentProps> = ({
   }
 
   return (
-    <>
-      <IconButton
-        onClick={(e) => onAddBuddyClick?.(e, userId)}
-        disabled={isLoading}
-      >
-        <PersonAddIcon color="primary" />
-      </IconButton>
-    </>
+    <IconButton
+      onClick={(e) => onAddBuddyClick?.(e, userId)}
+      disabled={isLoading}
+      color="primary"
+    >
+      <PersonAddIcon sx={{ color: "inherit" }} />
+    </IconButton>
   );
 };
 
