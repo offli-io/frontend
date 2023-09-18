@@ -97,9 +97,9 @@ const ProfileGallery: React.FC<IProfileGalleryProps> = ({
             size="small"
             variant="outlined"
             sx={{ fontSize: 16, mt: 2 }}
-            startIcon={<InstagramIcon />}
+            startIcon={<InstagramIcon sx={{ color: "primary.main" }} />}
           >
-            Connect instagram
+            Connect Instagram
           </OffliButton>
         </Box>
       ) : null}
