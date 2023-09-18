@@ -324,7 +324,7 @@ const ActivitiesScreen = () => {
           mb: 1,
         }}
       >
-        <Typography variant="h2" sx={{ color: palette?.text?.primary }}>
+        <Typography variant="h4" sx={{ color: palette?.text?.primary }}>
           Explore
         </Typography>
         <OffliButton
@@ -422,7 +422,7 @@ const ActivitiesScreen = () => {
                   mt: 1,
                 }}
               >
-                <Typography variant="h2" sx={{ color: palette?.text?.primary }}>
+                <Typography variant="h4" sx={{ color: palette?.text?.primary }}>
                   Your upcoming this week
                 </Typography>
                 {/* <OffliButton
