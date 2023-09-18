@@ -110,6 +110,15 @@ const FiltersDrawerContent: React.FC<IFiltersDrawerContentProps> = ({
     }
   }, [filters?.tags, setSelectedTags]);
 
+  // possible filters -
+  //   const (
+  //     SortSoonest  Sort = "soonest"
+  //     SortNearest  Sort = "nearest"
+  //     SortCheapest Sort = "cheapest"
+  //     SortPopular  Sort = "popular"
+  //     SortRecent   Sort = "recent"
+  // )
+
   return (
     <Box
       sx={{

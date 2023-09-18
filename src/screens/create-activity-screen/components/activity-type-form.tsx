@@ -77,6 +77,9 @@ export const ActivityTypeForm: React.FC<IActivityTypeFormProps> = ({
           flexWrap: "wrap",
           justifyContent: "space-between",
           width: "100%",
+          height: "100%",
+          overflow: "scroll",
+          pr: 2,
         }}
       >
         {isLoading ? (
@@ -118,7 +121,12 @@ export const ActivityTypeForm: React.FC<IActivityTypeFormProps> = ({
       </Box>
 
       <Box
-        sx={{ width: "100%", display: "flex", justifyContent: "space-between" }}
+        sx={{
+          width: "100%",
+          display: "flex",
+          justifyContent: "space-between",
+          mt: 2,
+        }}
       >
         <IconButton
           onClick={onBackClicked}

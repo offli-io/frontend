@@ -323,6 +323,26 @@ export const getUsers = ({ username, ...params }: IUsersSearchParamsDto) => {
   return promise;
 };
 
+export const getUsersPromiseResolved = async ({
+  username,
+  ...params
+}: IUsersSearchParamsDto) => {
+  const validUsername = username ?? localStorage.getItem("username");
+
+  const promise = await axios.get<IUsersResponseDto>(
+    `${DEFAULT_DEV_URL}/users`,
+    {
+      params: {
+        username: username ? validUsername : undefined,
+        ...params,
+      },
+      // cancelToken: source?.token,
+    }
+  );
+
+  return promise?.data?.users;
+};
+
 export const getUser = ({ id, requestingInfoUserId }: IUsersParamsDto) => {
   const CancelToken = axios.CancelToken;
   const source = CancelToken.source();
