@@ -32,7 +32,7 @@ import { ApplicationLocations } from "../../../types/common/applications-locatio
 import { useSendBuddyRequest } from "../../profile-screen/hooks/use-send-buddy-request";
 import { isBuddy } from "../utils/is-buddy.util";
 import { isExistingPendingBuddyState } from "utils/person.util";
-import AddBuddiesActionContentd from "./add-buddies-action-content";
+import AddBuddiesActionContent from "./add-buddies-action-content";
 import { BuddyRequestActionEnum } from "types/users";
 import { toggleBuddyInvitation } from "api/users/requests";
 import {
@@ -71,7 +71,7 @@ const AddBuddiesContent: React.FC<IAddBuddiesContentProps> = ({ navigate }) => {
     isFetching,
     isFetchingNextPage,
   } = useInfiniteQuery(
-    [PAGED_USERS_QUERY_KEY],
+    [PAGED_USERS_QUERY_KEY, usernameDebounced],
     ({ pageParam = 0 }) =>
       getUsersPromiseResolved({
         offset: pageParam,
@@ -277,7 +277,7 @@ const AddBuddiesContent: React.FC<IAddBuddiesContentProps> = ({ navigate }) => {
                       buddy={user}
                       onClick={(_user) => handleBuddyActionsClick(_user)}
                       actionContent={
-                        <AddBuddiesActionContentd
+                        <AddBuddiesActionContent
                           buddieStates={buddieStates}
                           userId={user?.id}
                           onAddBuddyClick={handleAddBuddy}
