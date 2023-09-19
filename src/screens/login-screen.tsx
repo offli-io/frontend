@@ -123,6 +123,8 @@ const LoginScreen: React.FC = () => {
     }
   }, [googleToken]);
 
+  console.log(isGoogleAuthorizationLoading);
+
   return (
     <>
       <OffliBackButton
@@ -153,7 +155,9 @@ const LoginScreen: React.FC = () => {
             startIcon={<GoogleIcon sx={{ filter: "invert(100%)" }} />}
             onClick={handleGoogleAuthorization}
             sx={{ mb: 1 }}
-            disabled={isLoading || isGoogleAuthorizationLoading}
+            disabled={
+              isLoading || isGoogleAuthorizationLoading || isGoogleLoginLoading
+            }
           >
             Sign in with Google
           </OffliButton>
@@ -216,7 +220,9 @@ const LoginScreen: React.FC = () => {
           data-testid="submit-btn"
           sx={{ width: "80%", mb: 5 }}
           type="submit"
-          isLoading={isLoading || isGoogleAuthorizationLoading}
+          isLoading={
+            isLoading || isGoogleAuthorizationLoading || isGoogleLoginLoading
+          }
           disabled={!formState?.isValid}
         >
           Login
