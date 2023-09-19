@@ -10,20 +10,19 @@ import { connectInstagram, getBuddyState } from "../../api/users/requests";
 import userPlaceholder from "../../assets/img/user-placeholder.svg";
 import { AuthenticationContext } from "../../assets/theme/authentication-provider";
 import ActionButton from "../../components/action-button";
+import OffliButton from "../../components/offli-button";
 import { PageWrapper } from "../../components/page-wrapper";
 import ProfileGallery from "../../components/profile-gallery";
 import ProfileStatistics from "../../components/profile-statistics";
+import { useGetApiUrl } from "../../hooks/use-get-api-url";
 import { useUser } from "../../hooks/use-user";
 import { ApplicationLocations } from "../../types/common/applications-locations.dto";
 import { ICustomizedLocationStateDto } from "../../types/common/customized-location-state.dto";
-import { ProfileEntryTypeEnum } from "./types/profile-entry-type";
-import OffliButton from "../../components/offli-button";
-import { useToggleBuddyRequest } from "./hooks/use-toggle-buddy-request";
 import { BuddyRequestActionEnum } from "../../types/users/buddy-request-action-enum.dto";
-import { deleteNotification } from "../../api/notifications/requests";
-import { useGetApiUrl } from "../../hooks/use-get-api-url";
-import { useSendBuddyRequest } from "./hooks/use-send-buddy-request";
 import { BuddyStateEnum } from "../../types/users/buddy-state-enum.dto";
+import { useSendBuddyRequest } from "./hooks/use-send-buddy-request";
+import { useToggleBuddyRequest } from "./hooks/use-toggle-buddy-request";
+import { ProfileEntryTypeEnum } from "./types/profile-entry-type";
 import { generateBuddyActionButtonLabel } from "./utils/generate-buddy-action-button-label.util";
 
 interface IProfileScreenProps {
