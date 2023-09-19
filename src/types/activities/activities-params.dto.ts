@@ -8,4 +8,5 @@ export interface IActivitiesParamsDto {
   lon?: number;
   lat?: number;
   participantId?: number;
+  sort?: string;
 }

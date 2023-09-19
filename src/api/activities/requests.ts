@@ -110,6 +110,7 @@ export const getActivity = <T>({
   offset,
   lon,
   lat,
+  sort,
   participantId,
 }: IActivitiesParamsDto) => {
   const promise = axios.get<T>(
@@ -124,6 +125,7 @@ export const getActivity = <T>({
         lon,
         lat,
         participantId,
+        sort,
       },
       paramsSerializer: (params) => {
         return qs.stringify(params, { arrayFormat: "repeat" });

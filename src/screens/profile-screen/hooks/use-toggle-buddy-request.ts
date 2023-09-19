@@ -1,12 +1,11 @@
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useSnackbar } from "notistack";
 import React from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useLocation, useNavigate } from "react-router-dom";
 import { toggleBuddyInvitation } from "../../../api/users/requests";
 import { AuthenticationContext } from "../../../assets/theme/authentication-provider";
-import { BuddyRequestActionEnum } from "../../../types/users/buddy-request-action-enum.dto";
-import { useLocation, useNavigate } from "react-router-dom";
 import { ICustomizedLocationStateDto } from "../../../types/common/customized-location-state.dto";
-import { deleteNotification } from "../../../api/notifications/requests";
+import { BuddyRequestActionEnum } from "../../../types/users/buddy-request-action-enum.dto";
 
 interface IToggleBuddyRequestValues {
   status?: BuddyRequestActionEnum;
@@ -31,29 +30,6 @@ export const useToggleBuddyRequest = ({
   )?.notificationId;
 
   const navigate = useNavigate();
-
-  const { mutate: sendDeleteNotification } = useMutation(
-    ["mark-notification"],
-    () => {
-      abortControllerRef.current = new AbortController();
-      return deleteNotification(
-        Number(notificationId),
-        abortControllerRef.current?.signal
-      );
-    },
-    {
-      onSuccess: (data, variables) => {
-        queryClient.invalidateQueries(["notifications"]);
-        from && navigate(from);
-      },
-      onError: () => {
-        from && navigate(from);
-        enqueueSnackbar("Failed to delete notification", {
-          variant: "error",
-        });
-      },
-    }
-  );
 
   const { mutate: sendToggleBuddyRequest, isLoading: isTogglingBuddyRequest } =
     useMutation(
@@ -83,13 +59,7 @@ export const useToggleBuddyRequest = ({
               variant: "success",
             });
           }
-
-          if (!!onSuccess) {
-            onSuccess?.();
-          } else {
-            // TODO we can be accepting from users search not only from notifications
-            sendDeleteNotification();
-          }
+          onSuccess?.();
         },
         onError: (error, variables) => {
           enqueueSnackbar(

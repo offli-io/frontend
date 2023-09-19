@@ -72,7 +72,7 @@ const AddBuddiesActionContent: React.FC<IAddBuddiesActionContentProps> = ({
         disabled
         size="small"
         variant="contained"
-        sx={{ fontSize: 12 }}
+        sx={{ fontSize: 12, minWidth: 100 }}
       >
         Request sent
       </OffliButton>
