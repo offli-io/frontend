@@ -1,5 +1,3 @@
-import LockIcon from "@mui/icons-material/Lock";
-import LockOpenIcon from "@mui/icons-material/LockOpen";
 import MenuIcon from "@mui/icons-material/Menu";
 
 import { Box, IconButton, Typography, useTheme } from "@mui/material";
@@ -299,9 +297,11 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
           }}
         >
           <Typography
-            variant="h2"
-            align="left"
+            variant="h1"
+            align="center"
             sx={{
+              ml: 1,
+              mr: 1,
               overflow: "hidden",
               wordWrap: "break-word",
               // filter: "invert(100%)",
@@ -344,12 +344,14 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
               }
               alt="profile"
               style={{
-                height: 35,
+                height: 40,
+                width: 40,
                 aspectRatio: 1,
                 borderRadius: "50%",
-                boxShadow: shadows?.[2],
+                borderWidth: "2px",
+                borderColor: palette?.primary?.main,
+                borderStyle: "solid",
                 margin: 1,
-                position: "relative",
               }}
             />
             <Icon
@@ -358,9 +360,12 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
               style={{
                 position: "absolute",
                 left: -4,
-                top: -6,
+                top: -7,
                 fontSize: 12,
                 color: palette?.primary?.main,
+                border: "0.5px solid white",
+                borderRadius: "50%",
+                backgroundColor: "white",
                 // boxShadow: shadows[1],
               }}
             />
@@ -369,6 +374,7 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
               sx={{
                 ml: 1,
                 fontSize: 16,
+                // fontWeight: "bold",
                 color: ({ palette }) => palette?.text?.primary,
               }}
             >
@@ -399,7 +405,7 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
 
         <ActivityVisibilityDuration
           visibility={activity?.visibility as ActivityVisibilityEnum}
-          // duration={activity?.tags!}
+          description={activity?.description}
           duration={`${durationDays > 0 ? `${durationDays} days` : ""} ${
             durationHours > 0 ? `${durationHours} hours` : ""
           } ${durationMinutes > 0 ? `${durationMinutes} minutes` : ""}`}

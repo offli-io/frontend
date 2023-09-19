@@ -15,8 +15,6 @@ const ActivityTags: React.FC<IProps> = ({ tags, sx }) => {
         display: "flex",
         alignItems: "center",
         justifyContent: "space-evenly",
-        my: 2,
-        px: 3,
         flexWrap: "wrap",
         ...sx,
         // overflowWrap: "wrap",
@@ -35,8 +33,6 @@ const ActivityTags: React.FC<IProps> = ({ tags, sx }) => {
             fontSize: "14px",
             fontWeight: "bold",
             textTransform: "capitalize",
-            mx: 1,
-            my: 0.5,
           }}
           color="primary"
         />
