@@ -335,6 +335,18 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
         >
           <Box
             sx={{ display: "flex", alignItems: "center", position: "relative" }}
+            onClick={() => {
+              if (activity?.creator?.id !== userInfo?.id) {
+                navigate(
+                  `${ApplicationLocations.USER_PROFILE}/${activity?.creator?.id}`,
+                  {
+                    state: {
+                      from: location?.pathname,
+                    },
+                  }
+                );
+              }
+            }}
           >
             <img
               src={
