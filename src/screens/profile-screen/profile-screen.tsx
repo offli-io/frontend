@@ -188,8 +188,8 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
           }}
         >
           <Typography
-            variant="h4"
-            sx={{ mb: 2, color: palette?.text?.primary, mt: "30px" }}
+            variant="h2"
+            sx={{ mb: 2, color: palette?.text?.primary, mt: 1 }}
           >
             {data?.username}
           </Typography>
@@ -209,7 +209,7 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
               // backgroundColor: theme?.palette?.inactive as string,
               // border: '2px solid primary.main', //nejde pica
               border: `2px solid ${palette?.primary?.main}`,
-              boxShadow: "5px 5px 20px 0px rgba(0,0,0,0.6)",
+              boxShadow: "5px 5px 10px 0px rgba(0,0,0,0.6)",
             }}
             data-testid="profile-img"
           />
@@ -259,14 +259,18 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
                 // justifyContent: 'flex-start',
               }}
             >
-              <Box sx={{ display: "flex", alignItems: "center", mt: "20px" }}>
+              <Box sx={{ display: "flex", alignItems: "center", mt: 2 }}>
                 <IconButton
                   sx={{ paddingRight: 0, color: palette?.text?.primary, mr: 1 }}
                 >
                   <LocationOnIcon sx={{ fontSize: 20 }} />
                 </IconButton>
                 <Typography
-                  sx={{ color: palette?.text.primary, maxWidth: 250 }}
+                  sx={{
+                    color: palette?.text.primary,
+                    maxWidth: 250,
+                    fontWeight: "bolder",
+                  }}
                 >
                   {data?.location?.name}
                 </Typography>
@@ -282,6 +286,7 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
                 width: "80%",
                 color: palette?.text?.primary,
                 mt: "20px",
+                textAlign: "center",
               }}
             >
               {data?.about_me}
