@@ -35,12 +35,14 @@ code {
 }
 
 .marker-cluster-small,
-.marker-cluster-medium {
+.marker-cluster-medium,
+.marker-cluster-large {
   background-color: #e4e3ff !important;
 }
 
 .marker-cluster-small div,
-.marker-cluster-medium div {
+.marker-cluster-medium div,
+.marker-cluster-large div {
   background-color: #e4e3ff !important;
   color: #000 !important;
   font-weight: bolder !important;

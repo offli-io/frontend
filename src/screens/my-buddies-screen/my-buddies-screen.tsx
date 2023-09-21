@@ -51,7 +51,7 @@ const MyBuddiesScreen = () => {
   const from =
     (location?.state as ICustomizedLocationStateDto)?.from ??
     ApplicationLocations.PROFILE;
-  const { data, isLoading, invalidateBuddies } = useBuddies({
+  const { buddies, isLoading, invalidateBuddies } = useBuddies({
     text: currentSearch,
   });
 
@@ -157,7 +157,7 @@ const MyBuddiesScreen = () => {
   return (
     <>
       <Box sx={{ mx: 1.5, height: "100%" }}>
-        {(!data || (data?.data?.length === 0 && currentSearch?.length === 0)) &&
+        {(!buddies || (buddies?.length === 0 && currentSearch?.length === 0)) &&
         !isLoading ? (
           <NoBuddiesScreen onAddBuddiesClick={handleAddBuddies} />
         ) : (
@@ -209,7 +209,7 @@ const MyBuddiesScreen = () => {
                 sx={{ fontSize: 14, ml: 1 }}
                 onClick={handleAddBuddies}
               >
-                <PersonAddIcon color="primary" />
+                <PersonAddIcon sx={{ color: "primary.main" }} />
               </IconButton>
             </Box>
             {(recommendedBuddiesData?.data ?? [])?.length > 0 && (
@@ -250,7 +250,7 @@ const MyBuddiesScreen = () => {
               <Typography variant="h5" sx={{ mt: 2, mb: 1 }}>
                 Your buddies
               </Typography>
-              {(data?.data ?? [])?.length < 1 ? (
+              {(buddies ?? [])?.length < 1 ? (
                 <Box
                   sx={{
                     height: "100%",
@@ -286,7 +286,7 @@ const MyBuddiesScreen = () => {
                       <CircularProgress color="primary" />
                     </Box>
                   ) : (
-                    data?.data.map((buddy) => (
+                    buddies?.map((buddy) => (
                       <BuddyItem
                         key={buddy?.id}
                         buddy={buddy}

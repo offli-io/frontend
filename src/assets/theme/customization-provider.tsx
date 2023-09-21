@@ -67,9 +67,11 @@ const createCustomizationTheme = (mode: PaletteMode = "light") => {
       },
       MuiTypography: {
         styleOverrides: {
-          root: {
+          root: ({ theme }) => ({
             fontFamily: "Roboto",
-          },
+            color: theme?.palette?.text?.primary,
+            // ...(mode === "dark" ? { filter: "invert(100%)" } : {}),
+          }),
           h1: {
             fontSize: 32,
             fontWeight: "bold",
@@ -107,6 +109,23 @@ const createCustomizationTheme = (mode: PaletteMode = "light") => {
             fontSize: 16,
             color: theme.palette.inactiveFont.main,
             // fontWeight: 'bold',
+          }),
+        },
+      },
+      MuiSvgIcon: {
+        styleOverrides: {
+          root: ({ theme }) => ({
+            fontFamily: "Roboto",
+            color: theme?.palette?.text?.primary,
+            // ...(mode === "dark" ? { filter: "invert(100%)" } : {}),
+          }),
+        },
+      },
+      MuiCheckbox: {
+        styleOverrides: {
+          root: ({ theme }) => ({
+            color: theme?.palette?.primary?.main,
+            // ...(mode === "dark" ? { filter: "invert(100%)" } : {}),
           }),
         },
       },

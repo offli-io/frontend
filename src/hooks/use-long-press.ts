@@ -12,17 +12,6 @@ export default function useLongPress({
   const timerRef = React.useRef<any>();
   const isLongPress = React.useRef<boolean>();
 
-  function startPressTimer() {
-    isLongPress.current = false;
-    timerRef.current = setTimeout(() => {
-      isLongPress.current = true;
-      console.log(isScrolling);
-
-      onLongPress?.();
-      // setAction("longpress");
-    }, 500);
-  }
-
   function handleOnClick() {
     if (isLongPress.current) {
       console.log("Is long press - not continuing.");
@@ -31,21 +20,38 @@ export default function useLongPress({
     setAction("click");
   }
 
-  function handleOnMouseDown() {
-    console.log(isScrolling);
+  function startPressTimer() {
+    isLongPress.current = false;
+    timerRef.current = setTimeout(() => {
+      isLongPress.current = true;
+      console.log(isScrolling);
+      onLongPress?.();
+    }, 500);
+  }
+
+  function handleOnMouseDown(e: any) {
+    console.log(e);
+    console.log(e?.clientY);
     startPressTimer();
   }
 
-  function handleOnMouseUp() {
+  function handleOnMouseUp(e: any) {
+    console.log(e?.clientY);
+
     clearTimeout(timerRef.current);
   }
 
-  function handleOnTouchStart() {
+  function handleOnTouchStart(e: any) {
+    console.log(e);
+    console.log(e?.clientY);
+    //compare e?.changedTouches?.[0]?.clientY alebo pageY
     console.log("handleOnTouchStart");
     startPressTimer();
   }
 
-  function handleOnTouchEnd() {
+  function handleOnTouchEnd(e: any) {
+    console.log(e);
+    console.log(e?.clientY);
     if (action === "longpress") return;
     console.log("handleOnTouchEnd");
     clearTimeout(timerRef.current);

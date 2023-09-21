@@ -1,21 +1,16 @@
-import React from "react";
 import { Box, Typography } from "@mui/material";
-import BackHeader from "../../components/back-header";
-import { AuthenticationContext } from "../../assets/theme/authentication-provider";
-import { setAuthToken } from "../../utils/token.util";
-import { useLocation, useNavigate } from "react-router-dom";
-import { ApplicationLocations } from "../../types/common/applications-locations.dto";
-import { useNotifications } from "../../hooks/use-notifications";
-import NotificationRequest from "../../components/notification-request";
-import { INotificationDto } from "../../types/notifications/notification.dto";
-import { NotificationTypeEnum } from "../../types/notifications/notification-type-enum";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import {
-  deleteNotification,
-  markNotificationAsSeen,
-} from "../../api/notifications/requests";
 import { useSnackbar } from "notistack";
+import React from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { markNotificationAsSeen } from "../../api/notifications/requests";
+import { AuthenticationContext } from "../../assets/theme/authentication-provider";
+import NotificationRequest from "../../components/notification-request";
+import { useNotifications } from "../../hooks/use-notifications";
+import { ApplicationLocations } from "../../types/common/applications-locations.dto";
 import { ICustomizedLocationStateDto } from "../../types/common/customized-location-state.dto";
+import { NotificationTypeEnum } from "../../types/notifications/notification-type-enum";
+import { INotificationDto } from "../../types/notifications/notification.dto";
 
 const NotificationsScreen = () => {
   const { userInfo } = React.useContext(AuthenticationContext);

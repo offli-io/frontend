@@ -10,7 +10,11 @@ interface IProps {
 const ActivityDescriptionTags: React.FC<IProps> = ({ description, tags }) => {
   return (
     <>
-      <Typography variant="h5" align="left" sx={{ mt: 1 }}>
+      <Typography
+        variant="h5"
+        align="left"
+        sx={{ mt: 1, color: ({ palette }) => palette?.text?.primary }}
+      >
         Additional description
       </Typography>
       <ActivityTags tags={tags} sx={{ mt: 1, mb: 0 }} />

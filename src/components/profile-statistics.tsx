@@ -66,7 +66,9 @@ const ProfileStatistics: React.FC<IProps> = ({
                 data-testid="participated-statistics"
               >
                 <IconButton color="primary">
-                  <OfflineBoltIcon sx={{ fontSize: 30 }} />
+                  <OfflineBoltIcon
+                    sx={{ fontSize: 30, color: "primary.main" }}
+                  />
                 </IconButton>
                 <Typography
                   align="center"
@@ -90,7 +92,7 @@ const ProfileStatistics: React.FC<IProps> = ({
                 data-testid="enjoyed-statistics"
               >
                 <IconButton color="primary">
-                  <FavoriteIcon sx={{ fontSize: 30 }} />
+                  <FavoriteIcon sx={{ fontSize: 30, color: "primary.main" }} />
                 </IconButton>
                 <Typography
                   align="center"
@@ -113,7 +115,9 @@ const ProfileStatistics: React.FC<IProps> = ({
                 data-testid="created-statistics"
               >
                 <IconButton color="primary" sx={{ padding: "2%" }}>
-                  <AddRoundedIcon sx={{ fontSize: 40 }} />
+                  <AddRoundedIcon
+                    sx={{ fontSize: 40, color: "primary.main" }}
+                  />
                 </IconButton>
                 <Typography
                   align="center"
@@ -137,7 +141,7 @@ const ProfileStatistics: React.FC<IProps> = ({
                 data-testid="new-buddies-statistics"
               >
                 <IconButton color="primary">
-                  <PeopleAltIcon sx={{ fontSize: 30 }} />
+                  <PeopleAltIcon sx={{ fontSize: 30, color: "primary.main" }} />
                 </IconButton>
                 <Typography
                   align="center"

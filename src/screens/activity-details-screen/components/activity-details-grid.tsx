@@ -77,17 +77,13 @@ const ActivityDetailsGrid: React.FC<IProps> = ({ activity, onActionClick }) => {
         rowGap: 0.5,
         columnGap: 2,
         ml: 0.2,
-        mt: 0.5,
+        mt: 5,
       }}
     >
       <StyledBox>
         <IconButton color="primary" sx={{ p: 0 }}>
-          <PeopleAltIcon sx={{ fontSize: 26 }} />
+          <PeopleAltIcon sx={{ fontSize: 26, color: "primary.main" }} />
         </IconButton>
-        {/* <Typography variant="h5" sx={{ mb: 1 }}>
-          Who?
-        </Typography> */}
-
         <OffliButton
           onClick={() =>
             navigate(
@@ -100,7 +96,6 @@ const ActivityDetailsGrid: React.FC<IProps> = ({ activity, onActionClick }) => {
             )
           }
           variant="text"
-          // endIcon={<PeopleAltIcon sx={{ fontSize: 26 }} />}
           size="small"
           sx={{
             textDecoration: "none",
@@ -117,11 +112,9 @@ const ActivityDetailsGrid: React.FC<IProps> = ({ activity, onActionClick }) => {
       </StyledBox>
       <StyledBox>
         <IconButton color="primary" sx={{ p: 0 }}>
-          <CalendarTodayIcon sx={{ fontSize: 26 }} />
+          <CalendarTodayIcon sx={{ fontSize: 26, color: "primary.main" }} />
         </IconButton>
-        {/* <Typography variant="h5" sx={{ mb: 1 }}>
-          When?
-        </Typography> */}
+
         <OffliButton
           onClick={() => onActionClick?.(IGridAction.GOOGLE_CALENDAR)}
           variant="text"
@@ -145,7 +138,7 @@ const ActivityDetailsGrid: React.FC<IProps> = ({ activity, onActionClick }) => {
       </StyledBox>
       <StyledBox>
         <IconButton color="primary" sx={{ p: 0 }}>
-          <RoomIcon sx={{ fontSize: 26 }} />
+          <RoomIcon sx={{ fontSize: 26, color: "primary.main" }} />
         </IconButton>
         {/* <Typography variant="h5" sx={{ mb: 1 }}>
           Where?
@@ -176,16 +169,11 @@ const ActivityDetailsGrid: React.FC<IProps> = ({ activity, onActionClick }) => {
       </StyledBox>
       <StyledBox>
         <IconButton color="primary" sx={{ p: 0 }}>
-          <MonetizationOnIcon sx={{ fontSize: 26 }} />
+          <MonetizationOnIcon sx={{ fontSize: 26, color: "primary.main" }} />
         </IconButton>
-        {/* <Typography variant="h5" sx={{ mb: 1 }}>
-          How much?
-        </Typography> */}
-
         <OffliButton
           onClick={() => console.log("show on map")}
           variant="text"
-          // endIcon={<MonetizationOnIcon sx={{ fontSize: 26 }} />}
           size="small"
           sx={{
             textDecoration: "none",

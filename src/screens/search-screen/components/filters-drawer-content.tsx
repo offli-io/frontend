@@ -32,14 +32,18 @@ const FiltersDrawerContent: React.FC<IFiltersDrawerContentProps> = ({
   const { data, isLoading } = useTags();
   const [selectedFilter, setSelectedFilter] = React.useState<
     string | undefined
-  >(filters?.filter ?? Object.keys(RadioGroupDataDefinitionsEnum)[0]);
+  >(filters?.filter ?? undefined);
   const [dateOptions, setDateOptions] = React.useState(
     generateDateSlots(false)
   );
   const [selectedTags, setSelectedTags] = React.useState<string[]>(
     filters?.tags ?? []
   );
+
+  const [filtersTouched, setFiltersTouched] = React.useState(false);
   const theme = useTheme();
+
+  console.log(filtersTouched);
 
   React.useEffect(() => {
     if (filters?.date) {
@@ -65,6 +69,7 @@ const FiltersDrawerContent: React.FC<IFiltersDrawerContentProps> = ({
           selected: option?.id === item?.id,
         }))
       );
+      setFiltersTouched(true);
     },
     [dateOptions]
   );
@@ -102,11 +107,13 @@ const FiltersDrawerContent: React.FC<IFiltersDrawerContentProps> = ({
           return [...tags, title];
         }
       });
+    setFiltersTouched(true);
   }, []);
 
   React.useEffect(() => {
     if (filters?.tags) {
       setSelectedTags(filters?.tags);
+      setFiltersTouched(true);
     }
   }, [filters?.tags, setSelectedTags]);
 
@@ -119,79 +126,115 @@ const FiltersDrawerContent: React.FC<IFiltersDrawerContentProps> = ({
         maxHeight: "70vh",
       }}
     >
-      <Box>
-        <Typography variant="h4" sx={{ my: 1 }}>
-          Set filters
-        </Typography>
-        <FormControl sx={{ mx: 1.5 }}>
-          <RadioGroup
-            aria-labelledby="filter-radio-buttons"
-            name="filter-radio-buttons"
-            value={selectedFilter}
-            onChange={(event, value) => setSelectedFilter(value)}
-          >
-            {Object.entries(RadioGroupDataDefinitionsEnum).map(
-              ([key, value]) => (
-                <FormControlLabel
-                  value={key}
-                  control={<Radio />}
-                  label={value}
-                />
-              )
-            )}
-          </RadioGroup>
-        </FormControl>
-      </Box>
-      <Box>
-        <Typography variant="h4" sx={{ my: 1 }}>
-          Select date
-        </Typography>
-        <Box sx={{ mx: 1.5, display: "flex" }}>
-          <MobileCarousel
-            items={dateOptions}
-            onItemSelect={handleDateSelect}
-            onSlotAdd={handleDateAdd}
-            sx={{ py: `${theme.spacing(1)} !important` }}
-          />
+      <Box sx={{ flex: 6, overflow: "scroll" }}>
+        <Box>
+          <Typography variant="h4" sx={{ my: 1 }}>
+            Set filters
+          </Typography>
+          <FormControl sx={{ mx: 1.5 }}>
+            <RadioGroup
+              aria-labelledby="filter-radio-buttons"
+              name="filter-radio-buttons"
+              value={selectedFilter}
+              sx={{
+                mt: 1,
+                "& .MuiSvgIcon-root": {
+                  color: "primary.main",
+                },
+              }}
+            >
+              {Object.entries(RadioGroupDataDefinitionsEnum).map(
+                ([key, value]) => (
+                  <FormControlLabel
+                    value={value}
+                    control={
+                      <Radio
+                        onClick={(event: any) => {
+                          if (event?.target?.value === selectedFilter) {
+                            setSelectedFilter(undefined);
+                          } else {
+                            // console.log(value);
+                            setFiltersTouched(true);
+                            setSelectedFilter(event?.target?.value);
+                          }
+                        }}
+                      />
+                    }
+                    label={value}
+                  />
+                )
+              )}
+            </RadioGroup>
+          </FormControl>
+        </Box>
+        <Box>
+          <Typography variant="h4" sx={{ my: 1 }}>
+            Select date
+          </Typography>
+          <Box sx={{ mx: 1.5, display: "flex" }}>
+            <MobileCarousel
+              items={dateOptions}
+              onItemSelect={handleDateSelect}
+              onSlotAdd={handleDateAdd}
+              sx={{ py: `${theme.spacing(1)} !important` }}
+            />
+          </Box>
+        </Box>
+
+        <Box>
+          <Typography variant="h4" sx={{ my: 1 }}>
+            Select tags
+          </Typography>
+          {isLoading ? (
+            <>
+              <Box sx={{ display: "flex", justifyContent: "center", my: 2 }}>
+                <CircularProgress color="primary" />
+              </Box>
+            </>
+          ) : (
+            data?.data?.tags &&
+            data?.data?.tags?.length > 0 && (
+              <Box sx={{ mx: 0.5 }}>
+                {data?.data?.tags.map((tag) => (
+                  <Chip
+                    label={tag.title}
+                    key={tag.id}
+                    sx={{ m: 1 }}
+                    color="primary"
+                    variant={
+                      selectedTags.includes(tag.title) ? "filled" : "outlined"
+                    }
+                    onClick={() => handleTagClick(tag.title)}
+                  />
+                ))}
+              </Box>
+            )
+          )}
         </Box>
       </Box>
-
-      <Box>
-        <Typography variant="h4" sx={{ my: 1 }}>
-          Select tags
-        </Typography>
-        {isLoading ? (
-          <>
-            <Box sx={{ display: "flex", justifyContent: "center", my: 2 }}>
-              <CircularProgress color="primary" />
-            </Box>
-          </>
-        ) : (
-          data?.data?.tags &&
-          data?.data?.tags?.length > 0 && (
-            <Box sx={{ mx: 0.5 }}>
-              {data?.data?.tags.map((tag) => (
-                <Chip
-                  label={tag.title}
-                  key={tag.id}
-                  sx={{ m: 1 }}
-                  color="primary"
-                  variant={
-                    selectedTags.includes(tag.title) ? "filled" : "outlined"
-                  }
-                  onClick={() => handleTagClick(tag.title)}
-                />
-              ))}
-            </Box>
-          )
-        )}
-      </Box>
-      <OffliButton
-        sx={{ width: "80%", my: 2, alignSelf: "center" }}
-        onClick={handleApplyFilters}
+      <Box
+        sx={{
+          flex: 1,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          width: "100%",
+        }}
       >
-        Apply
-      </OffliButton>
+        <OffliButton
+          sx={{
+            width: "80%",
+            my: 1,
+            alignSelf: "center",
+            // position: "absolute",
+            // bottom: 0,
+          }}
+          onClick={handleApplyFilters}
+          disabled={!filtersTouched}
+        >
+          Apply
+        </OffliButton>
+      </Box>
     </Box>
   );
 };

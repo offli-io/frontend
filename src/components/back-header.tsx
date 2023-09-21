@@ -95,11 +95,14 @@ const BackHeader: React.FC<IBackHeaderProps> = ({
               flex: 1,
               position: "absolute",
               top: 2,
-              // left: 5,
               textTransform: "none",
             }}
           >
-            <ArrowBackIosNewIcon />
+            <ArrowBackIosNewIcon
+              sx={{
+                color: "inherit",
+              }}
+            />
           </IconButton>
         )}
         <Box
@@ -110,7 +113,6 @@ const BackHeader: React.FC<IBackHeaderProps> = ({
             alignItems: "center",
             position: "absolute",
             left: "50%",
-            top: 22,
             transform: "translate(-50%, -50%)",
             // mr: 6,
           }}
