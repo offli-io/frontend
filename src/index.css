@@ -34,20 +34,14 @@ code {
   background-color: #fcfcfc;
 }
 
-.marker-cluster-small {
-  background-color: #e4e3ff !important;
-}
-
-.marker-cluster-small div {
-  background-color: #4a148c !important;
-  color: #000 !important;
-}
-
+.marker-cluster-small,
 .marker-cluster-medium {
   background-color: #e4e3ff !important;
 }
 
+.marker-cluster-small div,
 .marker-cluster-medium div {
   background-color: #e4e3ff !important;
   color: #000 !important;
+  font-weight: bolder !important;
 }
