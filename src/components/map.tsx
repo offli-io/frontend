@@ -25,30 +25,6 @@ import { CustomizationContext } from "../assets/theme/customization-provider";
 import markerIcon from "../assets/img/location-marker.svg";
 import wavePeople from "../assets/img/here-icon.svg";
 
-// function LocationMarker() {
-//   const [position, setPosition] = React.useState<LatLng | null>(null);
-//   const map = useMa({
-//     click() {
-//       map.locate();
-//     },
-//     locationfound(e) {
-//       setPosition(e.latlng);
-//       map.flyTo(e.latlng, map.getZoom());
-//     },
-//   });
-
-// const iconPerson = new L.Icon({
-//   iconUrl: require("../img/marker-pin-person.svg"),
-//   iconRetinaUrl: require("../img/marker-pin-person.svg"),
-//   // iconAnchor: null,
-//   // popupAnchor: null,
-//   // shadowUrl: null,
-//   // shadowSize: null,
-//   // shadowAnchor: null,
-//   iconSize: new L.Point(60, 75),
-//   className: "leaflet-div-icon",
-// });
-
 const RecenterAutomatically = ({
   lat,
   lon,
@@ -80,7 +56,7 @@ const offliMarkerIcon = new L.Icon({
   iconAnchor: [22.5, 22.5],
 });
 
-const peopleIcon = new L.Icon({
+const youAreHereIcon = new L.Icon({
   iconUrl: wavePeople,
   iconSize: [45, 45], // Adjust the size of the icon as needed
   iconAnchor: [22.5, 22.5],
@@ -156,24 +132,10 @@ const Map: React.FC<ILabeledTileProps> = ({
                     click: () => handleMarkerClick(id),
                   }}
                   icon={offliMarkerIcon}
-                >
-                  {/* 
-                Maybe omit popup because activity detail will be displayed with drawer
-                <Popup>
-                  <Typography
-                    variant="h6"
-                    align="center"
-                    sx={{ overflowWrap: "break-word" }}
-                  >
-                    {title}
-                  </Typography>
-                </Popup>{" "} */}
-                </Marker>
+                ></Marker>
               )
           )}
-          <Marker position={latLonTuple ?? position} icon={peopleIcon}>
-            <Popup>You are here</Popup>
-          </Marker>
+
           <RecenterAutomatically
             lat={
               isSingleActivity
@@ -187,6 +149,9 @@ const Map: React.FC<ILabeledTileProps> = ({
             }
           />
         </MarkerClusterGroup>
+        <Marker position={latLonTuple ?? position} icon={youAreHereIcon}>
+          <Popup>You are here</Popup>
+        </Marker>
       </MapContainer>
     </Box>
   );
