@@ -10,6 +10,7 @@ interface IBuddyItemProps {
   actionContent?: React.ReactNode;
   onClick?: (buddy?: IPerson) => void;
   sx?: SxProps;
+  divRef?: any;
 }
 
 const BuddyItem: React.FC<IBuddyItemProps> = ({
@@ -18,6 +19,7 @@ const BuddyItem: React.FC<IBuddyItemProps> = ({
   actionContent,
   onClick,
   sx,
+  divRef,
   ...rest
 }) => {
   const { shadows } = useTheme();
@@ -36,6 +38,7 @@ const BuddyItem: React.FC<IBuddyItemProps> = ({
         width: "100%",
         ...sx,
       }}
+      ref={divRef}
       {...rest}
     >
       <Box

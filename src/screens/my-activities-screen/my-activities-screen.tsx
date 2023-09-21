@@ -48,6 +48,8 @@ import FirstTimeLoginContent from "./components/first-time-login-content";
 import { SetLocationContent } from "./components/set-location-content";
 import { LayoutContext } from "../../app/layout";
 import { useInView } from "react-intersection-observer";
+import InfiniteScroll from "react-infinite-scroll-component";
+import Loader from "components/loader";
 
 const ActivitiesScreen = () => {
   const { ref, inView } = useInView();
@@ -103,6 +105,8 @@ const ActivitiesScreen = () => {
       }),
     }
   );
+
+  console.log(isFetchingNextPage);
 
   const {
     data: { data = {} } = {},
@@ -316,7 +320,7 @@ const ActivitiesScreen = () => {
   console.log(isScrolling);
 
   return (
-    <PageWrapper sxOverrides={{ px: 2 }}>
+    <PageWrapper sxOverrides={{ px: 2, overflow: "auto", height: "100%" }}>
       <Box
         sx={{
           display: "flex",
@@ -509,57 +513,55 @@ const ActivitiesScreen = () => {
                 Show on Map
               </OffliButton>
             </Box>
-            <Box
-              // ref={ref}
-              sx={{
-                // height: "100vh",
-                width: "100vw",
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                justifyContent: "flex-start",
-                // overflow: "auto",
-              }}
+            <InfiniteScroll
+              dataLength={(paginatedActivitiesData?.pages?.length ?? 0) * 20}
+              // height={500}
+              // height={350}
+              // height={"100%"}
+              next={() => fetchNextPage()}
+              hasMore={Boolean(hasNextPage)}
+              loader={<Loader />}
             >
-              {paginatedActivitiesData?.pages?.map((group, i) => (
-                <React.Fragment key={i}>
-                  {group?.map((activity) => (
-                    <ActivityCard
-                      key={activity?.id}
-                      activity={activity}
-                      onPress={() =>
-                        !isScrolling
-                          ? navigate(
-                              `${ApplicationLocations.ACTIVITY_DETAIL}/${activity?.id}`,
-                              {
-                                state: {
-                                  from: ApplicationLocations.ACTIVITIES,
-                                },
-                              }
-                            )
-                          : undefined
-                      }
-                      onLongPress={
-                        !isScrolling ? openActivityActions : undefined
-                      }
-                    />
-                  ))}
-                  {isFetchingNextPage ? (
-                    <Box
-                      sx={{
-                        display: "flex",
-                        justifyContent: "center",
-                        my: 4,
-                      }}
-                    >
-                      <CircularProgress color="primary" />
-                    </Box>
-                  ) : null}
-                </React.Fragment>
-              ))}
-            </Box>
+              <div>
+                {paginatedActivitiesData?.pages?.map((group, i) => (
+                  <React.Fragment key={i}>
+                    {group?.map((activity) => (
+                      <ActivityCard
+                        key={activity?.id}
+                        activity={activity}
+                        onPress={() =>
+                          !isScrolling
+                            ? navigate(
+                                `${ApplicationLocations.ACTIVITY_DETAIL}/${activity?.id}`,
+                                {
+                                  state: {
+                                    from: ApplicationLocations.ACTIVITIES,
+                                  },
+                                }
+                              )
+                            : undefined
+                        }
+                        onLongPress={
+                          !isScrolling ? openActivityActions : undefined
+                        }
+                      />
+                    ))}
+                    {/* {isFetchingNextPage ? (
+                      <Box
+                        sx={{
+                          display: "flex",
+                          justifyContent: "center",
+                          my: 4,
+                        }}
+                      >
+                        <CircularProgress color="primary" />
+                      </Box>
+                    ) : null} */}
+                  </React.Fragment>
+                ))}
+              </div>
+            </InfiniteScroll>
           </>
-          {/* )} */}
         </>
       )}
     </PageWrapper>

@@ -39,6 +39,9 @@ import {
   getActivitiesPromiseResolved,
   getUsersPromiseResolved,
 } from "api/activities/requests";
+import { useInView } from "react-intersection-observer";
+import InfiniteScroll from "react-infinite-scroll-component";
+import Loader from "components/loader";
 
 interface IAddBuddiesContentProps {
   navigate?: NavigateFunction;
@@ -52,6 +55,7 @@ const AddBuddiesContent: React.FC<IAddBuddiesContentProps> = ({ navigate }) => {
   const [usernameDebounced] = useDebounce(username, 150);
   const abortControllerRef = React.useRef<AbortController | null>(null);
   const usersContentDivRef = React.useRef<HTMLDivElement | null>(null);
+  const bottom = React.useRef<any>(null);
 
   const { toggleDrawer } = React.useContext(DrawerContext);
 
@@ -86,7 +90,7 @@ const AddBuddiesContent: React.FC<IAddBuddiesContentProps> = ({ navigate }) => {
     }
   );
 
-  console.log(isFetchingNextPage);
+  const { ref, inView, entry } = useInView();
 
   const queryClient = useQueryClient();
 
@@ -99,8 +103,6 @@ const AddBuddiesContent: React.FC<IAddBuddiesContentProps> = ({ navigate }) => {
       },
     }
   );
-
-  console.log(isSendingBuddyRequest);
 
   const { mutate: sendAcceptBuddyRequest, isLoading: isTogglingBuddyRequest } =
     useMutation(
@@ -171,33 +173,54 @@ const AddBuddiesContent: React.FC<IAddBuddiesContentProps> = ({ navigate }) => {
     [handleSendBuddyRequest]
   );
 
-  const handleScroll = React.useCallback(() => {
-    if (usersContentDivRef?.current) {
-      const { scrollTop, scrollHeight, clientHeight } =
-        usersContentDivRef.current;
+  // const handleScroll = React.useCallback(() => {
+  //   if (usersContentDivRef?.current) {
+  //     const { scrollTop, scrollHeight, clientHeight } =
+  //       usersContentDivRef.current;
 
-      // scrollheight / 5 to start refetching before I hit the bottom
-      if (
-        scrollTop + clientHeight === scrollHeight &&
-        !isFetchingNextPage &&
-        !isFetching
-      ) {
-        // This will be triggered after hitting the last element.
-        // API call should be made here while implementing pagination.
-        // setActiveOffset((activeOffset) => activeOffset + 1);
-        // setScrollPosition(scrollHeight);
-        usersContentDivRef?.current?.scrollTo(0, scrollHeight - 50);
-        // window.scrollTo(0, scrollHeight - 200);
-        // setActiveLimit((activeLimit) => activeLimit + 10);
-        fetchNextPage();
-        console.log("refetch");
-      }
-    }
-  }, [usersContentDivRef?.current, isFetchingNextPage, isFetching]);
+  //     // scrollheight / 5 to start refetching before I hit the bottom
+  //     if (
+  //       scrollTop + clientHeight >= 0.75 * scrollHeight &&
+  //       !isFetchingNextPage &&
+  //       !isFetching
+  //     ) {
+  //       // This will be triggered after hitting the last element.
+  //       // API call should be made here while implementing pagination.
+  //       // setActiveOffset((activeOffset) => activeOffset + 1);
+  //       // setScrollPosition(scrollHeight);
+  //       usersContentDivRef?.current?.scrollTo(0, scrollHeight - 50);
+  //       // window.scrollTo(0, scrollHeight - 200);
+  //       // setActiveLimit((activeLimit) => activeLimit + 10);
+  //       fetchNextPage();
+  //       console.log("refetch");
+  //     }
+  //   }
+  // }, [
+  //   usersContentDivRef?.current,
+  //   isFetchingNextPage,
+  //   isFetching,
+  //   fetchNextPage,
+  // ]);
+
+  // React.useEffect(() => {
+  //   if (inView && !isFetching && !isFetchingNextPage) {
+  //     console.log(entry);
+  //     fetchNextPage();
+  //   }
+  // }, [inView, entry, isFetching, isFetchingNextPage]);
+
+  // React.useEffect(() => {
+  //   const observer = new IntersectionObserver((entries) => {
+  //     if (entries[0].isIntersecting) {
+  //       fetchNextPage();
+  //     }
+  //   });
+  //   observer.observe(bottom.current);
+  // }, []);
 
   return (
     <Box
-      sx={{ mx: 1.5, height: 450, position: "relative", overflow: "hidden" }}
+      sx={{ mx: 1.5, maxHeight: 500, position: "relative", overflow: "hidden" }}
     >
       <TextField
         sx={{
@@ -238,8 +261,8 @@ const AddBuddiesContent: React.FC<IAddBuddiesContentProps> = ({ navigate }) => {
 
       <Box
         ref={usersContentDivRef}
-        sx={{ overflowY: "auto", height: "100%" }}
-        onScroll={handleScroll}
+        sx={{ overflowY: "auto" }}
+        // onScroll={handleScroll}
       >
         {[...(paginatedUsersData?.pages ?? [])]?.length < 1 &&
         !isFetchingNextPage ? (
@@ -258,12 +281,25 @@ const AddBuddiesContent: React.FC<IAddBuddiesContentProps> = ({ navigate }) => {
             </Typography>
           </Box>
         ) : (
-          <Box
-            sx={{
-              height: 300,
-              width: "100%",
-            }}
+          // <Box
+          //   sx={{
+          //     height: 300,
+          //     width: "100%",
+          //   }}
+          // >
+          <InfiniteScroll
+            dataLength={
+              paginatedUsersData?.pages
+                ? paginatedUsersData?.pages?.length * 20
+                : 0
+            }
+            // height={500}
+            height={350}
+            next={() => fetchNextPage()}
+            hasMore={Boolean(hasNextPage)}
+            loader={<Loader />}
           >
+            {/* <div> */}
             {paginatedUsersData?.pages?.map((group, index) => (
               <React.Fragment key={index}>
                 {group
@@ -271,10 +307,15 @@ const AddBuddiesContent: React.FC<IAddBuddiesContentProps> = ({ navigate }) => {
                     (user) =>
                       user?.id !== userInfo?.id && !isBuddy(buddies, user?.id)
                   )
-                  ?.map((user: IPersonExtended) => (
+                  ?.map((user: IPersonExtended, index) => (
                     <BuddyItem
                       key={user?.id}
                       buddy={user}
+                      divRef={
+                        index === paginatedUsersData?.pages?.length * 20 - 5
+                          ? ref
+                          : undefined
+                      }
                       onClick={(_user) => handleBuddyActionsClick(_user)}
                       actionContent={
                         <AddBuddiesActionContent
@@ -289,7 +330,7 @@ const AddBuddiesContent: React.FC<IAddBuddiesContentProps> = ({ navigate }) => {
                       }
                     />
                   ))}
-                {isFetchingNextPage || isFetching ? (
+                {/* {isFetchingNextPage || isFetching ? (
                   <Box
                     sx={{
                       display: "flex",
@@ -299,10 +340,10 @@ const AddBuddiesContent: React.FC<IAddBuddiesContentProps> = ({ navigate }) => {
                   >
                     <CircularProgress color="primary" />
                   </Box>
-                ) : null}
+                ) : null} */}
               </React.Fragment>
             ))}
-          </Box>
+          </InfiniteScroll>
         )}
       </Box>
     </Box>
