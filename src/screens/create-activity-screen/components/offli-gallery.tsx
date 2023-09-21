@@ -2,6 +2,7 @@ import { Box, Chip, CircularProgress, Typography } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import * as React from "react";
 import { getPredefinedPhotos } from "../../../api/activities/requests";
+import { useGetApiUrl } from "hooks/use-get-api-url";
 
 interface ITimePickerProps {
   onPictureSelect: (value: string) => void;
@@ -12,6 +13,7 @@ const OffliGallery: React.FC<ITimePickerProps> = ({
   tags,
   onPictureSelect,
 }) => {
+  const baseUrl = useGetApiUrl();
   const { data: { data: { pictures = [], count = 0 } = {} } = {}, isLoading } =
     useQuery(["predefined-photos", tags], () => getPredefinedPhotos(tags));
   return (
@@ -40,18 +42,22 @@ const OffliGallery: React.FC<ITimePickerProps> = ({
             my: 4,
           }}
         >
-          {pictures.map(({ url }, index) => (
+          {pictures.map(({ name }, index) => (
             <Box
               sx={{
                 maxWidth: "100%",
                 m: 0.5,
                 boxShadow: "1px 3px 2px #ccc",
               }}
-              onClick={() => url && onPictureSelect(url)}
-              key={`predefined_picture_${url}`}
+              onClick={() => name && onPictureSelect(name)}
+              key={`predefined_picture_${name}`}
               data-testid="offli-gallery-img-btn"
             >
-              <img src={url} style={{ maxWidth: "100%" }} alt="gallery" />
+              <img
+                src={`${baseUrl}/files/${name}`}
+                style={{ maxWidth: "100%" }}
+                alt="gallery"
+              />
             </Box>
           ))}
         </Box>
