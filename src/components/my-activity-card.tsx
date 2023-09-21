@@ -32,7 +32,6 @@ const MyActivityCard: React.FC<IMyActivityCardProps> = ({
   const { action, handlers } = useLongPress({
     onLongPress: () => onLongPress?.(activity),
   });
-  const { shadows } = useTheme();
   const baseUrl = useGetApiUrl();
 
   // React.useEffect(() => {
@@ -47,10 +46,9 @@ const MyActivityCard: React.FC<IMyActivityCardProps> = ({
         display: "grid",
         gridTemplateColumns: "3fr 1fr",
         boxSizing: "border-box",
-        boxShadow: shadows[3],
-        bgcolor: ({ palette }) => palette.background.default,
-        minWidth: "300px",
-        maxWidth: "300px",
+        bgcolor: ({ palette }) => palette.primary.light,
+        minWidth: "280px",
+        maxWidth: "280px",
         wordWrap: "break-word",
         overflow: "hidden",
         textOverflow: "ellipsis",
@@ -68,7 +66,7 @@ const MyActivityCard: React.FC<IMyActivityCardProps> = ({
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
-            maxWidth: 280,
+            maxWidth: 260,
           }}
         >
           <Box sx={{ mt: 0.5, height: 75 }}>

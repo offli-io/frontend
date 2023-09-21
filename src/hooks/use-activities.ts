@@ -16,6 +16,7 @@ export const useActivities = <T>({
   lon,
   lat,
   participantId,
+  sort,
 }: IActivitiesParamsDto = {}) => {
   const { enqueueSnackbar } = useSnackbar();
   const { data, isLoading } = useQuery(
@@ -30,11 +31,12 @@ export const useActivities = <T>({
       lat,
       lon,
       participantId,
+      sort,
     ],
     () =>
       getActivity<T>({
         id,
-        text,
+        text: !!text && text?.length > 0 ? text : undefined,
         tag,
         datetimeFrom,
         limit,
@@ -42,6 +44,7 @@ export const useActivities = <T>({
         lon,
         lat,
         participantId,
+        sort,
       }),
     {
       onError: () => {

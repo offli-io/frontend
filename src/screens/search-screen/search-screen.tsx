@@ -27,6 +27,7 @@ import { ApplicationLocations } from "../../types/common/applications-locations.
 import FiltersDrawerContent from "./components/filters-drawer-content";
 import { IFiltersDto } from "./types/filters.dto";
 import { HeaderContext } from "../../app/providers/header-provider";
+import { RadioLabelToFilterValue } from "./utils/radio-group-data-definitions";
 
 const SearchScreen = () => {
   const navigate = useNavigate();
@@ -40,9 +41,6 @@ const SearchScreen = () => {
   const { setHeaderRightContent, headerRightContent } =
     React.useContext(HeaderContext);
   const isFirstVisitRender = React.useRef(true);
-  let params = new URLSearchParams(document.location.search);
-  console.log(params);
-
   const isTag = queryStringDebounced?.includes("tag");
 
   const {
@@ -52,6 +50,7 @@ const SearchScreen = () => {
     text: isTag ? undefined : queryStringDebounced,
     tag: filters?.tags,
     datetimeFrom: filters?.date,
+    sort: filters?.filter ? RadioLabelToFilterValue[filters.filter] : undefined,
   });
 
   const handleApplyFilters = React.useCallback(
@@ -112,7 +111,7 @@ const SearchScreen = () => {
           color={!!filters ? "primary" : undefined}
           data-testid="toggle-filters-btn"
         >
-          <FilterListIcon />
+          <FilterListIcon sx={{ color: "primary.main" }} />
         </IconButton>
       );
     }
@@ -127,6 +126,8 @@ const SearchScreen = () => {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
+            position: "fixed",
+            bgcolor: "white",
           }}
         >
           <TextField
@@ -134,20 +135,29 @@ const SearchScreen = () => {
               width: "100%",
               display: "flex",
               justifyContent: "center",
-              my: 1.5,
+              my: 1,
               "& .MuiOutlinedInput-root": {
                 pr: 0,
               },
               "& input::placeholder": {
                 fontSize: 14,
+                color: "#4A148C",
+                fontWeight: 500,
+                opacity: 1,
+                pl: 1,
               },
+              "& fieldset": { border: "none" },
+              backgroundColor: ({ palette }) => palette?.primary?.light,
+              borderRadius: "10px",
             }}
             value={currentSearch}
             placeholder="Search by text in activity"
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
-                  <SearchIcon sx={{ fontSize: "1.2rem" }} />
+                  <SearchIcon
+                    sx={{ fontSize: "1.4rem", color: "primary.main" }}
+                  />
                 </InputAdornment>
               ),
             }}
@@ -158,17 +168,15 @@ const SearchScreen = () => {
           <OffliButton
             variant="text"
             size="small"
-            sx={{ fontSize: 14, ml: 0.5 }}
+            sx={{ fontSize: 14, mr: 2 }}
             onClick={() => navigate(ApplicationLocations.ACTIVITIES)}
             data-testid="cancel-search-btn"
           >
             Cancel
           </OffliButton>
         </Box>
-
-        <Divider sx={{ my: 2 }} />
         {areActivitiesLoading ? (
-          <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
+          <Box sx={{ display: "flex", justifyContent: "center" }}>
             <CircularProgress color="primary" />
           </Box>
         ) : activities?.length > 0 ? (
@@ -185,11 +193,10 @@ const SearchScreen = () => {
                   })
                 }
               />
-              <Divider sx={{ mb: 1 }} />
             </>
           ))
         ) : (
-          <Typography sx={{ textAlign: "center", mt: 4 }} variant="subtitle2">
+          <Typography sx={{ textAlign: "center" }} variant="subtitle2">
             No activities found
           </Typography>
         )}

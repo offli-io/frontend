@@ -2,12 +2,25 @@ import { useQuery } from "@tanstack/react-query";
 import { useSnackbar } from "notistack";
 import { getUsers } from "../api/activities/requests";
 import { getNotifications } from "../api/notifications/requests";
+import { IUsersSearchParamsDto } from "types/users/users-search-params.dto";
 
-export const useUsers = ({ username }: { username?: string }) => {
+export interface IUseUsersParams {
+  params?: IUsersSearchParamsDto;
+}
+
+export const PAGED_USERS_QUERY_KEY = "paged-users";
+
+export const useUsers = ({
+  params: { username, ...restParams } = {},
+}: IUseUsersParams) => {
   const { enqueueSnackbar } = useSnackbar();
-  const { data, isLoading } = useQuery(
+  console.log(restParams);
+  const {
+    data: { data: { users = [], buddieStates = [] } = {} } = {},
+    isLoading,
+  } = useQuery(
     ["users", username],
-    () => getUsers({ username }),
+    () => getUsers({ username, ...restParams }),
     {
       onError: () => {
         //some generic toast for every hook
@@ -17,5 +30,5 @@ export const useUsers = ({ username }: { username?: string }) => {
     }
   );
 
-  return { data, isLoading };
+  return { users, buddieStates, isLoading };
 };

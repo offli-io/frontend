@@ -30,6 +30,9 @@ import { IActivityListRestDto } from "../../types/activities/activity-list-rest.
 import { IActivitiesParamsDto } from "types/activities/activities-params.dto";
 import { IUsersParamsDto } from "types/users";
 import { IMapViewActivitiesResponseDto } from "../../types/activities/mapview-activities.dto";
+import { IBuddiesResponseDto } from "types/users/buddies-response.dto";
+import { IUsersResponseDto } from "types/users/users-response.dto";
+import { IUsersSearchParamsDto } from "types/users/users-search-params.dto";
 
 export const getActivities = async ({
   queryFunctionContext,
@@ -107,6 +110,7 @@ export const getActivity = <T>({
   offset,
   lon,
   lat,
+  sort,
   participantId,
 }: IActivitiesParamsDto) => {
   const promise = axios.get<T>(
@@ -121,6 +125,7 @@ export const getActivity = <T>({
         lon,
         lat,
         participantId,
+        sort,
       },
       paramsSerializer: (params) => {
         return qs.stringify(params, { arrayFormat: "repeat" });
@@ -308,14 +313,20 @@ export const updateActivity = async (
   return promise;
 };
 
-export const getUsers = ({ username }: { username?: string }) => {
+export const getUsers = ({ username, ...params }: IUsersSearchParamsDto) => {
   // const CancelToken = axios.CancelToken;
   // const source = CancelToken.source();
   const validUsername = username ?? localStorage.getItem("username");
 
-  const promise = axios.get<IPersonExtended[]>(`${DEFAULT_DEV_URL}/users`, {
+  // params
+  // sentRequestFilter
+  // recievedRequestFilter
+  // buddyIdToCheckInBuddies = svoje id -> response rozisrena o pole buddy states
+
+  const promise = axios.get<IUsersResponseDto>(`${DEFAULT_DEV_URL}/users`, {
     params: {
       username: username ? validUsername : undefined,
+      ...params,
     },
     // cancelToken: source?.token,
   });
@@ -334,6 +345,26 @@ export const getUsers = ({ username }: { username?: string }) => {
   // })
 
   return promise;
+};
+
+export const getUsersPromiseResolved = async ({
+  username,
+  ...params
+}: IUsersSearchParamsDto) => {
+  const validUsername = username ?? localStorage.getItem("username");
+
+  const promise = await axios.get<IUsersResponseDto>(
+    `${DEFAULT_DEV_URL}/users`,
+    {
+      params: {
+        username: username ? validUsername : undefined,
+        ...params,
+      },
+      // cancelToken: source?.token,
+    }
+  );
+
+  return promise?.data?.users;
 };
 
 export const getUser = ({ id, requestingInfoUserId }: IUsersParamsDto) => {
@@ -361,7 +392,7 @@ export const getBuddies = (userId: number, queryString?: string) => {
   const CancelToken = axios.CancelToken;
   const source = CancelToken.source();
 
-  const promise = axios.get<IPerson[]>(
+  const promise = axios.get<IBuddiesResponseDto>(
     `${DEFAULT_DEV_URL}/users/${userId}/buddies`,
     {
       params: {

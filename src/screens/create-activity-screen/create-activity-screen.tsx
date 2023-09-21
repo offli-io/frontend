@@ -23,7 +23,8 @@ import { ActivityTypeForm } from "./components/activity-type-form";
 import { DateTimeForm } from "./components/date-time-form";
 import { NameForm } from "./components/name-form";
 import { PlaceForm } from "./components/place-form";
-import { setHours, setMinutes } from "date-fns";
+import { add, setHours, setMinutes } from "date-fns";
+import { ActivityDurationTypeEnumDto } from "types/activities/activity-duration-type-enum.dto";
 
 export interface FormValues {
   title?: string;
@@ -42,7 +43,8 @@ export interface FormValues {
   limit?: number;
   isActivityFree?: boolean;
   timeFrom?: string | null;
-  timeUntil?: string | null;
+  duration?: number;
+  durationType?: ActivityDurationTypeEnumDto;
 }
 
 const schema: (activeStep: number) => yup.SchemaOf<FormValues> = (
@@ -116,10 +118,21 @@ const schema: (activeStep: number) => yup.SchemaOf<FormValues> = (
       activeStep === 3
         ? yup.string().defined().required().nullable(true)
         : yup.string().notRequired().nullable(true),
-    timeUntil:
+    duration:
       activeStep === 3
-        ? yup.string().defined().required().nullable(true)
-        : yup.string().notRequired().nullable(true),
+        ? yup.number().defined().required()
+        : yup.number().notRequired(),
+    durationType:
+      activeStep === 3
+        ? yup
+            .mixed<ActivityDurationTypeEnumDto>()
+            .oneOf(Object.values(ActivityDurationTypeEnumDto))
+            .defined()
+            .required()
+        : yup
+            .mixed<ActivityDurationTypeEnumDto>()
+            .oneOf(Object.values(ActivityDurationTypeEnumDto))
+            .notRequired(),
   });
 
 const CreateActivityScreen = () => {
@@ -143,8 +156,9 @@ const CreateActivityScreen = () => {
       limit: 10,
       location: null,
       isActivityFree: true,
-      timeFrom: null,
-      timeUntil: null,
+      timeFrom: "",
+      durationType: ActivityDurationTypeEnumDto.HOURS,
+      // duration: null,
     },
     resolver: yupResolver(schema(activeStep)),
     mode: "onChange",
@@ -188,13 +202,12 @@ const CreateActivityScreen = () => {
           )
         : undefined;
 
-      const untilTimeValues = data?.timeUntil?.split(":");
-      const dateTimeUntil = data?.datetime_until
-        ? setMinutes(
-            setHours(data?.datetime_until, Number(untilTimeValues?.[0])),
-            Number(untilTimeValues?.[1])
-          )
-        : undefined;
+      const duration = data?.duration;
+      const durationType = data?.durationType;
+
+      const dateTimeUntil = add(dateTimeFrom as Date, {
+        [durationType as string]: duration,
+      });
 
       mutate({
         ...restValues,
@@ -334,7 +347,7 @@ const CreateActivityScreen = () => {
             alignItems: "flex-start",
             justifyContent: getFormLayout(),
             flexDirection: "column",
-            height: "72vh",
+            height: "78vh",
             width: "100%",
             //TODO in the future maybe include navigation height in the PageWrapper component for now pb: 12 is enough
             // paddingBottom: theme.spacing(20),

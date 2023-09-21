@@ -15,6 +15,7 @@ import OffliButton from "../../../components/offli-button";
 import { ActivityInviteStateEnum } from "../../../types/activities/activity-invite-state-enum.dto";
 import { IPerson } from "../../../types/activities/activity.dto";
 import { ICreateActivityRequestDto } from "../../../types/activities/create-activity-request.dto";
+import { useBuddies } from "hooks/use-buddies";
 
 interface IActivityTypeFormProps {
   onNextClicked: () => void;
@@ -35,15 +36,9 @@ export const ActivityInviteForm: React.FC<IActivityTypeFormProps> = ({
   const [queryString, setQueryString] = React.useState<string | undefined>();
   const [queryStringDebounced] = useDebounce(queryString, 1000);
 
-  const { data: buddies, isLoading } = useQuery(
-    ["buddies", userInfo?.id, queryStringDebounced],
-    // TODO Fetch with current user id
-    () => getBuddies(Number(userInfo?.id), queryStringDebounced),
-    {
-      // enabled: !!queryStringDebounced,
-      enabled: !!userInfo?.id,
-    }
-  );
+  const { buddies, isLoading } = useBuddies({
+    text: queryStringDebounced,
+  });
 
   const { mutate: sendInviteBuddy, isLoading: isInviting } = useMutation(
     ["invite-participant"],
@@ -114,7 +109,7 @@ export const ActivityInviteForm: React.FC<IActivityTypeFormProps> = ({
           placeholder="Type buddy username"
           data-testid="activity-invite-buddies-input"
         />
-        {buddies?.data && buddies?.data?.length < 1 ? (
+        {buddies && buddies?.length < 1 ? (
           <Box
             sx={{
               height: 100,
@@ -148,7 +143,7 @@ export const ActivityInviteForm: React.FC<IActivityTypeFormProps> = ({
                 <CircularProgress color="primary" />
               </Box>
             ) : (
-              buddies?.data?.map((buddy) => (
+              buddies?.map((buddy) => (
                 <BuddyItemInvite
                   key={buddy?.id}
                   onInviteClick={handleBuddyInviteClick}

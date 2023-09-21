@@ -4,6 +4,11 @@ import {
   Checkbox,
   FormControlLabel,
   IconButton,
+  InputAdornment,
+  MenuItem,
+  Radio,
+  RadioGroup,
+  TextField,
   Typography,
   useTheme,
 } from "@mui/material";
@@ -14,6 +19,8 @@ import OffliButton from "../../../components/offli-button";
 import TimePicker from "../../../components/time-picker";
 import { generateDateSlots } from "../utils/generate-date-slots.util";
 import { generateOptionsOrder } from "../utils/generate-options-order.util";
+import AccessTimeIcon from "@mui/icons-material/AccessTime";
+import { ActivityDurationTypeEnumDto } from "types/activities/activity-duration-type-enum.dto";
 
 interface IDateTimeForm {
   onNextClicked: () => void;
@@ -128,16 +135,10 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
   }, [date?.untilOptions]);
 
   const fromTimeValue = watch("timeFrom");
-  const untilTimeValue = watch("timeUntil");
 
-  const isTimeSelected =
-    !!fromTimeValue &&
-    fromTimeValue !== "" &&
-    !!untilTimeValue &&
-    untilTimeValue !== "";
+  const isTimeSelected = !!fromTimeValue && fromTimeValue !== "";
 
-  console.log(watch("datetime_from"));
-  console.log(watch("datetime_until"));
+  console.log(watch());
 
   return (
     <Box
@@ -168,7 +169,7 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
           onItemSelect={(item) => handleItemSelect("from", item?.id)}
           onSlotAdd={handleDateAdd}
         />
-        <FormControlLabel
+        {/* <FormControlLabel
           control={
             <Checkbox
               checked={sameEndDate}
@@ -183,17 +184,144 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
           }
           label="End date is same as start date"
           sx={{ color: palette?.text?.primary }}
+        /> */}
+        <Typography
+          sx={{ my: 1, fontWeight: "bold", color: palette?.text?.primary }}
+        >
+          Start time
+        </Typography>
+        <Controller
+          name="timeFrom"
+          control={control}
+          render={({ field, fieldState: { error } }) => (
+            <TextField
+              {...field}
+              id="outlined-select-currency"
+              select
+              // label="Start time"
+              sx={{ width: "100%", mb: 1 }}
+              variant="outlined"
+              data-testid="activitiy-from-time-picker"
+              error={!!error}
+              helperText={!!error && "Activity start time is required"}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <AccessTimeIcon />
+                  </InputAdornment>
+                ),
+              }}
+            >
+              {generateOptionsOrder("from")?.map((option) => (
+                <MenuItem key={option} value={option} divider>
+                  {option}
+                </MenuItem>
+              ))}
+            </TextField>
+          )}
         />
 
-        {!sameEndDate && (
+        {/* <Typography
+          sx={{ my: 1, fontWeight: "bold", color: palette?.text?.primary }}
+        >
+          Duration
+        </Typography> */}
+
+        {/* <Box sx={{ display: "grid", gridTemplateColumns: "3fr 1fr", gap: 2 }}> */}
+        <Typography
+          sx={{ my: 1, fontWeight: "bold", color: palette?.text?.primary }}
+        >
+          Duration
+        </Typography>
+        <Controller
+          name="duration"
+          control={control}
+          render={({ field, fieldState: { error } }) => (
+            <TextField
+              {...field}
+              error={!!error}
+              type="number"
+              sx={{ width: "100%" }}
+              // label="Duration"
+              placeholder="Enter activity duration"
+              helperText={!!error && "Activity duration is required"}
+              data-testid="activity-name-input"
+            />
+          )}
+        />
+
+        {/* <Controller
+            name="repeated"
+            control={control}
+            render={({ field, fieldState: { error } }) => (
+              <TextField
+                {...field}
+                id="outlined-select-currency"
+                select
+                // label="Does activity repeat?"
+                value="h"
+                variant="outlined"
+
+                // helperText="Please select your currency"
+              >
+                {["m", "h", "d"].map((option) => (
+                  <MenuItem key={option} value={option}>
+                    {option}
+                  </MenuItem>
+                ))}
+              </TextField>
+            )}
+          /> */}
+        {/* </Box> */}
+
+        <Controller
+          name="durationType"
+          control={control}
+          render={({ field, fieldState: { error } }) => (
+            <RadioGroup
+              {...field}
+              row
+              aria-labelledby="demo-row-radio-buttons-group-label"
+              name="row-radio-buttons-group"
+              sx={{
+                justifyContent: "center",
+                mt: 1,
+                "& .MuiSvgIcon-root": {
+                  color: "primary.main",
+                },
+              }}
+              color="primary.main"
+            >
+              <FormControlLabel
+                value={ActivityDurationTypeEnumDto.MINUTES}
+                control={<Radio />}
+                label={ActivityDurationTypeEnumDto.MINUTES}
+              />
+              <FormControlLabel
+                value={ActivityDurationTypeEnumDto.HOURS}
+                control={<Radio color="primary" />}
+                label={ActivityDurationTypeEnumDto.HOURS}
+              />
+              <FormControlLabel
+                value={ActivityDurationTypeEnumDto.DAYS}
+                control={<Radio color="primary" />}
+                label={ActivityDurationTypeEnumDto.DAYS}
+              />
+            </RadioGroup>
+          )}
+        />
+
+        {/* </Box> */}
+
+        {/* {!sameEndDate && (
           <MobileCarousel
             items={date.untilOptions}
             // title="Select end date"
             onItemSelect={(item) => handleItemSelect("until", item?.id)}
           />
-        )}
+        )} */}
 
-        <Typography
+        {/* <Typography
           sx={{ my: 2, fontWeight: "bold", color: palette?.text?.primary }}
         >
           Start time
@@ -260,7 +388,7 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
               />
             )}
           />
-        </Box>
+        </Box>*/}
       </Box>
 
       <Box

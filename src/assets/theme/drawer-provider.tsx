@@ -15,13 +15,13 @@ interface IDrawerContext {
 }
 
 const Puller = styled(Box)(({ theme }) => ({
-  width: 30,
-  height: 6,
+  width: 50,
+  height: 8,
   backgroundColor: theme.palette.primary.main,
-  borderRadius: 3,
+  borderRadius: 30,
   position: "absolute",
-  top: 8,
-  left: "calc(50% - 15px)",
+  top: 15,
+  left: "calc(50% - 25px)",
 }));
 
 export const DrawerContext = React.createContext<IDrawerContext>(
@@ -71,9 +71,9 @@ export const DrawerProvider = ({ children }: { children: React.ReactNode }) => {
         disableSwipeToOpen
         sx={{
           "& .MuiPaper-root": {
-            borderTopLeftRadius: 8,
-            borderTopRightRadius: 8,
-            pt: 3,
+            borderTopLeftRadius: 30,
+            borderTopRightRadius: 30,
+            pt: 5,
             pb: 2,
             px: 1,
           },
