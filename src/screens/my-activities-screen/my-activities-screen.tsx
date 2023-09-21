@@ -1,5 +1,3 @@
-import PlaceIcon from "@mui/icons-material/Place";
-import SearchIcon from "@mui/icons-material/Search";
 import {
   Autocomplete,
   Box,
@@ -48,6 +46,9 @@ import FirstTimeLoginContent from "./components/first-time-login-content";
 import { SetLocationContent } from "./components/set-location-content";
 import { LayoutContext } from "../../app/layout";
 import { useInView } from "react-intersection-observer";
+import PlaceIcon from "@mui/icons-material/Place";
+import SearchIcon from "@mui/icons-material/Search";
+import MapIcon from "@mui/icons-material/Map";
 
 const ActivitiesScreen = () => {
   const { ref, inView } = useInView();
@@ -497,6 +498,11 @@ const ActivitiesScreen = () => {
               <OffliButton
                 variant="text"
                 sx={{ fontSize: 16 }}
+                endIcon={
+                  <MapIcon
+                    sx={{ fontSize: "1.2rem", ml: -0.7, color: "primary.main" }}
+                  />
+                }
                 onClick={() =>
                   navigate(ApplicationLocations.MAP, {
                     state: {
@@ -506,7 +512,7 @@ const ActivitiesScreen = () => {
                 }
                 data-testid="see-map-btn"
               >
-                Show on Map
+                Show
               </OffliButton>
             </Box>
             <Box
