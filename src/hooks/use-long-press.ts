@@ -30,28 +30,28 @@ export default function useLongPress({
   }
 
   function handleOnMouseDown(e: any) {
-    console.log(e);
-    console.log(e?.clientY);
+    // console.log(e);
+    // console.log(e?.clientY);
     startPressTimer();
   }
 
   function handleOnMouseUp(e: any) {
-    console.log(e?.clientY);
+    // console.log(e?.clientY);
 
     clearTimeout(timerRef.current);
   }
 
   function handleOnTouchStart(e: any) {
-    console.log(e);
-    console.log(e?.clientY);
+    // console.log(e);
+    // console.log(e?.clientY);
     //compare e?.changedTouches?.[0]?.clientY alebo pageY
-    console.log("handleOnTouchStart");
+    // console.log("handleOnTouchStart");
     startPressTimer();
   }
 
   function handleOnTouchEnd(e: any) {
-    console.log(e);
-    console.log(e?.clientY);
+    // console.log(e);
+    // console.log(e?.clientY);
     if (action === "longpress") return;
     console.log("handleOnTouchEnd");
     clearTimeout(timerRef.current);

@@ -161,7 +161,7 @@ export const Layout: React.FC<ILayoutProps> = ({ children }) => {
           sx={{
             width: "100%",
             height: "100%",
-            overflow: "auto",
+            overflow: "hidden",
             bgcolor: palette.background.default,
           }}
         >
