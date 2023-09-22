@@ -19,13 +19,14 @@ export const PageWrapper: React.FC<IPageWrapperProps> = ({
         flexDirection: "column",
         alignItems: "center",
         mt: 1,
+        // overflow: "auto",
         //mt: (HEADER_HEIGHT + 16) / 8,
         // aby borderNvigation neprekryval spodok screenu profile
         //pb: (HEADER_HEIGHT + 16) / 8,
         ...sxOverrides,
       }}
       onScroll={() => console.log("scroll")}
-      id="scrollableDiv"
+      id="pageWrapper"
     >
       {children}
     </Box>
