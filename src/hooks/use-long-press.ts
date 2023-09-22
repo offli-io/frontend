@@ -1,57 +1,55 @@
-import { LayoutContext } from "app/layout";
 import React from "react";
 
 export default function useLongPress({
   onLongPress,
+  elementRef,
 }: {
   onLongPress?: () => void;
+  elementRef?: HTMLDivElement | null;
 }) {
   const [action, setAction] = React.useState<string | undefined>();
-  const { isScrolling } = React.useContext(LayoutContext);
 
   const timerRef = React.useRef<any>();
   const isLongPress = React.useRef<boolean>();
+  let startingOffset = 0;
 
-  function handleOnClick() {
-    if (isLongPress.current) {
-      console.log("Is long press - not continuing.");
-      return;
-    }
-    setAction("click");
-  }
+  // function handleOnClick() {
+  //   if (isLongPress.current) {
+  //     console.log("Is long press - not continuing.");
+  //     return;
+  //   }
+  //   setAction("click");
+  // }
 
-  function startPressTimer() {
+  function startPressTimer(yOffset?: number) {
     isLongPress.current = false;
     timerRef.current = setTimeout(() => {
+      startingOffset = yOffset ?? 0;
+
+      const currentOffset = elementRef?.scrollTop ?? 0;
+      // if user is scrolling - offset is either increasing or decreasing
+      if (Math.abs(currentOffset - startingOffset) > 5) {
+        return;
+      }
       isLongPress.current = true;
-      console.log(isScrolling);
       onLongPress?.();
     }, 500);
   }
 
   function handleOnMouseDown(e: any) {
-    // console.log(e);
-    // console.log(e?.clientY);
     startPressTimer();
   }
 
   function handleOnMouseUp(e: any) {
-    // console.log(e?.clientY);
-
     clearTimeout(timerRef.current);
   }
 
   function handleOnTouchStart(e: any) {
-    // console.log(e);
-    // console.log(e?.clientY);
-    //compare e?.changedTouches?.[0]?.clientY alebo pageY
-    // console.log("handleOnTouchStart");
-    startPressTimer();
+    const yOffset = elementRef?.scrollTop;
+    startPressTimer(yOffset);
   }
 
   function handleOnTouchEnd(e: any) {
-    // console.log(e);
-    // console.log(e?.clientY);
     if (action === "longpress") return;
     console.log("handleOnTouchEnd");
     clearTimeout(timerRef.current);
