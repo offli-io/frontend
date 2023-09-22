@@ -48,7 +48,7 @@ import FirstTimeLoginContent from "./components/first-time-login-content";
 import { SetLocationContent } from "./components/set-location-content";
 import { LayoutContext } from "../../app/layout";
 import { useInView } from "react-intersection-observer";
-import InfiniteScroll from "react-infinite-scroll-component";
+import InfiniteScroll from "react-infinite-scroller";
 import Loader from "components/loader";
 
 const ActivitiesScreen = () => {
@@ -105,8 +105,6 @@ const ActivitiesScreen = () => {
       }),
     }
   );
-
-  console.log(isFetchingNextPage);
 
   const {
     data: { data = {} } = {},
@@ -290,34 +288,34 @@ const ActivitiesScreen = () => {
 
   // contentDivRef?.current?.scrollTo(0, 500);
 
-  const handleScroll = React.useCallback(() => {
-    if (contentDivRef?.current) {
-      const { scrollTop, scrollHeight, clientHeight } = contentDivRef.current;
-      if (scrollTop + clientHeight === scrollHeight && !isFetchingNextPage) {
-        // This will be triggered after hitting the last element.
-        // API call should be made here while implementing pagination.
-        // setActiveOffset((activeOffset) => activeOffset + 1);
-        // setScrollPosition(scrollHeight);
-        contentDivRef?.current?.scrollTo(0, scrollHeight - 200);
-        // window.scrollTo(0, scrollHeight - 200);
-        // setActiveLimit((activeLimit) => activeLimit + 10);
-        fetchNextPage();
-        console.log("refetch");
-      }
-    }
-  }, [contentDivRef?.current, isFetchingNextPage]);
+  // const handleScroll = React.useCallback(() => {
+  //   if (contentDivRef?.current) {
+  //     const { scrollTop, scrollHeight, clientHeight } = contentDivRef.current;
+  //     if (scrollTop + clientHeight === scrollHeight && !isFetchingNextPage) {
+  //       // This will be triggered after hitting the last element.
+  //       // API call should be made here while implementing pagination.
+  //       // setActiveOffset((activeOffset) => activeOffset + 1);
+  //       // setScrollPosition(scrollHeight);
+  //       contentDivRef?.current?.scrollTo(0, scrollHeight - 200);
+  //       // window.scrollTo(0, scrollHeight - 200);
+  //       // setActiveLimit((activeLimit) => activeLimit + 10);
+  //       fetchNextPage();
+  //       console.log("refetch");
+  //     }
+  //   }
+  // }, [contentDivRef?.current, isFetchingNextPage]);
 
   // React.useLayoutEffect(() => {
   //   window.scrollTo(0, scrollPosition);
   // }, [scrollPosition]);
 
-  React.useEffect(() => {
-    contentDivRef?.current?.addEventListener("scroll", handleScroll);
-    return () =>
-      contentDivRef?.current?.removeEventListener("scroll", handleScroll);
-  }, []);
+  // React.useEffect(() => {
+  //   contentDivRef?.current?.addEventListener("scroll", handleScroll);
+  //   return () =>
+  //     contentDivRef?.current?.removeEventListener("scroll", handleScroll);
+  // }, []);
 
-  console.log(isScrolling);
+  // console.log(isScrolling);
 
   return (
     <PageWrapper sxOverrides={{ px: 2, overflow: "auto", height: "100%" }}>
@@ -514,18 +512,16 @@ const ActivitiesScreen = () => {
               </OffliButton>
             </Box>
             <InfiniteScroll
-              dataLength={(paginatedActivitiesData?.pages?.length ?? 0) * 20}
-              // height={500}
-              // height={350}
-              // height={"100%"}
-              next={() => fetchNextPage()}
-              hasMore={Boolean(hasNextPage)}
+              pageStart={0}
+              loadMore={() => fetchNextPage()}
+              hasMore={hasNextPage}
               loader={<Loader />}
+              useWindow={false}
             >
-              <div>
-                {paginatedActivitiesData?.pages?.map((group, i) => (
-                  <React.Fragment key={i}>
-                    {group?.map((activity) => (
+              {paginatedActivitiesData?.pages?.map((group, i) => (
+                <div key={i}>
+                  {group?.map((activity) => (
+                    <div>
                       <ActivityCard
                         key={activity?.id}
                         activity={activity}
@@ -545,8 +541,9 @@ const ActivitiesScreen = () => {
                           !isScrolling ? openActivityActions : undefined
                         }
                       />
-                    ))}
-                    {/* {isFetchingNextPage ? (
+                    </div>
+                  ))}
+                  {/* {isFetchingNextPage ? (
                       <Box
                         sx={{
                           display: "flex",
@@ -557,9 +554,8 @@ const ActivitiesScreen = () => {
                         <CircularProgress color="primary" />
                       </Box>
                     ) : null} */}
-                  </React.Fragment>
-                ))}
-              </div>
+                </div>
+              ))}
             </InfiniteScroll>
           </>
         </>

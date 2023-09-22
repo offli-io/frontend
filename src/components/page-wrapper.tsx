@@ -25,6 +25,7 @@ export const PageWrapper: React.FC<IPageWrapperProps> = ({
         ...sxOverrides,
       }}
       onScroll={() => console.log("scroll")}
+      id="scrollableDiv"
     >
       {children}
     </Box>
