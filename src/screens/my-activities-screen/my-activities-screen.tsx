@@ -319,7 +319,7 @@ const ActivitiesScreen = () => {
   // console.log(isScrolling);
 
   return (
-    <PageWrapper sxOverrides={{ px: 2, overflow: "auto", height: "100%" }}>
+    <PageWrapper sxOverrides={{ px: 2, height: "100%" }}>
       <Box
         sx={{
           display: "flex",
@@ -525,42 +525,29 @@ const ActivitiesScreen = () => {
               useWindow={false}
             >
               {paginatedActivitiesData?.pages?.map((group, i) => (
-                <div key={i}>
+                <React.Fragment key={i}>
                   {group?.map((activity) => (
-                    <div>
-                      <ActivityCard
-                        key={activity?.id}
-                        activity={activity}
-                        onPress={() =>
-                          !isScrolling
-                            ? navigate(
-                                `${ApplicationLocations.ACTIVITY_DETAIL}/${activity?.id}`,
-                                {
-                                  state: {
-                                    from: ApplicationLocations.ACTIVITIES,
-                                  },
-                                }
-                              )
-                            : undefined
-                        }
-                        onLongPress={
-                          !isScrolling ? openActivityActions : undefined
-                        }
-                      />
-                    </div>
+                    <ActivityCard
+                      key={activity?.id}
+                      activity={activity}
+                      onPress={() =>
+                        !isScrolling
+                          ? navigate(
+                              `${ApplicationLocations.ACTIVITY_DETAIL}/${activity?.id}`,
+                              {
+                                state: {
+                                  from: ApplicationLocations.ACTIVITIES,
+                                },
+                              }
+                            )
+                          : undefined
+                      }
+                      onLongPress={
+                        !isScrolling ? openActivityActions : undefined
+                      }
+                    />
                   ))}
-                  {/* {isFetchingNextPage ? (
-                      <Box
-                        sx={{
-                          display: "flex",
-                          justifyContent: "center",
-                          my: 4,
-                        }}
-                      >
-                        <CircularProgress color="primary" />
-                      </Box>
-                    ) : null} */}
-                </div>
+                </React.Fragment>
               ))}
             </InfiniteScroll>
           </>
