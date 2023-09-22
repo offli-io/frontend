@@ -1,25 +1,27 @@
 import LockIcon from "@mui/icons-material/Lock";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
-import { Box, Typography, useTheme } from "@mui/material";
+import { Box, SxProps, Typography, useTheme } from "@mui/material";
+import { format, getDay } from "date-fns";
+import useLongPress from "hooks/use-long-press";
 import React from "react";
-import { IActivity } from "../types/activities/activity.dto";
-import { format, getDay, getHours, getMonth, getTime } from "date-fns";
-import { TIME_FORMAT } from "../utils/common-constants";
 import { CustomizationContext } from "../assets/theme/customization-provider";
 import { useGetApiUrl } from "../hooks/use-get-api-url";
-import useLongPress from "hooks/use-long-press";
+import { IActivity } from "../types/activities/activity.dto";
+import { TIME_FORMAT } from "../utils/common-constants";
 import OffliButton from "./offli-button";
 
 interface IProps {
   activity?: IActivity;
   onPress?: (activity?: IActivity) => void;
   onLongPress?: (activity?: IActivity) => void;
+  sx?: SxProps;
 }
 
 const ActivityCard: React.FC<IProps> = ({
   activity,
   onPress,
   onLongPress,
+  sx,
   ...rest
 }) => {
   //TODO maybe in later use also need some refactoring
@@ -58,6 +60,7 @@ const ActivityCard: React.FC<IProps> = ({
         color: "white",
         boxShadow: shadows[4],
         p: 0,
+        ...sx,
       }}
       data-testid="activity-card"
       {...handlers}
