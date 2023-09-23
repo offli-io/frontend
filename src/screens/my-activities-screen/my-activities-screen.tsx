@@ -55,8 +55,6 @@ const ActivitiesScreen = () => {
   );
   const { location, setLocation } = React.useContext(LocationContext);
   const { toggleDrawer } = React.useContext(DrawerContext);
-  const { contentDivRef, isScrolling } = React.useContext(LayoutContext);
-
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
   const queryClient = useQueryClient();
@@ -223,19 +221,17 @@ const ActivitiesScreen = () => {
 
   const openActivityActions = React.useCallback(
     (activity?: IActivity) => {
-      if (!isScrolling) {
-        toggleDrawer({
-          open: true,
-          content: (
-            <ActivityActions
-              onActionClick={handleActionClick}
-              activity={activity}
-            />
-          ),
-        });
-      }
+      toggleDrawer({
+        open: true,
+        content: (
+          <ActivityActions
+            onActionClick={handleActionClick}
+            activity={activity}
+          />
+        ),
+      });
     },
-    [toggleDrawer, isScrolling]
+    [toggleDrawer]
   );
 
   React.useEffect(() => {
@@ -416,20 +412,16 @@ const ActivitiesScreen = () => {
                       key={activity?.id}
                       activity={activity}
                       onPress={() =>
-                        !isScrolling
-                          ? navigate(
-                              `${ApplicationLocations.ACTIVITY_DETAIL}/${activity?.id}`,
-                              {
-                                state: {
-                                  from: ApplicationLocations.ACTIVITIES,
-                                },
-                              }
-                            )
-                          : undefined
+                        navigate(
+                          `${ApplicationLocations.ACTIVITY_DETAIL}/${activity?.id}`,
+                          {
+                            state: {
+                              from: ApplicationLocations.ACTIVITIES,
+                            },
+                          }
+                        )
                       }
-                      onLongPress={
-                        !isScrolling ? openActivityActions : undefined
-                      }
+                      onLongPress={openActivityActions}
                       sx={{
                         minWidth:
                           participantActivites?.length <= 1 ? "100%" : "80%",
@@ -489,20 +481,16 @@ const ActivitiesScreen = () => {
                       key={activity?.id}
                       activity={activity}
                       onPress={() =>
-                        !isScrolling
-                          ? navigate(
-                              `${ApplicationLocations.ACTIVITY_DETAIL}/${activity?.id}`,
-                              {
-                                state: {
-                                  from: ApplicationLocations.ACTIVITIES,
-                                },
-                              }
-                            )
-                          : undefined
+                        navigate(
+                          `${ApplicationLocations.ACTIVITY_DETAIL}/${activity?.id}`,
+                          {
+                            state: {
+                              from: ApplicationLocations.ACTIVITIES,
+                            },
+                          }
+                        )
                       }
-                      onLongPress={
-                        !isScrolling ? openActivityActions : undefined
-                      }
+                      onLongPress={openActivityActions}
                       sx={{ mx: 0, my: 1.5, width: "100%" }}
                     />
                   ))}

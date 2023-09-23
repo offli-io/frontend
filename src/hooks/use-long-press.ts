@@ -51,7 +51,6 @@ export default function useLongPress({
 
   function handleOnTouchEnd(e: any) {
     if (action === "longpress") return;
-    console.log("handleOnTouchEnd");
     clearTimeout(timerRef.current);
   }
 
