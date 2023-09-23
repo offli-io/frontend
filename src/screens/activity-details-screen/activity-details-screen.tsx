@@ -47,6 +47,7 @@ import { mdiCrown } from "@mdi/js";
 import ActivityVisibilityDuration from "./components/activity-visibility-duration";
 import { CustomizationContext } from "assets/theme/customization-provider";
 import Loader from "components/loader";
+import { IActivity } from "types/activities/activity.dto";
 
 interface IProps {
   type: "detail" | "request";
@@ -78,8 +79,20 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
 
   const { data: { data: { activity = undefined } = {} } = {}, isLoading } =
     useActivities<IActivityRestDto>({
-      id: id ? Number(id) : undefined,
-      participantId: userInfo?.id,
+      params: {
+        id: id ? Number(id) : undefined,
+        participantId: userInfo?.id,
+      },
+      // onSuccess: (data) =>
+      //   setHeaderRightContent(
+      //     <IconButton
+      //       color="primary"
+      //       data-testid="toggle-activity-menu-btn"
+      //       onClick={() => handleActivityActionsCLick(data?.data?.activity)}
+      //     >
+      //       <MenuIcon />
+      //     </IconButton>
+      //   ),
     });
 
   const {
@@ -185,34 +198,32 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
     [sendJoinActivity, navigate, id]
   );
 
-  const handleActivityActionsCLick = React.useCallback(() => {
-    toggleDrawer({
-      open: true,
-      content: (
-        <ActivityActions
-          activity={activity}
-          onActionClick={handleMenuItemClick}
-        />
-      ),
-    });
-  }, [toggleDrawer, handleMenuItemClick, activity]);
+  const handleActivityActionsCLick = React.useCallback(
+    (activity?: IActivity) => {
+      toggleDrawer({
+        open: true,
+        content: (
+          <ActivityActions
+            activity={activity}
+            onActionClick={handleMenuItemClick}
+          />
+        ),
+      });
+    },
+    [toggleDrawer, handleMenuItemClick]
+  );
 
   React.useEffect(() => {
-    //TODO this runs on every re-render but with dependencies (they wont change on page refresh)
-    if (!headerRightContent) {
-      setHeaderRightContent(
-        <IconButton
-          // aria-describedby={id}
-          color="primary"
-          data-testid="toggle-activity-menu-btn"
-          onClick={handleActivityActionsCLick}
-        >
-          <MenuIcon />
-        </IconButton>
-        // <ActivityDetailActionMenu onMenuItemClick={handleMenuItemClick} />
-      );
-    }
-  });
+    setHeaderRightContent(
+      <IconButton
+        color="primary"
+        data-testid="toggle-activity-menu-btn"
+        onClick={() => handleActivityActionsCLick(activity)}
+      >
+        <MenuIcon />
+      </IconButton>
+    );
+  }, [activity, handleActivityActionsCLick]);
 
   React.useEffect(() => {
     if (state) {

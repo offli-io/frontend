@@ -38,7 +38,9 @@ const MapDrawerDetail: React.FC<IProps> = ({ activityId }) => {
   const { userInfo } = React.useContext(AuthenticationContext);
   const { data: { data: { activity = {} } = {} } = {}, isLoading } =
     useActivities<IActivityRestDto>({
-      id: activityId,
+      params: {
+        id: activityId,
+      },
     });
 
   const { data: { data = {} } = {} } = useUser({

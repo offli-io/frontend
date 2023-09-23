@@ -9,6 +9,8 @@ import {
   MenuItem,
   Chip,
   Autocomplete,
+  Switch,
+  FormLabel,
 } from "@mui/material";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import BackHeader from "../../components/back-header";
@@ -43,58 +45,16 @@ import { useDebounce } from "use-debounce";
 import { mapLocationValue } from "../../utils/map-location-value.util";
 import { ILocation } from "../../types/activities/location.dto";
 import { useGetApiUrl } from "../../hooks/use-get-api-url";
-
-interface IEditActivity {
-  title: string;
-  location?: ILocation | null;
-  startDateTime: Date | string;
-  endDateTime: Date | string;
-  accessibility: string;
-  maxAttendance: number;
-  price: number | null;
-  additionalDesc: string;
-  categoryTags: string[];
-  placeQuery?: string;
-}
+import { IActivity } from "types/activities/activity.dto";
+import {
+  IAdditionalHelperActivityInterface,
+  validationSchema,
+} from "./utils/validation-schema";
 
 interface ICategoryTag {
   title: string;
   active: boolean;
 }
-
-// const schema: () => yup.SchemaOf<IEditActivity> = () =>
-//   yup.object({
-//     title: yup.string().defined().required("Please enter the Title"),
-//     location: yup
-//       .object({
-//         name: yup.string().defined().required(),
-//         coordinates: yup.object({
-//           lat: yup.number().defined().required(),
-//           lon: yup.number().defined().required(),
-//         }),
-//       })
-//       .notRequired(),
-//     startDateTime: yup.date().defined().required("Please enter the Start Date"),
-//     endDateTime: yup.date().defined().required("Please enter the End Date"),
-//     accessibility: yup.boolean().defined(),
-//     maxAttendance: yup
-//       .number()
-//       .defined()
-//       .required("Please enter How many people can attend"),
-//     price: yup.number().defined().required("Please enter the Price"),
-//     additionalDesc: yup
-//       .string()
-//       .defined()
-//       .required("Please enter the Description"),
-//     // about_me: yup.string().defined().required("Please enter your aboutMe"),
-//     // location: yup.string().defined().required("Please enter your location"),
-//     // birthdate: yup.date().nullable().required("Please enter your birthDate"),
-//     // instagram: yup
-//     //   .string()
-//     //   .defined()
-//     //   .required("Please enter your instagramUsername"),
-//     placeQuery: yup.string().notRequired(),
-//   });
 
 const EditActivityScreen: React.FC = () => {
   const { id } = useParams();
@@ -112,12 +72,14 @@ const EditActivityScreen: React.FC = () => {
 
   const { data: { data: { tags: predefinedTags = [] } = {} } = {} } = useTags();
 
+  const mappedTags = predefinedTags?.map(({ title }) => title);
+
   const { data: { data: { activity = {} } = {} } = {}, isLoading } =
     useActivities<IActivityRestDto>({
-      id: Number(id),
+      params: {
+        id: Number(id),
+      },
     });
-
-  console.log(activity);
 
   const {
     control,
@@ -126,19 +88,19 @@ const EditActivityScreen: React.FC = () => {
     setValue,
     watch,
     formState: { dirtyFields = [], isValid },
-  } = useForm<IEditActivity>({
+  } = useForm<IActivity & IAdditionalHelperActivityInterface>({
     defaultValues: {
       title: "",
+      description: "",
       location: null,
-      startDateTime: new Date(), // TODO: pridava 2 hodiny kvoli timezone
-      endDateTime: new Date(), // TODO: pridava 2 hodiny kvoli timezone
-      // accessibility: ACTIVITY_VISIBILITY_OPTIONS.PUBLIC,
-      accessibility: "public",
-      maxAttendance: 50,
-      price: 0,
-      additionalDesc: "",
+      datetime_from: new Date(), // TODO: pridava 2 hodiny kvoli timezone
+      datetime_until: new Date(), // TODO: pridava 2 hodiny kvoli timezone
+      visibility: ActivityVisibilityEnum.public,
+      // limit: '',
+      // price: 0,
+      tags: [],
     },
-    // resolver: yupResolver(schema()),
+    resolver: yupResolver(validationSchema()),
     mode: "onChange",
   });
 
@@ -154,17 +116,13 @@ const EditActivityScreen: React.FC = () => {
 
   useEffect(() => {
     reset({
-      title: activity?.title,
-      location: activity?.location,
-      startDateTime: activity?.datetime_from?.toString(),
-      endDateTime: activity?.datetime_until?.toString(),
-      accessibility: activity?.visibility,
-      maxAttendance: activity?.limit,
-      price: activity?.price,
-      additionalDesc: activity?.description,
-      categoryTags: activity?.tags,
+      ...activity,
+      datetime_from: activity?.datetime_from?.toString(),
+      datetime_until: activity?.datetime_until?.toString(),
     });
   }, [activity]);
+
+  console.log(watch("tags"));
 
   // const { mutate: sendUpdateActivity } = useMutation(
   //   ["update-profile-info"],
@@ -186,20 +144,20 @@ const EditActivityScreen: React.FC = () => {
   // );
 
   const handleFormSubmit = React.useCallback(
-    (values: IEditActivity) => {
+    (values: IActivity) => {
       // console.log(values);
 
-      let newValues = {};
+      // let newValues = {};
 
-      console.log(dirtyFields);
+      // console.log(dirtyFields);
 
-      Object.keys(dirtyFields).forEach((field: string) => {
-        newValues = { ...newValues, [field]: (values as any)?.[field] };
-      });
+      // Object.keys(dirtyFields).forEach((field: string) => {
+      //   newValues = { ...newValues, [field]: (values as any)?.[field] };
+      // });
 
       // newValues = { ...newValues, tags: }
 
-      console.log(newValues);
+      console.log(values);
 
       // sendUpdateActivity({
       //   title: values.title,
@@ -271,7 +229,7 @@ const EditActivityScreen: React.FC = () => {
                   error={!!error}
                   helperText={error?.message}
                   //disabled={methodSelectionDisabled}
-                  sx={{ width: "95%", mt: 2 }}
+                  sx={{ width: "100%", mt: 2 }}
                 />
               )}
             />
@@ -302,28 +260,32 @@ const EditActivityScreen: React.FC = () => {
                     option?.formatted === (value?.formatted ?? value?.name)
                   }
                   sx={{
-                    width: "95%",
-                    mt: 3,
+                    width: "100%",
+                    display: "flex",
+                    justifyContent: "center",
+                    mt: 2,
                   }}
                   loading={placeQuery?.isLoading}
-                  onChange={(e, locationObject) =>
-                    field.onChange({
-                      name: locationObject?.formatted,
-                      coordinates: {
-                        lat: locationObject?.lat,
-                        lon: locationObject?.lon,
-                      },
-                    })
-                  }
+                  onChange={(e, locationObject) => {
+                    field.onChange(
+                      locationObject
+                        ? {
+                            name: locationObject?.formatted,
+                            coordinates: {
+                              lat: locationObject?.lat,
+                              lon: locationObject?.lon,
+                            },
+                          }
+                        : null
+                    );
+                  }}
                   getOptionLabel={(option) => String(option?.formatted)}
                   // inputValue={inputValue ?? ""}
                   renderInput={(params) => (
                     <TextField
                       {...params}
-                      label="Location"
-                      placeholder="Search for location"
-                      // onChange={(e) => setValue("placeQuery", e.target.value)}
-                      onChange={(e) => console.log(e.target.value)}
+                      label="Search place"
+                      onChange={(e) => setValue("placeQuery", e.target.value)}
                     />
                   )}
                   data-testid="activity-place-input"
@@ -333,7 +295,7 @@ const EditActivityScreen: React.FC = () => {
             {/* nwm ci by v LocalizationProvider mali byt Boxy a veci co sa netykaju DateTimePickeru, ked tak vyhodit */}
             <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="sk">
               <Controller
-                name="startDateTime"
+                name="datetime_from"
                 control={control}
                 render={({
                   field: { onChange, ...field },
@@ -350,7 +312,7 @@ const EditActivityScreen: React.FC = () => {
                         helperText={error?.message}
                         //disabled={methodSelectionDisabled}
                         sx={{
-                          width: "95%",
+                          width: "100%",
                           mt: 3, // backgroundColor: `${theme.palette.primary.light}`,
                           fontSize: "bold",
                           input: {
@@ -365,7 +327,7 @@ const EditActivityScreen: React.FC = () => {
                 )}
               />
               <Controller
-                name="endDateTime"
+                name="datetime_until"
                 control={control}
                 render={({
                   field: { onChange, ...field },
@@ -382,7 +344,7 @@ const EditActivityScreen: React.FC = () => {
                         helperText={error?.message}
                         //disabled={methodSelectionDisabled}
                         sx={{
-                          width: "95%",
+                          width: "100%",
                           mt: 3, // backgroundColor: `${theme.palette.primary.light}`,
                           // fontSize: "bold",
                           input: {
@@ -430,7 +392,7 @@ const EditActivityScreen: React.FC = () => {
             /> */}
             {/* ///////////////////////////////////////////////////////////////////////////////// MAX ATTENDANCE */}
             <Controller
-              name="maxAttendance"
+              name="limit"
               control={control}
               render={({ field, fieldState: { error } }) => (
                 <TextField
@@ -440,8 +402,9 @@ const EditActivityScreen: React.FC = () => {
                   variant="outlined"
                   error={!!error}
                   helperText={error?.message}
+                  InputLabelProps={{ shrink: true }}
                   //disabled={methodSelectionDisabled}
-                  sx={{ width: "95%", mt: 3 }}
+                  sx={{ width: "100%", mt: 3 }}
                 />
               )}
             />
@@ -457,65 +420,143 @@ const EditActivityScreen: React.FC = () => {
                   variant="outlined"
                   error={!!error}
                   helperText={error?.message}
+                  InputLabelProps={{ shrink: true }}
                   //disabled={methodSelectionDisabled}
-                  sx={{ width: "95%", mt: 3 }}
+                  sx={{ width: "100%", mt: 3 }}
                 />
               )}
             />
-            {/* ///////////////////////////////////////////////////////////////////////////////// ADDITIONAL DESC */}
             <Controller
-              name="additionalDesc"
+              name="visibility"
+              control={control}
+              render={({ field, fieldState: { error } }) => (
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    width: "100%",
+                    justifyContent: "space-around",
+                    mt: 2,
+                  }}
+                >
+                  <Typography
+                    sx={{
+                      fontWeight: "bold",
+                    }}
+                  >
+                    Accessibility
+                  </Typography>
+                  <Box sx={{ display: "flex", alignItems: "center" }}>
+                    <Switch
+                      sx={{ mx: 1 }}
+                      value={
+                        field?.value === ActivityVisibilityEnum.private
+                          ? false
+                          : true
+                      }
+                      checked={
+                        field?.value === ActivityVisibilityEnum.private
+                          ? false
+                          : true
+                      }
+                      onChange={(e) => {
+                        field.onChange(
+                          e.target.checked
+                            ? ActivityVisibilityEnum.public
+                            : ActivityVisibilityEnum.private
+                        );
+                      }}
+                      color="primary"
+                      data-testid="accessibility-switch"
+                    />
+                    <FormLabel>public</FormLabel>
+                  </Box>
+                </Box>
+              )}
+            />
+            <Controller
+              name="description"
               control={control}
               render={({ field, fieldState: { error } }) => (
                 <TextField
                   {...field}
                   multiline
-                  maxRows={10}
-                  label="Additional description"
-                  variant="outlined"
+                  rows={3}
                   error={!!error}
-                  helperText={error?.message}
-                  inputProps={{ maxLength: MAX_ACTIVITY_DESC_LENGTH }}
-                  //disabled={methodSelectionDisabled}
-                  sx={{ width: "95%", mt: 3 }}
+                  label="Additional description"
+                  placeholder="Type more info about the activity"
+                  sx={{
+                    mt: 3,
+                    width: "100%",
+                    "& .MuiOutlinedInput-root": {
+                      height: "unset",
+                    },
+                  }}
+                  inputProps={{ maxLength: 200 }}
+                  helperText={`${field?.value?.length ?? 0}/200`}
+                  data-testid="description-input"
                 />
               )}
             />
-            {/* ///////////////////////////////////////////////////////////////////////////////// CATEGORY / TAGS */}
             {predefinedTags ? (
               <Controller
-                name="categoryTags"
+                name="tags"
                 control={control}
                 render={({ field, fieldState: { error } }) => (
+                  // <Autocomplete
+                  //   multiple
+                  //   aria-multiline
+                  //   id="predefined-tags"
+                  //   options={predefinedTags}
+                  //   getOptionLabel={(option) => option.title}
+                  //   // defaultValue={[top100Films[13]]}
+                  //   renderInput={(params) => (
+                  //     <TextField
+                  //       {...params}
+                  //       variant="outlined"
+                  //       label="Predefined tags"
+                  //       error={!!error}
+                  //       helperText={error?.message}
+                  //       // InputProps={{
+                  //       //   style: {
+                  //       //     maxHeight: "auto",
+                  //       //   },
+                  //       // }}
+                  //       // placeholder="Predefined tags"
+                  //     />
+                  //   )}
+                  //   sx={{ width: "100%", mt: 3, flex: 1 }}
+                  // />
                   <Autocomplete
+                    {...field}
                     multiple
-                    aria-multiline
-                    id="predefined-tags"
-                    options={predefinedTags}
-                    getOptionLabel={(option) => option.title}
-                    // defaultValue={[top100Films[13]]}
+                    id="tags-standard"
+                    options={mappedTags}
+                    onChange={(e, collectedTags) => {
+                      field.onChange(collectedTags);
+                    }}
+                    // getOptionLabel={(option) => option.title}
+                    defaultValue={[]}
+                    sx={{
+                      minWidth: "100%",
+                      "& .MuiOutlinedInput-root": {
+                        height: "auto",
+                      },
+                      mt: 2,
+                    }}
                     renderInput={(params) => (
                       <TextField
                         {...params}
-                        variant="outlined"
-                        label="Predefined tags"
-                        error={!!error}
-                        helperText={error?.message}
-                        // InputProps={{
-                        //   style: {
-                        //     maxHeight: "auto",
-                        //   },
-                        // }}
-                        // placeholder="Predefined tags"
+                        // variant="outlined"
+                        label="Select tags"
+                        placeholder="Favorites"
                       />
                     )}
-                    sx={{ width: "95%", mt: 3, flex: 1 }}
                   />
                 )}
               />
             ) : null}
 
-            {/* ///////////////////////////////////////////////////////////////////////////////// SUBMIT BTN */}
             <ActionButton
               type="submit"
               text="Save"

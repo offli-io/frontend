@@ -13,7 +13,6 @@ export interface IUseActivityMenuItemsProps {
 const CORE_ACTIONS = [
   ActivityActionsTypeEnumDto.ACTIVITY_MEMBERS,
   ActivityActionsTypeEnumDto.MAP,
-  ActivityActionsTypeEnumDto.EDIT,
 ];
 
 export const useActivityMenuItems = ({
