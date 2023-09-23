@@ -27,6 +27,7 @@ import { ApplicationLocations } from "../../types/common/applications-locations.
 import FiltersDrawerContent from "./components/filters-drawer-content";
 import { IFiltersDto } from "./types/filters.dto";
 import { HeaderContext } from "../../app/providers/header-provider";
+import { RadioLabelToFilterValue } from "./utils/radio-group-data-definitions";
 
 const SearchScreen = () => {
   const navigate = useNavigate();
@@ -49,6 +50,7 @@ const SearchScreen = () => {
     text: isTag ? undefined : queryStringDebounced,
     tag: filters?.tags,
     datetimeFrom: filters?.date,
+    sort: filters?.filter ? RadioLabelToFilterValue[filters.filter] : undefined,
   });
 
   const handleApplyFilters = React.useCallback(

@@ -42,7 +42,7 @@ const offliMarkerIcon = new L.Icon({
   iconAnchor: [22.5, 22.5],
 });
 
-const peopleIcon = new L.Icon({
+const youAreHereIcon = new L.Icon({
   iconUrl: wavePeople,
   iconSize: [45, 45], // Adjust the size of the icon as needed
   iconAnchor: [22.5, 22.5],
@@ -140,10 +140,6 @@ const Map: React.FC<ILabeledTileProps> = ({
                 )
             )
           )}
-          <Marker position={latLonTuple ?? position} icon={peopleIcon}>
-            <Popup>You are here</Popup>
-            {/* TODO: custom Person marker instead of text "you are here" */}
-          </Marker>
           <RecenterAutomatically
             lat={
               isSingleActivity
@@ -157,6 +153,9 @@ const Map: React.FC<ILabeledTileProps> = ({
             }
           />
         </MarkerClusterGroup>
+        <Marker position={latLonTuple ?? position} icon={youAreHereIcon}>
+          <Popup>You are here</Popup>
+        </Marker>
       </MapContainer>
     </Box>
   );

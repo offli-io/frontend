@@ -10,6 +10,7 @@ interface IBuddyItemProps {
   actionContent?: React.ReactNode;
   onClick?: (buddy?: IPerson) => void;
   sx?: SxProps;
+  divRef?: any;
 }
 
 const BuddyItem: React.FC<IBuddyItemProps> = ({
@@ -18,6 +19,7 @@ const BuddyItem: React.FC<IBuddyItemProps> = ({
   actionContent,
   onClick,
   sx,
+  divRef,
   ...rest
 }) => {
   const { shadows } = useTheme();
@@ -36,6 +38,7 @@ const BuddyItem: React.FC<IBuddyItemProps> = ({
         width: "100%",
         ...sx,
       }}
+      ref={divRef}
       {...rest}
     >
       <Box
@@ -43,7 +46,7 @@ const BuddyItem: React.FC<IBuddyItemProps> = ({
           display: "flex",
           alignItems: "center",
           mx: 1,
-          maxWidth: "90%",
+          maxWidth: "85%",
           overflow: "hidden",
         }}
       >
@@ -62,7 +65,16 @@ const BuddyItem: React.FC<IBuddyItemProps> = ({
             margin: 1,
           }}
         />
-        <Typography sx={{ ml: 2, color: "black" }}>
+        <Typography
+          sx={{
+            ml: 2,
+            color: "black",
+            maxWidth: "100%", // Add this line
+            overflow: "hidden", // Add this line
+            textOverflow: "ellipsis", // Add this line
+            whiteSpace: "nowrap", // Add this line
+          }}
+        >
           {buddy?.username}
         </Typography>
       </Box>
