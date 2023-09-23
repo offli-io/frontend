@@ -36,6 +36,7 @@ import { useCurrentLocation } from "../../../hooks/use-current-location";
 import { useGeolocated } from "react-geolocated";
 import { useNavigate } from "react-router-dom";
 import { ApplicationLocations } from "../../../types/common/applications-locations.dto";
+import Searchbar from "components/searchbar";
 
 interface IPlaceFormProps {
   onLocationSelect: (location: ILocation) => void;
@@ -129,20 +130,18 @@ export const SetLocationContent: React.FC<IPlaceFormProps> = ({
       <Box
         sx={{
           display: "flex",
-          width: "100%",
           alignItems: "flex-end",
-          justifyContent: "center",
-          mt: 2,
+          justifyContent: "space-between",
+          mt: 1.5,
+          gap: 7
         }}
       >
         <Box
           sx={{
             display: "flex",
             flexDirection: "column",
-            alignItems: "center",
+            alignItems: "flex-start",
             justifyContent: "center",
-            // pl: 2,
-            width: "50%",
           }}
         >
           <Typography variant="h2" sx={{ color: "primary.main" }}>
@@ -150,8 +149,8 @@ export const SetLocationContent: React.FC<IPlaceFormProps> = ({
           </Typography>
           <Typography variant="h2">location</Typography>
         </Box>
-        <Box sx={{ width: "50%", display: "flex", justifyContent: "center" }}>
-          <img src={activityLocation} style={{ height: 80 }} alt="place-form" />
+        <Box sx={{display: "flex", justifyContent: "center" }}>
+          <img src={activityLocation} style={{ height: 90 }} alt="place-form" />
         </Box>
       </Box>
       <OffliButton
@@ -161,7 +160,7 @@ export const SetLocationContent: React.FC<IPlaceFormProps> = ({
           alignContent: "center",
           mt: 2,
         }}
-        startIcon={<PlaceIcon />}
+          startIcon={<PlaceIcon sx={{color: "primary.main",}}/>}
       >
         {externalLocation?.name ?? "No location found"}
       </OffliButton>
@@ -177,38 +176,9 @@ export const SetLocationContent: React.FC<IPlaceFormProps> = ({
           //   mb: 30,
         }}
       >
-        <Autocomplete
-          value={selectedLocation}
-          options={data?.results ?? []}
-          sx={{
-            width: "100%",
-            display: "flex",
-            justifyContent: "center",
-          }}
-          loading={isLoading}
-          onChange={
-            (e, locationObject) =>
-              onLocationSelect({
-                name: locationObject?.name ?? locationObject?.city,
-                coordinates: {
-                  lat: locationObject?.lat,
-                  lon: locationObject?.lon,
-                },
-              })
-
-            // locationObject && setSelectedLocation(locationObject)
-          }
-          getOptionLabel={(option) => String(option?.formatted)}
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              label="Search place"
-              onChange={(e) => setPlaceQuery(e.target.value)}
-            />
-          )}
-        />
+        <Searchbar Input={"Find events anywhere"}></Searchbar>
         <OffliButton
-          startIcon={<NearMeIcon />}
+          startIcon={<NearMeIcon sx={{color: "white"}}/>}
           sx={{ width: "90%", my: 4, fontSize: 16 }}
           onClick={handleUseCurrentLocation}
           disabled={!coords}

@@ -47,6 +47,7 @@ import ActivityActions from "./components/activity-actions";
 import ActivityLeaveConfirmation from "./components/activity-leave-confirmation";
 import FirstTimeLoginContent from "./components/first-time-login-content";
 import { SetLocationContent } from "./components/set-location-content";
+import Searchbar from "components/searchbar";
 
 const ActivitiesScreen = () => {
   const { ref, inView } = useInView();
@@ -318,59 +319,8 @@ const ActivitiesScreen = () => {
           {location?.name ?? "No location found"}
         </OffliButton>
       </Box>
-      {/* {TODO Outsource autocomplete} */}
-      <Autocomplete
-        options={[]}
-        forcePopupIcon={false}
-        sx={{
-          width: "100%",
-          display: "flex",
-          justifyContent: "center",
-          mb: 1,
-          "& .MuiOutlinedInput-root": {
-            pr: 0,
-          },
-        }}
-        //loading={placeQuery?.isLoading}
-        // isOptionEqualToValue={(option, value) => option.id === value.id}
-        onFocus={() =>
-          navigate(ApplicationLocations.SEARCH, {
-            state: {
-              from: ApplicationLocations.ACTIVITIES,
-            },
-          })
-        }
-        onBlur={() => setIsSearchFocused(false)}
-        // getOptionLabel={(option) => option?.display_name}
-        renderInput={(params) => (
-          <TextField
-            {...params}
-            placeholder="What kind of activity are you looking for?"
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon sx={{ fontSize: "1.5rem", color: "#4A148C" }} />{" "}
-                </InputAdornment>
-              ),
-            }}
-            sx={{
-              "& input::placeholder": {
-                fontSize: 14,
-                color: "#4A148C",
-                fontWeight: 400,
-                opacity: 1,
-                pl: 1,
-              },
-              "& fieldset": { border: "none" },
-              backgroundColor: ({ palette }) => palette?.primary?.light,
-              borderRadius: "10px",
-            }}
-            data-testid="activities-search-input"
-            // onChange={(e) => setValue("placeQuery", e.target.value)}
-          />
-        )}
-      />
-      {areParticipantActivitiesLoading ? (
+      <Searchbar Input="What kind of activity are you looking for ?"></Searchbar>
+        {areParticipantActivitiesLoading ? (
         <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
           <CircularProgress color="primary" />
         </Box>
@@ -458,11 +408,6 @@ const ActivitiesScreen = () => {
               <OffliButton
                 variant="text"
                 sx={{ fontSize: 16 }}
-                endIcon={
-                  <MapIcon
-                    sx={{ fontSize: "1.2rem", ml: -0.7, color: "primary.main" }}
-                  />
-                }
                 onClick={() =>
                   navigate(ApplicationLocations.MAP, {
                     state: {
@@ -472,7 +417,7 @@ const ActivitiesScreen = () => {
                 }
                 data-testid="see-map-btn"
               >
-                Show
+                Show on map
               </OffliButton>
             </Box>
             <InfiniteScroll
