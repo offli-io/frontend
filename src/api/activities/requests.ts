@@ -291,6 +291,25 @@ export const createActivity = async (values: IActivity) => {
   return promise;
 };
 
+export const updateActivity = async (id: number, values: IActivity) => {
+  const CancelToken = axios.CancelToken;
+  const source = CancelToken.source();
+
+  const promise = axios.patch<IUpdateActivityRequestDto>(
+    `${DEFAULT_DEV_URL}/activities/${id}`,
+    values,
+    {
+      cancelToken: source?.token,
+    }
+  );
+
+  //   queryFunctionContext?.signal?.addEventListener('abort', () => {
+  //     source.cancel('Query was cancelled by React Query')
+  //   })
+
+  return promise;
+};
+
 export const getUsers = ({ username, ...params }: IUsersSearchParamsDto) => {
   // const CancelToken = axios.CancelToken;
   // const source = CancelToken.source();

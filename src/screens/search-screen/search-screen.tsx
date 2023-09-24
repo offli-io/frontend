@@ -47,10 +47,14 @@ const SearchScreen = () => {
     data: { data: { activities = [] } = {} } = {},
     isLoading: areActivitiesLoading,
   } = useActivities<IActivityListRestDto>({
-    text: isTag ? undefined : queryStringDebounced,
-    tag: filters?.tags,
-    datetimeFrom: filters?.date,
-    sort: filters?.filter ? RadioLabelToFilterValue[filters.filter] : undefined,
+    params: {
+      text: isTag ? undefined : queryStringDebounced,
+      tag: filters?.tags,
+      datetimeFrom: filters?.date,
+      sort: filters?.filter
+        ? RadioLabelToFilterValue[filters.filter]
+        : undefined,
+    },
   });
 
   const handleApplyFilters = React.useCallback(

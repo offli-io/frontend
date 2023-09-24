@@ -1,4 +1,4 @@
-import { Box, CircularProgress, Divider } from "@mui/material";
+import { Box, CircularProgress, Divider, Typography } from "@mui/material";
 import React from "react";
 import { AuthenticationContext } from "../../../assets/theme/authentication-provider";
 import MenuItem from "../../../components/menu-item";
@@ -41,6 +41,14 @@ const ActivityActions: React.FC<IActivityActionsProps> = ({
     contrastText,
   });
 
+  if (!activity) {
+    return (
+      <Typography variant="subtitle2" sx={{ textAlign: "center" }}>
+        Currently there are no actions to display
+      </Typography>
+    );
+  }
+
   return (
     <Box
       sx={{
@@ -48,12 +56,12 @@ const ActivityActions: React.FC<IActivityActionsProps> = ({
       }}
     >
       {menuItems?.map((actionDefinition, index) => (
-        <>
+        <React.Fragment key={actionDefinition?.type}>
           <MenuItem
             label={actionDefinition?.label}
             type={actionDefinition?.type}
             icon={actionDefinition?.icon}
-            key={`activity_action_${index}_${actionDefinition?.type}`}
+            // key={`activity_action_${index}_${actionDefinition?.type}`}
             //temporary solution just add bolean if next icon should be displayed
             headerRight={<></>}
             onMenuItemClick={() =>
@@ -66,7 +74,7 @@ const ActivityActions: React.FC<IActivityActionsProps> = ({
               sx={{ bgcolor: ({ palette }) => palette?.inactive?.main }}
             />
           ) : null}
-        </>
+        </React.Fragment>
       ))}
     </Box>
   );
