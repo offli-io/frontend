@@ -376,9 +376,9 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
                 top: -7,
                 fontSize: 12,
                 color: palette?.primary?.main,
-                border: "0.5px solid white",
+                border: "0.5px solid palette?.background?.default",
                 borderRadius: "50%",
-                backgroundColor: "white",
+                backgroundColor: palette?.background?.default,
                 // boxShadow: shadows[1],
               }}
             />
