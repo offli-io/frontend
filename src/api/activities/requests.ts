@@ -291,10 +291,7 @@ export const createActivity = async (values: IActivity) => {
   return promise;
 };
 
-export const updateActivity = async (
-  id: number,
-  values: IUpdateActivityRequestDto
-) => {
+export const updateActivity = async (id: number, values: IActivity) => {
   const CancelToken = axios.CancelToken;
   const source = CancelToken.source();
 
