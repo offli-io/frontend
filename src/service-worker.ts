@@ -79,3 +79,15 @@ self.addEventListener('message', event => {
 })
 
 // Any other custom service worker logic can go here.
+
+self.addEventListener('push', async event => {
+  console.log(`Browser Push data: "${event?.data?.text()}"`); // TODO: Remove
+  // TODO: Deserialize the event data and use it to build the title and options
+  const title = 'Offli Browser Puska';
+  const options = {
+    body: event?.data?.text(), 
+    icon: 'https://offli-dev-frontend-jurajpaska8.cloud.okteto.net/logo192.png', 
+    badge: "https://offli-dev-frontend-jurajpaska8.cloud.okteto.net/logo192.png",
+  };
+  event.waitUntil(self.registration.showNotification(title, options));
+});
