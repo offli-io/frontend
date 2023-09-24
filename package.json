@@ -1,6 +1,6 @@
 {
   "name": "offli",
-  "version": "0.1.85",
+  "version": "0.1.86",
   "private": true,
   "homepage": "http://localhost:3000/",
   "dependencies": {
