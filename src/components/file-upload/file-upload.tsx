@@ -15,7 +15,6 @@ const FileUpload: React.FC<IFileUploadProps> = ({
   uploadFunction,
   ...rest
 }) => {
-  const [isImageUploading, setIsImageUploading] = React.useState(false);
   const [localFile, setLocalFile] = React.useState<any>();
   const hiddenFileInput = React.useRef<HTMLInputElement | null>(null);
 

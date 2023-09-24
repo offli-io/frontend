@@ -64,7 +64,9 @@ export const ActivityMembersScreen: React.FC = () => {
 
   const { data: { data: { activity = {} } = {} } = {}, isLoading } =
     useActivities<IActivityRestDto>({
-      id: id ? Number(id) : undefined,
+      params: {
+        id: id ? Number(id) : undefined,
+      },
     });
 
   const {

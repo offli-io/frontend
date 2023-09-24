@@ -16,6 +16,7 @@ interface IProps extends ButtonProps {
   onClick?: () => void;
   href?: string;
   isLoading?: boolean;
+  disabled?: boolean;
 }
 
 const ActionButton: React.FC<IProps> = ({
@@ -25,6 +26,7 @@ const ActionButton: React.FC<IProps> = ({
   onClick,
   href,
   isLoading,
+  disabled,
   ...rest
 }) => {
   return (
@@ -33,7 +35,10 @@ const ActionButton: React.FC<IProps> = ({
         ...sx,
         width: "60%",
         borderRadius: "15px",
-        backgroundColor: (theme) => theme.palette.primary.light,
+        backgroundColor: (theme) =>
+          disabled
+            ? theme?.palette?.inactive?.main
+            : theme.palette.primary.light,
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
@@ -42,7 +47,7 @@ const ActionButton: React.FC<IProps> = ({
       type={type}
       onClick={onClick}
       data-testid="action-button"
-      disabled={isLoading}
+      disabled={isLoading || disabled}
       {...rest}
     >
       {isLoading ? (
