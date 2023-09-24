@@ -7,9 +7,12 @@ export interface IUpdateActivityRequestDto {
   location?: ILocation;
   datetime_from?: string;
   datetime_until?: string;
-  visibility?: string;
+  visibility?: ActivityVisibilityEnum;
   limit?: number;
   price?: string;
   description?: string;
   tags?: string[];
+  canceled?: boolean;
+  creator_id?: number;
+  title_picture_url?: string;
 }

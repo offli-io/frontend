@@ -52,6 +52,13 @@ const createCustomizationTheme = (mode: PaletteMode = "light") => {
           },
         },
       },
+      MuiFormHelperText: {
+        styleOverrides: {
+          root: ({ theme }) => ({
+            // color: theme?.palette?.error?.main,
+          }),
+        },
+      },
       MuiButton: {
         styleOverrides: {
           root: {

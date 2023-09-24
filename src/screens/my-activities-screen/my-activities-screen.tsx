@@ -1,3 +1,6 @@
+import MapIcon from "@mui/icons-material/Map";
+import PlaceIcon from "@mui/icons-material/Place";
+import SearchIcon from "@mui/icons-material/Search";
 import {
   Autocomplete,
   Box,
@@ -12,31 +15,31 @@ import {
   useMutation,
   useQueryClient,
 } from "@tanstack/react-query";
+import Loader from "components/loader";
 import { useSnackbar } from "notistack";
 import React from "react";
+import InfiniteScroll from "react-infinite-scroller";
+import { useInView } from "react-intersection-observer";
 import { useNavigate } from "react-router-dom";
 import {
   changeActivityParticipantStatus,
-  getActivities,
   getActivitiesPromiseResolved,
   removePersonFromActivity,
 } from "../../api/activities/requests";
+import { LayoutContext } from "../../app/layout";
 import { LocationContext } from "../../app/providers/location-provider";
 import { AuthenticationContext } from "../../assets/theme/authentication-provider";
 import { DrawerContext } from "../../assets/theme/drawer-provider";
 import ActivityCard from "../../components/activity-card";
 import MyActivityCard from "../../components/my-activity-card";
 import OffliButton from "../../components/offli-button";
-import { PageWrapper } from "../../components/page-wrapper";
 import {
   ACTIVITIES_QUERY_KEY,
   PAGED_ACTIVITIES_QUERY_KEY,
-  useActivities,
 } from "../../hooks/use-activities";
 import { useParticipantActivities } from "../../hooks/use-participant-activities";
 import { useUser } from "../../hooks/use-user";
 import { ActivityInviteStateEnum } from "../../types/activities/activity-invite-state-enum.dto";
-import { IActivityListRestDto } from "../../types/activities/activity-list-rest.dto";
 import { IActivity } from "../../types/activities/activity.dto";
 import { ActivityActionsTypeEnumDto } from "../../types/common/activity-actions-type-enum.dto";
 import { ApplicationLocations } from "../../types/common/applications-locations.dto";
@@ -44,11 +47,6 @@ import ActivityActions from "./components/activity-actions";
 import ActivityLeaveConfirmation from "./components/activity-leave-confirmation";
 import FirstTimeLoginContent from "./components/first-time-login-content";
 import { SetLocationContent } from "./components/set-location-content";
-import { LayoutContext } from "../../app/layout";
-import { useInView } from "react-intersection-observer";
-import PlaceIcon from "@mui/icons-material/Place";
-import SearchIcon from "@mui/icons-material/Search";
-import MapIcon from "@mui/icons-material/Map";
 
 const ActivitiesScreen = () => {
   const { ref, inView } = useInView();
@@ -57,8 +55,6 @@ const ActivitiesScreen = () => {
   );
   const { location, setLocation } = React.useContext(LocationContext);
   const { toggleDrawer } = React.useContext(DrawerContext);
-  const { contentDivRef, isScrolling } = React.useContext(LayoutContext);
-
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
   const queryClient = useQueryClient();
@@ -216,6 +212,16 @@ const ActivitiesScreen = () => {
           });
         case ActivityActionsTypeEnumDto.JOIN:
           return sendJoinActivity(activityId);
+        case ActivityActionsTypeEnumDto.EDIT:
+          return navigate(
+            `${ApplicationLocations.EDIT_ACTIVITY}/${activityId}`,
+            {
+              state: {
+                from: ApplicationLocations.ACTIVITIES,
+              },
+            }
+          );
+
         default:
           return console.log(action);
       }
@@ -225,19 +231,17 @@ const ActivitiesScreen = () => {
 
   const openActivityActions = React.useCallback(
     (activity?: IActivity) => {
-      if (!isScrolling) {
-        toggleDrawer({
-          open: true,
-          content: (
-            <ActivityActions
-              onActionClick={handleActionClick}
-              activity={activity}
-            />
-          ),
-        });
-      }
+      toggleDrawer({
+        open: true,
+        content: (
+          <ActivityActions
+            onActionClick={handleActionClick}
+            activity={activity}
+          />
+        ),
+      });
     },
-    [toggleDrawer, isScrolling]
+    [toggleDrawer]
   );
 
   React.useEffect(() => {
@@ -285,39 +289,8 @@ const ActivitiesScreen = () => {
       });
   }, [isFirstTimeLogin, toggleDrawer]);
 
-  // contentDivRef?.current?.scrollTo(0, 500);
-
-  const handleScroll = React.useCallback(() => {
-    if (contentDivRef?.current) {
-      const { scrollTop, scrollHeight, clientHeight } = contentDivRef.current;
-      if (scrollTop + clientHeight === scrollHeight && !isFetchingNextPage) {
-        // This will be triggered after hitting the last element.
-        // API call should be made here while implementing pagination.
-        // setActiveOffset((activeOffset) => activeOffset + 1);
-        // setScrollPosition(scrollHeight);
-        contentDivRef?.current?.scrollTo(0, scrollHeight - 200);
-        // window.scrollTo(0, scrollHeight - 200);
-        // setActiveLimit((activeLimit) => activeLimit + 10);
-        fetchNextPage();
-        console.log("refetch");
-      }
-    }
-  }, [contentDivRef?.current, isFetchingNextPage]);
-
-  // React.useLayoutEffect(() => {
-  //   window.scrollTo(0, scrollPosition);
-  // }, [scrollPosition]);
-
-  React.useEffect(() => {
-    contentDivRef?.current?.addEventListener("scroll", handleScroll);
-    return () =>
-      contentDivRef?.current?.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  console.log(isScrolling);
-
   return (
-    <PageWrapper sxOverrides={{ px: 2 }}>
+    <>
       <Box
         sx={{
           display: "flex",
@@ -432,13 +405,6 @@ const ActivitiesScreen = () => {
                 <Typography variant="h4" sx={{ color: palette?.text?.primary }}>
                   Your upcoming this week
                 </Typography>
-                {/* <OffliButton
-                  variant="text"
-                  sx={{ fontSize: 16 }}
-                  data-testid="see-all-activities-btn"
-                >
-                  See all
-                </OffliButton> */}
               </Box>
               <Box
                 sx={{
@@ -456,20 +422,16 @@ const ActivitiesScreen = () => {
                       key={activity?.id}
                       activity={activity}
                       onPress={() =>
-                        !isScrolling
-                          ? navigate(
-                              `${ApplicationLocations.ACTIVITY_DETAIL}/${activity?.id}`,
-                              {
-                                state: {
-                                  from: ApplicationLocations.ACTIVITIES,
-                                },
-                              }
-                            )
-                          : undefined
+                        navigate(
+                          `${ApplicationLocations.ACTIVITY_DETAIL}/${activity?.id}`,
+                          {
+                            state: {
+                              from: ApplicationLocations.ACTIVITIES,
+                            },
+                          }
+                        )
                       }
-                      onLongPress={
-                        !isScrolling ? openActivityActions : undefined
-                      }
+                      onLongPress={openActivityActions}
                       sx={{
                         minWidth:
                           participantActivites?.length <= 1 ? "100%" : "80%",
@@ -515,17 +477,12 @@ const ActivitiesScreen = () => {
                 Show
               </OffliButton>
             </Box>
-            <Box
-              // ref={ref}
-              sx={{
-                // height: "100vh",
-                width: "100vw",
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                justifyContent: "flex-start",
-                // overflow: "auto",
-              }}
+            <InfiniteScroll
+              pageStart={0}
+              loadMore={() => fetchNextPage()}
+              hasMore={hasNextPage}
+              loader={<Loader />}
+              useWindow={false}
             >
               {paginatedActivitiesData?.pages?.map((group, i) => (
                 <React.Fragment key={i}>
@@ -534,41 +491,26 @@ const ActivitiesScreen = () => {
                       key={activity?.id}
                       activity={activity}
                       onPress={() =>
-                        !isScrolling
-                          ? navigate(
-                              `${ApplicationLocations.ACTIVITY_DETAIL}/${activity?.id}`,
-                              {
-                                state: {
-                                  from: ApplicationLocations.ACTIVITIES,
-                                },
-                              }
-                            )
-                          : undefined
+                        navigate(
+                          `${ApplicationLocations.ACTIVITY_DETAIL}/${activity?.id}`,
+                          {
+                            state: {
+                              from: ApplicationLocations.ACTIVITIES,
+                            },
+                          }
+                        )
                       }
-                      onLongPress={
-                        !isScrolling ? openActivityActions : undefined
-                      }
+                      onLongPress={openActivityActions}
+                      sx={{ mx: 0, my: 1.5, width: "100%" }}
                     />
                   ))}
-                  {isFetchingNextPage ? (
-                    <Box
-                      sx={{
-                        display: "flex",
-                        justifyContent: "center",
-                        my: 4,
-                      }}
-                    >
-                      <CircularProgress color="primary" />
-                    </Box>
-                  ) : null}
                 </React.Fragment>
               ))}
-            </Box>
+            </InfiniteScroll>
           </>
-          {/* )} */}
         </>
       )}
-    </PageWrapper>
+    </>
   );
 };
 

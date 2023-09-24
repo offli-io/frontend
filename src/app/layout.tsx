@@ -1,4 +1,4 @@
-import { Box, useTheme } from "@mui/material";
+import { Box, SxProps, useTheme } from "@mui/material";
 import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { AuthenticationContext } from "../assets/theme/authentication-provider";
@@ -18,6 +18,7 @@ interface ILayoutContext {
   contentDivRef?: React.MutableRefObject<HTMLDivElement | null>;
   onScroll?: () => void;
   isScrolling?: boolean;
+  layoutStyle?: SxProps;
 }
 
 export const LayoutContext = React.createContext<ILayoutContext>(
@@ -139,8 +140,22 @@ export const Layout: React.FC<ILayoutProps> = ({ children }) => {
     setIsScrolling(false);
   });
 
+  const addContentPadding = React.useMemo(
+    () =>
+      [ApplicationLocations.ACTIVITIES].includes(
+        location?.pathname as ApplicationLocations
+      ),
+    [location?.pathname]
+  );
+
   return (
-    <LayoutContext.Provider value={{ contentDivRef, isScrolling }}>
+    <LayoutContext.Provider
+      value={{
+        contentDivRef,
+        isScrolling,
+        // layoutStyle
+      }}
+    >
       <Box
         sx={{
           width: "100%",
@@ -163,6 +178,9 @@ export const Layout: React.FC<ILayoutProps> = ({ children }) => {
             height: "100%",
             overflow: "auto",
             bgcolor: palette.background.default,
+            boxSizing: "border-box",
+            px: addContentPadding ? 1 : 0,
+            // ...layoutStyle,
           }}
         >
           <Routes />

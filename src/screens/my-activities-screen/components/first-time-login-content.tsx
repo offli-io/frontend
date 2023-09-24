@@ -1,8 +1,5 @@
+import { Box, Typography } from "@mui/material";
 import React from "react";
-import { Box, CircularProgress, Typography } from "@mui/material";
-import OffliButton from "../../../components/offli-button";
-import { useActivities } from "../../../hooks/use-activities";
-import { IActivityRestDto } from "../../../types/activities/activity-rest.dto";
 import firstTimeLoginUrl from "../../../assets/img/first-time-login.svg";
 import { AuthenticationContext } from "../../../assets/theme/authentication-provider";
 

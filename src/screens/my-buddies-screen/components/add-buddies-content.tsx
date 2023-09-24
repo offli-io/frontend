@@ -1,9 +1,6 @@
-import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import SearchIcon from "@mui/icons-material/Search";
 import {
   Box,
-  CircularProgress,
-  IconButton,
   InputAdornment,
   LinearProgress,
   TextField,
@@ -15,9 +12,15 @@ import {
   useMutation,
   useQueryClient,
 } from "@tanstack/react-query";
+import { getUsersPromiseResolved } from "api/activities/requests";
+import { toggleBuddyInvitation } from "api/users/requests";
+import Loader from "components/loader";
 import { useSnackbar } from "notistack";
 import React from "react";
+import InfiniteScroll from "react-infinite-scroller";
+import { useInView } from "react-intersection-observer";
 import { NavigateFunction } from "react-router-dom";
+import { BuddyRequestActionEnum } from "types/users";
 import { useDebounce } from "use-debounce";
 import { AuthenticationContext } from "../../../assets/theme/authentication-provider";
 import { DrawerContext } from "../../../assets/theme/drawer-provider";
@@ -31,14 +34,7 @@ import {
 import { ApplicationLocations } from "../../../types/common/applications-locations.dto";
 import { useSendBuddyRequest } from "../../profile-screen/hooks/use-send-buddy-request";
 import { isBuddy } from "../utils/is-buddy.util";
-import { isExistingPendingBuddyState } from "utils/person.util";
 import AddBuddiesActionContent from "./add-buddies-action-content";
-import { BuddyRequestActionEnum } from "types/users";
-import { toggleBuddyInvitation } from "api/users/requests";
-import {
-  getActivitiesPromiseResolved,
-  getUsersPromiseResolved,
-} from "api/activities/requests";
 
 interface IAddBuddiesContentProps {
   navigate?: NavigateFunction;
@@ -52,6 +48,7 @@ const AddBuddiesContent: React.FC<IAddBuddiesContentProps> = ({ navigate }) => {
   const [usernameDebounced] = useDebounce(username, 150);
   const abortControllerRef = React.useRef<AbortController | null>(null);
   const usersContentDivRef = React.useRef<HTMLDivElement | null>(null);
+  const bottom = React.useRef<any>(null);
 
   const { toggleDrawer } = React.useContext(DrawerContext);
 
@@ -86,7 +83,7 @@ const AddBuddiesContent: React.FC<IAddBuddiesContentProps> = ({ navigate }) => {
     }
   );
 
-  console.log(isFetchingNextPage);
+  const { ref, inView, entry } = useInView();
 
   const queryClient = useQueryClient();
 
@@ -99,8 +96,6 @@ const AddBuddiesContent: React.FC<IAddBuddiesContentProps> = ({ navigate }) => {
       },
     }
   );
-
-  console.log(isSendingBuddyRequest);
 
   const { mutate: sendAcceptBuddyRequest, isLoading: isTogglingBuddyRequest } =
     useMutation(
@@ -171,33 +166,54 @@ const AddBuddiesContent: React.FC<IAddBuddiesContentProps> = ({ navigate }) => {
     [handleSendBuddyRequest]
   );
 
-  const handleScroll = React.useCallback(() => {
-    if (usersContentDivRef?.current) {
-      const { scrollTop, scrollHeight, clientHeight } =
-        usersContentDivRef.current;
+  // const handleScroll = React.useCallback(() => {
+  //   if (usersContentDivRef?.current) {
+  //     const { scrollTop, scrollHeight, clientHeight } =
+  //       usersContentDivRef.current;
 
-      // scrollheight / 5 to start refetching before I hit the bottom
-      if (
-        scrollTop + clientHeight === scrollHeight &&
-        !isFetchingNextPage &&
-        !isFetching
-      ) {
-        // This will be triggered after hitting the last element.
-        // API call should be made here while implementing pagination.
-        // setActiveOffset((activeOffset) => activeOffset + 1);
-        // setScrollPosition(scrollHeight);
-        usersContentDivRef?.current?.scrollTo(0, scrollHeight - 50);
-        // window.scrollTo(0, scrollHeight - 200);
-        // setActiveLimit((activeLimit) => activeLimit + 10);
-        fetchNextPage();
-        console.log("refetch");
-      }
-    }
-  }, [usersContentDivRef?.current, isFetchingNextPage, isFetching]);
+  //     // scrollheight / 5 to start refetching before I hit the bottom
+  //     if (
+  //       scrollTop + clientHeight >= 0.75 * scrollHeight &&
+  //       !isFetchingNextPage &&
+  //       !isFetching
+  //     ) {
+  //       // This will be triggered after hitting the last element.
+  //       // API call should be made here while implementing pagination.
+  //       // setActiveOffset((activeOffset) => activeOffset + 1);
+  //       // setScrollPosition(scrollHeight);
+  //       usersContentDivRef?.current?.scrollTo(0, scrollHeight - 50);
+  //       // window.scrollTo(0, scrollHeight - 200);
+  //       // setActiveLimit((activeLimit) => activeLimit + 10);
+  //       fetchNextPage();
+  //       console.log("refetch");
+  //     }
+  //   }
+  // }, [
+  //   usersContentDivRef?.current,
+  //   isFetchingNextPage,
+  //   isFetching,
+  //   fetchNextPage,
+  // ]);
+
+  // React.useEffect(() => {
+  //   if (inView && !isFetching && !isFetchingNextPage) {
+  //     console.log(entry);
+  //     fetchNextPage();
+  //   }
+  // }, [inView, entry, isFetching, isFetchingNextPage]);
+
+  // React.useEffect(() => {
+  //   const observer = new IntersectionObserver((entries) => {
+  //     if (entries[0].isIntersecting) {
+  //       fetchNextPage();
+  //     }
+  //   });
+  //   observer.observe(bottom.current);
+  // }, []);
 
   return (
     <Box
-      sx={{ mx: 1.5, height: 450, position: "relative", overflow: "hidden" }}
+      sx={{ mx: 1.5, maxHeight: 500, position: "relative", overflow: "hidden" }}
     >
       <TextField
         sx={{
@@ -236,11 +252,7 @@ const AddBuddiesContent: React.FC<IAddBuddiesContentProps> = ({ navigate }) => {
         </Box>
       ) : null}
 
-      <Box
-        ref={usersContentDivRef}
-        sx={{ overflowY: "auto", height: "100%" }}
-        onScroll={handleScroll}
-      >
+      <Box ref={usersContentDivRef} sx={{ overflowY: "auto" }} id="scrolik">
         {[...(paginatedUsersData?.pages ?? [])]?.length < 1 &&
         !isFetchingNextPage ? (
           <Box
@@ -264,44 +276,48 @@ const AddBuddiesContent: React.FC<IAddBuddiesContentProps> = ({ navigate }) => {
               width: "100%",
             }}
           >
-            {paginatedUsersData?.pages?.map((group, index) => (
-              <React.Fragment key={index}>
-                {group
-                  ?.filter(
-                    (user) =>
-                      user?.id !== userInfo?.id && !isBuddy(buddies, user?.id)
-                  )
-                  ?.map((user: IPersonExtended) => (
-                    <BuddyItem
-                      key={user?.id}
-                      buddy={user}
-                      onClick={(_user) => handleBuddyActionsClick(_user)}
-                      actionContent={
-                        <AddBuddiesActionContent
-                          buddieStates={buddieStates}
-                          userId={user?.id}
-                          onAddBuddyClick={handleAddBuddy}
-                          onAcceptBuddyRequestClick={handleAcceptBuddyRequest}
-                          isLoading={
-                            isSendingBuddyRequest || isTogglingBuddyRequest
-                          }
-                        />
-                      }
-                    />
-                  ))}
-                {isFetchingNextPage || isFetching ? (
-                  <Box
-                    sx={{
-                      display: "flex",
-                      justifyContent: "center",
-                      my: 4,
-                    }}
-                  >
-                    <CircularProgress color="primary" />
-                  </Box>
-                ) : null}
-              </React.Fragment>
-            ))}
+            <InfiniteScroll
+              pageStart={0}
+              loadMore={() => fetchNextPage()}
+              hasMore={Boolean(hasNextPage)}
+              loader={<Loader />}
+              height={300}
+              useWindow={false}
+              getScrollParent={() => document.getElementById("scrolik")}
+            >
+              {paginatedUsersData?.pages?.map((group, index) => (
+                <React.Fragment key={index}>
+                  {group
+                    ?.filter(
+                      (user) =>
+                        user?.id !== userInfo?.id && !isBuddy(buddies, user?.id)
+                    )
+                    ?.map((user: IPersonExtended, index) => (
+                      <BuddyItem
+                        key={user?.id}
+                        buddy={user}
+                        divRef={
+                          index === paginatedUsersData?.pages?.length * 20 - 5
+                            ? ref
+                            : undefined
+                        }
+                        onClick={(_user) => handleBuddyActionsClick(_user)}
+                        actionContent={
+                          <AddBuddiesActionContent
+                            buddieStates={buddieStates}
+                            userId={user?.id}
+                            onAddBuddyClick={handleAddBuddy}
+                            onAcceptBuddyRequestClick={handleAcceptBuddyRequest}
+                            isLoading={
+                              isSendingBuddyRequest || isTogglingBuddyRequest
+                            }
+                          />
+                        }
+                      />
+                    ))}
+                </React.Fragment>
+              ))}
+            </InfiniteScroll>
           </Box>
         )}
       </Box>
