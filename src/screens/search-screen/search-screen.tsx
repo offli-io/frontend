@@ -179,6 +179,7 @@ const SearchScreen = () => {
             Cancel
           </OffliButton>
         </Box>
+        <Box sx={{ p: 5 }}></Box>
         {areActivitiesLoading ? (
           <Box sx={{ display: "flex", justifyContent: "center" }}>
             <CircularProgress color="primary" />
