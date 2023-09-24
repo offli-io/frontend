@@ -53,6 +53,7 @@ export interface IActivity {
   visibility?: ActivityVisibilityEnum | string;
   limit?: number;
   creator?: IPerson;
+  creator_id?: number;
   canceled?: boolean;
   count_confirmed?: number;
   count_invited?: number;

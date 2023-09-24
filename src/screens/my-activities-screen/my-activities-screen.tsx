@@ -212,6 +212,16 @@ const ActivitiesScreen = () => {
           });
         case ActivityActionsTypeEnumDto.JOIN:
           return sendJoinActivity(activityId);
+        case ActivityActionsTypeEnumDto.EDIT:
+          return navigate(
+            `${ApplicationLocations.EDIT_ACTIVITY}/${activityId}`,
+            {
+              state: {
+                from: ApplicationLocations.ACTIVITIES,
+              },
+            }
+          );
+
         default:
           return console.log(action);
       }

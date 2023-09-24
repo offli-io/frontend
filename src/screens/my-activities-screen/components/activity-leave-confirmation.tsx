@@ -21,7 +21,9 @@ const ActivityLeaveConfirmation: React.FC<IActivityActionsProps> = ({
   const { palette } = useTheme();
 
   const { data, isLoading } = useActivities<IActivityRestDto>({
-    id: activityId,
+    params: {
+      id: activityId,
+    },
   });
   return isLoading ? (
     <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>

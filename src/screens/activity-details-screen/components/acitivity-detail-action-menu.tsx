@@ -17,7 +17,9 @@ const ActivityDetailActionMenu: React.FC<IProps> = ({ onMenuItemClick }) => {
   const pathnameArray = window.location.href.split("/");
   const activityId = pathnameArray[pathnameArray.length - 1];
   const { data, isLoading } = useActivities<IActivityRestDto>({
-    id: Number(activityId),
+    params: {
+      id: Number(activityId),
+    },
   });
 
   return (
