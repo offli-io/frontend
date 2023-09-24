@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import * as React from "react";
 import { getPredefinedPhotos } from "../../../api/activities/requests";
 import { useGetApiUrl } from "hooks/use-get-api-url";
+import { usePredefinedPictures } from "hooks/use-predefined-pictures";
 
 interface ITimePickerProps {
   onPictureSelect: (value: string) => void;
@@ -15,7 +16,7 @@ const OffliGallery: React.FC<ITimePickerProps> = ({
 }) => {
   const baseUrl = useGetApiUrl();
   const { data: { data: { pictures = [], count = 0 } = {} } = {}, isLoading } =
-    useQuery(["predefined-photos", tags], () => getPredefinedPhotos(tags));
+    usePredefinedPictures({ tags });
   return (
     <Box>
       {tags?.map((tag) => (
