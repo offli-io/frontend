@@ -1,8 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useSnackbar } from "notistack";
-import { getUsers } from "../api/activities/requests";
-import { getNotifications } from "../api/notifications/requests";
 import { IUsersSearchParamsDto } from "types/users/users-search-params.dto";
+import { getUsers } from "../api/activities/requests";
 
 export interface IUseUsersParams {
   params?: IUsersSearchParamsDto;
@@ -14,7 +13,6 @@ export const useUsers = ({
   params: { username, ...restParams } = {},
 }: IUseUsersParams) => {
   const { enqueueSnackbar } = useSnackbar();
-  console.log(restParams);
   const {
     data: { data: { users = [], buddieStates = [] } = {} } = {},
     isLoading,
