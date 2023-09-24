@@ -66,6 +66,10 @@ const BackHeader: React.FC<IBackHeaderProps> = ({
         height: HEADER_HEIGHT,
         boxShadow: "1px 2px 2px #ccc",
         position: "sticky",
+        top: 0,
+        boxSizing: "border-box",
+        pt: 2,
+        zIndex: 500,
         bgcolor: ({ palette }) => palette.background.default,
         ...sx,
       }}
@@ -78,7 +82,9 @@ const BackHeader: React.FC<IBackHeaderProps> = ({
           justifyContent: "space-between",
           alignItems: "center",
           position: "relative",
+          pt: 1,
           boxSizing: "border-box",
+          height: "100%",
         }}
       >
         {fromLocation && (
@@ -86,7 +92,9 @@ const BackHeader: React.FC<IBackHeaderProps> = ({
             onClick={handleBackNavigation}
             color="primary"
             sx={{
+              flex: 1,
               position: "absolute",
+              top: 2,
               textTransform: "none",
             }}
           >

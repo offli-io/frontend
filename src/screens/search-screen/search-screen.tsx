@@ -111,7 +111,7 @@ const SearchScreen = () => {
           color={!!filters ? "primary" : undefined}
           data-testid="toggle-filters-btn"
         >
-          <FilterListIcon sx={{ color: "primary.main", mr: 1.5 }} />
+          <FilterListIcon sx={{ color: "primary.main" }} />
         </IconButton>
       );
     }
@@ -119,14 +119,14 @@ const SearchScreen = () => {
 
   return (
     <>
-      <Box sx={{ px: 1.5, boxSizing: "border-box"}}>
+      <Box sx={{ px: 1.5, boxSizing: "border-box" }}>
         <Box
           sx={{
             width: "100%",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            position: "sticky",
+            position: "fixed",
             bgcolor: "white",
           }}
         >
@@ -164,7 +164,18 @@ const SearchScreen = () => {
             onChange={(e) => setCurrentSearch(e.target.value)}
             data-testid="search-activities-input"
           />
+
+          <OffliButton
+            variant="text"
+            size="small"
+            sx={{ fontSize: 14, mr: 2 }}
+            onClick={() => navigate(ApplicationLocations.ACTIVITIES)}
+            data-testid="cancel-search-btn"
+          >
+            Cancel
+          </OffliButton>
         </Box>
+        <Box sx={{ p: 5 }}></Box>
         {areActivitiesLoading ? (
           <Box sx={{ display: "flex", justifyContent: "center" }}>
             <CircularProgress color="primary" />
