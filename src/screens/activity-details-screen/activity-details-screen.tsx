@@ -83,16 +83,6 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
         id: id ? Number(id) : undefined,
         participantId: userInfo?.id,
       },
-      // onSuccess: (data) =>
-      //   setHeaderRightContent(
-      //     <IconButton
-      //       color="primary"
-      //       data-testid="toggle-activity-menu-btn"
-      //       onClick={() => handleActivityActionsCLick(data?.data?.activity)}
-      //     >
-      //       <MenuIcon />
-      //     </IconButton>
-      //   ),
     });
 
   const {
@@ -223,7 +213,7 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
         <MenuIcon />
       </IconButton>
     );
-  }, [activity, handleActivityActionsCLick]);
+  }, [activity, handleActivityActionsCLick, setHeaderRightContent]);
 
   React.useEffect(() => {
     if (state) {
