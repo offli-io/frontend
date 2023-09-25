@@ -300,8 +300,7 @@ const ActivitiesScreen = () => {
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
-          width: "100%",
-          mb: 1,
+          my: 1,
         }}
       >
         <Typography variant="h4" sx={{ color: palette?.text?.primary }}>
@@ -402,8 +401,7 @@ const ActivitiesScreen = () => {
                   justifyContent: "space-between",
                   alignItems: "center",
                   width: "100%",
-                  mb: 2,
-                  mt: 1,
+                  my: 2,
                 }}
               >
                 <Typography variant="h4" sx={{ color: palette?.text?.primary }}>
@@ -468,7 +466,7 @@ const ActivitiesScreen = () => {
               <OffliButton
                 variant="text"
                 sx={{ fontSize: 16 }}
-                endIcon={
+                startIcon={
                   <MapIcon
                     sx={{ fontSize: "1.2rem", ml: -0.7, color: "primary.main" }}
                   />
@@ -482,7 +480,7 @@ const ActivitiesScreen = () => {
                 }
                 data-testid="see-map-btn"
               >
-                Show
+                Show map
               </OffliButton>
             </Box>
             <InfiniteScroll
