@@ -33,15 +33,25 @@ const NotificationRequest: React.FC<INotificationRequestProps> = ({
     return undefined;
   }, [notification?.timestamp]);
 
+  const generateNotificationType = React.useCallback(() => {
+    if (notification?.type === NotificationTypeEnum.BUDDY_REQ) {
+      return `Buddy request`;
+    }
+    if (notification?.type === NotificationTypeEnum.ACTIVITY_REQ) {
+      return `Activity invite`;
+    }
+    return "";
+  }, [notification]);
+
   // console.log(
   //   format(new Date(`${notification?.timestamp}` * 1000), DATE_TIME_FORMAT)
   // );
   const generateNotificationMessage = React.useCallback(() => {
     if (notification?.type === NotificationTypeEnum.BUDDY_REQ) {
-      return `${notification?.properties?.user?.username} sent you request to become buddies`;
+      return `${notification?.properties?.user?.username} wants to become buddies`;
     }
     if (notification?.type === NotificationTypeEnum.ACTIVITY_REQ) {
-      return `${notification?.properties?.user?.username} invited you to join activity`;
+      return `${notification?.properties?.user?.username} invited you to join ${notification?.properties?.activity?.title}`;
     }
     return "";
   }, [notification]);
@@ -83,7 +93,7 @@ const NotificationRequest: React.FC<INotificationRequestProps> = ({
 
             <img
               style={{
-                height: 35,
+                height: 45,
                 borderRadius: "50%",
                 // border: `2px solid ${palette?.primary?.main}`,
                 boxShadow: shadows[5],
@@ -95,7 +105,8 @@ const NotificationRequest: React.FC<INotificationRequestProps> = ({
               }
               alt="profile"
             />
-
+            <Box sx={{display: "flex", flexDirection:"column"}}>
+              <Typography sx={{fontWeight: notification?.seen ? "normal" : "bold",fontSize:"h5",ml: 2,}}>{generateNotificationType()}</Typography>
             <Typography
               sx={{
                 ml: 2,
@@ -106,6 +117,8 @@ const NotificationRequest: React.FC<INotificationRequestProps> = ({
             >
               {generateNotificationMessage()}
             </Typography>
+            </Box>
+            
           </Box>
           <Typography
             sx={{
@@ -120,7 +133,6 @@ const NotificationRequest: React.FC<INotificationRequestProps> = ({
           {/* </Box> */}
         </Box>
       </Box>
-      <Divider sx={{ width: "100%" }} />
     </>
   );
 };
