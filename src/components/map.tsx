@@ -9,7 +9,7 @@ import { DrawerContext } from "../assets/theme/drawer-provider";
 import MapDrawerDetail from "../screens/map-screen/components/map-drawer-detail";
 import { IActivity } from "../types/activities/activity.dto";
 import { IMapViewActivityDto } from "../types/activities/mapview-activities.dto";
-import wavePeople from "../assets/img/here-icon.svg";
+import wavePeople from "../assets/img/your-location.svg";
 
 const RecenterAutomatically = ({
   lat,
