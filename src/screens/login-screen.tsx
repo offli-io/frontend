@@ -5,6 +5,7 @@ import {
   InputAdornment,
   TextField,
   Typography,
+  useTheme,
 } from "@mui/material";
 import React from "react";
 
@@ -43,6 +44,7 @@ const LoginScreen: React.FC = () => {
     AuthenticationContext
   );
   const { enqueueSnackbar } = useSnackbar();
+  const { shadows, palette } = useTheme();
   const navigate = useNavigate();
   const {
     googleToken,
@@ -128,10 +130,10 @@ const LoginScreen: React.FC = () => {
   return (
     <>
       <OffliBackButton
-        onClick={() => navigate(ApplicationLocations.REGISTER)}
-        sx={{ alignSelf: "flex-start", m: 1 }}
+        onClick={() => navigate(ApplicationLocations.LOGIN_OR_REGISTER)}
+        sx={{ alignSelf: "flex-start", m: 1, color: palette?.primary?.main }}
       >
-        Sign up
+        Back
       </OffliBackButton>
       <form
         onSubmit={handleSubmit(handleFormSubmit)}
@@ -152,14 +154,14 @@ const LoginScreen: React.FC = () => {
           }}
         >
           <OffliButton
-            startIcon={<GoogleIcon sx={{ filter: "invert(100%)" }} />}
+            startIcon={<GoogleIcon sx={{ filter: "invert(100%)", color: palette?.background?.default,}} />}
             onClick={handleGoogleAuthorization}
             sx={{ mb: 1 }}
             disabled={
               isLoading || isGoogleAuthorizationLoading || isGoogleLoginLoading
             }
           >
-            Sign in with Google
+            Log in with Google
           </OffliButton>
 
           <LabeledDivider sx={{ my: 1 }}>

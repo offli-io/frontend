@@ -16,7 +16,7 @@ const OffliBackButton: React.FC<IOffliBackButtonProps> = ({
 }) => {
   return (
     <OffliButton
-      startIcon={<ArrowBackIosNewIcon color="primary" />}
+      startIcon={<ArrowBackIosNewIcon sx={{color: ({ palette }) => palette?.primary?.main}} />}
       variant="text"
       sx={{
         fontSize: 16,
