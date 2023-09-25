@@ -123,20 +123,19 @@ const SearchScreen = () => {
 
   return (
     <>
-      <Box sx={{ px: 1.5, boxSizing: "border-box" }}>
-        <Box
+    <Box
           sx={{
-            width: "100%",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
+            width: "100%",
             position: "fixed",
-            bgcolor: "white",
+            backgroundColor: ({ palette }) => palette?.background?.default,
           }}
         >
           <TextField
             sx={{
-              width: "100%",
+              width: "95%",
               display: "flex",
               justifyContent: "center",
               my: 1,
@@ -169,7 +168,9 @@ const SearchScreen = () => {
             data-testid="search-activities-input"
           />
         </Box>
-        <Box sx={{ p: 5 }}></Box>
+      <Box sx={{ ml: 1.5, boxSizing: "border-box" }}>
+        
+        <Box sx={{ p: 4 }}></Box>
         {areActivitiesLoading ? (
           <Box sx={{ display: "flex", justifyContent: "center" }}>
             <CircularProgress color="primary" />
