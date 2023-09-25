@@ -168,16 +168,6 @@ const SearchScreen = () => {
             onChange={(e) => setCurrentSearch(e.target.value)}
             data-testid="search-activities-input"
           />
-
-          <OffliButton
-            variant="text"
-            size="small"
-            sx={{ fontSize: 14, mr: 2 }}
-            onClick={() => navigate(ApplicationLocations.ACTIVITIES)}
-            data-testid="cancel-search-btn"
-          >
-            Cancel
-          </OffliButton>
         </Box>
         <Box sx={{ p: 5 }}></Box>
         {areActivitiesLoading ? (
