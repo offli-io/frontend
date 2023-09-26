@@ -89,9 +89,11 @@ const ActivitiesScreen = () => {
       }),
     {
       getNextPageParam: (lastPage, allPages) => {
-        const nextPage: number = allPages?.length + 1;
+        // don't need to add +1 because we are indexing offset from 0 (so length will handle + 1)
+        const nextPage: number = allPages?.length;
         return nextPage;
       },
+      enabled: !!userInfo?.id,
       select: (data) => ({
         pages: data?.pages?.map((page) =>
           page?.filter((activity) => activity?.participant_status === null)
@@ -442,7 +444,6 @@ const ActivitiesScreen = () => {
               </Box>
             </>
           )}
-          {/* {anyNearYouActivities && ( */}
           <>
             <Box
               sx={{
@@ -481,31 +482,33 @@ const ActivitiesScreen = () => {
               pageStart={0}
               loadMore={() => fetchNextPage()}
               hasMore={hasNextPage}
-              loader={<Loader />}
+              loader={<Loader key={"loader"} />}
               useWindow={false}
             >
-              {paginatedActivitiesData?.pages?.map((group, i) => (
-                <React.Fragment key={i}>
-                  {group?.map((activity) => (
-                    <ActivityCard
-                      key={activity?.id}
-                      activity={activity}
-                      onPress={() =>
-                        navigate(
-                          `${ApplicationLocations.ACTIVITY_DETAIL}/${activity?.id}`,
-                          {
-                            state: {
-                              from: ApplicationLocations.ACTIVITIES,
-                            },
-                          }
-                        )
-                      }
-                      onLongPress={openActivityActions}
-                      sx={{ mx: 0, my: 1.5, width: "100%" }}
-                    />
-                  ))}
-                </React.Fragment>
-              ))}
+              <>
+                {paginatedActivitiesData?.pages?.map((group, i) => (
+                  <React.Fragment key={i}>
+                    {group?.map((activity) => (
+                      <ActivityCard
+                        key={activity?.id}
+                        activity={activity}
+                        onPress={() =>
+                          navigate(
+                            `${ApplicationLocations.ACTIVITY_DETAIL}/${activity?.id}`,
+                            {
+                              state: {
+                                from: ApplicationLocations.ACTIVITIES,
+                              },
+                            }
+                          )
+                        }
+                        onLongPress={openActivityActions}
+                        sx={{ mx: 0, my: 1.5, width: "100%" }}
+                      />
+                    ))}
+                  </React.Fragment>
+                ))}
+              </>
             </InfiniteScroll>
           </>
         </>

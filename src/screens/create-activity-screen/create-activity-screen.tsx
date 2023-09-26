@@ -140,6 +140,8 @@ const CreateActivityScreen = () => {
   const queryClient = useQueryClient();
   const { enqueueSnackbar } = useSnackbar();
   const [activeStep, setActiveStep] = React.useState<number>(0);
+  const [isMap, toggleMap] = React.useState(false);
+
   const navigate = useNavigate();
   const { userInfo } = React.useContext(AuthenticationContext);
   const { data: { data: userData = {} } = {}, isLoading: isUserDataLoading } =
@@ -165,6 +167,8 @@ const CreateActivityScreen = () => {
   });
 
   const { control, handleSubmit, formState, watch } = methods;
+
+  console.log(formState);
 
   const { data, mutate, isLoading } = useMutation(
     ["create-activity"],
@@ -245,6 +249,8 @@ const CreateActivityScreen = () => {
             onNextClicked={() => setActiveStep((activeStep) => activeStep + 1)}
             onBackClicked={handleBackClicked}
             methods={methods}
+            isMap={isMap}
+            toggleMap={toggleMap}
           />
         );
       case 2:
@@ -301,7 +307,7 @@ const CreateActivityScreen = () => {
           </Box>
         );
     }
-  }, [activeStep, methods]);
+  }, [activeStep, methods, isMap]);
 
   const getFormLayout = React.useCallback(() => {
     switch (activeStep) {
@@ -337,8 +343,9 @@ const CreateActivityScreen = () => {
       <PageWrapper
         sxOverrides={{
           alignItems: "center",
-          px: 3,
+          px: isMap ? 0 : 3,
           bgcolor: palette.background.default,
+          ...(isMap ? { mt: 0 } : {}),
         }}
       >
         <form
@@ -347,7 +354,7 @@ const CreateActivityScreen = () => {
             alignItems: "flex-start",
             justifyContent: getFormLayout(),
             flexDirection: "column",
-            height: "78vh",
+            height: isMap ? "100vh" : "78vh",
             width: "100%",
             //TODO in the future maybe include navigation height in the PageWrapper component for now pb: 12 is enough
             // paddingBottom: theme.spacing(20),
