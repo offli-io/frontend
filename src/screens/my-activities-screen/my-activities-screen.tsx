@@ -442,7 +442,6 @@ const ActivitiesScreen = () => {
               </Box>
             </>
           )}
-          {/* {anyNearYouActivities && ( */}
           <>
             <Box
               sx={{
