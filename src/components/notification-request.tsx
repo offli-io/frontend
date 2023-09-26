@@ -75,7 +75,8 @@ const NotificationRequest: React.FC<INotificationRequestProps> = ({
           sx={{
             width: "100%",
             display: "grid",
-            gridTemplateColumns: "4fr 1fr",
+            gridTemplateColumns: "5fr 1fr",
+            gap: 2,
             alignItems: "center",
           }}
         >
@@ -109,7 +110,7 @@ const NotificationRequest: React.FC<INotificationRequestProps> = ({
             <Box sx={{ display: "flex", flexDirection: "column" }}>
               <Typography
                 sx={{
-                  fontWeight: "bold",
+                  fontWeight: notification?.seen ? "normal" : "bold",
                   fontSize: "h5",
                   ml: 2,
                 }}
@@ -120,6 +121,7 @@ const NotificationRequest: React.FC<INotificationRequestProps> = ({
                 sx={{
                   ml: 2,
                   color: "black",
+                  overflowWrap: "anywhere",
                   fontWeight: notification?.seen ? "normal" : "bold",
                 }}
                 variant="subtitle1"
@@ -130,10 +132,11 @@ const NotificationRequest: React.FC<INotificationRequestProps> = ({
           </Box>
           <Typography
             sx={{
-              ml: 2,
+              // ml: 2,
               color: (theme) => theme.palette.inactiveFont.main,
               fontSize: "0.8rem",
               textAlign: "end",
+              minWidth: 50,
             }}
           >
             {hourDifference()}
