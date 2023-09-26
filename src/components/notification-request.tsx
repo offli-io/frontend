@@ -5,6 +5,7 @@ import userPlaceholder from "../assets/img/user-placeholder.svg";
 import { useGetApiUrl } from "../hooks/use-get-api-url";
 import { NotificationTypeEnum } from "../types/notifications/notification-type-enum";
 import { INotificationDto } from "../types/notifications/notification.dto";
+import SanitizedText from "./sanitized-text/sanitized-text";
 
 interface INotificationRequestProps {
   notification: INotificationDto;
@@ -51,7 +52,7 @@ const NotificationRequest: React.FC<INotificationRequestProps> = ({
       return `${notification?.properties?.user?.username} wants to become buddies`;
     }
     if (notification?.type === NotificationTypeEnum.ACTIVITY_REQ) {
-      return `${notification?.properties?.user?.username} invited you to join ${notification?.properties?.activity?.title}`;
+      return `${notification?.properties?.user?.username} invited you to join <em>${notification?.properties?.activity?.title}</em>`;
     }
     return "";
   }, [notification]);
@@ -105,20 +106,27 @@ const NotificationRequest: React.FC<INotificationRequestProps> = ({
               }
               alt="profile"
             />
-            <Box sx={{display: "flex", flexDirection:"column"}}>
-              <Typography sx={{fontWeight: notification?.seen ? "normal" : "bold",fontSize:"h5",ml: 2,}}>{generateNotificationType()}</Typography>
-            <Typography
-              sx={{
-                ml: 2,
-                color: "black",
-                fontWeight: notification?.seen ? "normal" : "bold",
-              }}
-              variant="subtitle1"
-            >
-              {generateNotificationMessage()}
-            </Typography>
+            <Box sx={{ display: "flex", flexDirection: "column" }}>
+              <Typography
+                sx={{
+                  fontWeight: "bold",
+                  fontSize: "h5",
+                  ml: 2,
+                }}
+              >
+                {generateNotificationType()}
+              </Typography>
+              <Typography
+                sx={{
+                  ml: 2,
+                  color: "black",
+                  fontWeight: notification?.seen ? "normal" : "bold",
+                }}
+                variant="subtitle1"
+              >
+                <SanitizedText text={generateNotificationMessage()} />
+              </Typography>
             </Box>
-            
           </Box>
           <Typography
             sx={{
