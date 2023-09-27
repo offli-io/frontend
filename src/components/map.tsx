@@ -3,7 +3,6 @@ import L, { LatLngTuple } from "leaflet";
 import React from "react";
 import { MapContainer, Marker, Popup, TileLayer, useMap } from "react-leaflet";
 import MarkerClusterGroup from "react-leaflet-cluster";
-import wavePeople from "../assets/img/here-icon.svg";
 import markerIcon from "../assets/img/location-marker.svg";
 import { CustomizationContext } from "../assets/theme/customization-provider";
 import { DrawerContext } from "../assets/theme/drawer-provider";
