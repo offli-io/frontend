@@ -11,13 +11,14 @@ import { ApplicationLocations } from "../../types/common/applications-locations.
 import { ICustomizedLocationStateDto } from "../../types/common/customized-location-state.dto";
 import { NotificationTypeEnum } from "../../types/notifications/notification-type-enum";
 import { INotificationDto } from "../../types/notifications/notification.dto";
+import Loader from "components/loader";
 
 const NotificationsScreen = () => {
   const { userInfo } = React.useContext(AuthenticationContext);
   const navigate = useNavigate();
   const location = useLocation();
   const from = (location?.state as ICustomizedLocationStateDto)?.from;
-  const { data } = useNotifications(userInfo?.id);
+  const { data, isLoading } = useNotifications(userInfo?.id);
   const { enqueueSnackbar } = useSnackbar();
   const queryClient = useQueryClient();
   const abortControllerRef = React.useRef<AbortController | null>(null);
@@ -95,40 +96,44 @@ const NotificationsScreen = () => {
         height: "100vh",
       }}
     >
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          width: "100%",
-          px: 2,
-          boxSizing: "border-box",
-        }}
-      >
-        {areAnyNotifications ? (
-          data?.data?.notifications?.map((notification) => (
-            <NotificationRequest
-              key={notification?.id}
-              notification={notification}
-              onClick={handleNotificationClick}
-            />
-          ))
-        ) : (
-          <Box
-            sx={{
-              display: "flex",
-              width: "100%",
-              justifyContent: "center",
-              mt: 4,
-              // alignItems: "center",
-              // height: "100%",
-            }}
-          >
-            <Typography variant="subtitle2">
-              You have no new notifications
-            </Typography>
-          </Box>
-        )}
-      </Box>
+      {isLoading ? (
+        <Loader />
+      ) : (
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            width: "100%",
+            px: 2,
+            boxSizing: "border-box",
+          }}
+        >
+          {areAnyNotifications ? (
+            data?.data?.notifications?.map((notification) => (
+              <NotificationRequest
+                key={notification?.id}
+                notification={notification}
+                onClick={handleNotificationClick}
+              />
+            ))
+          ) : (
+            <Box
+              sx={{
+                display: "flex",
+                width: "100%",
+                justifyContent: "center",
+                mt: 4,
+                // alignItems: "center",
+                // height: "100%",
+              }}
+            >
+              <Typography variant="subtitle2">
+                You have no new notifications
+              </Typography>
+            </Box>
+          )}
+        </Box>
+      )}
     </Box>
   );
 };

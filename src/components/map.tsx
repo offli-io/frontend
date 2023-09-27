@@ -10,6 +10,7 @@ import { DrawerContext } from "../assets/theme/drawer-provider";
 import MapDrawerDetail from "../screens/map-screen/components/map-drawer-detail";
 import { IActivity } from "../types/activities/activity.dto";
 import { IMapViewActivityDto } from "../types/activities/mapview-activities.dto";
+import wavePeople from "../assets/img/your-location.svg";
 import OffliButton from "./offli-button";
 import { getPlaceFromCoordinates } from "api/activities/requests";
 import { useQuery } from "@tanstack/react-query";
