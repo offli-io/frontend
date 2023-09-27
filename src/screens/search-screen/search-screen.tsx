@@ -123,20 +123,19 @@ const SearchScreen = () => {
 
   return (
     <>
-      <Box sx={{ px: 1.5, boxSizing: "border-box" }}>
-        <Box
+    <Box
           sx={{
-            width: "100%",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
+            width: "100%",
             position: "fixed",
-            bgcolor: "white",
+            backgroundColor: ({ palette }) => palette?.background?.default,
           }}
         >
           <TextField
             sx={{
-              width: "100%",
+              width: "95%",
               display: "flex",
               justifyContent: "center",
               my: 1,
@@ -168,17 +167,10 @@ const SearchScreen = () => {
             onChange={(e) => setCurrentSearch(e.target.value)}
             data-testid="search-activities-input"
           />
-
-          <OffliButton
-            variant="text"
-            size="small"
-            sx={{ fontSize: 14, mr: 2 }}
-            onClick={() => navigate(ApplicationLocations.ACTIVITIES)}
-            data-testid="cancel-search-btn"
-          >
-            Cancel
-          </OffliButton>
         </Box>
+      <Box sx={{ ml: 1.5, boxSizing: "border-box" }}>
+        
+        <Box sx={{ p: 4 }}></Box>
         {areActivitiesLoading ? (
           <Box sx={{ display: "flex", justifyContent: "center" }}>
             <CircularProgress color="primary" />

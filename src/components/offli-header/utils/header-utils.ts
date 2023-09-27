@@ -27,6 +27,10 @@ export const mapPathnameToHeaderTitle = (pathname?: ApplicationLocations) => {
     return "Activity members";
   }
 
+  if (pathname?.startsWith(ApplicationLocations.NOTIFICATIONS)) {
+    return "Notifications";
+  }
+
   if (pathname?.startsWith(ApplicationLocations.ACTIVITY_INVITE_MEMBERS)) {
     return "Invite buddies";
   }
