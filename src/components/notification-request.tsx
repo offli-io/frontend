@@ -129,11 +129,10 @@ const NotificationRequest: React.FC<INotificationRequestProps> = ({
                   color: "black",
                   overflowWrap: "anywhere",
                   fontWeight: notification?.seen ? "normal" : "bold",
-                  overflow: "hidden", textOverflow: "ellipsis", maxWidth: 220,
                 }}
                 variant="subtitle1"
               >
-                <SanitizedText style={{overflow: "hidden", textOverflow: "ellipsis",whiteSpace: "nowrap"}} text={generateNotificationMessage()}/>
+                <SanitizedText style={{overflow: "hidden", textOverflow: "ellipsis",whiteSpace: "nowrap",  maxWidth: 200,}} text={generateNotificationMessage()}/>
               </Typography>
             </Box>
           </Box>
