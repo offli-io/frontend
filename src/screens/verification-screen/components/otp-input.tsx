@@ -15,7 +15,7 @@ type InputProps = Required<
     | "maxLength"
     | "autoComplete"
     | "style"
-    // | "disabled"
+    | "disabled"
   > & {
     ref: React.RefCallback<HTMLInputElement>;
     placeholder: string | undefined;
@@ -45,7 +45,7 @@ interface OTPInputProps {
   inputStyle?: React.CSSProperties | string;
   /** The type that will be passed to the input being rendered */
   inputType?: AllowedInputTypes;
-  // otpDisabled?: boolean | undefined;
+  otpDisabled?: boolean | undefined;
 }
 
 const isStyleObject = (obj: unknown) => typeof obj === "object" && obj !== null;
@@ -61,8 +61,8 @@ const OTPInput = ({
   placeholder,
   containerStyle,
   inputStyle,
-}: // otpDisabled,
-OTPInputProps) => {
+  otpDisabled,
+}: OTPInputProps) => {
   const [activeInput, setActiveInput] = React.useState(0);
   const inputRefs = React.useRef<Array<HTMLInputElement | null>>([]);
 
@@ -246,7 +246,7 @@ OTPInputProps) => {
               onPaste: handlePaste,
               autoComplete: "off",
               maxLength: 1,
-              // disabled: !!otpDisabled,
+              disabled: !!otpDisabled,
               "aria-label": `Please enter OTP character ${index + 1}`,
               style: Object.assign(
                 {
