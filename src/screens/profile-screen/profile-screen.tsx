@@ -24,6 +24,7 @@ import { useSendBuddyRequest } from "./hooks/use-send-buddy-request";
 import { useToggleBuddyRequest } from "./hooks/use-toggle-buddy-request";
 import { ProfileEntryTypeEnum } from "./types/profile-entry-type";
 import { generateBuddyActionButtonLabel } from "./utils/generate-buddy-action-button-label.util";
+import LastAttendedActivityCard from "components/last-attended-activity-card/last-attended-activity-card";
 
 interface IProfileScreenProps {
   type: ProfileEntryTypeEnum;
@@ -306,11 +307,6 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
             }
           />
         )}
-        {/* <Box sx={{display: "flex", alignSelf: "start", mt: "30px", ml: "10%", mb:"30px"}}>
-          <Typography sx={{fontWeight: "bold"}}>
-            This month
-          </Typography>
-        </Box> */}
         {[
           ProfileEntryTypeEnum.REQUEST,
           ProfileEntryTypeEnum.USER_PROFILE,
@@ -377,6 +373,23 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
             </OffliButton>
           </Box>
         ) : null} */}
+        {type === ProfileEntryTypeEnum.BUDDY ? (
+          <Box
+            sx={{
+              width: "90%",
+            }}
+          >
+            <Typography
+              align="left"
+              variant="h5"
+              sx={{ mt: 3, mb: 1, color: palette?.text?.primary }}
+            >
+              Last attended
+            </Typography>
+            <LastAttendedActivityCard label="Movie night" />
+          </Box>
+        ) : null}
+
         {displayStatistics ? (
           <Box
             sx={{
