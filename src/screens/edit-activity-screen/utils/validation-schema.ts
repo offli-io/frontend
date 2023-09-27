@@ -53,7 +53,6 @@ export const validationSchema = () =>
       .required()
       .defined()
       .typeError("Activity maximal attendance must be filled"),
-
     title_picture: yup.string().notRequired(),
     placeQuery: yup.string().notRequired(),
     description: yup.string().notRequired(),

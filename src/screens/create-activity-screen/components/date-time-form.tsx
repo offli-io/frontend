@@ -204,6 +204,7 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
               data-testid="activitiy-from-time-picker"
               error={!!error}
               helperText={!!error && "Activity start time is required"}
+              SelectProps={{}}
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
@@ -212,22 +213,19 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
                 ),
               }}
             >
+              {/* <Box sx={{ height: 300, width: "100%" }}> 
+              TODO add limited height to options container
+              */}
               {generateOptionsOrder("from")?.map((option) => (
                 <MenuItem key={option} value={option} divider>
                   {option}
                 </MenuItem>
               ))}
+              {/* </Box> */}
             </TextField>
           )}
         />
 
-        {/* <Typography
-          sx={{ my: 1, fontWeight: "bold", color: palette?.text?.primary }}
-        >
-          Duration
-        </Typography> */}
-
-        {/* <Box sx={{ display: "grid", gridTemplateColumns: "3fr 1fr", gap: 2 }}> */}
         <Typography
           sx={{ my: 1, fontWeight: "bold", color: palette?.text?.primary }}
         >
