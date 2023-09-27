@@ -156,16 +156,17 @@ const MyBuddiesScreen = () => {
 
   return (
     <>
-      <Box sx={{ mx: 1.5, height: "100%" }}>
+      <Box sx={{ mx: 1.5, height: "100%", overflow: "auto" }}>
         {(!buddies || (buddies?.length === 0 && currentSearch?.length === 0)) &&
         !isLoading ? (
           <NoBuddiesScreen onAddBuddiesClick={handleAddBuddies} />
         ) : (
           <Box
             sx={{
-              overflow: "hidden",
+              // overflow: "hidden",
               position: "relative",
               height: "100%",
+              // overflow: "auto",
               zIndex: 555,
             }}
           >
@@ -177,7 +178,8 @@ const MyBuddiesScreen = () => {
                 justifyContent: "center",
                 position: "sticky",
                 top: 0,
-                zIndex: 555,
+                zIndex: 20,
+                bgcolor: ({ palette }) => palette?.background?.default,
               }}
             >
               <TextField
@@ -243,24 +245,19 @@ const MyBuddiesScreen = () => {
             <Box
               sx={{
                 height: "100%",
-                overflow: "auto",
-                "::-webkit-scrollbar": { display: "none" },
               }}
             >
               <Typography variant="h5" sx={{ mt: 2, mb: 1 }}>
                 Your buddies
               </Typography>
-              {(buddies ?? [])?.length < 1 ? (
+              {(buddies ?? [])?.length < 1 && !isLoading ? (
                 <Box
                   sx={{
                     height: "100%",
                     width: "100%",
-                    // my: 3,
                     display: "flex",
                     justifyContent: "center",
                     alignItems: "center",
-                    // borderTop: "1px solid lightgrey",
-                    // borderBottom: "1px solid lightgrey",
                   }}
                 >
                   <Typography
@@ -272,11 +269,12 @@ const MyBuddiesScreen = () => {
               ) : (
                 <Box
                   sx={{
-                    height: "100%",
                     width: "100%",
-                    overflowY: "auto",
-                    "::-webkit-scrollbar": { display: "none" },
-                    mb: 10,
+                    overflow: "hidden",
+                    // height: '100%',
+                    // overflowY: "auto",
+                    // "::-webkit-scrollbar": { display: "none" },
+                    mb: 2,
                   }}
                 >
                   {isLoading ? (
