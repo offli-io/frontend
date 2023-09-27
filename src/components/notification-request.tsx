@@ -20,6 +20,11 @@ const NotificationRequest: React.FC<INotificationRequestProps> = ({
   const baseUrl = useGetApiUrl();
 
   const roundDaysIfNecessarry = React.useCallback((hours: number) => {
+    if (hours === 1)
+      return `${hours} hour`;
+    if (hours > 24 && hours < 48)
+      return `${Math.floor(hours / 24)} day`;
+
     return hours > 24 ? `${Math.floor(hours / 24)} days` : `${hours} hours`;
   }, []);
 
@@ -52,7 +57,7 @@ const NotificationRequest: React.FC<INotificationRequestProps> = ({
       return `${notification?.properties?.user?.username} wants to become buddies`;
     }
     if (notification?.type === NotificationTypeEnum.ACTIVITY_REQ) {
-      return `${notification?.properties?.user?.username} invited you to join <em>${notification?.properties?.activity?.title}</em>`;
+      return `${notification?.properties?.user?.username} invited you to join <br><em>${notification?.properties?.activity?.title}</em>`;
     }
     return "";
   }, [notification]);
@@ -78,6 +83,7 @@ const NotificationRequest: React.FC<INotificationRequestProps> = ({
             gridTemplateColumns: "5fr 1fr",
             gap: 2,
             alignItems: "center",
+            overflow: "hidden", textOverflow: "ellipsis"
           }}
         >
           <Box sx={{ display: "flex", alignItems: "center" }}>
@@ -107,7 +113,7 @@ const NotificationRequest: React.FC<INotificationRequestProps> = ({
               }
               alt="profile"
             />
-            <Box sx={{ display: "flex", flexDirection: "column" }}>
+            <Box sx={{ display: "flex", flexDirection: "column"}}>
               <Typography
                 sx={{
                   fontWeight: notification?.seen ? "normal" : "bold",
@@ -123,10 +129,11 @@ const NotificationRequest: React.FC<INotificationRequestProps> = ({
                   color: "black",
                   overflowWrap: "anywhere",
                   fontWeight: notification?.seen ? "normal" : "bold",
+                  overflow: "hidden", textOverflow: "ellipsis", maxWidth: 220,
                 }}
                 variant="subtitle1"
               >
-                <SanitizedText text={generateNotificationMessage()} />
+                <SanitizedText style={{overflow: "hidden", textOverflow: "ellipsis",whiteSpace: "nowrap"}} text={generateNotificationMessage()}/>
               </Typography>
             </Box>
           </Box>
@@ -135,13 +142,12 @@ const NotificationRequest: React.FC<INotificationRequestProps> = ({
               // ml: 2,
               color: (theme) => theme.palette.inactiveFont.main,
               fontSize: "0.8rem",
-              textAlign: "end",
-              minWidth: 50,
+              textAlign: "center",
+              minWidth: 60,
             }}
           >
             {hourDifference()}
           </Typography>
-          {/* </Box> */}
         </Box>
       </Box>
     </>
