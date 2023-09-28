@@ -5,7 +5,7 @@ import { IUsersParamsDto } from "types/users";
 
 export const useUser = ({ id, requestingInfoUserId }: IUsersParamsDto) => {
   const { enqueueSnackbar } = useSnackbar();
-  const { data, isLoading } = useQuery(
+  const { data, isLoading, isFetching } = useQuery(
     ["user", id, requestingInfoUserId],
     () => getUser({ id, requestingInfoUserId }),
     {
@@ -17,5 +17,5 @@ export const useUser = ({ id, requestingInfoUserId }: IUsersParamsDto) => {
     }
   );
 
-  return { data, isLoading };
+  return { data, isLoading, isFetching };
 };

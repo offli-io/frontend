@@ -223,3 +223,18 @@ export const connectInstagram = (userId?: number, authCode?: string) => {
 
   return promise;
 };
+
+export const unlinkInstagram = (userId?: number, authCode?: string) => {
+  const CancelToken = axios.CancelToken;
+  const source = CancelToken.source();
+
+  const promise = axios.delete(`${DEFAULT_DEV_URL}/instagram/${userId}/media`, {
+    cancelToken: source?.token,
+  });
+
+  //   queryFunctionContext?.signal?.addEventListener('abort', () => {
+  //     source.cancel('Query was cancelled by React Query')
+  //   })
+
+  return promise;
+};

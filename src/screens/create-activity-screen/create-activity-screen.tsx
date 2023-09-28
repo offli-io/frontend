@@ -168,8 +168,6 @@ const CreateActivityScreen = () => {
 
   const { control, handleSubmit, formState, watch } = methods;
 
-  console.log(formState);
-
   const { data, mutate, isLoading } = useMutation(
     ["create-activity"],
     (formValues: FormValues & { creator_id?: number }) =>

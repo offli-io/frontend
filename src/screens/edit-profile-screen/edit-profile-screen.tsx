@@ -22,7 +22,11 @@ import {
   getLocationFromQueryFetch,
   uploadFile,
 } from "../../api/activities/requests";
-import { updateProfileInfo } from "../../api/users/requests";
+import {
+  connectInstagram,
+  unlinkInstagram,
+  updateProfileInfo,
+} from "../../api/users/requests";
 import userPlaceholder from "../../assets/img/user-placeholder.svg";
 import { AuthenticationContext } from "../../assets/theme/authentication-provider";
 import { DrawerContext } from "../../assets/theme/drawer-provider";
@@ -42,6 +46,7 @@ import ProfilePhotoActions, {
 } from "./components/profile-photo-actions";
 import { getMatchingProperties } from "./utils/get-matching-properties.util";
 import { useGetApiUrl } from "../../hooks/use-get-api-url";
+import InstagramIcon from "@mui/icons-material/Instagram";
 
 export interface IEditProfile {
   username?: string;
@@ -173,6 +178,7 @@ const EditProfileScreen: React.FC = () => {
         //TODO construct server url
         sendUpdateProfile({ profile_photo: data?.data?.filename });
         queryClient.invalidateQueries(["user"]);
+        navigate(ApplicationLocations.PROFILE);
       },
       onError: (error) => {
         enqueueSnackbar("Failed to upload profile photo", {
@@ -181,6 +187,36 @@ const EditProfileScreen: React.FC = () => {
       },
     }
   );
+
+  const { isLoading: isUnlinkingInstagram, mutate: sendUnlinkInstagram } =
+    useMutation(
+      ["instagram-unlink"],
+      () => unlinkInstagram(Number(userInfo?.id)),
+      {
+        onSuccess: () => {
+          //params destruction
+          // const url = new URL(window.location.href);
+          // url.searchParams.delete
+          //this doesn't work -> will have to redirect I guess
+          enqueueSnackbar(
+            "Your instagram account has been successfully unlinked",
+            { variant: "success" }
+          );
+          queryClient.invalidateQueries(["user"]);
+          //didnt even notice the refresh -> this might work
+          // window.history.pushState(
+          //   {},
+          //   document.title,
+          //   window.location.pathname
+          // );
+        },
+        onError: () => {
+          enqueueSnackbar("Failed unlinking your instagram account", {
+            variant: "error",
+          });
+        },
+      }
+    );
 
   useEffect(() => {
     // alebo setValue ak bude resetu kurovat
@@ -556,32 +592,32 @@ const EditProfileScreen: React.FC = () => {
                   )}
                 />
               </LocalizationProvider>
-              {/* <Controller
-                name="instagram"
-                control={control}
-                render={({ field, fieldState: { error } }) => (
-                  <>
-                    <Typography
-                      sx={{ fontWeight: "bold", color: palette?.text?.primary }}
-                    >
-                      Instagram
-                    </Typography>
-                    <TextField
-                      {...field}
-                      error={!!error}
-                      helperText={error?.message}
-                      sx={{ width: "100%", my: 1.5 }}
-                      data-testid="instagram-username-input"
-                      // label="Instagram"
-                    />
-                  </>
-                )}
-              /> */}
+              {!!data?.instagram ? (
+                <Box
+                  sx={{
+                    display: "flex",
+                    width: "100%",
+                    justifyContent: "center",
+                  }}
+                >
+                  <OffliButton
+                    onClick={() => sendUnlinkInstagram()}
+                    size="small"
+                    variant="outlined"
+                    sx={{ fontSize: 16, mt: 1, width: "65%" }}
+                    startIcon={<InstagramIcon sx={{ color: "inherit" }} />}
+                    isLoading={true}
+                  >
+                    Unlink Instagram
+                  </OffliButton>
+                </Box>
+              ) : null}
             </Box>
             <OffliButton
               type="submit"
-              sx={{ mt: 3, mb: 2, width: "50%" }}
+              sx={{ mt: 4, mb: 2, width: "50%" }}
               isLoading={isSubmitting}
+              disabled={isUnlinkingInstagram}
               data-testid="submit-btn"
             >
               Save

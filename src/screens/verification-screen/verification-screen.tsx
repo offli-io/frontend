@@ -16,6 +16,7 @@ import {
 import OffliBackButton from "../../components/offli-back-button";
 import { loginUser, resendCode } from "../../api/auth/requests";
 import OTPInput from "./components/otp-input";
+import Loader from "components/loader";
 
 interface LoginValues {
   username: string;
@@ -49,7 +50,7 @@ const VerificationScreen = () => {
     setConfig((prevConfig) => ({ ...prevConfig, otp }));
     if (otp?.length === numInputs) {
       // setOptDisabled(true);
-      verifyCodeMutation.mutate(otp);
+      sendVerifyCode(otp);
     }
   };
 
@@ -68,7 +69,7 @@ const VerificationScreen = () => {
     "registration-username",
   ]);
 
-  const { isLoading, mutate: sendLoginUser } = useMutation(
+  const { isLoading: isLoggingUser, mutate: sendLoginUser } = useMutation(
     ["login"],
     (values: LoginValues) => {
       return loginUser(values);
@@ -86,7 +87,7 @@ const VerificationScreen = () => {
       },
     }
   );
-  const verifyCodeMutation = useMutation(
+  const { mutate: sendVerifyCode, isLoading: isVerifyingCode } = useMutation(
     ["user-id"],
     (code: string) =>
       verifyCodeAndRetrieveUserId({
@@ -102,7 +103,10 @@ const VerificationScreen = () => {
         });
       },
       onError: (error) => {
-        console.log(error);
+        enqueueSnackbar("Entered code is not correct, please try again.", {
+          variant: "error",
+        });
+        setConfig((prevConfig) => ({ ...prevConfig, otp: "" }));
       },
     }
   );
@@ -128,12 +132,12 @@ const VerificationScreen = () => {
     }
   );
 
-  const handleOnCompleted = (code: string) => {
-    setVerificationCode(code);
-    verifyCodeMutation.mutate(code);
-  };
-
   const handleResendCode = React.useCallback(() => sendResendCode(), []);
+
+  const isLoading = React.useMemo(
+    () => isVerifyingCode || isLoggingUser,
+    [isVerifyingCode, isLoggingUser]
+  );
 
   return (
     <Box
@@ -163,6 +167,7 @@ const VerificationScreen = () => {
         Take a look for the verification code we just sent you to{" "}
         <b>{precreatedEmailPassword?.email}</b>.
       </Typography>
+      {isLoading ? <Loader containerSx={{ mt: 1 }} /> : null}
       <Typography variant="subtitle2" sx={{ ml: -18, mb: 1 }}>
         Confirmation code
       </Typography>
@@ -174,7 +179,7 @@ const VerificationScreen = () => {
         inputType={inputType}
         renderInput={(props) => <input {...props} />}
         shouldAutoFocus
-        // otpDisabled={otpDisabled}
+        otpDisabled={isLoading}
       />
       <Box sx={{ display: "flex", mr: -15, alignItems: "center" }}>
         <Typography variant="subtitle2">No email?</Typography>

@@ -83,10 +83,7 @@ const Routes = () => {
           path={`${ApplicationLocations.PROFILE}/request/:id`}
           element={<ProfileScreen type={ProfileEntryTypeEnum.REQUEST} />}
         />
-        <Route
-          path={`${ApplicationLocations.PROFILE}/buddy/:id`}
-          element={<ProfileScreen type={ProfileEntryTypeEnum.BUDDY} />}
-        />
+
         <Route
           path={`${ApplicationLocations.PROFILE}/user/:id`}
           element={<ProfileScreen type={ProfileEntryTypeEnum.USER_PROFILE} />}
