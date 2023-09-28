@@ -32,10 +32,13 @@ const RecenterAutomatically = ({
   return null;
 };
 
+//TODO outsource this
 const SaveButton = ({
   onClick,
+  isLoading,
 }: {
   onClick?: (location: L.LatLng) => void;
+  isLoading?: boolean;
 }) => {
   const map = useMap();
   return (
@@ -54,6 +57,7 @@ const SaveButton = ({
       }}
       onClick={() => onClick?.(map.getCenter())}
       startIcon={<WhereToVoteIcon sx={{color: ({ palette }) => palette?.background?.default}}/>}
+      isLoading={isLoading}
     >
       
       Use location
@@ -109,7 +113,8 @@ const Map: React.FC<ILabeledTileProps> = ({
 
   const {
     data: placeFromCoordinatesData,
-    isLoading: isPlaceFromCoordinatesDataLoading,
+    // isLoading: isPlaceFromCoordinatesDataLoading,
+    isFetching: isPlaceFromCoordinatesDataLoading,
   } = useQuery(
     ["locations", pendingLatLngTuple],
     () =>
@@ -186,7 +191,10 @@ const Map: React.FC<ILabeledTileProps> = ({
         />
         {setLocationByMap ? (
           <>
-            <SaveButton onClick={handleLocationSave} />
+            <SaveButton
+              onClick={handleLocationSave}
+              isLoading={isPlaceFromCoordinatesDataLoading}
+            />
             <img
               src={markerIcon}
               alt="marker"
@@ -243,9 +251,11 @@ const Map: React.FC<ILabeledTileProps> = ({
           </MarkerClusterGroup>
         )}
 
-        <Marker position={latLonTuple ?? position} icon={youAreHereIcon}>
-          <Popup>You are here</Popup>
-        </Marker>
+        {latLonTuple ? (
+          <Marker position={latLonTuple} icon={youAreHereIcon}>
+            <Popup>You are here</Popup>
+          </Marker>
+        ) : null}
       </MapContainer>
     </Box>
   );

@@ -69,7 +69,7 @@ const OffliHeader: React.FC<IProps> = ({ sx }) => {
         top: 0,
         boxSizing: "border-box",
         // pt: 2,
-        zIndex: 500,
+        zIndex: 2000,
         bgcolor: palette.background.default,
         display: "flex",
         ...sx,

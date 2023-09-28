@@ -1,19 +1,18 @@
-import React from "react";
-import { Box, Switch, Typography } from "@mui/material";
-import BackHeader from "../../components/back-header";
-import MenuItem from "../../components/menu-item";
-import { SettingsItemsObject } from "./settings-items-object";
-import { SettingsTypeEnumDto } from "../../types/common/settings-type-enum.dto";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 import InfoIcon from "@mui/icons-material/Info";
 import LogoutIcon from "@mui/icons-material/Logout";
-import { AuthenticationContext } from "../../assets/theme/authentication-provider";
-import { setAuthToken } from "../../utils/token.util";
+import { Box, Switch } from "@mui/material";
+import { useQueryClient } from "@tanstack/react-query";
+import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { AuthenticationContext } from "../../assets/theme/authentication-provider";
+import { CustomizationContext } from "../../assets/theme/customization-provider";
+import MenuItem from "../../components/menu-item";
 import { ApplicationLocations } from "../../types/common/applications-locations.dto";
 import { ICustomizedLocationStateDto } from "../../types/common/customized-location-state.dto";
-import { useQueryClient } from "@tanstack/react-query";
-import { CustomizationContext } from "../../assets/theme/customization-provider";
+import { SettingsTypeEnumDto } from "../../types/common/settings-type-enum.dto";
+import { setAuthToken } from "../../utils/token.util";
+import { SettingsItemsObject } from "./settings-items-object";
 
 const SettingsScreen = () => {
   const { setStateToken, setUserInfo } = React.useContext(

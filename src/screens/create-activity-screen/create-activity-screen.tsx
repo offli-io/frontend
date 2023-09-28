@@ -140,6 +140,8 @@ const CreateActivityScreen = () => {
   const queryClient = useQueryClient();
   const { enqueueSnackbar } = useSnackbar();
   const [activeStep, setActiveStep] = React.useState<number>(0);
+  const [pendingRedirectActivityId, setPendingRedirectActivityId] =
+    React.useState<number | undefined>();
   const [isMap, toggleMap] = React.useState(false);
 
   const navigate = useNavigate();
@@ -168,9 +170,11 @@ const CreateActivityScreen = () => {
 
   const { control, handleSubmit, formState, watch } = methods;
 
-  console.log(formState);
-
-  const { data, mutate, isLoading } = useMutation(
+  const {
+    data,
+    mutate: sendCreateActivity,
+    isLoading,
+  } = useMutation(
     ["create-activity"],
     (formValues: FormValues & { creator_id?: number }) =>
       createActivity(formValues),
@@ -182,6 +186,7 @@ const CreateActivityScreen = () => {
         //TODO query invalidation doesnt work - activities are not refetched!
         queryClient.invalidateQueries({ queryKey: ["activities"] });
         queryClient.invalidateQueries({ queryKey: ["participant-activities"] });
+        setPendingRedirectActivityId(data?.data?.id);
         setActiveStep((activeStep) => activeStep + 1);
       },
       onError: (error) => {
@@ -213,7 +218,7 @@ const CreateActivityScreen = () => {
         [durationType as string]: duration,
       });
 
-      mutate({
+      sendCreateActivity({
         ...restValues,
         datetime_from: dateTimeFrom,
         datetime_until: dateTimeUntil,
@@ -221,7 +226,7 @@ const CreateActivityScreen = () => {
         creator_id: id,
       });
     },
-    [userData, mutate]
+    [userData, sendCreateActivity]
   );
 
   const handleFormError = React.useCallback(
@@ -287,19 +292,23 @@ const CreateActivityScreen = () => {
       case 6:
         return (
           <ActivityCreatedScreen
-            onDismiss={() => setActiveStep((activeStep) => activeStep + 1)}
+            onDismiss={() =>
+              navigate(
+                `${ApplicationLocations.ACTIVITY_DETAIL}/${pendingRedirectActivityId}`
+              )
+            }
           />
         );
-      case 7:
-        return (
-          <ActivityInviteForm
-            methods={methods}
-            onNextClicked={() => {
-              navigate(ApplicationLocations.ACTIVITIES);
-              setActiveStep((activeStep) => activeStep + 1);
-            }}
-          />
-        );
+      // case 7:
+      //   return (
+      //     <ActivityInviteForm
+      //       methods={methods}
+      //       onNextClicked={() => {
+      //         navigate(ApplicationLocations.ACTIVITIES);
+      //         setActiveStep((activeStep) => activeStep + 1);
+      //       }}
+      //     />
+      //   );
       default:
         return (
           <Box>

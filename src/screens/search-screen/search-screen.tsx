@@ -3,31 +3,24 @@ import SearchIcon from "@mui/icons-material/Search";
 import {
   Box,
   CircularProgress,
-  Divider,
   IconButton,
   InputAdornment,
   TextField,
   Typography,
 } from "@mui/material";
+import { LocationContext } from "app/providers/location-provider";
 import React from "react";
-import {
-  URLSearchParamsInit,
-  useLocation,
-  useNavigate,
-  useSearchParams,
-} from "react-router-dom";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { useDebounce } from "use-debounce";
+import { HeaderContext } from "../../app/providers/header-provider";
 import { DrawerContext } from "../../assets/theme/drawer-provider";
 import ActivitySearchCard from "../../components/activity-search-card";
-import BackHeader from "../../components/back-header";
-import OffliButton from "../../components/offli-button";
 import { useActivities } from "../../hooks/use-activities";
 import { IActivityListRestDto } from "../../types/activities/activity-list-rest.dto";
 import { ApplicationLocations } from "../../types/common/applications-locations.dto";
 import FiltersDrawerContent from "./components/filters-drawer-content";
 import { IFiltersDto } from "./types/filters.dto";
-import { HeaderContext } from "../../app/providers/header-provider";
-import { RadioLabelToFilterValue } from "./utils/radio-group-data-definitions";
+import { generateSortValue } from "./utils/generate-sort-value.util";
 
 const SearchScreen = () => {
   const navigate = useNavigate();
@@ -38,6 +31,8 @@ const SearchScreen = () => {
   const [queryStringDebounced] = useDebounce(currentSearch, 250);
   const [filters, setFilters] = React.useState<IFiltersDto | undefined>();
   const { toggleDrawer } = React.useContext(DrawerContext);
+  const { location: userLocation } = React.useContext(LocationContext);
+
   const { setHeaderRightContent, headerRightContent } =
     React.useContext(HeaderContext);
   const isFirstVisitRender = React.useRef(true);
@@ -51,8 +46,10 @@ const SearchScreen = () => {
       text: isTag ? undefined : queryStringDebounced,
       tag: filters?.tags,
       datetimeFrom: filters?.date,
+      lat: userLocation?.coordinates?.lat,
+      lon: userLocation?.coordinates?.lon,
       sort: filters?.filter
-        ? RadioLabelToFilterValue[filters.filter]
+        ? (generateSortValue(filters?.filter) as any)
         : undefined,
     },
   });
@@ -123,53 +120,52 @@ const SearchScreen = () => {
 
   return (
     <>
-    <Box
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          width: "100%",
+          position: "fixed",
+          backgroundColor: ({ palette }) => palette?.background?.default,
+        }}
+      >
+        <TextField
           sx={{
+            width: "95%",
             display: "flex",
-            alignItems: "center",
             justifyContent: "center",
-            width: "100%",
-            position: "fixed",
-            backgroundColor: ({ palette }) => palette?.background?.default,
+            my: 1,
+            "& .MuiOutlinedInput-root": {
+              pr: 0,
+            },
+            "& input::placeholder": {
+              fontSize: 14,
+              color: "#4A148C",
+              fontWeight: 500,
+              opacity: 1,
+              pl: 1,
+            },
+            "& fieldset": { border: "none" },
+            backgroundColor: ({ palette }) => palette?.primary?.light,
+            borderRadius: "10px",
           }}
-        >
-          <TextField
-            sx={{
-              width: "95%",
-              display: "flex",
-              justifyContent: "center",
-              my: 1,
-              "& .MuiOutlinedInput-root": {
-                pr: 0,
-              },
-              "& input::placeholder": {
-                fontSize: 14,
-                color: "#4A148C",
-                fontWeight: 500,
-                opacity: 1,
-                pl: 1,
-              },
-              "& fieldset": { border: "none" },
-              backgroundColor: ({ palette }) => palette?.primary?.light,
-              borderRadius: "10px",
-            }}
-            value={currentSearch}
-            placeholder="Search by text in activity"
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon
-                    sx={{ fontSize: "1.4rem", color: "primary.main" }}
-                  />
-                </InputAdornment>
-              ),
-            }}
-            onChange={(e) => setCurrentSearch(e.target.value)}
-            data-testid="search-activities-input"
-          />
-        </Box>
+          value={currentSearch}
+          placeholder="Search by text in activity"
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <SearchIcon
+                  sx={{ fontSize: "1.4rem", color: "primary.main" }}
+                />
+              </InputAdornment>
+            ),
+          }}
+          onChange={(e) => setCurrentSearch(e.target.value)}
+          data-testid="search-activities-input"
+        />
+      </Box>
       <Box sx={{ ml: 1.5, boxSizing: "border-box" }}>
-        
         <Box sx={{ p: 4 }}></Box>
         {areActivitiesLoading ? (
           <Box sx={{ display: "flex", justifyContent: "center" }}>

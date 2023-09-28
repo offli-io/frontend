@@ -15,10 +15,6 @@ export const mapPathnameToHeaderTitle = (pathname?: ApplicationLocations) => {
     return "Buddy request";
   }
 
-  if (pathname?.startsWith(ApplicationLocations.BUDDY_PROFILE)) {
-    return "Buddy profile";
-  }
-
   if (pathname?.startsWith(ApplicationLocations.ACTIVITY_DETAIL)) {
     return "Activity detail";
   }
