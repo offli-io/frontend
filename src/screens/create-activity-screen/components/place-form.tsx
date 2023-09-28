@@ -19,6 +19,7 @@ import OffliButton from "../../../components/offli-button";
 import { mapLocationValue } from "../../../utils/map-location-value.util";
 import { FormValues } from "../create-activity-screen";
 import LocationSearchingIcon from "@mui/icons-material/LocationSearching";
+import AddLocationAltIcon from '@mui/icons-material/AddLocationAlt';
 
 interface IPlaceFormProps {
   onNextClicked: () => void;
@@ -70,16 +71,17 @@ export const PlaceForm: React.FC<IPlaceFormProps> = ({
               sx={{
                 display: "flex",
                 flexDirection: "column",
-                alignItems: "center",
+                alignItems: "start",
                 justifyContent: "center",
                 // pl: 2,
                 width: "50%",
+                ml: 1
               }}
             >
-              <Typography variant="h2" sx={{ color: "primary.main" }}>
+              <Typography variant="h1" sx={{ color: "primary.main" }}>
                 Set
               </Typography>
-              <Typography variant="h2" sx={{ color: palette.text.primary }}>
+              <Typography variant="h1" sx={{ color: palette.text.primary }}>
                 location
               </Typography>
             </Box>
@@ -88,7 +90,7 @@ export const PlaceForm: React.FC<IPlaceFormProps> = ({
             >
               <img
                 src={activityLocation}
-                style={{ height: 80 }}
+                style={{ height: 120 }}
                 alt="place-form"
               />
             </Box>
@@ -111,7 +113,7 @@ export const PlaceForm: React.FC<IPlaceFormProps> = ({
                     display: "flex",
                     width: "100%",
                     alignItems: "center",
-                    mb: 2,
+                    mb: 3,
                   }}
                 >
                   <Autocomplete
@@ -148,14 +150,18 @@ export const PlaceForm: React.FC<IPlaceFormProps> = ({
                     data-testid="activity-place-input"
                   />
                   <IconButton onClick={() => toggleMap?.(true)}>
-                    <LocationSearchingIcon
+                    <AddLocationAltIcon
                       sx={{
                         color: ({ palette }) => palette?.primary?.main,
                         ml: 1,
+                        bgcolor: ({ palette }) => palette?.primary?.light,
+                        borderRadius: "10px",
+                        p: 1.75,
                       }}
                     />
                   </IconButton>
                 </Box>
+                
               )}
             />
           </Box>
@@ -170,12 +176,14 @@ export const PlaceForm: React.FC<IPlaceFormProps> = ({
               onClick={onBackClicked}
               color="primary"
               data-testid="back-btn"
+              sx={{fontSize: 20}}
             >
-              <ArrowBackIosNewIcon sx={{ color: "inherit" }} />
+              <ArrowBackIosNewIcon sx={{ color: "inherit", mr: 1 }} />
+              Back
             </IconButton>
             <OffliButton
               onClick={onNextClicked}
-              sx={{ width: "40%" }}
+              sx={{ width: "40%", height: 50 }}
               disabled={!selectedLocation}
               data-testid="next-btn"
             >

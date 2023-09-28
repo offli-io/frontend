@@ -96,7 +96,7 @@ const FileUploadModal: React.FC<IFileUploadModalProps> = ({
           // backgroundColor: (theme) => theme.palette.background.paper,
           // boxShadow: (theme) => theme.shadows[5],
           outline: "none",
-          width: "90%",
+          width: "95%",
         }}
       >
         <Box
@@ -109,7 +109,7 @@ const FileUploadModal: React.FC<IFileUploadModalProps> = ({
             alignItems: "center",
           }}
         >
-          <Box sx={{ position: "relative", height: 350, width: "100%" }}>
+          <Box sx={{ position: "relative", height: 350, width: "100%"}}>
             <Cropper
               image={localFile}
               crop={crop}

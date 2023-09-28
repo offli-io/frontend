@@ -1,4 +1,4 @@
-import { Box, SxProps } from "@mui/material";
+import { Box, IconButton, SxProps } from "@mui/material";
 import L, { LatLngTuple } from "leaflet";
 import React from "react";
 import { MapContainer, Marker, Popup, TileLayer, useMap } from "react-leaflet";
@@ -14,6 +14,7 @@ import OffliButton from "./offli-button";
 import { getPlaceFromCoordinates } from "api/activities/requests";
 import { useQuery } from "@tanstack/react-query";
 import { ILocation } from "types/activities/location.dto";
+import WhereToVoteIcon from '@mui/icons-material/WhereToVote';
 
 const RecenterAutomatically = ({
   lat,
@@ -40,14 +41,21 @@ const SaveButton = ({
   return (
     <OffliButton
       sx={{
-        position: "absolute",
-        bottom: 120,
-        left: 10,
+        position: "fixed",
+        bottom: 75,
+        right: 20,
         zIndex: 400,
-        fontSize: 16,
+        fontSize: 20,
+        width: "45%",
+        height: 55,
+        bgcolor: ({ palette }) => palette?.primary?.main,
+        color: ({ palette }) => palette?.background?.default,
+        borderRadius: "15px"
       }}
       onClick={() => onClick?.(map.getCenter())}
+      startIcon={<WhereToVoteIcon sx={{color: ({ palette }) => palette?.background?.default}}/>}
     >
+      
       Use location
     </OffliButton>
   );
