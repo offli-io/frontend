@@ -1,3 +1,4 @@
+import { ActivitiyParticipantStatusEnum } from "./activity-participant-status-enum.dto";
 import { ActivitySortColumnEnum } from "./activity-sort-enum.dto";
 
 export interface IActivitiesParamsDto {
@@ -11,5 +12,6 @@ export interface IActivitiesParamsDto {
   lon?: number;
   lat?: number;
   participantId?: number;
+  participantStatus?: ActivitiyParticipantStatusEnum;
   sort?: ActivitySortColumnEnum;
 }

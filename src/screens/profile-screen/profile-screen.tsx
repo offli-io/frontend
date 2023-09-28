@@ -27,6 +27,7 @@ import { generateBuddyActionButtonLabel } from "./utils/generate-buddy-action-bu
 import LastAttendedActivityCard from "components/last-attended-activity-card/last-attended-activity-card";
 import Loader from "components/loader";
 import { useGetLastAttendedActivities } from "./hooks/use-get-last-attended-activities";
+import { ActivitiyParticipantStatusEnum } from "types/activities/activity-participant-status-enum.dto";
 
 interface IProfileScreenProps {
   type: ProfileEntryTypeEnum;
@@ -73,6 +74,7 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
   } = useGetLastAttendedActivities({
     params: {
       participantId: Number(id),
+      participantStatus: ActivitiyParticipantStatusEnum.CONFIRMED,
     },
     enabled: !!id,
   });
@@ -192,7 +194,7 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
     [buddyState, senderId, userInfo?.id]
   );
 
-  if (isLoading || isBuddyStateLoading) {
+  if (isLoading || isBuddyStateLoading || instagramCode) {
     return <Loader />;
   }
 

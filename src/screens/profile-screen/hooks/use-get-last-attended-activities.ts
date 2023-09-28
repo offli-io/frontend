@@ -13,7 +13,7 @@ interface IUseSendBuddyRequestProps {
 }
 
 export const useGetLastAttendedActivities = ({
-  params: { limit = 2, participantId } = {},
+  params: { limit = 2, participantId, ...rest } = {},
   enabled,
 }: IUseSendBuddyRequestProps = {}) => {
   const abortControllerRef = React.useRef<AbortController | null>(null);
@@ -26,6 +26,7 @@ export const useGetLastAttendedActivities = ({
         sort: `${ActivitySortColumnEnum.DATETOME_UNTIL}:${ActivitySortDirectionEnum.DESC}` as any,
         limit,
         participantId,
+        ...rest,
       },
       enabled,
     });

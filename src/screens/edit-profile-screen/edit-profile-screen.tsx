@@ -606,7 +606,7 @@ const EditProfileScreen: React.FC = () => {
                     variant="outlined"
                     sx={{ fontSize: 16, mt: 1, width: "65%" }}
                     startIcon={<InstagramIcon sx={{ color: "inherit" }} />}
-                    isLoading={true}
+                    isLoading={isUnlinkingInstagram}
                   >
                     Unlink Instagram
                   </OffliButton>

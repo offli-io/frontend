@@ -29,6 +29,7 @@ export const useActivities = <T>({
     lon,
     lat,
     participantId,
+    participantStatus,
     sort,
   } = {},
   onSuccess,
@@ -48,6 +49,7 @@ export const useActivities = <T>({
       lat,
       lon,
       participantId,
+      participantStatus,
       sort,
     ],
     () =>
@@ -62,6 +64,7 @@ export const useActivities = <T>({
         lon,
         lat,
         participantId,
+        participantStatus,
         sort,
       }),
     {
