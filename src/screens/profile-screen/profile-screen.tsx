@@ -368,33 +368,7 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
             ) : null}
           </Box>
         ) : null}
-        {/* {type === ProfileEntryTypeEnum.USER_PROFILE ? (
-          <Box
-            sx={{
-              display: "flex",
-              width: "100%",
-              justifyContent: "center",
-              mt: 2.5,
-            }}
-          >
-            <OffliButton
-              sx={{ fontSize: 14, width: "50%" }}
-              onClick={handleBuddyRequest}
-              isLoading={isTogglingBuddyRequest}
-              disabled={
-                buddyState === BuddyStateEnum.PENDING &&
-                senderId === userInfo?.id
-              }
-            >
-              {generateBuddyActionButtonLabel(
-                buddyState,
-                userInfo?.id,
-                senderId
-              )}
-            </OffliButton>
-          </Box>
-        ) : null} */}
-        {isBuddy ? (
+        {isBuddy && lastAttendedActivties?.length > 0 ? (
           <Box
             sx={{
               width: "90%",

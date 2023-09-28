@@ -31,6 +31,7 @@ const LastAttendedActivityCard: React.FC<ILastAttendedActivityCardProps> = ({
         bgcolor: ({ palette }) => palette.primary.light,
         ...sx,
       }}
+      {...rest}
     >
       <Box
         sx={{

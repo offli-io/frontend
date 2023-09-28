@@ -1,6 +1,4 @@
-import { useQueryClient } from "@tanstack/react-query";
 import { useActivities } from "hooks/use-activities";
-import { useSnackbar } from "notistack";
 import React from "react";
 import { IActivitiesParamsDto } from "types/activities/activities-params.dto";
 import { IActivityListRestDto } from "types/activities/activity-list-rest.dto";
@@ -18,8 +16,6 @@ export const useGetLastAttendedActivities = ({
   params: { limit = 2, participantId } = {},
   enabled,
 }: IUseSendBuddyRequestProps = {}) => {
-  const { enqueueSnackbar } = useSnackbar();
-  const queryClient = useQueryClient();
   const abortControllerRef = React.useRef<AbortController | null>(null);
   const currentDate = React.useMemo(() => new Date(), []);
 
