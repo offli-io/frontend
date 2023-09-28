@@ -1,44 +1,33 @@
-import React from "react";
+import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
+import PersonAddIcon from "@mui/icons-material/PersonAdd";
+import SearchIcon from "@mui/icons-material/Search";
 import {
   Box,
   CircularProgress,
-  Divider,
   IconButton,
   InputAdornment,
   TextField,
   Typography,
 } from "@mui/material";
-import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
-import SearchIcon from "@mui/icons-material/Search";
-import PersonAddIcon from "@mui/icons-material/PersonAdd";
-import { ApplicationLocations } from "../../types/common/applications-locations.dto";
-import { useLocation, useNavigate } from "react-router-dom";
-import BackHeader from "../../components/back-header";
-import { ICustomizedLocationStateDto } from "../../types/common/customized-location-state.dto";
-import BuddyItem from "../../components/buddy-item";
-import { useBuddies } from "../../hooks/use-buddies";
-import { ActivityMembersActionTypeDto } from "../../types/common/activity-members-action-type.dto";
-import BuddyActions from "./components/buddy-actions";
-import { DrawerContext } from "../../assets/theme/drawer-provider";
-import { IPerson } from "../../types/activities/activity.dto";
-import { BuddyActionTypeEnum } from "../../types/common/buddy-actions-type-enum.dto";
-import { addBuddy, deleteBuddy } from "../../api/users/requests";
-import {
-  useMutation,
-  useQueries,
-  useQuery,
-  useQueryClient,
-} from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useSnackbar } from "notistack";
+import React from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { getRecommendedBuddies } from "../../api/activities/requests";
+import { deleteBuddy } from "../../api/users/requests";
 import { AuthenticationContext } from "../../assets/theme/authentication-provider";
-import NoBuddiesScreen from "./components/no-buddies-screen";
+import { DrawerContext } from "../../assets/theme/drawer-provider";
+import BuddyItem from "../../components/buddy-item";
 import BuddySuggestCard from "../../components/buddy-suggest-card";
-import {
-  getBuddies,
-  getRecommendedBuddies,
-} from "../../api/activities/requests";
+import { useBuddies } from "../../hooks/use-buddies";
+import { IPerson } from "../../types/activities/activity.dto";
+import { ApplicationLocations } from "../../types/common/applications-locations.dto";
+import { BuddyActionTypeEnum } from "../../types/common/buddy-actions-type-enum.dto";
+import { ICustomizedLocationStateDto } from "../../types/common/customized-location-state.dto";
 import { useSendBuddyRequest } from "../profile-screen/hooks/use-send-buddy-request";
 import AddBuddiesContent from "./components/add-buddies-content";
+import BuddyActions from "./components/buddy-actions";
+import NoBuddiesScreen from "./components/no-buddies-screen";
 
 const MyBuddiesScreen = () => {
   const navigate = useNavigate();

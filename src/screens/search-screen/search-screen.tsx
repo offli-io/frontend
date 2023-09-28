@@ -3,34 +3,24 @@ import SearchIcon from "@mui/icons-material/Search";
 import {
   Box,
   CircularProgress,
-  Divider,
   IconButton,
   InputAdornment,
   TextField,
   Typography,
 } from "@mui/material";
+import { LocationContext } from "app/providers/location-provider";
 import React from "react";
-import {
-  URLSearchParamsInit,
-  useLocation,
-  useNavigate,
-  useSearchParams,
-} from "react-router-dom";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { useDebounce } from "use-debounce";
+import { HeaderContext } from "../../app/providers/header-provider";
 import { DrawerContext } from "../../assets/theme/drawer-provider";
 import ActivitySearchCard from "../../components/activity-search-card";
-import BackHeader from "../../components/back-header";
-import OffliButton from "../../components/offli-button";
 import { useActivities } from "../../hooks/use-activities";
 import { IActivityListRestDto } from "../../types/activities/activity-list-rest.dto";
 import { ApplicationLocations } from "../../types/common/applications-locations.dto";
 import FiltersDrawerContent from "./components/filters-drawer-content";
 import { IFiltersDto } from "./types/filters.dto";
-import { HeaderContext } from "../../app/providers/header-provider";
-import { RadioLabelToFilterValue } from "./utils/radio-group-data-definitions";
-import { ActivitySortColumnEnum } from "types/activities/activity-sort-enum.dto";
 import { generateSortValue } from "./utils/generate-sort-value.util";
-import { LocationContext } from "app/providers/location-provider";
 
 const SearchScreen = () => {
   const navigate = useNavigate();
