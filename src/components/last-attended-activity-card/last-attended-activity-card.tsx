@@ -29,6 +29,7 @@ const LastAttendedActivityCard: React.FC<ILastAttendedActivityCardProps> = ({
         maxHeight: 70,
         borderRadius: 4,
         bgcolor: ({ palette }) => palette.primary.light,
+        ...sx,
       }}
     >
       <Box
@@ -38,7 +39,8 @@ const LastAttendedActivityCard: React.FC<ILastAttendedActivityCardProps> = ({
           justifyContent: "center",
           display: "flex",
           overflow: "hidden",
-          pl: 1,
+          boxSizing: "border-box",
+          px: 1,
         }}
       >
         <Typography
@@ -49,6 +51,7 @@ const LastAttendedActivityCard: React.FC<ILastAttendedActivityCardProps> = ({
             whiteSpace: "nowrap",
             overflow: "hidden",
             textOverflow: "ellipsis",
+            fontSize: 14,
           }}
         >
           {label}

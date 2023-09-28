@@ -101,32 +101,11 @@ export const getActivitiesPromiseResolved = async ({
   return response?.data?.activities;
 };
 
-export const getActivity = <T>({
-  id,
-  text,
-  tag,
-  datetimeFrom,
-  limit,
-  offset,
-  lon,
-  lat,
-  sort,
-  participantId,
-}: IActivitiesParamsDto) => {
+export const getActivity = <T>(params: IActivitiesParamsDto) => {
   const promise = axios.get<T>(
-    `${DEFAULT_DEV_URL}/activities${id ? `/${id}` : ""}`,
+    `${DEFAULT_DEV_URL}/activities${params?.id ? `/${params?.id}` : ""}`,
     {
-      params: {
-        text,
-        tag,
-        datetimeFrom,
-        limit,
-        offset,
-        lon,
-        lat,
-        participantId,
-        sort,
-      },
+      params,
       paramsSerializer: (params) => {
         return qs.stringify(params, { arrayFormat: "repeat" });
       },

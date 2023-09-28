@@ -5,6 +5,7 @@ export interface IActivitiesParamsDto {
   text?: string;
   tag?: string[];
   datetimeFrom?: Date | null;
+  datetimeUntil?: Date | null;
   limit?: number;
   offset?: number;
   lon?: number;

@@ -14,6 +14,7 @@ export const PAGED_ACTIVITIES_QUERY_KEY = "paged-activities";
 export interface IUseActivitiesReturn<T> {
   params?: IActivitiesParamsDto;
   onSuccess?: (data?: AxiosResponse<T>) => void;
+  enabled?: boolean;
 }
 
 export const useActivities = <T>({
@@ -22,6 +23,7 @@ export const useActivities = <T>({
     text,
     tag,
     datetimeFrom,
+    datetimeUntil,
     limit,
     offset,
     lon,
@@ -30,6 +32,7 @@ export const useActivities = <T>({
     sort,
   } = {},
   onSuccess,
+  enabled,
 }: IUseActivitiesReturn<T>) => {
   const { enqueueSnackbar } = useSnackbar();
   const { data, isLoading } = useQuery(
@@ -39,6 +42,7 @@ export const useActivities = <T>({
       text,
       tag,
       datetimeFrom,
+      datetimeUntil,
       limit,
       offset,
       lat,
@@ -51,6 +55,7 @@ export const useActivities = <T>({
         id,
         text: !!text && text?.length > 0 ? text : undefined,
         tag,
+        datetimeUntil,
         datetimeFrom,
         limit,
         offset,
@@ -70,6 +75,7 @@ export const useActivities = <T>({
       refetchOnMount: true,
       refetchOnWindowFocus: true,
       refetchOnReconnect: true,
+      enabled,
     }
   );
 

@@ -109,7 +109,7 @@ const MyBuddiesScreen = () => {
 
   const navigateToBuddyProfile = React.useCallback(
     (userId?: number) =>
-      navigate(`${ApplicationLocations.PROFILE}/buddy/${userId}`, {
+      navigate(`${ApplicationLocations.USER_PROFILE}/${userId}`, {
         state: {
           from: ApplicationLocations.BUDDIES,
         },
