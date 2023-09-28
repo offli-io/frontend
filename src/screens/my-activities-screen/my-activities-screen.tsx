@@ -47,6 +47,7 @@ import ActivityActions from "./components/activity-actions";
 import ActivityLeaveConfirmation from "./components/activity-leave-confirmation";
 import FirstTimeLoginContent from "./components/first-time-login-content";
 import { SetLocationContent } from "./components/set-location-content";
+import { ActivitySortColumnEnum } from "types/activities/activity-sort-enum.dto";
 
 const ActivitiesScreen = () => {
   const { ref, inView } = useInView();
@@ -84,7 +85,7 @@ const ActivitiesScreen = () => {
         participantId: Number(userInfo?.id),
         sort:
           location?.coordinates?.lon && location?.coordinates?.lat
-            ? "nearest"
+            ? ActivitySortColumnEnum.LOCATION
             : undefined,
       }),
     {

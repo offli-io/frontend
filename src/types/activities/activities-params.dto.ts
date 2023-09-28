@@ -1,3 +1,5 @@
+import { ActivitySortColumnEnum } from "./activity-sort-enum.dto";
+
 export interface IActivitiesParamsDto {
   id?: number;
   text?: string;
@@ -8,5 +10,5 @@ export interface IActivitiesParamsDto {
   lon?: number;
   lat?: number;
   participantId?: number;
-  sort?: string;
+  sort?: ActivitySortColumnEnum;
 }
