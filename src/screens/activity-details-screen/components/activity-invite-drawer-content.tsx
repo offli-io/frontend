@@ -1,9 +1,9 @@
-import { Box, CircularProgress, TextField, Typography } from "@mui/material";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { Box, TextField, Typography } from "@mui/material";
+import { useMutation } from "@tanstack/react-query";
+import Loader from "components/loader";
 import { useBuddies } from "hooks/use-buddies";
 import { useSnackbar } from "notistack";
 import React from "react";
-import { UseFormReturn } from "react-hook-form";
 import { useDebounce } from "use-debounce";
 import {
   inviteBuddyToActivity,
@@ -13,24 +13,18 @@ import { AuthenticationContext } from "../../../assets/theme/authentication-prov
 import BuddyItemInvite from "../../../components/buddy-item-invite";
 import { ActivityInviteStateEnum } from "../../../types/activities/activity-invite-state-enum.dto";
 import { IPerson } from "../../../types/activities/activity.dto";
-import { ICreateActivityRequestDto } from "../../../types/activities/create-activity-request.dto";
-import Loader from "components/loader";
 
 interface IActivityTypeFormProps {
-  methods?: UseFormReturn;
+  activityId?: number;
 }
 
 export const ActivityInviteDrawerContent: React.FC<IActivityTypeFormProps> = ({
-  methods,
+  activityId,
 }) => {
   const { userInfo } = React.useContext(AuthenticationContext);
   const [invitedBuddies, setInvitedBuddies] = React.useState<number[]>([]);
   const { enqueueSnackbar } = useSnackbar();
-  const queryClient = useQueryClient();
-
-  const activityId = queryClient.getQueryData<ICreateActivityRequestDto>([
-    "created-activity-data",
-  ]);
+  //   const { id: activityId } = useParams();
   const [queryString, setQueryString] = React.useState<string | undefined>();
   const [queryStringDebounced] = useDebounce(queryString, 1000);
 
@@ -41,7 +35,7 @@ export const ActivityInviteDrawerContent: React.FC<IActivityTypeFormProps> = ({
   const { mutate: sendInviteBuddy, isLoading: isInviting } = useMutation(
     ["invite-participant"],
     (buddy?: IPerson) =>
-      inviteBuddyToActivity(Number(activityId?.id), Number(buddy?.id), {
+      inviteBuddyToActivity(Number(activityId), Number(buddy?.id), {
         status: ActivityInviteStateEnum.INVITED,
         invited_by_id: Number(userInfo?.id),
       }),
@@ -57,8 +51,7 @@ export const ActivityInviteDrawerContent: React.FC<IActivityTypeFormProps> = ({
 
   const { mutate: sendUninviteBuddy, isLoading: isUninviting } = useMutation(
     ["uninvite-person"],
-    (buddyId?: number) =>
-      uninviteBuddy(Number(activityId?.id), Number(buddyId)),
+    (buddyId?: number) => uninviteBuddy(Number(activityId), Number(buddyId)),
     {
       onSuccess: (data, buddyId) => {
         const _buddies = invitedBuddies?.filter((buddy) => buddy !== buddyId);
