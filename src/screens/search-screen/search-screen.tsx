@@ -35,7 +35,6 @@ const SearchScreen = () => {
 
   const { setHeaderRightContent, headerRightContent } =
     React.useContext(HeaderContext);
-  const isFirstVisitRender = React.useRef(true);
   const isTag = queryStringDebounced?.includes("tag");
   const todayFallbackDate = React.useMemo(() => new Date(), []);
 
