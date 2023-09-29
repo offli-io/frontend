@@ -27,23 +27,22 @@ export const NameForm: React.FC<INameFormProps> = ({
           sx={{
             display: "flex",
             flexDirection: "column",
-            alignItems: "center",
-            width: "50%",
-            pl: 1,
+            alignItems: "start",
+            width: "55%",
           }}
         >
           <Typography
-            variant="h2"
+            variant="h1"
             sx={{ color: "primary.main", fontFamily: "Nunito" }}
           >
             Create
           </Typography>
-          <Typography variant="h2" sx={{ color: palette.text.primary }}>
+          <Typography variant="h1" sx={{ color: palette.text.primary }}>
             new activity
           </Typography>
         </Box>
-        <Box sx={{ width: "50%", display: "flex", justifyContent: "center" }}>
-          <img src={createActivityImg} style={{ height: 80 }} alt="Name form" />
+        <Box sx={{ width: "45%", display: "flex", justifyContent: "center" }}>
+          <img src={createActivityImg} style={{ height: 120 }} alt="Name form" />
         </Box>
       </Box>
       <Box
@@ -57,7 +56,7 @@ export const NameForm: React.FC<INameFormProps> = ({
               {...field}
               error={!!error}
               sx={{ width: "100%" }}
-              label="Name"
+              label="Activity name"
               placeholder="Type activity name"
               helperText={!!error && "Activity name is required"}
               data-testid="activity-name-input"
@@ -75,7 +74,7 @@ export const NameForm: React.FC<INameFormProps> = ({
       >
         <OffliButton
           onClick={onNextClicked}
-          sx={{ width: "40%" }}
+          sx={{ width: "40%", height: 50 }}
           //TODO some bug isValid returning false when name is
           disabled={!isFormValid}
           data-testid="next-btn"

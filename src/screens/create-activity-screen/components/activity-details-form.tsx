@@ -5,6 +5,8 @@ import {
   FormControlLabel,
   FormLabel,
   IconButton,
+  Radio,
+  RadioGroup,
   Switch,
   TextField,
   Typography,
@@ -34,26 +36,34 @@ export const ActivityDetailsForm: React.FC<IPlaceFormProps> = ({
 
   return (
     <>
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          width: "100%",
-          alignItems: "flex-start",
-        }}
-      >
-        <Box
+    <Box
           sx={{
             display: "flex",
+            mt:1,
             mb: 2,
             justifyContent: "center",
             width: "100%",
           }}
         >
-          <Typography variant="h2" sx={{ color: palette?.text?.primary }}>
-            Activity details
+          <Typography variant="h1" sx={{mr:1, color: palette?.primary?.main }}>
+            Activity
+          </Typography>
+          <Typography variant="h1" sx={{ color: palette?.text?.primary }}>
+            details
           </Typography>
         </Box>
+      <Box
+        sx={{
+          display: "flex",
+          flexWrap: "wrap",
+          justifyContent: "space-between",
+          width: "100%",
+          height: "100%",
+          overflow: "scroll",
+          
+        }}
+      >
+        
         <Controller
           name="visibility"
           control={control}
@@ -62,51 +72,10 @@ export const ActivityDetailsForm: React.FC<IPlaceFormProps> = ({
               sx={{
                 display: "flex",
                 flexDirection: "column",
-                alignItems: "center",
                 width: "100%",
               }}
             >
-              <Box
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  width: "100%",
-                  justifyContent: "space-around",
-                  mb: 5,
-                }}
-              >
-                <Typography
-                  sx={{ fontWeight: "bold", color: palette?.text?.primary }}
-                >
-                  Accessibility
-                </Typography>
-                <Box sx={{ display: "flex", alignItems: "center" }}>
-                  <Switch
-                    sx={{ mx: 1 }}
-                    value={
-                      field?.value === ActivityVisibilityEnum.private
-                        ? false
-                        : true
-                    }
-                    checked={
-                      field?.value === ActivityVisibilityEnum.private
-                        ? false
-                        : true
-                    }
-                    onChange={(e) => {
-                      field.onChange(
-                        e.target.checked
-                          ? ActivityVisibilityEnum.public
-                          : ActivityVisibilityEnum.private
-                      );
-                    }}
-                    color="primary"
-                    data-testid="accessibility-switch"
-                  />
-                  <FormLabel>public</FormLabel>
-                </Box>
-              </Box>
-
+              <Typography variant="h4" sx={{mb: 3}}>Attendance & accessibility</Typography>
               <Controller
                 name="limit"
                 control={control}
@@ -114,19 +83,76 @@ export const ActivityDetailsForm: React.FC<IPlaceFormProps> = ({
                   <TextField
                     {...field}
                     error={!!error}
-                    sx={{ width: "100%", mb: 5 }}
-                    label="How many people can attend"
+                    sx={{ width: "100%", mb: 3}}
+                    label="How many people can attend activity ?"
                     placeholder="Type activity capacity"
                     data-testid="limit-input"
                   />
                 )}
-              />
-
+                /> 
+                <Box sx={{display: "flex", flexDirection: "column", alignItems: "flex-start"}}>
+                  <Typography sx={{fontSize: "bold", color: palette?.text?.primary }}>
+                    Who can join the activity ?
+                  </Typography>
+                  <RadioGroup
+                    {...field}
+                    aria-labelledby="demo-row-radio-buttons-group-label"
+                    name="row-radio-buttons-group"
+                    
+                    sx={{
+                      justifyContent: "center",
+                      mt: 1,
+                      "& .MuiSvgIcon-root": {
+                        color: "primary.main",
+                      },
+                      ml: 2,
+                    }}
+                    color="primary.main"
+                  >
+                    <FormControlLabel
+                      value={ActivityVisibilityEnum.public}
+                      control={<Radio />}
+                      label="Anyone"
+                    />
+                    <FormControlLabel
+                      value={ActivityVisibilityEnum.private}
+                      control={<Radio color="primary" />}
+                      label="Invited users only"
+                    />
+                  </RadioGroup>
+                  {/* <Box sx={{ display: "flex", alignItems: "center" }}>
+                    <Switch
+                      sx={{ mx: 1 }}
+                      value={
+                        field?.value === ActivityVisibilityEnum.private
+                          ? false
+                          : true
+                      }
+                      checked={
+                        field?.value === ActivityVisibilityEnum.private
+                          ? false
+                          : true
+                      }
+                      onChange={(e) => {
+                        field.onChange(
+                          e.target.checked
+                            ? ActivityVisibilityEnum.public
+                            : ActivityVisibilityEnum.private
+                        );
+                      }}
+                      color="primary"
+                      data-testid="accessibility-switch"
+                    />
+                    <FormLabel>{field.value === ActivityVisibilityEnum.public ? "Anyone" : "Only invited users"}</FormLabel>
+                  </Box> */}
+                
+              </Box>
+              <Typography variant="h4" sx={{mb: 3, mt:3}}>Fees & description</Typography>
               <Box
                 sx={{
                   display: "flex",
                   alignItems: "center",
-                  mb: 5,
+                  mb: 2,
                   width: "100%",
                 }}
               >
@@ -241,6 +267,7 @@ export const ActivityDetailsForm: React.FC<IPlaceFormProps> = ({
                 "& .MuiOutlinedInput-root": {
                   height: "unset",
                 },
+                mt: 2
               }}
               inputProps={{ maxLength: 200 }}
               helperText={`${field?.value?.length ?? 0}/200`}
@@ -261,13 +288,15 @@ export const ActivityDetailsForm: React.FC<IPlaceFormProps> = ({
           onClick={onBackClicked}
           color="primary"
           data-testid="back-btn"
+          sx={{fontSize: 20}}
         >
-          <ArrowBackIosNewIcon />
+          <ArrowBackIosNewIcon sx={{ color: "inherit",mr:1 }}/>
+          Back
         </IconButton>
 
         <OffliButton
           onClick={onNextClicked}
-          sx={{ width: "40%" }}
+          sx={{ width: "40%" , height: 50 }}
           disabled={!formState.isValid}
           data-testid="next-btn"
         >

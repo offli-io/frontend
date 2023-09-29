@@ -6,8 +6,10 @@ import {
   IconButton,
   InputAdornment,
   MenuItem,
+  Paper,
   Radio,
   RadioGroup,
+  Select,
   TextField,
   Typography,
   useTheme,
@@ -45,6 +47,7 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
     fromOptions: generateDateSlots(),
     untilOptions: generateDateSlots(),
   });
+
   const [sameEndDate, setSameEndDate] = React.useState(true);
 
   const isFormValid = !!watch("datetime_from") && !!watch("datetime_until");
@@ -122,6 +125,7 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
     [date]
   );
 
+
   const handleSameDateCheckboxCheck = React.useCallback(() => {
     setSameEndDate((previousValue) => !previousValue);
     const _untilOptions = date?.untilOptions.map((item) => ({
@@ -138,6 +142,7 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
 
   const isTimeSelected = !!fromTimeValue && fromTimeValue !== "";
 
+
   console.log(watch());
 
   return (
@@ -151,16 +156,16 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
       }}
     >
       <Box sx={{ display: "flex", flexDirection: "column", width: "100%" }}>
-        <Box sx={{ display: "flex", mb: 1, justifyContent: "center" }}>
-          <Typography variant="h2" sx={{ mr: 1, color: "primary.main" }}>
+        <Box sx={{ display: "flex", mb: 3, mt: 1, justifyContent: "center" }}>
+          <Typography variant="h1" sx={{ mr: 1, color: palette?.primary?.main }}>
             Select
           </Typography>
-          <Typography variant="h2" sx={{ color: palette?.text?.primary }}>
+          <Typography variant="h1" sx={{ color: palette?.text?.primary }}>
             date and time
           </Typography>
         </Box>
-        <Typography
-          sx={{ mt: 1, fontWeight: "bold", color: palette?.text?.primary }}
+        <Typography variant="h4"
+          sx={{color: palette?.text?.primary }}
         >
           Start date
         </Typography>
@@ -185,8 +190,8 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
           label="End date is same as start date"
           sx={{ color: palette?.text?.primary }}
         /> */}
-        <Typography
-          sx={{ my: 1, fontWeight: "bold", color: palette?.text?.primary }}
+        <Typography variant="h4"
+          sx={{ mt: 3, mb:1, color: palette?.text?.primary }}
         >
           Start time
         </Typography>
@@ -198,38 +203,48 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
               {...field}
               id="outlined-select-currency"
               select
-              // label="Start time"
-              sx={{ width: "100%", mb: 1 }}
+              sx={{ width: "100%", mb: 1}}
               variant="outlined"
               data-testid="activitiy-from-time-picker"
               error={!!error}
               helperText={!!error && "Activity start time is required"}
-              SelectProps={{}}
+              SelectProps={{
+                MenuProps: {
+                  anchorOrigin: {
+                    vertical: "bottom",
+                    horizontal: "right",
+                  },
+                  transformOrigin: {
+                    vertical: "top",
+                    horizontal: "right",
+                  },
+                style: {height: "40%"}
+
+                },
+              }}
               InputProps={{
                 startAdornment: (
-                  <InputAdornment position="start">
-                    <AccessTimeIcon />
+                  <InputAdornment position="end">
+                    <AccessTimeIcon sx={{mr: 2}}/>
                   </InputAdornment>
                 ),
               }}
+              
             >
-              {/* <Box sx={{ height: 300, width: "100%" }}> 
-              TODO add limited height to options container
-              */}
               {generateOptionsOrder("from")?.map((option) => (
-                <MenuItem key={option} value={option} divider>
+                <MenuItem key={option} value={option} divider >
                   {option}
                 </MenuItem>
               ))}
-              {/* </Box> */}
+              
             </TextField>
           )}
         />
 
-        <Typography
-          sx={{ my: 1, fontWeight: "bold", color: palette?.text?.primary }}
+        <Typography variant="h4"
+          sx={{ mt: 3, mb:1, color: palette?.text?.primary }}
         >
-          Duration
+          Activity duration
         </Typography>
         <Controller
           name="duration"
@@ -283,7 +298,7 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
               name="row-radio-buttons-group"
               sx={{
                 justifyContent: "center",
-                mt: 1,
+                mt: 1,mb:1,
                 "& .MuiSvgIcon-root": {
                   color: "primary.main",
                 },
@@ -390,19 +405,21 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
       </Box>
 
       <Box
-        sx={{ width: "100%", display: "flex", justifyContent: "space-between" }}
+        sx={{ width: "100%", display: "flex", justifyContent: "space-between", mt: 1 }}
       >
         <IconButton
           onClick={onBackClicked}
           color="primary"
           data-testid="back-btn"
+          sx={{fontSize: 20}}
         >
-          <ArrowBackIosNewIcon sx={{ color: "inherit" }} />
+          <ArrowBackIosNewIcon sx={{ color: "inherit",mr:1 }} />
+          Back
         </IconButton>
 
         <OffliButton
           onClick={onNextClicked}
-          sx={{ width: "40%" }}
+          sx={{ width: "40%", height: 50 }}
           disabled={!isFormValid || !isTimeSelected}
           data-testid="next-btn"
         >

@@ -54,8 +54,8 @@ const FileUpload: React.FC<IFileUploadProps> = ({
       />
       <Box
         sx={{
-          width: "75%",
-          height: 100,
+          width: "65%",
+          height: 120,
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
@@ -63,7 +63,7 @@ const FileUpload: React.FC<IFileUploadProps> = ({
           position: "relative",
           bgcolor:
             palette?.mode === "light"
-              ? grey[200]
+              ? palette?.primary?.light
               : palette?.background?.default,
           borderRadius: 5,
           border: (theme) => `1px dashed ${theme.palette.primary.main}`,
@@ -82,7 +82,7 @@ const FileUpload: React.FC<IFileUploadProps> = ({
         <IconButton size="large" data-testid="upload-img-btn">
           <AddAPhotoIcon sx={{ color: "primary.main" }} />
         </IconButton>
-        <Typography sx={{ fontSize: 14, color: palette?.text?.primary }}>
+        <Typography sx={{ fontSize: 16, color: palette?.primary?.main }}>
           Upload from your phone
         </Typography>
       </Box>

@@ -20,7 +20,10 @@ import { Controller, useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 import { IActivity } from "types/activities/activity.dto";
 import { useDebounce } from "use-debounce";
-import { ALLOWED_PHOTO_EXTENSIONS } from "utils/common-constants";
+import {
+  ACTIVITY_ASPECT_RATIO,
+  ALLOWED_PHOTO_EXTENSIONS,
+} from "utils/common-constants";
 import {
   getLocationFromQueryFetch,
   updateActivity,
@@ -229,7 +232,7 @@ const EditActivityScreen: React.FC = () => {
                 alt="profile"
                 style={{
                   width: "100%",
-                  aspectRatio: 4 / 3,
+                  aspectRatio: ACTIVITY_ASPECT_RATIO,
                 }}
               />
               <OffliButton

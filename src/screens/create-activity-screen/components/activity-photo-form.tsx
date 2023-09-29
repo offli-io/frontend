@@ -13,6 +13,7 @@ import { DrawerContext } from "../../../assets/theme/drawer-provider";
 import LabeledDivider from "../../../components/labeled-divider";
 import OffliButton from "../../../components/offli-button";
 import {
+  ACTIVITY_ASPECT_RATIO,
   ALLOWED_PHOTO_EXTENSIONS,
   MAX_FILE_SIZE,
 } from "../../../utils/common-constants";
@@ -22,6 +23,7 @@ import { uploadFile } from "../../../api/activities/requests";
 import getCroppedImg from "../utils/crop-utils";
 import { useGetApiUrl } from "../../../hooks/use-get-api-url";
 import FileUpload from "components/file-upload/file-upload";
+import FilterIcon from "@mui/icons-material/Filter";
 
 interface IActivityPhotoFormProps {
   methods: UseFormReturn;
@@ -91,33 +93,15 @@ export const ActivityPhotoForm: React.FC<IActivityPhotoFormProps> = ({
         sx={{
           display: "flex",
           width: "100%",
-          alignItems: "flex-end",
-          my: 4,
+          justifyContent: "center",
         }}
       >
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            width: "100%",
-          }}
-        >
-          <Box sx={{ display: "flex" }}>
-            <Typography variant="h2" sx={{ color: "primary.main", mr: 1 }}>
-              Add
-            </Typography>
-            <Typography variant="h2" sx={{ color: palette?.text?.primary }}>
-              activity photo
-            </Typography>
-          </Box>
-          <Typography
-            variant="subtitle2"
-            sx={{ color: (theme) => theme.palette.inactiveFont.main, mt: 0.5 }}
-          >
-            Later you can add two more photos
-          </Typography>
-        </Box>
+        <Typography variant="h1" sx={{ color: "primary.main", mr: 1 }}>
+          Add
+        </Typography>
+        <Typography variant="h1" sx={{ color: palette?.text?.primary }}>
+          activity photo
+        </Typography>
       </Box>
 
       <Box
@@ -127,7 +111,7 @@ export const ActivityPhotoForm: React.FC<IActivityPhotoFormProps> = ({
           flexDirection: "column",
           justifyContent: "center",
           alignItems: "center",
-          mb: 6,
+          mb: 4,
         }}
       >
         {selectedPhoto || croppedImage ? (
@@ -143,19 +127,31 @@ export const ActivityPhotoForm: React.FC<IActivityPhotoFormProps> = ({
               src={`${baseUrl}/files/${selectedPhoto}`}
               alt="cropped"
               style={{
-                width: 280,
-                aspectRatio: 1.3,
+                width: "75%",
+                height: 150,
+                aspectRatio: ACTIVITY_ASPECT_RATIO,
                 border: `1px solid ${palette?.primary.main}`,
-                borderRadius: 5,
+                borderRadius: 15,
                 boxShadow: "2px 3px 3px #ccc",
               }}
             />
             <OffliButton
               variant="text"
-              sx={{ mt: 2, fontSize: 16 }}
+              sx={{
+                mt: 3,
+                fontSize: 16,
+                bgcolor: palette?.primary?.light,
+                p: 1,
+                px: 2,
+              }}
               size="small"
               onClick={handleResetSelectedPhoto}
               data-testid="choose-different-img-btn"
+              startIcon={
+                <FilterIcon
+                  sx={{ color: ({ palette }) => palette?.primary?.main }}
+                />
+              }
             >
               Choose different picture
             </OffliButton>
@@ -190,18 +186,17 @@ export const ActivityPhotoForm: React.FC<IActivityPhotoFormProps> = ({
               <Box
                 onClick={openGallery}
                 sx={{
-                  width: "75%",
-                  height: 100,
+                  width: "65%",
+                  height: 130,
                   display: "flex",
                   flexDirection: "column",
                   alignItems: "center",
                   justifyContent: "center",
                   position: "relative",
-                  // bgcolor: grey[200],
                   bgcolor:
                     palette?.mode === "light"
-                      ? grey[200]
-                      : palette?.background?.default,
+                      ? palette?.primary?.light
+                      : grey[200],
                   borderRadius: 5,
                   border: (theme) => `1px dashed ${theme.palette.primary.main}`,
                 }}
@@ -209,11 +204,11 @@ export const ActivityPhotoForm: React.FC<IActivityPhotoFormProps> = ({
               >
                 <img
                   src={activityPhotoImg}
-                  style={{ height: 50, marginBottom: 12 }}
+                  style={{ height: 70, marginBottom: 12 }}
                   alt="Activity img"
                 />
                 <Typography
-                  sx={{ fontSize: 14, color: palette?.text?.primary }}
+                  sx={{ fontSize: 16, color: palette?.primary?.main }}
                 >
                   Select from Offli
                 </Typography>
@@ -233,12 +228,14 @@ export const ActivityPhotoForm: React.FC<IActivityPhotoFormProps> = ({
           onClick={onBackClicked}
           color="primary"
           data-testid="back-btn"
+          sx={{ fontSize: 20 }}
         >
-          <ArrowBackIosNewIcon />
+          <ArrowBackIosNewIcon sx={{ color: "inherit", mr: 1 }} />
+          Back
         </IconButton>
 
         <OffliButton
-          sx={{ width: "60%" }}
+          sx={{ width: "50%", height: 50 }}
           disabled={!formState.isValid || !selectedPhoto}
           type="submit"
           data-testid="create-btn"
