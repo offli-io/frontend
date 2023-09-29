@@ -46,9 +46,14 @@ import ActivityVisibilityDuration from "./components/activity-visibility-duratio
 import { CustomizationContext } from "assets/theme/customization-provider";
 import Loader from "components/loader";
 import { IActivity } from "types/activities/activity.dto";
+import { ActivityInviteDrawerContent } from "./components/activity-invite-drawer-content";
 
 interface IProps {
   type: "detail" | "request";
+}
+
+interface ICustomizedLocationState {
+  openInviteDrawer?: boolean;
 }
 
 const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
@@ -56,9 +61,8 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
   const { mode } = React.useContext(CustomizationContext);
   const navigate = useNavigate();
   const location = useLocation();
-  const from =
-    (location?.state as ICustomizedLocationStateDto)?.from ??
-    ApplicationLocations.ACTIVITIES;
+  const shouldOpenInviteDrawer =
+    (location?.state as ICustomizedLocationState)?.openInviteDrawer ?? false;
   const { toggleDrawer } = React.useContext(DrawerContext);
   const { setHeaderRightContent, headerRightContent } =
     React.useContext(HeaderContext);
@@ -220,6 +224,15 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
       });
     }
   }, [state]);
+
+  React.useEffect(() => {
+    if (shouldOpenInviteDrawer) {
+      toggleDrawer({
+        open: true,
+        content: <ActivityInviteDrawerContent />,
+      });
+    }
+  }, [shouldOpenInviteDrawer]);
 
   const handleGridClick = React.useCallback(
     (action: IGridAction) => {
