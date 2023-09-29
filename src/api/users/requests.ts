@@ -148,14 +148,14 @@ export const rejectBuddyInvitation = (
 export const toggleBuddyInvitation = (
   userId?: number,
   buddyToBeId?: number,
-  status?: BuddyRequestActionEnum
+  state?: BuddyRequestActionEnum
 ) => {
   const CancelToken = axios.CancelToken;
   const source = CancelToken.source();
 
   const promise = axios.patch(
     `${DEFAULT_DEV_URL}/users/${userId}/buddies/${buddyToBeId}`,
-    { changeToState: status },
+    { state },
     {
       cancelToken: source?.token,
     }
