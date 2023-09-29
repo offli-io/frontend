@@ -37,6 +37,7 @@ const SearchScreen = () => {
     React.useContext(HeaderContext);
   const isFirstVisitRender = React.useRef(true);
   const isTag = queryStringDebounced?.includes("tag");
+  const todayFallbackDate = React.useMemo(() => new Date(), []);
 
   const {
     data: { data: { activities = [] } = {} } = {},
@@ -45,7 +46,7 @@ const SearchScreen = () => {
     params: {
       text: isTag ? undefined : queryStringDebounced,
       tag: filters?.tags,
-      datetimeFrom: filters?.date,
+      datetimeFrom: filters?.date ?? todayFallbackDate,
       lat: userLocation?.coordinates?.lat,
       lon: userLocation?.coordinates?.lon,
       sort: filters?.filter
