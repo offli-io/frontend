@@ -2,6 +2,7 @@ import { Box, Card, SxProps, Typography, useTheme } from "@mui/material";
 import { CustomizationContext } from "assets/theme/customization-provider";
 import { useGetApiUrl } from "hooks/use-get-api-url";
 import React from "react";
+import { ACTIVITY_ASPECT_RATIO } from "utils/common-constants";
 
 interface ILastAttendedActivityCardProps {
   label?: string;
@@ -64,7 +65,7 @@ const LastAttendedActivityCard: React.FC<ILastAttendedActivityCardProps> = ({
         alt="profile"
         style={{
           width: "100%",
-          aspectRatio: 4 / 3,
+          aspectRatio: ACTIVITY_ASPECT_RATIO,
           maxHeight: 70,
           objectFit: "cover",
         }}

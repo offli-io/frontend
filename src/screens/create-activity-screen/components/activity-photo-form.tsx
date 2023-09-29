@@ -13,6 +13,7 @@ import { DrawerContext } from "../../../assets/theme/drawer-provider";
 import LabeledDivider from "../../../components/labeled-divider";
 import OffliButton from "../../../components/offli-button";
 import {
+  ACTIVITY_ASPECT_RATIO,
   ALLOWED_PHOTO_EXTENSIONS,
   MAX_FILE_SIZE,
 } from "../../../utils/common-constants";
@@ -22,7 +23,7 @@ import { uploadFile } from "../../../api/activities/requests";
 import getCroppedImg from "../utils/crop-utils";
 import { useGetApiUrl } from "../../../hooks/use-get-api-url";
 import FileUpload from "components/file-upload/file-upload";
-import FilterIcon from '@mui/icons-material/Filter';
+import FilterIcon from "@mui/icons-material/Filter";
 
 interface IActivityPhotoFormProps {
   methods: UseFormReturn;
@@ -128,7 +129,7 @@ export const ActivityPhotoForm: React.FC<IActivityPhotoFormProps> = ({
               style={{
                 width: "75%",
                 height: 150,
-                aspectRatio: 1.3,
+                aspectRatio: ACTIVITY_ASPECT_RATIO,
                 border: `1px solid ${palette?.primary.main}`,
                 borderRadius: 15,
                 boxShadow: "2px 3px 3px #ccc",
@@ -136,11 +137,21 @@ export const ActivityPhotoForm: React.FC<IActivityPhotoFormProps> = ({
             />
             <OffliButton
               variant="text"
-              sx={{ mt: 3, fontSize: 16, bgcolor: palette?.primary?.light, p:1, px: 2 }}
+              sx={{
+                mt: 3,
+                fontSize: 16,
+                bgcolor: palette?.primary?.light,
+                p: 1,
+                px: 2,
+              }}
               size="small"
               onClick={handleResetSelectedPhoto}
               data-testid="choose-different-img-btn"
-              startIcon={<FilterIcon sx={{color: ({ palette }) => palette?.primary?.main}}/>}
+              startIcon={
+                <FilterIcon
+                  sx={{ color: ({ palette }) => palette?.primary?.main }}
+                />
+              }
             >
               Choose different picture
             </OffliButton>
@@ -217,9 +228,9 @@ export const ActivityPhotoForm: React.FC<IActivityPhotoFormProps> = ({
           onClick={onBackClicked}
           color="primary"
           data-testid="back-btn"
-          sx={{fontSize: 20}}
+          sx={{ fontSize: 20 }}
         >
-          <ArrowBackIosNewIcon sx={{ color: "inherit",mr:1 }}/>
+          <ArrowBackIosNewIcon sx={{ color: "inherit", mr: 1 }} />
           Back
         </IconButton>
 
