@@ -294,7 +294,12 @@ const CreateActivityScreen = () => {
           <ActivityCreatedScreen
             onDismiss={() =>
               navigate(
-                `${ApplicationLocations.ACTIVITY_DETAIL}/${pendingRedirectActivityId}`
+                `${ApplicationLocations.ACTIVITY_DETAIL}/${pendingRedirectActivityId}`,
+                {
+                  state: {
+                    openInviteDrawer: true,
+                  },
+                }
               )
             }
           />
