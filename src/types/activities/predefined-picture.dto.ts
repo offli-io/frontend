@@ -4,6 +4,6 @@ export interface IPredefinedPictureResponseDto {
 }
 
 export interface IPredefinedPictureDto {
-  name?: string;
+  url?: string;
   tags?: string[];
 }
