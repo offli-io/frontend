@@ -40,6 +40,7 @@ export const MobileCarousel: React.FC<IMobileCarouselProps> = ({
 }) => {
   const { palette } = useTheme();
 
+
   const handleDatePick = React.useCallback(
     (date: Date | null) => {
       if (!date) {
@@ -64,7 +65,7 @@ export const MobileCarousel: React.FC<IMobileCarouselProps> = ({
           title: format(date, "EEEE").slice(0, 3),
           description: format(date, "dd.MM.yyyy"),
           disabled: false,
-          selected: true,
+          selected: false,
           id: `date_slot_${format(date, "dd.MM.yyyy")}`,
         });
       }
@@ -96,24 +97,27 @@ export const MobileCarousel: React.FC<IMobileCarouselProps> = ({
       >
         {items?.map((item) => (
           <Card
-            raised={item?.selected}
             key={item.id}
             sx={{
               minWidth: 100,
-              maxHeight: 50,
+              minHeight: 70,
               bgcolor: (theme) =>
                 item?.selected ? theme.palette.primary.main : "transparent",
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
               justifyContent: "center",
-              mr: 1,
+              borderRadius: 3,
+              mr: 2,
+              ...(item.selected
+                ? { border: (theme) => `2px solid ${theme.palette.primary.main}` }
+                : { border: (theme) => `2px solid ${theme.palette.primary.light}` }),
               ...sx,
             }}
             onClick={() => onItemSelect?.(item)}
             data-testid="mobile-carousel-item"
           >
-            <Typography
+            <Typography variant="h5"
               sx={{
                 //TODO fix this,
                 color: item?.selected ? "white" : palette?.text?.primary,
@@ -125,7 +129,7 @@ export const MobileCarousel: React.FC<IMobileCarouselProps> = ({
             {item?.description && (
               <Typography
                 sx={{
-                  fontSize: "0.75rem",
+                  fontSize: 14,
                   color: item?.selected ? "white" : palette?.text?.primary,
                 }}
               >
@@ -137,11 +141,12 @@ export const MobileCarousel: React.FC<IMobileCarouselProps> = ({
         <Card
           sx={{
             minWidth: 100,
-            height: 50,
+            minHeight: 70,
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
             justifyContent: "center",
+            borderRadius: 3,
             ...sx,
           }}
         >

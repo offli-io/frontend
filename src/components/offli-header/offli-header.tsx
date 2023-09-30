@@ -48,6 +48,7 @@ const OffliHeader: React.FC<IProps> = ({ sx }) => {
         ApplicationLocations.BUDDIES,
         ApplicationLocations.CHOOSE_USERNAME_GOOGLE,
         ApplicationLocations.SEARCH,
+        ApplicationLocations.NOTIFICATIONS,
       ].includes(location?.pathname as ApplicationLocations) ||
       NOT_EXACT_UNALLOWED_URLS?.some((item) =>
         location?.pathname.includes(item)
@@ -68,7 +69,7 @@ const OffliHeader: React.FC<IProps> = ({ sx }) => {
         top: 0,
         boxSizing: "border-box",
         // pt: 2,
-        zIndex: 500,
+        zIndex: 2000,
         bgcolor: palette.background.default,
         display: "flex",
         ...sx,

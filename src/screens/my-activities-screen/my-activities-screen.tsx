@@ -47,6 +47,7 @@ import ActivityActions from "./components/activity-actions";
 import ActivityLeaveConfirmation from "./components/activity-leave-confirmation";
 import FirstTimeLoginContent from "./components/first-time-login-content";
 import { SetLocationContent } from "./components/set-location-content";
+import { ActivitySortColumnEnum } from "types/activities/activity-sort-enum.dto";
 
 const ActivitiesScreen = () => {
   const { ref, inView } = useInView();
@@ -84,14 +85,16 @@ const ActivitiesScreen = () => {
         participantId: Number(userInfo?.id),
         sort:
           location?.coordinates?.lon && location?.coordinates?.lat
-            ? "nearest"
+            ? ActivitySortColumnEnum.LOCATION
             : undefined,
       }),
     {
       getNextPageParam: (lastPage, allPages) => {
-        const nextPage: number = allPages?.length + 1;
+        // don't need to add +1 because we are indexing offset from 0 (so length will handle + 1)
+        const nextPage: number = allPages?.length;
         return nextPage;
       },
+      enabled: !!userInfo?.id,
       select: (data) => ({
         pages: data?.pages?.map((page) =>
           page?.filter((activity) => activity?.participant_status === null)
@@ -296,8 +299,7 @@ const ActivitiesScreen = () => {
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
-          width: "100%",
-          mb: 1,
+          my: 1,
         }}
       >
         <Typography variant="h4" sx={{ color: palette?.text?.primary }}>
@@ -398,8 +400,7 @@ const ActivitiesScreen = () => {
                   justifyContent: "space-between",
                   alignItems: "center",
                   width: "100%",
-                  mb: 2,
-                  mt: 1,
+                  my: 2,
                 }}
               >
                 <Typography variant="h4" sx={{ color: palette?.text?.primary }}>
@@ -442,7 +443,6 @@ const ActivitiesScreen = () => {
               </Box>
             </>
           )}
-          {/* {anyNearYouActivities && ( */}
           <>
             <Box
               sx={{
@@ -460,7 +460,7 @@ const ActivitiesScreen = () => {
               <OffliButton
                 variant="text"
                 sx={{ fontSize: 16 }}
-                endIcon={
+                startIcon={
                   <MapIcon
                     sx={{ fontSize: "1.2rem", ml: -0.7, color: "primary.main" }}
                   />
@@ -474,38 +474,40 @@ const ActivitiesScreen = () => {
                 }
                 data-testid="see-map-btn"
               >
-                Show
+                Show map
               </OffliButton>
             </Box>
             <InfiniteScroll
               pageStart={0}
               loadMore={() => fetchNextPage()}
               hasMore={hasNextPage}
-              loader={<Loader />}
+              loader={<Loader key={"loader"} />}
               useWindow={false}
             >
-              {paginatedActivitiesData?.pages?.map((group, i) => (
-                <React.Fragment key={i}>
-                  {group?.map((activity) => (
-                    <ActivityCard
-                      key={activity?.id}
-                      activity={activity}
-                      onPress={() =>
-                        navigate(
-                          `${ApplicationLocations.ACTIVITY_DETAIL}/${activity?.id}`,
-                          {
-                            state: {
-                              from: ApplicationLocations.ACTIVITIES,
-                            },
-                          }
-                        )
-                      }
-                      onLongPress={openActivityActions}
-                      sx={{ mx: 0, my: 1.5, width: "100%" }}
-                    />
-                  ))}
-                </React.Fragment>
-              ))}
+              <>
+                {paginatedActivitiesData?.pages?.map((group, i) => (
+                  <React.Fragment key={i}>
+                    {group?.map((activity) => (
+                      <ActivityCard
+                        key={activity?.id}
+                        activity={activity}
+                        onPress={() =>
+                          navigate(
+                            `${ApplicationLocations.ACTIVITY_DETAIL}/${activity?.id}`,
+                            {
+                              state: {
+                                from: ApplicationLocations.ACTIVITIES,
+                              },
+                            }
+                          )
+                        }
+                        onLongPress={openActivityActions}
+                        sx={{ mx: 0, my: 1.5, width: "100%" }}
+                      />
+                    ))}
+                  </React.Fragment>
+                ))}
+              </>
             </InfiniteScroll>
           </>
         </>

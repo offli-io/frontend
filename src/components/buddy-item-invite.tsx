@@ -1,6 +1,7 @@
 import { Box, Typography, useTheme } from "@mui/material";
 import React from "react";
-import logo from "../assets/img/profilePicture.jpg";
+import userPlaceholder from "../assets/img/user-placeholder.svg";
+
 import { useGetApiUrl } from "../hooks/use-get-api-url";
 import { IPerson } from "../types/activities/activity.dto";
 import OffliButton from "./offli-button";
@@ -51,7 +52,7 @@ const BuddyItemInvite: React.FC<ILabeledDividerProps> = ({
           src={
             buddy?.profile_photo
               ? `${baseUrl}/files/${buddy?.profile_photo}`
-              : logo
+              : userPlaceholder
           }
           style={{
             margin: 0.5,

@@ -24,6 +24,10 @@ import { useSendBuddyRequest } from "./hooks/use-send-buddy-request";
 import { useToggleBuddyRequest } from "./hooks/use-toggle-buddy-request";
 import { ProfileEntryTypeEnum } from "./types/profile-entry-type";
 import { generateBuddyActionButtonLabel } from "./utils/generate-buddy-action-button-label.util";
+import LastAttendedActivityCard from "components/last-attended-activity-card/last-attended-activity-card";
+import Loader from "components/loader";
+import { useGetLastAttendedActivities } from "./hooks/use-get-last-attended-activities";
+import { ActivitiyParticipantStatusEnum } from "types/activities/activity-participant-status-enum.dto";
 
 interface IProfileScreenProps {
   type: ProfileEntryTypeEnum;
@@ -59,6 +63,22 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
     requestingInfoUserId: id ? userInfo?.id : undefined,
   });
 
+  const isBuddy = React.useMemo(
+    () => !!data?.buddies?.find(({ id }) => id === userInfo?.id),
+    [data]
+  );
+
+  const {
+    activities: lastAttendedActivties,
+    isLoading: areLastAttendedActivitiesLoading,
+  } = useGetLastAttendedActivities({
+    params: {
+      participantId: Number(id),
+      participantStatus: ActivitiyParticipantStatusEnum.CONFIRMED,
+    },
+    enabled: !!id,
+  });
+
   const { isLoading: isConnectingInstagram, mutate: sendConnectInstagram } =
     useMutation(
       ["instagram-connection"],
@@ -91,9 +111,9 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
 
   const isOtherProfile = React.useMemo(
     () =>
+      isBuddy ||
       [
         ProfileEntryTypeEnum.REQUEST,
-        ProfileEntryTypeEnum.BUDDY,
         ProfileEntryTypeEnum.USER_PROFILE,
       ].includes(type),
     [type]
@@ -107,7 +127,7 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
         receiverId = null,
       } = {},
     } = {},
-    isLoading: isBuddyStateLoading,
+    isFetching: isBuddyStateLoading,
   } = useQuery(
     ["buddy-state", userInfo?.id, id],
     () => getBuddyState(Number(userInfo?.id), Number(id)),
@@ -173,6 +193,10 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
       buddyState === BuddyStateEnum.CONFIRMED,
     [buddyState, senderId, userInfo?.id]
   );
+
+  if (isLoading || isBuddyStateLoading || instagramCode) {
+    return <Loader />;
+  }
 
   return (
     <>
@@ -306,11 +330,6 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
             }
           />
         )}
-        {/* <Box sx={{display: "flex", alignSelf: "start", mt: "30px", ml: "10%", mb:"30px"}}>
-          <Typography sx={{fontWeight: "bold"}}>
-            This month
-          </Typography>
-        </Box> */}
         {[
           ProfileEntryTypeEnum.REQUEST,
           ProfileEntryTypeEnum.USER_PROFILE,
@@ -351,32 +370,29 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
             ) : null}
           </Box>
         ) : null}
-        {/* {type === ProfileEntryTypeEnum.USER_PROFILE ? (
+        {isBuddy && lastAttendedActivties?.length > 0 ? (
           <Box
             sx={{
-              display: "flex",
-              width: "100%",
-              justifyContent: "center",
-              mt: 2.5,
+              width: "90%",
             }}
           >
-            <OffliButton
-              sx={{ fontSize: 14, width: "50%" }}
-              onClick={handleBuddyRequest}
-              isLoading={isTogglingBuddyRequest}
-              disabled={
-                buddyState === BuddyStateEnum.PENDING &&
-                senderId === userInfo?.id
-              }
+            <Typography
+              align="left"
+              variant="h5"
+              sx={{ mt: 3, mb: 1, color: palette?.text?.primary }}
             >
-              {generateBuddyActionButtonLabel(
-                buddyState,
-                userInfo?.id,
-                senderId
-              )}
-            </OffliButton>
+              Last attended
+            </Typography>
+            {lastAttendedActivties?.map(({ title, title_picture }) => (
+              <LastAttendedActivityCard
+                label={title}
+                imageUrl={title_picture}
+                sx={{ mb: 2 }}
+              />
+            ))}
           </Box>
-        ) : null} */}
+        ) : null}
+
         {displayStatistics ? (
           <Box
             sx={{
@@ -394,18 +410,12 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
               participatedNum={data?.activities_participated_last_month_count}
               enjoyedNum={data?.enjoyed_together_last_month_count}
               createdNum={
-                [
-                  ProfileEntryTypeEnum.BUDDY,
-                  ProfileEntryTypeEnum.PROFILE,
-                ].includes(type)
+                isBuddy || [ProfileEntryTypeEnum.PROFILE].includes(type)
                   ? data?.activities_created_last_month_count
                   : undefined
               }
               metNum={
-                [
-                  ProfileEntryTypeEnum.BUDDY,
-                  ProfileEntryTypeEnum.PROFILE,
-                ].includes(type)
+                isBuddy || [ProfileEntryTypeEnum.PROFILE].includes(type)
                   ? data?.new_buddies_last_month_count
                   : undefined
               }

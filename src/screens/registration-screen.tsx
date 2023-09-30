@@ -5,6 +5,7 @@ import {
   InputAdornment,
   TextField,
   Typography,
+  useTheme,
 } from "@mui/material";
 import React from "react";
 import OffliButton from "../components/offli-button";
@@ -49,6 +50,7 @@ export const RegistrationScreen: React.FC = () => {
   const [showPassword, setShowPassword] = React.useState(false);
   const [email, setEmail] = React.useState<string | undefined>();
   const { enqueueSnackbar } = useSnackbar();
+  const { shadows, palette } = useTheme();
   const { setUserInfo, setStateToken } = React.useContext(
     AuthenticationContext
   );
@@ -135,10 +137,10 @@ export const RegistrationScreen: React.FC = () => {
   return (
     <>
       <OffliBackButton
-        onClick={() => navigate(ApplicationLocations.LOGIN)}
-        sx={{ alignSelf: "flex-start", m: 1 }}
+        onClick={() => navigate(ApplicationLocations.LOGIN_OR_REGISTER)}
+        sx={{ alignSelf: "flex-start", m: 1, color: palette?.primary?.main}}
       >
-        Sign in
+        Back
       </OffliBackButton>
       <form onSubmit={handleSubmit(handleFormSubmit)}>
         <Box
@@ -164,7 +166,7 @@ export const RegistrationScreen: React.FC = () => {
           </Typography>
 
           <OffliButton
-            startIcon={<GoogleIcon sx={{ filter: "invert(100%)" }} />}
+            startIcon={<GoogleIcon sx={{ filter: "invert(100%)" , color: palette?.background?.default,}} />}
             onClick={handleGoogleAuthorization}
             sx={{ mb: 1 }}
           >

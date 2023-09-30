@@ -80,7 +80,7 @@ const createCustomizationTheme = (mode: PaletteMode = "light") => {
             // ...(mode === "dark" ? { filter: "invert(100%)" } : {}),
           }),
           h1: {
-            fontSize: 32,
+            fontSize: 28,
             fontWeight: "bold",
             fontFamily: "Nunito",
           },

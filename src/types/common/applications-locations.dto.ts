@@ -2,6 +2,7 @@ export enum ApplicationLocations {
   LOADING = "/loading",
   LOGIN = "/login",
   REGISTER = "/register",
+  LOGIN_OR_REGISTER = "/login-register",
   VERIFY = "/verify",
   PICK_USERNAME = "/pick-username",
   SELECT_PROFILE_PICTURE = "/select-picture",
@@ -11,7 +12,6 @@ export enum ApplicationLocations {
   PROFILE = "/profile",
   USER_PROFILE = "/profile/user",
   BUDDY_REQUEST = "/profile/request",
-  BUDDY_PROFILE = "/profile/buddy",
   EDIT_PROFILE = "/edit-profile",
   //todo
   EDIT_ACTIVITY = "/edit-activity",
