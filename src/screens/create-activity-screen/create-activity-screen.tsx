@@ -1,10 +1,12 @@
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Box, useTheme } from "@mui/material";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { add, setHours, setMinutes } from "date-fns";
 import { useSnackbar } from "notistack";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import { ActivityDurationTypeEnumDto } from "types/activities/activity-duration-type-enum.dto";
 import * as yup from "yup";
 import { createActivity } from "../../api/activities/requests";
 import { AuthenticationContext } from "../../assets/theme/authentication-provider";
@@ -17,14 +19,11 @@ import { ILocation } from "../../types/activities/location.dto";
 import { ApplicationLocations } from "../../types/common/applications-locations.dto";
 import ActivityCreatedScreen from "../static-screens/activity-created-screen";
 import { ActivityDetailsForm } from "./components/activity-details-form";
-import { ActivityInviteForm } from "./components/activity-invite-form";
 import { ActivityPhotoForm } from "./components/activity-photo-form";
 import { ActivityTypeForm } from "./components/activity-type-form";
 import { DateTimeForm } from "./components/date-time-form";
 import { NameForm } from "./components/name-form";
 import { PlaceForm } from "./components/place-form";
-import { add, setHours, setMinutes } from "date-fns";
-import { ActivityDurationTypeEnumDto } from "types/activities/activity-duration-type-enum.dto";
 
 export interface FormValues {
   title?: string;
@@ -304,16 +303,6 @@ const CreateActivityScreen = () => {
             }
           />
         );
-      // case 7:
-      //   return (
-      //     <ActivityInviteForm
-      //       methods={methods}
-      //       onNextClicked={() => {
-      //         navigate(ApplicationLocations.ACTIVITIES);
-      //         setActiveStep((activeStep) => activeStep + 1);
-      //       }}
-      //     />
-      //   );
       default:
         return (
           <Box>

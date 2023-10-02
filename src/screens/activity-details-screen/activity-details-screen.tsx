@@ -104,30 +104,32 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
     }
   );
 
-  const { mutate: sendLeaveActivity } = useMutation(
-    ["leave-activity"],
-    (activityId?: number) =>
-      removePersonFromActivity({ activityId, personId: userInfo?.id }),
-    {
-      onSuccess: (data, activityId) => {
-        hideDrawer();
-        //TODO add generic jnaming for activites / activity
-        queryClient.invalidateQueries(["activity", activityId]);
-        queryClient.invalidateQueries([ACTIVITIES_QUERY_KEY]);
-        queryClient.invalidateQueries([PAGED_ACTIVITIES_QUERY_KEY]);
+  const { mutate: sendLeaveActivity, isLoading: isLeavingActivity } =
+    useMutation(
+      ["leave-activity"],
+      (activityId?: number) =>
+        removePersonFromActivity({ activityId, personId: userInfo?.id }),
+      {
+        onSuccess: (data, activityId) => {
+          hideDrawer();
+          //TODO add generic jnaming for activites / activity
+          queryClient.invalidateQueries(["activity", activityId]);
+          queryClient.invalidateQueries([ACTIVITIES_QUERY_KEY]);
+          queryClient.invalidateQueries([PAGED_ACTIVITIES_QUERY_KEY]);
+          queryClient.invalidateQueries([PARTICIPANT_ACTIVITIES_QUERY_KEY]);
 
-        enqueueSnackbar("You have successfully left the activity", {
-          variant: "success",
-        });
-        navigate(ApplicationLocations.ACTIVITIES);
-        //invalidate queries
-        //TODO display success notification?
-      },
-      onError: () => {
-        enqueueSnackbar("Failed to leave activity", { variant: "error" });
-      },
-    }
-  );
+          enqueueSnackbar("You have successfully left the activity", {
+            variant: "success",
+          });
+          navigate(ApplicationLocations.ACTIVITIES);
+          //invalidate queries
+          //TODO display success notification?
+        },
+        onError: () => {
+          enqueueSnackbar("Failed to leave activity", { variant: "error" });
+        },
+      }
+    );
 
   const { mutate: sendJoinActivity, isLoading: isJoiningActivity } =
     useMutation(
@@ -230,6 +232,7 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
                 activityId={Number(id)}
                 onLeaveCancel={hideDrawer}
                 onLeaveConfirm={sendLeaveActivity}
+                isLeaving={isLeavingActivity}
               />
             ),
           });
@@ -237,7 +240,7 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
           return;
       }
     },
-    [sendJoinActivity, navigate, id]
+    [sendJoinActivity, navigate, id, isLeavingActivity]
   );
 
   const handleActivityActionsCLick = React.useCallback(
