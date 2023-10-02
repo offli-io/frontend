@@ -9,7 +9,7 @@ import { Link, useLocation } from "react-router-dom";
 import { AuthenticationContext } from "../../assets/theme/authentication-provider";
 import { CustomizationContext } from "../../assets/theme/customization-provider";
 import { ApplicationLocations } from "../../types/common/applications-locations.dto";
-import { HEADER_HEIGHT } from "../../utils/common-constants";
+import { FOOTER_HEIGHT, HEADER_HEIGHT } from "../../utils/common-constants";
 import { mapLocationToNavigatorValue } from "./utils/map-location-to-navigator-value.util";
 
 interface IBottomNavigatorProps {
@@ -40,7 +40,7 @@ const BottomNavigator: React.FC<IBottomNavigatorProps> = ({ sx }) => {
         left: 0,
         right: 0,
         width: "100%",
-        height: HEADER_HEIGHT,
+        height: FOOTER_HEIGHT,
         bgcolor: palette?.background?.default,
 
         // boxShadow: 15,
