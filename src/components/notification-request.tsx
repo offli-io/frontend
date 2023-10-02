@@ -20,10 +20,16 @@ const NotificationRequest: React.FC<INotificationRequestProps> = ({
   const baseUrl = useGetApiUrl();
 
   const roundDaysIfNecessarry = React.useCallback((hours: number) => {
-    if (hours === 1)
-      return `${hours} hour`;
-    if (hours > 24 && hours < 48)
-      return `${Math.floor(hours / 24)} day`;
+    if (hours === 1) return `${hours} hour`;
+    if (hours > 24 && hours < 48) return `${Math.floor(hours / 24)} day`;
+
+    if (hours >= 168 && hours < 332) {
+      return "1 week";
+    }
+
+    if (hours >= 332) {
+      return "2 weeks";
+    }
 
     return hours > 24 ? `${Math.floor(hours / 24)} days` : `${hours} hours`;
   }, []);
@@ -83,7 +89,8 @@ const NotificationRequest: React.FC<INotificationRequestProps> = ({
             gridTemplateColumns: "5fr 1fr",
             gap: 2,
             alignItems: "center",
-            overflow: "hidden", textOverflow: "ellipsis"
+            overflow: "hidden",
+            textOverflow: "ellipsis",
           }}
         >
           <Box sx={{ display: "flex", alignItems: "center" }}>
@@ -113,7 +120,7 @@ const NotificationRequest: React.FC<INotificationRequestProps> = ({
               }
               alt="profile"
             />
-            <Box sx={{ display: "flex", flexDirection: "column"}}>
+            <Box sx={{ display: "flex", flexDirection: "column" }}>
               <Typography
                 sx={{
                   fontWeight: notification?.seen ? "normal" : "bold",
@@ -132,7 +139,15 @@ const NotificationRequest: React.FC<INotificationRequestProps> = ({
                 }}
                 variant="subtitle1"
               >
-                <SanitizedText style={{overflow: "hidden", textOverflow: "ellipsis",whiteSpace: "nowrap",  maxWidth: 200,}} text={generateNotificationMessage()}/>
+                <SanitizedText
+                  style={{
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap",
+                    maxWidth: 200,
+                  }}
+                  text={generateNotificationMessage()}
+                />
               </Typography>
             </Box>
           </Box>
