@@ -1,41 +1,25 @@
 import {
   Autocomplete,
   Box,
-  Checkbox,
-  FormControl,
-  FormControlLabel,
-  FormLabel,
-  IconButton,
-  MenuItem,
-  Switch,
   TextField,
   Typography,
-  useTheme,
 } from "@mui/material";
 import React from "react";
 import PlaceIcon from "@mui/icons-material/Place";
-
-import { Controller, UseFormReturn } from "react-hook-form";
 import OffliButton from "../../../components/offli-button";
 import activityLocation from "../../../assets/img/activity-location.svg";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
-  getLocationFromQuery,
   getLocationFromQueryFetch,
   getPlaceFromCoordinates,
 } from "../../../api/activities/requests";
 import { useDebounce } from "use-debounce";
-import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import {
-  IPlaceExternalApiDto,
   IPlaceExternalApiResultDto,
 } from "../../../types/activities/place-external-api.dto";
 import { ILocation } from "../../../types/activities/location.dto";
 import NearMeIcon from "@mui/icons-material/NearMe";
-import { useCurrentLocation } from "../../../hooks/use-current-location";
 import { useGeolocated } from "react-geolocated";
-import { useNavigate } from "react-router-dom";
-import { ApplicationLocations } from "../../../types/common/applications-locations.dto";
 
 interface IPlaceFormProps {
   onLocationSelect: (location: ILocation) => void;
@@ -154,17 +138,6 @@ export const SetLocationContent: React.FC<IPlaceFormProps> = ({
           <img src={activityLocation} style={{ height: 90 }} alt="place-form" />
         </Box>
       </Box>
-      <OffliButton
-        variant="text"
-        sx={{
-          fontSize: 16,
-          alignContent: "center",
-          mt: 2,
-        }}
-        startIcon={<PlaceIcon sx={{color: "primary.main"}}/>}
-      >
-        {externalLocation?.name ?? "No location found"}
-      </OffliButton>
       <Box
         sx={{
           display: "flex",
@@ -203,7 +176,7 @@ export const SetLocationContent: React.FC<IPlaceFormProps> = ({
           renderInput={(params) => (
             <TextField
               {...params}
-              placeholder="Search place"
+              placeholder={externalLocation?.name ?? "Search places"}
               onChange={(e) => setPlaceQuery(e.target.value)}
               sx={{
                 "& input::placeholder": {
