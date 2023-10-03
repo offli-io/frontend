@@ -176,7 +176,10 @@ const FiltersDrawerContent: React.FC<IFiltersDrawerContentProps> = ({
               items={dateOptions}
               onItemSelect={handleDateSelect}
               onSlotAdd={handleDateAdd}
-              sx={{ py: `${theme.spacing(1)} !important` }}
+              sx={{
+                py: `${theme.spacing(0)} !important`,
+                borderRadius: "12px !important",
+              }}
             />
           </Box>
         </Box>
