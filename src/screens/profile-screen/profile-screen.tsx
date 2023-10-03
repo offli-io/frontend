@@ -28,6 +28,7 @@ import Loader from "components/loader";
 import { useGetLastAttendedActivities } from "./hooks/use-get-last-attended-activities";
 import { ActivitiyParticipantStatusEnum } from "types/activities/activity-participant-status-enum.dto";
 import MyActivityCard from "components/my-activity-card";
+import LastAttendedActivityCard from "components/last-attended-activity-card/last-attended-activity-card";
 
 interface IProfileScreenProps {
   type: ProfileEntryTypeEnum;
@@ -387,7 +388,7 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
                 sx={{
                   display: "flex",
                   justifyContent: "space-between",
-                  gap: 2,
+                  gap: 1.5,
                   overflowX: "scroll",
                   width: "100%",
                   "::-webkit-scrollbar": { display: "none" },
@@ -395,8 +396,7 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
               >
                 {lastAttendedActivties?.map((activity) => {
                   return (
-                    <MyActivityCard
-                      key={activity?.id}
+                    <LastAttendedActivityCard
                       activity={activity}
                       onPress={() =>
                         navigate(
