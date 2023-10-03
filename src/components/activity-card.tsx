@@ -154,7 +154,7 @@ const ActivityCard: React.FC<IProps> = ({
               }}
             />
             {activity?.limit ? (
-              <Box sx={{display: "flex", justifyContent: "center"}}>
+              <Box sx={{ display: "flex", justifyContent: "center" }}>
                 <Typography
                   sx={{
                     fontSize: 16,
@@ -165,23 +165,40 @@ const ActivityCard: React.FC<IProps> = ({
                 >
                   {activity?.count_confirmed}/{activity?.limit}{" "}
                 </Typography>
-                {activity?.count_confirmed ? (
-                  activity?.participants_thumb ? (
-                    <Box>
-                      <img
-                        src={`${baseUrl}/files/${activity?.participants_thumb[1]?.profile_photo}`}
-                        alt="profile"
-                        style={{
-                          height: 5,
-                          width: 5,
-                          aspectRatio: 1,
-                          borderRadius: "50%",
-                        }}
-                      />
+                {[...(activity?.participants_thumb ?? [])]?.length > 0 ? (
+                  <Box sx={{ position: "relative", display: "flex" }}>
+                    {[...(activity?.participants_thumb ?? [])].map(
+                      (participant, index) => (
+                        <>
+                          <img
+                            src={`${baseUrl}/files/${participant?.profile_photo}`}
+                            alt="profile"
+                            style={{
+                              position: "absolute",
+                              left: 10 * (index + 1),
+                              height: 15,
+                              aspectRatio: 1,
+                              borderRadius: "50%",
+                              zIndex: index,
+                            }}
+                          />
+                          <img
+                            src={`${baseUrl}/files/${participant?.profile_photo}`}
+                            alt="profile"
+                            style={{
+                              position: "absolute",
+                              height: 15,
+                              left: 10 * (index + 2),
+                              aspectRatio: 1,
+                              borderRadius: "50%",
+                              zIndex: index + 1,
+                            }}
+                          />
+                        </>
+                      )
+                    )}
                   </Box>
-                  ) : null
                 ) : null}
-                
               </Box>
             ) : (
               <Typography
