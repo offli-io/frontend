@@ -179,18 +179,6 @@ const ActivityCard: React.FC<IProps> = ({
                               height: 15,
                               aspectRatio: 1,
                               borderRadius: "50%",
-                              zIndex: index,
-                            }}
-                          />
-                          <img
-                            src={`${baseUrl}/files/${participant?.profile_photo}`}
-                            alt="profile"
-                            style={{
-                              position: "absolute",
-                              height: 15,
-                              left: 10 * (index + 2),
-                              aspectRatio: 1,
-                              borderRadius: "50%",
                               zIndex: index + 1,
                             }}
                           />

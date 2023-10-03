@@ -46,16 +46,18 @@ const MyActivityCard: React.FC<IMyActivityCardProps> = ({
         display: "grid",
         gridTemplateColumns: "3fr 1fr",
         boxSizing: "border-box",
-        bgcolor: ({ palette }) => palette.primary.light,
+        borderColor: "primary.light",
+        borderWidth: 1,
+        borderStyle: "solid",
         minWidth: "280px",
         maxWidth: "280px",
-        wordWrap: "break-word",
         overflow: "hidden",
         textOverflow: "ellipsis",
         whiteSpace: "normal",
+        bgcolor: "background.default"
       }}
-      {...handlers}
       color="inherit"
+      {...handlers}
       onClick={() => onPress?.(activity)}
       data-testid="my-activitiy-card"
       {...rest}
