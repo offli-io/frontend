@@ -72,7 +72,10 @@ const ActivityVisibilityDuration: React.FC<IProps> = ({
           </Typography>
         </Box>
       </Box>
-      <Typography sx={{ m: 0.5 }}>{description}</Typography>
+      <Box sx={{ m: 0.5, wordWrap: "break-word"}}>
+      <Typography >{description}</Typography>
+
+      </Box>
 
       <Typography
         variant="subtitle1"
