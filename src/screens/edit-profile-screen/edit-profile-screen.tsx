@@ -393,9 +393,6 @@ const EditProfileScreen: React.FC = () => {
                       {...field}
                       options={mapExternalApiOptions(placeQuery?.data?.results)}
                       value={field?.value}
-                      // isOptionEqualToValue={(option, value) =>
-                      //   option?.formatted === (value?.formatted ?? value?.name)
-                      // }
                       sx={{
                         width: "100%",
                         display: "flex",
