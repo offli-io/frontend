@@ -125,25 +125,11 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
     [date]
   );
 
-
-  const handleSameDateCheckboxCheck = React.useCallback(() => {
-    setSameEndDate((previousValue) => !previousValue);
-    const _untilOptions = date?.untilOptions.map((item) => ({
-      ...item,
-      selected: false,
-    }));
-    setDate((_dates) => ({
-      ..._dates,
-      untilOptions: _untilOptions,
-    }));
-  }, [date?.untilOptions]);
-
   const fromTimeValue = watch("timeFrom");
+  //TODO why duration isn't caught by validation error with yup?
+  const duration = watch("duration");
 
   const isTimeSelected = !!fromTimeValue && fromTimeValue !== "";
-
-
-  console.log(watch());
 
   return (
     <Box
@@ -157,16 +143,17 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
     >
       <Box sx={{ display: "flex", flexDirection: "column", width: "100%" }}>
         <Box sx={{ display: "flex", mb: 3, mt: 1, justifyContent: "center" }}>
-          <Typography variant="h1" sx={{ mr: 1, color: palette?.primary?.main }}>
+          <Typography
+            variant="h1"
+            sx={{ mr: 1, color: palette?.primary?.main }}
+          >
             Select
           </Typography>
           <Typography variant="h1" sx={{ color: palette?.text?.primary }}>
             date and time
           </Typography>
         </Box>
-        <Typography variant="h4"
-          sx={{color: palette?.text?.primary }}
-        >
+        <Typography variant="h4" sx={{ color: palette?.text?.primary }}>
           Start date
         </Typography>
         <MobileCarousel
@@ -174,24 +161,10 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
           onItemSelect={(item) => handleItemSelect("from", item?.id)}
           onSlotAdd={handleDateAdd}
         />
-        {/* <FormControlLabel
-          control={
-            <Checkbox
-              checked={sameEndDate}
-              onChange={handleSameDateCheckboxCheck}
-              data-testid="same-end-date-checkbox"
-              sx={{
-                "& .MuiSvgIcon-root": {
-                  color: "primary.main",
-                },
-              }}
-            />
-          }
-          label="End date is same as start date"
-          sx={{ color: palette?.text?.primary }}
-        /> */}
-        <Typography variant="h4"
-          sx={{ mt: 3, mb:1, color: palette?.text?.primary }}
+
+        <Typography
+          variant="h4"
+          sx={{ mt: 3, mb: 1, color: palette?.text?.primary }}
         >
           Start time
         </Typography>
@@ -203,7 +176,7 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
               {...field}
               id="outlined-select-currency"
               select
-              sx={{ width: "100%", mb: 1}}
+              sx={{ width: "100%", mb: 1 }}
               variant="outlined"
               data-testid="activitiy-from-time-picker"
               error={!!error}
@@ -218,31 +191,29 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
                     vertical: "top",
                     horizontal: "right",
                   },
-                style: {height: "40%"}
-
+                  style: { height: "40%" },
                 },
               }}
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="end">
-                    <AccessTimeIcon sx={{mr: 2}}/>
+                    <AccessTimeIcon sx={{ mr: 2 }} />
                   </InputAdornment>
                 ),
               }}
-              
             >
               {generateOptionsOrder("from")?.map((option) => (
-                <MenuItem key={option} value={option} divider >
+                <MenuItem key={option} value={option} divider>
                   {option}
                 </MenuItem>
               ))}
-              
             </TextField>
           )}
         />
 
-        <Typography variant="h4"
-          sx={{ mt: 3, mb:1, color: palette?.text?.primary }}
+        <Typography
+          variant="h4"
+          sx={{ mt: 3, mb: 1, color: palette?.text?.primary }}
         >
           Activity duration
         </Typography>
@@ -263,30 +234,6 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
           )}
         />
 
-        {/* <Controller
-            name="repeated"
-            control={control}
-            render={({ field, fieldState: { error } }) => (
-              <TextField
-                {...field}
-                id="outlined-select-currency"
-                select
-                // label="Does activity repeat?"
-                value="h"
-                variant="outlined"
-
-                // helperText="Please select your currency"
-              >
-                {["m", "h", "d"].map((option) => (
-                  <MenuItem key={option} value={option}>
-                    {option}
-                  </MenuItem>
-                ))}
-              </TextField>
-            )}
-          /> */}
-        {/* </Box> */}
-
         <Controller
           name="durationType"
           control={control}
@@ -298,7 +245,8 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
               name="row-radio-buttons-group"
               sx={{
                 justifyContent: "center",
-                mt: 1,mb:1,
+                mt: 1,
+                mb: 1,
                 "& .MuiSvgIcon-root": {
                   color: "primary.main",
                 },
@@ -323,97 +271,23 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
             </RadioGroup>
           )}
         />
-
-        {/* </Box> */}
-
-        {/* {!sameEndDate && (
-          <MobileCarousel
-            items={date.untilOptions}
-            // title="Select end date"
-            onItemSelect={(item) => handleItemSelect("until", item?.id)}
-          />
-        )} */}
-
-        {/* <Typography
-          sx={{ my: 2, fontWeight: "bold", color: palette?.text?.primary }}
-        >
-          Start time
-        </Typography>
-
-        <Box
-          sx={{
-            display: "flex",
-            width: "100%",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <Controller
-            name="timeFrom"
-            control={control}
-            render={({ field: { value, onChange }, fieldState: { error } }) => (
-              <TimePicker
-                value={value}
-                onChange={onChange}
-                label="From"
-                sx={{ width: "40%", mr: 2 }}
-                // onChange={(value: string | null) => {
-                //   setTimeValues((previousValues) => ({
-                //     ...previousValues,
-                //     from: value ?? undefined,
-                //   }));
-                //   handleTimeChange("datetime_from", value);
-                // }}
-                options={generateOptionsOrder("from")}
-                data-testid="activitiy-from-time-picker"
-              />
-            )}
-          />
-
-          <Typography
-            sx={{
-              fontWeight: 200,
-              fontSize: "2rem",
-              color: palette?.text?.primary,
-            }}
-          >
-            -
-          </Typography>
-
-          <Controller
-            name="timeUntil"
-            control={control}
-            render={({ field: { value, onChange }, fieldState: { error } }) => (
-              <TimePicker
-                value={value}
-                onChange={onChange}
-                label="Until"
-                sx={{ width: "40%", ml: 2 }}
-                // onChange={(value: string | null) => {
-                //   setTimeValues((previousValues) => ({
-                //     ...previousValues,
-                //     until: value ?? undefined,
-                //   }));
-                //   handleTimeChange("datetime_until", value);
-                // }}
-                options={generateOptionsOrder("until")}
-                data-testid="activitiy-to-time-picker"
-              />
-            )}
-          />
-        </Box>*/}
       </Box>
 
       <Box
-        sx={{ width: "100%", display: "flex", justifyContent: "space-between", mt: 1 }}
+        sx={{
+          width: "100%",
+          display: "flex",
+          justifyContent: "space-between",
+          mt: 1,
+        }}
       >
         <IconButton
           onClick={onBackClicked}
           color="primary"
           data-testid="back-btn"
-          sx={{fontSize: 20}}
+          sx={{ fontSize: 20 }}
         >
-          <ArrowBackIosNewIcon sx={{ color: "inherit",mr:1 }} />
+          <ArrowBackIosNewIcon sx={{ color: "inherit", mr: 1 }} />
           Back
         </IconButton>
 
