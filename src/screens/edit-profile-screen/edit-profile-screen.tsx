@@ -281,8 +281,8 @@ const EditProfileScreen: React.FC = () => {
               }
               alt="profile"
               style={{
-                height: "70px",
-                width: "70px",
+                height: 100,
+                aspectRatio: 1,
                 borderRadius: "50%",
                 border: `2px solid ${palette.primary.main}`,
                 boxShadow: "5px 5px 20px 0px rgba(0,0,0,0.6)",
@@ -393,9 +393,6 @@ const EditProfileScreen: React.FC = () => {
                       {...field}
                       options={mapExternalApiOptions(placeQuery?.data?.results)}
                       value={field?.value}
-                      // isOptionEqualToValue={(option, value) =>
-                      //   option?.formatted === (value?.formatted ?? value?.name)
-                      // }
                       sx={{
                         width: "100%",
                         display: "flex",

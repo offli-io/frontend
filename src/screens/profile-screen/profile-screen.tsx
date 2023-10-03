@@ -333,7 +333,7 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
         {[
           ProfileEntryTypeEnum.REQUEST,
           ProfileEntryTypeEnum.USER_PROFILE,
-        ].includes(type) ? (
+        ].includes(type) && !isBuddy ? (
           <Box
             sx={{
               display: "flex",

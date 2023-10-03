@@ -33,6 +33,7 @@ import { IMapViewActivitiesResponseDto } from "../../types/activities/mapview-ac
 import { IBuddiesResponseDto } from "types/users/buddies-response.dto";
 import { IUsersResponseDto } from "types/users/users-response.dto";
 import { IUsersSearchParamsDto } from "types/users/users-search-params.dto";
+import { ActivitySortColumnEnum } from "types/activities/activity-sort-enum.dto";
 
 export const getActivities = async ({
   queryFunctionContext,
@@ -126,29 +127,19 @@ export const getActivity = <T>(params: IActivitiesParamsDto) => {
 
 export const getParticipantActivities = ({
   participantId,
-}: {
-  participantId?: number;
-}) => {
+  sort,
+  datetimeFrom,
+}: IActivitiesParamsDto) => {
   const promise = axios.get<IListActivitiesResponseDto>(
     `${DEFAULT_DEV_URL}/activities`,
     {
       params: {
+        sort,
         participantId,
         participantStatus: ActivitiyParticipantStatusEnum.CONFIRMED,
+        datetimeFrom,
       },
-      // params: {
-      //   text,
-      //   tag,
-      // },
-      // paramsSerializer: (params) => {
-      //   return qs.stringify(params, { arrayFormat: "repeat" });
-      // },
     }
-    // {
-
-    //   params: searchParams,
-    //   cancelToken: source?.token,
-    // }
   );
 
   // queryFunctionContext?.signal?.addEventListener('abort', () => {

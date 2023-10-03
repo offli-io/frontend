@@ -16,10 +16,13 @@ import { useDebounce } from "use-debounce";
 import { getLocationFromQueryFetch } from "../../../api/activities/requests";
 import activityLocation from "../../../assets/img/activity-location.svg";
 import OffliButton from "../../../components/offli-button";
-import { mapLocationValue } from "../../../utils/map-location-value.util";
+import {
+  mapExternalApiOptions,
+  mapLocationValue,
+} from "../../../utils/map-location-value.util";
 import { FormValues } from "../create-activity-screen";
 import LocationSearchingIcon from "@mui/icons-material/LocationSearching";
-import AddLocationAltIcon from '@mui/icons-material/AddLocationAlt';
+import AddLocationAltIcon from "@mui/icons-material/AddLocationAlt";
 
 interface IPlaceFormProps {
   onNextClicked: () => void;
@@ -75,7 +78,7 @@ export const PlaceForm: React.FC<IPlaceFormProps> = ({
                 justifyContent: "center",
                 // pl: 2,
                 width: "50%",
-                ml: 1
+                ml: 1,
               }}
             >
               <Typography variant="h1" sx={{ color: "primary.main" }}>
@@ -118,11 +121,8 @@ export const PlaceForm: React.FC<IPlaceFormProps> = ({
                 >
                   <Autocomplete
                     {...field}
-                    options={placeQuery?.data?.results ?? []}
-                    value={mapLocationValue(field?.value)}
-                    isOptionEqualToValue={(option, value) =>
-                      option?.formatted === (value?.formatted ?? value?.name)
-                    }
+                    options={mapExternalApiOptions(placeQuery?.data?.results)}
+                    value={field?.value}
                     sx={{
                       width: "100%",
                       display: "flex",
@@ -131,14 +131,12 @@ export const PlaceForm: React.FC<IPlaceFormProps> = ({
                     loading={placeQuery?.isLoading}
                     onChange={(e, locationObject) =>
                       field.onChange({
-                        name: locationObject?.formatted,
-                        coordinates: {
-                          lat: locationObject?.lat,
-                          lon: locationObject?.lon,
-                        },
+                        name: locationObject?.name ?? "",
+                        coordinates: locationObject?.coordinates,
                       })
                     }
-                    getOptionLabel={(option) => String(option?.formatted)}
+                    getOptionLabel={(option) => String(option?.name)}
+                    inputValue={field?.value?.name}
                     // inputValue={inputValue ?? ""}
                     renderInput={(params) => (
                       <TextField
@@ -161,7 +159,6 @@ export const PlaceForm: React.FC<IPlaceFormProps> = ({
                     />
                   </IconButton>
                 </Box>
-                
               )}
             />
           </Box>
@@ -176,7 +173,7 @@ export const PlaceForm: React.FC<IPlaceFormProps> = ({
               onClick={onBackClicked}
               color="primary"
               data-testid="back-btn"
-              sx={{fontSize: 20}}
+              sx={{ fontSize: 20 }}
             >
               <ArrowBackIosNewIcon sx={{ color: "inherit", mr: 1 }} />
               Back

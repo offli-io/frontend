@@ -63,7 +63,7 @@ const OffliHeader: React.FC<IProps> = ({ sx }) => {
     <Box
       ref={headerRef}
       sx={{
-        height: HEADER_HEIGHT,
+        minHeight: HEADER_HEIGHT,
         boxShadow: "1px 2px 2px #ccc",
         position: "sticky",
         top: 0,

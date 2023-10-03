@@ -14,7 +14,8 @@ import OffliButton from "./offli-button";
 import { getPlaceFromCoordinates } from "api/activities/requests";
 import { useQuery } from "@tanstack/react-query";
 import { ILocation } from "types/activities/location.dto";
-import WhereToVoteIcon from '@mui/icons-material/WhereToVote';
+import WhereToVoteIcon from "@mui/icons-material/WhereToVote";
+import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 
 const RecenterAutomatically = ({
   lat,
@@ -50,17 +51,41 @@ const SaveButton = ({
         zIndex: 400,
         fontSize: 20,
         width: "45%",
-        height: 55,
         bgcolor: ({ palette }) => palette?.primary?.main,
         color: ({ palette }) => palette?.background?.default,
-        borderRadius: "15px"
+        borderRadius: "15px",
       }}
       onClick={() => onClick?.(map.getCenter())}
-      startIcon={<WhereToVoteIcon sx={{color: ({ palette }) => palette?.background?.default}}/>}
+      startIcon={
+        <WhereToVoteIcon
+          sx={{ color: ({ palette }) => palette?.background?.default }}
+        />
+      }
       isLoading={isLoading}
     >
-      
       Use location
+    </OffliButton>
+  );
+};
+
+const BackButton = ({ onClick }: { onClick?: () => void }) => {
+  return (
+    <OffliButton
+      sx={{
+        position: "fixed",
+        bottom: 75,
+        left: 20,
+        zIndex: 400,
+        fontSize: 20,
+        // width: "45%",
+      }}
+      onClick={() => onClick?.()}
+      startIcon={
+        <ArrowBackIosNewIcon sx={{ color: ({ palette }) => "inherit" }} />
+      }
+      // variant="text"
+    >
+      Back
     </OffliButton>
   );
 };
@@ -174,6 +199,10 @@ const Map: React.FC<ILabeledTileProps> = ({
     // onLocationSave?.()
   };
 
+  const handleMapDismiss = () => {
+    onLocationSave?.(null);
+  };
+
   return (
     <Box sx={{ width: "100%", height: "100%", position: "fixed" }}>
       <MapContainer
@@ -191,6 +220,7 @@ const Map: React.FC<ILabeledTileProps> = ({
         />
         {setLocationByMap ? (
           <>
+            <BackButton onClick={handleMapDismiss} />
             <SaveButton
               onClick={handleLocationSave}
               isLoading={isPlaceFromCoordinatesDataLoading}
