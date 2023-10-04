@@ -35,7 +35,7 @@ import { format } from "date-fns";
 import { DATE_TIME_FORMAT } from "../../utils/common-constants";
 import { getTimeDifference } from "../map-screen/utils/get-time-difference";
 import { useGetApiUrl } from "../../hooks/use-get-api-url";
-import { ActivitiyParticipantStatusEnum } from "../../types/activities/activity-participant-status-enum.dto";
+import { ActivitiyParticipantStatusEnum as ActivityParticipantStatusEnum } from "../../types/activities/activity-participant-status-enum.dto";
 import { DrawerContext } from "assets/theme/drawer-provider";
 import ActivityActions from "screens/my-activities-screen/components/activity-actions";
 import { PARTICIPANT_ACTIVITIES_QUERY_KEY } from "hooks/use-participant-activities";
@@ -289,7 +289,7 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
   const isAlreadyParticipant = React.useMemo(
     () =>
       !!activity &&
-      activity?.participant_status === ActivitiyParticipantStatusEnum.CONFIRMED,
+      activity?.participant_status === ActivityParticipantStatusEnum.CONFIRMED,
 
     [activity]
   );
@@ -391,11 +391,19 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
           >
             <OffliButton
               size="small"
-              sx={{ fontSize: 18, width: "40%", height: 48 }}
+              sx={{ 
+                fontSize: 18, 
+                width: "40%", 
+                height: 48, 
+                color: isAlreadyParticipant ? "primary.main" : "background.default"
+              }}
               onClick={handleJoinButtonClick}
+              color={!isAlreadyParticipant ? "primary" : "secondary"}
               isLoading={areActionsLoading}
               startIcon={
-                <CheckCircleOutlineIcon sx={{ color: "background.default" }} />
+                isAlreadyParticipant ? 
+                <CheckCircleIcon sx={{ color: "primary.main"}}/>
+                : <CheckCircleOutlineIcon sx={{ color: "background.default"}}/>
               }
             >
               {isAlreadyParticipant ? "Joined" : "Join"}
@@ -403,7 +411,7 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
             <OffliButton
               size="small"
               disabled={!isAlreadyParticipant || areActionsLoading}
-              sx={{ fontSize: 18, width: "40%", height: 48 }}
+              sx={{ fontSize: 18, width: "40%", height: 48, bgcolor: "primary.light", color: "primary.main" }}
               onClick={() =>
                 toggleDrawer({
                   open: true,
@@ -412,7 +420,7 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
                   ),
                 })
               }
-              startIcon={<EmailIcon sx={{ color: "inactiveFont.main" }} />}
+              startIcon={<EmailIcon sx={{ color: isAlreadyParticipant ? "primary.main" : "inactiveFont.main"}} />}
             >
               Invite
             </OffliButton>

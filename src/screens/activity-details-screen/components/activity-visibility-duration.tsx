@@ -15,7 +15,6 @@ const ActivityVisibilityDuration: React.FC<IProps> = ({
   tags,
   description,
 }) => {
-  console.log(duration)
   return (
     <>
       <Box
