@@ -57,12 +57,11 @@ export const AuthenticationProvider = ({
   React.useEffect(() => {
     if (userInfo?.id) {
       // TODO: moreover IOS requires some user interaction before subscription
-      subscribeBrowserPush(Number(userInfo));
+      subscribeBrowserPush(Number(userInfo?.id));
     }
   }, [userInfo?.id]);
 
-
-  useServiceInterceptors({ setStateToken, setUserInfo});
+  useServiceInterceptors({ setStateToken, setUserInfo });
   React.useEffect(() => {
     if (stateToken) {
       setAuthToken(stateToken);
