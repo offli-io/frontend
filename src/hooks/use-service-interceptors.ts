@@ -2,11 +2,10 @@ import { useQueryClient } from "@tanstack/react-query";
 import axios, { AxiosError } from "axios";
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { IPersonExtended } from "types/activities/activity.dto";
 import { ApplicationLocations } from "types/common/applications-locations.dto";
-import { AuthenticationContext } from "../assets/theme/authentication-provider";
 import { getAuthToken, setAuthToken } from "../utils/token.util";
 import { useGetApiUrl } from "./use-get-api-url";
-import { IPersonExtended } from "types/activities/activity.dto";
 
 interface IUseServiceInterceptorsProps {
   setStateToken: React.Dispatch<React.SetStateAction<string | null>>;
@@ -23,9 +22,6 @@ export const useServiceInterceptors = ({
   const baseUrl = useGetApiUrl();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
-
-  // if using docker
-  const token = getAuthToken();
 
   axios.interceptors.request.use(
     (config) => {
@@ -80,21 +76,3 @@ export const useServiceInterceptors = ({
     }
   );
 };
-
-// import axios from 'axios'
-
-// // Add a request interceptor
-// axios.interceptors.request.use(
-//   config => {
-//     //const token = localStorageService.getAccessToken()
-//     // if (token) {
-//     //   config.headers['Authorization'] = 'Bearer ' + token
-//     // }
-
-//     config?.headers?.['Content-Type'] = 'application/json'
-//     return config
-//   },
-//   error => {
-//     Promise.reject(error)
-//   }
-// )
