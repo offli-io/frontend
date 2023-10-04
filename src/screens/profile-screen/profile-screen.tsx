@@ -76,6 +76,7 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
     params: {
       participantId: Number(id),
       participantStatus: ActivitiyParticipantStatusEnum.CONFIRMED,
+      limit: 5,
     },
     enabled: !!id,
   });
@@ -385,37 +386,37 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
               Last attended
             </Typography>
             <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  gap: 1.5,
-                  overflowX: "scroll",
-                  width: "100%",
-                  "::-webkit-scrollbar": { display: "none" },
-                }}
-              >
-                {lastAttendedActivties?.map((activity) => {
-                  return (
-                    <LastAttendedActivityCard
-                      activity={activity}
-                      onPress={() =>
-                        navigate(
-                          `${ApplicationLocations.ACTIVITY_DETAIL}/${activity?.id}`,
-                          {
-                            state: {
-                              from: ApplicationLocations.ACTIVITIES,
-                            },
-                          }
-                        )
-                      }
-                      sx={{
-                        minWidth:
-                          lastAttendedActivties?.length <= 1 ? "100%" : "80%",
-                      }}
-                    />
-                  );
-                })}
-              </Box>
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                gap: 1.5,
+                overflowX: "scroll",
+                width: "100%",
+                "::-webkit-scrollbar": { display: "none" },
+              }}
+            >
+              {lastAttendedActivties?.map((activity) => {
+                return (
+                  <LastAttendedActivityCard
+                    activity={activity}
+                    onPress={() =>
+                      navigate(
+                        `${ApplicationLocations.ACTIVITY_DETAIL}/${activity?.id}`,
+                        {
+                          state: {
+                            from: ApplicationLocations.ACTIVITIES,
+                          },
+                        }
+                      )
+                    }
+                    sx={{
+                      minWidth:
+                        lastAttendedActivties?.length <= 1 ? "100%" : "80%",
+                    }}
+                  />
+                );
+              })}
+            </Box>
           </Box>
         ) : null}
 

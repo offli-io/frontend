@@ -1,9 +1,9 @@
 import MenuIcon from "@mui/icons-material/Menu";
 import LockIcon from "@mui/icons-material/Lock";
 import LockOpenIcon from "@mui/icons-material/LockOpen";
-import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import EmailIcon from '@mui/icons-material/Email';
+import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import EmailIcon from "@mui/icons-material/Email";
 import { Box, IconButton, Typography, useTheme } from "@mui/material";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useSnackbar } from "notistack";
@@ -14,6 +14,7 @@ import {
   changeActivityParticipantStatus,
   getActivity,
   getActivityParticipants,
+  removePersonFromActivity,
 } from "../../api/activities/requests";
 import { HeaderContext } from "../../app/providers/header-provider";
 import { AuthenticationContext } from "../../assets/theme/authentication-provider";
@@ -38,7 +39,11 @@ import { ActivitiyParticipantStatusEnum } from "../../types/activities/activity-
 import { DrawerContext } from "assets/theme/drawer-provider";
 import ActivityActions from "screens/my-activities-screen/components/activity-actions";
 import { PARTICIPANT_ACTIVITIES_QUERY_KEY } from "hooks/use-participant-activities";
-import { ACTIVITIES_QUERY_KEY, useActivities } from "hooks/use-activities";
+import {
+  ACTIVITIES_QUERY_KEY,
+  PAGED_ACTIVITIES_QUERY_KEY,
+  useActivities,
+} from "hooks/use-activities";
 import userPlaceholder from "../../assets/img/user-placeholder.svg";
 import Icon from "@mdi/react";
 import { mdiCrown } from "@mdi/js";
@@ -110,7 +115,7 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
           enqueueSnackbar("You have successfully joined the activity", {
             variant: "success",
           });
-          navigate(ApplicationLocations.ACTIVITIES);
+          // navigate(ApplicationLocations.ACTIVITIES);
           queryClient.invalidateQueries(["paged-activities"]);
           queryClient.invalidateQueries(["activity", id]);
           queryClient.invalidateQueries(["activity-participants", id]);
@@ -124,6 +129,24 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
         },
       }
     );
+
+  const { mutate: sendLeaveActivity, isLoading: isLeaving } = useMutation(
+    ["leave-activity"],
+    (activityId?: number) =>
+      removePersonFromActivity({ activityId, personId: userInfo?.id }),
+    {
+      onSuccess: (data, activityId) => {
+        // hideDrawer();
+        //TODO add generic jnaming for activites / activity
+        queryClient.invalidateQueries(["activity", activityId]);
+        queryClient.invalidateQueries([ACTIVITIES_QUERY_KEY]);
+        queryClient.invalidateQueries([PAGED_ACTIVITIES_QUERY_KEY]);
+      },
+      onError: () => {
+        enqueueSnackbar("Failed to leave activity", { variant: "error" });
+      },
+    }
+  );
 
   const { mutate: sendAddActivityToCalendar } = useMutation(
     ["add-event-to-calendar"],
@@ -246,17 +269,29 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
     [handleGoogleAuthorization]
   );
 
-  const displayJoinButton = React.useMemo(
+  // const displayJoinButton = React.useMemo(
+  //   () =>
+  //     (activity?.visibility === ActivityVisibilityEnum.public &&
+  //       activity?.participant_status === null)
+  //       ||
+  //     (!!participants &&
+  //       participants?.some(
+  //         ({ id, status }: IParticipantDto) =>
+  //           id === userInfo?.id &&
+  //           status === ActivitiyParticipantStatusEnum.INVITED
+  //       )),
+  //   [participants, userInfo?.id, activity]
+  // );
+
+  const displayActionButtons =
+    activity?.visibility === ActivityVisibilityEnum.public;
+
+  const isAlreadyParticipant = React.useMemo(
     () =>
-      (activity?.visibility === ActivityVisibilityEnum.public &&
-        activity?.participant_status === null) ||
-      (!!participants &&
-        participants?.some(
-          ({ id, status }: IParticipantDto) =>
-            id === userInfo?.id &&
-            status === ActivitiyParticipantStatusEnum.INVITED
-        )),
-    [participants, userInfo?.id, activity]
+      !!activity &&
+      activity?.participant_status === ActivitiyParticipantStatusEnum.CONFIRMED,
+
+    [activity]
   );
 
   const dateTimeFrom = activity?.datetime_from
@@ -272,6 +307,12 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
     durationMinutes = 0,
     durationDays = 0,
   } = getTimeDifference(dateTimeFrom, dateTimeUntil) ?? {}; // useMemo??
+
+  const handleJoinButtonClick = React.useCallback(() => {
+    isAlreadyParticipant ? sendLeaveActivity(Number(id)) : sendJoinActivity();
+  }, [isAlreadyParticipant]);
+
+  const areActionsLoading = isLeaving || isJoiningActivity;
 
   // const durationMinutes = timeDifference?.durationMinutes;
   // const durationHours = timeDifference?.durationHours;
@@ -339,57 +380,51 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
           margin: "auto",
         }}
       >
-        {displayJoinButton ? (
-            <Box sx={{display: "flex", alignItems: "center", justifyContent: "space-evenly", my:2, }}>
-              <OffliButton
-                size="small"
-                sx={{ fontSize: 18, width: "40%", height: 48 }}
-                onClick={() => sendJoinActivity()}
-                isLoading={isJoiningActivity}
-                startIcon={<CheckCircleOutlineIcon sx={{color: "background.default"}}/>}
-              >
-                Join
-              </OffliButton>
-              <OffliButton
-                size="small"
-                disabled={true}
-                sx={{ fontSize: 18, width: "40%", height: 48}}
-                onClick={() => toggleDrawer({
-                  open: true,
-                  content: <ActivityInviteDrawerContent activityId={Number(id)} />,
-                })}
-                startIcon={<EmailIcon sx={{color: "inactiveFont.main"}}/>}
-              >
-                Invite
-              </OffliButton>
-            </Box>
-          ) : (
-            <Box sx={{display: "flex", alignItems: "center", justifyContent: "space-evenly", my:2, }}>
-              <OffliButton
-                size="small"
-                sx={{ fontSize: 18, width: "40%", height: 48, bgcolor: "primary.light", color: "primary.main"}}
-                onClick={() => sendJoinActivity()}
-                isLoading={isJoiningActivity}
-                startIcon={<CheckCircleIcon sx={{color: "primary.main"}}/>}
-              >
-                Joined
-              </OffliButton>
-              <OffliButton
+        {displayActionButtons ? (
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-evenly",
+              my: 2,
+            }}
+          >
+            <OffliButton
               size="small"
-              sx={{ fontSize: 18, width: "40%", height: 48,bgcolor: "primary.light", color: "primary.main" }}
-              startIcon={<EmailIcon sx={{color: "primary.main"}}/>}
+              sx={{ fontSize: 18, width: "40%", height: 48 }}
+              onClick={handleJoinButtonClick}
+              isLoading={areActionsLoading}
+              startIcon={
+                <CheckCircleOutlineIcon sx={{ color: "background.default" }} />
+              }
+            >
+              {isAlreadyParticipant ? "Joined" : "Join"}
+            </OffliButton>
+            <OffliButton
+              size="small"
+              disabled={!isAlreadyParticipant || areActionsLoading}
+              sx={{ fontSize: 18, width: "40%", height: 48 }}
+              onClick={() =>
+                toggleDrawer({
+                  open: true,
+                  content: (
+                    <ActivityInviteDrawerContent activityId={Number(id)} />
+                  ),
+                })
+              }
+              startIcon={<EmailIcon sx={{ color: "inactiveFont.main" }} />}
             >
               Invite
             </OffliButton>
           </Box>
-        )}
+        ) : null}
         <Box
           sx={{
             display: "flex",
             alignItems: "center",
             justifyContent: "space-evenly",
             my: 2,
-            gap: 18
+            gap: 18,
           }}
         >
           <Box
@@ -453,24 +488,25 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
             </Typography>
           </Box>
           <Box sx={{ display: "flex", alignItems: "center" }}>
-          {activity?.visibility === ActivityVisibilityEnum.private ? (
-            <LockIcon sx={{ fontSize: 20 }} />
-          ) : (
-            <LockOpenIcon sx={{ fontSize: 20 }} />
-          )}
-          <Typography
-            variant="h6"
-            align="left"
-            sx={{
-              ml: 0.5,
-            }}
-          >
-            {activity?.visibility}
-          </Typography>
+            {activity?.visibility === ActivityVisibilityEnum.private ? (
+              <LockIcon sx={{ fontSize: 20 }} />
+            ) : (
+              <LockOpenIcon sx={{ fontSize: 20 }} />
+            )}
+            <Typography
+              variant="h6"
+              align="left"
+              sx={{
+                ml: 0.5,
+              }}
+            >
+              {activity?.visibility}
+            </Typography>
           </Box>
-          
         </Box>
-        <Typography variant="h4" sx={{mt: 3}}>Basic information</Typography>
+        <Typography variant="h4" sx={{ mt: 3 }}>
+          Basic information
+        </Typography>
 
         <ActivityDetailsGrid
           activity={activity}
@@ -485,9 +521,21 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
 
         <ActivityVisibilityDuration
           description={activity?.description}
-          duration={`${durationDays > 0 ? `${durationDays} ${durationDays === 1 ? 'day' : 'days'}` : ""} ${
-            durationHours > 0 ? `${durationHours} ${durationHours === 1 ? 'hour' : 'hours'}` : ""
-          } ${durationMinutes > 0 ? `${durationMinutes} ${durationMinutes === 1 ? 'minute' : 'minutes'}` : ""}`}
+          duration={`${
+            durationDays > 0
+              ? `${durationDays} ${durationDays === 1 ? "day" : "days"}`
+              : ""
+          } ${
+            durationHours > 0
+              ? `${durationHours} ${durationHours === 1 ? "hour" : "hours"}`
+              : ""
+          } ${
+            durationMinutes > 0
+              ? `${durationMinutes} ${
+                  durationMinutes === 1 ? "minute" : "minutes"
+                }`
+              : ""
+          }`}
           createdDateTime={
             activity?.created_at
               ? format(new Date(activity?.created_at), DATE_TIME_FORMAT)
