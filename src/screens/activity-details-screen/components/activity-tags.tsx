@@ -27,6 +27,7 @@ const ActivityTags: React.FC<IProps> = ({ tags, sx }) => {
           key={index}
           sx={{
             p: 2,
+            my: 0.5,
             borderRadius: "10px",
             borderWidth: "2px",
             border: "solid primary",

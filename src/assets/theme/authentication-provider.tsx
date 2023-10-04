@@ -45,8 +45,6 @@ export const AuthenticationProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
-  useServiceInterceptors();
-
   const { enqueueSnackbar } = useSnackbar();
   const [stateToken, setStateToken] = React.useState<null | string>(null);
   const [userInfo, setUserInfo] = React.useState<IPersonExtended | undefined>();
@@ -63,6 +61,8 @@ export const AuthenticationProvider = ({
     }
   }, [userInfo?.id]);
 
+
+  useServiceInterceptors({ setStateToken, setUserInfo});
   React.useEffect(() => {
     if (stateToken) {
       setAuthToken(stateToken);

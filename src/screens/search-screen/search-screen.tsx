@@ -3,31 +3,24 @@ import SearchIcon from "@mui/icons-material/Search";
 import {
   Box,
   CircularProgress,
-  Divider,
   IconButton,
   InputAdornment,
   TextField,
   Typography,
 } from "@mui/material";
+import { LocationContext } from "app/providers/location-provider";
 import React from "react";
-import {
-  URLSearchParamsInit,
-  useLocation,
-  useNavigate,
-  useSearchParams,
-} from "react-router-dom";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { useDebounce } from "use-debounce";
+import { HeaderContext } from "../../app/providers/header-provider";
 import { DrawerContext } from "../../assets/theme/drawer-provider";
 import ActivitySearchCard from "../../components/activity-search-card";
-import BackHeader from "../../components/back-header";
-import OffliButton from "../../components/offli-button";
 import { useActivities } from "../../hooks/use-activities";
 import { IActivityListRestDto } from "../../types/activities/activity-list-rest.dto";
 import { ApplicationLocations } from "../../types/common/applications-locations.dto";
 import FiltersDrawerContent from "./components/filters-drawer-content";
 import { IFiltersDto } from "./types/filters.dto";
-import { HeaderContext } from "../../app/providers/header-provider";
-import { RadioLabelToFilterValue } from "./utils/radio-group-data-definitions";
+import { generateSortValue } from "./utils/generate-sort-value.util";
 
 const SearchScreen = () => {
   const navigate = useNavigate();
@@ -38,10 +31,12 @@ const SearchScreen = () => {
   const [queryStringDebounced] = useDebounce(currentSearch, 250);
   const [filters, setFilters] = React.useState<IFiltersDto | undefined>();
   const { toggleDrawer } = React.useContext(DrawerContext);
+  const { location: userLocation } = React.useContext(LocationContext);
+
   const { setHeaderRightContent, headerRightContent } =
     React.useContext(HeaderContext);
-  const isFirstVisitRender = React.useRef(true);
   const isTag = queryStringDebounced?.includes("tag");
+  const todayFallbackDate = React.useMemo(() => new Date(), []);
 
   const {
     data: { data: { activities = [] } = {} } = {},
@@ -50,9 +45,11 @@ const SearchScreen = () => {
     params: {
       text: isTag ? undefined : queryStringDebounced,
       tag: filters?.tags,
-      datetimeFrom: filters?.date,
+      datetimeFrom: filters?.date ?? todayFallbackDate,
+      lat: userLocation?.coordinates?.lat,
+      lon: userLocation?.coordinates?.lon,
       sort: filters?.filter
-        ? RadioLabelToFilterValue[filters.filter]
+        ? (generateSortValue(filters?.filter) as any)
         : undefined,
     },
   });
@@ -123,63 +120,53 @@ const SearchScreen = () => {
 
   return (
     <>
-      <Box sx={{ px: 1.5, boxSizing: "border-box" }}>
-        <Box
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          width: "100%",
+          position: "fixed",
+          backgroundColor: ({ palette }) => palette?.background?.default,
+        }}
+      >
+        <TextField
           sx={{
-            width: "100%",
+            width: "95%",
             display: "flex",
-            alignItems: "center",
             justifyContent: "center",
-            position: "fixed",
-            bgcolor: "white",
+            my: 1,
+            "& .MuiOutlinedInput-root": {
+              pr: 0,
+            },
+            "& input::placeholder": {
+              fontSize: 14,
+              color: "#4A148C",
+              fontWeight: 500,
+              opacity: 1,
+              pl: 1,
+            },
+            "& fieldset": { border: "none" },
+            backgroundColor: ({ palette }) => palette?.primary?.light,
+            borderRadius: "10px",
           }}
-        >
-          <TextField
-            sx={{
-              width: "100%",
-              display: "flex",
-              justifyContent: "center",
-              my: 1,
-              "& .MuiOutlinedInput-root": {
-                pr: 0,
-              },
-              "& input::placeholder": {
-                fontSize: 14,
-                color: "#4A148C",
-                fontWeight: 500,
-                opacity: 1,
-                pl: 1,
-              },
-              "& fieldset": { border: "none" },
-              backgroundColor: ({ palette }) => palette?.primary?.light,
-              borderRadius: "10px",
-            }}
-            value={currentSearch}
-            placeholder="Search by text in activity"
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon
-                    sx={{ fontSize: "1.4rem", color: "primary.main" }}
-                  />
-                </InputAdornment>
-              ),
-            }}
-            onChange={(e) => setCurrentSearch(e.target.value)}
-            data-testid="search-activities-input"
-          />
-
-          <OffliButton
-            variant="text"
-            size="small"
-            sx={{ fontSize: 14, mr: 2 }}
-            onClick={() => navigate(ApplicationLocations.ACTIVITIES)}
-            data-testid="cancel-search-btn"
-          >
-            Cancel
-          </OffliButton>
-        </Box>
-        <Box sx={{ p: 5 }}></Box>
+          value={currentSearch}
+          placeholder="Search by text in activity"
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <SearchIcon
+                  sx={{ fontSize: "1.4rem", color: "primary.main" }}
+                />
+              </InputAdornment>
+            ),
+          }}
+          onChange={(e) => setCurrentSearch(e.target.value)}
+          data-testid="search-activities-input"
+        />
+      </Box>
+      <Box sx={{ ml: 1.5, boxSizing: "border-box" }}>
+        <Box sx={{ p: 4 }}></Box>
         {areActivitiesLoading ? (
           <Box sx={{ display: "flex", justifyContent: "center" }}>
             <CircularProgress color="primary" />

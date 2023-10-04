@@ -1,9 +1,9 @@
 import { yupResolver } from "@hookform/resolvers/yup";
 import AddIcon from "@mui/icons-material/Add";
+import InstagramIcon from "@mui/icons-material/Instagram";
 import {
   Autocomplete,
   Box,
-  Modal,
   TextField,
   Typography,
   useTheme,
@@ -11,9 +11,9 @@ import {
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import FileUploadModal from "components/file-upload/components/file-upload-modal";
 import { useSnackbar } from "notistack";
 import React, { useEffect } from "react";
-import Cropper from "react-easy-crop";
 import { Controller, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { useDebounce } from "use-debounce";
@@ -22,26 +22,22 @@ import {
   getLocationFromQueryFetch,
   uploadFile,
 } from "../../api/activities/requests";
-import { updateProfileInfo } from "../../api/users/requests";
+import { unlinkInstagram, updateProfileInfo } from "../../api/users/requests";
 import userPlaceholder from "../../assets/img/user-placeholder.svg";
 import { AuthenticationContext } from "../../assets/theme/authentication-provider";
 import { DrawerContext } from "../../assets/theme/drawer-provider";
 import OffliButton from "../../components/offli-button";
 import { PageWrapper } from "../../components/page-wrapper";
+import { useGetApiUrl } from "../../hooks/use-get-api-url";
 import { useUser } from "../../hooks/use-user";
 import { ILocation } from "../../types/activities/location.dto";
 import { ApplicationLocations } from "../../types/common/applications-locations.dto";
-import {
-  ALLOWED_PHOTO_EXTENSIONS,
-  MAX_FILE_SIZE,
-} from "../../utils/common-constants";
+import { ALLOWED_PHOTO_EXTENSIONS } from "../../utils/common-constants";
 import { mapExternalApiOptions } from "../../utils/map-location-value.util";
-import getCroppedImg from "../create-activity-screen/utils/crop-utils";
 import ProfilePhotoActions, {
   ProfilePhotoActionsEnum,
 } from "./components/profile-photo-actions";
 import { getMatchingProperties } from "./utils/get-matching-properties.util";
-import { useGetApiUrl } from "../../hooks/use-get-api-url";
 
 export interface IEditProfile {
   username?: string;
@@ -83,10 +79,6 @@ const EditProfileScreen: React.FC = () => {
   const { toggleDrawer } = React.useContext(DrawerContext);
   const hiddenFileInput = React.useRef<HTMLInputElement | null>(null);
   const [localImageFile, setLocalImageFile] = React.useState<any>();
-  const [crop, setCrop] = React.useState({ x: 0, y: 0 });
-  const [zoom, setZoom] = React.useState(1);
-  const [croppedAreaPixels, setCroppedAreaPixels] = React.useState(null);
-  const [croppedImage, setCroppedImage] = React.useState<any>(null);
   const baseUrl = useGetApiUrl();
 
   const { mutate: sendUpdateProfile, isLoading: isSubmitting } = useMutation(
@@ -98,13 +90,6 @@ const EditProfileScreen: React.FC = () => {
       }),
     {
       onSuccess: (data, variables) => {
-        //TODO what to invalidate, and where to navigate after success
-        // queryClient.invalidateQueries(['notifications'])
-        // navigateBasedOnType(
-        //   variables?.type,
-        //   variables?.properties?.user?.id ?? variables?.properties?.activity?.id
-        // )
-        //close drawer mby from upload pictures
         toggleDrawer({
           open: false,
           content: undefined,
@@ -113,7 +98,7 @@ const EditProfileScreen: React.FC = () => {
         enqueueSnackbar("Your personal information was successfully updated", {
           variant: "success",
         });
-        navigate(ApplicationLocations.PROFILE);
+        // navigate(ApplicationLocations.PROFILE);
       },
       onError: () => {
         enqueueSnackbar("Failed to update your personal info", {
@@ -165,14 +150,10 @@ const EditProfileScreen: React.FC = () => {
     (formData?: FormData) => uploadFile(formData),
     {
       onSuccess: (data) => {
-        // Dont display 2 snackbars (1 is already displayed when profile is updated)
-        // enqueueSnackbar("Your profile photo has been successfully uploaded", {
-        //   variant: "success",
-        // });
         setLocalImageFile(null);
-        //TODO construct server url
         sendUpdateProfile({ profile_photo: data?.data?.filename });
         queryClient.invalidateQueries(["user"]);
+        navigate(ApplicationLocations.PROFILE);
       },
       onError: (error) => {
         enqueueSnackbar("Failed to upload profile photo", {
@@ -181,6 +162,26 @@ const EditProfileScreen: React.FC = () => {
       },
     }
   );
+
+  const { isLoading: isUnlinkingInstagram, mutate: sendUnlinkInstagram } =
+    useMutation(
+      ["instagram-unlink"],
+      () => unlinkInstagram(Number(userInfo?.id)),
+      {
+        onSuccess: () => {
+          enqueueSnackbar(
+            "Your instagram account has been successfully unlinked",
+            { variant: "success" }
+          );
+          queryClient.invalidateQueries(["user"]);
+        },
+        onError: () => {
+          enqueueSnackbar("Failed unlinking your instagram account", {
+            variant: "error",
+          });
+        },
+      }
+    );
 
   useEffect(() => {
     // alebo setValue ak bude resetu kurovat
@@ -230,10 +231,6 @@ const EditProfileScreen: React.FC = () => {
       if (!file) {
         return;
       }
-      if (file.size > MAX_FILE_SIZE) {
-        enqueueSnackbar("File is too large", { variant: "error" });
-        return;
-      }
 
       // check file format
       const fileExtension = file.name.split(".").pop();
@@ -246,100 +243,16 @@ const EditProfileScreen: React.FC = () => {
     []
   );
 
-  const handleCloseModal = React.useCallback(() => {
-    setLocalImageFile(null);
-  }, []);
-
-  const onCropComplete = React.useCallback(
-    (croppedArea: any, croppedAreaPixels: any) => {
-      setCroppedAreaPixels(croppedAreaPixels);
-    },
-    []
-  );
-
-  const submitCroppedPhoto = React.useCallback(async () => {
-    try {
-      const croppedImage: any = await getCroppedImg(
-        localImageFile,
-        croppedAreaPixels
-      );
-      if (!!croppedImage) {
-        const formData = new FormData();
-        // we now only have string from createObjectURL, now we need to resolve it
-        // Creates a 'blob:nodedata:...' URL string that represents the given <Blob> object and can be used to retrieve the Blob later.
-        let blobImage = await fetch(croppedImage).then((r) => r.blob());
-        formData.append("file", blobImage, "Idk.jpg");
-        sendUploadProfilePhoto(formData);
-      }
-    } catch (e) {
-      console.error(e);
-    }
-  }, [croppedAreaPixels]);
-
   return (
     <>
       <PageWrapper>
-        <Modal
-          aria-labelledby="modal-title"
-          aria-describedby="modal-description"
-          open={!!localImageFile}
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            backdropFilter: "blur(4px)", // Add backdrop filter to blur the background
-            // zIndex: theme.zIndex.modal + 1,
-          }}
-          onClose={handleCloseModal}
-        >
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
-              // backgroundColor: (theme) => theme.palette.background.paper,
-              // boxShadow: (theme) => theme.shadows[5],
-              outline: "none",
-              width: "90%",
-            }}
-          >
-            <Box
-              sx={{
-                position: "relative",
-                height: 400,
-                width: "90%",
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-              }}
-            >
-              <Box sx={{ position: "relative", height: 350, width: "100%" }}>
-                <Cropper
-                  image={localImageFile}
-                  crop={crop}
-                  zoom={zoom}
-                  aspect={3 / 3}
-                  onCropChange={setCrop}
-                  onCropComplete={onCropComplete}
-                  onZoomChange={setZoom}
-                  style={{
-                    containerStyle: {
-                      color: "transparent",
-                    },
-                  }}
-                  cropShape="round"
-                />
-              </Box>
-              <OffliButton
-                sx={{ mt: 4, width: "80%" }}
-                onClick={submitCroppedPhoto}
-              >
-                Crop
-              </OffliButton>
-            </Box>
-          </Box>
-        </Modal>
+        <FileUploadModal
+          uploadFunction={(formData) => sendUploadProfilePhoto(formData)}
+          localFile={localImageFile}
+          onClose={() => setLocalImageFile(null)}
+          aspectRatio={1}
+          cropShape="round"
+        />
         <Box
           sx={{
             // mt: (HEADER_HEIGHT + 16) / 12,
@@ -556,32 +469,32 @@ const EditProfileScreen: React.FC = () => {
                   )}
                 />
               </LocalizationProvider>
-              {/* <Controller
-                name="instagram"
-                control={control}
-                render={({ field, fieldState: { error } }) => (
-                  <>
-                    <Typography
-                      sx={{ fontWeight: "bold", color: palette?.text?.primary }}
-                    >
-                      Instagram
-                    </Typography>
-                    <TextField
-                      {...field}
-                      error={!!error}
-                      helperText={error?.message}
-                      sx={{ width: "100%", my: 1.5 }}
-                      data-testid="instagram-username-input"
-                      // label="Instagram"
-                    />
-                  </>
-                )}
-              /> */}
+              {!!data?.instagram ? (
+                <Box
+                  sx={{
+                    display: "flex",
+                    width: "100%",
+                    justifyContent: "center",
+                  }}
+                >
+                  <OffliButton
+                    onClick={() => sendUnlinkInstagram()}
+                    size="small"
+                    variant="outlined"
+                    sx={{ fontSize: 16, mt: 1, width: "55%" }}
+                    startIcon={<InstagramIcon sx={{ color: "inherit" }} />}
+                    isLoading={isUnlinkingInstagram}
+                  >
+                    Unlink Instagram
+                  </OffliButton>
+                </Box>
+              ) : null}
             </Box>
             <OffliButton
               type="submit"
-              sx={{ mt: 3, mb: 2, width: "50%" }}
+              sx={{ mt: 4, mb: 2, width: "65%" }}
               isLoading={isSubmitting}
+              disabled={isUnlinkingInstagram}
               data-testid="submit-btn"
             >
               Save

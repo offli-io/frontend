@@ -9,8 +9,11 @@ import OffliButton from "../components/offli-button";
 
 import backgroundImage from "../assets/img/undraw_real_life_blue.svg";
 import { PageWrapper } from "../components/page-wrapper";
+import { ApplicationLocations } from "types/common/applications-locations.dto";
+import { useNavigate } from "react-router-dom";
 
 const LoginOrRegisterScreen = () => {
+  const navigate = useNavigate();
   return (
     <Box
       sx={{
@@ -30,10 +33,10 @@ const LoginOrRegisterScreen = () => {
         alt="Background"
         style={{ height: "25%", marginBottom: "30%" }}
       />
-      <OffliButton to="/login" sx={{ width: "80%", mb: 1 }}>
+      <OffliButton onClick={() => navigate(ApplicationLocations.LOGIN)} sx={{ width: "80%", mb: 1 }}>
         Login
       </OffliButton>
-      <OffliButton to="/register" variant="text" sx={{ width: "80%", mb: 3 }}>
+      <OffliButton onClick={() => navigate(ApplicationLocations.REGISTER)} variant="text" sx={{ width: "80%", mb: 3 }}>
         Register
       </OffliButton>
     </Box>

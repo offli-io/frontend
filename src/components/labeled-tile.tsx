@@ -32,12 +32,12 @@ const LabeledTile: React.FC<ILabeledTileProps> = ({
       sx={{
         backgroundColor: "transparent",
         position: "relative",
-        width: 135,
-        height: 100,
-        borderRadius: 2,
+        width: 150,
+        height: 115,
+        borderRadius: 3,
         ...(selected
           ? { border: (theme) => `2px solid ${theme.palette.primary.main}` }
-          : { border: "2px solid transparent" }),
+          : { border: (theme) => `2px solid ${theme.palette.primary.light}` }),
         ...sx,
       }}
     >
@@ -52,23 +52,21 @@ const LabeledTile: React.FC<ILabeledTileProps> = ({
           src={imageUrl ?? logo}
           style={{
             width: "100%",
-            height: 100,
+            height: 115,
             maxWidth: "100%",
             position: "absolute",
             left: 0,
             top: 0,
-            opacity: selected ? 0.8 : 0.6,
+            opacity: selected ? 0.9 : 0.5,
             objectFit: "contain",
           }}
         ></img>
-        <Box sx={{ position: "absolute", bottom: 10, left: 0, width: "60%" }}>
+        <Box sx={{ position: "absolute", bottom: 10, left: 10, width: "60%", textAlign: "start" }}>
           <Typography
             sx={{
               color: "primary.main",
-              fontSize: 14,
+              fontSize: 16,
               fontWeight: "bold",
-              textShadow: ({ palette }) =>
-                `2px 2px 2px ${palette?.primary?.light}`,
             }}
           >
             {title}

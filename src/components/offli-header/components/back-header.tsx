@@ -59,6 +59,9 @@ const BackHeader: React.FC<IBackHeaderProps> = ({
     if (location.startsWith(ApplicationLocations.ACTIVITY_DETAIL)) {
       return navigate(ApplicationLocations.ACTIVITIES);
     }
+    if (location.startsWith(ApplicationLocations.BUDDIES)) {
+      return navigate(ApplicationLocations.PROFILE);
+    }
     //idk if this state passing is ok
     // I dont want to always loop between 2 back routes
     navigate(to, {

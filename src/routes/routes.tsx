@@ -32,6 +32,7 @@ import { IActivityListRestDto } from "../types/activities/activity-list-rest.dto
 import { IActivityRestDto } from "../types/activities/activity-rest.dto";
 import EditActivityScreen from "../screens/edit-activity-screen/edit-activity-screen";
 import { ApplicationLocations } from "../types/common/applications-locations.dto";
+import LoginOrRegisterScreen from "screens/login-or-register";
 
 const Routes = () => {
   return (
@@ -42,6 +43,10 @@ const Routes = () => {
       <Route
         path={ApplicationLocations.FORGOTTEN_PASSWORD}
         element={<ForgottenPasswordScreen />}
+      />
+      <Route
+        path={ApplicationLocations.LOGIN_OR_REGISTER}
+        element={<LoginOrRegisterScreen />}
       />
       <Route
         path={ApplicationLocations.AUTHENTICATION_METHOD}
@@ -78,10 +83,7 @@ const Routes = () => {
           path={`${ApplicationLocations.PROFILE}/request/:id`}
           element={<ProfileScreen type={ProfileEntryTypeEnum.REQUEST} />}
         />
-        <Route
-          path={`${ApplicationLocations.PROFILE}/buddy/:id`}
-          element={<ProfileScreen type={ProfileEntryTypeEnum.BUDDY} />}
-        />
+
         <Route
           path={`${ApplicationLocations.PROFILE}/user/:id`}
           element={<ProfileScreen type={ProfileEntryTypeEnum.USER_PROFILE} />}

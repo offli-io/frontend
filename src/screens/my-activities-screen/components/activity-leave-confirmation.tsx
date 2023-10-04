@@ -9,12 +9,14 @@ export interface IActivityActionsProps {
   onLeaveConfirm?: (activityId?: number) => void;
   onLeaveCancel?: (activityId?: number) => void;
   activityId?: number;
+  isLeaving?: boolean;
 }
 
 const ActivityLeaveConfirmation: React.FC<IActivityActionsProps> = ({
   onLeaveConfirm,
   onLeaveCancel,
   activityId,
+  isLeaving,
 }) => {
   //TODO if no activity display nothing
   const baseUrl = useGetApiUrl();
@@ -77,12 +79,14 @@ const ActivityLeaveConfirmation: React.FC<IActivityActionsProps> = ({
           sx={{ width: "40%", fontSize: 16 }}
           variant="outlined"
           onClick={() => onLeaveCancel?.(data?.data?.activity?.id)}
+          disabled={isLeaving}
         >
           Cancel
         </OffliButton>
         <OffliButton
           sx={{ width: "40%", fontSize: 16 }}
           onClick={() => onLeaveConfirm?.(data?.data?.activity?.id)}
+          isLoading={isLeaving}
         >
           Leave
         </OffliButton>

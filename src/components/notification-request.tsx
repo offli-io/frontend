@@ -5,6 +5,7 @@ import userPlaceholder from "../assets/img/user-placeholder.svg";
 import { useGetApiUrl } from "../hooks/use-get-api-url";
 import { NotificationTypeEnum } from "../types/notifications/notification-type-enum";
 import { INotificationDto } from "../types/notifications/notification.dto";
+import SanitizedText from "./sanitized-text/sanitized-text";
 
 interface INotificationRequestProps {
   notification: INotificationDto;
@@ -19,6 +20,17 @@ const NotificationRequest: React.FC<INotificationRequestProps> = ({
   const baseUrl = useGetApiUrl();
 
   const roundDaysIfNecessarry = React.useCallback((hours: number) => {
+    if (hours === 1) return `${hours} hour`;
+    if (hours > 24 && hours < 48) return `${Math.floor(hours / 24)} day`;
+
+    if (hours >= 168 && hours < 332) {
+      return "1 week";
+    }
+
+    if (hours >= 332) {
+      return "2 weeks";
+    }
+
     return hours > 24 ? `${Math.floor(hours / 24)} days` : `${hours} hours`;
   }, []);
 
@@ -33,15 +45,25 @@ const NotificationRequest: React.FC<INotificationRequestProps> = ({
     return undefined;
   }, [notification?.timestamp]);
 
+  const generateNotificationType = React.useCallback(() => {
+    if (notification?.type === NotificationTypeEnum.BUDDY_REQ) {
+      return `Buddy request`;
+    }
+    if (notification?.type === NotificationTypeEnum.ACTIVITY_REQ) {
+      return `Activity invite`;
+    }
+    return "";
+  }, [notification]);
+
   // console.log(
   //   format(new Date(`${notification?.timestamp}` * 1000), DATE_TIME_FORMAT)
   // );
   const generateNotificationMessage = React.useCallback(() => {
     if (notification?.type === NotificationTypeEnum.BUDDY_REQ) {
-      return `${notification?.properties?.user?.username} sent you request to become buddies`;
+      return `${notification?.properties?.user?.username} wants to become buddies`;
     }
     if (notification?.type === NotificationTypeEnum.ACTIVITY_REQ) {
-      return `${notification?.properties?.user?.username} invited you to join activity`;
+      return `${notification?.properties?.user?.username} invited you to join <br><em>${notification?.properties?.activity?.title}</em>`;
     }
     return "";
   }, [notification]);
@@ -64,8 +86,11 @@ const NotificationRequest: React.FC<INotificationRequestProps> = ({
           sx={{
             width: "100%",
             display: "grid",
-            gridTemplateColumns: "4fr 1fr",
+            gridTemplateColumns: "5fr 1fr",
+            gap: 2,
             alignItems: "center",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
           }}
         >
           <Box sx={{ display: "flex", alignItems: "center" }}>
@@ -83,7 +108,7 @@ const NotificationRequest: React.FC<INotificationRequestProps> = ({
 
             <img
               style={{
-                height: 35,
+                height: 45,
                 borderRadius: "50%",
                 // border: `2px solid ${palette?.primary?.main}`,
                 boxShadow: shadows[5],
@@ -95,32 +120,50 @@ const NotificationRequest: React.FC<INotificationRequestProps> = ({
               }
               alt="profile"
             />
-
-            <Typography
-              sx={{
-                ml: 2,
-                color: "black",
-                fontWeight: notification?.seen ? "normal" : "bold",
-              }}
-              variant="subtitle1"
-            >
-              {generateNotificationMessage()}
-            </Typography>
+            <Box sx={{ display: "flex", flexDirection: "column" }}>
+              <Typography
+                sx={{
+                  fontWeight: notification?.seen ? "normal" : "bold",
+                  fontSize: "h5",
+                  ml: 2,
+                }}
+              >
+                {generateNotificationType()}
+              </Typography>
+              <Typography
+                sx={{
+                  ml: 2,
+                  color: "black",
+                  overflowWrap: "anywhere",
+                  fontWeight: notification?.seen ? "normal" : "bold",
+                }}
+                variant="subtitle1"
+              >
+                <SanitizedText
+                  style={{
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap",
+                    maxWidth: 200,
+                  }}
+                  text={generateNotificationMessage()}
+                />
+              </Typography>
+            </Box>
           </Box>
           <Typography
             sx={{
-              ml: 2,
+              // ml: 2,
               color: (theme) => theme.palette.inactiveFont.main,
               fontSize: "0.8rem",
-              textAlign: "end",
+              textAlign: "center",
+              minWidth: 60,
             }}
           >
             {hourDifference()}
           </Typography>
-          {/* </Box> */}
         </Box>
       </Box>
-      <Divider sx={{ width: "100%" }} />
     </>
   );
 };

@@ -1,38 +1,30 @@
-import { Box, CircularProgress, TextField, Typography } from "@mui/material";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { Box, TextField, Typography } from "@mui/material";
+import { useMutation } from "@tanstack/react-query";
+import Loader from "components/loader";
+import { useBuddies } from "hooks/use-buddies";
 import { useSnackbar } from "notistack";
 import React from "react";
-import { UseFormReturn } from "react-hook-form";
 import { useDebounce } from "use-debounce";
 import {
-  getBuddies,
   inviteBuddyToActivity,
   uninviteBuddy,
 } from "../../../api/activities/requests";
 import { AuthenticationContext } from "../../../assets/theme/authentication-provider";
 import BuddyItemInvite from "../../../components/buddy-item-invite";
-import OffliButton from "../../../components/offli-button";
 import { ActivityInviteStateEnum } from "../../../types/activities/activity-invite-state-enum.dto";
 import { IPerson } from "../../../types/activities/activity.dto";
-import { ICreateActivityRequestDto } from "../../../types/activities/create-activity-request.dto";
-import { useBuddies } from "hooks/use-buddies";
 
 interface IActivityTypeFormProps {
-  onNextClicked: () => void;
-  methods: UseFormReturn;
+  activityId?: number;
 }
 
-export const ActivityInviteForm: React.FC<IActivityTypeFormProps> = ({
-  onNextClicked,
+export const ActivityInviteDrawerContent: React.FC<IActivityTypeFormProps> = ({
+  activityId,
 }) => {
   const { userInfo } = React.useContext(AuthenticationContext);
   const [invitedBuddies, setInvitedBuddies] = React.useState<number[]>([]);
   const { enqueueSnackbar } = useSnackbar();
-  const queryClient = useQueryClient();
-
-  const activityId = queryClient.getQueryData<ICreateActivityRequestDto>([
-    "created-activity-data",
-  ]);
+  //   const { id: activityId } = useParams();
   const [queryString, setQueryString] = React.useState<string | undefined>();
   const [queryStringDebounced] = useDebounce(queryString, 1000);
 
@@ -43,7 +35,7 @@ export const ActivityInviteForm: React.FC<IActivityTypeFormProps> = ({
   const { mutate: sendInviteBuddy, isLoading: isInviting } = useMutation(
     ["invite-participant"],
     (buddy?: IPerson) =>
-      inviteBuddyToActivity(Number(activityId?.id), Number(buddy?.id), {
+      inviteBuddyToActivity(Number(activityId), Number(buddy?.id), {
         status: ActivityInviteStateEnum.INVITED,
         invited_by_id: Number(userInfo?.id),
       }),
@@ -59,8 +51,7 @@ export const ActivityInviteForm: React.FC<IActivityTypeFormProps> = ({
 
   const { mutate: sendUninviteBuddy, isLoading: isUninviting } = useMutation(
     ["uninvite-person"],
-    (buddyId?: number) =>
-      uninviteBuddy(Number(activityId?.id), Number(buddyId)),
+    (buddyId?: number) => uninviteBuddy(Number(activityId), Number(buddyId)),
     {
       onSuccess: (data, buddyId) => {
         const _buddies = invitedBuddies?.filter((buddy) => buddy !== buddyId);
@@ -87,7 +78,7 @@ export const ActivityInviteForm: React.FC<IActivityTypeFormProps> = ({
   );
 
   return (
-    <>
+    <Box sx={{ height: 450, overflow: "auto", px: 1.5 }}>
       <Box sx={{ display: "flex", mb: 3, mt: 2 }}>
         <Typography sx={{ fontWeight: "bold" }} variant="h4">
           Send invites to your buddies
@@ -109,7 +100,7 @@ export const ActivityInviteForm: React.FC<IActivityTypeFormProps> = ({
           placeholder="Type buddy username"
           data-testid="activity-invite-buddies-input"
         />
-        {buddies && buddies?.length < 1 ? (
+        {buddies && buddies?.length < 1 && !isLoading ? (
           <Box
             sx={{
               height: 100,
@@ -129,7 +120,7 @@ export const ActivityInviteForm: React.FC<IActivityTypeFormProps> = ({
         ) : (
           <Box
             sx={{
-              height: 300,
+              //   height: 300,
               width: "100%",
               overflowY: "auto",
               overflowX: "hidden",
@@ -139,9 +130,7 @@ export const ActivityInviteForm: React.FC<IActivityTypeFormProps> = ({
             }}
           >
             {isLoading ? (
-              <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
-                <CircularProgress color="primary" />
-              </Box>
+              <Loader />
             ) : (
               buddies?.map((buddy) => (
                 <BuddyItemInvite
@@ -156,16 +145,6 @@ export const ActivityInviteForm: React.FC<IActivityTypeFormProps> = ({
           </Box>
         )}
       </Box>
-
-      <Box sx={{ width: "100%", display: "flex", justifyContent: "flex-end" }}>
-        <OffliButton
-          onClick={onNextClicked}
-          sx={{ width: "40%" }}
-          data-testid="skip-btn"
-        >
-          Skip
-        </OffliButton>
-      </Box>
-    </>
+    </Box>
   );
 };

@@ -1,10 +1,12 @@
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Box, useTheme } from "@mui/material";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { add, setHours, setMinutes } from "date-fns";
 import { useSnackbar } from "notistack";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import { ActivityDurationTypeEnumDto } from "types/activities/activity-duration-type-enum.dto";
 import * as yup from "yup";
 import { createActivity } from "../../api/activities/requests";
 import { AuthenticationContext } from "../../assets/theme/authentication-provider";
@@ -17,14 +19,11 @@ import { ILocation } from "../../types/activities/location.dto";
 import { ApplicationLocations } from "../../types/common/applications-locations.dto";
 import ActivityCreatedScreen from "../static-screens/activity-created-screen";
 import { ActivityDetailsForm } from "./components/activity-details-form";
-import { ActivityInviteForm } from "./components/activity-invite-form";
 import { ActivityPhotoForm } from "./components/activity-photo-form";
 import { ActivityTypeForm } from "./components/activity-type-form";
 import { DateTimeForm } from "./components/date-time-form";
 import { NameForm } from "./components/name-form";
 import { PlaceForm } from "./components/place-form";
-import { add, setHours, setMinutes } from "date-fns";
-import { ActivityDurationTypeEnumDto } from "types/activities/activity-duration-type-enum.dto";
 
 export interface FormValues {
   title?: string;
@@ -140,6 +139,10 @@ const CreateActivityScreen = () => {
   const queryClient = useQueryClient();
   const { enqueueSnackbar } = useSnackbar();
   const [activeStep, setActiveStep] = React.useState<number>(0);
+  const [pendingRedirectActivityId, setPendingRedirectActivityId] =
+    React.useState<number | undefined>();
+  const [isMap, toggleMap] = React.useState(false);
+
   const navigate = useNavigate();
   const { userInfo } = React.useContext(AuthenticationContext);
   const { data: { data: userData = {} } = {}, isLoading: isUserDataLoading } =
@@ -166,7 +169,11 @@ const CreateActivityScreen = () => {
 
   const { control, handleSubmit, formState, watch } = methods;
 
-  const { data, mutate, isLoading } = useMutation(
+  const {
+    data,
+    mutate: sendCreateActivity,
+    isLoading,
+  } = useMutation(
     ["create-activity"],
     (formValues: FormValues & { creator_id?: number }) =>
       createActivity(formValues),
@@ -178,6 +185,7 @@ const CreateActivityScreen = () => {
         //TODO query invalidation doesnt work - activities are not refetched!
         queryClient.invalidateQueries({ queryKey: ["activities"] });
         queryClient.invalidateQueries({ queryKey: ["participant-activities"] });
+        setPendingRedirectActivityId(data?.data?.id);
         setActiveStep((activeStep) => activeStep + 1);
       },
       onError: (error) => {
@@ -209,7 +217,7 @@ const CreateActivityScreen = () => {
         [durationType as string]: duration,
       });
 
-      mutate({
+      sendCreateActivity({
         ...restValues,
         datetime_from: dateTimeFrom,
         datetime_until: dateTimeUntil,
@@ -217,7 +225,7 @@ const CreateActivityScreen = () => {
         creator_id: id,
       });
     },
-    [userData, mutate]
+    [userData, sendCreateActivity]
   );
 
   const handleFormError = React.useCallback(
@@ -245,6 +253,8 @@ const CreateActivityScreen = () => {
             onNextClicked={() => setActiveStep((activeStep) => activeStep + 1)}
             onBackClicked={handleBackClicked}
             methods={methods}
+            isMap={isMap}
+            toggleMap={toggleMap}
           />
         );
       case 2:
@@ -281,17 +291,16 @@ const CreateActivityScreen = () => {
       case 6:
         return (
           <ActivityCreatedScreen
-            onDismiss={() => setActiveStep((activeStep) => activeStep + 1)}
-          />
-        );
-      case 7:
-        return (
-          <ActivityInviteForm
-            methods={methods}
-            onNextClicked={() => {
-              navigate(ApplicationLocations.ACTIVITIES);
-              setActiveStep((activeStep) => activeStep + 1);
-            }}
+            onDismiss={() =>
+              navigate(
+                `${ApplicationLocations.ACTIVITY_DETAIL}/${pendingRedirectActivityId}`,
+                {
+                  state: {
+                    openInviteDrawer: true,
+                  },
+                }
+              )
+            }
           />
         );
       default:
@@ -301,7 +310,7 @@ const CreateActivityScreen = () => {
           </Box>
         );
     }
-  }, [activeStep, methods]);
+  }, [activeStep, methods, isMap]);
 
   const getFormLayout = React.useCallback(() => {
     switch (activeStep) {
@@ -337,8 +346,9 @@ const CreateActivityScreen = () => {
       <PageWrapper
         sxOverrides={{
           alignItems: "center",
-          px: 3,
+          px: isMap ? 0 : 3,
           bgcolor: palette.background.default,
+          ...(isMap ? { mt: 0 } : {}),
         }}
       >
         <form
@@ -347,7 +357,7 @@ const CreateActivityScreen = () => {
             alignItems: "flex-start",
             justifyContent: getFormLayout(),
             flexDirection: "column",
-            height: "78vh",
+            height: isMap ? "100vh" : "78vh",
             width: "100%",
             //TODO in the future maybe include navigation height in the PageWrapper component for now pb: 12 is enough
             // paddingBottom: theme.spacing(20),

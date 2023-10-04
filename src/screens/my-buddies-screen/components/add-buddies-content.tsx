@@ -77,8 +77,9 @@ const AddBuddiesContent: React.FC<IAddBuddiesContentProps> = ({ navigate }) => {
       }),
     {
       getNextPageParam: (lastPage, allPages) => {
-        const nextPage: number = allPages?.length + 1;
-        return nextPage;
+        const nextPage: number = allPages?.length;
+        // only return next page when this page has full array (20 items)
+        return lastPage?.length >= 20 ? nextPage : undefined;
       },
     }
   );
@@ -166,50 +167,7 @@ const AddBuddiesContent: React.FC<IAddBuddiesContentProps> = ({ navigate }) => {
     [handleSendBuddyRequest]
   );
 
-  // const handleScroll = React.useCallback(() => {
-  //   if (usersContentDivRef?.current) {
-  //     const { scrollTop, scrollHeight, clientHeight } =
-  //       usersContentDivRef.current;
-
-  //     // scrollheight / 5 to start refetching before I hit the bottom
-  //     if (
-  //       scrollTop + clientHeight >= 0.75 * scrollHeight &&
-  //       !isFetchingNextPage &&
-  //       !isFetching
-  //     ) {
-  //       // This will be triggered after hitting the last element.
-  //       // API call should be made here while implementing pagination.
-  //       // setActiveOffset((activeOffset) => activeOffset + 1);
-  //       // setScrollPosition(scrollHeight);
-  //       usersContentDivRef?.current?.scrollTo(0, scrollHeight - 50);
-  //       // window.scrollTo(0, scrollHeight - 200);
-  //       // setActiveLimit((activeLimit) => activeLimit + 10);
-  //       fetchNextPage();
-  //       console.log("refetch");
-  //     }
-  //   }
-  // }, [
-  //   usersContentDivRef?.current,
-  //   isFetchingNextPage,
-  //   isFetching,
-  //   fetchNextPage,
-  // ]);
-
-  // React.useEffect(() => {
-  //   if (inView && !isFetching && !isFetchingNextPage) {
-  //     console.log(entry);
-  //     fetchNextPage();
-  //   }
-  // }, [inView, entry, isFetching, isFetchingNextPage]);
-
-  // React.useEffect(() => {
-  //   const observer = new IntersectionObserver((entries) => {
-  //     if (entries[0].isIntersecting) {
-  //       fetchNextPage();
-  //     }
-  //   });
-  //   observer.observe(bottom.current);
-  // }, []);
+  console.log(hasNextPage);
 
   return (
     <Box

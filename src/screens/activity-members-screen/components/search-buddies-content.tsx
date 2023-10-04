@@ -119,9 +119,7 @@ const SearchBuddiesContent: React.FC<IAddBuddiesContentProps> = ({
     areBuddiesLoading || areActivityParticipantsLoading || isInviting;
 
   return (
-    <Box
-      sx={{ mx: 1.5, height: 450, position: "relative", overflow: "hidden" }}
-    >
+    <Box sx={{ height: 450, position: "relative", overflow: "hidden" }}>
       <TextField
         sx={{
           width: "100%",
@@ -154,7 +152,7 @@ const SearchBuddiesContent: React.FC<IAddBuddiesContentProps> = ({
         onChange={(e) => setUsername(e.target.value)}
       />
 
-      <Box sx={{ overflowY: "auto", height: "100%" }}>
+      <Box sx={{ overflowY: "auto", height: "100%", px: 1.5 }}>
         {invitableBuddies?.length < 1 && !isLoading ? (
           <Box
             sx={{

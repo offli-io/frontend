@@ -2,6 +2,7 @@ import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import {
   Box,
   CircularProgress,
+  Divider,
   IconButton,
   Typography,
   useTheme,
@@ -56,21 +57,21 @@ export const ActivityTypeForm: React.FC<IActivityTypeFormProps> = ({
           justifyContent: "center",
           alignItems: "center",
           width: "100%",
-          mb: 2,
         }}
       >
-        <Box sx={{ display: "flex" }}>
-          <Typography variant="h2" sx={{ mr: 1, color: "primary.main" }}>
+        <Box sx={{ display: "flex" ,mt: 1, mb: 1}}>
+          <Typography variant="h1" sx={{ mr: 1, color: "primary.main" }}>
             Choose
           </Typography>
-          <Typography variant="h2" sx={{ color: palette.text.primary }}>
+          <Typography variant="h1" sx={{ color: palette.text.primary }}>
             category
           </Typography>
         </Box>
         <Typography variant="subtitle2">
-          You can pick none, or more categories
+          You can pick multiple categories
         </Typography>
       </Box>
+      <Divider sx={{width: "100%", display: "flex", justifyContent: "center", mt: 1}}/>
       <Box
         sx={{
           display: "flex",
@@ -80,6 +81,7 @@ export const ActivityTypeForm: React.FC<IActivityTypeFormProps> = ({
           height: "100%",
           overflow: "scroll",
           pr: 2,
+          
         }}
       >
         {isLoading ? (
@@ -89,7 +91,7 @@ export const ActivityTypeForm: React.FC<IActivityTypeFormProps> = ({
               justifyContent: "center",
               alignItems: "center",
               width: "100%",
-              my: 4,
+              my: 3,
             }}
           >
             <CircularProgress color="primary" />
@@ -102,8 +104,9 @@ export const ActivityTypeForm: React.FC<IActivityTypeFormProps> = ({
               onClick={handleTileClick}
               selected={tags?.includes(tag.title)}
               sx={{
-                width: "42%",
-                mb: 2,
+                width: "45%",
+                mt:1,
+                mb: 1,
               }}
               //TODO construct URL
               imageUrl={`${baseUrl}/predefined/tags/${tag.id}`}
@@ -119,26 +122,29 @@ export const ActivityTypeForm: React.FC<IActivityTypeFormProps> = ({
           </Box>
         )}
       </Box>
-
+      <Divider sx={{width: "100%", display: "flex", justifyContent: "center"}}/>
+      
       <Box
         sx={{
           width: "100%",
           display: "flex",
           justifyContent: "space-between",
-          mt: 2,
+          mt:2
         }}
       >
         <IconButton
           onClick={onBackClicked}
           color="primary"
           data-testid="back-btn"
+          sx={{fontSize: 20}}
         >
-          <ArrowBackIosNewIcon sx={{ color: "inherit" }} />
+          <ArrowBackIosNewIcon sx={{ color: "inherit", mr: 1 }} />
+          Back
         </IconButton>
 
         <OffliButton
           onClick={onNextClicked}
-          sx={{ width: "40%" }}
+          sx={{ width: "40%", height: 50 }}
           data-testid="next-btn"
         >
           Next
