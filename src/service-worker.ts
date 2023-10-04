@@ -81,16 +81,11 @@ self.addEventListener("message", (event) => {
 // Any other custom service worker logic can go here.
 
 self.addEventListener("push", async (event) => {
-  console.log(`Browser Push data: "${event?.data?.text()}"`); // TODO: Remove
-  console.log(
-    `Browser Push data JSON: "${event?.data?.json()?.user?.username}"`
-  ); // TODO: Remove
-
   const name = event?.data?.json()?.user?.username;
   const activityName = event?.data?.json()?.activity?.title ?? null;
 
   // TODO: Deserialize the event data and use it to build the title and options
-  const title = "Offli Browser Puska";
+  const title = "Offli Browser Push";
   const options = {
     body: `${name} ${
       activityName
