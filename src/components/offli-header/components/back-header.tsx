@@ -26,49 +26,55 @@ const BackHeader: React.FC<IBackHeaderProps> = ({
   const { headerRightContent, setHeaderRightContent } =
     React.useContext(HeaderContext);
   const toParsed = to?.split("/");
+
   //why was this done?
   //BIG TODO
   const fromLocation = toParsed && `/${toParsed[toParsed?.length - 1]}`;
 
   const handleBackNavigation = React.useCallback(() => {
-    if (!to) {
-      return;
-    }
-    // edge cases when there is double navigation via header (e.g. BUDDIES -> ADD_BUDDY screens)
-    if (
-      to === ApplicationLocations.ACTIVITY_DETAIL &&
-      location.startsWith(ApplicationLocations.MAP)
-    ) {
-      return navigate(to, {
-        state: {
-          from: ApplicationLocations.ACTIVITIES,
-        },
-      });
-    }
+    return navigate(-1);
 
-    if (
-      to.startsWith(ApplicationLocations.ACTIVITY_MEMBERS) &&
-      location.startsWith(ApplicationLocations.USER_PROFILE)
-    ) {
-      return navigate(to, {
-        state: {
-          from: ApplicationLocations.ACTIVITIES,
-        },
-      });
-    }
-    if (location.startsWith(ApplicationLocations.ACTIVITY_DETAIL)) {
-      return navigate(ApplicationLocations.ACTIVITIES);
-    }
-    if (location.startsWith(ApplicationLocations.BUDDIES)) {
-      return navigate(ApplicationLocations.PROFILE);
-    }
-    //idk if this state passing is ok
-    // I dont want to always loop between 2 back routes
-    navigate(to, {
-      state: {
-        from: location,
-      },
-    });
+    //TODO tried navigate to (-1) and it looks like it is working just fine don't need the code below
+
+    // if (!to) {
+    //   return;
+    // }
+
+    // // edge cases when there is double navigation via header (e.g. BUDDIES -> ADD_BUDDY screens)
+    // if (
+    //   to === ApplicationLocations.ACTIVITY_DETAIL &&
+    //   location.startsWith(ApplicationLocations.MAP)
+    // ) {
+    //   return navigate(to, {
+    //     state: {
+    //       from: ApplicationLocations.ACTIVITIES,
+    //     },
+    //   });
+    // }
+
+    // if (
+    //   to.startsWith(ApplicationLocations.ACTIVITY_MEMBERS) &&
+    //   location.startsWith(ApplicationLocations.USER_PROFILE)
+    // ) {
+    //   return navigate(to, {
+    //     state: {
+    //       from: ApplicationLocations.ACTIVITIES,
+    //     },
+    //   });
+    // }
+    // if (location.startsWith(ApplicationLocations.ACTIVITY_DETAIL)) {
+    //   return navigate(ApplicationLocations.ACTIVITIES);
+    // }
+    // if (location.startsWith(ApplicationLocations.BUDDIES)) {
+    //   return navigate(ApplicationLocations.PROFILE);
+    // }
+    // //idk if this state passing is ok
+    // // I dont want to always loop between 2 back routes
+    // navigate(to, {
+    //   state: {
+    //     from: location,
+    //   },
+    // });
   }, [fromLocation, location, navigate]);
 
   React.useEffect(() => {
@@ -84,7 +90,7 @@ const BackHeader: React.FC<IBackHeaderProps> = ({
         justifyContent: "center",
         alignItems: "center",
         position: "relative",
-        pt: 1,
+        // pt: 1,
         boxSizing: "border-box",
         height: "100%",
       }}
@@ -98,6 +104,8 @@ const BackHeader: React.FC<IBackHeaderProps> = ({
             position: "absolute",
             left: 0,
             textTransform: "none",
+            p: 0,
+            pl: 1,
           }}
         >
           <ArrowBackIosNewIcon sx={{ color: "primary.main" }} />

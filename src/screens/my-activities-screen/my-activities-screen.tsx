@@ -111,16 +111,10 @@ const ActivitiesScreen = () => {
     data: { data: { activities: participantActivites = [] } = {} } = {},
     isLoading: areParticipantActivitiesLoading,
     invalidate: invalidateParticipantActivities,
-  } = useParticipantActivities({ participantId: userInfo?.id });
-  const [scrollPosition, setScrollPosition] = React.useState(0);
-
-  const allActivities = React.useMemo(() => {
-    let activities: IActivity[] = [];
-    paginatedActivitiesData?.pages?.forEach((page) => {
-      activities = [...activities, ...page];
-    });
-    return activities;
-  }, [paginatedActivitiesData]);
+  } = useParticipantActivities({
+    participantId: userInfo?.id,
+    sort: ActivitySortColumnEnum.DATETIME_FROM,
+  });
 
   const { mutate: sendJoinActivity } = useMutation(
     ["join-activity-response"],

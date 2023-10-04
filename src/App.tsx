@@ -1,24 +1,18 @@
 import { Box, Button } from "@mui/material";
-import "./App.css";
-import Router from "./routes/router";
-import React from "react";
-import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
-import { AuthenticationProvider } from "./assets/theme/authentication-provider";
-import { ReactNode } from "react";
-import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import { useServiceInterceptors } from "./hooks/use-service-interceptors";
 import { SnackbarKey, SnackbarProvider } from "notistack";
-import { DrawerProvider } from "./assets/theme/drawer-provider";
-import { CustomizationProvider } from "./assets/theme/customization-provider";
-import { gapi } from "gapi-script";
-import { useGoogleCalendar } from "./hooks/use-google-calendar";
-import axios from "axios";
-import jwt_decode from "jwt-decode";
-import { LocationProvider } from "./app/providers/location-provider";
-import { HeaderProvider } from "./app/providers/header-provider";
+import React from "react";
 import { BrowserRouter } from "react-router-dom";
+import "./App.css";
+import { HeaderProvider } from "./app/providers/header-provider";
+import { LocationProvider } from "./app/providers/location-provider";
+import { AuthenticationProvider } from "./assets/theme/authentication-provider";
+import { CustomizationProvider } from "./assets/theme/customization-provider";
+import { DrawerProvider } from "./assets/theme/drawer-provider";
+import Router from "./routes/router";
 
 const queryClient = new QueryClient({
   defaultOptions: {

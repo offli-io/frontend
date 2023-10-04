@@ -82,27 +82,27 @@ const createCustomizationTheme = (mode: PaletteMode = "light") => {
           h1: {
             fontSize: 28,
             fontWeight: "bold",
-            fontFamily: "Nunito",
+            fontFamily: "Open Sans",
           },
           h2: {
             fontSize: 24,
             fontWeight: "bold",
-            fontFamily: "Nunito",
+            fontFamily: "Open Sans",
           },
           h3: {
             fontSize: 20,
             fontWeight: "bold",
-            fontFamily: "Nunito",
+            fontFamily: "Open Sans",
           },
           h4: {
             fontSize: 20,
             fontWeight: "600",
-            fontFamily: "Nunito",
+            fontFamily: "Open Sans",
           },
           h5: {
             fontSize: 18,
             fontWeight: "bold",
-            fontFamily: "Nunito",
+            fontFamily: "Open Sans",
           },
           h6: {
             fontSize: 16,

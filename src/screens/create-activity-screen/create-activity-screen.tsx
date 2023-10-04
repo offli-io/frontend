@@ -149,6 +149,7 @@ const CreateActivityScreen = () => {
     useUser({
       id: userInfo?.id,
     });
+  const wrapper = React.useRef<HTMLDivElement | null>(null);
 
   const methods = useForm<FormValues>({
     defaultValues: {
@@ -334,12 +335,23 @@ const CreateActivityScreen = () => {
     });
   }, [activeStep]);
 
+  const onBeforeUnload = () => console.log("odchadzas?");
+
+  React.useEffect(() => {
+    if (wrapper?.current) {
+      wrapper?.current?.addEventListener("beforeunload", onBeforeUnload);
+    }
+    return () => {
+      window.removeEventListener("beforeunload", onBeforeUnload);
+    };
+  });
+
   React.useEffect(() => {
     return () => setActiveStep(0);
   }, []);
 
   return (
-    <>
+    <Box ref={wrapper}>
       {activeStep <= 5 && (
         <DotsMobileStepper activeStep={activeStep} containerSx={{ p: 0 }} />
       )}
@@ -367,7 +379,7 @@ const CreateActivityScreen = () => {
           {renderProperContent()}
         </form>
       </PageWrapper>
-    </>
+    </Box>
   );
 };
 
