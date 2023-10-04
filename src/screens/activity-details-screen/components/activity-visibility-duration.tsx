@@ -1,12 +1,8 @@
-import LockIcon from "@mui/icons-material/Lock";
-import LockOpenIcon from "@mui/icons-material/LockOpen";
 import { Box, Typography } from "@mui/material";
 import React from "react";
-import { ActivityVisibilityEnum } from "types/activities/activity-visibility-enum.dto";
 import ActivityTags from "./activity-tags";
 
 interface IProps {
-  visibility?: ActivityVisibilityEnum;
   duration?: string;
   createdDateTime?: string;
   tags: string[];
@@ -14,12 +10,12 @@ interface IProps {
 }
 
 const ActivityVisibilityDuration: React.FC<IProps> = ({
-  visibility,
   duration,
   createdDateTime,
   tags,
   description,
 }) => {
+  console.log(duration)
   return (
     <>
       <Box
@@ -55,22 +51,7 @@ const ActivityVisibilityDuration: React.FC<IProps> = ({
         <Typography variant="h4" align="left">
           Additional description
         </Typography>
-        <Box sx={{ display: "flex", alignItems: "center" }}>
-          {visibility === ActivityVisibilityEnum.private ? (
-            <LockIcon sx={{ fontSize: 20 }} />
-          ) : (
-            <LockOpenIcon sx={{ fontSize: 20 }} />
-          )}
-          <Typography
-            variant="h6"
-            align="left"
-            sx={{
-              ml: 0.5,
-            }}
-          >
-            {visibility}
-          </Typography>
-        </Box>
+        
       </Box>
       <Box sx={{ m: 0.5, wordWrap: "break-word"}}>
       <Typography >{description}</Typography>

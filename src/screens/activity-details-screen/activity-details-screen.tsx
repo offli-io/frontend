@@ -1,5 +1,9 @@
 import MenuIcon from "@mui/icons-material/Menu";
-
+import LockIcon from "@mui/icons-material/Lock";
+import LockOpenIcon from "@mui/icons-material/LockOpen";
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import EmailIcon from '@mui/icons-material/Email';
 import { Box, IconButton, Typography, useTheme } from "@mui/material";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useSnackbar } from "notistack";
@@ -14,16 +18,12 @@ import {
 import { HeaderContext } from "../../app/providers/header-provider";
 import { AuthenticationContext } from "../../assets/theme/authentication-provider";
 import { useGoogleAuthorization } from "../../hooks/use-google-authorization";
-import { useUser } from "../../hooks/use-user";
 import { ActivityInviteStateEnum } from "../../types/activities/activity-invite-state-enum.dto";
 import { IActivityRestDto } from "../../types/activities/activity-rest.dto";
 import { ActivityVisibilityEnum } from "../../types/activities/activity-visibility-enum.dto";
 import { ActivityActionsTypeEnumDto } from "../../types/common/activity-actions-type-enum.dto";
 import { ApplicationLocations } from "../../types/common/applications-locations.dto";
-import { ICustomizedLocationStateDto } from "../../types/common/customized-location-state.dto";
 import { GoogleAuthCodeFromEnumDto } from "../../types/google/google-auth-code-from-enum.dto";
-import ActivityDetailActionMenu from "./components/acitivity-detail-action-menu";
-import ActivityCreatorDuration from "./components/activity-visibility-duration";
 import ActivityDetailsGrid, {
   IGridAction,
 } from "./components/activity-details-grid";
@@ -339,12 +339,57 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
           margin: "auto",
         }}
       >
+        {displayJoinButton ? (
+            <Box sx={{display: "flex", alignItems: "center", justifyContent: "space-evenly", my:2, }}>
+              <OffliButton
+                size="small"
+                sx={{ fontSize: 18, width: "40%", height: 48 }}
+                onClick={() => sendJoinActivity()}
+                isLoading={isJoiningActivity}
+                startIcon={<CheckCircleOutlineIcon sx={{color: "background.default"}}/>}
+              >
+                Join
+              </OffliButton>
+              <OffliButton
+                size="small"
+                disabled={true}
+                sx={{ fontSize: 18, width: "40%", height: 48}}
+                onClick={() => toggleDrawer({
+                  open: true,
+                  content: <ActivityInviteDrawerContent activityId={Number(id)} />,
+                })}
+                startIcon={<EmailIcon sx={{color: "inactiveFont.main"}}/>}
+              >
+                Invite
+              </OffliButton>
+            </Box>
+          ) : (
+            <Box sx={{display: "flex", alignItems: "center", justifyContent: "space-evenly", my:2, }}>
+              <OffliButton
+                size="small"
+                sx={{ fontSize: 18, width: "40%", height: 48, bgcolor: "primary.light", color: "primary.main"}}
+                onClick={() => sendJoinActivity()}
+                isLoading={isJoiningActivity}
+                startIcon={<CheckCircleIcon sx={{color: "primary.main"}}/>}
+              >
+                Joined
+              </OffliButton>
+              <OffliButton
+              size="small"
+              sx={{ fontSize: 18, width: "40%", height: 48,bgcolor: "primary.light", color: "primary.main" }}
+              startIcon={<EmailIcon sx={{color: "primary.main"}}/>}
+            >
+              Invite
+            </OffliButton>
+          </Box>
+        )}
         <Box
           sx={{
             display: "flex",
             alignItems: "center",
-            justifyContent: "space-between",
-            my: 1.5,
+            justifyContent: "space-evenly",
+            my: 2,
+            gap: 18
           }}
         >
           <Box
@@ -407,17 +452,26 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
               {activity?.creator?.username}
             </Typography>
           </Box>
-          {displayJoinButton ? (
-            <OffliButton
-              size="small"
-              sx={{ fontSize: 16, width: "30%" }}
-              onClick={() => sendJoinActivity()}
-              isLoading={isJoiningActivity}
-            >
-              Join
-            </OffliButton>
-          ) : null}
+          <Box sx={{ display: "flex", alignItems: "center" }}>
+          {activity?.visibility === ActivityVisibilityEnum.private ? (
+            <LockIcon sx={{ fontSize: 20 }} />
+          ) : (
+            <LockOpenIcon sx={{ fontSize: 20 }} />
+          )}
+          <Typography
+            variant="h6"
+            align="left"
+            sx={{
+              ml: 0.5,
+            }}
+          >
+            {activity?.visibility}
+          </Typography>
+          </Box>
+          
         </Box>
+        <Typography variant="h4" sx={{mt: 3}}>Basic information</Typography>
+
         <ActivityDetailsGrid
           activity={activity}
           onActionClick={handleGridClick}
@@ -430,11 +484,10 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
         </Box> */}
 
         <ActivityVisibilityDuration
-          visibility={activity?.visibility as ActivityVisibilityEnum}
           description={activity?.description}
-          duration={`${durationDays > 0 ? `${durationDays} days` : ""} ${
-            durationHours > 0 ? `${durationHours} hours` : ""
-          } ${durationMinutes > 0 ? `${durationMinutes} minutes` : ""}`}
+          duration={`${durationDays > 0 ? `${durationDays} ${durationDays === 1 ? 'day' : 'days'}` : ""} ${
+            durationHours > 0 ? `${durationHours} ${durationHours === 1 ? 'hour' : 'hours'}` : ""
+          } ${durationMinutes > 0 ? `${durationMinutes} ${durationMinutes === 1 ? 'minute' : 'minutes'}` : ""}`}
           createdDateTime={
             activity?.created_at
               ? format(new Date(activity?.created_at), DATE_TIME_FORMAT)
