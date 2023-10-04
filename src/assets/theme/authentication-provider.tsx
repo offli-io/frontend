@@ -1,39 +1,10 @@
-import { useMutation } from "@tanstack/react-query";
+import { subscribeBrowserPush } from "api/notifications/requests";
 import axios from "axios";
-import jwt_decode from "jwt-decode";
 import { useSnackbar } from "notistack";
 import React from "react";
-import { useLocation } from "react-router-dom";
-import {
-  loginUser,
-  loginViaGoogle,
-  registerViaGoogle,
-} from "../../api/auth/requests";
 import { useServiceInterceptors } from "../../hooks/use-service-interceptors";
 import { IPersonExtended } from "../../types/activities/activity.dto";
 import { setAuthToken } from "../../utils/token.util";
-
-// const event = {
-//   summary: 'Hello World',
-//   location: '',
-//   start: {
-//     dateTime: '2022-12-28T09:00:00-07:00',
-//     timeZone: 'America/Los_Angeles',
-//   },
-//   end: {
-//     dateTime: '2022-12-28T17:00:00-07:00',
-//     timeZone: 'America/Los_Angeles',
-//   },
-//   // recurrence: ['RRULE:FREQ=DAILY;COUNT=2'],
-//   attendees: [],
-//   reminders: {
-//     useDefault: false,
-//     overrides: [
-//       { method: 'email', minutes: 24 * 60 },
-//       { method: 'popup', minutes: 10 },
-//     ],
-//   },
-// }
 
 interface IAuthenticationContext {
   stateToken: string | null;
@@ -74,7 +45,6 @@ export const AuthenticationProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
-  //one way to authenticate but I think token refresh and handling will be done by keycloak
   const { enqueueSnackbar } = useSnackbar();
   const [stateToken, setStateToken] = React.useState<null | string>(null);
   const [userInfo, setUserInfo] = React.useState<IPersonExtended | undefined>();
@@ -84,48 +54,20 @@ export const AuthenticationProvider = ({
     boolean | undefined
   >(false);
 
-  useServiceInterceptors({ setStateToken, setUserInfo });
+  React.useEffect(() => {
+    if (userInfo?.id) {
+      // TODO: moreover IOS requires some user interaction before subscription
+      subscribeBrowserPush(Number(userInfo));
+    }
+  }, [userInfo?.id]);
 
-  const isLogin = window?.location?.href?.includes("login");
 
-  // const { isLoading, mutate: sendAuthenticateViaGoogle } = useMutation(
-  //   ["google-login"],
-  //   (authorizationCode?: string) => {
-  //     return isLogin
-  //       ? loginViaGoogle({ authorizationCode })
-  //       : registerViaGoogle({ authorizationCode });
-  //   },
-  //   {
-  //     onSuccess: (data, params) => {
-  //       console.log(data?.data);
-  //       // setAuthToken(data?.data?.access_token)
-  //       // setRefreshToken(data?.data?.refresh_token)
-  //       // setStateToken(data?.data?.token?.access_token ?? null);
-  //       // !!setUserInfo && setUserInfo({ username: params?.username });
-  //       // localStorage.setItem("username", params?.username);
-  //       // navigate(ApplicationLocations.ACTIVITIES);
-  //     },
-  //     onError: (error) => {
-  //       enqueueSnackbar("Failed to log in", { variant: "error" });
-  //     },
-  //   }
-  // );
-
-  //another way just to inform with boolean,
-  //const [authenticated, setIsAuthenticated] = React.useState<boolean>(false)
-
+  useServiceInterceptors({ setStateToken, setUserInfo});
   React.useEffect(() => {
     if (stateToken) {
       setAuthToken(stateToken);
     }
   }, [stateToken]);
-
-  // async function handleCredentialResponse(response: any) {
-  //   console.log("Encoded JWT ID token: " + response.credential);
-  //   const decoded: any = jwt_decode(response.credential);
-  //   console.log(decoded);
-  //   sendAuthenticateViaGoogle(response.credential);
-  // }
 
   React.useEffect(() => {
     // if I get instagram code, exchange it for access token
@@ -179,41 +121,6 @@ export const AuthenticationProvider = ({
     }
   }, [instagramCode]);
 
-  React.useEffect(() => {
-    /* global google */
-    // google?.accounts?.id.initialize({
-    //   client_id: CLIENT_ID,
-    //   callback: handleCredentialResponse,
-    // });
-    // google?.accounts?.id.renderButton(
-    //   document.getElementById("signIn") as HTMLElement,
-    //   {
-    //     type: "standard",
-    //     theme: "outline",
-    //     size: "large",
-    //     width: "270px",
-    //   }
-    // );
-    // TODO old way maybe if I can call this with params I can use it later
-    // setGoogleTokenClient(
-    //   google.accounts.oauth2.initTokenClient({
-    //     client_id: CLIENT_ID,
-    //     scope: SCOPE,
-    //     callback: async tokenResponse => {
-    //       console.log(tokenResponse)
-    //       if (tokenResponse && tokenResponse.access_token) {
-    //         //TODO calendarId is logged in user mail,
-    //         const promise = addEventToCalendar(
-    //           'thefaston@gmail.com',
-    //           tokenResponse?.access_token,
-    //           event
-    //         )
-    //         console.log(promise)
-    //       }
-    //     },
-    //   })
-    // )
-  }, []);
   return (
     <AuthenticationContext.Provider
       value={{
