@@ -82,12 +82,21 @@ self.addEventListener("message", (event) => {
 
 self.addEventListener("push", async (event) => {
   console.log(`Browser Push data: "${event?.data?.text()}"`); // TODO: Remove
-  console.log(`Browser Push data JSON: "${event?.data?.json()}"`); // TODO: Remove
+  console.log(
+    `Browser Push data JSON: "${event?.data?.json()?.user?.username}"`
+  ); // TODO: Remove
+
+  const name = event?.data?.json()?.user?.username;
+  const activityName = event?.data?.json()?.activity?.title ?? null;
 
   // TODO: Deserialize the event data and use it to build the title and options
   const title = "Offli Browser Puska";
   const options = {
-    body: event?.data?.json(),
+    body: `${name} ${
+      activityName
+        ? `invited you to join ${activityName}`
+        : "sent you buddy request"
+    }`,
     icon: "https://offli-dev-frontend-jurajpaska8.cloud.okteto.net/logo192.png",
     badge:
       "https://offli-dev-frontend-jurajpaska8.cloud.okteto.net/logo192.png",
