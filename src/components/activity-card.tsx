@@ -154,16 +154,38 @@ const ActivityCard: React.FC<IProps> = ({
               }}
             />
             {activity?.limit ? (
-              <Typography
-                sx={{
-                  fontSize: 16,
-                  // fontWeight: "bold",
-                  lineHeight: 1,
-                  ...(mode === "light" ? { filter: "invert(100%)" } : {}),
-                }}
-              >
-                {activity?.count_confirmed}/{activity?.limit}{" "}
-              </Typography>
+              <Box sx={{ display: "flex", justifyContent: "center" }}>
+                <Typography
+                  sx={{
+                    fontSize: 16,
+                    // fontWeight: "bold",
+                    lineHeight: 1,
+                    ...(mode === "light" ? { filter: "invert(100%)" } : {}),
+                  }}
+                >
+                  {activity?.count_confirmed}/{activity?.limit}{" "}
+                </Typography>
+                {[...(activity?.participants_thumb ?? [])]?.length > 0 ? (
+                  <Box sx={{ position: "relative", display: "flex" }}>
+                    {[...(activity?.participants_thumb ?? [])].map(
+                      (participant, index) => (
+                          <img
+                            src={`${baseUrl}/files/${participant?.profile_photo}`}
+                            alt="profile"
+                            style={{
+                              position: "absolute",
+                              left: 10 * (index + 1),
+                              height: 15,
+                              aspectRatio: 1,
+                              borderRadius: "50%",
+                              zIndex: index + 1,
+                            }}
+                          />
+                      )
+                    )}
+                  </Box>
+                ) : null}
+              </Box>
             ) : (
               <Typography
                 sx={{

@@ -24,10 +24,10 @@ import { useSendBuddyRequest } from "./hooks/use-send-buddy-request";
 import { useToggleBuddyRequest } from "./hooks/use-toggle-buddy-request";
 import { ProfileEntryTypeEnum } from "./types/profile-entry-type";
 import { generateBuddyActionButtonLabel } from "./utils/generate-buddy-action-button-label.util";
-import LastAttendedActivityCard from "components/last-attended-activity-card/last-attended-activity-card";
 import Loader from "components/loader";
 import { useGetLastAttendedActivities } from "./hooks/use-get-last-attended-activities";
 import { ActivitiyParticipantStatusEnum } from "types/activities/activity-participant-status-enum.dto";
+import MyActivityCard from "components/my-activity-card";
 
 interface IProfileScreenProps {
   type: ProfileEntryTypeEnum;
@@ -75,6 +75,7 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
     params: {
       participantId: Number(id),
       participantStatus: ActivitiyParticipantStatusEnum.CONFIRMED,
+      limit: 5,
     },
     enabled: !!id,
   });
@@ -383,13 +384,39 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
             >
               Last attended
             </Typography>
-            {lastAttendedActivties?.map(({ title, title_picture }) => (
-              <LastAttendedActivityCard
-                label={title}
-                imageUrl={title_picture}
-                sx={{ mb: 2 }}
-              />
-            ))}
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                gap: 1.5,
+                overflowX: "scroll",
+                width: "100%",
+                "::-webkit-scrollbar": { display: "none" },
+              }}
+            >
+              {lastAttendedActivties?.map((activity) => {
+                return (
+                  <MyActivityCard
+                    activity={activity}
+                    type="profile"
+                    onPress={() =>
+                      navigate(
+                        `${ApplicationLocations.ACTIVITY_DETAIL}/${activity?.id}`,
+                        {
+                          state: {
+                            from: ApplicationLocations.ACTIVITIES,
+                          },
+                        }
+                      )
+                    }
+                    sx={{
+                      minWidth:
+                        lastAttendedActivties?.length <= 1 ? "100%" : "80%",
+                    }}
+                  />
+                );
+              })}
+            </Box>
           </Box>
         ) : null}
 
