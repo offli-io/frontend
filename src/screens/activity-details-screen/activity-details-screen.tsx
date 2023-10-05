@@ -121,7 +121,6 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
           enqueueSnackbar("You have successfully left the activity", {
             variant: "success",
           });
-          navigate(ApplicationLocations.ACTIVITIES);
           //invalidate queries
           //TODO display success notification?
         },
@@ -143,7 +142,7 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
           enqueueSnackbar("You have successfully joined the activity", {
             variant: "success",
           });
-          // navigate(ApplicationLocations.ACTIVITIES);
+          hideDrawer();
           queryClient.invalidateQueries(["paged-activities"]);
           queryClient.invalidateQueries(["activity", id]);
           queryClient.invalidateQueries(["activity-participants", id]);
@@ -157,24 +156,6 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
         },
       }
     );
-
-  const { mutate: sendLeaveActivity, isLoading: isLeaving } = useMutation(
-    ["leave-activity"],
-    (activityId?: number) =>
-      removePersonFromActivity({ activityId, personId: userInfo?.id }),
-    {
-      onSuccess: (data, activityId) => {
-        // hideDrawer();
-        //TODO add generic jnaming for activites / activity
-        queryClient.invalidateQueries(["activity", activityId]);
-        queryClient.invalidateQueries([ACTIVITIES_QUERY_KEY]);
-        queryClient.invalidateQueries([PAGED_ACTIVITIES_QUERY_KEY]);
-      },
-      onError: () => {
-        enqueueSnackbar("Failed to leave activity", { variant: "error" });
-      },
-    }
-  );
 
   const { mutate: sendAddActivityToCalendar } = useMutation(
     ["add-event-to-calendar"],
@@ -258,7 +239,7 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
           return;
       }
     },
-    [sendJoinActivity, navigate, id, isLeavingActivity]
+    [sendJoinActivity, navigate, id]
   );
 
   const handleActivityActionsCLick = React.useCallback(
@@ -346,7 +327,7 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
     isAlreadyParticipant ? sendLeaveActivity(Number(id)) : sendJoinActivity();
   }, [isAlreadyParticipant]);
 
-  const areActionsLoading = isLeaving || isJoiningActivity;
+  const areActionsLoading = isLeavingActivity || isJoiningActivity;
 
   // const durationMinutes = timeDifference?.durationMinutes;
   // const durationHours = timeDifference?.durationHours;
