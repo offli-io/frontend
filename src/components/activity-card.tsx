@@ -169,7 +169,6 @@ const ActivityCard: React.FC<IProps> = ({
                   <Box sx={{ position: "relative", display: "flex" }}>
                     {[...(activity?.participants_thumb ?? [])].map(
                       (participant, index) => (
-                        <>
                           <img
                             src={`${baseUrl}/files/${participant?.profile_photo}`}
                             alt="profile"
@@ -182,7 +181,6 @@ const ActivityCard: React.FC<IProps> = ({
                               zIndex: index + 1,
                             }}
                           />
-                        </>
                       )
                     )}
                   </Box>
