@@ -1,25 +1,41 @@
 import {
   Autocomplete,
   Box,
+  Checkbox,
+  FormControl,
+  FormControlLabel,
+  FormLabel,
+  IconButton,
+  MenuItem,
+  Switch,
   TextField,
   Typography,
+  useTheme,
 } from "@mui/material";
 import React from "react";
 import PlaceIcon from "@mui/icons-material/Place";
+
+import { Controller, UseFormReturn } from "react-hook-form";
 import OffliButton from "../../../components/offli-button";
 import activityLocation from "../../../assets/img/activity-location.svg";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
+  getLocationFromQuery,
   getLocationFromQueryFetch,
   getPlaceFromCoordinates,
 } from "../../../api/activities/requests";
 import { useDebounce } from "use-debounce";
+import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import {
+  IPlaceExternalApiDto,
   IPlaceExternalApiResultDto,
 } from "../../../types/activities/place-external-api.dto";
 import { ILocation } from "../../../types/activities/location.dto";
 import NearMeIcon from "@mui/icons-material/NearMe";
+import { useCurrentLocation } from "../../../hooks/use-current-location";
 import { useGeolocated } from "react-geolocated";
+import { useNavigate } from "react-router-dom";
+import { ApplicationLocations } from "../../../types/common/applications-locations.dto";
 
 interface IPlaceFormProps {
   onLocationSelect: (location: ILocation) => void;
@@ -115,18 +131,18 @@ export const SetLocationContent: React.FC<IPlaceFormProps> = ({
           display: "flex",
           width: "100%",
           alignItems: "flex-end",
-          justifyContent: "space-between",
+          justifyContent: "center",
           mt: 2,
-          gap: -2
         }}
       >
         <Box
           sx={{
             display: "flex",
             flexDirection: "column",
+            alignItems: "center",
             justifyContent: "center",
-            width: "40%",
-            ml: 5,
+            // pl: 2,
+            width: "50%",
           }}
         >
           <Typography variant="h2" sx={{ color: "primary.main" }}>
@@ -134,10 +150,21 @@ export const SetLocationContent: React.FC<IPlaceFormProps> = ({
           </Typography>
           <Typography variant="h2">location</Typography>
         </Box>
-        <Box sx={{ width: "60%", display: "flex", justifyContent: "center" }}>
-          <img src={activityLocation} style={{ height: 90 }} alt="place-form" />
+        <Box sx={{ width: "50%", display: "flex", justifyContent: "center" }}>
+          <img src={activityLocation} style={{ height: 80 }} alt="place-form" />
         </Box>
       </Box>
+      <OffliButton
+        variant="text"
+        sx={{
+          fontSize: 16,
+          alignContent: "center",
+          mt: 2,
+        }}
+        startIcon={<PlaceIcon />}
+      >
+        {externalLocation?.name ?? "No location found"}
+      </OffliButton>
       <Box
         sx={{
           display: "flex",
@@ -157,7 +184,6 @@ export const SetLocationContent: React.FC<IPlaceFormProps> = ({
             width: "100%",
             display: "flex",
             justifyContent: "center",
-            alignItems: "center"
           }}
           loading={isLoading}
           onChange={
@@ -176,25 +202,14 @@ export const SetLocationContent: React.FC<IPlaceFormProps> = ({
           renderInput={(params) => (
             <TextField
               {...params}
-              placeholder={externalLocation?.name ?? "Search places"}
+              label="Search place"
               onChange={(e) => setPlaceQuery(e.target.value)}
-              sx={{
-                "& input::placeholder": {
-                  fontSize: 14,
-                  color: "primary.main",
-                  opacity: 1,
-                  pl:1,
-                },
-                "& fieldset": { border: "none" },
-                backgroundColor: ({ palette }) => palette?.primary?.light,
-                borderRadius: "10px",
-              }}
             />
           )}
         />
         <OffliButton
-          startIcon={<NearMeIcon sx={{color: "background.default"}}/>}
-          sx={{ width: "80%", my: 4, fontSize: 16, height: 48 }}
+          startIcon={<NearMeIcon />}
+          sx={{ width: "90%", my: 4, fontSize: 16 }}
           onClick={handleUseCurrentLocation}
           disabled={!coords}
         >
