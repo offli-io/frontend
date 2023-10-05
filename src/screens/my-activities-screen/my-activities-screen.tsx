@@ -150,7 +150,7 @@ const ActivitiesScreen = () => {
   }, [toggleDrawer]);
 
   const { mutate: sendLeaveActivity } = useMutation(
-    ["leave-activity-response"],
+    ["leave-activity"],
     (activityId?: number) =>
       removePersonFromActivity({ activityId, personId: userInfo?.id }),
     {
