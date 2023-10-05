@@ -37,7 +37,10 @@ import {
   ACTIVITIES_QUERY_KEY,
   PAGED_ACTIVITIES_QUERY_KEY,
 } from "../../hooks/use-activities";
-import { useParticipantActivities } from "../../hooks/use-participant-activities";
+import {
+  PARTICIPANT_ACTIVITIES_QUERY_KEY,
+  useParticipantActivities,
+} from "../../hooks/use-participant-activities";
 import { useUser } from "../../hooks/use-user";
 import { ActivityInviteStateEnum } from "../../types/activities/activity-invite-state-enum.dto";
 import { IActivity } from "../../types/activities/activity.dto";
@@ -105,13 +108,11 @@ const ActivitiesScreen = () => {
   );
 
   const {
-    data: { data = {} } = {},
+    data: { data: { activities: participantActivites = [] } = {} } = {},
     isLoading: areParticipantActivitiesLoading,
     invalidate: invalidateParticipantActivities,
   } = useParticipantActivities({ participantId: userInfo?.id });
   const [scrollPosition, setScrollPosition] = React.useState(0);
-
-  const participantActivites = data?.activities ?? [];
 
   const allActivities = React.useMemo(() => {
     let activities: IActivity[] = [];
@@ -165,6 +166,7 @@ const ActivitiesScreen = () => {
         queryClient.invalidateQueries(["activity", activityId]);
         queryClient.invalidateQueries([ACTIVITIES_QUERY_KEY]);
         queryClient.invalidateQueries([PAGED_ACTIVITIES_QUERY_KEY]);
+        queryClient.invalidateQueries([PARTICIPANT_ACTIVITIES_QUERY_KEY]);
 
         //invalidate queries
         //TODO display success notification?

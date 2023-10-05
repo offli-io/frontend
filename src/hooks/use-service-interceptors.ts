@@ -1,35 +1,36 @@
-import { useMutation } from "@tanstack/react-query";
-import qs from "qs";
-import React from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import axios, { AxiosError } from "axios";
-import { getAuthToken, getRefreshToken } from "../utils/token.util";
+import React from "react";
+import { useNavigate } from "react-router-dom";
+import { ApplicationLocations } from "types/common/applications-locations.dto";
 import { AuthenticationContext } from "../assets/theme/authentication-provider";
-import { DEFAULT_KEYCLOAK_URL } from "../assets/config";
+import { getAuthToken, setAuthToken } from "../utils/token.util";
 import { useGetApiUrl } from "./use-get-api-url";
+import { IPersonExtended } from "types/activities/activity.dto";
 
-export const useServiceInterceptors = () => {
-  const { stateToken } = React.useContext(AuthenticationContext);
+interface IUseServiceInterceptorsProps {
+  setStateToken: React.Dispatch<React.SetStateAction<string | null>>;
+  setUserInfo?: React.Dispatch<
+    React.SetStateAction<IPersonExtended | undefined>
+  >;
+}
+
+export const useServiceInterceptors = ({
+  setStateToken,
+  setUserInfo,
+}: IUseServiceInterceptorsProps) => {
   const abortControllerRef = React.useRef<AbortController | null>(null);
   const baseUrl = useGetApiUrl();
+  const queryClient = useQueryClient();
+  const navigate = useNavigate();
 
   // if using docker
   const token = getAuthToken();
-  // axios.defaults.baseURL = token
-  //   ? 'http://localhost:8081'
-  //   : 'http://localhost:8082'
-  // 'https://virtserver.swaggerhub.com/semjacko/Activities/1.0.0'
-  // 'http://localhost:5000' activities
-  // 'http://localhost:8082' usermanagement
-  //  'https://virtserver.swaggerhub.com/semjacko/Activities/1.0.0'
 
   axios.interceptors.request.use(
     (config) => {
       const _token = getAuthToken();
       if (config) {
-        // if you have token -> all requests same port
-        // if you dont have token 2 subcases
-        // keycloak - e.g. :8082
-        // Offli unauthorized backend - e.g. :5000
         config.baseURL = baseUrl;
         if (config?.headers) {
           //const newConfig = { ...config }
@@ -51,9 +52,20 @@ export const useServiceInterceptors = () => {
     (res) => {
       return res;
     },
-    async (err: AxiosError) => {
+    async (error: AxiosError) => {
+      // if token has expired
+      if (error?.response?.status === 401) {
+        setStateToken(null);
+        setAuthToken(undefined);
+        setUserInfo?.({ username: undefined, id: undefined });
+        queryClient.invalidateQueries();
+        queryClient.removeQueries();
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        navigate(ApplicationLocations.LOGIN);
+      }
       //TODO uncomment
-      const originalConfig = err.config;
+      // const originalConfig = err.config;
       // if (err?.response?.status === 401) {
       //   console.error('Token expired')
       //   // call refresh token
@@ -64,7 +76,7 @@ export const useServiceInterceptors = () => {
       //   }
       // }
 
-      return Promise.reject(err);
+      return Promise.reject(error);
     }
   );
 };

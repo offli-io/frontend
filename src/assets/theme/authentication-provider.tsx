@@ -74,7 +74,6 @@ export const AuthenticationProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
-  useServiceInterceptors();
   //one way to authenticate but I think token refresh and handling will be done by keycloak
   const { enqueueSnackbar } = useSnackbar();
   const [stateToken, setStateToken] = React.useState<null | string>(null);
@@ -84,6 +83,8 @@ export const AuthenticationProvider = ({
   const [isFirstTimeLogin, setIsFirstTimeLogin] = React.useState<
     boolean | undefined
   >(false);
+
+  useServiceInterceptors({ setStateToken, setUserInfo });
 
   const isLogin = window?.location?.href?.includes("login");
 

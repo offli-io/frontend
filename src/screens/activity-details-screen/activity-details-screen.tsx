@@ -52,6 +52,7 @@ import { CustomizationContext } from "assets/theme/customization-provider";
 import Loader from "components/loader";
 import { IActivity } from "types/activities/activity.dto";
 import { ActivityInviteDrawerContent } from "./components/activity-invite-drawer-content";
+import ActivityLeaveConfirmation from "screens/my-activities-screen/components/activity-leave-confirmation";
 
 interface IProps {
   type: "detail" | "request";
@@ -102,6 +103,33 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
       enabled: !!id,
     }
   );
+
+  const { mutate: sendLeaveActivity, isLoading: isLeavingActivity } =
+    useMutation(
+      ["leave-activity"],
+      (activityId?: number) =>
+        removePersonFromActivity({ activityId, personId: userInfo?.id }),
+      {
+        onSuccess: (data, activityId) => {
+          hideDrawer();
+          //TODO add generic jnaming for activites / activity
+          queryClient.invalidateQueries(["activity", activityId]);
+          queryClient.invalidateQueries([ACTIVITIES_QUERY_KEY]);
+          queryClient.invalidateQueries([PAGED_ACTIVITIES_QUERY_KEY]);
+          queryClient.invalidateQueries([PARTICIPANT_ACTIVITIES_QUERY_KEY]);
+
+          enqueueSnackbar("You have successfully left the activity", {
+            variant: "success",
+          });
+          navigate(ApplicationLocations.ACTIVITIES);
+          //invalidate queries
+          //TODO display success notification?
+        },
+        onError: () => {
+          enqueueSnackbar("Failed to leave activity", { variant: "error" });
+        },
+      }
+    );
 
   const { mutate: sendJoinActivity, isLoading: isJoiningActivity } =
     useMutation(
@@ -188,6 +216,13 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
     }
   }, [googleToken, activity]);
 
+  const hideDrawer = React.useCallback(() => {
+    return toggleDrawer({
+      open: false,
+      content: undefined,
+    });
+  }, [toggleDrawer]);
+
   const handleMenuItemClick = React.useCallback(
     (action?: ActivityActionsTypeEnumDto) => {
       switch (action) {
@@ -206,11 +241,24 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
         case ActivityActionsTypeEnumDto.EDIT:
           //TODO EditActivityScreen pass id?
           return navigate(`${ApplicationLocations.EDIT_ACTIVITY}/${id}`);
+        case ActivityActionsTypeEnumDto.LEAVE:
+          //TODO EditActivityScreen pass id?
+          return toggleDrawer({
+            open: true,
+            content: (
+              <ActivityLeaveConfirmation
+                activityId={Number(id)}
+                onLeaveCancel={hideDrawer}
+                onLeaveConfirm={sendLeaveActivity}
+                isLeaving={isLeavingActivity}
+              />
+            ),
+          });
         default:
           return;
       }
     },
-    [sendJoinActivity, navigate, id]
+    [sendJoinActivity, navigate, id, isLeavingActivity]
   );
 
   const handleActivityActionsCLick = React.useCallback(
