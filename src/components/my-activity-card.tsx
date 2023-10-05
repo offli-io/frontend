@@ -1,13 +1,7 @@
 import React from "react";
-import { Box, Card, SxProps, Typography, useTheme } from "@mui/material";
+import { Box, SxProps, Typography } from "@mui/material";
 import { IActivity } from "../types/activities/activity.dto";
-import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
-import LockIcon from "@mui/icons-material/Lock";
-import LockOpenIcon from "@mui/icons-material/LockOpen";
-import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import useLongPress from "../hooks/use-long-press";
-import TransparentChip from "./transparent-chip";
-import { ActivityVisibilityEnum } from "../types/activities/activity-visibility-enum.dto";
 import { format } from "date-fns";
 import OffliButton from "./offli-button";
 import { useGetApiUrl } from "hooks/use-get-api-url";
@@ -19,6 +13,7 @@ interface IMyActivityCardProps {
   onPress?: (activity?: IActivity) => void;
   onLongPress?: (activity?: IActivity) => void;
   sx?: SxProps;
+  type: string;
 }
 
 const MyActivityCard: React.FC<IMyActivityCardProps> = ({
@@ -26,6 +21,7 @@ const MyActivityCard: React.FC<IMyActivityCardProps> = ({
   onPress,
   onLongPress,
   sx,
+  type,
   ...rest
 }) => {
   //TODO maybe in later use also need some refactoring
@@ -34,97 +30,87 @@ const MyActivityCard: React.FC<IMyActivityCardProps> = ({
   });
   const baseUrl = useGetApiUrl();
 
-  // React.useEffect(() => {
-  //   if (action) {
-  //     onLongPress?.(activity);
-  //   }
-  // }, [action, onLongPress]);
-
   return (
     <OffliButton
       sx={{
         display: "grid",
         gridTemplateColumns: "3fr 1fr",
         boxSizing: "border-box",
-        bgcolor: ({ palette }) => palette.primary.light,
-        minWidth: "280px",
-        maxWidth: "280px",
-        wordWrap: "break-word",
-        overflow: "hidden",
-        textOverflow: "ellipsis",
-        whiteSpace: "normal",
+        minWidth: 280,
+        maxWidth: 280,
+        background: "linear-gradient(90deg, rgba(74, 20, 140, 0.18) 0%, rgba(74, 20, 140, 0.18) 44.06%, rgba(255, 255, 255, 0.00) 90.95%)",
+        m:1
       }}
-      {...handlers}
       color="inherit"
+      {...handlers}
       onClick={() => onPress?.(activity)}
       data-testid="my-activitiy-card"
       {...rest}
     >
-      <>
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          width: 260,
+        }}
+      >
+        <Box sx={{ mt: 0.5, height: 75 , width: "35%"}}>
+          <img
+            src={`${baseUrl}/files/${activity?.title_picture}`}
+            alt="activity_picture"
+            style={{ height: 70, borderRadius: "10px" }}
+          />
+        </Box>
+        {type === "explore" && (
         <Box
           sx={{
+            width: "65%",
+            ml: 1.5,
             display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            maxWidth: 260,
+            flexDirection: "column",
+            alignItems: "flex-start",
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            textOverflow: "ellipsis"
           }}
         >
-          <Box sx={{ mt: 0.5, height: 75 }}>
-            <img
-              src={`${baseUrl}/files/${activity?.title_picture}`}
-              alt="activity_picture"
-              style={{ height: 70, width: 90, borderRadius: "10px" }}
-            />
-          </Box>
-          <Box
-            sx={{
-              ml: 1.5,
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "flex-start",
-              height: "100%",
-              whiteSpace: "nowrap",
-              overflow: "hidden",
-            }}
-          >
-            <Typography
-              sx={{
-                fontSize: 18,
-                fontWeight: "bold",
-                lineHeight: 1,
-                color: ({ palette }) => palette?.text?.primary,
-              }}
-            >
-              {activity?.title ?? "Title"}
-            </Typography>
-            <Typography
-              sx={{
-                fontSize: 14,
-                // fontWeight: "bold",
-                lineHeight: 1,
-                color: ({ palette }) => palette?.text?.primary,
-                my: 0.75,
-              }}
-            >
-              {activity?.location?.name ?? "Location"}
-            </Typography>
-            <Typography
-              sx={{
-                fontSize: 14,
-                lineHeight: 1,
-                color: ({ palette }) => palette?.text?.primary,
-              }}
-            >
-              {format(
-                (activity?.datetime_from
-                  ? new Date(activity?.datetime_from)
-                  : new Date()) as Date,
-                DATE_TIME_FORMAT
-              )}
-            </Typography>
-          </Box>
+          <Typography variant="h5">
+            {activity?.title ?? "Title"}
+          </Typography>
+          <Typography variant="subtitle1">
+            {activity?.location?.name ?? "Location"}
+          </Typography>
+          <Typography variant="subtitle1">
+            {format(
+              (activity?.datetime_from
+                ? new Date(activity?.datetime_from)
+                : new Date()) as Date,
+              DATE_TIME_FORMAT
+            )}
+          </Typography>
         </Box>
-      </>
+        )}
+        {type === "profile" && (
+        <Box
+          sx={{
+            width: "65%",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "flex-start",
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            textOverflow: "ellipsis"
+          }}
+        >
+          <Typography variant="h5" sx={{
+            color: ({ palette }) => palette?.primary?.main,
+            ml:2
+          }}>
+            {activity?.title ?? "Title"}
+          </Typography>
+        </Box>
+        )}
+      </Box>
     </OffliButton>
   );
 };

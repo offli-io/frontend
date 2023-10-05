@@ -141,7 +141,7 @@ const SearchScreen = () => {
             },
             "& input::placeholder": {
               fontSize: 14,
-              color: "#4A148C",
+              color: "primary.main",
               fontWeight: 500,
               opacity: 1,
               pl: 1,

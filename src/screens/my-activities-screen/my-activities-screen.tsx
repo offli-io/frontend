@@ -150,7 +150,7 @@ const ActivitiesScreen = () => {
   }, [toggleDrawer]);
 
   const { mutate: sendLeaveActivity } = useMutation(
-    ["leave-activity"],
+    ["leave-activity-response"],
     (activityId?: number) =>
       removePersonFromActivity({ activityId, personId: userInfo?.id }),
     {
@@ -353,7 +353,7 @@ const ActivitiesScreen = () => {
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
-                  <SearchIcon sx={{ fontSize: "1.5rem", color: "#4A148C" }} />{" "}
+                  <SearchIcon sx={{ fontSize: "1.5rem", color: "primary.main" }} />{" "}
                 </InputAdornment>
               ),
             }}
@@ -418,6 +418,7 @@ const ActivitiesScreen = () => {
                     <MyActivityCard
                       key={activity?.id}
                       activity={activity}
+                      type="explore"
                       onPress={() =>
                         navigate(
                           `${ApplicationLocations.ACTIVITY_DETAIL}/${activity?.id}`,
