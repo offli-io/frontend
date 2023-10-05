@@ -29,17 +29,15 @@ interface IProps {
   onActionClick?: (action: IGridAction) => void;
 }
 
-const StyledBox = styled(Card)(() => ({  
+const StyledBox = styled(Card)(() => ({
   display: "flex",
   alignItems: "center",
   flexDirection: "column",
-  borderRadius: "12px",
+  borderRadius: "10px",
   // backgroundColor: "#E4E3FF",
-  paddingTop: "5%",
-  paddingBottom: "5%",
+  paddingTop: "4%",
+  paddingBottom: "2%",
   marginBottom: "16px",
-  borderStyle: "solid",
-  borderWidth: 1,
   // maxWidth: "45vw",
 }));
 
@@ -60,7 +58,6 @@ const ActivityDetailsGrid: React.FC<IProps> = ({ activity, onActionClick }) => {
   const { userInfo } = React.useContext(AuthenticationContext);
   const { enqueueSnackbar } = useSnackbar();
 
-
   // const from = (location?.state as ICustomizedLocationStateDto)?.from;
 
   const handleShowOnMap = () => {
@@ -80,11 +77,11 @@ const ActivityDetailsGrid: React.FC<IProps> = ({ activity, onActionClick }) => {
         rowGap: 0.5,
         columnGap: 2,
         ml: 0.2,
-        mt: 3,
+        mt: 5,
       }}
     >
-      <StyledBox sx={{borderColor: "primary.light"}}>
-        <IconButton color="primary"  sx={{ p: 0 }}>
+      <StyledBox>
+        <IconButton color="primary" sx={{ p: 0 }}>
           <PeopleAltIcon sx={{ fontSize: 26, color: "primary.main" }} />
         </IconButton>
         <OffliButton
@@ -102,7 +99,7 @@ const ActivityDetailsGrid: React.FC<IProps> = ({ activity, onActionClick }) => {
           size="small"
           sx={{
             textDecoration: "none",
-            fontSize: 16,
+            fontSize: 15,
             mt: 0.5,
             // fontWeight: "500",
           }}
@@ -113,7 +110,7 @@ const ActivityDetailsGrid: React.FC<IProps> = ({ activity, onActionClick }) => {
           {activity?.count_confirmed}/{activity?.limit}
         </StyledText>
       </StyledBox>
-      <StyledBox sx={{borderColor: "primary.light"}}>
+      <StyledBox>
         <IconButton color="primary" sx={{ p: 0 }}>
           <CalendarTodayIcon sx={{ fontSize: 26, color: "primary.main" }} />
         </IconButton>
@@ -126,7 +123,9 @@ const ActivityDetailsGrid: React.FC<IProps> = ({ activity, onActionClick }) => {
             textDecoration: "none",
             fontSize: 15,
             mt: 0.5,
+            // fontWeight: "700",
           }}
+          // endIcon={<CalendarTodayIcon />}
         >
           Add to calendar
         </OffliButton>
@@ -137,7 +136,7 @@ const ActivityDetailsGrid: React.FC<IProps> = ({ activity, onActionClick }) => {
             : "-"}
         </StyledText>
       </StyledBox>
-      <StyledBox sx={{borderColor: "primary.light"}}>
+      <StyledBox>
         <IconButton color="primary" sx={{ p: 0 }}>
           <RoomIcon sx={{ fontSize: 26, color: "primary.main" }} />
         </IconButton>
@@ -168,7 +167,7 @@ const ActivityDetailsGrid: React.FC<IProps> = ({ activity, onActionClick }) => {
           {activity?.location?.name}
         </StyledText>
       </StyledBox>
-      <StyledBox sx={{borderColor: "primary.light"}}>
+      <StyledBox>
         <IconButton color="primary" sx={{ p: 0 }}>
           <MonetizationOnIcon sx={{ fontSize: 26, color: "primary.main" }} />
         </IconButton>

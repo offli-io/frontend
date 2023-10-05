@@ -30,7 +30,7 @@ const createCustomizationTheme = (mode: PaletteMode = "light") => {
         light: "#E4E3FF",
       },
       secondary: {
-        main: "#E4E3FF",
+        main: "#ffa500",
       },
       inactive: {
         main: "#B8B8B8",
