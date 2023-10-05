@@ -28,7 +28,6 @@ import Loader from "components/loader";
 import { useGetLastAttendedActivities } from "./hooks/use-get-last-attended-activities";
 import { ActivitiyParticipantStatusEnum } from "types/activities/activity-participant-status-enum.dto";
 import MyActivityCard from "components/my-activity-card";
-import LastAttendedActivityCard from "components/last-attended-activity-card/last-attended-activity-card";
 
 interface IProfileScreenProps {
   type: ProfileEntryTypeEnum;
@@ -397,8 +396,9 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
             >
               {lastAttendedActivties?.map((activity) => {
                 return (
-                  <LastAttendedActivityCard
+                  <MyActivityCard
                     activity={activity}
+                    type="profile"
                     onPress={() =>
                       navigate(
                         `${ApplicationLocations.ACTIVITY_DETAIL}/${activity?.id}`,

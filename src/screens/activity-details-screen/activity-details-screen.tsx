@@ -269,20 +269,6 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
     [handleGoogleAuthorization]
   );
 
-  // const displayJoinButton = React.useMemo(
-  //   () =>
-  //     (activity?.visibility === ActivityVisibilityEnum.public &&
-  //       activity?.participant_status === null)
-  //       ||
-  //     (!!participants &&
-  //       participants?.some(
-  //         ({ id, status }: IParticipantDto) =>
-  //           id === userInfo?.id &&
-  //           status === ActivitiyParticipantStatusEnum.INVITED
-  //       )),
-  //   [participants, userInfo?.id, activity]
-  // );
-
   const displayActionButtons =
     activity?.visibility === ActivityVisibilityEnum.public;
 

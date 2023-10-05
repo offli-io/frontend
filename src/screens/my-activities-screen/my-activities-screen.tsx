@@ -422,6 +422,7 @@ const ActivitiesScreen = () => {
                     <MyActivityCard
                       key={activity?.id}
                       activity={activity}
+                      type="explore"
                       onPress={() =>
                         navigate(
                           `${ApplicationLocations.ACTIVITY_DETAIL}/${activity?.id}`,

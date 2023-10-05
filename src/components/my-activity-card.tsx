@@ -13,6 +13,7 @@ interface IMyActivityCardProps {
   onPress?: (activity?: IActivity) => void;
   onLongPress?: (activity?: IActivity) => void;
   sx?: SxProps;
+  type: string;
 }
 
 const MyActivityCard: React.FC<IMyActivityCardProps> = ({
@@ -20,6 +21,7 @@ const MyActivityCard: React.FC<IMyActivityCardProps> = ({
   onPress,
   onLongPress,
   sx,
+  type,
   ...rest
 }) => {
   //TODO maybe in later use also need some refactoring
@@ -59,6 +61,7 @@ const MyActivityCard: React.FC<IMyActivityCardProps> = ({
             style={{ height: 70, borderRadius: "10px" }}
           />
         </Box>
+        {type === "explore" && (
         <Box
           sx={{
             width: "65%",
@@ -86,6 +89,27 @@ const MyActivityCard: React.FC<IMyActivityCardProps> = ({
             )}
           </Typography>
         </Box>
+        )}
+        {type === "profile" && (
+        <Box
+          sx={{
+            width: "65%",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "flex-start",
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            textOverflow: "ellipsis"
+          }}
+        >
+          <Typography variant="h5" sx={{
+            color: ({ palette }) => palette?.primary?.main,
+            ml:2
+          }}>
+            {activity?.title ?? "Title"}
+          </Typography>
+        </Box>
+        )}
       </Box>
     </OffliButton>
   );
