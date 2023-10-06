@@ -51,6 +51,8 @@ import ActivityLeaveConfirmation from "./components/activity-leave-confirmation"
 import FirstTimeLoginContent from "./components/first-time-login-content";
 import { SetLocationContent } from "./components/set-location-content";
 import { ActivitySortColumnEnum } from "types/activities/activity-sort-enum.dto";
+import ca from "date-fns/locale/ca/index";
+import { useDismissActivity } from "hooks/use-dismiss-activity";
 
 const ActivitiesScreen = () => {
   const { ref, inView } = useInView();
@@ -62,10 +64,9 @@ const ActivitiesScreen = () => {
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
   const queryClient = useQueryClient();
-  const [isSearchFocused, setIsSearchFocused] = React.useState(false);
   const { palette } = useTheme();
-  const [activeOffset, setActiveOffset] = React.useState(0);
-  const [activeLimit, setActiveLimit] = React.useState(10);
+  const { sendDismissActivity, isLoading: isDismissingActivity } =
+    useDismissActivity();
 
   //TODO either call it like this or set user info once useUsers request in layout.tsx got Promise resolved
   const { data: { data: userData = {} } = {} } = useUser({
@@ -220,6 +221,19 @@ const ActivitiesScreen = () => {
               },
             }
           );
+        case ActivityActionsTypeEnumDto.DISMISS:
+          return toggleDrawer({
+            open: true,
+            content: (
+              <ActivityLeaveConfirmation
+                activityId={Number(activityId)}
+                onLeaveCancel={hideDrawer}
+                onLeaveConfirm={sendDismissActivity}
+                isLeaving={isDismissingActivity}
+                type="dismiss"
+              />
+            ),
+          });
 
         default:
           return console.log(action);
@@ -335,8 +349,6 @@ const ActivitiesScreen = () => {
             pr: 0,
           },
         }}
-        //loading={placeQuery?.isLoading}
-        // isOptionEqualToValue={(option, value) => option.id === value.id}
         onFocus={() =>
           navigate(ApplicationLocations.SEARCH, {
             state: {
@@ -344,8 +356,6 @@ const ActivitiesScreen = () => {
             },
           })
         }
-        onBlur={() => setIsSearchFocused(false)}
-        // getOptionLabel={(option) => option?.display_name}
         renderInput={(params) => (
           <TextField
             {...params}
@@ -353,7 +363,9 @@ const ActivitiesScreen = () => {
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
-                  <SearchIcon sx={{ fontSize: "1.5rem", color: "primary.main" }} />{" "}
+                  <SearchIcon
+                    sx={{ fontSize: "1.5rem", color: "primary.main" }}
+                  />{" "}
                 </InputAdornment>
               ),
             }}

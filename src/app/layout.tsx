@@ -9,6 +9,11 @@ import Routes from "../routes/routes";
 import { ApplicationLocations } from "../types/common/applications-locations.dto";
 import { getAuthToken } from "../utils/token.util";
 import { HeaderContext } from "./providers/header-provider";
+import {
+  detectSafariBottomBarHeight,
+  isIOS,
+  isSafari,
+} from "utils/is-ios-device.util";
 
 interface ILayoutProps {
   children?: React.ReactNode;
@@ -148,6 +153,8 @@ export const Layout: React.FC<ILayoutProps> = ({ children }) => {
     [location?.pathname]
   );
 
+  const isIOSSafari = isIOS() && isSafari();
+
   return (
     <LayoutContext.Provider
       value={{
@@ -159,7 +166,9 @@ export const Layout: React.FC<ILayoutProps> = ({ children }) => {
       <Box
         sx={{
           width: "100%",
-          height: "100vh",
+          height: isIOSSafari
+            ? `calc(100vh - ${detectSafariBottomBarHeight()}px`
+            : "100vh",
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
