@@ -166,9 +166,9 @@ export const Layout: React.FC<ILayoutProps> = ({ children }) => {
       <Box
         sx={{
           width: "100%",
-          height: isIOSSafari
-            ? `calc(100vh - ${detectSafariBottomBarHeight()}px`
-            : "100vh",
+          // height: isIOSSafari ? `calc(100vh - 20px)` : "100vh",
+          height: isIOSSafari ? "98vh" : "100vh",
+
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
