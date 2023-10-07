@@ -10,6 +10,7 @@ export interface IActivityActionsProps {
   onLeaveCancel?: (activityId?: number) => void;
   activityId?: number;
   isLeaving?: boolean;
+  type?: "leave" | "dismiss";
 }
 
 const ActivityLeaveConfirmation: React.FC<IActivityActionsProps> = ({
@@ -17,6 +18,7 @@ const ActivityLeaveConfirmation: React.FC<IActivityActionsProps> = ({
   onLeaveCancel,
   activityId,
   isLeaving,
+  type = "leave",
 }) => {
   //TODO if no activity display nothing
   const baseUrl = useGetApiUrl();
@@ -41,7 +43,7 @@ const ActivityLeaveConfirmation: React.FC<IActivityActionsProps> = ({
       }}
     >
       <Typography variant="h4" sx={{ my: 2, color: palette?.text?.primary }}>
-        Leaving the group
+        {type === "leave" ? "Leaving activity" : "Dismissing activity"}
       </Typography>
 
       <img
@@ -56,7 +58,7 @@ const ActivityLeaveConfirmation: React.FC<IActivityActionsProps> = ({
       />
       <Box sx={{ my: 2 }}>
         <Typography sx={{ color: palette?.text?.primary, textAlign: "center" }}>
-          Do you really want to leave
+          {`Do you really want to ${type === "leave" ? "leave" : "dismiss"}`}
         </Typography>
         <Typography
           sx={{
@@ -88,7 +90,7 @@ const ActivityLeaveConfirmation: React.FC<IActivityActionsProps> = ({
           onClick={() => onLeaveConfirm?.(data?.data?.activity?.id)}
           isLoading={isLeaving}
         >
-          Leave
+          {type === "leave" ? "Leave" : "Dismiss"}
         </OffliButton>
       </Box>
     </Box>

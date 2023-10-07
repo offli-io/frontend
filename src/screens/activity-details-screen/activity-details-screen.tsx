@@ -53,6 +53,7 @@ import Loader from "components/loader";
 import { IActivity } from "types/activities/activity.dto";
 import { ActivityInviteDrawerContent } from "./components/activity-invite-drawer-content";
 import ActivityLeaveConfirmation from "screens/my-activities-screen/components/activity-leave-confirmation";
+import { useDismissActivity } from "hooks/use-dismiss-activity";
 
 interface IProps {
   type: "detail" | "request";
@@ -74,6 +75,8 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
     React.useContext(HeaderContext);
   const { userInfo } = React.useContext(AuthenticationContext);
   const { enqueueSnackbar } = useSnackbar();
+  const { sendDismissActivity, isLoading: isDismissingActivity } =
+    useDismissActivity();
   const queryClient = useQueryClient();
   const baseUrl = useGetApiUrl();
   const abortControllerRef = React.useRef<AbortController | null>(null);
@@ -235,6 +238,19 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
               />
             ),
           });
+        case ActivityActionsTypeEnumDto.DISMISS:
+          return toggleDrawer({
+            open: true,
+            content: (
+              <ActivityLeaveConfirmation
+                activityId={Number(id)}
+                onLeaveCancel={hideDrawer}
+                onLeaveConfirm={sendDismissActivity}
+                isLeaving={isLeavingActivity}
+                type="dismiss"
+              />
+            ),
+          });
         default:
           return;
       }
@@ -309,6 +325,8 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
     [activity]
   );
 
+  const isCreator = activity?.creator?.id === userInfo?.id;
+
   const dateTimeFrom = activity?.datetime_from
     ? new Date(activity?.datetime_from)
     : null;
@@ -324,8 +342,23 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
   } = getTimeDifference(dateTimeFrom, dateTimeUntil) ?? {}; // useMemo??
 
   const handleJoinButtonClick = React.useCallback(() => {
-    isAlreadyParticipant ? sendLeaveActivity(Number(id)) : sendJoinActivity();
-  }, [isAlreadyParticipant]);
+    isAlreadyParticipant
+      ? isCreator
+        ? toggleDrawer({
+            open: true,
+            content: (
+              <ActivityLeaveConfirmation
+                activityId={Number(id)}
+                onLeaveCancel={hideDrawer}
+                onLeaveConfirm={sendDismissActivity}
+                isLeaving={isLeavingActivity}
+                type="dismiss"
+              />
+            ),
+          })
+        : sendLeaveActivity(Number(id))
+      : sendJoinActivity();
+  }, [isAlreadyParticipant, isCreator, id]);
 
   const areActionsLoading = isLeavingActivity || isJoiningActivity;
 
@@ -406,27 +439,43 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
           >
             <OffliButton
               size="small"
-              sx={{ 
-                fontSize: 18, 
-                width: "40%", 
-                height: 48, 
-                color: isAlreadyParticipant ? "primary.main" : "background.default"
+              sx={{
+                fontSize: 18,
+                width: "40%",
+                height: 48,
+                color: isAlreadyParticipant
+                  ? "primary.main"
+                  : "background.default",
               }}
               onClick={handleJoinButtonClick}
               color={!isAlreadyParticipant ? "primary" : "secondary"}
               isLoading={areActionsLoading}
               startIcon={
-                isAlreadyParticipant ? 
-                <CheckCircleIcon sx={{ color: "primary.main"}}/>
-                : <CheckCircleOutlineIcon sx={{ color: "background.default"}}/>
+                isAlreadyParticipant ? (
+                  <CheckCircleIcon sx={{ color: "primary.main" }} />
+                ) : (
+                  <CheckCircleOutlineIcon
+                    sx={{ color: "background.default" }}
+                  />
+                )
               }
             >
-              {isAlreadyParticipant ? "Joined" : "Join"}
+              {isAlreadyParticipant
+                ? isCreator
+                  ? "Dismiss"
+                  : "Joined"
+                : "Join"}
             </OffliButton>
             <OffliButton
               size="small"
               disabled={!isAlreadyParticipant || areActionsLoading}
-              sx={{ fontSize: 18, width: "40%", height: 48, bgcolor: "primary.light", color: "primary.main" }}
+              sx={{
+                fontSize: 18,
+                width: "40%",
+                height: 48,
+                bgcolor: "primary.light",
+                color: "primary.main",
+              }}
               onClick={() =>
                 toggleDrawer({
                   open: true,
@@ -435,7 +484,15 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
                   ),
                 })
               }
-              startIcon={<EmailIcon sx={{ color: isAlreadyParticipant ? "primary.main" : "inactiveFont.main"}} />}
+              startIcon={
+                <EmailIcon
+                  sx={{
+                    color: isAlreadyParticipant
+                      ? "primary.main"
+                      : "inactiveFont.main",
+                  }}
+                />
+              }
             >
               Invite
             </OffliButton>
