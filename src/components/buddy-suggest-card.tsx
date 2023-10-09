@@ -8,7 +8,11 @@ import { useGetApiUrl } from "../hooks/use-get-api-url";
 interface ILabeledDividerProps {
   buddy: IPerson;
   children?: React.ReactElement;
-  onAddBuddyClick?: (buddy: IPerson) => void;
+  onAddBuddyClick?: (
+    e: React.MouseEvent<HTMLButtonElement>,
+    buddy: IPerson
+  ) => void;
+  onClick?: (buddy: IPerson) => void;
   isLoading?: boolean;
 }
 
@@ -23,6 +27,7 @@ const BuddySuggestCard: React.FC<ILabeledDividerProps> = ({
   children,
   buddy,
   onAddBuddyClick,
+  onClick,
   isLoading,
   ...rest
 }) => {
@@ -42,6 +47,7 @@ const BuddySuggestCard: React.FC<ILabeledDividerProps> = ({
         overflow: "hidden",
         mx: 1,
       }}
+      onClick={(e) => onClick?.(buddy)}
     >
       <StyledImage
         src={
@@ -63,7 +69,7 @@ const BuddySuggestCard: React.FC<ILabeledDividerProps> = ({
         {buddy?.username}
       </Typography>
       <OffliButton
-        onClick={() => onAddBuddyClick?.(buddy)}
+        onClick={(e) => onAddBuddyClick?.(e, buddy)}
         sx={{ fontSize: 14 }}
         isLoading={isLoading}
       >

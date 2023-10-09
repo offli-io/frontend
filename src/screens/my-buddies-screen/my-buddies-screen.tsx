@@ -143,6 +143,14 @@ const MyBuddiesScreen = () => {
     });
   }, [toggleDrawer]);
 
+  const handleBuddySuggestAddClick = React.useCallback(
+    (e: React.MouseEvent<HTMLButtonElement>, buddy: IPerson) => {
+      e.stopPropagation();
+      handleSendBuddyRequest(buddy?.id);
+    },
+    [toggleDrawer]
+  );
+
   return (
     <>
       <Box sx={{ mx: 1.5, height: "100%", overflow: "auto" }}>
@@ -217,16 +225,17 @@ const MyBuddiesScreen = () => {
                   }}
                 >
                   {recommendedBuddiesData?.data?.map((buddy) => (
-                    <>
-                      <BuddySuggestCard
-                        key={buddy?.id}
-                        buddy={buddy}
-                        onAddBuddyClick={(buddy) =>
-                          handleSendBuddyRequest(buddy?.id)
-                        }
-                        isLoading={isSendingBuddyRequest}
-                      />
-                    </>
+                    <BuddySuggestCard
+                      key={buddy?.id}
+                      buddy={buddy}
+                      onAddBuddyClick={handleBuddySuggestAddClick}
+                      isLoading={isSendingBuddyRequest}
+                      onClick={(buddy) =>
+                        navigate(
+                          `${ApplicationLocations.USER_PROFILE}/${buddy?.id}`
+                        )
+                      }
+                    />
                   ))}
                 </Box>
               </Box>

@@ -25,12 +25,9 @@ const BackHeader: React.FC<IBackHeaderProps> = ({
   const navigate = useNavigate();
   const { headerRightContent, setHeaderRightContent } =
     React.useContext(HeaderContext);
-  const toParsed = to?.split("/");
 
   //why was this done?
   //BIG TODO
-  const fromLocation = toParsed && `/${toParsed[toParsed?.length - 1]}`;
-
   const handleBackNavigation = React.useCallback(() => {
     return navigate(-1);
 
@@ -75,7 +72,7 @@ const BackHeader: React.FC<IBackHeaderProps> = ({
     //     from: location,
     //   },
     // });
-  }, [fromLocation, location, navigate]);
+  }, [location, navigate]);
 
   React.useEffect(() => {
     return () => setHeaderRightContent(null);
@@ -95,22 +92,20 @@ const BackHeader: React.FC<IBackHeaderProps> = ({
         height: "100%",
       }}
     >
-      {fromLocation && (
-        <IconButton
-          onClick={handleBackNavigation}
-          color="primary"
-          sx={{
-            flex: 1,
-            position: "absolute",
-            left: 0,
-            textTransform: "none",
-            p: 0,
-            pl: 1,
-          }}
-        >
-          <ArrowBackIosNewIcon sx={{ color: "primary.main" }} />
-        </IconButton>
-      )}
+      <IconButton
+        onClick={handleBackNavigation}
+        color="primary"
+        sx={{
+          flex: 1,
+          position: "absolute",
+          left: 0,
+          textTransform: "none",
+          p: 0,
+          pl: 1,
+        }}
+      >
+        <ArrowBackIosNewIcon sx={{ color: "primary.main" }} />
+      </IconButton>
       <Box>
         <Typography
           variant="h4"
