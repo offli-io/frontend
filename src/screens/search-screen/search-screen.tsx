@@ -119,14 +119,14 @@ const SearchScreen = () => {
   });
 
   return (
-    <>
+    <Box>
       <Box
         sx={{
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
           width: "100%",
-          position: "fixed",
+          position: "sticky",
           backgroundColor: ({ palette }) => palette?.background?.default,
         }}
       >
@@ -166,7 +166,6 @@ const SearchScreen = () => {
         />
       </Box>
       <Box sx={{ ml: 1.5, boxSizing: "border-box" }}>
-        <Box sx={{ p: 4 }}></Box>
         {areActivitiesLoading ? (
           <Box sx={{ display: "flex", justifyContent: "center" }}>
             <CircularProgress color="primary" />
@@ -193,7 +192,7 @@ const SearchScreen = () => {
           </Typography>
         )}
       </Box>
-    </>
+    </Box>
   );
 };
 

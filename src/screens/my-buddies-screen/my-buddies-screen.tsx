@@ -9,16 +9,14 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useSnackbar } from "notistack";
 import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { getRecommendedBuddies } from "../../api/activities/requests";
 import { deleteBuddy } from "../../api/users/requests";
 import { AuthenticationContext } from "../../assets/theme/authentication-provider";
 import { DrawerContext } from "../../assets/theme/drawer-provider";
 import BuddyItem from "../../components/buddy-item";
-import BuddySuggestCard from "../../components/buddy-suggest-card";
 import { useBuddies } from "../../hooks/use-buddies";
 import { IPerson } from "../../types/activities/activity.dto";
 import { ApplicationLocations } from "../../types/common/applications-locations.dto";
@@ -28,6 +26,7 @@ import { useSendBuddyRequest } from "../profile-screen/hooks/use-send-buddy-requ
 import AddBuddiesContent from "./components/add-buddies-content";
 import BuddyActions from "./components/buddy-actions";
 import NoBuddiesScreen from "./components/no-buddies-screen";
+import RecommendedBuddiesContent from "./components/recommended-buddies-content";
 
 const MyBuddiesScreen = () => {
   const navigate = useNavigate();
@@ -43,31 +42,6 @@ const MyBuddiesScreen = () => {
   const { buddies, isLoading, invalidateBuddies } = useBuddies({
     text: currentSearch,
   });
-
-  const { handleSendBuddyRequest, isSendingBuddyRequest } = useSendBuddyRequest(
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries(["recommended-buddies"]);
-      },
-    }
-  );
-
-  const {
-    data: recommendedBuddiesData,
-    isLoading: areBuddiesRecommendationsLoading,
-  } = useQuery(
-    ["recommended-buddies", userInfo?.id],
-    () => getRecommendedBuddies(userInfo?.id ?? -1),
-    {
-      onError: () => {
-        //some generic toast for every hook
-        enqueueSnackbar(`Failed to load recommended buddies`, {
-          variant: "error",
-        });
-      },
-      enabled: !!userInfo?.id,
-    }
-  );
 
   const { mutate: sendDeleteBuddy } = useMutation(
     ["delete-buddy"],
@@ -145,7 +119,7 @@ const MyBuddiesScreen = () => {
 
   return (
     <>
-      <Box sx={{ mx: 1.5, height: "100%", overflow: "auto" }}>
+      <Box sx={{ mx: 1.5 }}>
         {(!buddies || (buddies?.length === 0 && currentSearch?.length === 0)) &&
         !isLoading ? (
           <NoBuddiesScreen onAddBuddiesClick={handleAddBuddies} />
@@ -203,34 +177,7 @@ const MyBuddiesScreen = () => {
                 <PersonAddIcon sx={{ color: "primary.main" }} />
               </IconButton>
             </Box>
-            {(recommendedBuddiesData?.data ?? [])?.length > 0 && (
-              <Box>
-                <Typography variant="h5" sx={{ mb: 2 }}>
-                  People you attended activity with
-                </Typography>
-                <Box
-                  sx={{
-                    display: "flex",
-                    overflowX: "scroll",
-                    width: "100%",
-                    "::-webkit-scrollbar": { display: "none" },
-                  }}
-                >
-                  {recommendedBuddiesData?.data?.map((buddy) => (
-                    <>
-                      <BuddySuggestCard
-                        key={buddy?.id}
-                        buddy={buddy}
-                        onAddBuddyClick={(buddy) =>
-                          handleSendBuddyRequest(buddy?.id)
-                        }
-                        isLoading={isSendingBuddyRequest}
-                      />
-                    </>
-                  ))}
-                </Box>
-              </Box>
-            )}
+            <RecommendedBuddiesContent />
             <Box
               sx={{
                 height: "100%",
