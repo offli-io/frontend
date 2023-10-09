@@ -77,6 +77,8 @@ const BackButton = ({ onClick }: { onClick?: () => void }) => {
         left: 20,
         zIndex: 400,
         fontSize: 20,
+        color: "primary.main",
+        bgcolor: "primary.light"
         // width: "45%",
       }}
       onClick={() => onClick?.()}
