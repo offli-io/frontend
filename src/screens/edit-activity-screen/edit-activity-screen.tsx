@@ -2,10 +2,15 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import {
   Autocomplete,
   Box,
+  FormControlLabel,
   FormLabel,
+  IconButton,
+  Radio,
+  RadioGroup,
   Switch,
   TextField,
   Typography,
+  useTheme,
 } from "@mui/material";
 import { DateTimePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -44,6 +49,7 @@ import {
   IAdditionalHelperActivityInterface,
   validationSchema,
 } from "./utils/validation-schema";
+import AddLocationAltIcon from "@mui/icons-material/AddLocationAlt";
 
 const EditActivityScreen: React.FC = () => {
   const [localFile, setLocalFile] = React.useState<any>();
@@ -54,7 +60,7 @@ const EditActivityScreen: React.FC = () => {
   const navigate = useNavigate();
   const baseUrl = useGetApiUrl();
   const { userInfo } = React.useContext(AuthenticationContext);
-
+  const { palette } = useTheme();
   const { data: { data: { tags: predefinedTags = [] } = {} } = {} } = useTags();
 
   const mappedTags = predefinedTags?.map(({ title }) => title);
@@ -224,32 +230,35 @@ const EditActivityScreen: React.FC = () => {
             accept="image/*"
           />
           {activity?.title_picture ? (
-            <Box sx={{ width: "75%", position: "relative" }}>
-              <img
-                onClick={() => console.log("change profile photo")}
-                // todo add default picture in case of missing photo
-                src={`${baseUrl}/files/${activity?.title_picture}`}
-                alt="profile"
-                style={{
-                  width: "100%",
-                  aspectRatio: ACTIVITY_ASPECT_RATIO,
-                }}
-              />
+            <Box sx={{height: 200, position: "relative", overflow: "hidden"}}>
+              <Box sx={{ width: "100%", }}>
+                <img
+                  onClick={() => console.log("change profile photo")}
+                  // todo add default picture in case of missing photo
+                  src={`${baseUrl}/files/${activity?.title_picture}`}
+                  alt="profile"
+                  style={{
+                    width: "100%",
+                    aspectRatio: ACTIVITY_ASPECT_RATIO,
+                  }}
+                />
+                
+              </Box>
               <OffliButton
-                size="small"
-                sx={{
-                  position: "absolute",
-                  bottom: 5,
-                  right: 5,
-                  opacity: 0.8,
-                  px: 2,
-                  py: 0.5,
-                  fontSize: 14,
-                }}
-                onClick={() => hiddenFileInput?.current?.click()}
-              >
-                Edit photo
-              </OffliButton>
+                  size="small"
+                  sx={{
+                    position: "absolute",
+                    bottom: 150,
+                    right: 10,
+                    opacity: 0.8,
+                    px: 2,
+                    py: 1,
+                    fontSize: 14,
+                  }}
+                  onClick={() => hiddenFileInput?.current?.click()}
+                >
+                  Edit photo
+                </OffliButton>
             </Box>
           ) : null}
 
@@ -267,22 +276,27 @@ const EditActivityScreen: React.FC = () => {
               name="title"
               control={control}
               render={({ field, fieldState: { error } }) => (
-                <TextField
-                  {...field}
-                  label="Title"
-                  variant="outlined"
-                  error={!!error}
-                  helperText={error?.message}
-                  //disabled={methodSelectionDisabled}
-                  sx={{ width: "100%", mt: 3 }}
-                />
+                <Box sx={{display: "flex", width: "100%", flexDirection: "column", mt: 3}}>
+                  <Typography variant="h4">General information</Typography>
+                  <TextField
+                    {...field}
+                    label="Title"
+                    variant="outlined"
+                    error={!!error}
+                    helperText={error?.message}
+                    //disabled={methodSelectionDisabled}
+                    sx={{ width: "100%", mt: 3, mb: 2 }}
+                  />
+                </Box>
+                
               )}
             />
             <Controller
               name="location"
               control={control}
               render={({ field, fieldState: { error } }) => (
-                <Autocomplete
+                <Box sx={{display: "flex", alignItems: "center", width: "100%", justifyContent: "center"}}>
+                  <Autocomplete
                   {...field}
                   options={placeQuery?.data?.results ?? []}
                   value={mapLocationValue(field?.value)}
@@ -293,7 +307,6 @@ const EditActivityScreen: React.FC = () => {
                     width: "100%",
                     display: "flex",
                     justifyContent: "center",
-                    mt: 2,
                   }}
                   loading={placeQuery?.isLoading}
                   onChange={(e, locationObject) => {
@@ -320,6 +333,19 @@ const EditActivityScreen: React.FC = () => {
                   )}
                   data-testid="activity-place-input"
                 />
+                <IconButton onClick={() => {}}>
+                    <AddLocationAltIcon
+                      sx={{
+                        color: ({ palette }) => palette?.primary?.main,
+                        ml: 1,
+                        bgcolor: ({ palette }) => palette?.primary?.light,
+                        borderRadius: "10px",
+                        p: 1.75,
+                      }}
+                    />
+                  </IconButton>
+                </Box>
+                
               )}
             />
             <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="sk">
@@ -381,6 +407,40 @@ const EditActivityScreen: React.FC = () => {
               />
             </LocalizationProvider>
 
+            {predefinedTags ? (
+              <Controller
+                name="tags"
+                control={control}
+                render={({ field, fieldState: { error } }) => (
+                  <Autocomplete
+                    {...field}
+                    multiple
+                    id="tags-standard"
+                    options={mappedTags}
+                    onChange={(e, collectedTags) => {
+                      field.onChange(collectedTags);
+                    }}
+                    defaultValue={[]}
+                    sx={{
+                      minWidth: "100%",
+                      "& .MuiOutlinedInput-root": {
+                        height: "auto",
+                      },
+                      mt: 2,
+                    }}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        // variant="outlined"
+                        label="Select categories"
+                        placeholder="Favorites"
+                      />
+                    )}
+                  />
+                )}
+              />
+            ) : null}
+
             <Controller
               name="limit"
               control={control}
@@ -388,7 +448,7 @@ const EditActivityScreen: React.FC = () => {
                 <TextField
                   {...field}
                   type="number"
-                  label="Maximal attendance"
+                  label="Maximum attendance"
                   variant="outlined"
                   error={!!error}
                   helperText={error?.message}
@@ -415,6 +475,54 @@ const EditActivityScreen: React.FC = () => {
                 />
               )}
             />
+            
+            <Controller
+              name="visibility"
+              control={control}
+              render={({ field, fieldState: { error } }) => (
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "flex-start",
+                    width: "100%",
+                    justifyContent: "space-around",
+                    mt: 2,
+                  }}
+                >
+                  <Typography sx={{ fontWeight: 600 }}>
+                    Who can join the activity ?
+                  </Typography>
+                  <Box sx={{ display: "flex", alignItems: "center" }}>
+                  <RadioGroup
+                  {...field}
+                  aria-labelledby="demo-row-radio-buttons-group-label"
+                  name="row-radio-buttons-group"
+                  sx={{
+                    justifyContent: "center",
+                    mt: 1,
+                    "& .MuiSvgIcon-root": {
+                      color: "primary.main",
+                    },
+                    ml: 2,
+                  }}
+                  color="primary.main"
+                >
+                  <FormControlLabel
+                    value={ActivityVisibilityEnum.public}
+                    control={<Radio />}
+                    label="Anyone"
+                  />
+                  <FormControlLabel
+                    value={ActivityVisibilityEnum.private}
+                    control={<Radio color="primary" />}
+                    label="Invited users only"
+                  />
+                </RadioGroup>
+                  </Box>
+                </Box>
+              )}
+            />
             <Controller
               name="description"
               control={control}
@@ -437,84 +545,6 @@ const EditActivityScreen: React.FC = () => {
                   helperText={`${field?.value?.length ?? 0}/200`}
                   data-testid="description-input"
                 />
-              )}
-            />
-            {predefinedTags ? (
-              <Controller
-                name="tags"
-                control={control}
-                render={({ field, fieldState: { error } }) => (
-                  <Autocomplete
-                    {...field}
-                    multiple
-                    id="tags-standard"
-                    options={mappedTags}
-                    onChange={(e, collectedTags) => {
-                      field.onChange(collectedTags);
-                    }}
-                    defaultValue={[]}
-                    sx={{
-                      minWidth: "100%",
-                      "& .MuiOutlinedInput-root": {
-                        height: "auto",
-                      },
-                      mt: 2,
-                    }}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        // variant="outlined"
-                        label="Select tags"
-                        placeholder="Favorites"
-                      />
-                    )}
-                  />
-                )}
-              />
-            ) : null}
-
-            <Controller
-              name="visibility"
-              control={control}
-              render={({ field, fieldState: { error } }) => (
-                <Box
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    width: "100%",
-                    justifyContent: "space-around",
-                    mt: 2,
-                  }}
-                >
-                  <Typography sx={{ fontWeight: 600 }}>
-                    Accessibility
-                  </Typography>
-                  <Box sx={{ display: "flex", alignItems: "center" }}>
-                    <Switch
-                      sx={{ mx: 1 }}
-                      value={
-                        field?.value === ActivityVisibilityEnum.private
-                          ? false
-                          : true
-                      }
-                      checked={
-                        field?.value === ActivityVisibilityEnum.private
-                          ? false
-                          : true
-                      }
-                      onChange={(e) => {
-                        field.onChange(
-                          e.target.checked
-                            ? ActivityVisibilityEnum.public
-                            : ActivityVisibilityEnum.private
-                        );
-                      }}
-                      color="primary"
-                      data-testid="accessibility-switch"
-                    />
-                    <FormLabel>public</FormLabel>
-                  </Box>
-                </Box>
               )}
             />
 
