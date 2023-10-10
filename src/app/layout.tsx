@@ -167,8 +167,8 @@ export const Layout: React.FC<ILayoutProps> = ({ children }) => {
         sx={{
           width: "100%",
           // height: isIOSSafari ? `calc(100vh - 20px)` : "100vh",
-          height: isIOSSafari ? "98vh" : "100vh",
-
+          // height: isIOSSafari ? "98vh" : "100vh",
+          height: "100vh",
           display: "flex",
           flexDirection: "column",
           alignItems: "center",

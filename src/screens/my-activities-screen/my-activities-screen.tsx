@@ -488,7 +488,7 @@ const ActivitiesScreen = () => {
             </Box>
             <InfiniteScroll
               pageStart={0}
-              loadMore={() => fetchNextPage()}
+              loadMore={() => !isFetchingNextPage && fetchNextPage()}
               hasMore={hasNextPage}
               loader={<Loader key={"loader"} />}
               useWindow={false}

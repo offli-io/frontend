@@ -110,8 +110,9 @@ const NotificationRequest: React.FC<INotificationRequestProps> = ({
               style={{
                 height: 45,
                 borderRadius: "50%",
+                margin: 5,
                 // border: `2px solid ${palette?.primary?.main}`,
-                boxShadow: shadows[5],
+                boxShadow: shadows[4],
               }}
               src={
                 notification?.properties?.user?.profile_photo

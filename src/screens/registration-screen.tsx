@@ -138,7 +138,7 @@ export const RegistrationScreen: React.FC = () => {
     <>
       <OffliBackButton
         onClick={() => navigate(ApplicationLocations.LOGIN_OR_REGISTER)}
-        sx={{ alignSelf: "flex-start", m: 1, color: palette?.primary?.main}}
+        sx={{ alignSelf: "flex-start", m: 1, color: palette?.primary?.main }}
       >
         Back
       </OffliBackButton>
@@ -166,7 +166,9 @@ export const RegistrationScreen: React.FC = () => {
           </Typography>
 
           <OffliButton
-            startIcon={<GoogleIcon sx={{ filter: "invert(100%)" , color: palette?.background?.default,}} />}
+            startIcon={
+              <GoogleIcon sx={{ color: palette?.background?.default }} />
+            }
             onClick={handleGoogleAuthorization}
             sx={{ mb: 1 }}
           >

@@ -154,7 +154,9 @@ const LoginScreen: React.FC = () => {
           }}
         >
           <OffliButton
-            startIcon={<GoogleIcon sx={{ filter: "invert(100%)", color: palette?.background?.default,}} />}
+            startIcon={
+              <GoogleIcon sx={{ color: palette?.background?.default }} />
+            }
             onClick={handleGoogleAuthorization}
             sx={{ mb: 1 }}
             disabled={

@@ -236,7 +236,7 @@ const AddBuddiesContent: React.FC<IAddBuddiesContentProps> = ({ navigate }) => {
           >
             <InfiniteScroll
               pageStart={0}
-              loadMore={() => fetchNextPage()}
+              loadMore={() => !isFetchingNextPage && fetchNextPage()}
               hasMore={Boolean(hasNextPage)}
               loader={<Loader />}
               height={300}
