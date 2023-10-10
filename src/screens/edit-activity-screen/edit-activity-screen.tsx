@@ -478,41 +478,43 @@ const EditActivityScreen: React.FC = () => {
                   )}
                 />
               ) : null}
-
-              <Controller
-                name="limit"
-                control={control}
-                render={({ field, fieldState: { error } }) => (
-                  <TextField
-                    {...field}
-                    type="number"
-                    label="Maximum attendance"
-                    variant="outlined"
-                    error={!!error}
-                    helperText={error?.message}
-                    InputLabelProps={{ shrink: true }}
-                    //disabled={methodSelectionDisabled}
-                    sx={{ width: "100%", mt: 3 }}
-                  />
-                )}
-              />
-              <Controller
-                name="price"
-                control={control}
-                render={({ field, fieldState: { error } }) => (
-                  <TextField
-                    type="number"
-                    {...field}
-                    label="Price"
-                    variant="outlined"
-                    error={!!error}
-                    helperText={error?.message}
-                    InputLabelProps={{ shrink: true }}
-                    //disabled={methodSelectionDisabled}
-                    sx={{ width: "100%", mt: 3 }}
-                  />
-                )}
-              />
+              <Box sx={{display: "flex", width: "100%", alignItems: "center", justifyContent: "space-between"}}>
+                <Controller
+                  name="limit"
+                  control={control}
+                  render={({ field, fieldState: { error } }) => (
+                    <TextField
+                      {...field}
+                      type="number"
+                      label="Maximum attendance"
+                      variant="outlined"
+                      error={!!error}
+                      helperText={error?.message}
+                      InputLabelProps={{ shrink: true }}
+                      //disabled={methodSelectionDisabled}
+                      sx={{ width: "55%", mt: 3 }}
+                    />
+                  )}
+                />
+                <Controller
+                  name="price"
+                  control={control}
+                  render={({ field, fieldState: { error } }) => (
+                    <TextField
+                      type="number"
+                      {...field}
+                      label="Price"
+                      variant="outlined"
+                      error={!!error}
+                      helperText={error?.message}
+                      InputLabelProps={{ shrink: true }}
+                      //disabled={methodSelectionDisabled}
+                      sx={{ width: "40%", mt: 3 }}
+                    />
+                  )}
+                />
+              </Box>
+              
 
               <Controller
                 name="visibility"
