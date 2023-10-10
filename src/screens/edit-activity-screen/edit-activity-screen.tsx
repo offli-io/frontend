@@ -50,6 +50,9 @@ import {
   validationSchema,
 } from "./utils/validation-schema";
 import AddLocationAltIcon from "@mui/icons-material/AddLocationAlt";
+import MapScreen from "screens/map-screen";
+import SetOnMapScreen from "screens/set-on-map-screen/set-on-map-screen";
+import { ILocation } from "types/activities/location.dto";
 
 const EditActivityScreen: React.FC = () => {
   const [localFile, setLocalFile] = React.useState<any>();
@@ -61,6 +64,7 @@ const EditActivityScreen: React.FC = () => {
   const baseUrl = useGetApiUrl();
   const { userInfo } = React.useContext(AuthenticationContext);
   const { palette } = useTheme();
+  const [showMap, setShowMap] = React.useState(false);
   const { data: { data: { tags: predefinedTags = [] } = {} } = {} } = useTags();
 
   const mappedTags = predefinedTags?.map(({ title }) => title);
@@ -190,6 +194,16 @@ const EditActivityScreen: React.FC = () => {
   const dateFrom = watch("datetime_from");
   const dateUntil = watch("datetime_until");
 
+  const handleLocationSaveFromMap = React.useCallback(
+    (location: ILocation | null) => {
+      if (location) {
+        setValue("location", location);
+      }
+      setShowMap(false);
+    },
+    [setValue]
+  );
+
   const handleFormSubmit = React.useCallback(
     (values: IActivity) => {
       // let newValues = {};
@@ -210,41 +224,48 @@ const EditActivityScreen: React.FC = () => {
         onClose={() => setLocalFile(null)}
         aspectRatio={390 / 300}
       />
-      <PageWrapper>
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            alignItems: "center",
-            width: "100%",
-          }}
-        >
-          <input
-            onChange={handleFileUpload}
-            type="file"
-            style={{ display: "none" }}
-            ref={hiddenFileInput}
-            // setting empty string to always fire onChange event on input even when selecting same pictures 2 times in a row
-            value={""}
-            accept="image/*"
-          />
-          {activity?.title_picture ? (
-            <Box sx={{height: 200, position: "relative", overflow: "hidden"}}>
-              <Box sx={{ width: "100%", }}>
-                <img
-                  onClick={() => console.log("change profile photo")}
-                  // todo add default picture in case of missing photo
-                  src={`${baseUrl}/files/${activity?.title_picture}`}
-                  alt="profile"
-                  style={{
-                    width: "100%",
-                    aspectRatio: ACTIVITY_ASPECT_RATIO,
-                  }}
-                />
-                
-              </Box>
-              <OffliButton
+      {showMap ? (
+        <SetOnMapScreen
+          onLocationSave={handleLocationSaveFromMap}
+          activity={activity}
+        />
+      ) : (
+        <PageWrapper sxOverrides={{ mt: 0 }}>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+              width: "100%",
+            }}
+          >
+            <input
+              onChange={handleFileUpload}
+              type="file"
+              style={{ display: "none" }}
+              ref={hiddenFileInput}
+              // setting empty string to always fire onChange event on input even when selecting same pictures 2 times in a row
+              value={""}
+              accept="image/*"
+            />
+            {activity?.title_picture ? (
+              <Box
+                sx={{ height: 200, position: "relative", overflow: "hidden" }}
+              >
+                <Box sx={{ width: "100%" }}>
+                  <img
+                    onClick={() => console.log("change profile photo")}
+                    // todo add default picture in case of missing photo
+                    src={`${baseUrl}/files/${activity?.title_picture}`}
+                    alt="profile"
+                    style={{
+                      width: "100%",
+                      aspectRatio: ACTIVITY_ASPECT_RATIO,
+                    }}
+                  />
+                </Box>
+                <OffliButton
                   size="small"
                   sx={{
                     position: "absolute",
@@ -259,307 +280,325 @@ const EditActivityScreen: React.FC = () => {
                 >
                   Edit photo
                 </OffliButton>
-            </Box>
-          ) : null}
+              </Box>
+            ) : null}
 
-          <form
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
-              alignItems: "center",
-              width: "86%",
-            }}
-            onSubmit={handleSubmit(handleFormSubmit)}
-          >
-            <Controller
-              name="title"
-              control={control}
-              render={({ field, fieldState: { error } }) => (
-                <Box sx={{display: "flex", width: "100%", flexDirection: "column", mt: 3}}>
-                  <Typography variant="h4">General information</Typography>
+            <form
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                alignItems: "center",
+                width: "86%",
+              }}
+              onSubmit={handleSubmit(handleFormSubmit)}
+            >
+              <Controller
+                name="title"
+                control={control}
+                render={({ field, fieldState: { error } }) => (
+                  <Box
+                    sx={{
+                      display: "flex",
+                      width: "100%",
+                      flexDirection: "column",
+                      mt: 3,
+                    }}
+                  >
+                    <Typography variant="h4">General information</Typography>
+                    <TextField
+                      {...field}
+                      label="Title"
+                      variant="outlined"
+                      error={!!error}
+                      helperText={error?.message}
+                      //disabled={methodSelectionDisabled}
+                      sx={{ width: "100%", mt: 3, mb: 2 }}
+                    />
+                  </Box>
+                )}
+              />
+              <Controller
+                name="location"
+                control={control}
+                render={({ field, fieldState: { error } }) => (
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      width: "100%",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <Autocomplete
+                      {...field}
+                      options={placeQuery?.data?.results ?? []}
+                      value={mapLocationValue(field?.value)}
+                      isOptionEqualToValue={(option, value) =>
+                        option?.formatted === (value?.formatted ?? value?.name)
+                      }
+                      sx={{
+                        width: "100%",
+                        display: "flex",
+                        justifyContent: "center",
+                      }}
+                      loading={placeQuery?.isLoading}
+                      onChange={(e, locationObject) => {
+                        field.onChange(
+                          locationObject
+                            ? {
+                                name: locationObject?.formatted,
+                                coordinates: {
+                                  lat: locationObject?.lat,
+                                  lon: locationObject?.lon,
+                                },
+                              }
+                            : null
+                        );
+                      }}
+                      getOptionLabel={(option) => String(option?.formatted)}
+                      // inputValue={inputValue ?? ""}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          label="Search place"
+                          onChange={(e) =>
+                            setValue("placeQuery", e.target.value)
+                          }
+                        />
+                      )}
+                      data-testid="activity-place-input"
+                    />
+                    <IconButton onClick={() => setShowMap(true)}>
+                      <AddLocationAltIcon
+                        sx={{
+                          color: ({ palette }) => palette?.primary?.main,
+                          ml: 1,
+                          bgcolor: ({ palette }) => palette?.primary?.light,
+                          borderRadius: "10px",
+                          p: 1.75,
+                        }}
+                      />
+                    </IconButton>
+                  </Box>
+                )}
+              />
+              <LocalizationProvider
+                dateAdapter={AdapterDayjs}
+                adapterLocale="sk"
+              >
+                <Controller
+                  name="datetime_from"
+                  control={control}
+                  render={({
+                    field: { onChange, ...field },
+                    fieldState: { error },
+                  }) => (
+                    <DateTimePicker
+                      {...field}
+                      disablePast
+                      maxDate={dateUntil}
+                      label="Start date"
+                      onChange={(e) => onChange(e)}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          variant="outlined"
+                          error={!!error}
+                          helperText={error?.message}
+                          sx={{
+                            width: "100%",
+                            mt: 3,
+                          }}
+                        />
+                      )}
+                    />
+                  )}
+                />
+                <Controller
+                  name="datetime_until"
+                  control={control}
+                  render={({
+                    field: { onChange, ...field },
+                    fieldState: { error },
+                  }) => (
+                    <DateTimePicker
+                      {...field}
+                      label="End date"
+                      minDate={dateFrom}
+                      disablePast
+                      onChange={(e) => onChange(e)}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          variant="outlined"
+                          error={!!error}
+                          helperText={error?.message}
+                          sx={{
+                            width: "100%",
+                            mt: 3,
+                          }}
+                        />
+                      )}
+                    />
+                  )}
+                />
+              </LocalizationProvider>
+
+              {predefinedTags ? (
+                <Controller
+                  name="tags"
+                  control={control}
+                  render={({ field, fieldState: { error } }) => (
+                    <Autocomplete
+                      {...field}
+                      multiple
+                      id="tags-standard"
+                      options={mappedTags}
+                      onChange={(e, collectedTags) => {
+                        field.onChange(collectedTags);
+                      }}
+                      defaultValue={[]}
+                      sx={{
+                        minWidth: "100%",
+                        "& .MuiOutlinedInput-root": {
+                          height: "auto",
+                        },
+                        mt: 2,
+                      }}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          // variant="outlined"
+                          label="Select categories"
+                          placeholder="Favorites"
+                        />
+                      )}
+                    />
+                  )}
+                />
+              ) : null}
+
+              <Controller
+                name="limit"
+                control={control}
+                render={({ field, fieldState: { error } }) => (
                   <TextField
                     {...field}
-                    label="Title"
+                    type="number"
+                    label="Maximum attendance"
                     variant="outlined"
                     error={!!error}
                     helperText={error?.message}
+                    InputLabelProps={{ shrink: true }}
                     //disabled={methodSelectionDisabled}
-                    sx={{ width: "100%", mt: 3, mb: 2 }}
-                  />
-                </Box>
-                
-              )}
-            />
-            <Controller
-              name="location"
-              control={control}
-              render={({ field, fieldState: { error } }) => (
-                <Box sx={{display: "flex", alignItems: "center", width: "100%", justifyContent: "center"}}>
-                  <Autocomplete
-                  {...field}
-                  options={placeQuery?.data?.results ?? []}
-                  value={mapLocationValue(field?.value)}
-                  isOptionEqualToValue={(option, value) =>
-                    option?.formatted === (value?.formatted ?? value?.name)
-                  }
-                  sx={{
-                    width: "100%",
-                    display: "flex",
-                    justifyContent: "center",
-                  }}
-                  loading={placeQuery?.isLoading}
-                  onChange={(e, locationObject) => {
-                    field.onChange(
-                      locationObject
-                        ? {
-                            name: locationObject?.formatted,
-                            coordinates: {
-                              lat: locationObject?.lat,
-                              lon: locationObject?.lon,
-                            },
-                          }
-                        : null
-                    );
-                  }}
-                  getOptionLabel={(option) => String(option?.formatted)}
-                  // inputValue={inputValue ?? ""}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      label="Search place"
-                      onChange={(e) => setValue("placeQuery", e.target.value)}
-                    />
-                  )}
-                  data-testid="activity-place-input"
-                />
-                <IconButton onClick={() => {}}>
-                    <AddLocationAltIcon
-                      sx={{
-                        color: ({ palette }) => palette?.primary?.main,
-                        ml: 1,
-                        bgcolor: ({ palette }) => palette?.primary?.light,
-                        borderRadius: "10px",
-                        p: 1.75,
-                      }}
-                    />
-                  </IconButton>
-                </Box>
-                
-              )}
-            />
-            <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="sk">
-              <Controller
-                name="datetime_from"
-                control={control}
-                render={({
-                  field: { onChange, ...field },
-                  fieldState: { error },
-                }) => (
-                  <DateTimePicker
-                    {...field}
-                    disablePast
-                    maxDate={dateUntil}
-                    label="Start date"
-                    onChange={(e) => onChange(e)}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        variant="outlined"
-                        error={!!error}
-                        helperText={error?.message}
-                        sx={{
-                          width: "100%",
-                          mt: 3,
-                        }}
-                      />
-                    )}
+                    sx={{ width: "100%", mt: 3 }}
                   />
                 )}
               />
               <Controller
-                name="datetime_until"
-                control={control}
-                render={({
-                  field: { onChange, ...field },
-                  fieldState: { error },
-                }) => (
-                  <DateTimePicker
-                    {...field}
-                    label="End date"
-                    minDate={dateFrom}
-                    disablePast
-                    onChange={(e) => onChange(e)}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        variant="outlined"
-                        error={!!error}
-                        helperText={error?.message}
-                        sx={{
-                          width: "100%",
-                          mt: 3,
-                        }}
-                      />
-                    )}
-                  />
-                )}
-              />
-            </LocalizationProvider>
-
-            {predefinedTags ? (
-              <Controller
-                name="tags"
+                name="price"
                 control={control}
                 render={({ field, fieldState: { error } }) => (
-                  <Autocomplete
+                  <TextField
+                    type="number"
                     {...field}
-                    multiple
-                    id="tags-standard"
-                    options={mappedTags}
-                    onChange={(e, collectedTags) => {
-                      field.onChange(collectedTags);
-                    }}
-                    defaultValue={[]}
-                    sx={{
-                      minWidth: "100%",
-                      "& .MuiOutlinedInput-root": {
-                        height: "auto",
-                      },
-                      mt: 2,
-                    }}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        // variant="outlined"
-                        label="Select categories"
-                        placeholder="Favorites"
-                      />
-                    )}
+                    label="Price"
+                    variant="outlined"
+                    error={!!error}
+                    helperText={error?.message}
+                    InputLabelProps={{ shrink: true }}
+                    //disabled={methodSelectionDisabled}
+                    sx={{ width: "100%", mt: 3 }}
                   />
                 )}
               />
-            ) : null}
 
-            <Controller
-              name="limit"
-              control={control}
-              render={({ field, fieldState: { error } }) => (
-                <TextField
-                  {...field}
-                  type="number"
-                  label="Maximum attendance"
-                  variant="outlined"
-                  error={!!error}
-                  helperText={error?.message}
-                  InputLabelProps={{ shrink: true }}
-                  //disabled={methodSelectionDisabled}
-                  sx={{ width: "100%", mt: 3 }}
-                />
-              )}
-            />
-            <Controller
-              name="price"
-              control={control}
-              render={({ field, fieldState: { error } }) => (
-                <TextField
-                  type="number"
-                  {...field}
-                  label="Price"
-                  variant="outlined"
-                  error={!!error}
-                  helperText={error?.message}
-                  InputLabelProps={{ shrink: true }}
-                  //disabled={methodSelectionDisabled}
-                  sx={{ width: "100%", mt: 3 }}
-                />
-              )}
-            />
-            
-            <Controller
-              name="visibility"
-              control={control}
-              render={({ field, fieldState: { error } }) => (
-                <Box
-                  sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "flex-start",
-                    width: "100%",
-                    justifyContent: "space-around",
-                    mt: 2,
-                  }}
-                >
-                  <Typography sx={{ fontWeight: 600 }}>
-                    Who can join the activity ?
-                  </Typography>
-                  <Box sx={{ display: "flex", alignItems: "center" }}>
-                  <RadioGroup
-                  {...field}
-                  aria-labelledby="demo-row-radio-buttons-group-label"
-                  name="row-radio-buttons-group"
-                  sx={{
-                    justifyContent: "center",
-                    mt: 1,
-                    "& .MuiSvgIcon-root": {
-                      color: "primary.main",
-                    },
-                    ml: 2,
-                  }}
-                  color="primary.main"
-                >
-                  <FormControlLabel
-                    value={ActivityVisibilityEnum.public}
-                    control={<Radio />}
-                    label="Anyone"
-                  />
-                  <FormControlLabel
-                    value={ActivityVisibilityEnum.private}
-                    control={<Radio color="primary" />}
-                    label="Invited users only"
-                  />
-                </RadioGroup>
+              <Controller
+                name="visibility"
+                control={control}
+                render={({ field, fieldState: { error } }) => (
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "flex-start",
+                      width: "100%",
+                      justifyContent: "space-around",
+                      mt: 2,
+                    }}
+                  >
+                    <Typography sx={{ fontWeight: 600 }}>
+                      Who can join the activity ?
+                    </Typography>
+                    <Box sx={{ display: "flex", alignItems: "center" }}>
+                      <RadioGroup
+                        {...field}
+                        aria-labelledby="demo-row-radio-buttons-group-label"
+                        name="row-radio-buttons-group"
+                        sx={{
+                          justifyContent: "center",
+                          mt: 1,
+                          "& .MuiSvgIcon-root": {
+                            color: "primary.main",
+                          },
+                          ml: 2,
+                        }}
+                        color="primary.main"
+                      >
+                        <FormControlLabel
+                          value={ActivityVisibilityEnum.public}
+                          control={<Radio />}
+                          label="Anyone"
+                        />
+                        <FormControlLabel
+                          value={ActivityVisibilityEnum.private}
+                          control={<Radio color="primary" />}
+                          label="Invited users only"
+                        />
+                      </RadioGroup>
+                    </Box>
                   </Box>
-                </Box>
-              )}
-            />
-            <Controller
-              name="description"
-              control={control}
-              render={({ field, fieldState: { error } }) => (
-                <TextField
-                  {...field}
-                  multiline
-                  rows={3}
-                  error={!!error}
-                  label="Additional description"
-                  placeholder="Type more info about the activity"
-                  sx={{
-                    mt: 3,
-                    width: "100%",
-                    "& .MuiOutlinedInput-root": {
-                      height: "unset",
-                    },
-                  }}
-                  inputProps={{ maxLength: 200 }}
-                  helperText={`${field?.value?.length ?? 0}/200`}
-                  data-testid="description-input"
-                />
-              )}
-            />
+                )}
+              />
+              <Controller
+                name="description"
+                control={control}
+                render={({ field, fieldState: { error } }) => (
+                  <TextField
+                    {...field}
+                    multiline
+                    rows={3}
+                    error={!!error}
+                    label="Additional description"
+                    placeholder="Type more info about the activity"
+                    sx={{
+                      mt: 3,
+                      width: "100%",
+                      "& .MuiOutlinedInput-root": {
+                        height: "unset",
+                      },
+                    }}
+                    inputProps={{ maxLength: 200 }}
+                    helperText={`${field?.value?.length ?? 0}/200`}
+                    data-testid="description-input"
+                  />
+                )}
+              />
 
-            <OffliButton
-              size="small"
-              type="submit"
-              sx={{ my: 4, width: "60%" }}
-              disabled={!isValid}
-              isLoading={isUpdatingActivity}
-            >
-              Save
-            </OffliButton>
-          </form>
-        </Box>
-      </PageWrapper>
+              <OffliButton
+                size="small"
+                type="submit"
+                sx={{ my: 4, width: "60%" }}
+                disabled={!isValid}
+                isLoading={isUpdatingActivity}
+              >
+                Save
+              </OffliButton>
+            </form>
+          </Box>
+        </PageWrapper>
+      )}
     </>
   );
 };
