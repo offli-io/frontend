@@ -53,6 +53,7 @@ import { SetLocationContent } from "./components/set-location-content";
 import { ActivitySortColumnEnum } from "types/activities/activity-sort-enum.dto";
 import ca from "date-fns/locale/ca/index";
 import { useDismissActivity } from "hooks/use-dismiss-activity";
+import { endOfWeek, isWithinInterval, startOfToday } from "date-fns";
 
 const ActivitiesScreen = () => {
   const { ref, inView } = useInView();
@@ -425,7 +426,18 @@ const ActivitiesScreen = () => {
                   "::-webkit-scrollbar": { display: "none" },
                 }}
               >
-                {participantActivites?.map((activity) => {
+                {participantActivites
+                  .filter((activity) => {
+                    if(activity?.datetime_from && activity?.datetime_until) {
+                      const startDate = new Date(activity?.datetime_from);
+                      const endDate = new Date(activity?.datetime_until);
+                      const today = startOfToday();
+                      const nextWeek = endOfWeek(today);
+
+                    return isWithinInterval(startDate, { start: today, end: nextWeek });
+                    } else return null;
+                  })
+                  .map((activity) => {
                   return (
                     <MyActivityCard
                       key={activity?.id}
