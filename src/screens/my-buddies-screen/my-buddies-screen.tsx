@@ -10,9 +10,9 @@ import {
   Typography,
 } from "@mui/material";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useSnackbar } from "notistack";
 import React from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 import { deleteBuddy } from "../../api/users/requests";
 import { AuthenticationContext } from "../../assets/theme/authentication-provider";
 import { DrawerContext } from "../../assets/theme/drawer-provider";
@@ -21,8 +21,6 @@ import { useBuddies } from "../../hooks/use-buddies";
 import { IPerson } from "../../types/activities/activity.dto";
 import { ApplicationLocations } from "../../types/common/applications-locations.dto";
 import { BuddyActionTypeEnum } from "../../types/common/buddy-actions-type-enum.dto";
-import { ICustomizedLocationStateDto } from "../../types/common/customized-location-state.dto";
-import { useSendBuddyRequest } from "../profile-screen/hooks/use-send-buddy-request";
 import AddBuddiesContent from "./components/add-buddies-content";
 import BuddyActions from "./components/buddy-actions";
 import NoBuddiesScreen from "./components/no-buddies-screen";
@@ -32,13 +30,8 @@ const MyBuddiesScreen = () => {
   const navigate = useNavigate();
   const [currentSearch, setCurrentSearch] = React.useState("");
   const { toggleDrawer } = React.useContext(DrawerContext);
-  const { enqueueSnackbar } = useSnackbar();
   const { userInfo } = React.useContext(AuthenticationContext);
-  const location = useLocation();
   const queryClient = useQueryClient();
-  const from =
-    (location?.state as ICustomizedLocationStateDto)?.from ??
-    ApplicationLocations.PROFILE;
   const { buddies, isLoading, invalidateBuddies } = useBuddies({
     text: currentSearch,
   });
@@ -48,35 +41,21 @@ const MyBuddiesScreen = () => {
     (id?: number) => deleteBuddy(userInfo?.id, id),
     {
       onSuccess: (data, variables) => {
-        //TODO what to invalidate, and where to navigate after success
-        // queryClient.invalidateQueries(['notifications'])
-        // navigateBasedOnType(
-        //   variables?.type,
-        //   variables?.properties?.user?.id ?? variables?.properties?.activity?.id
-        // )
         toggleDrawer({ open: false, content: undefined });
         //TODO invalidate only my data
         queryClient.invalidateQueries(["user"]);
         invalidateBuddies();
-        enqueueSnackbar("Buddy was successfully deleted", {
-          variant: "success",
-        });
+        toast.success("Buddy was successfully deleted");
       },
       onError: () => {
-        enqueueSnackbar("Failed to delete buddy", {
-          variant: "error",
-        });
+        toast.error("Failed to delete buddy");
       },
     }
   );
 
   const navigateToBuddyProfile = React.useCallback(
     (userId?: number) =>
-      navigate(`${ApplicationLocations.USER_PROFILE}/${userId}`, {
-        state: {
-          from: ApplicationLocations.BUDDIES,
-        },
-      }),
+      navigate(`${ApplicationLocations.USER_PROFILE}/${userId}`),
     [navigate]
   );
 

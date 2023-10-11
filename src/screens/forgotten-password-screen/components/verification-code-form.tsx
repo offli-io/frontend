@@ -1,15 +1,10 @@
-import React from "react";
-import { Box, Typography, TextField } from "@mui/material";
-import OffliButton from "../../../components/offli-button";
-import ReactInputVerificationCode from "react-input-verification-code";
+import { Box, Typography } from "@mui/material";
 import { useMutation } from "@tanstack/react-query";
-import {
-  checkVerificationCode,
-  resendCode,
-  resetPassword,
-  verifyEmail,
-} from "../../../api/auth/requests";
-import { useSnackbar } from "notistack";
+import React from "react";
+import ReactInputVerificationCode from "react-input-verification-code";
+import { toast } from "sonner";
+import { checkVerificationCode, resendCode } from "../../../api/auth/requests";
+import OffliButton from "../../../components/offli-button";
 
 interface IVerificationCodeFormProps {
   onSuccess: (code: string) => void;
@@ -19,7 +14,6 @@ const VerificationCodeForm: React.FC<IVerificationCodeFormProps> = ({
   onSuccess,
   email,
 }) => {
-  const { enqueueSnackbar } = useSnackbar();
   const { isLoading: isVerifyingEmail, mutate: sendResetPassword } =
     useMutation(
       ["reset-password"],
@@ -35,9 +29,7 @@ const VerificationCodeForm: React.FC<IVerificationCodeFormProps> = ({
         },
         onError: (error) => {
           //TODO this not might be always the problem check request status
-          enqueueSnackbar("Verification code is incorrect", {
-            variant: "error",
-          });
+          toast.error("Verification code is incorrect");
         },
       }
     );
@@ -51,14 +43,10 @@ const VerificationCodeForm: React.FC<IVerificationCodeFormProps> = ({
     },
     {
       onSuccess: (data, code) => {
-        enqueueSnackbar("Verification code was re-sent to your email", {
-          variant: "success",
-        });
+        toast.success("Verification code was re-sent to your email");
       },
       onError: (error) => {
-        enqueueSnackbar("Failed to re-send verification code to given email", {
-          variant: "error",
-        });
+        toast.error("Failed to re-send verification code to given email");
       },
     }
   );

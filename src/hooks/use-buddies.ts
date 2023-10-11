@@ -1,11 +1,10 @@
-import React from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useSnackbar } from "notistack";
+import { AxiosResponse } from "axios";
+import React from "react";
+import { toast } from "sonner";
+import { IBuddiesResponseDto } from "types/users/buddies-response.dto";
 import { getBuddies } from "../api/activities/requests";
 import { AuthenticationContext } from "../assets/theme/authentication-provider";
-import { AxiosResponse } from "axios";
-import { IPerson } from "../types/activities/activity.dto";
-import { IBuddiesResponseDto } from "types/users/buddies-response.dto";
 
 export interface IUseBuddiesProps {
   text?: string;
@@ -16,7 +15,6 @@ export interface IUseBuddiesProps {
 }
 
 export const useBuddies = ({ text, select }: IUseBuddiesProps = {}) => {
-  const { enqueueSnackbar } = useSnackbar();
   const { userInfo } = React.useContext(AuthenticationContext);
   const queryClient = useQueryClient();
 
@@ -27,10 +25,7 @@ export const useBuddies = ({ text, select }: IUseBuddiesProps = {}) => {
     () => getBuddies(Number(userInfo?.id), text),
     {
       onError: () => {
-        //some generic toast for every hook
-        enqueueSnackbar(`Failed to load buddies`, {
-          variant: "error",
-        });
+        toast.error(`Failed to load buddies`);
       },
       enabled: !!userInfo?.id,
       select,

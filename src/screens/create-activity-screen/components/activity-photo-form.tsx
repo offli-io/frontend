@@ -1,29 +1,21 @@
-import AddAPhotoIcon from "@mui/icons-material/AddAPhoto";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
-import { Box, IconButton, Modal, Typography, useTheme } from "@mui/material";
+import FilterIcon from "@mui/icons-material/Filter";
+import { Box, IconButton, Typography, useTheme } from "@mui/material";
 import { grey } from "@mui/material/colors";
 import { useMutation } from "@tanstack/react-query";
-import { useSnackbar } from "notistack";
-import React, { BaseSyntheticEvent } from "react";
-import Cropper from "react-easy-crop";
+import FileUpload from "components/file-upload/file-upload";
+import React from "react";
 import { Controller, UseFormReturn } from "react-hook-form";
 import "react-image-crop/dist/ReactCrop.css";
+import { toast } from "sonner";
+import { uploadFile } from "../../../api/activities/requests";
 import activityPhotoImg from "../../../assets/img/activity-photo.svg";
 import { DrawerContext } from "../../../assets/theme/drawer-provider";
 import LabeledDivider from "../../../components/labeled-divider";
 import OffliButton from "../../../components/offli-button";
-import {
-  ACTIVITY_ASPECT_RATIO,
-  ALLOWED_PHOTO_EXTENSIONS,
-  MAX_FILE_SIZE,
-} from "../../../utils/common-constants";
-import { getAuthToken } from "../../../utils/token.util";
-import OffliGallery from "./offli-gallery";
-import { uploadFile } from "../../../api/activities/requests";
-import getCroppedImg from "../utils/crop-utils";
 import { useGetApiUrl } from "../../../hooks/use-get-api-url";
-import FileUpload from "components/file-upload/file-upload";
-import FilterIcon from "@mui/icons-material/Filter";
+import { ACTIVITY_ASPECT_RATIO } from "../../../utils/common-constants";
+import OffliGallery from "./offli-gallery";
 
 interface IActivityPhotoFormProps {
   methods: UseFormReturn;
@@ -38,7 +30,6 @@ export const ActivityPhotoForm: React.FC<IActivityPhotoFormProps> = ({
   const { toggleDrawer } = React.useContext(DrawerContext);
   const [isImageUploading, setIsImageUploading] = React.useState(false);
   const baseUrl = useGetApiUrl();
-  const { enqueueSnackbar } = useSnackbar();
   const { palette } = useTheme();
   const tags = watch("tags");
   const selectedPhoto = watch("title_picture");
@@ -67,17 +58,13 @@ export const ActivityPhotoForm: React.FC<IActivityPhotoFormProps> = ({
     {
       onSuccess: (data) => {
         setIsImageUploading(false);
-        enqueueSnackbar("Your photo has been successfully uploaded", {
-          variant: "success",
-        });
+        toast.success("Your photo has been successfully uploaded");
         // setLocalFile(null);
         setValue("title_picture", data?.data?.filename);
       },
       onError: (error) => {
         setIsImageUploading(false);
-        enqueueSnackbar("Failed to upload activity photo", {
-          variant: "error",
-        });
+        toast.error("Failed to upload activity photo");
       },
     }
   );

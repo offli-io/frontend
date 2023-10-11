@@ -15,11 +15,10 @@ import {
 import { getUsersPromiseResolved } from "api/activities/requests";
 import { toggleBuddyInvitation } from "api/users/requests";
 import Loader from "components/loader";
-import { useSnackbar } from "notistack";
 import React from "react";
 import InfiniteScroll from "react-infinite-scroller";
-import { useInView } from "react-intersection-observer";
 import { NavigateFunction } from "react-router-dom";
+import { toast } from "sonner";
 import { BuddyRequestActionEnum } from "types/users";
 import { useDebounce } from "use-debounce";
 import { AuthenticationContext } from "../../../assets/theme/authentication-provider";
@@ -42,13 +41,12 @@ interface IAddBuddiesContentProps {
 
 const AddBuddiesContent: React.FC<IAddBuddiesContentProps> = ({ navigate }) => {
   const [username, setUsername] = React.useState("");
-  const { enqueueSnackbar } = useSnackbar();
   const { userInfo } = React.useContext(AuthenticationContext);
   const { shadows } = useTheme();
   const [usernameDebounced] = useDebounce(username, 150);
   const abortControllerRef = React.useRef<AbortController | null>(null);
   const usersContentDivRef = React.useRef<HTMLDivElement | null>(null);
-  const bottom = React.useRef<any>(null);
+  const queryClient = useQueryClient();
 
   const { toggleDrawer } = React.useContext(DrawerContext);
 
@@ -84,10 +82,6 @@ const AddBuddiesContent: React.FC<IAddBuddiesContentProps> = ({ navigate }) => {
     }
   );
 
-  const { ref, inView, entry } = useInView();
-
-  const queryClient = useQueryClient();
-
   const { handleSendBuddyRequest, isSendingBuddyRequest } = useSendBuddyRequest(
     {
       onSuccess: () => {
@@ -117,17 +111,10 @@ const AddBuddiesContent: React.FC<IAddBuddiesContentProps> = ({ navigate }) => {
           queryClient.invalidateQueries(["users"]);
           queryClient.invalidateQueries(["user"]);
 
-          enqueueSnackbar(
-            "You have successfully confirmed user as your buddy",
-            {
-              variant: "success",
-            }
-          );
+          toast.success("You have successfully confirmed user as your buddy");
         },
         onError: (error, variables) => {
-          enqueueSnackbar("Failed to add user as your buddy", {
-            variant: "error",
-          });
+          toast.error("Failed to add user as your buddy");
         },
       }
     );
@@ -140,12 +127,7 @@ const AddBuddiesContent: React.FC<IAddBuddiesContentProps> = ({ navigate }) => {
       navigate?.(
         `${ApplicationLocations.PROFILE}/${
           isBuddy(buddies, buddy?.id) ? "buddy" : "user"
-        }/${buddy?.id}`,
-        {
-          state: {
-            from: ApplicationLocations.BUDDIES,
-          },
-        }
+        }/${buddy?.id}`
       );
     },
     [toggleDrawer]
@@ -254,11 +236,6 @@ const AddBuddiesContent: React.FC<IAddBuddiesContentProps> = ({ navigate }) => {
                       <BuddyItem
                         key={user?.id}
                         buddy={user}
-                        divRef={
-                          index === paginatedUsersData?.pages?.length * 20 - 5
-                            ? ref
-                            : undefined
-                        }
                         onClick={(_user) => handleBuddyActionsClick(_user)}
                         actionContent={
                           <AddBuddiesActionContent

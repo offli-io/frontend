@@ -1,49 +1,27 @@
-import React from "react";
-import {
-  Box,
-  TextField,
-  Typography,
-  InputAdornment,
-  IconButton,
-  Autocomplete,
-} from "@mui/material";
-import qs from "qs";
-import Logo from "../components/logo";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Controller, useForm } from "react-hook-form";
-import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import OffliButton from "../components/offli-button";
-import LabeledDivider from "../components/labeled-divider";
-import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
-import VisibilityIcon from "@mui/icons-material/Visibility";
-import axios from "axios";
 import NearMeIcon from "@mui/icons-material/NearMe";
+import { Autocomplete, Box, TextField, Typography } from "@mui/material";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import React from "react";
+import { useForm } from "react-hook-form";
+import * as yup from "yup";
+import OffliButton from "../components/offli-button";
 
-import { useSnackbar } from "notistack";
-import {
-  getAuthToken,
-  setAuthToken,
-  setRefreshToken,
-} from "../utils/token.util";
-import { AuthenticationContext } from "../assets/theme/authentication-provider";
-import { ApplicationLocations } from "../types/common/applications-locations.dto";
+import { useGeolocated } from "react-geolocated";
 import { useNavigate } from "react-router-dom";
-import { DEFAULT_KEYCLOAK_URL } from "../assets/config";
-import { loginUser } from "../api/auth/requests";
+import { toast } from "sonner";
 import { useDebounce } from "use-debounce";
 import {
-  getLocationFromQuery,
   getLocationFromQueryFetch,
   getPlaceFromCoordinates,
 } from "../api/activities/requests";
-import chooseLocationUrl from "../assets/img/choose-location.svg";
-
-import { IPlaceExternalApiResultDto } from "../types/activities/place-external-api.dto";
-import { ILocation } from "../types/activities/location.dto";
 import { updateProfileInfo } from "../api/users/requests";
-import { useGeolocated } from "react-geolocated";
 import { LocationContext } from "../app/providers/location-provider";
+import chooseLocationUrl from "../assets/img/choose-location.svg";
+import { AuthenticationContext } from "../assets/theme/authentication-provider";
+import { ILocation } from "../types/activities/location.dto";
+import { IPlaceExternalApiResultDto } from "../types/activities/place-external-api.dto";
+import { ApplicationLocations } from "../types/common/applications-locations.dto";
 
 export interface FormValues {
   placeQuery: string;
@@ -91,8 +69,6 @@ const ChooseLocationScreen: React.FC = () => {
   );
 
   const queryClient = useQueryClient();
-  const { enqueueSnackbar } = useSnackbar();
-
   const [queryString] = useDebounce(placeQuery, 1000);
 
   const { data, isLoading: isLocationQueryLoading } = useQuery(
@@ -113,16 +89,11 @@ const ChooseLocationScreen: React.FC = () => {
           setLocation?.(location);
           queryClient.invalidateQueries(["user"]);
           //TODO display snackbar for first login? Idk too many windows (Welcome screen and snackbar)
-          // enqueueSnackbar("Your location was successfully saved", {
-          //   variant: "success",
-          // });
 
           navigate(ApplicationLocations.ACTIVITIES);
         },
         onError: () => {
-          enqueueSnackbar("Failed to select location", {
-            variant: "error",
-          });
+          toast.error("Failed to select location");
         },
       }
     );

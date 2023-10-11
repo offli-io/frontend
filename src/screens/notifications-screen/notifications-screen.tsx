@@ -1,8 +1,9 @@
 import { Box, Typography } from "@mui/material";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useSnackbar } from "notistack";
+import Loader from "components/loader";
 import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 import { markNotificationAsSeen } from "../../api/notifications/requests";
 import { AuthenticationContext } from "../../assets/theme/authentication-provider";
 import NotificationRequest from "../../components/notification-request";
@@ -11,7 +12,6 @@ import { ApplicationLocations } from "../../types/common/applications-locations.
 import { ICustomizedLocationStateDto } from "../../types/common/customized-location-state.dto";
 import { NotificationTypeEnum } from "../../types/notifications/notification-type-enum";
 import { INotificationDto } from "../../types/notifications/notification.dto";
-import Loader from "components/loader";
 
 const NotificationsScreen = () => {
   const { userInfo } = React.useContext(AuthenticationContext);
@@ -19,7 +19,6 @@ const NotificationsScreen = () => {
   const location = useLocation();
   const from = (location?.state as ICustomizedLocationStateDto)?.from;
   const { data, isLoading } = useNotifications(userInfo?.id);
-  const { enqueueSnackbar } = useSnackbar();
   const queryClient = useQueryClient();
   const abortControllerRef = React.useRef<AbortController | null>(null);
 
@@ -39,9 +38,7 @@ const NotificationsScreen = () => {
         );
       },
       onError: () => {
-        enqueueSnackbar("Failed to load notification detail", {
-          variant: "error",
-        });
+        toast.error("Failed to load notification detail");
       },
     }
   );
