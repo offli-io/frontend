@@ -77,6 +77,8 @@ const BackButton = ({ onClick }: { onClick?: () => void }) => {
         left: 20,
         zIndex: 400,
         fontSize: 20,
+        color: "primary.main",
+        bgcolor: "primary.light",
         // width: "45%",
       }}
       onClick={() => onClick?.()}
@@ -266,18 +268,6 @@ const Map: React.FC<ILabeledTileProps> = ({
                   )
               )
             )}
-            <RecenterAutomatically
-              lat={
-                isSingleActivity
-                  ? latLonTupleSingle[0]
-                  : currentLocation?.latitude
-              }
-              lon={
-                isSingleActivity
-                  ? latLonTupleSingle[1]
-                  : currentLocation?.longitude
-              }
-            />
           </MarkerClusterGroup>
         )}
 
@@ -286,6 +276,21 @@ const Map: React.FC<ILabeledTileProps> = ({
             <Popup>You are here</Popup>
           </Marker>
         ) : null}
+
+        {setLocationByMap && !activities ? null : (
+          <RecenterAutomatically
+            lat={
+              isSingleActivity
+                ? latLonTupleSingle[0]
+                : currentLocation?.latitude
+            }
+            lon={
+              isSingleActivity
+                ? latLonTupleSingle[1]
+                : currentLocation?.longitude
+            }
+          />
+        )}
       </MapContainer>
     </Box>
   );

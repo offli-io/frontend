@@ -138,7 +138,7 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
         flexDirection: "column",
         height: "100%",
         width: "100%",
-        justifyContent: "space-between",
+        justifyContent: "space-evenly",
       }}
     >
       <Box sx={{ display: "flex", flexDirection: "column", width: "100%" }}>

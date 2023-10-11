@@ -6,6 +6,7 @@ import { format } from "date-fns";
 import OffliButton from "./offli-button";
 import { useGetApiUrl } from "hooks/use-get-api-url";
 import { DATE_TIME_FORMAT } from "utils/common-constants";
+import { formatDistanceToNow } from 'date-fns';
 
 interface IMyActivityCardProps {
   activity?: IActivity;
@@ -29,6 +30,39 @@ const MyActivityCard: React.FC<IMyActivityCardProps> = ({
     onLongPress: () => onLongPress?.(activity),
   });
   const baseUrl = useGetApiUrl();
+
+  const currentTime = new Date(); // Get the current time
+
+  const isOngoing =
+    activity?.datetime_from &&
+    activity?.datetime_until &&
+    currentTime >= new Date(activity.datetime_from) &&
+    currentTime <= new Date(activity.datetime_until);
+
+    let startDateTime: Date | undefined = undefined;
+    let timeRemainingHours: number = 0;
+    let timeRemainingMinutes: number = 0;
+    let timeRemainingDays: number = 0;
+  
+    if (activity?.datetime_from) {
+      startDateTime = new Date(activity.datetime_from);
+      timeRemainingHours = Math.floor((startDateTime.valueOf() - currentTime.valueOf()) / (1000 * 60 * 60));
+      timeRemainingMinutes = Math.floor((startDateTime.valueOf() - currentTime.valueOf()) / (1000 * 60) % 60);
+      timeRemainingDays = Math.floor(timeRemainingHours / 24);
+    }
+
+  let timeRemainingText;
+
+  if (timeRemainingDays >= 1) {
+    // More than 24 hours remaining
+    timeRemainingText = timeRemainingDays === 1 ? "in 1 day" : `in ${timeRemainingDays} days`;
+  } else if (timeRemainingHours >= 1) {
+    // Less than 24 hours remaining
+    timeRemainingText = timeRemainingHours === 1 ? "in 1 hour" : `in ${timeRemainingHours} hours`;
+  } else {
+    // Less than an hour remaining
+    timeRemainingText = timeRemainingMinutes === 1 ? "less than a minute" : `in ${timeRemainingMinutes} minutes`;
+  }
 
   return (
     <OffliButton
@@ -80,14 +114,27 @@ const MyActivityCard: React.FC<IMyActivityCardProps> = ({
           <Typography variant="subtitle1">
             {activity?.location?.name ?? "Location"}
           </Typography>
-          <Typography variant="subtitle1">
-            {format(
-              (activity?.datetime_from
-                ? new Date(activity?.datetime_from)
-                : new Date()) as Date,
-              DATE_TIME_FORMAT
-            )}
+          {isOngoing ? (
+            <Box sx={{display: "flex", alignItems: "center"}}>
+              <Box
+                sx={{
+                  backgroundColor: ({ palette }) => palette.primary.main,
+                  height: 10,
+                  minWidth: 10,
+                  borderRadius: 5,
+                  mr: 1,
+                }}
+              />
+              <Typography variant="subtitle1" sx={{color: "primary.main"}}>
+                Activity in progress
+              </Typography>
+            </Box>
+          ) : (
+            <Typography variant="subtitle1">
+            {timeRemainingText}
           </Typography>
+          )}
+          
         </Box>
         )}
         {type === "profile" && (
