@@ -1,41 +1,24 @@
 import { Box, Typography } from "@mui/material";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import Loader from "components/loader";
 import React from "react";
-import ReactInputVerificationCode from "react-input-verification-code";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
+import { loginUser, resendCode } from "../../api/auth/requests";
 import { verifyCodeAndRetrieveUserId } from "../../api/users/requests";
+import { AuthenticationContext } from "../../assets/theme/authentication-provider";
+import OffliBackButton from "../../components/offli-back-button";
 import OffliButton from "../../components/offli-button";
 import { ApplicationLocations } from "../../types/common/applications-locations.dto";
-import { useSnackbar } from "notistack";
-import { AuthenticationContext } from "../../assets/theme/authentication-provider";
-import {
-  IEmailPassword,
-  IUsername,
-  IUsernamePassword,
-} from "../../types/users/user.dto";
-import OffliBackButton from "../../components/offli-back-button";
-import { loginUser, resendCode } from "../../api/auth/requests";
+import { IEmailPassword, IUsername } from "../../types/users/user.dto";
 import OTPInput from "./components/otp-input";
-import Loader from "components/loader";
 
 interface LoginValues {
   username: string;
   password: string;
 }
 
-const otpStyle = {
-  // width: "75%",
-  // heigth: "50px",
-  // display: "flex",
-  // alignItems: "center",
-  // justifyContent: "center",
-  // margin: "auto",
-};
-
 const VerificationScreen = () => {
-  const [verificationCode, setVerificationCode] = React.useState<string>("");
-  const [userId, setUserId] = React.useState<string>("");
-
   const [{ otp, numInputs, placeholder, inputType }, setConfig] =
     React.useState({
       otp: "",
@@ -43,8 +26,6 @@ const VerificationScreen = () => {
       placeholder: "",
       inputType: "number" as const,
     });
-
-  const [otpDisabled, setOptDisabled] = React.useState<boolean>(false);
 
   const handleOTPChange = (otp: string) => {
     setConfig((prevConfig) => ({ ...prevConfig, otp }));
@@ -56,7 +37,6 @@ const VerificationScreen = () => {
 
   const queryClient = useQueryClient();
   const navigate = useNavigate();
-  const { enqueueSnackbar } = useSnackbar();
   const { setIsFirstTimeLogin, setStateToken, setUserInfo } = React.useContext(
     AuthenticationContext
   );
@@ -83,7 +63,7 @@ const VerificationScreen = () => {
         navigate(ApplicationLocations.ACTIVITIES);
       },
       onError: (error) => {
-        enqueueSnackbar("Failed to log in", { variant: "error" });
+        toast.error("Failed to log in");
       },
     }
   );
@@ -103,9 +83,8 @@ const VerificationScreen = () => {
         });
       },
       onError: (error) => {
-        enqueueSnackbar("Entered code is not correct, please try again.", {
-          variant: "error",
-        });
+        toast.error("Entered code is not correct, please try again.");
+
         setConfig((prevConfig) => ({ ...prevConfig, otp: "" }));
       },
     }
@@ -120,14 +99,10 @@ const VerificationScreen = () => {
     },
     {
       onSuccess: (data, code) => {
-        enqueueSnackbar("Verification code was re-sent to your email", {
-          variant: "success",
-        });
+        toast.success("Verification code was re-sent to your email");
       },
       onError: (error) => {
-        enqueueSnackbar("Failed to re-send verification code to given email", {
-          variant: "error",
-        });
+        toast.error("Failed to re-send verification code to given email");
       },
     }
   );

@@ -34,7 +34,6 @@ const FileUploadModal: React.FC<IFileUploadModalProps> = ({
   const [zoom, setZoom] = React.useState(1);
   const [croppedAreaPixels, setCroppedAreaPixels] = React.useState(null);
 
-  const { enqueueSnackbar } = useSnackbar();
   const { palette } = useTheme();
 
   const onCropComplete = React.useCallback(
@@ -109,7 +108,7 @@ const FileUploadModal: React.FC<IFileUploadModalProps> = ({
             alignItems: "center",
           }}
         >
-          <Box sx={{ position: "relative", height: 350, width: "100%"}}>
+          <Box sx={{ position: "relative", height: 350, width: "100%" }}>
             <Cropper
               image={localFile}
               crop={crop}

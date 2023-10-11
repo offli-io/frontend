@@ -1,6 +1,7 @@
+import { mdiCrown } from "@mdi/js";
+import Icon from "@mdi/react";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import SearchIcon from "@mui/icons-material/Search";
-import StarIcon from "@mui/icons-material/Star";
 import {
   Box,
   Chip,
@@ -14,9 +15,10 @@ import {
   useTheme,
 } from "@mui/material";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useSnackbar } from "notistack";
 import React from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useSwipeable } from "react-swipeable";
+import { toast } from "sonner";
 import { useDebounce } from "use-debounce";
 import {
   getActivityParticipants,
@@ -34,9 +36,6 @@ import { ActivityMembersActionTypeDto } from "../../types/common/activity-member
 import { ApplicationLocations } from "../../types/common/applications-locations.dto";
 import { BuddyActionContent } from "./components/buddy-action-content";
 import SearchBuddiesContent from "./components/search-buddies-content";
-import { useSwipeable } from "react-swipeable";
-import Icon from "@mdi/react";
-import { mdiCrown } from "@mdi/js";
 
 enum ITabs {
   CONFIRMED = "CONFIRMED",
@@ -46,7 +45,6 @@ enum ITabs {
 export const ActivityMembersScreen: React.FC = () => {
   const { userInfo } = React.useContext(AuthenticationContext);
   const [invitedBuddies, setInvitedBuddies] = React.useState<string[]>([]);
-  const { enqueueSnackbar } = useSnackbar();
   const { id } = useParams();
   const navigate = useNavigate();
   const { toggleDrawer } = React.useContext(DrawerContext);
@@ -103,14 +101,12 @@ export const ActivityMembersScreen: React.FC = () => {
     {
       onSuccess: (data, variables) => {
         toggleDrawer({ open: false });
-        enqueueSnackbar("User has been successfully kicked from activity", {
-          variant: "success",
-        });
+        toast.success("User has been successfully kicked from activity");
         queryClient.invalidateQueries(["activity-participants", id]);
         queryClient.invalidateQueries(["activity", id]);
       },
       onError: (error) => {
-        enqueueSnackbar("Failed to kick user", { variant: "error" });
+        toast.error("Failed to kick user");
       },
     }
   );
@@ -127,9 +123,7 @@ export const ActivityMembersScreen: React.FC = () => {
         // setInvitedBuddies(_buddies);
       },
       onError: (error) => {
-        enqueueSnackbar("Failed to cancel invite for user", {
-          variant: "error",
-        });
+        toast.error("Failed to cancel invite for user");
       },
     }
   );

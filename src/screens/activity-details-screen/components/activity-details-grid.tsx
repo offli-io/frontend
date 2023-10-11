@@ -1,24 +1,15 @@
-import React from "react";
-import { Box, Card, Grid, IconButton, Typography, styled } from "@mui/material";
-import OfflineBoltIcon from "@mui/icons-material/OfflineBolt";
-import FavoriteIcon from "@mui/icons-material/Favorite";
-import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
-import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
-import RoomIcon from "@mui/icons-material/Room";
 import MonetizationOnIcon from "@mui/icons-material/MonetizationOn";
-import MoneyOffIcon from "@mui/icons-material/MoneyOff";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
+import RoomIcon from "@mui/icons-material/Room";
+import { Box, Card, IconButton, Typography, styled } from "@mui/material";
+import { format } from "date-fns";
+import React from "react";
+import { useNavigate } from "react-router-dom";
+import OffliButton from "../../../components/offli-button";
 import { IActivity } from "../../../types/activities/activity.dto";
 import { ApplicationLocations } from "../../../types/common/applications-locations.dto";
-import { ICustomizedLocationStateDto } from "../../../types/common/customized-location-state.dto";
-import { format } from "date-fns";
 import { DATE_TIME_FORMAT } from "../../../utils/common-constants";
-import OffliButton from "../../../components/offli-button";
-import { useMutation } from "@tanstack/react-query";
-import { addActivityToCalendar } from "../../../api/activities/requests";
-import { AuthenticationContext } from "../../../assets/theme/authentication-provider";
-import { useSnackbar } from "notistack";
 
 export enum IGridAction {
   GOOGLE_CALENDAR = "GOOGLE_CALENDAR",
@@ -29,7 +20,7 @@ interface IProps {
   onActionClick?: (action: IGridAction) => void;
 }
 
-const StyledBox = styled(Card)(() => ({  
+const StyledBox = styled(Card)(() => ({
   display: "flex",
   alignItems: "center",
   flexDirection: "column",
@@ -56,20 +47,6 @@ const StyledText = styled(Typography)(() => ({
 
 const ActivityDetailsGrid: React.FC<IProps> = ({ activity, onActionClick }) => {
   const navigate = useNavigate();
-  const { pathname } = useLocation();
-  const { userInfo } = React.useContext(AuthenticationContext);
-  const { enqueueSnackbar } = useSnackbar();
-
-
-  // const from = (location?.state as ICustomizedLocationStateDto)?.from;
-
-  const handleShowOnMap = () => {
-    navigate(`${ApplicationLocations.MAP}/${activity?.id}`, {
-      state: {
-        from: `${ApplicationLocations.ACTIVITY_DETAIL}/${activity?.id}`,
-      },
-    });
-  };
 
   return (
     <Box
@@ -80,23 +57,16 @@ const ActivityDetailsGrid: React.FC<IProps> = ({ activity, onActionClick }) => {
         rowGap: 0.5,
         columnGap: 2,
         ml: 0.2,
-        mt: 3,
+        mt: 2,
       }}
     >
-      <StyledBox sx={{borderColor: "primary.light"}}>
-        <IconButton color="primary"  sx={{ p: 0 }}>
+      <StyledBox sx={{ borderColor: "primary.light" }}>
+        <IconButton color="primary" sx={{ p: 0 }}>
           <PeopleAltIcon sx={{ fontSize: 26, color: "primary.main" }} />
         </IconButton>
         <OffliButton
           onClick={() =>
-            navigate(
-              `${ApplicationLocations.ACTIVITY_MEMBERS}/${activity?.id}`,
-              {
-                state: {
-                  from: pathname,
-                },
-              }
-            )
+            navigate(`${ApplicationLocations.ACTIVITY_MEMBERS}/${activity?.id}`)
           }
           variant="text"
           size="small"
@@ -113,7 +83,7 @@ const ActivityDetailsGrid: React.FC<IProps> = ({ activity, onActionClick }) => {
           {activity?.count_confirmed}/{activity?.limit}
         </StyledText>
       </StyledBox>
-      <StyledBox sx={{borderColor: "primary.light"}}>
+      <StyledBox sx={{ borderColor: "primary.light" }}>
         <IconButton color="primary" sx={{ p: 0 }}>
           <CalendarTodayIcon sx={{ fontSize: 26, color: "primary.main" }} />
         </IconButton>
@@ -137,7 +107,7 @@ const ActivityDetailsGrid: React.FC<IProps> = ({ activity, onActionClick }) => {
             : "-"}
         </StyledText>
       </StyledBox>
-      <StyledBox sx={{borderColor: "primary.light"}}>
+      <StyledBox sx={{ borderColor: "primary.light" }}>
         <IconButton color="primary" sx={{ p: 0 }}>
           <RoomIcon sx={{ fontSize: 26, color: "primary.main" }} />
         </IconButton>
@@ -146,11 +116,7 @@ const ActivityDetailsGrid: React.FC<IProps> = ({ activity, onActionClick }) => {
         </Typography> */}
         <OffliButton
           onClick={() =>
-            navigate(`${ApplicationLocations.MAP}/${activity?.id}`, {
-              state: {
-                from: pathname,
-              },
-            })
+            navigate(`${ApplicationLocations.MAP}/${activity?.id}`)
           }
           // endIcon={<RoomIcon sx={{ fontSize: 26 }} />}
           size="small"
@@ -168,7 +134,7 @@ const ActivityDetailsGrid: React.FC<IProps> = ({ activity, onActionClick }) => {
           {activity?.location?.name}
         </StyledText>
       </StyledBox>
-      <StyledBox sx={{borderColor: "primary.light"}}>
+      <StyledBox sx={{ borderColor: "primary.light" }}>
         <IconButton color="primary" sx={{ p: 0 }}>
           <MonetizationOnIcon sx={{ fontSize: 26, color: "primary.main" }} />
         </IconButton>

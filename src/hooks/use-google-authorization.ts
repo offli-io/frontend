@@ -1,8 +1,8 @@
-import React from "react";
-import { GoogleAuthCodeFromEnumDto } from "../types/google/google-auth-code-from-enum.dto";
 import { useMutation } from "@tanstack/react-query";
+import React from "react";
+import { toast } from "sonner";
 import { getBearerToken, getGoogleAuthCode } from "../api/auth/requests";
-import { useSnackbar } from "notistack";
+import { GoogleAuthCodeFromEnumDto } from "../types/google/google-auth-code-from-enum.dto";
 
 interface IUseGoogleAuthorizationProps {
   from: GoogleAuthCodeFromEnumDto;
@@ -14,7 +14,6 @@ export const useGoogleAuthorization = ({
   state,
 }: IUseGoogleAuthorizationProps) => {
   const [googleToken, setGoogleToken] = React.useState<string | null>(null);
-  const { enqueueSnackbar } = useSnackbar();
   const abortControllerRef = React.useRef<AbortController | null>(null);
 
   const { mutate: sendGetBearerToken, isLoading } = useMutation(
@@ -32,9 +31,7 @@ export const useGoogleAuthorization = ({
         data?.data?.access_token && setGoogleToken(data?.data?.access_token);
       },
       onError: (error) => {
-        enqueueSnackbar("Failed to get Google Bearer token", {
-          variant: "error",
-        });
+        toast.error("Failed to get Google Bearer token");
       },
     }
   );

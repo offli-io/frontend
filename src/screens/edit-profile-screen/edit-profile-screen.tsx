@@ -12,10 +12,10 @@ import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import FileUploadModal from "components/file-upload/components/file-upload-modal";
-import { useSnackbar } from "notistack";
 import React, { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 import { useDebounce } from "use-debounce";
 import * as yup from "yup";
 import {
@@ -75,7 +75,6 @@ const EditProfileScreen: React.FC = () => {
   const { palette } = useTheme();
   const { userInfo } = React.useContext(AuthenticationContext);
   const queryClient = useQueryClient();
-  const { enqueueSnackbar } = useSnackbar();
   const { toggleDrawer } = React.useContext(DrawerContext);
   const hiddenFileInput = React.useRef<HTMLInputElement | null>(null);
   const [localImageFile, setLocalImageFile] = React.useState<any>();
@@ -95,15 +94,11 @@ const EditProfileScreen: React.FC = () => {
           content: undefined,
         });
         queryClient.invalidateQueries(["user"]);
-        enqueueSnackbar("Your personal information was successfully updated", {
-          variant: "success",
-        });
+        toast.success("Your personal information was successfully updated");
         // navigate(ApplicationLocations.PROFILE);
       },
       onError: () => {
-        enqueueSnackbar("Failed to update your personal info", {
-          variant: "error",
-        });
+        toast.error("Failed to update your personal info");
       },
     }
   );
@@ -156,9 +151,7 @@ const EditProfileScreen: React.FC = () => {
         navigate(ApplicationLocations.PROFILE);
       },
       onError: (error) => {
-        enqueueSnackbar("Failed to upload profile photo", {
-          variant: "error",
-        });
+        toast.error("Failed to upload profile photo");
       },
     }
   );
@@ -169,16 +162,13 @@ const EditProfileScreen: React.FC = () => {
       () => unlinkInstagram(Number(userInfo?.id)),
       {
         onSuccess: () => {
-          enqueueSnackbar(
-            "Your instagram account has been successfully unlinked",
-            { variant: "success" }
+          toast.success(
+            "Your instagram account has been successfully unlinked"
           );
           queryClient.invalidateQueries(["user"]);
         },
         onError: () => {
-          enqueueSnackbar("Failed unlinking your instagram account", {
-            variant: "error",
-          });
+          toast.error("Failed unlinking your instagram account");
         },
       }
     );
@@ -235,7 +225,7 @@ const EditProfileScreen: React.FC = () => {
       // check file format
       const fileExtension = file.name.split(".").pop();
       if (fileExtension && !ALLOWED_PHOTO_EXTENSIONS.includes(fileExtension)) {
-        enqueueSnackbar("Unsupported file format", { variant: "error" });
+        toast.error("Unsupported file format");
         return;
       }
       setLocalImageFile(URL.createObjectURL(file));

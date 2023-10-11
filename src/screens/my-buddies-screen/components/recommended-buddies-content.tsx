@@ -3,15 +3,15 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { getRecommendedBuddies } from "api/activities/requests";
 import { AuthenticationContext } from "assets/theme/authentication-provider";
 import BuddySuggestCard from "components/buddy-suggest-card";
-import { useSnackbar } from "notistack";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useSendBuddyRequest } from "screens/profile-screen/hooks/use-send-buddy-request";
+import { toast } from "sonner";
 import { IPerson } from "types/activities/activity.dto";
 import { ApplicationLocations } from "types/common/applications-locations.dto";
+
 const RecommendedBuddiesContent = () => {
   const navigate = useNavigate();
-  const { enqueueSnackbar } = useSnackbar();
   const { userInfo } = React.useContext(AuthenticationContext);
   const queryClient = useQueryClient();
 
@@ -31,10 +31,7 @@ const RecommendedBuddiesContent = () => {
     () => getRecommendedBuddies(userInfo?.id ?? -1),
     {
       onError: () => {
-        //some generic toast for every hook
-        enqueueSnackbar(`Failed to load recommended buddies`, {
-          variant: "error",
-        });
+        toast.error(`Failed to load recommended buddies`);
       },
       enabled: !!userInfo?.id,
     }

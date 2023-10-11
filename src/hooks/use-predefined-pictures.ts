@@ -1,9 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
-import { useSnackbar } from "notistack";
-import {
-  getPredefinedPhotos,
-  getPredefinedTags,
-} from "../api/activities/requests";
+import { toast } from "sonner";
+import { getPredefinedPhotos } from "../api/activities/requests";
 
 export interface IUsePredefinedPicturesReturn {
   tags?: string[];
@@ -12,16 +9,12 @@ export interface IUsePredefinedPicturesReturn {
 export const usePredefinedPictures = ({
   tags,
 }: IUsePredefinedPicturesReturn = {}) => {
-  const { enqueueSnackbar } = useSnackbar();
   const { data, isLoading } = useQuery(
     ["predefined-photos", tags],
     () => getPredefinedPhotos(tags),
     {
       onError: () => {
-        //some generic toast for every hook
-        enqueueSnackbar("Failed to load predefined pictures", {
-          variant: "error",
-        });
+        toast.error("Failed to load predefined pictures");
       },
     }
   );

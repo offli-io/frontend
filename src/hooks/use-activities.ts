@@ -1,12 +1,8 @@
-import {
-  UseQueryOptions,
-  useQuery,
-  UseQueryResult,
-} from "@tanstack/react-query";
-import { useSnackbar } from "notistack";
-import { getActivity } from "../api/activities/requests";
-import { IActivitiesParamsDto } from "types/activities/activities-params.dto";
+import { useQuery } from "@tanstack/react-query";
 import { AxiosResponse } from "axios";
+import { toast } from "sonner";
+import { IActivitiesParamsDto } from "types/activities/activities-params.dto";
+import { getActivity } from "../api/activities/requests";
 
 export const ACTIVITIES_QUERY_KEY = "activities";
 export const PAGED_ACTIVITIES_QUERY_KEY = "paged-activities";
@@ -35,7 +31,6 @@ export const useActivities = <T>({
   onSuccess,
   enabled,
 }: IUseActivitiesReturn<T>) => {
-  const { enqueueSnackbar } = useSnackbar();
   const { data, isLoading } = useQuery(
     [
       ACTIVITIES_QUERY_KEY,
@@ -70,10 +65,7 @@ export const useActivities = <T>({
     {
       onSuccess,
       onError: () => {
-        //some generic toast for every hook
-        enqueueSnackbar(`Failed to load activit${id ? "y" : "ies"}`, {
-          variant: "error",
-        });
+        toast.error(`Failed to load activit${id ? "y" : "ies"}`);
       },
       refetchOnMount: true,
       refetchOnWindowFocus: true,

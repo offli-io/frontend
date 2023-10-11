@@ -2,10 +2,10 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { Box, useTheme } from "@mui/material";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { add, setHours, setMinutes } from "date-fns";
-import { useSnackbar } from "notistack";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 import { ActivityDurationTypeEnumDto } from "types/activities/activity-duration-type-enum.dto";
 import * as yup from "yup";
 import { createActivity } from "../../api/activities/requests";
@@ -137,7 +137,6 @@ const schema: (activeStep: number) => yup.SchemaOf<FormValues> = (
 const CreateActivityScreen = () => {
   const { palette } = useTheme();
   const queryClient = useQueryClient();
-  const { enqueueSnackbar } = useSnackbar();
   const [activeStep, setActiveStep] = React.useState<number>(0);
   const [pendingRedirectActivityId, setPendingRedirectActivityId] =
     React.useState<number | undefined>();
@@ -190,7 +189,7 @@ const CreateActivityScreen = () => {
         setActiveStep((activeStep) => activeStep + 1);
       },
       onError: (error) => {
-        enqueueSnackbar("Failed to create new activity", { variant: "error" });
+        toast.error("Failed to create new activity");
       },
     }
   );

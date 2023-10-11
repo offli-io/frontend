@@ -1,12 +1,12 @@
-import React from "react";
-import { Box, Typography, TextField } from "@mui/material";
-import OffliButton from "../../../components/offli-button";
-import { useMutation } from "@tanstack/react-query";
-import { resetPassword } from "../../../api/auth/requests";
-import { Controller, useForm } from "react-hook-form";
-import { useSnackbar } from "notistack";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { Box, TextField, Typography } from "@mui/material";
+import { useMutation } from "@tanstack/react-query";
+import React from "react";
+import { Controller, useForm } from "react-hook-form";
+import { toast } from "sonner";
 import * as yup from "yup";
+import { resetPassword } from "../../../api/auth/requests";
+import OffliButton from "../../../components/offli-button";
 
 interface IResetPasswordFormProps {
   onSuccess: (email: string) => void;
@@ -32,8 +32,6 @@ const ResetPasswordForm: React.FC<IResetPasswordFormProps> = ({
     mode: "onChange",
   });
 
-  const { enqueueSnackbar } = useSnackbar();
-
   const { isLoading, mutate: sendResetPassword } = useMutation(
     ["reset-password"],
     (formValues: FormValues) => {
@@ -41,13 +39,11 @@ const ResetPasswordForm: React.FC<IResetPasswordFormProps> = ({
     },
     {
       onSuccess: (data, params) => {
-        enqueueSnackbar("Verification code was sent to your email");
+        toast.success("Verification code was sent to your email");
         onSuccess(params?.email);
       },
       onError: (error) => {
-        enqueueSnackbar("Failed to send verification code to given email", {
-          variant: "error",
-        });
+        toast.error("Failed to send verification code to given email");
       },
     }
   );

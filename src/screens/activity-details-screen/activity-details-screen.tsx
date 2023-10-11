@@ -1,59 +1,57 @@
-import MenuIcon from "@mui/icons-material/Menu";
+import { mdiCrown } from "@mdi/js";
+import Icon from "@mdi/react";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
+import EmailIcon from "@mui/icons-material/Email";
 import LockIcon from "@mui/icons-material/Lock";
 import LockOpenIcon from "@mui/icons-material/LockOpen";
-import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import EmailIcon from "@mui/icons-material/Email";
+import MenuIcon from "@mui/icons-material/Menu";
 import { Box, IconButton, Typography, useTheme } from "@mui/material";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useSnackbar } from "notistack";
-import React from "react";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
-import {
-  addActivityToCalendar,
-  changeActivityParticipantStatus,
-  getActivity,
-  getActivityParticipants,
-  removePersonFromActivity,
-} from "../../api/activities/requests";
-import { HeaderContext } from "../../app/providers/header-provider";
-import { AuthenticationContext } from "../../assets/theme/authentication-provider";
-import { useGoogleAuthorization } from "../../hooks/use-google-authorization";
-import { ActivityInviteStateEnum } from "../../types/activities/activity-invite-state-enum.dto";
-import { IActivityRestDto } from "../../types/activities/activity-rest.dto";
-import { ActivityVisibilityEnum } from "../../types/activities/activity-visibility-enum.dto";
-import { ActivityActionsTypeEnumDto } from "../../types/common/activity-actions-type-enum.dto";
-import { ApplicationLocations } from "../../types/common/applications-locations.dto";
-import { GoogleAuthCodeFromEnumDto } from "../../types/google/google-auth-code-from-enum.dto";
-import ActivityDetailsGrid, {
-  IGridAction,
-} from "./components/activity-details-grid";
-import { convertDateToUTC } from "./utils/convert-date-to-utc";
-import OffliButton from "../../components/offli-button";
-import { IParticipantDto } from "../../types/activities/list-participants-response.dto";
-import { format } from "date-fns";
-import { DATE_TIME_FORMAT } from "../../utils/common-constants";
-import { getTimeDifference } from "../map-screen/utils/get-time-difference";
-import { useGetApiUrl } from "../../hooks/use-get-api-url";
-import { ActivitiyParticipantStatusEnum as ActivityParticipantStatusEnum } from "../../types/activities/activity-participant-status-enum.dto";
+import { CustomizationContext } from "assets/theme/customization-provider";
 import { DrawerContext } from "assets/theme/drawer-provider";
-import ActivityActions from "screens/my-activities-screen/components/activity-actions";
-import { PARTICIPANT_ACTIVITIES_QUERY_KEY } from "hooks/use-participant-activities";
+import Loader from "components/loader";
+import { format } from "date-fns";
 import {
   ACTIVITIES_QUERY_KEY,
   PAGED_ACTIVITIES_QUERY_KEY,
   useActivities,
 } from "hooks/use-activities";
-import userPlaceholder from "../../assets/img/user-placeholder.svg";
-import Icon from "@mdi/react";
-import { mdiCrown } from "@mdi/js";
-import ActivityVisibilityDuration from "./components/activity-visibility-duration";
-import { CustomizationContext } from "assets/theme/customization-provider";
-import Loader from "components/loader";
-import { IActivity } from "types/activities/activity.dto";
-import { ActivityInviteDrawerContent } from "./components/activity-invite-drawer-content";
-import ActivityLeaveConfirmation from "screens/my-activities-screen/components/activity-leave-confirmation";
 import { useDismissActivity } from "hooks/use-dismiss-activity";
+import { PARTICIPANT_ACTIVITIES_QUERY_KEY } from "hooks/use-participant-activities";
+import React from "react";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
+import ActivityActions from "screens/my-activities-screen/components/activity-actions";
+import ActivityLeaveConfirmation from "screens/my-activities-screen/components/activity-leave-confirmation";
+import { toast } from "sonner";
+import { IActivity } from "types/activities/activity.dto";
+import {
+  addActivityToCalendar,
+  changeActivityParticipantStatus,
+  getActivityParticipants,
+  removePersonFromActivity,
+} from "../../api/activities/requests";
+import { HeaderContext } from "../../app/providers/header-provider";
+import userPlaceholder from "../../assets/img/user-placeholder.svg";
+import { AuthenticationContext } from "../../assets/theme/authentication-provider";
+import OffliButton from "../../components/offli-button";
+import { useGetApiUrl } from "../../hooks/use-get-api-url";
+import { useGoogleAuthorization } from "../../hooks/use-google-authorization";
+import { ActivityInviteStateEnum } from "../../types/activities/activity-invite-state-enum.dto";
+import { ActivitiyParticipantStatusEnum as ActivityParticipantStatusEnum } from "../../types/activities/activity-participant-status-enum.dto";
+import { IActivityRestDto } from "../../types/activities/activity-rest.dto";
+import { ActivityVisibilityEnum } from "../../types/activities/activity-visibility-enum.dto";
+import { ActivityActionsTypeEnumDto } from "../../types/common/activity-actions-type-enum.dto";
+import { ApplicationLocations } from "../../types/common/applications-locations.dto";
+import { GoogleAuthCodeFromEnumDto } from "../../types/google/google-auth-code-from-enum.dto";
+import { DATE_TIME_FORMAT } from "../../utils/common-constants";
+import { getTimeDifference } from "../map-screen/utils/get-time-difference";
+import ActivityDetailsGrid, {
+  IGridAction,
+} from "./components/activity-details-grid";
+import { ActivityInviteDrawerContent } from "./components/activity-invite-drawer-content";
+import ActivityVisibilityDuration from "./components/activity-visibility-duration";
+import { convertDateToUTC } from "./utils/convert-date-to-utc";
 
 interface IProps {
   type: "detail" | "request";
@@ -74,7 +72,6 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
   const { setHeaderRightContent, headerRightContent } =
     React.useContext(HeaderContext);
   const { userInfo } = React.useContext(AuthenticationContext);
-  const { enqueueSnackbar } = useSnackbar();
   const { sendDismissActivity, isLoading: isDismissingActivity } =
     useDismissActivity();
   const queryClient = useQueryClient();
@@ -121,14 +118,12 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
           queryClient.invalidateQueries([PAGED_ACTIVITIES_QUERY_KEY]);
           queryClient.invalidateQueries([PARTICIPANT_ACTIVITIES_QUERY_KEY]);
 
-          enqueueSnackbar("You have successfully left the activity", {
-            variant: "success",
-          });
+          toast.success("You have successfully left the activity");
           //invalidate queries
           //TODO display success notification?
         },
         onError: () => {
-          enqueueSnackbar("Failed to leave activity", { variant: "error" });
+          toast.error("Failed to leave activity");
         },
       }
     );
@@ -142,9 +137,7 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
         }),
       {
         onSuccess: () => {
-          enqueueSnackbar("You have successfully joined the activity", {
-            variant: "success",
-          });
+          toast.success("You have successfully joined the activity");
           hideDrawer();
           queryClient.invalidateQueries(["paged-activities"]);
           queryClient.invalidateQueries(["activity", id]);
@@ -155,7 +148,7 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
           // setInvitedBuddies([...invitedBuddies, Number(buddy?.id)]);
         },
         onError: (error) => {
-          enqueueSnackbar("Failed to join activity", { variant: "error" });
+          toast.error("Failed to join activity");
         },
       }
     );
@@ -181,15 +174,12 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
     },
     {
       onSuccess: () => {
-        enqueueSnackbar(
-          "Activity has been successfully added to your Google calendar",
-          {
-            variant: "success",
-          }
+        toast.success(
+          "Activity has been successfully added to your Google calendar"
         );
       },
       onError: (error) => {
-        enqueueSnackbar("Failed to join activity", { variant: "error" });
+        toast.error("Failed to join activity");
       },
     }
   );
@@ -211,15 +201,9 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
     (action?: ActivityActionsTypeEnumDto) => {
       switch (action) {
         case ActivityActionsTypeEnumDto.ACTIVITY_MEMBERS:
-          return navigate(`${ApplicationLocations.ACTIVITY_MEMBERS}/${id}`, {
-            state: {
-              from: location?.pathname,
-            },
-          });
+          return navigate(`${ApplicationLocations.ACTIVITY_MEMBERS}/${id}`);
         case ActivityActionsTypeEnumDto.MAP:
-          return navigate(`${ApplicationLocations.MAP}/${id}`, {
-            state: { from: location?.pathname },
-          });
+          return navigate(`${ApplicationLocations.MAP}/${id}`);
         case ActivityActionsTypeEnumDto.JOIN:
           return sendJoinActivity();
         case ActivityActionsTypeEnumDto.EDIT:
@@ -362,9 +346,6 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
 
   const areActionsLoading = isLeavingActivity || isJoiningActivity;
 
-  // const durationMinutes = timeDifference?.durationMinutes;
-  // const durationHours = timeDifference?.durationHours;
-
   return isLoading ? (
     <Loader />
   ) : (
@@ -502,59 +483,61 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
           sx={{
             display: "flex",
             alignItems: "center",
-            justifyContent: "space-evenly",
+            justifyContent: "space-between",
             my: 2,
-            gap: 18,
+            // gap: 18,
           }}
         >
           <Box
-            sx={{ display: "flex", alignItems: "center", position: "relative" }}
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              p: 1,
+              maxWidth: "70%",
+            }}
             onClick={() => {
               if (activity?.creator?.id !== userInfo?.id) {
                 navigate(
-                  `${ApplicationLocations.USER_PROFILE}/${activity?.creator?.id}`,
-                  {
-                    state: {
-                      from: location?.pathname,
-                    },
-                  }
+                  `${ApplicationLocations.USER_PROFILE}/${activity?.creator?.id}`
                 );
               }
             }}
           >
-            <img
-              src={
-                activity?.creator?.profile_photo
-                  ? `${baseUrl}/files/${activity?.creator?.profile_photo}`
-                  : userPlaceholder
-              }
-              alt="profile"
-              style={{
-                height: 40,
-                width: 40,
-                aspectRatio: 1,
-                borderRadius: "50%",
-                borderWidth: "2px",
-                borderColor: palette?.primary?.main,
-                borderStyle: "solid",
-                margin: 1,
-              }}
-            />
-            <Icon
-              path={mdiCrown}
-              size={0.8}
-              style={{
-                position: "absolute",
-                left: -4,
-                top: -7,
-                fontSize: 12,
-                color: palette?.primary?.main,
-                border: "0.5px solid palette?.background?.default",
-                borderRadius: "50%",
-                backgroundColor: palette?.background?.default,
-                // boxShadow: shadows[1],
-              }}
-            />
+            <Box sx={{ position: "relative" }}>
+              <img
+                src={
+                  activity?.creator?.profile_photo
+                    ? `${baseUrl}/files/${activity?.creator?.profile_photo}`
+                    : userPlaceholder
+                }
+                alt="profile"
+                style={{
+                  height: 40,
+                  width: 40,
+                  aspectRatio: 1,
+                  borderRadius: "50%",
+                  borderWidth: "2px",
+                  borderColor: palette?.primary?.main,
+                  borderStyle: "solid",
+                  margin: 1,
+                }}
+              />
+              <Icon
+                path={mdiCrown}
+                size={0.8}
+                style={{
+                  position: "absolute",
+                  left: -4,
+                  top: -7,
+                  fontSize: 12,
+                  color: palette?.primary?.main,
+                  border: "0.5px solid palette?.background?.default",
+                  borderRadius: "50%",
+                  backgroundColor: palette?.background?.default,
+                  // boxShadow: shadows[1],
+                }}
+              />
+            </Box>
 
             <Typography
               sx={{
@@ -562,6 +545,8 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
                 fontSize: 16,
                 // fontWeight: "bold",
                 color: ({ palette }) => palette?.text?.primary,
+                overflow: "hidden",
+                textOverflow: "ellipsis",
               }}
             >
               {activity?.creator?.username}
@@ -584,7 +569,7 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
             </Typography>
           </Box>
         </Box>
-        <Typography variant="h4" sx={{ mt: 3 }}>
+        <Typography variant="h4" sx={{ mt: 1.5 }}>
           Basic information
         </Typography>
 
@@ -592,12 +577,6 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
           activity={activity}
           onActionClick={handleGridClick}
         />
-        {/* <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-          <Typography variant="h5">Duration</Typography>
-          <Typography>
-            {`${durationHours} hours, ${durationMinutes} minutes`}
-          </Typography>
-        </Box> */}
 
         <ActivityVisibilityDuration
           description={activity?.description}

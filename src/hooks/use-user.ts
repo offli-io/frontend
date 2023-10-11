@@ -1,17 +1,15 @@
 import { useQuery } from "@tanstack/react-query";
-import { useSnackbar } from "notistack";
-import { getUser } from "../api/activities/requests";
+import { toast } from "sonner";
 import { IUsersParamsDto } from "types/users";
+import { getUser } from "../api/activities/requests";
 
 export const useUser = ({ id, requestingInfoUserId }: IUsersParamsDto) => {
-  const { enqueueSnackbar } = useSnackbar();
   const { data, isLoading, isFetching } = useQuery(
     ["user", id, requestingInfoUserId],
     () => getUser({ id, requestingInfoUserId }),
     {
       onError: () => {
-        //some generic toast for every hook
-        enqueueSnackbar("Failed to load user", { variant: "error" });
+        toast.error("Failed to load user");
       },
       enabled: !!id,
     }

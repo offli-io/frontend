@@ -1,20 +1,20 @@
-import React from "react";
-import { Box, Typography, TextField } from "@mui/material";
-import { Controller, useForm } from "react-hook-form";
-import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useQueryClient, useMutation, useQuery } from "@tanstack/react-query";
+import { Box, TextField, Typography } from "@mui/material";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import React from "react";
+import { Controller, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import OffliButton from "../components/offli-button";
-import { ApplicationLocations } from "../types/common/applications-locations.dto";
-import { IUsername } from "../types/users/user.dto";
+import { toast } from "sonner";
+import { useDebounce } from "use-debounce";
+import * as yup from "yup";
 import {
   checkIfUsernameAlreadyTaken,
   updateProfileInfo,
 } from "../api/users/requests";
-import { useSnackbar } from "notistack";
-import { useDebounce } from "use-debounce";
 import { AuthenticationContext } from "../assets/theme/authentication-provider";
+import OffliButton from "../components/offli-button";
+import { ApplicationLocations } from "../types/common/applications-locations.dto";
+import { IUsername } from "../types/users/user.dto";
 
 const schema: () => yup.SchemaOf<IUsername> = () =>
   yup.object({
@@ -25,9 +25,7 @@ interface IChooseUsernameValues {
   username?: string;
 }
 const ChooseUsernameGooglePage = () => {
-  const [username, setUsername] = React.useState<string>("");
   const navigate = useNavigate();
-  const { enqueueSnackbar } = useSnackbar();
   const { userInfo } = React.useContext(AuthenticationContext);
 
   const { control, handleSubmit, setError, formState, watch } =
@@ -58,15 +56,12 @@ const ChooseUsernameGooglePage = () => {
     (values?: IChooseUsernameValues) => updateProfileInfo(userInfo?.id, values),
     {
       onSuccess: (data) => {
-        enqueueSnackbar("Username successfully updated", {
-          variant: "success",
-        });
+        toast.success("Username successfully updated");
         queryClient.invalidateQueries(["users", userInfo?.id]);
         navigate(ApplicationLocations.ACTIVITIES);
       },
       onError: (error) => {
-        console.log(error);
-        enqueueSnackbar("Failed to update username", { variant: "error" });
+        toast.error("Failed to update username");
       },
     }
   );

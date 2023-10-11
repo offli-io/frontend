@@ -1,8 +1,8 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { updateActivity } from "api/activities/requests";
 import { PAGED_ACTIVITIES_QUERY_KEY } from "hooks/use-activities";
-import { useSnackbar } from "notistack";
 import React from "react";
+import { toast } from "sonner";
 import { PARTICIPANT_ACTIVITIES_QUERY_KEY } from "./use-participant-activities";
 
 interface IUseSendBuddyRequestProps {
@@ -14,9 +14,7 @@ export const useDismissActivity = ({
   onSuccess,
 }: IUseSendBuddyRequestProps = {}) => {
   const abortControllerRef = React.useRef<AbortController | null>(null);
-  const currentDate = React.useMemo(() => new Date(), []);
   const queryClient = useQueryClient();
-  const { enqueueSnackbar } = useSnackbar();
 
   const { mutate: sendDismissActivity, isLoading } = useMutation(
     ["dismiss-activity"],
@@ -26,13 +24,11 @@ export const useDismissActivity = ({
       onSuccess: () => {
         queryClient.invalidateQueries([PAGED_ACTIVITIES_QUERY_KEY]);
         queryClient.invalidateQueries([PARTICIPANT_ACTIVITIES_QUERY_KEY]);
-        enqueueSnackbar("Activity has been successfully dismissed", {
-          variant: "success",
-        });
+        toast.success("Activity has been successfully dismissed");
         onSuccess?.();
       },
       onError: () => {
-        enqueueSnackbar("Failed to dismiss activity", { variant: "error" });
+        toast.error("Failed to dismiss activity");
       },
     }
   );

@@ -16,17 +16,17 @@ import {
   useQueryClient,
 } from "@tanstack/react-query";
 import Loader from "components/loader";
-import { useSnackbar } from "notistack";
+import { useDismissActivity } from "hooks/use-dismiss-activity";
 import React from "react";
 import InfiniteScroll from "react-infinite-scroller";
-import { useInView } from "react-intersection-observer";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
+import { ActivitySortColumnEnum } from "types/activities/activity-sort-enum.dto";
 import {
   changeActivityParticipantStatus,
   getActivitiesPromiseResolved,
   removePersonFromActivity,
 } from "../../api/activities/requests";
-import { LayoutContext } from "../../app/layout";
 import { LocationContext } from "../../app/providers/location-provider";
 import { AuthenticationContext } from "../../assets/theme/authentication-provider";
 import { DrawerContext } from "../../assets/theme/drawer-provider";
@@ -50,20 +50,15 @@ import ActivityActions from "./components/activity-actions";
 import ActivityLeaveConfirmation from "./components/activity-leave-confirmation";
 import FirstTimeLoginContent from "./components/first-time-login-content";
 import { SetLocationContent } from "./components/set-location-content";
-import { ActivitySortColumnEnum } from "types/activities/activity-sort-enum.dto";
-import ca from "date-fns/locale/ca/index";
-import { useDismissActivity } from "hooks/use-dismiss-activity";
 import { endOfWeek, isWithinInterval, startOfToday } from "date-fns";
 
 const ActivitiesScreen = () => {
-  const { ref, inView } = useInView();
   const { userInfo, isFirstTimeLogin, setIsFirstTimeLogin } = React.useContext(
     AuthenticationContext
   );
   const { location, setLocation } = React.useContext(LocationContext);
   const { toggleDrawer } = React.useContext(DrawerContext);
   const navigate = useNavigate();
-  const { enqueueSnackbar } = useSnackbar();
   const queryClient = useQueryClient();
   const { palette } = useTheme();
   const { sendDismissActivity, isLoading: isDismissingActivity } =
@@ -129,17 +124,13 @@ const ActivitiesScreen = () => {
 
     {
       onSuccess: (data, buddy) => {
-        enqueueSnackbar("You have successfully joined the activity", {
-          variant: "success",
-        });
+        toast.success("You have successfully joined the activity");
         invalidateParticipantActivities();
         queryClient.invalidateQueries(["activities"]);
         hideDrawer();
       },
       onError: (error) => {
-        enqueueSnackbar("Failed to join selected activity", {
-          variant: "error",
-        });
+        toast.error("Failed to join selected activity");
       },
     }
   );
@@ -168,7 +159,7 @@ const ActivitiesScreen = () => {
         //TODO display success notification?
       },
       onError: () => {
-        enqueueSnackbar("Failed to leave activity", { variant: "error" });
+        toast.error("Failed to leave activity");
       },
     }
   );
@@ -178,12 +169,7 @@ const ActivitiesScreen = () => {
       switch (action) {
         case ActivityActionsTypeEnumDto.ACTIVITY_MEMBERS:
           return navigate(
-            `${ApplicationLocations.ACTIVITY_MEMBERS}/${activityId}`,
-            {
-              state: {
-                from: ApplicationLocations.ACTIVITIES,
-              },
-            }
+            `${ApplicationLocations.ACTIVITY_MEMBERS}/${activityId}`
           );
         case ActivityActionsTypeEnumDto.LEAVE:
           return toggleDrawer({
@@ -198,29 +184,15 @@ const ActivitiesScreen = () => {
           });
         case ActivityActionsTypeEnumDto.MORE_INFORMATION:
           return navigate(
-            `${ApplicationLocations.ACTIVITY_DETAIL}/${activityId}`,
-            {
-              state: {
-                from: ApplicationLocations.ACTIVITIES,
-              },
-            }
+            `${ApplicationLocations.ACTIVITY_DETAIL}/${activityId}`
           );
         case ActivityActionsTypeEnumDto.MAP:
-          return navigate(`${ApplicationLocations.MAP}/${activityId}`, {
-            state: {
-              from: ApplicationLocations.ACTIVITIES,
-            },
-          });
+          return navigate(`${ApplicationLocations.MAP}/${activityId}`);
         case ActivityActionsTypeEnumDto.JOIN:
           return sendJoinActivity(activityId);
         case ActivityActionsTypeEnumDto.EDIT:
           return navigate(
-            `${ApplicationLocations.EDIT_ACTIVITY}/${activityId}`,
-            {
-              state: {
-                from: ApplicationLocations.ACTIVITIES,
-              },
-            }
+            `${ApplicationLocations.EDIT_ACTIVITY}/${activityId}`
           );
         case ActivityActionsTypeEnumDto.DISMISS:
           return toggleDrawer({
@@ -350,13 +322,7 @@ const ActivitiesScreen = () => {
             pr: 0,
           },
         }}
-        onFocus={() =>
-          navigate(ApplicationLocations.SEARCH, {
-            state: {
-              from: ApplicationLocations.ACTIVITIES,
-            },
-          })
-        }
+        onFocus={() => navigate(ApplicationLocations.SEARCH)}
         renderInput={(params) => (
           <TextField
             {...params}
@@ -445,12 +411,7 @@ const ActivitiesScreen = () => {
                       type="explore"
                       onPress={() =>
                         navigate(
-                          `${ApplicationLocations.ACTIVITY_DETAIL}/${activity?.id}`,
-                          {
-                            state: {
-                              from: ApplicationLocations.ACTIVITIES,
-                            },
-                          }
+                          `${ApplicationLocations.ACTIVITY_DETAIL}/${activity?.id}`
                         )
                       }
                       onLongPress={openActivityActions}
@@ -486,13 +447,7 @@ const ActivitiesScreen = () => {
                     sx={{ fontSize: "1.2rem", ml: -0.7, color: "primary.main" }}
                   />
                 }
-                onClick={() =>
-                  navigate(ApplicationLocations.MAP, {
-                    state: {
-                      from: ApplicationLocations.ACTIVITIES,
-                    },
-                  })
-                }
+                onClick={() => navigate(ApplicationLocations.MAP)}
                 data-testid="see-map-btn"
               >
                 Show map
@@ -514,12 +469,7 @@ const ActivitiesScreen = () => {
                         activity={activity}
                         onPress={() =>
                           navigate(
-                            `${ApplicationLocations.ACTIVITY_DETAIL}/${activity?.id}`,
-                            {
-                              state: {
-                                from: ApplicationLocations.ACTIVITIES,
-                              },
-                            }
+                            `${ApplicationLocations.ACTIVITY_DETAIL}/${activity?.id}`
                           )
                         }
                         onLongPress={openActivityActions}
