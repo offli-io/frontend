@@ -1,4 +1,7 @@
+import { yupResolver } from "@hookform/resolvers/yup";
 import GoogleIcon from "@mui/icons-material/Google";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import {
   Box,
   IconButton,
@@ -7,15 +10,11 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
-import React from "react";
-
-import { yupResolver } from "@hookform/resolvers/yup";
-import VisibilityIcon from "@mui/icons-material/Visibility";
-import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import { useMutation } from "@tanstack/react-query";
-import { useSnackbar } from "notistack";
+import React from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 import * as yup from "yup";
 import { loginUser, loginViaGoogle } from "../api/auth/requests";
 import { AuthenticationContext } from "../assets/theme/authentication-provider";
@@ -43,7 +42,6 @@ const LoginScreen: React.FC = () => {
   const { setUserInfo, setStateToken } = React.useContext(
     AuthenticationContext
   );
-  const { enqueueSnackbar } = useSnackbar();
   const { shadows, palette } = useTheme();
   const navigate = useNavigate();
   const {
@@ -86,9 +84,7 @@ const LoginScreen: React.FC = () => {
           navigate(ApplicationLocations.ACTIVITIES);
         },
         onError: (error) => {
-          enqueueSnackbar("Login with google failed", {
-            variant: "error",
-          });
+          toast.error("Login with google failed");
         },
       }
     );
@@ -99,7 +95,6 @@ const LoginScreen: React.FC = () => {
     },
     {
       onSuccess: (data, params) => {
-        console.log(data?.data);
         // setAuthToken(data?.data?.access_token)
         // setRefreshToken(data?.data?.refresh_token)
         //TODO refresh user Id after refresh
@@ -109,7 +104,7 @@ const LoginScreen: React.FC = () => {
         navigate(ApplicationLocations.ACTIVITIES);
       },
       onError: (error) => {
-        enqueueSnackbar("Failed to log in", { variant: "error" });
+        toast.error("Failed to log in");
       },
     }
   );

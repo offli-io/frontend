@@ -1,15 +1,14 @@
+import { yupResolver } from "@hookform/resolvers/yup";
+import { Box, TextField, Typography } from "@mui/material";
 import React from "react";
-import { Box, Typography, TextField } from "@mui/material";
-import BackButton from "../components/back-button";
 import { Controller, useForm } from "react-hook-form";
 import * as yup from "yup";
-import { yupResolver } from "@hookform/resolvers/yup";
+import BackButton from "../components/back-button";
 import OffliButton from "../components/offli-button";
-// import ErrorIcon from '@mui/icons-material/Error'
-import { ApplicationLocations } from "../types/common/applications-locations.dto";
 import { useMutation } from "@tanstack/react-query";
-import { loginUser, resetPassword } from "../api/auth/requests";
-import { useSnackbar } from "notistack";
+import { toast } from "sonner";
+import { resetPassword } from "../api/auth/requests";
+import { ApplicationLocations } from "../types/common/applications-locations.dto";
 
 export interface FormValues {
   email: string;
@@ -29,8 +28,6 @@ const ResetPasswordScreen = () => {
     mode: "onChange",
   });
 
-  const { enqueueSnackbar } = useSnackbar();
-
   const { isLoading, mutate } = useMutation(
     ["reset-password"],
     (formValues: FormValues) => {
@@ -38,18 +35,10 @@ const ResetPasswordScreen = () => {
     },
     {
       onSuccess: (data, params) => {
-        enqueueSnackbar("Verification code was sent to your email");
-        // setAuthToken(data?.data?.access_token)
-        // setRefreshToken(data?.data?.refresh_token)
-        // setStateToken(data?.data?.token?.access_token ?? null);
-        // !!setUserInfo && setUserInfo({ username: params?.username });
-        // localStorage.setItem("username", params?.username);
-        // navigate(ApplicationLocations.ACTIVITIES);
+        toast.success("Verification code was sent to your email");
       },
       onError: (error) => {
-        enqueueSnackbar("Failed to send verification code to given email", {
-          variant: "error",
-        });
+        toast.error("Failed to send verification code to given email");
       },
     }
   );

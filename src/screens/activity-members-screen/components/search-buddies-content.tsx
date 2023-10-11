@@ -8,9 +8,9 @@ import {
   useTheme,
 } from "@mui/material";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useSnackbar } from "notistack";
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 import { useDebounce } from "use-debounce";
 import {
   getActivityParticipants,
@@ -19,7 +19,9 @@ import {
 import { AuthenticationContext } from "../../../assets/theme/authentication-provider";
 import { DrawerContext } from "../../../assets/theme/drawer-provider";
 import BuddyItem from "../../../components/buddy-item";
+import OffliButton from "../../../components/offli-button";
 import { useBuddies } from "../../../hooks/use-buddies";
+import { ActivityInviteStateEnum } from "../../../types/activities/activity-invite-state-enum.dto";
 import {
   IPerson,
   IPersonExtended,
@@ -27,9 +29,6 @@ import {
 import { ApplicationLocations } from "../../../types/common/applications-locations.dto";
 import { isAlreadyParticipant } from "../../../utils/person.util";
 import { isBuddy } from "../../my-buddies-screen/utils/is-buddy.util";
-import { useSendBuddyRequest } from "../../profile-screen/hooks/use-send-buddy-request";
-import OffliButton from "../../../components/offli-button";
-import { ActivityInviteStateEnum } from "../../../types/activities/activity-invite-state-enum.dto";
 
 interface IAddBuddiesContentProps {
   activityId?: number;
@@ -39,7 +38,6 @@ const SearchBuddiesContent: React.FC<IAddBuddiesContentProps> = ({
   activityId,
 }) => {
   const [username, setUsername] = React.useState("");
-  const { enqueueSnackbar } = useSnackbar();
   const { userInfo } = React.useContext(AuthenticationContext);
   const { shadows } = useTheme();
   const navigate = useNavigate();
@@ -79,7 +77,7 @@ const SearchBuddiesContent: React.FC<IAddBuddiesContentProps> = ({
         // setInvitedBuddies([...invitedBuddies, Number(buddy?.id)]);
       },
       onError: (error) => {
-        enqueueSnackbar("Failed to invite user", { variant: "error" });
+        toast.error("Failed to invite user");
       },
     }
   );

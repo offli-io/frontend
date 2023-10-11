@@ -1,28 +1,24 @@
 import { Box, CircularProgress, TextField, Typography } from "@mui/material";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useSnackbar } from "notistack";
+import { useBuddies } from "hooks/use-buddies";
 import React from "react";
-import { UseFormReturn } from "react-hook-form";
 import { useParams } from "react-router-dom";
+import { toast } from "sonner";
 import { useDebounce } from "use-debounce";
-import { IPerson } from "../../types/activities/activity.dto";
 import {
   getActivityParticipants,
-  getBuddies,
   inviteBuddyToActivity,
   uninviteBuddy,
 } from "../../api/activities/requests";
 import { AuthenticationContext } from "../../assets/theme/authentication-provider";
 import BuddyItemInvite from "../../components/buddy-item-invite";
-import OffliButton from "../../components/offli-button";
 import { ActivityInviteStateEnum } from "../../types/activities/activity-invite-state-enum.dto";
 import { ActivitiyParticipantStatusEnum } from "../../types/activities/activity-participant-status-enum.dto";
-import { useBuddies } from "hooks/use-buddies";
+import { IPerson } from "../../types/activities/activity.dto";
 
 export const ActivityInviteScreen: React.FC = () => {
   const { userInfo } = React.useContext(AuthenticationContext);
   const [invitedBuddies, setInvitedBuddies] = React.useState<number[]>([]);
-  const { enqueueSnackbar } = useSnackbar();
   const queryClient = useQueryClient();
   const { id } = useParams();
   const [queryString, setQueryString] = React.useState<string | undefined>();
@@ -55,7 +51,7 @@ export const ActivityInviteScreen: React.FC = () => {
         // setInvitedBuddies([...invitedBuddies, Number(buddy?.id)]);
       },
       onError: (error) => {
-        enqueueSnackbar("Failed to invite user", { variant: "error" });
+        toast.error("Failed to invite user");
       },
     }
   );
@@ -70,9 +66,7 @@ export const ActivityInviteScreen: React.FC = () => {
         // setInvitedBuddies(_buddies);
       },
       onError: (error) => {
-        enqueueSnackbar("Failed to cancel invite for user", {
-          variant: "error",
-        });
+        toast.error("Failed to cancel invite for user");
       },
     }
   );

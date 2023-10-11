@@ -1,4 +1,7 @@
+import { yupResolver } from "@hookform/resolvers/yup";
 import GoogleIcon from "@mui/icons-material/Google";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import {
   Box,
   IconButton,
@@ -7,23 +10,18 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
-import React from "react";
-import OffliButton from "../components/offli-button";
-
-import { yupResolver } from "@hookform/resolvers/yup";
-import VisibilityIcon from "@mui/icons-material/Visibility";
-import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import React from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 import * as yup from "yup";
-import { checkIfEmailAlreadyTaken } from "../api/users/requests";
-import LabeledDivider from "../components/labeled-divider";
-
-import { useSnackbar } from "notistack";
 import { registerViaGoogle } from "../api/auth/requests";
+import { checkIfEmailAlreadyTaken } from "../api/users/requests";
 import { AuthenticationContext } from "../assets/theme/authentication-provider";
+import LabeledDivider from "../components/labeled-divider";
 import OffliBackButton from "../components/offli-back-button";
+import OffliButton from "../components/offli-button";
 import { useGoogleAuthorization } from "../hooks/use-google-authorization";
 import { ApplicationLocations } from "../types/common/applications-locations.dto";
 import { GoogleAuthCodeFromEnumDto } from "../types/google/google-auth-code-from-enum.dto";
@@ -49,7 +47,6 @@ const schema: () => yup.SchemaOf<IEmailPassword> = () =>
 export const RegistrationScreen: React.FC = () => {
   const [showPassword, setShowPassword] = React.useState(false);
   const [email, setEmail] = React.useState<string | undefined>();
-  const { enqueueSnackbar } = useSnackbar();
   const { shadows, palette } = useTheme();
   const { setUserInfo, setStateToken } = React.useContext(
     AuthenticationContext
@@ -83,9 +80,7 @@ export const RegistrationScreen: React.FC = () => {
     },
     {
       onSuccess: (data, params) => {
-        enqueueSnackbar("Your account has been successfully registered", {
-          variant: "success",
-        });
+        toast.success("Your account has been successfully registered");
         setStateToken(data?.data?.token?.access_token ?? null);
         !!setUserInfo && setUserInfo({ id: data?.data?.user_id });
         data?.data?.user_id &&
@@ -93,9 +88,7 @@ export const RegistrationScreen: React.FC = () => {
         navigate(ApplicationLocations.ACTIVITIES);
       },
       onError: (error) => {
-        enqueueSnackbar("Registration with google failed", {
-          variant: "error",
-        });
+        toast.error("Registration with google failed");
       },
     }
   );

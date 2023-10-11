@@ -1,9 +1,8 @@
 import AddAPhotoIcon from "@mui/icons-material/AddAPhoto";
 import { Box, IconButton, useTheme } from "@mui/material";
 import Typography from "@mui/material/Typography";
-import { grey } from "@mui/material/colors";
-import { useSnackbar } from "notistack";
 import React from "react";
+import { toast } from "sonner";
 import { ALLOWED_PHOTO_EXTENSIONS } from "utils/common-constants";
 import FileUploadModal from "./components/file-upload-modal";
 
@@ -17,8 +16,6 @@ const FileUpload: React.FC<IFileUploadProps> = ({
 }) => {
   const [localFile, setLocalFile] = React.useState<any>();
   const hiddenFileInput = React.useRef<HTMLInputElement | null>(null);
-
-  const { enqueueSnackbar } = useSnackbar();
   const { palette } = useTheme();
 
   const handleFileUpload = React.useCallback(
@@ -36,7 +33,7 @@ const FileUpload: React.FC<IFileUploadProps> = ({
       // check file format
       const fileExtension = file.name.split(".").pop();
       if (fileExtension && !ALLOWED_PHOTO_EXTENSIONS.includes(fileExtension)) {
-        enqueueSnackbar("Unsupported file format", { variant: "error" });
+        toast.error("Unsupported file format");
         return;
       }
       setLocalFile(URL.createObjectURL(file));

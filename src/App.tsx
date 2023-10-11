@@ -13,6 +13,7 @@ import { AuthenticationProvider } from "./assets/theme/authentication-provider";
 import { CustomizationProvider } from "./assets/theme/customization-provider";
 import { DrawerProvider } from "./assets/theme/drawer-provider";
 import Router from "./routes/router";
+import { Toaster, toast } from "sonner";
 
 const queryClient = new QueryClient({
   defaultOptions: {

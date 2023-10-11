@@ -1,20 +1,20 @@
-import React from "react";
+import { yupResolver } from "@hookform/resolvers/yup";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import {
   Box,
-  Typography,
-  TextField,
-  InputAdornment,
   IconButton,
+  InputAdornment,
+  TextField,
+  Typography,
 } from "@mui/material";
-import { Controller, useForm } from "react-hook-form";
-import * as yup from "yup";
-import { yupResolver } from "@hookform/resolvers/yup";
-import OffliButton from "../../../components/offli-button";
-import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
-import VisibilityIcon from "@mui/icons-material/Visibility";
-import { confirmResetPassword } from "../../../api/auth/requests";
 import { useMutation } from "@tanstack/react-query";
-import { useSnackbar } from "notistack";
+import React from "react";
+import { Controller, useForm } from "react-hook-form";
+import { toast } from "sonner";
+import * as yup from "yup";
+import { confirmResetPassword } from "../../../api/auth/requests";
+import OffliButton from "../../../components/offli-button";
 
 export interface FormValues {
   password: string;
@@ -54,9 +54,6 @@ const NewPasswordForm: React.FC<INewPasswordFormProps> = ({
   verificationCode,
 }) => {
   const [showPassword, setShowPassword] = React.useState(false);
-
-  const { enqueueSnackbar } = useSnackbar();
-
   const handleClickShowPassword = () => setShowPassword(!showPassword);
 
   const { control, handleSubmit } = useForm<FormValues>({
@@ -78,15 +75,11 @@ const NewPasswordForm: React.FC<INewPasswordFormProps> = ({
     },
     {
       onSuccess: (data, code) => {
-        enqueueSnackbar("Your password was successfully reset", {
-          variant: "success",
-        });
+        toast.success("Your password was successfully reset");
         onSuccess();
       },
       onError: (error) => {
-        enqueueSnackbar("Failed to reset your password", {
-          variant: "error",
-        });
+        toast.error("Failed to reset your password");
       },
     }
   );

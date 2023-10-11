@@ -1,26 +1,24 @@
-import React from "react";
-import { Box, Typography, TextField, IconButton, Icon } from "@mui/material";
-import BackButton from "../components/back-button";
-import { Controller, useForm } from "react-hook-form";
-import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useQueryClient, useMutation, useQuery } from "@tanstack/react-query";
+import { Box, TextField, Typography } from "@mui/material";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import React from "react";
+import { Controller, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
+import { useDebounce } from "use-debounce";
+import * as yup from "yup";
+import {
+  checkIfUsernameAlreadyTaken,
+  preCreateUser,
+} from "../api/users/requests";
+import OffliBackButton from "../components/offli-back-button";
 import OffliButton from "../components/offli-button";
-import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import { ApplicationLocations } from "../types/common/applications-locations.dto";
 import {
   IEmailPassword,
   IEmailUsernamePassword,
   IUsername,
 } from "../types/users/user.dto";
-import {
-  checkIfUsernameAlreadyTaken,
-  preCreateUser,
-} from "../api/users/requests";
-import OffliBackButton from "../components/offli-back-button";
-import { useSnackbar } from "notistack";
-import { useDebounce } from "use-debounce";
 
 const schema: () => yup.SchemaOf<IUsername> = () =>
   yup.object({
@@ -30,7 +28,6 @@ const schema: () => yup.SchemaOf<IUsername> = () =>
 const PickUsernamePhotoScreen = () => {
   const [username, setUsername] = React.useState<string>("");
   const navigate = useNavigate();
-  const { enqueueSnackbar } = useSnackbar();
 
   const { control, handleSubmit, setError, formState, watch } =
     useForm<IUsername>({
@@ -60,29 +57,20 @@ const PickUsernamePhotoScreen = () => {
     (values: IEmailUsernamePassword) => preCreateUser(values),
     {
       onSuccess: (data) => {
-        console.log(data);
         navigate(ApplicationLocations.VERIFY);
       },
       onError: (error) => {
-        console.log(error);
-        enqueueSnackbar("Failed to pre-signup", { variant: "error" });
+        toast.error("Failed to pre-signup");
       },
     }
   );
 
   const handleFormSubmit = React.useCallback((values: IUsername) => {
-    // if (usernameAlreadyTaken?.data) {
-    //   setError('username', { message: 'Username already in use' })
-    //   console.log(usernameAlreadyTaken?.data)
-    //   return
-    // }
     queryClient.setQueryData(["registration-username"], values);
 
     const registrationEmailPassword = queryClient.getQueryData<IEmailPassword>([
       "registration-email-password",
     ]);
-
-    // navigate(ApplicationLocations.VERIFY);
 
     sendPresignupUser({
       email: registrationEmailPassword?.email,

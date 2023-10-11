@@ -1,6 +1,7 @@
 import { PaletteMode, ThemeProvider } from "@mui/material";
 import { createTheme } from "@mui/material/styles";
 import React from "react";
+import { Toaster } from "sonner";
 
 declare module "@mui/material/styles" {
   // If we would like to declare something on the theme
@@ -163,6 +164,7 @@ export const CustomizationProvider: React.FC<ICustomizationProviderProps> = ({
   return (
     <CustomizationContext.Provider value={{ mode, setMode }}>
       <ThemeProvider theme={createCustomizationTheme(mode)}>
+        <Toaster richColors invert={mode === "dark"} />
         {children}
       </ThemeProvider>
     </CustomizationContext.Provider>

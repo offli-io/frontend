@@ -45,7 +45,6 @@ export const AuthenticationProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
-  const { enqueueSnackbar } = useSnackbar();
   const [stateToken, setStateToken] = React.useState<null | string>(null);
   const [userInfo, setUserInfo] = React.useState<IPersonExtended | undefined>();
   const [googleTokenClient] = React.useState<any>();

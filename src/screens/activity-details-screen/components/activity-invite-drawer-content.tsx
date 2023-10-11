@@ -2,8 +2,8 @@ import { Box, TextField, Typography } from "@mui/material";
 import { useMutation } from "@tanstack/react-query";
 import Loader from "components/loader";
 import { useBuddies } from "hooks/use-buddies";
-import { useSnackbar } from "notistack";
 import React from "react";
+import { toast } from "sonner";
 import { useDebounce } from "use-debounce";
 import {
   inviteBuddyToActivity,
@@ -23,8 +23,6 @@ export const ActivityInviteDrawerContent: React.FC<IActivityTypeFormProps> = ({
 }) => {
   const { userInfo } = React.useContext(AuthenticationContext);
   const [invitedBuddies, setInvitedBuddies] = React.useState<number[]>([]);
-  const { enqueueSnackbar } = useSnackbar();
-  //   const { id: activityId } = useParams();
   const [queryString, setQueryString] = React.useState<string | undefined>();
   const [queryStringDebounced] = useDebounce(queryString, 1000);
 
@@ -44,7 +42,7 @@ export const ActivityInviteDrawerContent: React.FC<IActivityTypeFormProps> = ({
         setInvitedBuddies([...invitedBuddies, Number(buddy?.id)]);
       },
       onError: (error) => {
-        enqueueSnackbar("Failed to invite user", { variant: "error" });
+        toast.error("Failed to invite user");
       },
     }
   );
@@ -58,9 +56,7 @@ export const ActivityInviteDrawerContent: React.FC<IActivityTypeFormProps> = ({
         setInvitedBuddies(_buddies);
       },
       onError: (error) => {
-        enqueueSnackbar("Failed to cancel invite for user", {
-          variant: "error",
-        });
+        toast.error("Failed to cancel invite for user");
       },
     }
   );

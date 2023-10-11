@@ -1,10 +1,8 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useSnackbar } from "notistack";
 import React from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 import { toggleBuddyInvitation } from "../../../api/users/requests";
 import { AuthenticationContext } from "../../../assets/theme/authentication-provider";
-import { ICustomizedLocationStateDto } from "../../../types/common/customized-location-state.dto";
 import { BuddyRequestActionEnum } from "../../../types/users/buddy-request-action-enum.dto";
 
 interface IToggleBuddyRequestValues {
@@ -19,17 +17,9 @@ interface IUseToggleBuddyRequestProps {
 export const useToggleBuddyRequest = ({
   onSuccess,
 }: IUseToggleBuddyRequestProps = {}) => {
-  const { enqueueSnackbar } = useSnackbar();
   const queryClient = useQueryClient();
   const abortControllerRef = React.useRef<AbortController | null>(null);
   const { userInfo } = React.useContext(AuthenticationContext);
-  const location = useLocation();
-  const from = (location?.state as ICustomizedLocationStateDto)?.from;
-  const notificationId = (
-    location?.state as ICustomizedLocationStateDto & { notificationId?: number }
-  )?.notificationId;
-
-  const navigate = useNavigate();
 
   const { mutate: sendToggleBuddyRequest, isLoading: isTogglingBuddyRequest } =
     useMutation(
@@ -49,26 +39,19 @@ export const useToggleBuddyRequest = ({
           queryClient.invalidateQueries(["buddy-state"]);
 
           if (variables?.status === BuddyRequestActionEnum.CONFIRM) {
-            enqueueSnackbar("You have successfully added user as your buddy", {
-              variant: "success",
-            });
+            toast.success("You have successfully added user as your buddy");
           }
 
           if (variables?.status === BuddyRequestActionEnum.REJECT) {
-            enqueueSnackbar("You have successfully declined buddy request", {
-              variant: "success",
-            });
+            toast.success("You have successfully declined buddy request");
           }
           onSuccess?.();
         },
         onError: (error, variables) => {
-          enqueueSnackbar(
+          toast.error(
             variables?.status === BuddyRequestActionEnum.CONFIRM
               ? "Failed to add user as your buddy"
-              : "Failed to decline buddy request",
-            {
-              variant: "error",
-            }
+              : "Failed to decline buddy request"
           );
         },
       }

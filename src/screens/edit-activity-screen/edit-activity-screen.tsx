@@ -14,10 +14,10 @@ import { AuthenticationContext } from "assets/theme/authentication-provider";
 import FileUploadModal from "components/file-upload/components/file-upload-modal";
 import OffliButton from "components/offli-button";
 import "dayjs/locale/sk";
-import { useSnackbar } from "notistack";
 import React, { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
+import { toast } from "sonner";
 import { IActivity } from "types/activities/activity.dto";
 import { useDebounce } from "use-debounce";
 import {
@@ -50,7 +50,6 @@ const EditActivityScreen: React.FC = () => {
   const hiddenFileInput = React.useRef<HTMLInputElement | null>(null);
   const { id } = useParams();
   const queryClient = useQueryClient();
-  const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
   const baseUrl = useGetApiUrl();
   const { userInfo } = React.useContext(AuthenticationContext);
@@ -76,7 +75,7 @@ const EditActivityScreen: React.FC = () => {
       // check file format
       const fileExtension = file.name.split(".").pop();
       if (fileExtension && !ALLOWED_PHOTO_EXTENSIONS.includes(fileExtension)) {
-        enqueueSnackbar("Unsupported file format", { variant: "error" });
+        toast.error("Unsupported file format");
         return;
       }
       setLocalFile(URL.createObjectURL(file));
@@ -135,9 +134,7 @@ const EditActivityScreen: React.FC = () => {
           !!localFile && setLocalFile(null);
           queryClient.invalidateQueries([ACTIVITIES_QUERY_KEY]);
           queryClient.invalidateQueries(["activity-participants"]);
-          enqueueSnackbar("Activity information was successfully updated", {
-            variant: "success",
-          });
+          toast.success("Activity information was successfully updated");
           navigate(`${ApplicationLocations.ACTIVITY_DETAIL}/${id}`, {
             state: {
               from: ApplicationLocations.EDIT_ACTIVITY,
@@ -146,9 +143,7 @@ const EditActivityScreen: React.FC = () => {
         },
         onError: () => {
           !!localFile && setLocalFile(null);
-          enqueueSnackbar("Failed to update activity info", {
-            variant: "error",
-          });
+          toast.error("Failed to update activity info");
         },
       }
     );
@@ -159,10 +154,6 @@ const EditActivityScreen: React.FC = () => {
       (formData?: FormData) => uploadFile(formData),
       {
         onSuccess: (data) => {
-          // setIsImageUploading(false);
-          // enqueueSnackbar("Your photo has been successfully uploaded", {
-          //   variant: "success",
-          // });
           const values = getValues();
           sendUpdateActivity({
             ...values,
@@ -174,9 +165,7 @@ const EditActivityScreen: React.FC = () => {
         },
         onError: (error) => {
           setLocalFile(null);
-          enqueueSnackbar("Failed to upload activity photo", {
-            variant: "error",
-          });
+          toast.error("Failed to upload activity photo");
         },
       }
     );

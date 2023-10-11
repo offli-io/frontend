@@ -3,9 +3,12 @@ import LocationOnIcon from "@mui/icons-material/LocationOn";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import { Box, IconButton, Typography, useTheme } from "@mui/material";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useSnackbar } from "notistack";
+import Loader from "components/loader";
+import MyActivityCard from "components/my-activity-card";
 import React from "react";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { toast } from "sonner";
+import { ActivitiyParticipantStatusEnum } from "types/activities/activity-participant-status-enum.dto";
 import { connectInstagram, getBuddyState } from "../../api/users/requests";
 import userPlaceholder from "../../assets/img/user-placeholder.svg";
 import { AuthenticationContext } from "../../assets/theme/authentication-provider";
@@ -17,17 +20,13 @@ import ProfileStatistics from "../../components/profile-statistics";
 import { useGetApiUrl } from "../../hooks/use-get-api-url";
 import { useUser } from "../../hooks/use-user";
 import { ApplicationLocations } from "../../types/common/applications-locations.dto";
-import { ICustomizedLocationStateDto } from "../../types/common/customized-location-state.dto";
 import { BuddyRequestActionEnum } from "../../types/users/buddy-request-action-enum.dto";
 import { BuddyStateEnum } from "../../types/users/buddy-state-enum.dto";
+import { useGetLastAttendedActivities } from "./hooks/use-get-last-attended-activities";
 import { useSendBuddyRequest } from "./hooks/use-send-buddy-request";
 import { useToggleBuddyRequest } from "./hooks/use-toggle-buddy-request";
 import { ProfileEntryTypeEnum } from "./types/profile-entry-type";
 import { generateBuddyActionButtonLabel } from "./utils/generate-buddy-action-button-label.util";
-import Loader from "components/loader";
-import { useGetLastAttendedActivities } from "./hooks/use-get-last-attended-activities";
-import { ActivitiyParticipantStatusEnum } from "types/activities/activity-participant-status-enum.dto";
-import MyActivityCard from "components/my-activity-card";
 
 interface IProfileScreenProps {
   type: ProfileEntryTypeEnum;
@@ -37,11 +36,8 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
   const { userInfo } = React.useContext(AuthenticationContext);
   const queryClient = useQueryClient();
   const { palette } = useTheme();
-  const location = useLocation();
   const navigate = useNavigate();
-  const from = (location?.state as ICustomizedLocationStateDto)?.from;
   const { id } = useParams();
-  const { enqueueSnackbar } = useSnackbar();
   const abortControllerRef = React.useRef<AbortController | null>(null);
   const queryParameters = new URLSearchParams(window.location.search);
   const instagramCode = queryParameters.get("code");
@@ -86,13 +82,8 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
       (code?: string) => connectInstagram(Number(userInfo?.id), String(code)),
       {
         onSuccess: () => {
-          //params destruction
-          // const url = new URL(window.location.href);
-          // url.searchParams.delete
-          //this doesn't work -> will have to redirect I guess
-          enqueueSnackbar(
-            "Your instagram account has been successfully connected",
-            { variant: "success" }
+          toast.success(
+            "Your instagram account has been successfully connected"
           );
           queryClient.invalidateQueries(["user"]);
           //didnt even notice the refresh -> this might work
@@ -103,9 +94,7 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
           );
         },
         onError: () => {
-          enqueueSnackbar("Failed to connect your instagram account", {
-            variant: "error",
-          });
+          toast.error("Failed to connect your instagram account");
         },
       }
     );
@@ -134,10 +123,7 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
     () => getBuddyState(Number(userInfo?.id), Number(id)),
     {
       onError: () => {
-        //some generic toast for every hook
-        enqueueSnackbar(`Failed to load activit${id ? "y" : "ies"}`, {
-          variant: "error",
-        });
+        toast.error(`Failed to load activit${id ? "y" : "ies"}`);
       },
       enabled:
         [
@@ -248,13 +234,7 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
                 py: 0.5,
                 borderRadius: "15px",
               }}
-              onClick={() =>
-                navigate(ApplicationLocations.BUDDIES, {
-                  state: {
-                    from: ApplicationLocations.PROFILE,
-                  },
-                })
-              }
+              onClick={() => navigate(ApplicationLocations.BUDDIES)}
               data-testid="buddies-btn"
             >
               <PeopleAltIcon
@@ -322,13 +302,7 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
           <ActionButton
             text="Edit profile"
             sx={{ mt: 4 }}
-            onClick={() =>
-              navigate(ApplicationLocations.EDIT_PROFILE, {
-                state: {
-                  from: ApplicationLocations.PROFILE,
-                },
-              })
-            }
+            onClick={() => navigate(ApplicationLocations.EDIT_PROFILE)}
           />
         )}
         {[
@@ -401,12 +375,7 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
                     type="profile"
                     onPress={() =>
                       navigate(
-                        `${ApplicationLocations.ACTIVITY_DETAIL}/${activity?.id}`,
-                        {
-                          state: {
-                            from: ApplicationLocations.ACTIVITIES,
-                          },
-                        }
+                        `${ApplicationLocations.ACTIVITY_DETAIL}/${activity?.id}`
                       )
                     }
                     sx={{
