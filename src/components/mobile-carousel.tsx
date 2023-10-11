@@ -40,6 +40,11 @@ export const MobileCarousel: React.FC<IMobileCarouselProps> = ({
 }) => {
   const { palette } = useTheme();
 
+  const [selected, setSelected] = React.useState(false);
+
+  const switchBorder = () => {
+    setSelected(!selected);
+  };
 
   const handleDatePick = React.useCallback(
     (date: Date | null) => {
@@ -139,6 +144,7 @@ export const MobileCarousel: React.FC<IMobileCarouselProps> = ({
           </Card>
         ))}
         <Card
+          onChange={switchBorder}
           sx={{
             minWidth: 100,
             minHeight: 70,
@@ -147,6 +153,10 @@ export const MobileCarousel: React.FC<IMobileCarouselProps> = ({
             alignItems: "center",
             justifyContent: "center",
             borderRadius: 3,
+            ...(selected
+              ? { border: (theme) => `2px solid ${theme.palette.primary.main}` }
+              : { border: (theme) => `2px solid ${theme.palette.primary.light}` }),
+            
             ...sx,
           }}
         >
