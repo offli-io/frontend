@@ -37,6 +37,20 @@ const SettingsScreen = () => {
     navigate(ApplicationLocations.LOGIN);
   }, [setStateToken]);
 
+  const handleMenuItemClick = React.useCallback(
+    (type?: unknown) => {
+      const correctType = type as SettingsTypeEnumDto;
+      switch (correctType) {
+        case SettingsTypeEnumDto.ACCOUNT:
+          return navigate(ApplicationLocations.ACCOUNT_SETTINGS);
+        default:
+          return;
+      }
+      //TODO double check if any security issues aren't here I am not sure about using tokens from 2 places
+    },
+    [setStateToken]
+  );
+
   return (
     <Box
       sx={{
@@ -53,6 +67,7 @@ const SettingsScreen = () => {
             type={item?.type}
             icon={item.icon}
             key={`settings_${item?.type}`}
+            onMenuItemClick={handleMenuItemClick}
           />
         ))}
         <MenuItem
