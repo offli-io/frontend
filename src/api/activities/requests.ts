@@ -45,7 +45,7 @@ export const getActivities = async ({
   const CancelToken = axios.CancelToken;
   const source = CancelToken.source();
 
-  const promise = axios.get<any>(`${DEFAULT_DEV_URL}/activities`, {
+  const promise = axios.get<any>(`/activities`, {
     params: searchParams,
     cancelToken: source?.token,
   });
@@ -79,21 +79,18 @@ export const getActivitiesPromiseResolved = async ({
   const CancelToken = axios.CancelToken;
   const source = CancelToken.source();
 
-  const response = await axios.get<IActivityListRestDto>(
-    `${DEFAULT_DEV_URL}/activities`,
-    {
-      // params: searchParams,
-      cancelToken: source?.token,
-      params: {
-        lat,
-        lon,
-        limit: 10,
-        offset,
-        sort,
-        participantId,
-      },
-    }
-  );
+  const response = await axios.get<IActivityListRestDto>(`/activities`, {
+    // params: searchParams,
+    cancelToken: source?.token,
+    params: {
+      lat,
+      lon,
+      limit: 10,
+      offset,
+      sort,
+      participantId,
+    },
+  });
 
   // queryFunctionContext?.signal?.addEventListener("abort", () => {
   //   source.cancel("Query was cancelled by React Query");
@@ -104,7 +101,7 @@ export const getActivitiesPromiseResolved = async ({
 
 export const getActivity = <T>(params: IActivitiesParamsDto) => {
   const promise = axios.get<T>(
-    `${DEFAULT_DEV_URL}/activities${params?.id ? `/${params?.id}` : ""}`,
+    `/activities${params?.id ? `/${params?.id}` : ""}`,
     {
       params,
       paramsSerializer: (params) => {
@@ -130,17 +127,14 @@ export const getParticipantActivities = ({
   sort,
   datetimeFrom,
 }: IActivitiesParamsDto) => {
-  const promise = axios.get<IListActivitiesResponseDto>(
-    `${DEFAULT_DEV_URL}/activities`,
-    {
-      params: {
-        sort,
-        participantId,
-        participantStatus: ActivitiyParticipantStatusEnum.CONFIRMED,
-        datetimeFrom,
-      },
-    }
-  );
+  const promise = axios.get<IListActivitiesResponseDto>(`/activities`, {
+    params: {
+      sort,
+      participantId,
+      participantStatus: ActivitiyParticipantStatusEnum.CONFIRMED,
+      datetimeFrom,
+    },
+  });
 
   // queryFunctionContext?.signal?.addEventListener('abort', () => {
   //   source.cancel('Query was cancelled by React Query')
@@ -157,7 +151,7 @@ export const removePersonFromActivity = ({
   activityId?: number;
 }) => {
   const promise = axios.delete<void>(
-    `${DEFAULT_DEV_URL}/activities/${activityId}/participants/${personId}`
+    `/activities/${activityId}/participants/${personId}`
   );
 
   // queryFunctionContext?.signal?.addEventListener('abort', () => {
@@ -246,13 +240,9 @@ export const createActivity = async (values: IActivity) => {
   const CancelToken = axios.CancelToken;
   const source = CancelToken.source();
 
-  const promise = axios.post<ICreateActivityRequestDto>(
-    `${DEFAULT_DEV_URL}/activities`,
-    values,
-    {
-      cancelToken: source?.token,
-    }
-  );
+  const promise = axios.post<ICreateActivityRequestDto>(`/activities`, values, {
+    cancelToken: source?.token,
+  });
 
   //   queryFunctionContext?.signal?.addEventListener('abort', () => {
   //     source.cancel('Query was cancelled by React Query')
@@ -266,7 +256,7 @@ export const updateActivity = async (id: number, values: IActivity) => {
   const source = CancelToken.source();
 
   const promise = axios.patch<IUpdateActivityRequestDto>(
-    `${DEFAULT_DEV_URL}/activities/${id}`,
+    `/activities/${id}`,
     values,
     {
       cancelToken: source?.token,
@@ -290,7 +280,7 @@ export const getUsers = ({ username, ...params }: IUsersSearchParamsDto) => {
   // recievedRequestFilter
   // buddyIdToCheckInBuddies = svoje id -> response rozisrena o pole buddy states
 
-  const promise = axios.get<IUsersResponseDto>(`${DEFAULT_DEV_URL}/users`, {
+  const promise = axios.get<IUsersResponseDto>(`/users`, {
     params: {
       username: username ? validUsername : undefined,
       ...params,
@@ -320,16 +310,13 @@ export const getUsersPromiseResolved = async ({
 }: IUsersSearchParamsDto) => {
   const validUsername = username ?? localStorage.getItem("username");
 
-  const promise = await axios.get<IUsersResponseDto>(
-    `${DEFAULT_DEV_URL}/users`,
-    {
-      params: {
-        username: username ? validUsername : undefined,
-        ...params,
-      },
-      // cancelToken: source?.token,
-    }
-  );
+  const promise = await axios.get<IUsersResponseDto>(`/users`, {
+    params: {
+      username: username ? validUsername : undefined,
+      ...params,
+    },
+    // cancelToken: source?.token,
+  });
 
   return promise?.data?.users;
 };
@@ -338,15 +325,12 @@ export const getUser = ({ id, requestingInfoUserId }: IUsersParamsDto) => {
   const CancelToken = axios.CancelToken;
   const source = CancelToken.source();
 
-  const promise = axios.get<IPersonExtended>(
-    `${DEFAULT_DEV_URL}/users${id ? `/${id}` : ""}`,
-    {
-      cancelToken: source?.token,
-      params: {
-        requestingInfoUserId,
-      },
-    }
-  );
+  const promise = axios.get<IPersonExtended>(`/users${id ? `/${id}` : ""}`, {
+    cancelToken: source?.token,
+    params: {
+      requestingInfoUserId,
+    },
+  });
 
   // queryFunctionContext?.signal?.addEventListener('abort', () => {
   //   source.cancel('Query was cancelled by React Query')
@@ -359,15 +343,12 @@ export const getBuddies = (userId: number, queryString?: string) => {
   const CancelToken = axios.CancelToken;
   const source = CancelToken.source();
 
-  const promise = axios.get<IBuddiesResponseDto>(
-    `${DEFAULT_DEV_URL}/users/${userId}/buddies`,
-    {
-      params: {
-        buddyName: queryString,
-      },
-      cancelToken: source?.token,
-    }
-  );
+  const promise = axios.get<IBuddiesResponseDto>(`/users/${userId}/buddies`, {
+    params: {
+      buddyName: queryString,
+    },
+    cancelToken: source?.token,
+  });
 
   // queryFunctionContext?.signal?.addEventListener('abort', () => {
   //   source.cancel('Query was cancelled by React Query')
@@ -381,7 +362,7 @@ export const getRecommendedBuddies = (userId: number) => {
   const source = CancelToken.source();
 
   const promise = axios.get<IPerson[]>(
-    `${DEFAULT_DEV_URL}/users/${userId}/buddies-recommendation`,
+    `/users/${userId}/buddies-recommendation`,
     {
       cancelToken: source?.token,
     }
@@ -398,12 +379,9 @@ export const getPredefinedTags = () => {
   const CancelToken = axios.CancelToken;
   const source = CancelToken.source();
 
-  const promise = axios.get<{ tags: IPredefinedTagDto[] }>(
-    `${DEFAULT_DEV_URL}/predefined/tags`,
-    {
-      cancelToken: source?.token,
-    }
-  );
+  const promise = axios.get<{ tags: IPredefinedTagDto[] }>(`/predefined/tags`, {
+    cancelToken: source?.token,
+  });
 
   // queryFunctionContext?.signal?.addEventListener('abort', () => {
   //   source.cancel('Query was cancelled by React Query')
@@ -417,7 +395,7 @@ export const getMapviewActivities = () => {
   const source = CancelToken.source();
 
   const promise = axios.get<IMapViewActivitiesResponseDto>(
-    `${DEFAULT_DEV_URL}/mapview/activities?lon=-180&lat=-90&maxLon=180&maxLat=90`,
+    `/mapview/activities?lon=-180&lat=-90&maxLon=180&maxLat=90`,
     {
       cancelToken: source?.token,
     }
@@ -439,7 +417,7 @@ export const changeActivityParticipantStatus = (
   const source = CancelToken.source();
 
   const promise = axios.put(
-    `${DEFAULT_DEV_URL}/activities/${activityId}/participants/${userId}`,
+    `/activities/${activityId}/participants/${userId}`,
     userInfo,
     {
       cancelToken: source?.token,
@@ -462,7 +440,7 @@ export const changeParticipantStatus = (
   const source = CancelToken.source();
 
   const promise = axios.patch(
-    `${DEFAULT_DEV_URL}/activities/${activityId}/participants/${participantId}`,
+    `/activities/${activityId}/participants/${participantId}`,
     { status },
     {
       cancelToken: source?.token,
@@ -522,7 +500,7 @@ export const getPredefinedPhotos = (tag?: string[]) => {
   const source = CancelToken.source();
 
   const promise = axios.get<IPredefinedPictureResponseDto>(
-    `${DEFAULT_DEV_URL}/predefined/pictures`,
+    `/predefined/pictures`,
     {
       cancelToken: source?.token,
       params: {
@@ -546,7 +524,7 @@ export const kickUserFromActivity = (activityId: number, personId: number) => {
   const source = CancelToken.source();
 
   const promise = axios.delete<void>(
-    `${DEFAULT_DEV_URL}/activities/${activityId}/participants/${personId}`,
+    `/activities/${activityId}/participants/${personId}`,
     {
       cancelToken: source?.token,
     }
@@ -567,7 +545,7 @@ export const acceptActivityInvitation = (
   const source = CancelToken.source();
 
   const promise = axios.patch(
-    `${DEFAULT_DEV_URL}/activities/${activityId}/participants/${userId}`,
+    `/activities/${activityId}/participants/${userId}`,
     {
       cancelToken: source?.token,
     }
@@ -585,7 +563,7 @@ export const sendBuddyRequest = (userId?: number, buddy_to_be_id?: number) => {
   const source = CancelToken.source();
 
   const promise = axios.post(
-    `${DEFAULT_DEV_URL}/users/${userId}/buddies`,
+    `/users/${userId}/buddies`,
     {
       buddy_to_be_id,
     },
@@ -605,13 +583,9 @@ export const uploadFile = (formData?: FormData) => {
   const CancelToken = axios.CancelToken;
   const source = CancelToken.source();
 
-  const promise = axios.post<{ filename?: string }>(
-    `${DEFAULT_DEV_URL}/files`,
-    formData,
-    {
-      cancelToken: source?.token,
-    }
-  );
+  const promise = axios.post<{ filename?: string }>(`/files`, formData, {
+    cancelToken: source?.token,
+  });
 
   //   queryFunctionContext?.signal?.addEventListener('abort', () => {
   //     source.cancel('Query was cancelled by React Query')
@@ -631,7 +605,7 @@ export const getActivityParticipants = ({
   const source = CancelToken.source();
 
   const promise = axios.get<IListParticipantsResponseDto>(
-    `${DEFAULT_DEV_URL}/activities/${activityId}/participants`,
+    `/activities/${activityId}/participants`,
     {
       // params: searchParams,
       cancelToken: source?.token,
@@ -653,13 +627,9 @@ export const addActivityToCalendar = (
   const CancelToken = axios.CancelToken;
   const source = CancelToken.source();
 
-  const promise = axios.post(
-    `${DEFAULT_DEV_URL}/google/events/${userId}`,
-    values,
-    {
-      cancelToken: source?.token,
-    }
-  );
+  const promise = axios.post(`/google/events/${userId}`, values, {
+    cancelToken: source?.token,
+  });
 
   signal?.addEventListener("abort", () => {
     source.cancel("Query was cancelled by React Query");

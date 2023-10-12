@@ -10,6 +10,7 @@ import { useQuery } from "@tanstack/react-query";
 import { ActivityVisibilityEnum } from "../../../types/activities/activity-visibility-enum.dto";
 import Loader from "../../../components/loader";
 import { ActivitiyParticipantStatusEnum } from "../../../types/activities/activity-participant-status-enum.dto";
+import { isAfter } from "date-fns";
 
 export interface IActivityActionsProps {
   onActionClick?: (
@@ -33,12 +34,16 @@ const ActivityActions: React.FC<IActivityActionsProps> = ({
       activity?.participant_status === ActivitiyParticipantStatusEnum.CONFIRMED,
     [activity]
   );
+  const isPastActivity =
+    !!activity?.datetime_until &&
+    isAfter(new Date(), new Date(activity.datetime_until));
 
   const menuItems = useActivityMenuItems({
     isCreator,
     isParticipant,
     isPrivate: activity?.visibility === ActivityVisibilityEnum.private,
     contrastText,
+    isPastActivity,
   });
 
   if (!activity) {

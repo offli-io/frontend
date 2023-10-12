@@ -12,13 +12,9 @@ export const preCreateUser = async (values: IEmailUsernamePassword) => {
   const CancelToken = axios.CancelToken;
   const source = CancelToken.source();
 
-  const promise = axios.post(
-    `${DEFAULT_DEV_URL}/registration/pre-signup`,
-    values,
-    {
-      cancelToken: source?.token,
-    }
-  );
+  const promise = axios.post(`/registration/pre-signup`, values, {
+    cancelToken: source?.token,
+  });
   return promise;
 };
 
@@ -29,7 +25,7 @@ export const verifyCodeAndRetrieveUserId = async (
   const source = CancelToken.source();
 
   const promise = axios.post<{ userId?: number }>(
-    `${DEFAULT_DEV_URL}/registration/verify-email`,
+    `/registration/verify-email`,
     values,
     {
       // params: searchParams,
@@ -43,13 +39,10 @@ export const checkIfEmailAlreadyTaken = async (email?: string) => {
   const CancelToken = axios.CancelToken;
   const source = CancelToken.source();
 
-  const promise = axios.get<boolean>(
-    `${DEFAULT_DEV_URL}/registration/emails/${email}`,
-    {
-      // params: searchParams,
-      cancelToken: source?.token,
-    }
-  );
+  const promise = axios.get<boolean>(`/registration/emails/${email}`, {
+    // params: searchParams,
+    cancelToken: source?.token,
+  });
   return promise;
 };
 
@@ -57,13 +50,10 @@ export const checkIfUsernameAlreadyTaken = async (username?: string) => {
   const CancelToken = axios.CancelToken;
   const source = CancelToken.source();
 
-  const promise = axios.get<boolean>(
-    `${DEFAULT_DEV_URL}/registration/users/${username}`,
-    {
-      // params: searchParams,
-      cancelToken: source?.token,
-    }
-  );
+  const promise = axios.get<boolean>(`/registration/users/${username}`, {
+    // params: searchParams,
+    cancelToken: source?.token,
+  });
   return promise;
 };
 
@@ -72,7 +62,7 @@ export const getBuddyState = (id: number, buddyId: number) => {
   const source = CancelToken.source();
 
   const promise = axios.get<IBuddyStateResponseDto>(
-    `${DEFAULT_DEV_URL}/users/${id}/buddies/${buddyId}`,
+    `/users/${id}/buddies/${buddyId}`,
     {
       // params: searchParams,
       cancelToken: source?.token,
@@ -90,7 +80,7 @@ export const acceptBuddyInvitation = (
 
   //change to PATCH
   const promise = axios.post(
-    `${DEFAULT_DEV_URL}/users/${userId}/buddies`,
+    `/users/${userId}/buddies`,
     { buddy_to_be_id: buddyToBeId },
     {
       cancelToken: source?.token,
@@ -111,7 +101,7 @@ export const updateProfileInfo = (
   const CancelToken = axios.CancelToken;
   const source = CancelToken.source();
 
-  const promise = axios.patch(`${DEFAULT_DEV_URL}/users/${userId}`, values, {
+  const promise = axios.patch(`/users/${userId}`, values, {
     cancelToken: source?.token,
   });
 
@@ -130,7 +120,7 @@ export const rejectBuddyInvitation = (
   const source = CancelToken.source();
 
   const promise = axios.patch(
-    `${DEFAULT_DEV_URL}/users/${userId}/buddies`,
+    `/users/${userId}/buddies`,
     //define DTO on FE
     { status: "Rejected" },
     {
@@ -154,7 +144,7 @@ export const toggleBuddyInvitation = (
   const source = CancelToken.source();
 
   const promise = axios.patch(
-    `${DEFAULT_DEV_URL}/users/${userId}/buddies/${buddyToBeId}`,
+    `/users/${userId}/buddies/${buddyToBeId}`,
     { state },
     {
       cancelToken: source?.token,
@@ -172,12 +162,9 @@ export const deleteBuddy = (userId?: number, idToDelete?: number) => {
   const CancelToken = axios.CancelToken;
   const source = CancelToken.source();
 
-  const promise = axios.delete(
-    `${DEFAULT_DEV_URL}/users/${userId}/buddies/${idToDelete}`,
-    {
-      cancelToken: source?.token,
-    }
-  );
+  const promise = axios.delete(`/users/${userId}/buddies/${idToDelete}`, {
+    cancelToken: source?.token,
+  });
 
   //   queryFunctionContext?.signal?.addEventListener('abort', () => {
   //     source.cancel('Query was cancelled by React Query')
@@ -191,7 +178,7 @@ export const addBuddy = (userId?: number, buddyId?: number) => {
   const source = CancelToken.source();
 
   const promise = axios.patch(
-    `${DEFAULT_DEV_URL}/users/${userId}/buddies/${buddyId}`,
+    `/users/${userId}/buddies/${buddyId}`,
     { status: "Pending" },
     {
       cancelToken: source?.token,
@@ -210,7 +197,7 @@ export const connectInstagram = (userId?: number, authCode?: string) => {
   const source = CancelToken.source();
 
   const promise = axios.post(
-    `${DEFAULT_DEV_URL}/instagram/${userId}/media`,
+    `/instagram/${userId}/media`,
     { authCode },
     {
       cancelToken: source?.token,
@@ -228,7 +215,7 @@ export const unlinkInstagram = (userId?: number, authCode?: string) => {
   const CancelToken = axios.CancelToken;
   const source = CancelToken.source();
 
-  const promise = axios.delete(`${DEFAULT_DEV_URL}/instagram/${userId}/media`, {
+  const promise = axios.delete(`/instagram/${userId}/media`, {
     cancelToken: source?.token,
   });
 

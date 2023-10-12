@@ -11,7 +11,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { CustomizationContext } from "assets/theme/customization-provider";
 import { DrawerContext } from "assets/theme/drawer-provider";
 import Loader from "components/loader";
-import { format } from "date-fns";
+import { format, isAfter } from "date-fns";
 import {
   ACTIVITIES_QUERY_KEY,
   PAGED_ACTIVITIES_QUERY_KEY,
@@ -52,6 +52,7 @@ import ActivityDetailsGrid, {
 import { ActivityInviteDrawerContent } from "./components/activity-invite-drawer-content";
 import ActivityVisibilityDuration from "./components/activity-visibility-duration";
 import { convertDateToUTC } from "./utils/convert-date-to-utc";
+import ActivityActionButtons from "./components/activity-action-buttons";
 
 interface IProps {
   type: "detail" | "request";
@@ -309,6 +310,9 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
     [activity]
   );
 
+  const isPastActivity =
+    !!activity?.datetime_until &&
+    isAfter(new Date(), new Date(activity.datetime_until));
   const isCreator = activity?.creator?.id === userInfo?.id;
 
   const dateTimeFrom = activity?.datetime_from
@@ -409,76 +413,14 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
           margin: "auto",
         }}
       >
-        {displayActionButtons ? (
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-evenly",
-              my: 2,
-            }}
-          >
-            <OffliButton
-              size="small"
-              sx={{
-                fontSize: 18,
-                width: "40%",
-                height: 48,
-                color: isAlreadyParticipant
-                  ? "primary.main"
-                  : "background.default",
-              }}
-              onClick={handleJoinButtonClick}
-              color={!isAlreadyParticipant ? "primary" : "secondary"}
-              isLoading={areActionsLoading}
-              startIcon={
-                isAlreadyParticipant ? (
-                  <CheckCircleIcon sx={{ color: "primary.main" }} />
-                ) : (
-                  <CheckCircleOutlineIcon
-                    sx={{ color: "background.default" }}
-                  />
-                )
-              }
-            >
-              {isAlreadyParticipant
-                ? isCreator
-                  ? "Dismiss"
-                  : "Joined"
-                : "Join"}
-            </OffliButton>
-            <OffliButton
-              size="small"
-              disabled={!isAlreadyParticipant || areActionsLoading}
-              sx={{
-                fontSize: 18,
-                width: "40%",
-                height: 48,
-                bgcolor: "primary.light",
-                color: "primary.main",
-              }}
-              onClick={() =>
-                toggleDrawer({
-                  open: true,
-                  content: (
-                    <ActivityInviteDrawerContent activityId={Number(id)} />
-                  ),
-                })
-              }
-              startIcon={
-                <EmailIcon
-                  sx={{
-                    color: isAlreadyParticipant
-                      ? "primary.main"
-                      : "inactiveFont.main",
-                  }}
-                />
-              }
-            >
-              Invite
-            </OffliButton>
-          </Box>
-        ) : null}
+        <ActivityActionButtons
+          onJoinClick={handleJoinButtonClick}
+          areActionsLoading={areActionsLoading}
+          isCreator={isCreator}
+          isAlreadyParticipant={isAlreadyParticipant}
+          isPublic={activity?.visibility === ActivityVisibilityEnum.public}
+          hasEnded={isPastActivity}
+        />
         <Box
           sx={{
             display: "flex",

@@ -7,15 +7,12 @@ export const getNotifications = (userId: number) => {
   const CancelToken = axios.CancelToken;
   const source = CancelToken.source();
 
-  const promise = axios.get<INotificationsResponse>(
-    `${DEFAULT_DEV_URL}/notifications`,
-    {
-      cancelToken: source?.token,
-      params: {
-        userId,
-      },
-    }
-  );
+  const promise = axios.get<INotificationsResponse>(`/notifications`, {
+    cancelToken: source?.token,
+    params: {
+      userId,
+    },
+  });
   return promise;
 };
 
@@ -24,7 +21,7 @@ export const markNotificationAsSeen = (notificationId: number) => {
   const source = CancelToken.source();
 
   const promise = axios.patch<INotificationsResponse>(
-    `${DEFAULT_DEV_URL}/notifications/${notificationId}`,
+    `/notifications/${notificationId}`,
     { seen: true },
     {
       cancelToken: source?.token,
@@ -40,12 +37,9 @@ export const deleteNotification = (
   const CancelToken = axios.CancelToken;
   const source = CancelToken.source();
 
-  const promise = axios.delete<void>(
-    `${DEFAULT_DEV_URL}/notifications/${notificationId}`,
-    {
-      cancelToken: source?.token,
-    }
-  );
+  const promise = axios.delete<void>(`/notifications/${notificationId}`, {
+    cancelToken: source?.token,
+  });
 
   signal?.addEventListener("abort", () => {
     source.cancel("Query was cancelled by React Query");
@@ -71,7 +65,7 @@ export async function subscribeBrowserPush(userId: number) {
     }
     // TODO: Check whether the user is already subscribed within Offli, if so and the endpoint is the same, do not
     //  perform putSubscription
-    // axios.get(`${DEFAULT_DEV_URL}/notifications/subscriptions`, {params: userId})
+    // axios.get(`/notifications/subscriptions`, {params: userId})
     await putSubscription(subscription, userId); // TODO: ID of current user
   } catch (err) {
     console.error(err);
@@ -88,7 +82,7 @@ function urlBase64ToUint8Array(base64String: string) {
 async function putSubscription(subscription: PushSubscription, userId: number) {
   let sub = subscription.toJSON();
   console.log(subscription.toJSON()); // TODO: Remove logging
-  let url = `${DEFAULT_DEV_URL}/notifications/subscriptions`;
+  let url = `/notifications/subscriptions`;
   let data = {
     endpoint: sub.endpoint,
     auth: sub.keys?.auth,

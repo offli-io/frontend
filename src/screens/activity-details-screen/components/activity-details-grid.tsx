@@ -3,7 +3,7 @@ import MonetizationOnIcon from "@mui/icons-material/MonetizationOn";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import RoomIcon from "@mui/icons-material/Room";
 import { Box, Card, IconButton, Typography, styled } from "@mui/material";
-import { format } from "date-fns";
+import { format, isAfter } from "date-fns";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import OffliButton from "../../../components/offli-button";
@@ -47,6 +47,9 @@ const StyledText = styled(Typography)(() => ({
 
 const ActivityDetailsGrid: React.FC<IProps> = ({ activity, onActionClick }) => {
   const navigate = useNavigate();
+  const isPastActivity =
+    !!activity?.datetime_until &&
+    isAfter(new Date(), new Date(activity.datetime_until));
 
   return (
     <Box
@@ -97,6 +100,7 @@ const ActivityDetailsGrid: React.FC<IProps> = ({ activity, onActionClick }) => {
             fontSize: 15,
             mt: 0.5,
           }}
+          disabled={isPastActivity}
         >
           Add to calendar
         </OffliButton>

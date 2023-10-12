@@ -36,6 +36,7 @@ import { ActivityMembersActionTypeDto } from "../../types/common/activity-member
 import { ApplicationLocations } from "../../types/common/applications-locations.dto";
 import { BuddyActionContent } from "./components/buddy-action-content";
 import SearchBuddiesContent from "./components/search-buddies-content";
+import { isAfter } from "date-fns";
 
 enum ITabs {
   CONFIRMED = "CONFIRMED",
@@ -164,6 +165,9 @@ export const ActivityMembersScreen: React.FC = () => {
     () => activity?.creator?.id === userInfo?.id,
     [activity, userInfo?.id]
   );
+  const isPastActivity =
+    !!activity?.datetime_until &&
+    isAfter(new Date(), new Date(activity.datetime_until));
   const anySearchResults = [...(activityMembers ?? [])]?.length > 0;
 
   const generateChipLabel = React.useCallback(() => {}, []);
@@ -296,8 +300,13 @@ export const ActivityMembersScreen: React.FC = () => {
             data-testid="activities-search-input"
           />
           {isCreator ? (
-            <IconButton sx={{ fontSize: 14, ml: 1 }} onClick={handleAddBuddies}>
-              <PersonAddIcon sx={{ color: "primary.main" }} />
+            <IconButton
+              color="primary"
+              sx={{ fontSize: 14, ml: 1 }}
+              onClick={handleAddBuddies}
+              disabled={isPastActivity}
+            >
+              <PersonAddIcon sx={{ color: "inherit" }} />
             </IconButton>
           ) : null}
         </Box>
@@ -355,7 +364,9 @@ export const ActivityMembersScreen: React.FC = () => {
                   <BuddyItem
                     key={member?.id}
                     buddy={member}
-                    actionContent={renderActionContent(member)}
+                    actionContent={
+                      !isPastActivity && renderActionContent(member)
+                    }
                     onClick={() =>
                       member?.id !== userInfo?.id &&
                       navigate(
