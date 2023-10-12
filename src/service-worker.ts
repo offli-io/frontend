@@ -92,9 +92,9 @@ self.addEventListener("push", async (event) => {
         ? `invited you to join ${activityName}`
         : "sent you buddy request"
     }`,
-    icon: "https://offli-dev-frontend-jurajpaska8.cloud.okteto.net/logo192.png",
+    icon: "https://offli-dev-gateway-jurajpaska8.cloud.okteto.net/logo192.png", // TODO: From env?
     badge:
-      "https://offli-dev-frontend-jurajpaska8.cloud.okteto.net/logo192.png",
+      "https://offli-dev-gateway-jurajpaska8.cloud.okteto.net/logo192.png", // TODO: From env?
   };
   event.waitUntil(self.registration.showNotification(title, options));
 });
