@@ -19,17 +19,20 @@ export const useGetLastAttendedActivities = ({
   const abortControllerRef = React.useRef<AbortController | null>(null);
   const currentDate = React.useMemo(() => new Date(), []);
 
-  const { data: { data: { activities = [] } = {} } = {}, isLoading } =
-    useActivities<IActivityListRestDto>({
-      params: {
-        datetimeUntil: currentDate,
-        sort: `${ActivitySortColumnEnum.DATETOME_UNTIL}:${ActivitySortDirectionEnum.DESC}` as any,
-        limit,
-        participantId,
-        ...rest,
-      },
-      enabled,
-    });
+  const {
+    data: { data: { activities = [] } = {} } = {},
+    isLoading,
+    isFetching,
+  } = useActivities<IActivityListRestDto>({
+    params: {
+      datetimeUntil: currentDate,
+      sort: `${ActivitySortColumnEnum.DATETOME_UNTIL}:${ActivitySortDirectionEnum.DESC}` as any,
+      limit,
+      participantId,
+      ...rest,
+    },
+    enabled,
+  });
 
-  return { activities, isLoading };
+  return { activities, isLoading, isFetching };
 };
