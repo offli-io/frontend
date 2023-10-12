@@ -49,6 +49,7 @@ const OffliHeader: React.FC<IProps> = ({ sx }) => {
         ApplicationLocations.CHOOSE_USERNAME_GOOGLE,
         ApplicationLocations.SEARCH,
         ApplicationLocations.NOTIFICATIONS,
+        ApplicationLocations.ACCOUNT_SETTINGS,
       ].includes(location?.pathname as ApplicationLocations) ||
       NOT_EXACT_UNALLOWED_URLS?.some((item) =>
         location?.pathname.includes(item)

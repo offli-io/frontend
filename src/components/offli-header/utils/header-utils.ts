@@ -47,6 +47,8 @@ export const mapPathnameToHeaderTitle = (pathname?: ApplicationLocations) => {
       return "Settings";
     case ApplicationLocations.MAP:
       return "Map";
+    case ApplicationLocations.ACCOUNT_SETTINGS:
+      return "Account settings";
     default:
       return "";
   }

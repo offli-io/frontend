@@ -3,6 +3,7 @@
   "version": "0.1.100",
   "private": true,
   "homepage": "http://localhost:3000/",
+  "proxy": "https://offli-dev-gateway-jurajpaska8.cloud.okteto.net/api",
   "dependencies": {
     "@date-io/date-fns": "^2.16.0",
     "@emotion/react": "^11.9.3",
@@ -29,6 +30,7 @@
     "@types/react-time-picker": "^4.0.2",
     "axios": "^0.27.2",
     "buffer": "^6.0.3",
+    "cross-var": "^1.1.0",
     "date-fns": "^2.29.3",
     "dayjs": "^1.11.7",
     "gapi-script": "^1.2.0",

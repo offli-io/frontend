@@ -8,6 +8,7 @@ export interface IUseActivityMenuItemsProps {
   isParticipant?: boolean;
   isPrivate?: boolean;
   contrastText?: boolean;
+  isPastActivity?: boolean;
 }
 
 const CORE_ACTIONS = [
@@ -20,6 +21,7 @@ export const useActivityMenuItems = ({
   isParticipant,
   isPrivate,
   contrastText,
+  isPastActivity,
 }: IUseActivityMenuItemsProps) => {
   const actionDefinitions = useActivityActionsDefinitions({ contrastText });
   // can't use location.pathname because Drawer is outside <Router> scope
@@ -37,27 +39,30 @@ export const useActivityMenuItems = ({
     ) {
       return menuItem;
     }
-    if (menuItem?.type === ActivityActionsTypeEnumDto.DISMISS && isCreator) {
-      return menuItem;
+    if (!isPastActivity) {
+      if (menuItem?.type === ActivityActionsTypeEnumDto.DISMISS && isCreator) {
+        return menuItem;
+      }
+      if (
+        menuItem?.type === ActivityActionsTypeEnumDto.LEAVE &&
+        isParticipant &&
+        !isCreator
+      ) {
+        return menuItem;
+      }
+      if (menuItem?.type === ActivityActionsTypeEnumDto.EDIT && isCreator) {
+        return menuItem;
+      }
+      if (
+        menuItem?.type === ActivityActionsTypeEnumDto.JOIN &&
+        !isCreator &&
+        !isParticipant &&
+        !isPrivate
+      ) {
+        return menuItem;
+      }
     }
-    if (
-      menuItem?.type === ActivityActionsTypeEnumDto.LEAVE &&
-      isParticipant &&
-      !isCreator
-    ) {
-      return menuItem;
-    }
-    if (menuItem?.type === ActivityActionsTypeEnumDto.EDIT && isCreator) {
-      return menuItem;
-    }
-    if (
-      menuItem?.type === ActivityActionsTypeEnumDto.JOIN &&
-      !isCreator &&
-      !isParticipant &&
-      !isPrivate
-    ) {
-      return menuItem;
-    }
+
     return undefined;
   });
 };

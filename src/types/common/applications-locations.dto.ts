@@ -31,4 +31,5 @@ export enum ApplicationLocations {
   CHAT = "/chat",
   AUTHENTICATION_METHOD = "/",
   FORGOTTEN_PASSWORD = "/forgotten-password",
+  ACCOUNT_SETTINGS = "/account-settings",
 }

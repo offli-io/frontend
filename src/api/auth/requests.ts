@@ -18,13 +18,9 @@ export const loginUser = (values: ILoginRequestDto) => {
   const CancelToken = axios.CancelToken;
   const source = CancelToken.source();
 
-  const promise = axios.post<ILoginResponseDto>(
-    `${DEFAULT_DEV_URL}/login`,
-    values,
-    {
-      cancelToken: source?.token,
-    }
-  );
+  const promise = axios.post<ILoginResponseDto>(`/login`, values, {
+    cancelToken: source?.token,
+  });
   return promise;
 };
 
@@ -33,7 +29,7 @@ export const loginViaGoogle = (accessToken?: string, signal?: AbortSignal) => {
   const source = CancelToken.source();
 
   const promise = axios.post<ILoginResponseDto>(
-    `${DEFAULT_DEV_URL}/google/login`,
+    `/google/login`,
     { googleBearerToken: accessToken },
     {
       cancelToken: source?.token,
@@ -125,7 +121,7 @@ export const registerViaGoogle = async (
   const source = CancelToken.source();
 
   const promise = axios.post<ILoginResponseDto>(
-    `${DEFAULT_DEV_URL}/google/registration`,
+    `/google/registration`,
     { googleBearerToken: accessToken },
     {
       cancelToken: source?.token,
@@ -144,7 +140,7 @@ export const resetPassword = (values: { email?: string }) => {
   const source = CancelToken.source();
 
   const promise = axios.post<ILoginResponseDto>(
-    `${DEFAULT_DEV_URL}/registration/reset-password`,
+    `/registration/reset-password`,
     values,
     {
       cancelToken: source?.token,
@@ -158,7 +154,7 @@ export const verifyEmail = (values: IVerifyEmailRequestDto) => {
   const source = CancelToken.source();
 
   const promise = axios.post<ILoginResponseDto>(
-    `${DEFAULT_DEV_URL}/registration/verify-email`,
+    `/registration/verify-email`,
     values,
     {
       cancelToken: source?.token,
@@ -174,7 +170,7 @@ export const checkVerificationCode = (
   const source = CancelToken.source();
 
   const promise = axios.post<ILoginResponseDto>(
-    `${DEFAULT_DEV_URL}/registration/check-verification-code`,
+    `/registration/check-verification-code`,
     values,
     {
       cancelToken: source?.token,
@@ -189,7 +185,7 @@ export const resendCode = (values: { email?: string }) => {
   const source = CancelToken.source();
 
   const promise = axios.post<void>(
-    `${DEFAULT_DEV_URL}/registration/resend-code`,
+    `/registration/resend-code`,
     { ...values, id: "321fdsf" },
     {
       cancelToken: source?.token,
@@ -203,7 +199,7 @@ export const confirmResetPassword = (values: IConfirmResetPasswordDto) => {
   const source = CancelToken.source();
 
   const promise = axios.post<void>(
-    `${DEFAULT_DEV_URL}/registration/confirm-reset-password`,
+    `/registration/confirm-reset-password`,
     values,
     {
       cancelToken: source?.token,

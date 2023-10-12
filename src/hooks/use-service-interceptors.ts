@@ -27,7 +27,9 @@ export const useServiceInterceptors = ({
     (config) => {
       const _token = getAuthToken();
       if (config) {
-        config.baseURL = baseUrl;
+        if (process.env.NODE_ENV !== "development") {
+          config.baseURL = baseUrl;
+        }
         if (config?.headers) {
           //const newConfig = { ...config }
           //config.headers['Content-Type'] = 'application/json'

@@ -1,12 +1,8 @@
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import { Box, IconButton, SxProps, Typography } from "@mui/material";
-import React, { useState } from "react";
+import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { ApplicationLocations } from "../../../types/common/applications-locations.dto";
-import {
-  HeaderContext,
-  HeaderProvider,
-} from "../../../app/providers/header-provider";
+import { HeaderContext } from "../../../app/providers/header-provider";
 
 interface IBackHeaderProps {
   title?: string;
@@ -23,8 +19,7 @@ const BackHeader: React.FC<IBackHeaderProps> = ({
 }) => {
   const location = useLocation().pathname;
   const navigate = useNavigate();
-  const { headerRightContent, setHeaderRightContent } =
-    React.useContext(HeaderContext);
+  const { headerRightContent } = React.useContext(HeaderContext);
 
   //why was this done?
   //BIG TODO
@@ -73,10 +68,6 @@ const BackHeader: React.FC<IBackHeaderProps> = ({
     //   },
     // });
   }, [location, navigate]);
-
-  React.useEffect(() => {
-    return () => setHeaderRightContent(null);
-  }, []);
 
   return (
     <Box
