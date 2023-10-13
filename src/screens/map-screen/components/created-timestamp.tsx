@@ -1,13 +1,13 @@
 import { Box, Typography, styled } from "@mui/material";
 import React from "react";
 
-const MainBox = styled(Box)(() => ({
+const MainBox = styled(Box)(({ theme }) => ({
   width: "100%",
   display: "flex",
   flexDirection: "column",
   alignContent: "center",
   justifyContent: "center",
-  marginTop: "10%",
+  marginTop: theme.spacing(2),
 }));
 
 interface IProps {

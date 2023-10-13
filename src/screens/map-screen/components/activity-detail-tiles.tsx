@@ -16,15 +16,20 @@ interface IProps {
 const StyledBox = styled(Card)(() => ({
   display: "flex",
   alignItems: "center",
+  justifyContent: "center",
   flexDirection: "column",
-  borderRadius: "10px",
-  margin: 8,
-  padding: 0,
+  borderRadius: "10px !important",
+  margin: 5,
+  padding: "10px !important",
   width: "100%",
 }));
 
 const StyledText = styled(Typography)(() => ({
-  lineHeight: 1.2,
+  width: "100%",
+  whiteSpace: "nowrap",
+  overflow: "hidden",
+  display: "block",
+  textOverflow: "ellipsis",
   marginTop: 8,
 }));
 
@@ -43,7 +48,7 @@ const ActivityDetailTiles: React.FC<IProps> = ({
         flexDirection: "row",
         alignItems: "stretch",
         justifyContent: "space-evenly",
-        pt: 1,
+        p: "8px !important",
       }}
     >
       <StyledBox>
