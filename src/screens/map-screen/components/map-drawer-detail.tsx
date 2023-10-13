@@ -17,7 +17,7 @@ import ActivityDuration from "./activity-duration";
 import AdditionalDescription from "./additional-description";
 import BasicInformation from "./basic-information";
 import CreatedTimestamp from "./created-timestamp";
-import { CreatorVisibilityRow } from "./creator-visibility-row";
+import { CreatorJoinRow } from "./creator-join-row";
 
 interface IProps {
   activityId?: number;
@@ -46,6 +46,7 @@ const MapDrawerDetail: React.FC<IProps> = ({ activityId }) => {
   const { data: { data = {} } = {} } = useUser({
     id: userInfo?.id,
   });
+
   const myLocation = data?.location?.coordinates;
   const baseUrl = useGetApiUrl();
 
@@ -57,10 +58,11 @@ const MapDrawerDetail: React.FC<IProps> = ({ activityId }) => {
   const dateTimeUntil = activity?.datetime_until
     ? new Date(activity?.datetime_until)
     : null;
-  const dateTimeCreatedAt = new Date();
+  const dateTimeCreatedAt = activity?.created_at
+    ? new Date(activity?.created_at)
+    : null;
 
   const timeDifference = getTimeDifference(dateTimeFrom, dateTimeUntil); // useMemo??
-
   const durationMinutes = timeDifference?.durationMinutes;
   const durationHours = timeDifference?.durationHours;
 
@@ -115,11 +117,11 @@ const MapDrawerDetail: React.FC<IProps> = ({ activityId }) => {
               )}
               price={activity?.price}
             />
-            <ActivityTags tags={activity?.tags} />
+            <ActivityTags tags={activity?.tags} sx={{ my: 1.5 }} />
             {activity?.creator ? (
-              <CreatorVisibilityRow
+              <CreatorJoinRow
                 creator={activity?.creator}
-                visibility={activity?.visibility}
+                activityId={activityId}
               />
             ) : null}
 

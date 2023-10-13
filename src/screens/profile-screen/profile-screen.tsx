@@ -27,6 +27,7 @@ import { useSendBuddyRequest } from "./hooks/use-send-buddy-request";
 import { useToggleBuddyRequest } from "./hooks/use-toggle-buddy-request";
 import { ProfileEntryTypeEnum } from "./types/profile-entry-type";
 import { generateBuddyActionButtonLabel } from "./utils/generate-buddy-action-button-label.util";
+import LastAttendedActivities from "./components/last-attended-activites";
 
 interface IProfileScreenProps {
   type: ProfileEntryTypeEnum;
@@ -51,7 +52,12 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
           : () => navigate(ApplicationLocations.BUDDIES),
     });
   const { handleSendBuddyRequest, isSendingBuddyRequest } = useSendBuddyRequest(
-    { onSuccess: () => queryClient.invalidateQueries(["buddy-state"]) }
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(["buddy-state"]);
+        queryClient.invalidateQueries(["recommended-buddies"]);
+      },
+    }
   );
 
   const { data: { data = {} } = {}, isLoading } = useUser({
@@ -154,12 +160,13 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
   }, [handleToggleBuddyRequest, id]);
 
   const displayStatistics = React.useMemo(() => {
-    return (
-      (data?.enjoyed_together_last_month_count ?? 0) > 0 ||
-      (data?.activities_created_last_month_count ?? 0) ||
-      (data?.activities_participated_last_month_count ?? 0) ||
-      (data?.new_buddies_last_month_count ?? 0) > 0
-    );
+    return id
+      ? (data?.enjoyed_together_last_month_count ?? 0) > 0 ||
+          (data?.activities_participated_last_month_count ?? 0)
+      : (data?.activities_participated_last_month_count ?? 0) ||
+          (data?.enjoyed_together_last_month_count ?? 0) > 0 ||
+          (data?.activities_created_last_month_count ?? 0) ||
+          (data?.new_buddies_last_month_count ?? 0) > 0;
   }, [data]);
 
   const handleBuddyRequest = React.useCallback(() => {
@@ -345,49 +352,7 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
             ) : null}
           </Box>
         ) : null}
-        {isBuddy && lastAttendedActivties?.length > 0 ? (
-          <Box
-            sx={{
-              width: "90%",
-            }}
-          >
-            <Typography
-              align="left"
-              variant="h5"
-              sx={{ mt: 3, mb: 1, color: palette?.text?.primary }}
-            >
-              Last attended
-            </Typography>
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "space-between",
-                gap: 1.5,
-                overflowX: "scroll",
-                width: "100%",
-                "::-webkit-scrollbar": { display: "none" },
-              }}
-            >
-              {lastAttendedActivties?.map((activity) => {
-                return (
-                  <MyActivityCard
-                    activity={activity}
-                    type="profile"
-                    onPress={() =>
-                      navigate(
-                        `${ApplicationLocations.ACTIVITY_DETAIL}/${activity?.id}`
-                      )
-                    }
-                    sx={{
-                      minWidth:
-                        lastAttendedActivties?.length <= 1 ? "100%" : "80%",
-                    }}
-                  />
-                );
-              })}
-            </Box>
-          </Box>
-        ) : null}
+        <LastAttendedActivities />
 
         {displayStatistics ? (
           <Box

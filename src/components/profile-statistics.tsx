@@ -11,6 +11,8 @@ import {
 } from "@mui/material";
 import React from "react";
 import { useParams } from "react-router-dom";
+import activitiesAttendedPicture from "../assets/img/activities-attended.svg";
+import enjoyedTimeTogetherPicture from "../assets/img/enjoyed-time-together.svg";
 
 interface IProps {
   participatedNum?: number;
@@ -28,7 +30,97 @@ const ProfileStatistics: React.FC<IProps> = ({
   isLoading,
 }) => {
   const { id } = useParams();
-  return (
+  return id ? (
+    <Box sx={{ width: "100%", mb: 2 }}>
+      {participatedNum && participatedNum > 0 ? (
+        // {TODO Outsource this image statistic into separate component}
+        <Box
+          sx={{
+            display: "grid",
+            gridTemplateColumns: "1fr 1fr",
+            gap: 2,
+            width: "100%",
+            alignItems: "center",
+            justifyContent: "center",
+            maxHeight: 100,
+            mt: 2,
+          }}
+        >
+          <Box sx={{ display: "flex", justifyContent: "center" }}>
+            <img
+              alt="activities_attended"
+              src={activitiesAttendedPicture}
+              style={{ height: 65 }}
+            />
+          </Box>
+          <Box>
+            <Box sx={{ display: "flex" }}>
+              <OfflineBoltIcon sx={{ color: "primary.main" }} />
+              <Typography
+                sx={{
+                  fontWeight: "bold",
+                  ml: 1,
+                  color: ({ palette }) => palette?.primary?.main,
+                }}
+              >
+                {participatedNum}
+              </Typography>
+            </Box>
+            <Typography
+              sx={{
+                color: ({ palette }) => palette?.primary?.main,
+              }}
+            >
+              activities attended
+            </Typography>
+          </Box>
+        </Box>
+      ) : null}
+      {enjoyedNum && enjoyedNum > 0 ? (
+        <Box
+          sx={{
+            display: "grid",
+            gridTemplateColumns: "1fr 1fr",
+            gap: 2,
+            width: "100%",
+            alignItems: "center",
+            justifyContent: "center",
+            maxHeight: 100,
+            mt: 2,
+          }}
+        >
+          <Box sx={{ display: "flex", justifyContent: "center" }}>
+            <img
+              alt="activities_attended"
+              src={enjoyedTimeTogetherPicture}
+              style={{ height: 65 }}
+            />
+          </Box>
+          <Box>
+            <Box sx={{ display: "flex" }}>
+              <FavoriteIcon sx={{ color: "primary.main" }} />
+              <Typography
+                sx={{
+                  fontWeight: "bold",
+                  ml: 1,
+                  color: ({ palette }) => palette?.primary?.main,
+                }}
+              >
+                {enjoyedNum}
+              </Typography>
+            </Box>
+            <Typography
+              sx={{
+                color: ({ palette }) => palette?.primary?.main,
+              }}
+            >
+              activities enjoyed
+            </Typography>
+          </Box>
+        </Box>
+      ) : null}
+    </Box>
+  ) : (
     <Grid
       container
       rowSpacing={1}
@@ -55,7 +147,7 @@ const ProfileStatistics: React.FC<IProps> = ({
         </Box>
       ) : (
         <>
-          {participatedNum || !id ? (
+          {participatedNum ? (
             <Grid item xs={6}>
               <Box
                 sx={{
@@ -81,7 +173,7 @@ const ProfileStatistics: React.FC<IProps> = ({
               </Box>
             </Grid>
           ) : null}
-          {enjoyedNum || !id ? (
+          {enjoyedNum ? (
             <Grid item xs={6}>
               <Box
                 sx={{
@@ -104,7 +196,7 @@ const ProfileStatistics: React.FC<IProps> = ({
               </Box>
             </Grid>
           ) : null}
-          {createdNum || !id ? (
+          {createdNum ? (
             <Grid item xs={6}>
               <Box
                 sx={{
@@ -130,7 +222,7 @@ const ProfileStatistics: React.FC<IProps> = ({
               </Box>
             </Grid>
           ) : null}
-          {metNum || !id ? (
+          {metNum ? (
             <Grid item xs={6}>
               <Box
                 sx={{

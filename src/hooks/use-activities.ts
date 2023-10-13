@@ -31,7 +31,7 @@ export const useActivities = <T>({
   onSuccess,
   enabled,
 }: IUseActivitiesReturn<T>) => {
-  const { data, isLoading } = useQuery(
+  const { data, isLoading, isFetching } = useQuery(
     [
       ACTIVITIES_QUERY_KEY,
       id,
@@ -74,5 +74,5 @@ export const useActivities = <T>({
     }
   );
 
-  return { data, isLoading, onSuccess };
+  return { data, isLoading, isFetching, onSuccess };
 };

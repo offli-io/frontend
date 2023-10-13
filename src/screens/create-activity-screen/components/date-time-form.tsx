@@ -23,6 +23,9 @@ import { generateDateSlots } from "../utils/generate-date-slots.util";
 import { generateOptionsOrder } from "../utils/generate-options-order.util";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import { ActivityDurationTypeEnumDto } from "types/activities/activity-duration-type-enum.dto";
+import { format } from "date-fns";
+import { DATE_TIME_FORMAT } from "utils/common-constants";
+import { calculateDateUsingDuration } from "../utils/calculate-date-using-duration.util";
 
 interface IDateTimeForm {
   onNextClicked: () => void;
@@ -125,11 +128,22 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
     [date]
   );
 
+  const datetimeFrom = watch("datetime_from");
   const fromTimeValue = watch("timeFrom");
   //TODO why duration isn't caught by validation error with yup?
   const duration = watch("duration");
+  const durationType = watch("durationType");
 
   const isTimeSelected = !!fromTimeValue && fromTimeValue !== "";
+
+  const displayEndingTime = isTimeSelected && !!datetimeFrom && !!duration;
+
+  const datetimeUntil = calculateDateUsingDuration({
+    timeFrom: fromTimeValue,
+    datetimeFrom,
+    duration,
+    durationType,
+  });
 
   return (
     <Box
@@ -142,7 +156,7 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
       }}
     >
       <Box sx={{ display: "flex", flexDirection: "column", width: "100%" }}>
-        <Box sx={{ display: "flex", mb: 3, mt: 1, justifyContent: "center" }}>
+        <Box sx={{ display: "flex", mb: 2, mt: 1, justifyContent: "center" }}>
           <Typography
             variant="h1"
             sx={{ mr: 1, color: palette?.primary?.main }}
@@ -164,7 +178,7 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
 
         <Typography
           variant="h4"
-          sx={{ mt: 3, mb: 1, color: palette?.text?.primary }}
+          sx={{ mt: 2, mb: 1, color: palette?.text?.primary }}
         >
           Start time
         </Typography>
@@ -213,7 +227,7 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
 
         <Typography
           variant="h4"
-          sx={{ mt: 3, mb: 1, color: palette?.text?.primary }}
+          sx={{ mt: 2, mb: 1, color: palette?.text?.primary }}
         >
           Activity duration
         </Typography>
@@ -271,6 +285,17 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
             </RadioGroup>
           )}
         />
+        {displayEndingTime ? (
+          <Typography
+            variant="subtitle2"
+            sx={{
+              textAlign: "center",
+              fontSize: 14,
+              my: 1.2,
+              fontWeight: "bold",
+            }}
+          >{`Ending ${format(datetimeUntil, DATE_TIME_FORMAT)}`}</Typography>
+        ) : null}
       </Box>
 
       <Box
