@@ -24,6 +24,7 @@ import { ActivityTypeForm } from "./components/activity-type-form";
 import { DateTimeForm } from "./components/date-time-form";
 import { NameForm } from "./components/name-form";
 import { PlaceForm } from "./components/place-form";
+import { calculateDateUsingDuration } from "./utils/calculate-date-using-duration.util";
 
 export interface FormValues {
   title?: string;
@@ -202,24 +203,16 @@ const CreateActivityScreen = () => {
       const { id = undefined } = { ...userData };
 
       // handle time values in from and until datetime
-      const fromTimeValues = data?.timeFrom?.split(":");
-      const dateTimeFrom = data?.datetime_from
-        ? setMinutes(
-            setHours(data?.datetime_from, Number(fromTimeValues?.[0])),
-            Number(fromTimeValues?.[1])
-          )
-        : undefined;
-
-      const duration = data?.duration;
-      const durationType = data?.durationType;
-
-      const dateTimeUntil = add(dateTimeFrom as Date, {
-        [durationType as string]: duration,
+      const dateTimeUntil = calculateDateUsingDuration({
+        duration: data?.duration,
+        durationType: data?.durationType,
+        datetimeFrom: data?.datetime_from,
+        timeFrom: data?.timeFrom,
       });
 
       sendCreateActivity({
         ...restValues,
-        datetime_from: dateTimeFrom,
+        datetime_from: data?.datetime_from,
         datetime_until: dateTimeUntil,
         price: finalPrice,
         creator_id: id,
