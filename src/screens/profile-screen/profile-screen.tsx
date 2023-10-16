@@ -253,7 +253,7 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
                   aspectRatio: 1,
                   borderRadius: "50%",
                   backgroundColor: palette?.background?.default,
-                  border: `2px solid ${palette?.primary?.main}`,
+                  border: `1px solid ${palette?.primary?.main}`,
                 }}
                 data-testid="profile-img"
               />

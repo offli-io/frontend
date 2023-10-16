@@ -2,11 +2,8 @@ import React from "react";
 import { Box, SxProps, Typography } from "@mui/material";
 import { IActivity } from "../types/activities/activity.dto";
 import useLongPress from "../hooks/use-long-press";
-import { format } from "date-fns";
 import OffliButton from "./offli-button";
 import { useGetApiUrl } from "hooks/use-get-api-url";
-import { DATE_TIME_FORMAT } from "utils/common-constants";
-import { formatDistanceToNow } from 'date-fns';
 
 interface IMyActivityCardProps {
   activity?: IActivity;
@@ -31,7 +28,7 @@ const MyActivityCard: React.FC<IMyActivityCardProps> = ({
   });
   const baseUrl = useGetApiUrl();
 
-  const currentTime = new Date(); // Get the current time
+  const currentTime = new Date();
 
   const isOngoing =
     activity?.datetime_from &&
@@ -54,26 +51,24 @@ const MyActivityCard: React.FC<IMyActivityCardProps> = ({
   let timeRemainingText;
 
   if (timeRemainingDays >= 1) {
-    // More than 24 hours remaining
     timeRemainingText = timeRemainingDays === 1 ? "in 1 day" : `in ${timeRemainingDays} days`;
   } else if (timeRemainingHours >= 1) {
-    // Less than 24 hours remaining
     timeRemainingText = timeRemainingHours === 1 ? "in 1 hour" : `in ${timeRemainingHours} hours`;
   } else {
-    // Less than an hour remaining
     timeRemainingText = timeRemainingMinutes === 1 ? "less than a minute" : `in ${timeRemainingMinutes} minutes`;
   }
 
   return (
     <OffliButton
       sx={{
-        display: "grid",
-        gridTemplateColumns: "3fr 1fr",
-        boxSizing: "border-box",
+        display: "flex",
+        width: 280,
         minWidth: 280,
-        maxWidth: 280,
         background: "linear-gradient(90deg, rgba(74, 20, 140, 0.18) 0%, rgba(74, 20, 140, 0.18) 44.06%, rgba(255, 255, 255, 0.00) 90.95%)",
-        m:1
+        m:1,
+        alignItems: "center",
+        justifyContent: "flex-start",
+        px: 0.5,
       }}
       color="inherit"
       {...handlers}
@@ -85,77 +80,74 @@ const MyActivityCard: React.FC<IMyActivityCardProps> = ({
         sx={{
           display: "flex",
           alignItems: "center",
-          width: 260,
+          justifyContent: "flex-start"
         }}
       >
-        <Box sx={{ mt: 0.5, height: 75 , width: "35%"}}>
+        <Box sx={{height: 75 , width: 90}}>
           <img
             src={`${baseUrl}/files/${activity?.title_picture}`}
             alt="activity_picture"
-            style={{ height: 70, borderRadius: "10px" }}
+            style={{ height: 75, borderRadius: "10px" }}
           />
         </Box>
         {type === "explore" && (
-        <Box
-          sx={{
-            width: "65%",
-            ml: 1.5,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "flex-start",
-            whiteSpace: "nowrap",
-            overflow: "hidden",
-            textOverflow: "ellipsis"
-          }}
-        >
-          <Typography variant="h5">
-            {activity?.title ?? "Title"}
-          </Typography>
-          <Typography variant="subtitle1">
-            {activity?.location?.name ?? "Location"}
-          </Typography>
-          {isOngoing ? (
-            <Box sx={{display: "flex", alignItems: "center"}}>
-              <Box
-                sx={{
-                  backgroundColor: ({ palette }) => palette.primary.main,
-                  height: 10,
-                  minWidth: 10,
-                  borderRadius: 5,
-                  mr: 1,
-                }}
-              />
-              <Typography variant="subtitle1" sx={{color: "primary.main"}}>
-                Activity in progress
-              </Typography>
-            </Box>
-          ) : (
-            <Typography variant="subtitle1">
-            {timeRemainingText}
-          </Typography>
-          )}
-          
-        </Box>
+          <Box
+            sx={{
+              width: 170,
+              ml: 2,
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "flex-start",
+              alignItems: "flex-start",
+            }}
+          >
+            <Typography variant="h5" sx={{width: 170,overflow: "hidden",textOverflow: "ellipsis",whiteSpace: "nowrap"}}>
+              {activity?.title ?? "Title"}
+            </Typography>
+            <Typography variant="subtitle1" sx={{width: 170,overflow: "hidden",textOverflow: "ellipsis",whiteSpace: "nowrap"}}>
+              {activity?.location?.name ?? "Location"}
+            </Typography>
+            {isOngoing ? (
+              <Box sx={{display: "flex", alignItems: "center"}}>
+                <Box
+                  sx={{
+                    backgroundColor: ({ palette }) => palette.primary.main,
+                    height: 10,
+                    minWidth: 10,
+                    borderRadius: 5,
+                    mr: 1,
+                  }}
+                />
+                <Typography variant="subtitle1" sx={{color: "primary.main"}}>
+                  Activity in progress
+                </Typography>
+              </Box>
+            ) : (
+              <Typography variant="subtitle1">
+              {timeRemainingText}
+            </Typography>
+            )}
+          </Box>
         )}
         {type === "profile" && (
-        <Box
-          sx={{
-            width: "65%",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "flex-start",
-            whiteSpace: "nowrap",
-            overflow: "hidden",
-            textOverflow: "ellipsis"
-          }}
-        >
-          <Typography variant="h5" sx={{
-            color: ({ palette }) => palette?.primary?.main,
-            ml:2
-          }}>
-            {activity?.title ?? "Title"}
-          </Typography>
-        </Box>
+          <Box
+            sx={{
+              width: 170,
+              display: "flex",
+              alignItems: "flex-start",
+              justifyContent: "flex-start",
+            }}
+          >
+            <Typography variant="h5" sx={{
+              color: ({ palette }) => palette?.primary?.main,
+              width: 170,
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap"
+            }}>
+              {activity?.title ?? "Title"}
+            </Typography>
+          </Box>
         )}
       </Box>
     </OffliButton>

@@ -250,6 +250,21 @@ const ActivitiesScreen = () => {
     [paginatedActivitiesData]
   );
 
+  function filterActivitiesForThisWeek(activities: any[]) {
+    const today = startOfToday();
+    const nextWeek = endOfWeek(today);
+  
+    return activities.filter((activity) => {
+      if (activity?.datetime_from && activity?.datetime_until) {
+        const startDate = new Date(activity.datetime_from);
+        const endDate = new Date(activity.datetime_until);
+  
+        return isWithinInterval(startDate, { start: today, end: nextWeek });
+      }
+      return false;
+    });
+  }
+
   const handleLocationSelect = React.useCallback(() => {
     toggleDrawer({
       open: true,
@@ -369,7 +384,9 @@ const ActivitiesScreen = () => {
           )}
           {anyMyActivities && (
             <>
-              <Box
+            {filterActivitiesForThisWeek(participantActivites).length > 0 && (
+              <Box>
+                <Box
                 sx={{
                   display: "flex",
                   justifyContent: "space-between",
@@ -386,24 +403,13 @@ const ActivitiesScreen = () => {
                 sx={{
                   display: "flex",
                   justifyContent: "space-between",
-                  gap: 2,
+                  gap: 1.5,
                   overflowX: "scroll",
                   width: "100%",
                   "::-webkit-scrollbar": { display: "none" },
                 }}
               >
-                {participantActivites
-                  .filter((activity) => {
-                    if(activity?.datetime_from && activity?.datetime_until) {
-                      const startDate = new Date(activity?.datetime_from);
-                      const endDate = new Date(activity?.datetime_until);
-                      const today = startOfToday();
-                      const nextWeek = endOfWeek(today);
-
-                    return isWithinInterval(startDate, { start: today, end: nextWeek });
-                    } else return null;
-                  })
-                  .map((activity) => {
+                {filterActivitiesForThisWeek(participantActivites).map((activity) => {
                   return (
                     <MyActivityCard
                       key={activity?.id}
@@ -423,6 +429,9 @@ const ActivitiesScreen = () => {
                   );
                 })}
               </Box>
+              </Box>
+            )}
+              
             </>
           )}
           <>
