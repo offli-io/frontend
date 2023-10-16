@@ -194,52 +194,31 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
 
   return (
     <>
-      <PageWrapper>
+      <PageWrapper sxOverrides={{mt: 0}}>
         <Box
           sx={{
             // height: '20%',
-            width: "90%",
+            width: "100%",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
             flexDirection: "column",
           }}
         >
-          <Typography
-            variant="h2"
-            sx={{ mb: 2, color: palette?.text?.primary, mt: 1 }}
-          >
-            {data?.username}
-          </Typography>
-          <img
-            // todo add default picture in case of missing photo
-            // src={data?.data?.profilePhotoUrl}
-            src={
-              data?.profile_photo
-                ? `${baseUrl}/files/${data?.profile_photo}`
-                : userPlaceholder
-            }
-            alt="profile"
-            style={{
-              height: 100,
-              aspectRatio: 1,
-              borderRadius: "50%",
-              // backgroundColor: theme?.palette?.inactive as string,
-              // border: '2px solid primary.main', //nejde pica
-              border: `2px solid ${palette?.primary?.main}`,
-              boxShadow: "5px 5px 10px 0px rgba(0,0,0,0.6)",
-            }}
-            data-testid="profile-img"
-          />
+          <Box sx={{display: "flex",width: "100%", height: 120, bgcolor: "#000000", zIndex: 0, justifyContent: "flex-end"}}>
           {type === ProfileEntryTypeEnum.PROFILE && (
             <IconButton
               color="primary"
               sx={{
-                backgroundColor: (theme) => theme.palette.primary.light,
-                mt: 4,
-                px: 2.5,
-                py: 0.5,
+                backgroundColor: (theme) => theme.palette.background.default,
+                height: 40,
+                px: 1.5,
+                mt: 1,
+                mr: 1,
                 borderRadius: "15px",
+                borderWidth: 1,
+                borderStyle: "solid",
+                borderColor: (theme) => theme.palette.primary.main,
               }}
               onClick={() => navigate(ApplicationLocations.BUDDIES)}
               data-testid="buddies-btn"
@@ -252,7 +231,6 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
                 color="primary"
                 sx={{
                   fontWeight: "bold",
-                  mt: 0.5,
                   ml: 0.75,
                 }}
               >
@@ -260,55 +238,60 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
               </Typography>
             </IconButton>
           )}
-
-          {!!data?.location && (
-            <Box
-              sx={{
-                ml: -1.5,
-                display: "flex",
-                alignItems: "center",
-                my: 1,
-                // justifyContent: 'flex-start',
-              }}
-            >
-              <Box sx={{ display: "flex", alignItems: "center", mt: 2 }}>
-                <IconButton
-                  sx={{ paddingRight: 0, color: palette?.text?.primary, mr: 1 }}
-                >
-                  <LocationOnIcon sx={{ fontSize: 20 }} />
-                </IconButton>
-                <Typography
-                  sx={{
-                    color: palette?.text.primary,
-                    maxWidth: 250,
-                    fontWeight: "bolder",
-                  }}
-                >
-                  {data?.location?.name}
-                </Typography>
+          </Box>
+          <Box sx={{zIndex: 1, display: "flex",mt: -5.5, flexDirection: "column"}}>
+            <Box sx={{display: "flex"}}>
+              <img
+                src={
+                  data?.profile_photo
+                    ? `${baseUrl}/files/${data?.profile_photo}`
+                    : userPlaceholder
+                }
+                alt="profile"
+                style={{
+                  height: 100,
+                  aspectRatio: 1,
+                  borderRadius: "50%",
+                  backgroundColor: palette?.background?.default,
+                  border: `2px solid ${palette?.primary?.main}`,
+                }}
+                data-testid="profile-img"
+              />
+              <Box sx={{display: "flex", flexDirection: "column", ml: 1.5}}>
+                <Box sx={{display: "flex", flexDirection: "column", alignItems: "flex-start", justifyContent: "baseline", height: "50%", mt:6}}>
+                  <Typography
+                  variant="h2"
+                  >
+                  {data?.username}
+                  </Typography>
+                  {!!data?.location && (
+                    <Box
+                      sx={{
+                        display: "flex",
+                        alignItems: "flex-start",
+                        justifyContent: "flex-start",
+                        width: 250,
+                      }}
+                    >
+                      <Typography sx={{overflow: "hidden",textOverflow: "ellipsis",whiteSpace: "nowrap"}}>
+                        {data?.location?.name}
+                      </Typography>
+                    </Box>
+                  )}
+                </Box>
               </Box>
             </Box>
-          )}
-          {!!data?.about_me && (
-            <Typography
-              // variant="subtitle2"
-              // align="center"
-              sx={{
-                lineHeight: 1.2,
-                width: "80%",
-                color: palette?.text?.primary,
-                mt: "20px",
-                textAlign: "center",
-              }}
-            >
-              {data?.about_me}
-            </Typography>
-          )}
+            <Box sx={{display: "flex", justifyContent: "center", mt: 1}}>
+              <Typography variant="subtitle1">
+                {data?.about_me}
+              </Typography>
+            </Box>  
+          </Box>
         </Box>
         {type === ProfileEntryTypeEnum.PROFILE && (
           <ActionButton
             text="Edit profile"
-            sx={{ mt: 4 }}
+            sx={{ mt: 2 }}
             onClick={() => navigate(ApplicationLocations.EDIT_PROFILE)}
           />
         )}
