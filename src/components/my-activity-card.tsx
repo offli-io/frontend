@@ -68,7 +68,7 @@ const MyActivityCard: React.FC<IMyActivityCardProps> = ({
         m:1,
         alignItems: "center",
         justifyContent: "flex-start",
-        px: 0.5,
+        pl: 0.5,
       }}
       color="inherit"
       {...handlers}
@@ -101,10 +101,10 @@ const MyActivityCard: React.FC<IMyActivityCardProps> = ({
               alignItems: "flex-start",
             }}
           >
-            <Typography variant="h5" sx={{width: 170,overflow: "hidden",textOverflow: "ellipsis",whiteSpace: "nowrap"}}>
+            <Typography variant="h5" sx={{width: 160,overflow: "hidden",textOverflow: "ellipsis",whiteSpace: "nowrap"}}>
               {activity?.title ?? "Title"}
             </Typography>
-            <Typography variant="subtitle1" sx={{width: 170,overflow: "hidden",textOverflow: "ellipsis",whiteSpace: "nowrap"}}>
+            <Typography variant="subtitle1" sx={{width: 160,overflow: "hidden",textOverflow: "ellipsis",whiteSpace: "nowrap"}}>
               {activity?.location?.name ?? "Location"}
             </Typography>
             {isOngoing ? (
@@ -140,7 +140,7 @@ const MyActivityCard: React.FC<IMyActivityCardProps> = ({
           >
             <Typography variant="h5" sx={{
               color: ({ palette }) => palette?.primary?.main,
-              width: 170,
+              width: 160,
               overflow: "hidden",
               textOverflow: "ellipsis",
               whiteSpace: "nowrap"

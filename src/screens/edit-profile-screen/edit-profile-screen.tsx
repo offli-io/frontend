@@ -1,6 +1,7 @@
 import { yupResolver } from "@hookform/resolvers/yup";
 import AddIcon from "@mui/icons-material/Add";
 import InstagramIcon from "@mui/icons-material/Instagram";
+import SquareIcon from '@mui/icons-material/Square';
 import {
   Autocomplete,
   Box,
@@ -47,6 +48,7 @@ export interface IEditProfile {
   // instagram?: string | null;
   placeQuery?: string;
   profile_photo?: string | null;
+  // color?: string | null;
 }
 
 const schema: () => yup.SchemaOf<IEditProfile> = () =>
@@ -69,6 +71,7 @@ const schema: () => yup.SchemaOf<IEditProfile> = () =>
     placeQuery: yup.string().notRequired(),
     // instagram: yup.string().nullable(true).notRequired(),
     profile_photo: yup.string().notRequired().nullable(true),
+    // color: yup.string().notRequired
   });
 
 const EditProfileScreen: React.FC = () => {
@@ -245,7 +248,6 @@ const EditProfileScreen: React.FC = () => {
         />
         <Box
           sx={{
-            // mt: (HEADER_HEIGHT + 16) / 12,
             display: "flex",
             flexDirection: "column",
             justifyContent: "center",
@@ -284,7 +286,8 @@ const EditProfileScreen: React.FC = () => {
                 position: "absolute",
                 p: 0.5,
                 m: 0,
-                right: 2,
+                right: 10,
+                top: 2,
                 bgcolor: palette?.primary?.main,
                 width: 20,
                 height: 20,
@@ -312,15 +315,13 @@ const EditProfileScreen: React.FC = () => {
             )}
             data-testid="edit-profile-form"
           >
-            <Box sx={{ width: "90%" }}>
+            <Box sx={{ width: "90%", mt:2 }}>
               <Controller
                 name="username"
                 control={control}
                 render={({ field, fieldState: { error } }) => (
                   <>
-                    <Typography
-                      sx={{ fontWeight: "bold", color: palette?.text?.primary }}
-                    >
+                    <Typography variant="h5">
                       Username
                     </Typography>
                     <TextField
@@ -334,46 +335,47 @@ const EditProfileScreen: React.FC = () => {
                   </>
                 )}
               />
-
-              <Controller
-                name="about_me"
-                control={control}
-                render={({ field, fieldState: { error } }) => (
-                  <>
-                    <Typography
-                      sx={{ fontWeight: "bold", color: palette?.text?.primary }}
-                    >
-                      About me
-                    </Typography>
-                    <TextField
-                      {...field}
-                      multiline
-                      rows={3}
-                      // label="Type something about you"
-                      placeholder="Type something about you"
-                      sx={{
-                        width: "100%",
-                        "& .MuiOutlinedInput-root": {
-                          height: "unset",
-                        },
-                        my: 1.5,
-                      }}
-                      helperText={`${field?.value?.length ?? 0}/200`}
-                      inputProps={{ maxLength: 200 }}
-                      data-testid="about-me-input"
-                    />
-                  </>
-                )}
-              />
-
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <Controller
+                  name="birthdate"
+                  control={control}
+                  render={({
+                    field: { onChange, value },
+                    fieldState: { error },
+                  }) => (
+                    <>
+                      <Typography variant="h5" sx={{mt:1}}>
+                        Birthdate
+                      </Typography>
+                      <DatePicker
+                        openTo="year"
+                        inputFormat="DD/MM/YYYY"
+                        value={value}
+                        disableFuture
+                        // closeOnSelect
+                        onChange={onChange}
+                        maxDate={new Date()}
+                        data-testid="birthdate-date-picker"
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            sx={{ width: "100%", my: 1.5 }}
+                            error={!!error}
+                            helperText={error?.message}
+                            // label="Birthdate"
+                          />
+                        )}
+                      />
+                    </>
+                  )}
+                />
+              </LocalizationProvider>
               <Controller
                 name="location"
                 control={control}
                 render={({ field, fieldState: { error } }) => (
                   <>
-                    <Typography
-                      sx={{ fontWeight: "bold", color: palette?.text?.primary }}
-                    >
+                    <Typography variant="h5" sx={{mt:1}}>
                       Location
                     </Typography>
                     {/* // We have completely different approach handling location here and in place-form
@@ -414,48 +416,62 @@ const EditProfileScreen: React.FC = () => {
                   </>
                 )}
               />
+              <Controller
+                name="about_me"
+                control={control}
+                render={({ field, fieldState: { error } }) => (
+                  <>
+                    <Typography variant="h5" sx={{mt:2}}>
+                      About me
+                    </Typography>
+                    <TextField
+                      {...field}
+                      multiline
+                      rows={3}
+                      placeholder="Type something about you"
+                      sx={{
+                        width: "100%",
+                        "& .MuiOutlinedInput-root": {
+                          height: "unset",
+                        },
+                        my: 1.5,
+                      }}
+                      helperText={`${field?.value?.length ?? 0}/200`}
+                      inputProps={{ maxLength: 200 }}
+                      data-testid="about-me-input"
+                    />
+                  </>
+                )}
+              />
+
+              
 
               {/* TODO outsource this on the Contexes and Adapters level in the App */}
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <Controller
-                  name="birthdate"
-                  control={control}
-                  render={({
-                    field: { onChange, value },
-                    fieldState: { error },
-                  }) => (
-                    <>
-                      <Typography
-                        sx={{
-                          fontWeight: "bold",
-                          color: palette?.text?.primary,
-                        }}
-                      >
-                        Birthdate
-                      </Typography>
-                      <DatePicker
-                        openTo="year"
-                        inputFormat="DD/MM/YYYY"
-                        value={value}
-                        disableFuture
-                        // closeOnSelect
-                        onChange={onChange}
-                        maxDate={new Date()}
-                        data-testid="birthdate-date-picker"
-                        renderInput={(params) => (
-                          <TextField
-                            {...params}
-                            sx={{ width: "100%", my: 1.5 }}
-                            error={!!error}
-                            helperText={error?.message}
-                            // label="Birthdate"
-                          />
-                        )}
-                      />
-                    </>
-                  )}
-                />
-              </LocalizationProvider>
+              
+              <Box>
+                <Typography variant="h5">
+                      Profile background color
+                    </Typography>
+                    <OffliButton
+                    size="small"
+                    variant="contained"
+                    onClick={() => {}}
+                    endIcon={<Box sx={{ml: 4,width: 32, height: 32, bgcolor: "primary.main", border: "1px solid black", borderRadius: 2}}></Box>}
+                    sx={{
+                      bgcolor: palette?.primary?.light,
+                      width: "100%",
+                      height: 50,
+                      mt:2,
+                      color: palette?.primary?.main,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      textAlign: "center",
+                      }}>
+                      your background color
+                    </OffliButton>
+              </Box>
+              
               {!!data?.instagram ? (
                 <Box
                   sx={{
