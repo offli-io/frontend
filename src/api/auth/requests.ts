@@ -8,6 +8,7 @@ import { ICheckResetPasswordVerificationCodeRequest } from "../../types/auth/che
 import { IGoogleLoginRequestDto } from "../../types/auth/google-login-request.dto";
 import { CLIENT_ID } from "../../utils/common-constants";
 import { GoogleAuthCodeFromEnumDto } from "../../types/google/google-auth-code-from-enum.dto";
+import { IChangePasswordRequestDto } from "types/auth/change-password-request.dto";
 
 export const refreshTokenSetup = (res: any) => {
   const refreshTiming = (res.tokenObj.expires_in || 3600 - 5 * 60) * 1000;
@@ -208,11 +209,23 @@ export const confirmResetPassword = (values: IConfirmResetPasswordDto) => {
   return promise;
 };
 
-//   const refreshToken = async () => {
-//     const newAuthRes = await res.reloadAuthResponse()
-//     refreshTiming = (newAuthRes.expires_in || 3600 - 5 * 60) * 1000
-//     console.log('new auth token', newAuthRes.id_token)
-//     setTimeout(refreshToken, refreshTiming)
-//   }
-//   setTimeout(refreshToken, refreshTiming)
-// }
+export const changePassword = (
+  values: IChangePasswordRequestDto,
+  signal?: AbortSignal
+) => {
+  const CancelToken = axios.CancelToken;
+  const source = CancelToken.source();
+
+  const promise = axios.post<ILoginResponseDto>(
+    `/registration/change-password`,
+    values,
+    {
+      cancelToken: source?.token,
+    }
+  );
+
+  signal?.addEventListener("abort", () => {
+    source.cancel("Query was cancelled by React Query");
+  });
+  return promise;
+};

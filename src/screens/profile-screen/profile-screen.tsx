@@ -28,6 +28,7 @@ import { useToggleBuddyRequest } from "./hooks/use-toggle-buddy-request";
 import { ProfileEntryTypeEnum } from "./types/profile-entry-type";
 import { generateBuddyActionButtonLabel } from "./utils/generate-buddy-action-button-label.util";
 import LastAttendedActivities from "./components/last-attended-activites";
+import ImagePreviewModal from "components/image-preview-modal/image-preview-modal";
 
 interface IProfileScreenProps {
   type: ProfileEntryTypeEnum;
@@ -43,6 +44,9 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
   const queryParameters = new URLSearchParams(window.location.search);
   const instagramCode = queryParameters.get("code");
   const baseUrl = useGetApiUrl();
+  const [previewModalImageUrl, setPreviewModalImageUrl] = React.useState<
+    string | null
+  >(null);
 
   const { handleToggleBuddyRequest, isTogglingBuddyRequest } =
     useToggleBuddyRequest({
@@ -194,6 +198,11 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
 
   return (
     <>
+      <ImagePreviewModal
+        imageSrc={`${baseUrl}/files/${previewModalImageUrl}`}
+        open={!!previewModalImageUrl}
+        onClose={() => setPreviewModalImageUrl(null)}
+      />
       <PageWrapper sxOverrides={{mt: 0}}>
         <Box
           sx={{
@@ -205,6 +214,36 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
             flexDirection: "column",
           }}
         >
+          <Typography
+            variant="h2"
+            sx={{ mb: 2, color: palette?.text?.primary, mt: 1 }}
+          >
+            {data?.username}
+          </Typography>
+          <img
+            // todo add default picture in case of missing photo
+            // src={data?.data?.profilePhotoUrl}
+            src={
+              data?.profile_photo
+                ? `${baseUrl}/files/${data?.profile_photo}`
+                : userPlaceholder
+            }
+            alt="profile"
+            style={{
+              height: 100,
+              aspectRatio: 1,
+              borderRadius: "50%",
+              // backgroundColor: theme?.palette?.inactive as string,
+              // border: '2px solid primary.main', //nejde pica
+              border: `2px solid ${palette?.primary?.main}`,
+              boxShadow: "5px 5px 10px 0px rgba(0,0,0,0.6)",
+            }}
+            data-testid="profile-img"
+            onClick={() =>
+              !!data?.profile_photo &&
+              setPreviewModalImageUrl(data?.profile_photo)
+            }
+          />
           <Box sx={{display: "flex",width: "100%", height: 120, bgcolor: "#000000", zIndex: 0, justifyContent: "flex-end"}}>
           {type === ProfileEntryTypeEnum.PROFILE && (
             <IconButton
