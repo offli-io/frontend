@@ -6,7 +6,7 @@ import CreateActivityScreen from "../screens/create-activity-screen/create-activ
 import EditProfileScreen from "../screens/edit-profile-screen/edit-profile-screen";
 import LoadingScreen from "../screens/loading-screen";
 import LoginScreen from "../screens/login-screen";
-import ActivitiesScreen from "../screens/my-activities-screen/my-activities-screen";
+import ActivitiesScreen from "../screens/my-buddies-screen/my-activities-screen";
 import MyBuddiesScreen from "../screens/my-buddies-screen/my-buddies-screen";
 import NewPasswordScreen from "../screens/new-password-screen";
 import NotificationsScreen from "../screens/notifications-screen/notifications-screen";

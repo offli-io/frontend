@@ -1,15 +1,15 @@
-import InstagramIcon from "@mui/icons-material/Instagram";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import { Box, IconButton, Typography, useTheme } from "@mui/material";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { DrawerContext } from "assets/theme/drawer-provider";
+import ImagePreviewModal from "components/image-preview-modal/image-preview-modal";
 import Loader from "components/loader";
-import MyActivityCard from "components/my-activity-card";
 import React from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import { ActivitiyParticipantStatusEnum } from "types/activities/activity-participant-status-enum.dto";
-import { connectInstagram, getBuddyState } from "../../api/users/requests";
+import { getBuddyState } from "../../api/users/requests";
 import userPlaceholder from "../../assets/img/user-placeholder.svg";
 import { AuthenticationContext } from "../../assets/theme/authentication-provider";
 import ActionButton from "../../components/action-button";
@@ -22,13 +22,12 @@ import { useUser } from "../../hooks/use-user";
 import { ApplicationLocations } from "../../types/common/applications-locations.dto";
 import { BuddyRequestActionEnum } from "../../types/users/buddy-request-action-enum.dto";
 import { BuddyStateEnum } from "../../types/users/buddy-state-enum.dto";
+import LastAttendedActivities from "./components/last-attended-activites";
 import { useGetLastAttendedActivities } from "./hooks/use-get-last-attended-activities";
 import { useSendBuddyRequest } from "./hooks/use-send-buddy-request";
 import { useToggleBuddyRequest } from "./hooks/use-toggle-buddy-request";
 import { ProfileEntryTypeEnum } from "./types/profile-entry-type";
 import { generateBuddyActionButtonLabel } from "./utils/generate-buddy-action-button-label.util";
-import LastAttendedActivities from "./components/last-attended-activites";
-import ImagePreviewModal from "components/image-preview-modal/image-preview-modal";
 
 interface IProfileScreenProps {
   type: ProfileEntryTypeEnum;
@@ -41,12 +40,11 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
   const navigate = useNavigate();
   const { id } = useParams();
   const abortControllerRef = React.useRef<AbortController | null>(null);
-  const queryParameters = new URLSearchParams(window.location.search);
-  const instagramCode = queryParameters.get("code");
   const baseUrl = useGetApiUrl();
   const [previewModalImageUrl, setPreviewModalImageUrl] = React.useState<
     string | null
   >(null);
+  const { toggleDrawer } = React.useContext(DrawerContext);
 
   const { handleToggleBuddyRequest, isTogglingBuddyRequest } =
     useToggleBuddyRequest({
@@ -73,41 +71,6 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
     () => !!data?.buddies?.find(({ id }) => id === userInfo?.id),
     [data]
   );
-
-  const {
-    activities: lastAttendedActivties,
-    isLoading: areLastAttendedActivitiesLoading,
-  } = useGetLastAttendedActivities({
-    params: {
-      participantId: Number(id),
-      participantStatus: ActivitiyParticipantStatusEnum.CONFIRMED,
-      limit: 5,
-    },
-    enabled: !!id,
-  });
-
-  const { isLoading: isConnectingInstagram, mutate: sendConnectInstagram } =
-    useMutation(
-      ["instagram-connection"],
-      (code?: string) => connectInstagram(Number(userInfo?.id), String(code)),
-      {
-        onSuccess: () => {
-          toast.success(
-            "Your instagram account has been successfully connected"
-          );
-          queryClient.invalidateQueries(["user"]);
-          //didnt even notice the refresh -> this might work
-          window.history.pushState(
-            {},
-            document.title,
-            window.location.pathname
-          );
-        },
-        onError: () => {
-          toast.error("Failed to connect your instagram account");
-        },
-      }
-    );
 
   const isOtherProfile = React.useMemo(
     () =>
@@ -142,12 +105,6 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
         ].includes(type) && !!id,
     }
   );
-
-  React.useEffect(() => {
-    if (instagramCode && userInfo?.id) {
-      sendConnectInstagram(instagramCode);
-    }
-  }, [instagramCode, userInfo?.id]);
 
   const onBuddyRequestAccept = React.useCallback(() => {
     handleToggleBuddyRequest({
@@ -192,7 +149,7 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
     [buddyState, senderId, userInfo?.id]
   );
 
-  if (isLoading || isBuddyStateLoading || instagramCode) {
+  if (isLoading || isBuddyStateLoading) {
     return <Loader />;
   }
 
@@ -398,55 +355,10 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
           </Box>
         ) : null}
 
-        {data?.instagram ? (
-          <Box
-            sx={{
-              width: "90%",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              mb: 1,
-            }}
-          >
-            <Box sx={{ mt: 3 }}>
-              <Typography
-                align="left"
-                variant="h5"
-                sx={{ color: palette?.text?.primary }}
-              >
-                Photos
-              </Typography>
-            </Box>
-
-            <Box
-              sx={{
-                display: "flex",
-                alignItems: "flex-end",
-                justifyContent: "center",
-              }}
-            >
-              <IconButton color="primary" sx={{ padding: 0 }}>
-                <InstagramIcon sx={{ color: "primary.main" }} />
-              </IconButton>
-              <Typography
-                align="left"
-                variant="subtitle1"
-                sx={{
-                  ml: 0.5,
-                  mt: 3,
-                  color: "primary.main",
-                  fontWeight: "bold",
-                }}
-              >
-                {data?.instagram}
-              </Typography>
-            </Box>
-          </Box>
-        ) : null}
-
         <ProfileGallery
           isOtherProfile={isOtherProfile}
           photoUrls={data?.instagram_photos}
+          instagramUsername={data?.instagram}
         />
       </PageWrapper>
     </>
