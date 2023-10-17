@@ -57,6 +57,11 @@ export const Layout: React.FC<ILayoutProps> = ({ children }) => {
 
   const { data: { data } = {}, isLoading } = useUser({
     id: userInfo?.id,
+    onSuccess: (data) =>
+      setUserInfo?.((basicInfo) => ({
+        ...basicInfo,
+        email: data?.data?.email,
+      })),
   });
 
   const isBuddyRequest = location?.pathname?.includes("/profile/request");
@@ -114,7 +119,7 @@ export const Layout: React.FC<ILayoutProps> = ({ children }) => {
       ["/", "/login", "/register"].includes(location?.pathname)
     ) {
       setStateToken(token);
-      setUserInfo?.({ id: Number(userIdFromStorage) });
+      setUserInfo?.((values) => ({ ...values, id: Number(userIdFromStorage) }));
       navigate(ApplicationLocations.ACTIVITIES);
     }
   }, [token]);

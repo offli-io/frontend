@@ -6,6 +6,7 @@ import {
   Box,
   CircularProgress,
   InputAdornment,
+  Modal,
   TextField,
   Typography,
   useTheme,
@@ -51,6 +52,7 @@ import ActivityLeaveConfirmation from "./components/activity-leave-confirmation"
 import FirstTimeLoginContent from "./components/first-time-login-content";
 import { SetLocationContent } from "./components/set-location-content";
 import { endOfWeek, isWithinInterval, startOfToday } from "date-fns";
+import ImagePreviewModal from "components/image-preview-modal/image-preview-modal";
 
 const ActivitiesScreen = () => {
   const { userInfo, isFirstTimeLogin, setIsFirstTimeLogin } = React.useContext(
@@ -230,23 +232,27 @@ const ActivitiesScreen = () => {
     [toggleDrawer]
   );
 
-  React.useEffect(() => {
-    //TODO is this fast enough isn't it flickering? Should I hide drawer before redirecting?
-    return () =>
-      toggleDrawer({
-        open: false,
-      });
-  }, [toggleDrawer]);
+  const myActivitiesWithintWeek = React.useMemo(
+    () =>
+      participantActivites.filter((activity) => {
+        if (activity?.datetime_from && activity?.datetime_until) {
+          const startDate = new Date(activity?.datetime_from);
+          const today = startOfToday();
+          const nextWeek = endOfWeek(today);
+
+          return isWithinInterval(startDate, { start: today, end: nextWeek });
+        } else return null;
+      }),
+    [participantActivites]
+  );
 
   const anyMyActivities = React.useMemo(
-    () => participantActivites?.length > 0,
-    // () => true,
+    () => myActivitiesWithintWeek?.length > 0,
     [participantActivites]
   );
 
   const anyNearYouActivities = React.useMemo(
     () => paginatedActivitiesData?.pages?.some((page) => page?.length > 0),
-    // () => true,
     [paginatedActivitiesData]
   );
 
@@ -392,18 +398,7 @@ const ActivitiesScreen = () => {
                   "::-webkit-scrollbar": { display: "none" },
                 }}
               >
-                {participantActivites
-                  .filter((activity) => {
-                    if(activity?.datetime_from && activity?.datetime_until) {
-                      const startDate = new Date(activity?.datetime_from);
-                      const endDate = new Date(activity?.datetime_until);
-                      const today = startOfToday();
-                      const nextWeek = endOfWeek(today);
-
-                    return isWithinInterval(startDate, { start: today, end: nextWeek });
-                    } else return null;
-                  })
-                  .map((activity) => {
+                {myActivitiesWithintWeek?.map((activity) => {
                   return (
                     <MyActivityCard
                       key={activity?.id}

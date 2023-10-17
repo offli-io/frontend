@@ -28,6 +28,7 @@ import { useToggleBuddyRequest } from "./hooks/use-toggle-buddy-request";
 import { ProfileEntryTypeEnum } from "./types/profile-entry-type";
 import { generateBuddyActionButtonLabel } from "./utils/generate-buddy-action-button-label.util";
 import LastAttendedActivities from "./components/last-attended-activites";
+import ImagePreviewModal from "components/image-preview-modal/image-preview-modal";
 
 interface IProfileScreenProps {
   type: ProfileEntryTypeEnum;
@@ -43,6 +44,9 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
   const queryParameters = new URLSearchParams(window.location.search);
   const instagramCode = queryParameters.get("code");
   const baseUrl = useGetApiUrl();
+  const [previewModalImageUrl, setPreviewModalImageUrl] = React.useState<
+    string | null
+  >(null);
 
   const { handleToggleBuddyRequest, isTogglingBuddyRequest } =
     useToggleBuddyRequest({
@@ -194,6 +198,11 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
 
   return (
     <>
+      <ImagePreviewModal
+        imageSrc={`${baseUrl}/files/${previewModalImageUrl}`}
+        open={!!previewModalImageUrl}
+        onClose={() => setPreviewModalImageUrl(null)}
+      />
       <PageWrapper>
         <Box
           sx={{
@@ -230,6 +239,10 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
               boxShadow: "5px 5px 10px 0px rgba(0,0,0,0.6)",
             }}
             data-testid="profile-img"
+            onClick={() =>
+              !!data?.profile_photo &&
+              setPreviewModalImageUrl(data?.profile_photo)
+            }
           />
           {type === ProfileEntryTypeEnum.PROFILE && (
             <IconButton
