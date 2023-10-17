@@ -16,9 +16,10 @@ import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import { PageWrapper } from "components/page-wrapper";
 import OffliButton from "components/offli-button";
 import { useMutation } from "@tanstack/react-query";
-import { loginViaGoogle } from "api/auth/requests";
+import { changePassword, loginViaGoogle } from "api/auth/requests";
 import { toast } from "sonner";
 import { ApplicationLocations } from "types/common/applications-locations.dto";
+import { AuthenticationContext } from "assets/theme/authentication-provider";
 
 export interface FormValues {
   oldPassword: string;
@@ -32,10 +33,12 @@ const schema: () => yup.SchemaOf<FormValues> = () =>
   });
 
 const AccountSettingsScreen = () => {
+  const { userInfo } = React.useContext(AuthenticationContext);
   const [visiblePassword, setVisiblePassword] = React.useState<number | null>(
     null
   );
   const navigate = useNavigate();
+  const abortControllerRef = React.useRef<AbortController | null>(null);
 
   const { control, handleSubmit, formState } = useForm<FormValues>({
     defaultValues: {
@@ -50,10 +53,14 @@ const AccountSettingsScreen = () => {
     useMutation(
       ["change-password"],
       (values: FormValues) => {
-        // abortControllerRef.current = new AbortController();
-        return loginViaGoogle(
-          values?.newPassword
-          //   abortControllerRef?.current?.signal
+        abortControllerRef.current = new AbortController();
+        return changePassword(
+          {
+            email: String(userInfo?.email),
+            old_password: String(values?.oldPassword),
+            new_password: String(values?.newPassword),
+          },
+          abortControllerRef?.current?.signal
         );
       },
       {

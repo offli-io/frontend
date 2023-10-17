@@ -5,8 +5,6 @@ import { AuthenticationContext } from "../assets/theme/authentication-provider";
 import LoadingScreen from "../screens/loading-screen";
 
 const Router: React.FC = (): ReactElement => {
-  const { userInfo, setUserInfo } = React.useContext(AuthenticationContext);
-
   return (
     <Suspense fallback={<LoadingScreen />}>
       <Layout />

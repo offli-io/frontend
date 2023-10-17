@@ -4,6 +4,7 @@ import ProfilePicture from "../assets/img/profilePicture.jpg";
 import OffliButton from "./offli-button";
 import InstagramIcon from "@mui/icons-material/Instagram";
 import { useGetApiUrl } from "../hooks/use-get-api-url";
+import ImagePreviewModal from "./image-preview-modal/image-preview-modal";
 
 interface IProfileGalleryProps {
   photoUrls?: string[];
@@ -20,6 +21,9 @@ const ProfileGallery: React.FC<IProfileGalleryProps> = ({
       // "https://api.instagram.com/oauth/authorize?client_id=738841197888411&redirect_uri=https://localhost:3000/profile/&scope=user_profile,user_media&response_type=code";
       `https://api.instagram.com/oauth/authorize?client_id=1317539042184854&redirect_uri=${window.location.href}/&scope=user_profile,user_media&response_type=code`;
   }, []);
+  const [previewModalImageUrl, setPreviewModalImageUrl] = React.useState<
+    string | null
+  >(null);
 
   const baseUrl = useGetApiUrl();
   const firstSplittedPhotos: string[] = [];
@@ -35,6 +39,11 @@ const ProfileGallery: React.FC<IProfileGalleryProps> = ({
 
   return (
     <Box sx={{ p: 1 }}>
+      <ImagePreviewModal
+        imageSrc={`${baseUrl}/files/${previewModalImageUrl}`}
+        open={!!previewModalImageUrl}
+        onClose={() => setPreviewModalImageUrl(null)}
+      />
       {[...(firstSplittedPhotos ?? [])]?.length > 0 ? (
         <Box
           sx={{
@@ -59,6 +68,7 @@ const ProfileGallery: React.FC<IProfileGalleryProps> = ({
                     marginBottom: 8,
                     boxShadow: shadows[5],
                   }}
+                  onClick={() => setPreviewModalImageUrl(photo)}
                 />
               ))}
             </Box>
@@ -77,6 +87,7 @@ const ProfileGallery: React.FC<IProfileGalleryProps> = ({
                     marginBottom: 8,
                     boxShadow: shadows[5],
                   }}
+                  onClick={() => setPreviewModalImageUrl(photo)}
                 />
               ))}
             </Box>

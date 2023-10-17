@@ -53,6 +53,7 @@ import { ActivityInviteDrawerContent } from "./components/activity-invite-drawer
 import ActivityVisibilityDuration from "./components/activity-visibility-duration";
 import { convertDateToUTC } from "./utils/convert-date-to-utc";
 import ActivityActionButtons from "./components/activity-action-buttons";
+import ImagePreviewModal from "components/image-preview-modal/image-preview-modal";
 
 interface IProps {
   type: "detail" | "request";
@@ -79,6 +80,8 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
   const baseUrl = useGetApiUrl();
   const abortControllerRef = React.useRef<AbortController | null>(null);
   const { shadows, palette } = useTheme();
+  const [imagePreviewModalOpen, setImagePreviewModalOpen] =
+    React.useState(false);
 
   const { googleToken, handleGoogleAuthorization, state } =
     useGoogleAuthorization({
@@ -354,6 +357,12 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
     <Loader />
   ) : (
     <>
+      <ImagePreviewModal
+        imageSrc={`${baseUrl}/files/${activity?.title_picture}`}
+        open={imagePreviewModalOpen}
+        onClose={() => setImagePreviewModalOpen(false)}
+      />
+
       <Box
         sx={{
           width: "100%",
@@ -370,6 +379,7 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
           // background:
           //   "linear-gradient(to top, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0))",
         }}
+        onClick={() => setImagePreviewModalOpen(true)}
       >
         <Box
           sx={{
