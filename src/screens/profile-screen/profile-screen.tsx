@@ -212,38 +212,7 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
             alignItems: "center",
             justifyContent: "center",
             flexDirection: "column",
-          }}
-        >
-          <Typography
-            variant="h2"
-            sx={{ mb: 2, color: palette?.text?.primary, mt: 1 }}
-          >
-            {data?.username}
-          </Typography>
-          <img
-            // todo add default picture in case of missing photo
-            // src={data?.data?.profilePhotoUrl}
-            src={
-              data?.profile_photo
-                ? `${baseUrl}/files/${data?.profile_photo}`
-                : userPlaceholder
-            }
-            alt="profile"
-            style={{
-              height: 100,
-              aspectRatio: 1,
-              borderRadius: "50%",
-              // backgroundColor: theme?.palette?.inactive as string,
-              // border: '2px solid primary.main', //nejde pica
-              border: `2px solid ${palette?.primary?.main}`,
-              boxShadow: "5px 5px 10px 0px rgba(0,0,0,0.6)",
-            }}
-            data-testid="profile-img"
-            onClick={() =>
-              !!data?.profile_photo &&
-              setPreviewModalImageUrl(data?.profile_photo)
-            }
-          />
+          }}>
           <Box sx={{display: "flex",width: "100%", height: 120, bgcolor: "#000000", zIndex: 0, justifyContent: "flex-end"}}>
           {type === ProfileEntryTypeEnum.PROFILE && (
             <IconButton
@@ -295,6 +264,10 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
                   border: `1px solid ${palette?.primary?.main}`,
                 }}
                 data-testid="profile-img"
+                onClick={() =>
+                  !!data?.profile_photo &&
+                  setPreviewModalImageUrl(data?.profile_photo)
+                }
               />
               <Box sx={{display: "flex", flexDirection: "column", ml: 1.5}}>
                 <Box sx={{display: "flex", flexDirection: "column", alignItems: "flex-start", justifyContent: "baseline", height: "50%", mt:6}}>
