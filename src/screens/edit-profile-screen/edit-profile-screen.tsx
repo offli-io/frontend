@@ -71,7 +71,7 @@ const schema: () => yup.SchemaOf<IEditProfile> = () =>
     placeQuery: yup.string().notRequired(),
     // instagram: yup.string().nullable(true).notRequired(),
     profile_photo: yup.string().notRequired().nullable(true),
-    color: yup.string().notRequired()
+    color: yup.string().notRequired(),
   });
 
 const EditProfileScreen: React.FC = () => {
@@ -133,7 +133,8 @@ const EditProfileScreen: React.FC = () => {
   });
 
   const [queryString] = useDebounce(watch("placeQuery"), 1000);
-  
+  const selectedColor = watch("color") ?? palette?.primary?.light;
+
   const placeQuery = useQuery(
     ["locations", queryString],
     (props) => getLocationFromQueryFetch(String(queryString)),
@@ -185,6 +186,7 @@ const EditProfileScreen: React.FC = () => {
       location: data?.location ?? null,
       // instagram: data?.instagram,
       profile_photo: data?.profile_photo,
+      color: data?.userPreferredColor,
     });
   }, [data]);
 
@@ -210,20 +212,23 @@ const EditProfileScreen: React.FC = () => {
     [hiddenFileInput]
   );
 
-  const color : string | null = "#4A148C";
-
-  const handleColorInput = React.useCallback((selectedColor: string | null) => {
+  const openColorPicker = React.useCallback(() => {
     toggleDrawer({
       open: true,
       content: (
-        <ColorPicker onColorChange={(selectedColor) => {
-          if (selectedColor === null) {
-            return;
-          }
-        }}/>
+        <ColorPicker
+          color={selectedColor}
+          onColorChange={(selectedColor) => {
+            if (selectedColor === null) {
+              return;
+            }
+            setValue("color", selectedColor);
+            toggleDrawer({ open: false });
+          }}
+        />
       ),
     });
-  }, [color]);
+  }, [selectedColor]);
 
   const handlePictureClick = React.useCallback(() => {
     toggleDrawer({
@@ -329,15 +334,13 @@ const EditProfileScreen: React.FC = () => {
             )}
             data-testid="edit-profile-form"
           >
-            <Box sx={{ width: "90%", mt:2 }}>
+            <Box sx={{ width: "90%", mt: 2 }}>
               <Controller
                 name="username"
                 control={control}
                 render={({ field, fieldState: { error } }) => (
                   <>
-                    <Typography variant="h5">
-                      Username
-                    </Typography>
+                    <Typography variant="h5">Username</Typography>
                     <TextField
                       {...field}
                       error={!!error}
@@ -358,7 +361,7 @@ const EditProfileScreen: React.FC = () => {
                     fieldState: { error },
                   }) => (
                     <>
-                      <Typography variant="h5" sx={{mt:1}}>
+                      <Typography variant="h5" sx={{ mt: 1 }}>
                         Birthdate
                       </Typography>
                       <DatePicker
@@ -389,7 +392,7 @@ const EditProfileScreen: React.FC = () => {
                 control={control}
                 render={({ field, fieldState: { error } }) => (
                   <>
-                    <Typography variant="h5" sx={{mt:1}}>
+                    <Typography variant="h5" sx={{ mt: 1 }}>
                       Location
                     </Typography>
                     {/* // We have completely different approach handling location here and in place-form
@@ -435,7 +438,7 @@ const EditProfileScreen: React.FC = () => {
                 control={control}
                 render={({ field, fieldState: { error } }) => (
                   <>
-                    <Typography variant="h5" sx={{mt:2}}>
+                    <Typography variant="h5" sx={{ mt: 2 }}>
                       About me
                     </Typography>
                     <TextField
@@ -458,34 +461,42 @@ const EditProfileScreen: React.FC = () => {
                 )}
               />
 
-              
-
               {/* TODO outsource this on the Contexes and Adapters level in the App */}
-              
+
               <Box>
-                <Typography variant="h5">
-                      Profile background color
-                    </Typography>
-                    <OffliButton
-                    size="small"
-                    variant="contained"
-                    onClick={() => {handleColorInput(color)}}
-                    endIcon={<Box sx={{ml: 4,width: 32, height: 32, bgcolor: `${color}`, border: "1px solid black", borderRadius: 2}}></Box>}
-                    sx={{
-                      bgcolor: palette?.primary?.light,
-                      width: "100%",
-                      height: 50,
-                      mt:2,
-                      color: palette?.primary?.main,
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      textAlign: "center",
-                      }}>
-                      {color}
-                    </OffliButton>
+                <Typography variant="h5">Profile background color</Typography>
+                <OffliButton
+                  size="small"
+                  variant="contained"
+                  onClick={openColorPicker}
+                  endIcon={
+                    <Box
+                      sx={{
+                        ml: 4,
+                        width: 32,
+                        height: 32,
+                        bgcolor: `${selectedColor}`,
+                        border: "1px solid black",
+                        borderRadius: 2,
+                      }}
+                    ></Box>
+                  }
+                  sx={{
+                    bgcolor: palette?.primary?.light,
+                    width: "100%",
+                    height: 50,
+                    mt: 2,
+                    color: palette?.primary?.main,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    textAlign: "center",
+                  }}
+                >
+                  {selectedColor}
+                </OffliButton>
               </Box>
-              
+
               {!!data?.instagram ? (
                 <Box
                   sx={{

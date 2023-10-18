@@ -27,6 +27,7 @@ export interface IPersonExtended {
   location?: ILocation | null;
   instagram?: string;
   instagram_photos?: string[];
+  userPreferredColor?: string | null;
 }
 
 export interface IActivityLocation {

@@ -1,37 +1,59 @@
-import React, { useState } from "react";
 import { Box, TextField, Typography } from "@mui/material";
-import { HexColorPicker } from "react-colorful";
 import OffliButton from "components/offli-button";
+import React from "react";
+import { HexColorPicker } from "react-colorful";
+import { useDebouncedCallback } from "use-debounce";
 
 export interface IColorProps {
-    onColorChange: (color : string | null) => void;
+  color: string;
+  onColorChange: (color: string | null) => void;
 }
 
+const ColorPicker: React.FC<IColorProps> = ({ onColorChange, color }) => {
+  const [temporaryColor, setTemporaryColor] = React.useState<string>(color);
 
-const ColorPicker: React.FC<IColorProps> = ({onColorChange}) => {
+  const setTemporaryColorDebounced = useDebouncedCallback(
+    // function
+    (value: string) => {
+      setTemporaryColor(value);
+    },
+    // delay in ms
+    200
+  );
 
-    const [color, setColor] = useState("#aabbcc");
+  const handleColorChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    //TODO validate color HEX
+    setTemporaryColorDebounced(
+      event.target.value?.startsWith("#")
+        ? event.target?.value
+        : `#${event.target.value}`
+    );
+  };
 
-    const handleColorChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setColor(event.target.value);
-    };
+  const handleTemporaryColorChange = React.useCallback((color: string) => {
+    setTemporaryColorDebounced(color);
+  }, []);
 
-    const handleColorSelect = () => {
-        onColorChange(color)
-    }
-
-    return (
-      <Box sx={{
+  return (
+    <Box
+      sx={{
         width: "100%",
-        display: "flex", 
+        display: "flex",
         flexDirection: "column",
         justifyContent: "center",
-        alignItems: "center"
-        }}>
-        <Typography variant="h5" sx={{mb: 2}}>Choose your profile background color</Typography>
-        <HexColorPicker color={color} onChange={setColor} style={{width: "80%"}}/>
-        <TextField 
-        sx={{width: "60%", mt: 2,}} 
+        alignItems: "center",
+      }}
+    >
+      <Typography variant="h5" sx={{ mb: 2 }}>
+        Choose your profile background color
+      </Typography>
+      <HexColorPicker
+        color={temporaryColor}
+        onChange={handleTemporaryColorChange}
+        style={{ width: "80%" }}
+      />
+      <TextField
+        sx={{ width: "60%", mt: 2 }}
         InputProps={{
           style: { textAlign: "center" },
           inputProps: {
@@ -39,10 +61,19 @@ const ColorPicker: React.FC<IColorProps> = ({onColorChange}) => {
               textAlign: "center",
             },
           },
-        }} placeholder={color} onChange={handleColorChange} defaultValue={color}/>
-        <OffliButton sx={{width: "60%", mt: 2}} onClick={handleColorSelect}>Select</OffliButton>
-      </Box>
-    );
-  };
-  
-  export default ColorPicker;
+        }}
+        placeholder={temporaryColor}
+        onChange={handleColorChange}
+        // defaultValue={color}
+      />
+      <OffliButton
+        sx={{ width: "60%", mt: 2 }}
+        onClick={() => onColorChange(temporaryColor)}
+      >
+        Select
+      </OffliButton>
+    </Box>
+  );
+};
+
+export default ColorPicker;
