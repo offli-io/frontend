@@ -1,7 +1,6 @@
 import { yupResolver } from "@hookform/resolvers/yup";
 import AddIcon from "@mui/icons-material/Add";
 import InstagramIcon from "@mui/icons-material/Instagram";
-import SquareIcon from '@mui/icons-material/Square';
 import {
   Autocomplete,
   Box,
@@ -39,6 +38,7 @@ import ProfilePhotoActions, {
   ProfilePhotoActionsEnum,
 } from "./components/profile-photo-actions";
 import { getMatchingProperties } from "./utils/get-matching-properties.util";
+import ColorPicker from "./components/color-picker";
 
 export interface IEditProfile {
   username?: string;
@@ -48,7 +48,7 @@ export interface IEditProfile {
   // instagram?: string | null;
   placeQuery?: string;
   profile_photo?: string | null;
-  // color?: string | null;
+  color?: string | null;
 }
 
 const schema: () => yup.SchemaOf<IEditProfile> = () =>
@@ -71,7 +71,7 @@ const schema: () => yup.SchemaOf<IEditProfile> = () =>
     placeQuery: yup.string().notRequired(),
     // instagram: yup.string().nullable(true).notRequired(),
     profile_photo: yup.string().notRequired().nullable(true),
-    // color: yup.string().notRequired
+    color: yup.string().notRequired()
   });
 
 const EditProfileScreen: React.FC = () => {
@@ -124,7 +124,6 @@ const EditProfileScreen: React.FC = () => {
     defaultValues: {
       username: "",
       about_me: "",
-      // location: "",
       birthdate: null,
       location: null,
       // instagram: "",
@@ -134,7 +133,7 @@ const EditProfileScreen: React.FC = () => {
   });
 
   const [queryString] = useDebounce(watch("placeQuery"), 1000);
-
+  
   const placeQuery = useQuery(
     ["locations", queryString],
     (props) => getLocationFromQueryFetch(String(queryString)),
@@ -210,6 +209,21 @@ const EditProfileScreen: React.FC = () => {
     },
     [hiddenFileInput]
   );
+
+  const color : string | null = "#4A148C";
+
+  const handleColorInput = React.useCallback((selectedColor: string | null) => {
+    toggleDrawer({
+      open: true,
+      content: (
+        <ColorPicker onColorChange={(selectedColor) => {
+          if (selectedColor === null) {
+            return;
+          }
+        }}/>
+      ),
+    });
+  }, [color]);
 
   const handlePictureClick = React.useCallback(() => {
     toggleDrawer({
@@ -455,8 +469,8 @@ const EditProfileScreen: React.FC = () => {
                     <OffliButton
                     size="small"
                     variant="contained"
-                    onClick={() => {}}
-                    endIcon={<Box sx={{ml: 4,width: 32, height: 32, bgcolor: "primary.main", border: "1px solid black", borderRadius: 2}}></Box>}
+                    onClick={() => {handleColorInput(color)}}
+                    endIcon={<Box sx={{ml: 4,width: 32, height: 32, bgcolor: `${color}`, border: "1px solid black", borderRadius: 2}}></Box>}
                     sx={{
                       bgcolor: palette?.primary?.light,
                       width: "100%",
@@ -468,7 +482,7 @@ const EditProfileScreen: React.FC = () => {
                       justifyContent: "center",
                       textAlign: "center",
                       }}>
-                      your background color
+                      {color}
                     </OffliButton>
               </Box>
               
