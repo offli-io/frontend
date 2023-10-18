@@ -24,7 +24,8 @@ const BackHeader: React.FC<IBackHeaderProps> = ({
   //why was this done?
   //BIG TODO
   const handleBackNavigation = React.useCallback(() => {
-    return navigate(-1);
+    //TODO what about location state is it okay to reset it after back redirect?
+    return navigate(-1, { state: undefined });
 
     //TODO tried navigate to (-1) and it looks like it is working just fine don't need the code below
 

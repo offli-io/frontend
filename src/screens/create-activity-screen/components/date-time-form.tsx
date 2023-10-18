@@ -51,27 +51,14 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
     untilOptions: generateDateSlots(),
   });
 
-  const [sameEndDate, setSameEndDate] = React.useState(true);
-
-  const isFormValid = !!watch("datetime_from") && !!watch("datetime_until");
+  const isFormValid = !!watch("datetime_from");
 
   React.useEffect(() => {
     const selectedDate = date?.fromOptions?.find((item) => item.selected);
-
     if (selectedDate) {
       setValue("datetime_from", selectedDate?.dateValue);
-      if (sameEndDate) {
-        setValue("datetime_until", selectedDate?.dateValue);
-      }
     }
-  }, [date?.fromOptions, sameEndDate]);
-
-  React.useEffect(() => {
-    const selectedDate = date?.untilOptions?.find((item) => item.selected);
-    if (!sameEndDate) {
-      setValue("datetime_until", selectedDate?.dateValue);
-    }
-  }, [date?.untilOptions]);
+  }, [date?.fromOptions]);
 
   const handleItemSelect = React.useCallback(
     (type: "from" | "until", id?: string) => {
@@ -138,7 +125,7 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
 
   const displayEndingTime = isTimeSelected && !!datetimeFrom && !!duration;
 
-  const datetimeUntil = calculateDateUsingDuration({
+  const { datetimeUntil } = calculateDateUsingDuration({
     timeFrom: fromTimeValue,
     datetimeFrom,
     duration,

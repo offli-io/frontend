@@ -111,6 +111,9 @@ const ProfileGallery: React.FC<IProfileGalleryProps> = ({
   );
 
   const openInstagramDrawer = React.useCallback(() => {
+    if (isOtherProfile) {
+      return;
+    }
     toggleDrawer({
       open: true,
       content: (
@@ -120,10 +123,10 @@ const ProfileGallery: React.FC<IProfileGalleryProps> = ({
         />
       ),
     });
-  }, [instagramUsername]);
+  }, [instagramUsername, isOtherProfile]);
 
   return (
-    <Box sx={{ px: 2, mb: 2 }}>
+    <Box sx={{ px: 2, mb: 2, width: "100%", boxSizing: "border-box" }}>
       <ImagePreviewModal
         imageSrc={`${baseUrl}/files/${previewModalImageUrl}`}
         open={!!previewModalImageUrl}
@@ -131,10 +134,10 @@ const ProfileGallery: React.FC<IProfileGalleryProps> = ({
       />
       <Box
         sx={{
-          width: "90%",
+          width: "100%",
           display: "flex",
           alignItems: "center",
-          justifyContent: "space-between",
+          justifyContent: instagramUsername ? "space-between" : "flex-start",
           mb: 1,
         }}
       >

@@ -355,11 +355,13 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
           </Box>
         ) : null}
 
-        <ProfileGallery
-          isOtherProfile={isOtherProfile}
-          photoUrls={data?.instagram_photos}
-          instagramUsername={data?.instagram}
-        />
+        {isOtherProfile && !data?.instagram ? null : (
+          <ProfileGallery
+            isOtherProfile={isOtherProfile}
+            photoUrls={data?.instagram_photos}
+            instagramUsername={data?.instagram}
+          />
+        )}
       </PageWrapper>
     </>
   );
