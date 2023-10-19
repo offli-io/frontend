@@ -2,7 +2,6 @@ import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import PageviewIcon from "@mui/icons-material/Pageview";
 import { Box } from "@mui/material";
-import { DrawerContext } from "assets/theme/drawer-provider";
 import OffliButton from "components/offli-button";
 import React from "react";
 import { useParams } from "react-router-dom";
@@ -60,7 +59,7 @@ const ActionButtons: React.FC<IActionButtonsProps> = ({
           </OffliButton>
           <OffliButton
             size="small"
-            disabled={!isAlreadyParticipant || areActionsLoading}
+            disabled={areActionsLoading}
             sx={{
               fontSize: 18,
               width: "40%",

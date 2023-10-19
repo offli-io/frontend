@@ -119,7 +119,9 @@ const MapDrawerDetail: React.FC<IProps> = ({ activityId }) => {
               )}
               price={activity?.price}
             />
-            {/* <ActionButtons 
+
+            {/* TODO implement action buttons 
+            <ActionButtons 
             onJoinClick={handleJoinButtonClick}
             areActionsLoading={areActionsLoading}
             isCreator={isCreator}
