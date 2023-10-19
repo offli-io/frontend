@@ -117,14 +117,8 @@ const MapDrawerDetail: React.FC<IProps> = ({ activityId }) => {
               )}
               price={activity?.price}
             />
-            <ActivityTags tags={activity?.tags} sx={{ my: 1.5 }} />
-            {activity?.creator ? (
-              <CreatorJoinRow
-                creator={activity?.creator}
-                activityId={activityId}
-              />
-            ) : null}
-
+            
+            
             <img
               src={
                 activity?.title_picture
@@ -137,6 +131,12 @@ const MapDrawerDetail: React.FC<IProps> = ({ activityId }) => {
                 width: "100%",
               }}
             />
+            {activity?.creator ? (
+              <CreatorJoinRow
+                creator={activity?.creator}
+                activityId={activityId}
+              />
+            ) : null}
             <BasicInformation
               locationName={activity?.location?.name}
               dateTime={
@@ -149,6 +149,8 @@ const MapDrawerDetail: React.FC<IProps> = ({ activityId }) => {
               price={activity?.price}
               participantsNum={participantsNum}
             />
+
+            <ActivityTags tags={activity?.tags} sx={{ my: 1 }} />
             {activity?.description ? (
               <AdditionalDescription description={activity?.description} />
             ) : null}
@@ -157,7 +159,6 @@ const MapDrawerDetail: React.FC<IProps> = ({ activityId }) => {
                 duration={`${durationHours} hours, ${durationMinutes} minutes`}
               />
             ) : null}
-
             <CreatedTimestamp
               timestamp={
                 dateTimeCreatedAt
