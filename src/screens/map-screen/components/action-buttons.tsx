@@ -4,7 +4,10 @@ import PageviewIcon from "@mui/icons-material/Pageview";
 import { Box } from "@mui/material";
 import OffliButton from "components/offli-button";
 import React from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { IActivityRestDto } from "types/activities/activity-rest.dto";
+import { IActivity } from "types/activities/activity.dto";
+import { ApplicationLocations } from "types/common/applications-locations.dto";
 
 interface IActionButtonsProps {
   isAlreadyParticipant?: boolean;
@@ -12,6 +15,7 @@ interface IActionButtonsProps {
   onJoinClick?: () => void;
   areActionsLoading?: boolean;
   isPublic?: boolean;
+  activity?: IActivity
 }
 
 const ActionButtons: React.FC<IActionButtonsProps> = ({
@@ -20,8 +24,10 @@ const ActionButtons: React.FC<IActionButtonsProps> = ({
   onJoinClick,
   areActionsLoading,
   isPublic,
+  activity,
 }) => {
   const { id } = useParams();
+  const navigate = useNavigate();
 
   return (
     <Box
@@ -67,13 +73,15 @@ const ActionButtons: React.FC<IActionButtonsProps> = ({
               bgcolor: "primary.light",
               color: "primary.main",
             }}
-            onClick={() => {}}
+            onClick={() => {
+              navigate(
+                `${ApplicationLocations.ACTIVITY_DETAIL}/${activity?.id}`
+              );
+            }}
             startIcon={
               <PageviewIcon
                 sx={{
-                  color: isAlreadyParticipant
-                    ? "primary.main"
-                    : "inactiveFont.main",
+                  color: "primary.main"
                 }}
               />
             }
