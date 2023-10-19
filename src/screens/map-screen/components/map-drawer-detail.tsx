@@ -17,7 +17,9 @@ import ActivityDuration from "./activity-duration";
 import AdditionalDescription from "./additional-description";
 import BasicInformation from "./basic-information";
 import CreatedTimestamp from "./created-timestamp";
-import { CreatorJoinRow } from "./creator-join-row";
+import { CreatorVisibilityRow } from "./creator-visibility-row";
+import ActionButton from "components/action-button";
+import ActionButtons from "./action-buttons";
 
 interface IProps {
   activityId?: number;
@@ -117,7 +119,12 @@ const MapDrawerDetail: React.FC<IProps> = ({ activityId }) => {
               )}
               price={activity?.price}
             />
-            
+            {/* <ActionButtons 
+            onJoinClick={handleJoinButtonClick}
+            areActionsLoading={areActionsLoading}
+            isCreator={isCreator}
+            isAlreadyParticipant={isAlreadyParticipant}
+            isPublic={activity?.visibility === ActivityVisibilityEnum.public}/> */}
             
             <img
               src={
@@ -132,7 +139,7 @@ const MapDrawerDetail: React.FC<IProps> = ({ activityId }) => {
               }}
             />
             {activity?.creator ? (
-              <CreatorJoinRow
+              <CreatorVisibilityRow
                 creator={activity?.creator}
                 activityId={activityId}
               />
@@ -149,16 +156,12 @@ const MapDrawerDetail: React.FC<IProps> = ({ activityId }) => {
               price={activity?.price}
               participantsNum={participantsNum}
             />
-
+            <ActivityDuration duration={`${durationHours} hours, ${durationMinutes} minutes`} />
             <ActivityTags tags={activity?.tags} sx={{ my: 1 }} />
             {activity?.description ? (
               <AdditionalDescription description={activity?.description} />
             ) : null}
-            {durationHours || durationMinutes ? (
-              <ActivityDuration
-                duration={`${durationHours} hours, ${durationMinutes} minutes`}
-              />
-            ) : null}
+            
             <CreatedTimestamp
               timestamp={
                 dateTimeCreatedAt
