@@ -120,7 +120,10 @@ const ActivityDetailsGrid: React.FC<IProps> = ({ activity, onActionClick }) => {
         </Typography> */}
         <OffliButton
           onClick={() =>
-            navigate(`${ApplicationLocations.MAP}/${activity?.id}`)
+            // navigate(`${ApplicationLocations.MAP}/${activity?.id}`)
+            window.open(
+              `https://www.google.com/maps?q=${activity?.location?.coordinates?.lat},${activity?.location?.coordinates?.lon}`
+            )
           }
           // endIcon={<RoomIcon sx={{ fontSize: 26 }} />}
           size="small"
@@ -132,7 +135,7 @@ const ActivityDetailsGrid: React.FC<IProps> = ({ activity, onActionClick }) => {
             // fontWeight: "400",
           }}
         >
-          Show on map
+          Get directions
         </OffliButton>
         <StyledText align="center" variant="subtitle1">
           {activity?.location?.name}

@@ -4,7 +4,11 @@ import { format } from "date-fns";
 import { sk } from "date-fns/esm/locale";
 import React from "react";
 import { AuthenticationContext } from "../../../assets/theme/authentication-provider";
-import { ACTIVITIES_QUERY_KEY, PAGED_ACTIVITIES_QUERY_KEY, useActivities } from "../../../hooks/use-activities";
+import {
+  ACTIVITIES_QUERY_KEY,
+  PAGED_ACTIVITIES_QUERY_KEY,
+  useActivities,
+} from "../../../hooks/use-activities";
 import { useGetApiUrl } from "../../../hooks/use-get-api-url";
 import { useUser } from "../../../hooks/use-user";
 import { IActivityRestDto } from "../../../types/activities/activity-rest.dto";
@@ -21,12 +25,16 @@ import { CreatorVisibilityRow } from "./creator-visibility-row";
 import ActionButtons from "./action-buttons";
 import { ActivitiyParticipantStatusEnum as ActivityParticipantStatusEnum } from "../../../types/activities/activity-participant-status-enum.dto";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { changeActivityParticipantStatus, removePersonFromActivity } from "api/activities/requests";
+import {
+  changeActivityParticipantStatus,
+  removePersonFromActivity,
+} from "api/activities/requests";
 import { PARTICIPANT_ACTIVITIES_QUERY_KEY } from "hooks/use-participant-activities";
 import { ActivityInviteStateEnum } from "types/activities/activity-invite-state-enum.dto";
 import { toast } from "sonner";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { ActivityVisibilityEnum } from "types/activities/activity-visibility-enum.dto";
+import { ApplicationLocations } from "types/common/applications-locations.dto";
 
 interface IProps {
   activityId?: number;
@@ -59,7 +67,7 @@ const MapDrawerDetail: React.FC<IProps> = ({ activityId }) => {
   const myLocation = data?.location?.coordinates;
   const baseUrl = useGetApiUrl();
   const queryClient = useQueryClient();
-  const { id } = useParams();
+  const navigate = useNavigate();
 
   const participantsNum = `${activity?.count_confirmed}/${activity?.limit}`;
 
@@ -104,17 +112,22 @@ const MapDrawerDetail: React.FC<IProps> = ({ activityId }) => {
     useMutation(
       ["join-activity"],
       () =>
-        changeActivityParticipantStatus(Number(id), Number(userInfo?.id), {
-          status: ActivityInviteStateEnum.CONFIRMED,
-        }),
+        changeActivityParticipantStatus(
+          Number(activityId),
+          Number(userInfo?.id),
+          {
+            status: ActivityInviteStateEnum.CONFIRMED,
+          }
+        ),
       {
         onSuccess: () => {
           toast.success("You have successfully joined the activity");
           queryClient.invalidateQueries(["paged-activities"]);
-          queryClient.invalidateQueries(["activity", id]);
-          queryClient.invalidateQueries(["activity-participants", id]);
+          queryClient.invalidateQueries(["activity", activityId]);
+          queryClient.invalidateQueries(["activity-participants", activityId]);
           queryClient.invalidateQueries([ACTIVITIES_QUERY_KEY]);
           queryClient.invalidateQueries([PARTICIPANT_ACTIVITIES_QUERY_KEY]);
+          navigate(`${ApplicationLocations.ACTIVITY_DETAIL}/${activityId}`);
 
           // setInvitedBuddies([...invitedBuddies, Number(buddy?.id)]);
         },
@@ -123,7 +136,7 @@ const MapDrawerDetail: React.FC<IProps> = ({ activityId }) => {
         },
       }
     );
-    
+
   const areActionsLoading = isLeavingActivity || isJoiningActivity;
   const isCreator = activity?.creator?.id === userInfo?.id;
 
@@ -135,13 +148,11 @@ const MapDrawerDetail: React.FC<IProps> = ({ activityId }) => {
     [activity]
   );
 
-    const handleJoinButtonClick = React.useCallback(() => {
-      isAlreadyParticipant
-        ?  sendLeaveActivity(Number(id))
-        : sendJoinActivity();
-    }, [isAlreadyParticipant, isCreator, id]);
-
-  
+  const handleJoinButtonClick = React.useCallback(() => {
+    isAlreadyParticipant
+      ? sendLeaveActivity(Number(activityId))
+      : sendJoinActivity();
+  }, [isAlreadyParticipant, isCreator, activityId]);
 
   return (
     <>
@@ -193,15 +204,15 @@ const MapDrawerDetail: React.FC<IProps> = ({ activityId }) => {
               price={activity?.price}
             />
 
-            
-            <ActionButtons 
-            onJoinClick={handleJoinButtonClick}
-            areActionsLoading={areActionsLoading}
-            isCreator={isCreator}
-            isAlreadyParticipant={isAlreadyParticipant}
-            isPublic={activity?.visibility === ActivityVisibilityEnum.public}
-            activity={activity}/>
-            
+            <ActionButtons
+              onJoinClick={handleJoinButtonClick}
+              areActionsLoading={areActionsLoading}
+              isCreator={isCreator}
+              isAlreadyParticipant={isAlreadyParticipant}
+              isPublic={activity?.visibility === ActivityVisibilityEnum.public}
+              activity={activity}
+            />
+
             <img
               src={
                 activity?.title_picture
@@ -232,12 +243,14 @@ const MapDrawerDetail: React.FC<IProps> = ({ activityId }) => {
               price={activity?.price}
               participantsNum={participantsNum}
             />
-            <ActivityDuration duration={`${durationHours} hours, ${durationMinutes} minutes`} />
+            <ActivityDuration
+              duration={`${durationHours} hours, ${durationMinutes} minutes`}
+            />
             <ActivityTags tags={activity?.tags} sx={{ my: 1 }} />
             {activity?.description ? (
               <AdditionalDescription description={activity?.description} />
             ) : null}
-            
+
             <CreatedTimestamp
               timestamp={
                 dateTimeCreatedAt
