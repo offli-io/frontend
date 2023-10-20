@@ -99,6 +99,7 @@ const MyActivityCard: React.FC<IMyActivityCardProps> = ({
               flexDirection: "column",
               justifyContent: "flex-start",
               alignItems: "flex-start",
+              textAlign: "left"
             }}
           >
             <Typography variant="h5" sx={{width: 160,overflow: "hidden",textOverflow: "ellipsis",whiteSpace: "nowrap"}}>
@@ -136,6 +137,8 @@ const MyActivityCard: React.FC<IMyActivityCardProps> = ({
               display: "flex",
               alignItems: "flex-start",
               justifyContent: "flex-start",
+              textAlign: "left",
+              ml: 2
             }}
           >
             <Typography variant="h5" sx={{
