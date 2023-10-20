@@ -205,14 +205,20 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
     (action?: ActivityActionsTypeEnumDto) => {
       switch (action) {
         case ActivityActionsTypeEnumDto.ACTIVITY_MEMBERS:
-          return navigate(`${ApplicationLocations.ACTIVITY_MEMBERS}/${id}`);
+          return navigate(`${ApplicationLocations.ACTIVITY_MEMBERS}/${id}`, {
+            state: undefined,
+          });
         case ActivityActionsTypeEnumDto.MAP:
-          return navigate(`${ApplicationLocations.MAP}/${id}`);
+          return navigate(`${ApplicationLocations.MAP}/${id}`, {
+            state: undefined,
+          });
         case ActivityActionsTypeEnumDto.JOIN:
           return sendJoinActivity();
         case ActivityActionsTypeEnumDto.EDIT:
           //TODO EditActivityScreen pass id?
-          return navigate(`${ApplicationLocations.EDIT_ACTIVITY}/${id}`);
+          return navigate(`${ApplicationLocations.EDIT_ACTIVITY}/${id}`, {
+            state: undefined,
+          });
         case ActivityActionsTypeEnumDto.LEAVE:
           //TODO EditActivityScreen pass id?
           return toggleDrawer({

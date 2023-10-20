@@ -15,16 +15,16 @@ export const calculateDateUsingDuration = ({
   timeFrom,
 }: ICalculateDateUsingDurationProps) => {
   const fromTimeValues = timeFrom?.split(":");
-  const dateTimeFrom = datetimeFrom
+  const _datetimeFrom = datetimeFrom
     ? setMinutes(
         setHours(datetimeFrom, Number(fromTimeValues?.[0])),
         Number(fromTimeValues?.[1])
       )
     : undefined;
 
-  const dateTimeUntil = add(dateTimeFrom as Date, {
+  const datetimeUntil = add(_datetimeFrom as Date, {
     [durationType as string]: duration,
   });
 
-  return dateTimeUntil;
+  return { dateTimeFrom: _datetimeFrom, datetimeUntil };
 };

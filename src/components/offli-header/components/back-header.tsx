@@ -3,6 +3,7 @@ import { Box, IconButton, SxProps, Typography } from "@mui/material";
 import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { HeaderContext } from "../../../app/providers/header-provider";
+import { ApplicationLocations } from "types/common/applications-locations.dto";
 
 interface IBackHeaderProps {
   title?: string;
@@ -24,6 +25,18 @@ const BackHeader: React.FC<IBackHeaderProps> = ({
   //why was this done?
   //BIG TODO
   const handleBackNavigation = React.useCallback(() => {
+    //TODO what about location state is it okay to reset it after back redirect?
+    // if (
+    //   [ApplicationLocations.MAP, ApplicationLocations.ACTIVITY_MEMBERS].some(
+    //     (_location) => location.startsWith(_location)
+    //   )
+    // ) {
+    //   const locationParams = location?.split("/");
+    //   const activityId = locationParams?.[locationParams?.length - 1];
+    //   return navigate(`${ApplicationLocations.ACTIVITY_DETAIL}/${activityId}`, {
+    //     replace: true,
+    //   });
+    // }
     return navigate(-1);
 
     //TODO tried navigate to (-1) and it looks like it is working just fine don't need the code below
