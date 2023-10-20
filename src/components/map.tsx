@@ -46,7 +46,7 @@ const SaveButton = ({
     <OffliButton
       sx={{
         position: "fixed",
-        bottom: 75,
+        bottom: 65,
         right: 20,
         zIndex: 400,
         fontSize: 20,
@@ -73,7 +73,7 @@ const BackButton = ({ onClick }: { onClick?: () => void }) => {
     <OffliButton
       sx={{
         position: "fixed",
-        bottom: 75,
+        bottom: 65,
         left: 20,
         zIndex: 400,
         fontSize: 20,
@@ -206,7 +206,7 @@ const Map: React.FC<ILabeledTileProps> = ({
   };
 
   return (
-    <Box sx={{ width: "100%", height: "100%", position: "fixed" }}>
+    <Box sx={{ width: "100%", height: "100%" }}>
       <MapContainer
         center={latLonTuple ?? position}
         zoom={13}
@@ -214,7 +214,7 @@ const Map: React.FC<ILabeledTileProps> = ({
         style={{ width: "100%", height: "100%", position: "relative" }}
       >
         <TileLayer
-          attribution='<a href="http://jawg.io" title="Tiles Courtesy of Jawg Maps" target="_blank">&copy; <b>Jawg</b>Maps</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+          // attribution='<a href="http://jawg.io" title="Tiles Courtesy of Jawg Maps" target="_blank">&copy; <b>Jawg</b>Maps</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           // url="https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png"
           url={`https://{s}.tile.jawg.io/jawg-${
             mode === "light" ? "sunny" : "dark"

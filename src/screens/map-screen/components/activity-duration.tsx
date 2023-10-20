@@ -26,14 +26,14 @@ interface IProps {
 
 const ActivityDuration: React.FC<IProps> = ({ duration }) => {
   return (
-    <MainBox>
-      <Typography variant="h3" align="left">
+    <Box sx={{display: "flex", justifyContent: "space-between", my: 1}}>
+      <Typography variant="h4" align="left">
         Duration
       </Typography>
       <TextBox>
         <Typography variant="subtitle1">{duration}</Typography>
       </TextBox>
-    </MainBox>
+    </Box>
   );
 };
 

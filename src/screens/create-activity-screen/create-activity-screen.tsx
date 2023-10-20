@@ -343,7 +343,7 @@ const CreateActivityScreen = () => {
   }, []);
 
   return (
-    <Box ref={wrapper}>
+    <Box ref={wrapper} sx={isMap ? { height: "100%" } : undefined}>
       {activeStep <= 5 && (
         <DotsMobileStepper activeStep={activeStep} containerSx={{ p: 0 }} />
       )}
@@ -352,7 +352,7 @@ const CreateActivityScreen = () => {
           alignItems: "center",
           px: isMap ? 0 : 3,
           bgcolor: palette.background.default,
-          ...(isMap ? { mt: 0 } : {}),
+          ...(isMap ? { mt: 0, height: "100%" } : {}),
         }}
       >
         <form

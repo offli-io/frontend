@@ -27,7 +27,7 @@ interface IProps {
 const AdditionalDescription: React.FC<IProps> = ({ description }) => {
   return (
     <MainBox>
-      <Typography variant="h3" align="left">
+      <Typography variant="h4" sx={{mb:1}}>
         Additional description
       </Typography>
       <TextBox>
