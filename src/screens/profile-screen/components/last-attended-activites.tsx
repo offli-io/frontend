@@ -58,6 +58,7 @@ const LastAttendedActivities: React.FC<ILastAttendedActivitiesProps> = () => {
           {lastAttendedActivties?.map((activity) => {
             return (
               <MyActivityCard
+                key={activity?.id}
                 activity={activity}
                 type="profile"
                 onPress={() =>
@@ -65,9 +66,6 @@ const LastAttendedActivities: React.FC<ILastAttendedActivitiesProps> = () => {
                     `${ApplicationLocations.ACTIVITY_DETAIL}/${activity?.id}`
                   )
                 }
-                sx={{
-                  minWidth: lastAttendedActivties?.length <= 1 ? "100%" : "80%",
-                }}
               />
             );
           })}

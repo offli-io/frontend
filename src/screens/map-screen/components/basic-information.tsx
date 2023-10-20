@@ -13,7 +13,6 @@ const MainBox = styled(Box)(() => ({
   flexDirection: "column",
   alignItems: "flex-start",
   justifyContent: "center",
-  marginTop: "5%",
 }));
 
 interface IProps {
@@ -31,7 +30,7 @@ const BasicInformation: React.FC<IProps> = ({
 }) => {
   return (
     <MainBox>
-      <Typography variant="h3" sx={{ mb: 1 }}>
+      <Typography variant="h4" sx={{mb :1}}>
         Basic information
       </Typography>
       <IconInformationRow icon={RoomIcon} text={locationName} />

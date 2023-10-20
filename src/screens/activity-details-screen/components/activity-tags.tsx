@@ -11,7 +11,7 @@ const ActivityTags: React.FC<IProps> = ({ tags, sx }) => {
   return (
     <Box
       sx={{
-        width: "90%",
+        width: "100%",
         display: "flex",
         alignItems: "center",
         justifyContent: "space-evenly",
@@ -27,7 +27,7 @@ const ActivityTags: React.FC<IProps> = ({ tags, sx }) => {
           key={index}
           sx={{
             p: 2,
-            my: 0.5,
+            my: 1,
             borderRadius: "10px",
             borderWidth: "2px",
             border: "solid primary",

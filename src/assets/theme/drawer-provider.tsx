@@ -7,6 +7,7 @@ import { useLocation } from "react-router-dom";
 interface IDrawerData {
   open?: boolean;
   content?: React.ReactElement;
+  variant?: "permanent" | "persistent" | "temporary";
   onClose?: () => void;
 }
 
@@ -61,6 +62,7 @@ export const DrawerProvider = ({ children }: { children: React.ReactNode }) => {
       {children}
       <SwipeableDrawer
         anchor="bottom"
+        // variant="permanent"
         open={Boolean(drawerData?.open)}
         onOpen={() => console.log("wtf")}
         onClose={() => {
