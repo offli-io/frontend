@@ -43,14 +43,14 @@ const CustomZoomControl: React.FC = () => {
           flexDirection: "column",
           width: 32,
           bgcolor: "primary.light",
-          borderRadius: 2,
+          borderRadius: 3,
           alignItems: "center"
       }}>
-          <IconButton onClick={handleZoomIn} size='small'>
+          <IconButton onClick={handleZoomIn} size='small' color='primary'>
             <AddIcon sx={{color: "primary.main"}}/>
           </IconButton>
           <Divider sx={{width: "65%", bgcolor: "primary.main"}}/>
-          <IconButton onClick={handleZoomOut} size='small'>
+          <IconButton onClick={handleZoomOut} size='small' color='primary'>
             <RemoveIcon sx={{color: "primary.main"}}/>
           </IconButton>
       </Box>
@@ -59,7 +59,7 @@ const CustomZoomControl: React.FC = () => {
         borderRadius: 10,
         mt: 1.5
       }}>
-        <IconButton onClick={centerOnLocation} size='medium'>
+        <IconButton onClick={centerOnLocation} size='medium' color='primary'>
           <MyLocationIcon sx={{color: "primary.main"}}/>
         </IconButton>
       </Box>
