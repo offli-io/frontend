@@ -1,7 +1,7 @@
-import { Box, IconButton, SxProps } from "@mui/material";
-import L, { LatLngTuple } from "leaflet";
+import { Box, IconButton, InputAdornment, SxProps, TextField } from "@mui/material";
+import L, { LatLngTuple, map } from "leaflet";
 import React from "react";
-import { MapContainer, Marker, Popup, TileLayer, useMap } from "react-leaflet";
+import { MapContainer, Marker, Popup, TileLayer, ZoomControl, useMap } from "react-leaflet";
 import MarkerClusterGroup from "react-leaflet-cluster";
 import markerIcon from "../assets/img/location-marker.svg";
 import { CustomizationContext } from "../assets/theme/customization-provider";
@@ -16,6 +16,8 @@ import { useQuery } from "@tanstack/react-query";
 import { ILocation } from "types/activities/location.dto";
 import WhereToVoteIcon from "@mui/icons-material/WhereToVote";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
+import SearchIcon from "@mui/icons-material/Search";
+import CustomZoomControl from "./custom-zoom-control";
 
 const RecenterAutomatically = ({
   lat,
@@ -113,6 +115,7 @@ const youAreHereIcon = new L.Icon({
   iconAnchor: [22.5, 22.5],
 });
 
+
 // bratislava position
 const position = [48.1486, 17.1077] as LatLngTuple;
 
@@ -129,8 +132,8 @@ const Map: React.FC<ILabeledTileProps> = ({
   >();
   const { mode } = React.useContext(CustomizationContext);
   const [pendingLatLngTuple, setPendingLatLngTuple] =
-    React.useState<LatLngTuple | null>(null);
-  // const map = useMap();
+  React.useState<LatLngTuple | null>(null);
+  //const map = useMap();
 
   React.useEffect(() => {
     navigator.geolocation.getCurrentPosition(function (position) {
@@ -205,14 +208,67 @@ const Map: React.FC<ILabeledTileProps> = ({
     onLocationSave?.(null);
   };
 
+  const custom = {}
+
+
+  const [currentSearch, setCurrentSearch] = React.useState("");
+
   return (
     <Box sx={{ width: "100%", height: "100%" }}>
+      
       <MapContainer
         center={latLonTuple ?? position}
         zoom={13}
         scrollWheelZoom={false}
         style={{ width: "100%", height: "100%", position: "relative" }}
+        zoomControl={false}
       >
+        <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          width: "100%",
+          zIndex: 400,
+          position: "fixed",
+          top: 50
+        }}>
+          <TextField
+            sx={{
+              width: "90%",
+              display: "flex",
+              justifyContent: "center",
+              my: 1,
+              "& .MuiOutlinedInput-root": {
+                pr: 0,
+              },
+              "& input::placeholder": {
+                fontSize: 14,
+                color: "primary.main",
+                fontWeight: 500,
+                opacity: 1,
+                pl: 1,
+              },
+              "& fieldset": { border: "none" },
+              backgroundColor: ({ palette }) => palette?.primary?.light,
+              borderRadius: "10px",
+            }}
+            value={currentSearch}
+            placeholder="Search places everywhere"
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon
+                    sx={{ fontSize: "1.4rem", color: "primary.main" }}
+                  />
+                </InputAdornment>
+              ),
+            }}
+            onChange={(e) => setCurrentSearch(e.target.value)}
+            data-testid="search-activities-input"
+          />
+        </Box>
+        <CustomZoomControl/>
         <TileLayer
           // attribution='<a href="http://jawg.io" title="Tiles Courtesy of Jawg Maps" target="_blank">&copy; <b>Jawg</b>Maps</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           // url="https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png"
@@ -220,6 +276,7 @@ const Map: React.FC<ILabeledTileProps> = ({
             mode === "light" ? "sunny" : "dark"
           }/{z}/{x}/{y}{r}.png?access-token=dY2cc1f9EUuag5geOpQB30R31VnRRhl7O401y78cM0NWSvzLf7irQSUGfA4m7Va5`}
         />
+        
         {setLocationByMap ? (
           <>
             <BackButton onClick={handleMapDismiss} />
