@@ -18,6 +18,7 @@ import WhereToVoteIcon from "@mui/icons-material/WhereToVote";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import SearchIcon from "@mui/icons-material/Search";
 import CustomZoomControl from "./custom-zoom-control";
+import TravelExploreIcon from '@mui/icons-material/TravelExplore';
 
 const RecenterAutomatically = ({
   lat,
@@ -258,7 +259,7 @@ const Map: React.FC<ILabeledTileProps> = ({
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
-                  <SearchIcon
+                  <TravelExploreIcon
                     sx={{ fontSize: "1.4rem", color: "primary.main" }}
                   />
                 </InputAdornment>
