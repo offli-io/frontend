@@ -17,7 +17,7 @@ import { ILocation } from "types/activities/location.dto";
 import WhereToVoteIcon from "@mui/icons-material/WhereToVote";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import SearchIcon from "@mui/icons-material/Search";
-import CustomZoomControl from "./custom-zoom-control";
+import MapControl from "./map-control";
 import TravelExploreIcon from '@mui/icons-material/TravelExplore';
 
 const RecenterAutomatically = ({
@@ -269,7 +269,7 @@ const Map: React.FC<ILabeledTileProps> = ({
             data-testid="search-activities-input"
           />
         </Box>
-        <CustomZoomControl/>
+        <MapControl/>
         <TileLayer
           // attribution='<a href="http://jawg.io" title="Tiles Courtesy of Jawg Maps" target="_blank">&copy; <b>Jawg</b>Maps</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           // url="https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png"

@@ -6,7 +6,7 @@ import RemoveIcon from '@mui/icons-material/Remove';
 import { toast } from "sonner";
 import MyLocationIcon from '@mui/icons-material/MyLocation';
 
-const CustomZoomControl: React.FC = () => {
+const MapControl: React.FC = () => {
   const map = useMap();
 
   const handleZoomIn = () => {
@@ -68,4 +68,4 @@ const CustomZoomControl: React.FC = () => {
   );
 }
 
-export default CustomZoomControl;
+export default MapControl;
