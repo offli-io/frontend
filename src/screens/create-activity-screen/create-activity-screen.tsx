@@ -203,7 +203,7 @@ const CreateActivityScreen = () => {
       const { id = undefined } = { ...userData };
 
       // handle time values in from and until datetime
-      const dateTimeUntil = calculateDateUsingDuration({
+      const { dateTimeFrom, datetimeUntil } = calculateDateUsingDuration({
         duration: data?.duration,
         durationType: data?.durationType,
         datetimeFrom: data?.datetime_from,
@@ -212,8 +212,8 @@ const CreateActivityScreen = () => {
 
       sendCreateActivity({
         ...restValues,
-        datetime_from: data?.datetime_from,
-        datetime_until: dateTimeUntil,
+        datetime_from: dateTimeFrom,
+        datetime_until: datetimeUntil,
         price: finalPrice,
         creator_id: id,
       });
