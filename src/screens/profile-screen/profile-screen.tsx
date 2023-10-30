@@ -254,7 +254,16 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
                     mt: 6,
                   }}
                 >
-                  <Typography variant="h2">{data?.username}</Typography>
+                  <Typography
+                    variant="h2"
+                    sx={{
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      width: 250,
+                    }}
+                  >
+                    {data?.username}
+                  </Typography>
                   {!!data?.location && (
                     <Box
                       sx={{
