@@ -95,7 +95,7 @@ self.addEventListener("push", async (event) => {
         ? `invited you to join ${activityName}`
         : "sent you buddy request"
     }`,
-    icon: notificationPicture, // TODO: From env?
+    icon: `https://app.offli.eu/api/files/${notificationPicture}`, // TODO: From env?
     badge: "https://app.offli.eu/logo192.png", // TODO: From env?
   };
   event.waitUntil(self.registration.showNotification(title, options));
