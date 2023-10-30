@@ -9,4 +9,5 @@ export interface IUpdateUserRequestDto {
   location?: ILocation | null;
   birthdate?: Date | null;
   instagram?: string | null;
+  background_color?: string | null;
 }
