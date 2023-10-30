@@ -75,7 +75,16 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
     React.useContext(HeaderContext);
   const { userInfo } = React.useContext(AuthenticationContext);
   const { sendDismissActivity, isLoading: isDismissingActivity } =
-    useDismissActivity();
+    useDismissActivity({
+      onSuccess: () => {
+        queryClient.invalidateQueries(["paged-activities"]);
+        queryClient.invalidateQueries(["activity", id]);
+        queryClient.invalidateQueries(["activity-participants", id]);
+        queryClient.invalidateQueries([ACTIVITIES_QUERY_KEY]);
+        queryClient.invalidateQueries([PARTICIPANT_ACTIVITIES_QUERY_KEY]);
+        navigate(ApplicationLocations.ACTIVITIES);
+      },
+    });
   const queryClient = useQueryClient();
   const baseUrl = useGetApiUrl();
   const abortControllerRef = React.useRef<AbortController | null>(null);

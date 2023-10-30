@@ -19,6 +19,8 @@ body {
   --ReactInputVerificationCode-itemWidth: 2.2rem;
   --ReactInputVerificationCode-itemHeight: 2.2rem;
   --ReactInputVerificationCode-itemSpacing: 1rem;
+
+  /* Styles for larger screens (desktop) */
 }
 
 li {
@@ -56,4 +58,25 @@ code {
   font-family: "Proxima";
   src: local("ProximaNovaFont"),
     url("./assets/fonts//ProximaNovaFont.otf") format("truetype");
+}
+
+@media (min-width: 768px) {
+  body {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f0f0f0;
+  }
+
+  .layout-parent {
+    min-width: 450px;
+    max-width: 450px; /* Adjust this to your desired max-width for mobile-like appearance */
+    width: 100%;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  }
 }

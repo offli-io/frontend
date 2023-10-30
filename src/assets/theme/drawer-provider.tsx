@@ -62,7 +62,7 @@ export const DrawerProvider = ({ children }: { children: React.ReactNode }) => {
       {children}
       <SwipeableDrawer
         anchor="bottom"
-        // variant="permanent"
+        // variant="persistent"
         open={Boolean(drawerData?.open)}
         onOpen={() => console.log("wtf")}
         onClose={() => {
@@ -71,6 +71,7 @@ export const DrawerProvider = ({ children }: { children: React.ReactNode }) => {
         }}
         disableDiscovery
         disableSwipeToOpen
+        // allowSwipeInChildren
         sx={{
           "& .MuiPaper-root": {
             borderTopLeftRadius: 30,

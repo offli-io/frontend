@@ -160,7 +160,7 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
         open={!!previewModalImageUrl}
         onClose={() => setPreviewModalImageUrl(null)}
       />
-      <PageWrapper sxOverrides={{mt: 0}}>
+      <PageWrapper sxOverrides={{ mt: 0 }}>
         <Box
           sx={{
             // height: '20%',
@@ -169,43 +169,60 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
             alignItems: "center",
             justifyContent: "center",
             flexDirection: "column",
-          }}>
-          <Box sx={{display: "flex",width: "100%", height: 120, bgcolor: "#000000", zIndex: 0, justifyContent: "flex-end"}}>
-          {type === ProfileEntryTypeEnum.PROFILE && (
-            <IconButton
-              color="primary"
-              sx={{
-                backgroundColor: (theme) => theme.palette.background.default,
-                height: 40,
-                px: 1.5,
-                mt: 1,
-                mr: 1,
-                borderRadius: "15px",
-                borderWidth: 1,
-                borderStyle: "solid",
-                borderColor: (theme) => theme.palette.primary.main,
-              }}
-              onClick={() => navigate(ApplicationLocations.BUDDIES)}
-              data-testid="buddies-btn"
-            >
-              <PeopleAltIcon
-                sx={{ fontSize: 18, padding: 0, color: "primary.main" }}
-              />
-              <Typography
-                variant="subtitle1"
+          }}
+        >
+          <Box
+            sx={{
+              display: "flex",
+              width: "100%",
+              height: 120,
+              bgcolor: data?.background_color ?? "#000000",
+              zIndex: 0,
+              justifyContent: "flex-end",
+            }}
+          >
+            {type === ProfileEntryTypeEnum.PROFILE && (
+              <IconButton
                 color="primary"
                 sx={{
-                  fontWeight: "bold",
-                  ml: 0.75,
+                  backgroundColor: (theme) => theme.palette.background.default,
+                  height: 40,
+                  px: 1.5,
+                  mt: 1,
+                  mr: 1,
+                  borderRadius: "15px",
+                  borderWidth: 1,
+                  borderStyle: "solid",
+                  borderColor: (theme) => theme.palette.primary.main,
                 }}
+                onClick={() => navigate(ApplicationLocations.BUDDIES)}
+                data-testid="buddies-btn"
               >
-                {`${data?.buddies?.length} Buddies`}
-              </Typography>
-            </IconButton>
-          )}
+                <PeopleAltIcon
+                  sx={{ fontSize: 18, padding: 0, color: "primary.main" }}
+                />
+                <Typography
+                  variant="subtitle1"
+                  color="primary"
+                  sx={{
+                    fontWeight: "bold",
+                    ml: 0.75,
+                  }}
+                >
+                  {`${data?.buddies?.length} Buddies`}
+                </Typography>
+              </IconButton>
+            )}
           </Box>
-          <Box sx={{zIndex: 1, display: "flex",mt: -5.5, flexDirection: "column"}}>
-            <Box sx={{display: "flex"}}>
+          <Box
+            sx={{
+              zIndex: 1,
+              display: "flex",
+              mt: -5.5,
+              flexDirection: "column",
+            }}
+          >
+            <Box sx={{ display: "flex" }}>
               <img
                 src={
                   data?.profile_photo
@@ -226,12 +243,26 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
                   setPreviewModalImageUrl(data?.profile_photo)
                 }
               />
-              <Box sx={{display: "flex", flexDirection: "column", ml: 1.5}}>
-                <Box sx={{display: "flex", flexDirection: "column", alignItems: "flex-start", justifyContent: "baseline", height: "50%", mt:6}}>
+              <Box sx={{ display: "flex", flexDirection: "column", ml: 1.5 }}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "flex-start",
+                    justifyContent: "baseline",
+                    height: "50%",
+                    mt: 6,
+                  }}
+                >
                   <Typography
-                  variant="h2"
+                    variant="h2"
+                    sx={{
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      width: 250,
+                    }}
                   >
-                  {data?.username}
+                    {data?.username}
                   </Typography>
                   {!!data?.location && (
                     <Box
@@ -242,7 +273,13 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
                         width: 250,
                       }}
                     >
-                      <Typography sx={{overflow: "hidden",textOverflow: "ellipsis",whiteSpace: "nowrap"}}>
+                      <Typography
+                        sx={{
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                          whiteSpace: "nowrap",
+                        }}
+                      >
                         {data?.location?.name}
                       </Typography>
                     </Box>
@@ -250,11 +287,9 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
                 </Box>
               </Box>
             </Box>
-            <Box sx={{display: "flex", justifyContent: "center", mt: 1}}>
-              <Typography variant="subtitle1">
-                {data?.about_me}
-              </Typography>
-            </Box>  
+            <Box sx={{ display: "flex", justifyContent: "center", mt: 1 }}>
+              <Typography variant="subtitle1">{data?.about_me}</Typography>
+            </Box>
           </Box>
         </Box>
         {type === ProfileEntryTypeEnum.PROFILE && (

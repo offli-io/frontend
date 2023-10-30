@@ -180,6 +180,7 @@ export const Layout: React.FC<ILayoutProps> = ({ children }) => {
           justifyContent: "stretch",
           overflow: "hidden",
         }}
+        className="layout-parent"
       >
         {/* TODO backHeader and diusplayheader better naming */}
         {stateToken && displayHeader && <OffliHeader sx={{ width: "100%" }} />}

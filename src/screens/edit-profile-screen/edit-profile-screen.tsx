@@ -48,7 +48,7 @@ export interface IEditProfile {
   // instagram?: string | null;
   placeQuery?: string;
   profile_photo?: string | null;
-  color?: string | null;
+  background_color?: string | null;
 }
 
 const schema: () => yup.SchemaOf<IEditProfile> = () =>
@@ -71,7 +71,7 @@ const schema: () => yup.SchemaOf<IEditProfile> = () =>
     placeQuery: yup.string().notRequired(),
     // instagram: yup.string().nullable(true).notRequired(),
     profile_photo: yup.string().notRequired().nullable(true),
-    color: yup.string().notRequired(),
+    background_color: yup.string().notRequired(),
   });
 
 const EditProfileScreen: React.FC = () => {
@@ -98,6 +98,7 @@ const EditProfileScreen: React.FC = () => {
         });
         queryClient.invalidateQueries(["user"]);
         toast.success("Your personal information was successfully updated");
+        navigate(-1);
         // navigate(ApplicationLocations.PROFILE);
       },
       onError: () => {
@@ -133,7 +134,7 @@ const EditProfileScreen: React.FC = () => {
   });
 
   const [queryString] = useDebounce(watch("placeQuery"), 1000);
-  const selectedColor = watch("color") ?? palette?.primary?.light;
+  const selectedColor = watch("background_color") ?? palette?.primary?.light;
 
   const placeQuery = useQuery(
     ["locations", queryString],
@@ -186,7 +187,7 @@ const EditProfileScreen: React.FC = () => {
       location: data?.location ?? null,
       // instagram: data?.instagram,
       profile_photo: data?.profile_photo,
-      color: data?.userPreferredColor,
+      background_color: data?.background_color,
     });
   }, [data]);
 
@@ -222,7 +223,9 @@ const EditProfileScreen: React.FC = () => {
             if (selectedColor === null) {
               return;
             }
-            setValue("color", selectedColor);
+            setValue("background_color", selectedColor, {
+              shouldDirty: true,
+            });
             toggleDrawer({ open: false });
           }}
         />
