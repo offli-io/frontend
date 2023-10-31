@@ -53,6 +53,7 @@ import FirstTimeLoginContent from "../my-activities-screen/components/first-time
 import { SetLocationContent } from "../my-activities-screen/components/set-location-content";
 import { endOfWeek, isWithinInterval, startOfToday } from "date-fns";
 import ImagePreviewModal from "components/image-preview-modal/image-preview-modal";
+import { ACTIVITES_LIMIT } from "utils/common-constants";
 
 const ActivitiesScreen = () => {
   const { userInfo, isFirstTimeLogin, setIsFirstTimeLogin } = React.useContext(
@@ -82,6 +83,7 @@ const ActivitiesScreen = () => {
     ({ pageParam = 0 }) =>
       getActivitiesPromiseResolved({
         offset: pageParam,
+        limit: ACTIVITES_LIMIT,
         lon: location?.coordinates?.lon,
         lat: location?.coordinates?.lat,
         participantId: Number(userInfo?.id),
@@ -93,8 +95,12 @@ const ActivitiesScreen = () => {
     {
       getNextPageParam: (lastPage, allPages) => {
         // don't need to add +1 because we are indexing offset from 0 (so length will handle + 1)
-        const nextPage: number = allPages?.length;
-        return nextPage;
+        if (lastPage?.length === ACTIVITES_LIMIT) {
+          const nextPage: number = allPages?.length;
+          return nextPage;
+        }
+
+        return undefined;
       },
       enabled: !!userInfo?.id,
       select: (data) => ({

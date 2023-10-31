@@ -169,18 +169,19 @@ const ActivityCard: React.FC<IProps> = ({
                   <Box sx={{ position: "relative", display: "flex" }}>
                     {[...(activity?.participants_thumb ?? [])].map(
                       (participant, index) => (
-                          <img
-                            src={`${baseUrl}/files/${participant?.profile_photo}`}
-                            alt="profile"
-                            style={{
-                              position: "absolute",
-                              left: 10 * (index + 1),
-                              height: 15,
-                              aspectRatio: 1,
-                              borderRadius: "50%",
-                              zIndex: index + 1,
-                            }}
-                          />
+                        <img
+                          key={participant?.profile_photo}
+                          src={`${baseUrl}/files/${participant?.profile_photo}`}
+                          alt="profile"
+                          style={{
+                            position: "absolute",
+                            left: 10 * (index + 1),
+                            height: 15,
+                            aspectRatio: 1,
+                            borderRadius: "50%",
+                            zIndex: index + 1,
+                          }}
+                        />
                       )
                     )}
                   </Box>
