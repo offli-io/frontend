@@ -96,11 +96,13 @@ const MyBuddiesScreen = () => {
     });
   }, [toggleDrawer]);
 
+  const userHasNoBuddies =
+    !buddies || (buddies?.length === 0 && currentSearch?.length === 0);
+
   return (
     <>
-      <Box sx={{ mx: 1.5 }}>
-        {(!buddies || (buddies?.length === 0 && currentSearch?.length === 0)) &&
-        !isLoading ? (
+      <Box sx={{ mx: 1.5, height: userHasNoBuddies ? "100%" : "auto" }}>
+        {userHasNoBuddies && !isLoading ? (
           <NoBuddiesScreen onAddBuddiesClick={handleAddBuddies} />
         ) : (
           <Box

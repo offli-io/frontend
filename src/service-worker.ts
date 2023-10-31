@@ -83,6 +83,9 @@ self.addEventListener("message", (event) => {
 self.addEventListener("push", async (event) => {
   const name = event?.data?.json()?.user?.username;
   const activityName = event?.data?.json()?.activity?.title ?? null;
+  const notificationPicture = activityName
+    ? event?.data?.json()?.activity?.title_picture
+    : event?.data?.json()?.user?.profile_photo;
 
   // TODO: Deserialize the event data and use it to build the title and options
   const title = "Offli Browser Push";
@@ -92,9 +95,8 @@ self.addEventListener("push", async (event) => {
         ? `invited you to join ${activityName}`
         : "sent you buddy request"
     }`,
-    icon: "https://offli-dev-gateway-jurajpaska8.cloud.okteto.net/logo192.png", // TODO: From env?
-    badge:
-      "https://offli-dev-gateway-jurajpaska8.cloud.okteto.net/logo192.png", // TODO: From env?
+    icon: `https://app.offli.eu/api/files/${notificationPicture}`, // TODO: From env?
+    badge: "https://app.offli.eu/logo192.png", // TODO: From env?
   };
   event.waitUntil(self.registration.showNotification(title, options));
 });

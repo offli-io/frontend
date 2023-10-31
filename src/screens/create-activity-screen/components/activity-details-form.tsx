@@ -60,6 +60,7 @@ export const ActivityDetailsForm: React.FC<IPlaceFormProps> = ({
           width: "100%",
           height: "100%",
           overflow: "scroll",
+          pr: 2,
         }}
       >
         <Controller

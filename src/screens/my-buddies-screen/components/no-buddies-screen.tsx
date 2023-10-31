@@ -11,7 +11,6 @@ interface INoBuddiesScreenProps {
 const NoBuddiesScreen: React.FC<INoBuddiesScreenProps> = ({
   onAddBuddiesClick,
 }) => {
-  const [showPassword, setShowPassword] = React.useState(false);
   const navigate = useNavigate();
 
   return (
@@ -27,13 +26,9 @@ const NoBuddiesScreen: React.FC<INoBuddiesScreenProps> = ({
       <img
         src={addFriends}
         alt="authentication method"
-        style={{ height: "30%" }}
+        style={{ height: 150 }}
       />
-      <Typography
-        sx={{ my: 2, color: ({ palette }) => palette?.text?.primary }}
-      >
-        You have no buddies yet
-      </Typography>
+      <Typography sx={{ my: 2 }}>You have no buddies yet</Typography>
       <Box
         sx={{
           display: "flex",

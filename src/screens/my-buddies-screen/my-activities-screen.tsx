@@ -259,12 +259,12 @@ const ActivitiesScreen = () => {
   function filterActivitiesForThisWeek(activities: any[]) {
     const today = startOfToday();
     const nextWeek = endOfWeek(today);
-  
+
     return activities.filter((activity) => {
       if (activity?.datetime_from && activity?.datetime_until) {
         const startDate = new Date(activity.datetime_from);
         const endDate = new Date(activity.datetime_until);
-  
+
         return isWithinInterval(startDate, { start: today, end: nextWeek });
       }
       return false;
@@ -390,54 +390,60 @@ const ActivitiesScreen = () => {
           )}
           {anyMyActivities && (
             <>
-            {filterActivitiesForThisWeek(participantActivites).length > 0 && (
-              <Box>
-                <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  width: "100%",
-                  my: 2,
-                }}
-              >
-                <Typography variant="h4" sx={{ color: palette?.text?.primary }}>
-                  Your upcoming this week
-                </Typography>
-              </Box>
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  gap: 1.5,
-                  overflowX: "scroll",
-                  width: "100%",
-                  "::-webkit-scrollbar": { display: "none" },
-                }}
-              >
-                {filterActivitiesForThisWeek(participantActivites).map((activity) => {
-                  return (
-                    <MyActivityCard
-                      key={activity?.id}
-                      activity={activity}
-                      type="explore"
-                      onPress={() =>
-                        navigate(
-                          `${ApplicationLocations.ACTIVITY_DETAIL}/${activity?.id}`
-                        )
+              {filterActivitiesForThisWeek(participantActivites).length > 0 && (
+                <Box>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      width: "100%",
+                      my: 2,
+                    }}
+                  >
+                    <Typography
+                      variant="h4"
+                      sx={{ color: palette?.text?.primary }}
+                    >
+                      Your upcoming this week
+                    </Typography>
+                  </Box>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      gap: 1.5,
+                      overflowX: "scroll",
+                      width: "100%",
+                      "::-webkit-scrollbar": { display: "none" },
+                    }}
+                  >
+                    {filterActivitiesForThisWeek(participantActivites).map(
+                      (activity) => {
+                        return (
+                          <MyActivityCard
+                            key={activity?.id}
+                            activity={activity}
+                            type="explore"
+                            onPress={() =>
+                              navigate(
+                                `${ApplicationLocations.ACTIVITY_DETAIL}/${activity?.id}`
+                              )
+                            }
+                            onLongPress={openActivityActions}
+                            sx={{
+                              minWidth:
+                                participantActivites?.length <= 1
+                                  ? "100%"
+                                  : "80%",
+                            }}
+                          />
+                        );
                       }
-                      onLongPress={openActivityActions}
-                      sx={{
-                        minWidth:
-                          participantActivites?.length <= 1 ? "100%" : "80%",
-                      }}
-                    />
-                  );
-                })}
-              </Box>
-              </Box>
-            )}
-              
+                    )}
+                  </Box>
+                </Box>
+              )}
             </>
           )}
           <>
@@ -470,7 +476,11 @@ const ActivitiesScreen = () => {
             </Box>
             <InfiniteScroll
               pageStart={0}
-              loadMore={() => !isFetchingNextPage && fetchNextPage()}
+              loadMore={() =>
+                !isFetchingNextPage &&
+                [...(paginatedActivitiesData?.pages?.[0] ?? [])].length > 8 &&
+                fetchNextPage()
+              }
               hasMore={hasNextPage}
               loader={<Loader key={"loader"} />}
               useWindow={false}
