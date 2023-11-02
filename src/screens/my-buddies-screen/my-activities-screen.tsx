@@ -51,7 +51,7 @@ import ActivityActions from "../my-activities-screen/components/activity-actions
 import ActivityLeaveConfirmation from "../my-activities-screen/components/activity-leave-confirmation";
 import FirstTimeLoginContent from "../my-activities-screen/components/first-time-login-content";
 import { SetLocationContent } from "../my-activities-screen/components/set-location-content";
-import { endOfWeek, isWithinInterval, startOfToday } from "date-fns";
+import { addWeeks, endOfWeek, isWithinInterval, startOfToday } from "date-fns";
 import ImagePreviewModal from "components/image-preview-modal/image-preview-modal";
 import { ACTIVITES_LIMIT } from "utils/common-constants";
 
@@ -244,9 +244,12 @@ const ActivitiesScreen = () => {
         if (activity?.datetime_from && activity?.datetime_until) {
           const startDate = new Date(activity?.datetime_from);
           const today = startOfToday();
-          const nextWeek = endOfWeek(today);
+          const oneWeekFromNow = addWeeks(today, 1);
 
-          return isWithinInterval(startDate, { start: today, end: nextWeek });
+          return isWithinInterval(startDate, {
+            start: today,
+            end: oneWeekFromNow,
+          });
         } else return null;
       }),
     [participantActivites]
@@ -254,28 +257,13 @@ const ActivitiesScreen = () => {
 
   const anyMyActivities = React.useMemo(
     () => myActivitiesWithintWeek?.length > 0,
-    [participantActivites]
+    [myActivitiesWithintWeek]
   );
 
   const anyNearYouActivities = React.useMemo(
     () => paginatedActivitiesData?.pages?.some((page) => page?.length > 0),
     [paginatedActivitiesData]
   );
-
-  function filterActivitiesForThisWeek(activities: any[]) {
-    const today = startOfToday();
-    const nextWeek = endOfWeek(today);
-
-    return activities.filter((activity) => {
-      if (activity?.datetime_from && activity?.datetime_until) {
-        const startDate = new Date(activity.datetime_from);
-        const endDate = new Date(activity.datetime_until);
-
-        return isWithinInterval(startDate, { start: today, end: nextWeek });
-      }
-      return false;
-    });
-  }
 
   const handleLocationSelect = React.useCallback(() => {
     toggleDrawer({
@@ -396,7 +384,7 @@ const ActivitiesScreen = () => {
           )}
           {anyMyActivities && (
             <>
-              {filterActivitiesForThisWeek(participantActivites).length > 0 && (
+              {participantActivites.length > 0 && (
                 <Box>
                   <Box
                     sx={{
@@ -424,29 +412,27 @@ const ActivitiesScreen = () => {
                       "::-webkit-scrollbar": { display: "none" },
                     }}
                   >
-                    {filterActivitiesForThisWeek(participantActivites).map(
-                      (activity) => {
-                        return (
-                          <MyActivityCard
-                            key={activity?.id}
-                            activity={activity}
-                            type="explore"
-                            onPress={() =>
-                              navigate(
-                                `${ApplicationLocations.ACTIVITY_DETAIL}/${activity?.id}`
-                              )
-                            }
-                            onLongPress={openActivityActions}
-                            sx={{
-                              minWidth:
-                                participantActivites?.length <= 1
-                                  ? "100%"
-                                  : "80%",
-                            }}
-                          />
-                        );
-                      }
-                    )}
+                    {participantActivites.map((activity) => {
+                      return (
+                        <MyActivityCard
+                          key={activity?.id}
+                          activity={activity}
+                          type="explore"
+                          onPress={() =>
+                            navigate(
+                              `${ApplicationLocations.ACTIVITY_DETAIL}/${activity?.id}`
+                            )
+                          }
+                          onLongPress={openActivityActions}
+                          sx={{
+                            minWidth:
+                              participantActivites?.length <= 1
+                                ? "100%"
+                                : "80%",
+                          }}
+                        />
+                      );
+                    })}
                   </Box>
                 </Box>
               )}
