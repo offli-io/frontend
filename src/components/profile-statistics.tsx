@@ -121,17 +121,12 @@ const ProfileStatistics: React.FC<IProps> = ({
       ) : null}
     </Box>
   ) : (
-    <Grid
-      container
-      rowSpacing={1}
+    <Box
       sx={{
         width: "100%",
-        borderRadius: "15px",
-        // backgroundColor: "#E4E3FF",
-        paddingBottom: "5%",
-        marginTop: "1%",
+        mt: 2,
+
       }}
-      data-testid="profile-statistics-grid"
     >
       {isLoading ? (
         <Box
@@ -148,108 +143,74 @@ const ProfileStatistics: React.FC<IProps> = ({
       ) : (
         <>
           {participatedNum ? (
-            <Grid item xs={6}>
               <Box
                 sx={{
                   display: "flex",
                   alignItems: "center",
-                  flexDirection: "column",
                 }}
                 data-testid="participated-statistics"
               >
-                <IconButton color="primary">
+                <IconButton>
                   <OfflineBoltIcon
-                    sx={{ fontSize: 30, color: "primary.main" }}
+                    sx={{ fontSize: 30, color: "primary.main", mr: 2 }}
                   />
                 </IconButton>
-                <Typography
-                  align="center"
-                  variant="subtitle2"
-                  sx={{ lineHeight: 1.2 }}
-                >
-                  {!!id ? "Participated " : "You participated "}
-                  in <br /> <b>{participatedNum} activities!</b>
+                <Typography variant="subtitle2">
+                  You participated in <b>{participatedNum} activities</b>.
                 </Typography>
               </Box>
-            </Grid>
           ) : null}
           {enjoyedNum ? (
-            <Grid item xs={6}>
               <Box
                 sx={{
                   display: "flex",
                   alignItems: "center",
-                  flexDirection: "column",
                 }}
                 data-testid="enjoyed-statistics"
               >
-                <IconButton color="primary">
-                  <FavoriteIcon sx={{ fontSize: 30, color: "primary.main" }} />
+                <IconButton>
+                  <FavoriteIcon sx={{ fontSize: 30, color: "primary.main", mr: 2 }} />
                 </IconButton>
-                <Typography
-                  align="center"
-                  variant="subtitle2"
-                  sx={{ lineHeight: 1.2 }}
-                >
-                  <b>{enjoyedNum} times</b> enjoyed <br /> time together!
+                <Typography variant="subtitle1">
+                <b>{enjoyedNum} people</b> enjoyed activities, you've created.
                 </Typography>
               </Box>
-            </Grid>
           ) : null}
           {createdNum ? (
-            <Grid item xs={6}>
               <Box
                 sx={{
                   display: "flex",
                   alignItems: "center",
-                  flexDirection: "column",
                 }}
                 data-testid="created-statistics"
               >
-                <IconButton color="primary" sx={{ padding: "2%" }}>
-                  <AddRoundedIcon
-                    sx={{ fontSize: 40, color: "primary.main" }}
-                  />
+                <IconButton>
+                  <AddRoundedIcon sx={{ fontSize: 30, color: "primary.main", mr: 2  }}/>
                 </IconButton>
-                <Typography
-                  align="center"
-                  variant="subtitle2"
-                  sx={{ lineHeight: 1.2 }}
-                >
-                  {!!id ? "Created " : "You created "} <br />
-                  <b>{createdNum} activities.</b>
+                <Typography variant="subtitle2">
+                  You created <b>{createdNum} activities</b>.
                 </Typography>
               </Box>
-            </Grid>
           ) : null}
           {metNum ? (
-            <Grid item xs={6}>
               <Box
                 sx={{
                   display: "flex",
                   alignItems: "center",
-                  flexDirection: "column",
                 }}
                 data-testid="new-buddies-statistics"
               >
-                <IconButton color="primary">
-                  <PeopleAltIcon sx={{ fontSize: 30, color: "primary.main" }} />
+                <IconButton>
+                  <PeopleAltIcon sx={{ fontSize: 30, color: "primary.main", mr: 2  }} />
                 </IconButton>
-                <Typography
-                  align="center"
-                  variant="subtitle2"
-                  sx={{ lineHeight: 1.2 }}
-                >
-                  {!!id ? "Met " : "You`ve met "}
-                  <br />
-                  <b>{metNum} new buddies!</b>
+                <Typography variant="subtitle2">
+                  You`ve met <b>{metNum}</b> new <b>{metNum === 1 ? "buddy" : "buddies"}</b>.
                 </Typography>
               </Box>
-            </Grid>
           ) : null}
         </>
       )}
-    </Grid>
+    </Box>
   );
 };
 
