@@ -156,7 +156,7 @@ const ProfileStatistics: React.FC<IProps> = ({
                   />
                 </IconButton>
                 <Typography variant="subtitle2">
-                  You participated in <b>{participatedNum} activities</b>.
+                  You participated in <b>{participatedNum} {participatedNum === 1 ? "buddy" : "buddies"}</b>.
                 </Typography>
               </Box>
           ) : null}
@@ -188,7 +188,7 @@ const ProfileStatistics: React.FC<IProps> = ({
                   <AddRoundedIcon sx={{ fontSize: 30, color: "primary.main", mr: 2  }}/>
                 </IconButton>
                 <Typography variant="subtitle2">
-                  You created <b>{createdNum} activities</b>.
+                  You created <b>{createdNum} {createdNum === 1 ? "buddy" : "buddies"}</b>.
                 </Typography>
               </Box>
           ) : null}
