@@ -37,26 +37,27 @@ const ActivityVisibilityDuration: React.FC<IProps> = ({
       </Box>
 
       <ActivityTags tags={tags} sx={{ mt: 3 }} />
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          gap: 2,
-          mt: 5,
-          mb: 3,
-          px: 1,
-        }}
-      >
-        <Typography variant="h4" align="left">
-          Additional description
-        </Typography>
-        
-      </Box>
-      <Box sx={{ m: 0.5, wordWrap: "break-word"}}>
-      <Typography >{description}</Typography>
-
-      </Box>
-
+      {description ? (
+        <Box>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              gap: 2,
+              mt: 5,
+              mb: 3,
+              px: 1,
+            }}
+          >
+            <Typography variant="h4" align="left">
+              Additional description
+            </Typography> 
+          </Box>
+          <Box sx={{ m: 0.5, wordWrap: "break-word"}}>
+            <Typography>{description}</Typography>
+          </Box>
+        </Box>       
+      ) : null}
       <Typography
         variant="subtitle1"
         align="center"
