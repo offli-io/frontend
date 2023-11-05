@@ -278,11 +278,14 @@ const Map: React.FC<ILabeledTileProps> = ({
             value={selectedLocation}
             options={mapExternalApiOptions(data?.results)}
             sx={{
-              width: "100%",
+              width: "95%",
               display: "flex",
               justifyContentw: "center",
               my: 1.5,
-            }}
+              bgcolor: "primary.light",
+              borderRadius: 3,
+              color: "primary.main"
+              }}
             loading={isLoading}
             onChange={(e, locationObject) => {
               setSelectedLocation({
@@ -297,6 +300,14 @@ const Map: React.FC<ILabeledTileProps> = ({
                 {...params}
                 // label="Location"
                 onChange={(e) => setPlaceQuery(e.target.value)}
+                sx={{
+                  '& .MuiAutocomplete-inputRoot': {
+                    '&.MuiOutlinedInput-notchedOutline': {
+                      borderColor: 'primary.main',
+                    },
+                  },
+
+                }}
               />
             )}
             data-testid="activity-place-input"
