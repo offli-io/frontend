@@ -1,6 +1,7 @@
 import { Box, Typography } from "@mui/material";
 import React from "react";
 import ActivityTags from "./activity-tags";
+import { isDefined } from "utils/is-defined";
 
 interface IProps {
   duration?: string;
@@ -37,25 +38,27 @@ const ActivityVisibilityDuration: React.FC<IProps> = ({
       </Box>
 
       <ActivityTags tags={tags} sx={{ mt: 3 }} />
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          gap: 2,
-          mt: 5,
-          mb: 3,
-          px: 1,
-        }}
-      >
-        <Typography variant="h4" align="left">
-          Additional description
-        </Typography>
-        
-      </Box>
-      <Box sx={{ m: 0.5, wordWrap: "break-word"}}>
-      <Typography >{description}</Typography>
-
-      </Box>
+      {isDefined(description) ? (
+        <>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              gap: 2,
+              mt: 5,
+              mb: 3,
+              px: 1,
+            }}
+          >
+            <Typography variant="h4" align="left">
+              Additional description
+            </Typography>
+          </Box>
+          <Box sx={{ m: 0.5, wordWrap: "break-word" }}>
+            <Typography>{description}</Typography>
+          </Box>
+        </>
+      ) : null}
 
       <Typography
         variant="subtitle1"
