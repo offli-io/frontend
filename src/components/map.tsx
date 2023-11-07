@@ -379,7 +379,7 @@ const Map: React.FC<ILabeledTileProps> = ({
           </Marker>
         ) : null}
 
-        {setLocationByMap && !activities ? null : (
+        {/* {setLocationByMap && !activities ? null : ( */}
           <RecenterAutomatically
             lat={
               isSingleActivity
@@ -393,7 +393,7 @@ const Map: React.FC<ILabeledTileProps> = ({
             }
             selectedLocation={selectedLocation}
           />
-        )}
+        {/* )} */}
       </MapContainer>
     </Box>
   );

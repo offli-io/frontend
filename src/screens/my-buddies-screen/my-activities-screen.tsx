@@ -6,7 +6,6 @@ import {
   Box,
   CircularProgress,
   InputAdornment,
-  Modal,
   TextField,
   Typography,
   useTheme,
@@ -51,8 +50,7 @@ import ActivityActions from "../my-activities-screen/components/activity-actions
 import ActivityLeaveConfirmation from "../my-activities-screen/components/activity-leave-confirmation";
 import FirstTimeLoginContent from "../my-activities-screen/components/first-time-login-content";
 import { SetLocationContent } from "../my-activities-screen/components/set-location-content";
-import { endOfWeek, isWithinInterval, startOfToday } from "date-fns";
-import ImagePreviewModal from "components/image-preview-modal/image-preview-modal";
+import { addDays, isWithinInterval, startOfToday } from "date-fns";
 
 const ActivitiesScreen = () => {
   const { userInfo, isFirstTimeLogin, setIsFirstTimeLogin } = React.useContext(
@@ -232,40 +230,20 @@ const ActivitiesScreen = () => {
     [toggleDrawer]
   );
 
-  const myActivitiesWithintWeek = React.useMemo(
-    () =>
-      participantActivites.filter((activity) => {
-        if (activity?.datetime_from && activity?.datetime_until) {
-          const startDate = new Date(activity?.datetime_from);
-          const today = startOfToday();
-          const nextWeek = endOfWeek(today);
-
-          return isWithinInterval(startDate, { start: today, end: nextWeek });
-        } else return null;
-      }),
-    [participantActivites]
-  );
-
-  const anyMyActivities = React.useMemo(
-    () => myActivitiesWithintWeek?.length > 0,
-    [participantActivites]
-  );
-
   const anyNearYouActivities = React.useMemo(
     () => paginatedActivitiesData?.pages?.some((page) => page?.length > 0),
     [paginatedActivitiesData]
   );
 
-  function filterActivitiesForThisWeek(activities: any[]) {
+  function filterActivitiesForNext7Days(activities: any[]) {
     const today = startOfToday();
-    const nextWeek = endOfWeek(today);
-
+    const next7Days = addDays(today, 8);
+  
     return activities.filter((activity) => {
-      if (activity?.datetime_from && activity?.datetime_until) {
+      if (activity?.datetime_from) {
         const startDate = new Date(activity.datetime_from);
-        const endDate = new Date(activity.datetime_until);
-
-        return isWithinInterval(startDate, { start: today, end: nextWeek });
+  
+        return isWithinInterval(startDate, { start: today, end: next7Days });
       }
       return false;
     });
@@ -313,11 +291,16 @@ const ActivitiesScreen = () => {
           variant="text"
           sx={{
             fontSize: 16,
+            justifyContent: "flex-end",
             maxWidth: 200,
-            justifyContent: "flex-start",
-            overflow: "hidden",
             whiteSpace: "nowrap",
-            // fontWeight: "bold",
+
+            ' & .MuiButton-text' : {
+              width: 200,
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+            },
+            
           }}
           startIcon={
             <PlaceIcon
@@ -380,7 +363,7 @@ const ActivitiesScreen = () => {
         </Box>
       ) : (
         <>
-          {!anyMyActivities && !anyNearYouActivities && (
+          {filterActivitiesForNext7Days(participantActivites).length < 1 && !anyNearYouActivities && (
             <Typography
               variant="h4"
               sx={{ my: 6, color: palette?.text?.primary }}
@@ -388,9 +371,8 @@ const ActivitiesScreen = () => {
               There are no activities
             </Typography>
           )}
-          {anyMyActivities && (
-            <>
-              {filterActivitiesForThisWeek(participantActivites).length > 0 && (
+          
+              {filterActivitiesForNext7Days(participantActivites).length > 0 && (
                 <Box>
                   <Box
                     sx={{
@@ -418,7 +400,7 @@ const ActivitiesScreen = () => {
                       "::-webkit-scrollbar": { display: "none" },
                     }}
                   >
-                    {filterActivitiesForThisWeek(participantActivites).map(
+                    {filterActivitiesForNext7Days(participantActivites).map(
                       (activity) => {
                         return (
                           <MyActivityCard
@@ -443,8 +425,6 @@ const ActivitiesScreen = () => {
                     )}
                   </Box>
                 </Box>
-              )}
-            </>
           )}
           <>
             <Box
