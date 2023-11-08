@@ -217,7 +217,7 @@ const ActivityCard: React.FC<IProps> = ({
                 ...(mode === "light" ? { filter: "invert(100%)" } : {}),
               }}
             >
-              {startDate ? getDay(startDate) : "-"}
+              {startDate ? format(startDate, "dd") : "-"}
             </Typography>
           </Box>
           <Box>
