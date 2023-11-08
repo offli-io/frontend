@@ -34,6 +34,7 @@ import { IBuddiesResponseDto } from "types/users/buddies-response.dto";
 import { IUsersResponseDto } from "types/users/users-response.dto";
 import { IUsersSearchParamsDto } from "types/users/users-search-params.dto";
 import { ActivitySortColumnEnum } from "types/activities/activity-sort-enum.dto";
+import { ACTIVITES_LIMIT } from "utils/common-constants";
 
 export const getActivities = async ({
   queryFunctionContext,
@@ -58,7 +59,7 @@ export const getActivities = async ({
 };
 
 export const getActivitiesPromiseResolved = async ({
-  limit,
+  limit = ACTIVITES_LIMIT,
   offset,
   lon,
   lat,
@@ -85,7 +86,7 @@ export const getActivitiesPromiseResolved = async ({
     params: {
       lat,
       lon,
-      limit: 10,
+      limit,
       offset,
       sort,
       participantId,
