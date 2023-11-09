@@ -17,6 +17,7 @@ interface IActivityActionButtonsProps {
   isPublic?: boolean;
   hasEnded?: boolean;
   inProgress?: boolean;
+  privateUninvitedActivity?: boolean;
 }
 
 const ActivityActionButtons: React.FC<IActivityActionButtonsProps> = ({
@@ -24,9 +25,11 @@ const ActivityActionButtons: React.FC<IActivityActionButtonsProps> = ({
   isCreator,
   onJoinClick,
   areActionsLoading,
+  //TODO just get activity and define all these properties in this component
   isPublic,
   hasEnded,
   inProgress = false,
+  privateUninvitedActivity,
 }) => {
   const { id } = useParams();
   const { toggleDrawer } = React.useContext(DrawerContext);
@@ -40,7 +43,7 @@ const ActivityActionButtons: React.FC<IActivityActionButtonsProps> = ({
         my: 2,
       }}
     >
-      {isPublic && !hasEnded ? (
+      {(isPublic || !privateUninvitedActivity) && !hasEnded ? (
         <>
           <OffliButton
             size="small"

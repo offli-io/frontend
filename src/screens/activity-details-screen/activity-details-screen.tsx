@@ -356,6 +356,10 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
     durationDays = 0,
   } = getTimeDifference(dateTimeFrom, dateTimeUntil) ?? {}; // useMemo??
 
+  const privateUninvitedActivity =
+    activity?.visibility === ActivityVisibilityEnum.private &&
+    !activity?.participant_status;
+
   const handleJoinButtonClick = React.useCallback(() => {
     isAlreadyParticipant
       ? isCreator
@@ -455,6 +459,7 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
           isPublic={activity?.visibility === ActivityVisibilityEnum.public}
           hasEnded={isPastActivity}
           inProgress={isInProgress}
+          privateUninvitedActivity={privateUninvitedActivity}
         />
         <Box
           sx={{
