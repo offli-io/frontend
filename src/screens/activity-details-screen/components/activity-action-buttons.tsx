@@ -16,6 +16,7 @@ interface IActivityActionButtonsProps {
   areActionsLoading?: boolean;
   isPublic?: boolean;
   hasEnded?: boolean;
+  inProgress?: boolean;
 }
 
 const ActivityActionButtons: React.FC<IActivityActionButtonsProps> = ({
@@ -25,6 +26,7 @@ const ActivityActionButtons: React.FC<IActivityActionButtonsProps> = ({
   areActionsLoading,
   isPublic,
   hasEnded,
+  inProgress = false,
 }) => {
   const { id } = useParams();
   const { toggleDrawer } = React.useContext(DrawerContext);
@@ -102,6 +104,16 @@ const ActivityActionButtons: React.FC<IActivityActionButtonsProps> = ({
           sx={{ width: "80%", color: "primary.main", fontWeight: "bold" }}
         >
           Activity has finished
+        </OffliButton>
+      ) : null}
+
+      {inProgress ? (
+        <OffliButton
+          color="secondary"
+          startIcon={<HistoryIcon sx={{ color: "primary.main" }} />}
+          sx={{ width: "80%", color: "primary.main", fontWeight: "bold" }}
+        >
+          Activity is in progress
         </OffliButton>
       ) : null}
     </Box>
