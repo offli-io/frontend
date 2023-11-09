@@ -46,10 +46,10 @@ import { ActivityInviteStateEnum } from "../../types/activities/activity-invite-
 import { IActivity } from "../../types/activities/activity.dto";
 import { ActivityActionsTypeEnumDto } from "../../types/common/activity-actions-type-enum.dto";
 import { ApplicationLocations } from "../../types/common/applications-locations.dto";
-import ActivityActions from "../my-activities-screen/components/activity-actions";
-import ActivityLeaveConfirmation from "../my-activities-screen/components/activity-leave-confirmation";
-import FirstTimeLoginContent from "../my-activities-screen/components/first-time-login-content";
-import { SetLocationContent } from "../my-activities-screen/components/set-location-content";
+import ActivityActions from "./components/activity-actions";
+import ActivityLeaveConfirmation from "./components/activity-leave-confirmation";
+import FirstTimeLoginContent from "./components/first-time-login-content";
+import { SetLocationContent } from "./components/set-location-content";
 import { addWeeks, addDays, isWithinInterval, startOfToday } from "date-fns";
 import { ACTIVITES_LIMIT } from "utils/common-constants";
 
@@ -393,7 +393,7 @@ const ActivitiesScreen = () => {
                       variant="h4"
                       sx={{ color: palette?.text?.primary }}
                     >
-                      Your upcoming this week
+                      Your upcoming in week
                     </Typography>
                   </Box>
                   <Box
