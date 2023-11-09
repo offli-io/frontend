@@ -30,7 +30,7 @@ export const loginViaGoogle = (accessToken?: string, signal?: AbortSignal) => {
   const source = CancelToken.source();
 
   const promise = axios.post<ILoginResponseDto>(
-    `/google/login`,
+    `/google/authorization`,
     { googleBearerToken: accessToken },
     {
       cancelToken: source?.token,
@@ -122,7 +122,7 @@ export const registerViaGoogle = async (
   const source = CancelToken.source();
 
   const promise = axios.post<ILoginResponseDto>(
-    `/google/registration`,
+    `/google/authorization`,
     { googleBearerToken: accessToken },
     {
       cancelToken: source?.token,

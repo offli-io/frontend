@@ -49,7 +49,7 @@ const ProfileGallery: React.FC<IProfileGalleryProps> = ({
   const handleConnectInstagram = React.useCallback(() => {
     window.location.href =
       // "https://api.instagram.com/oauth/authorize?client_id=738841197888411&redirect_uri=https://localhost:3000/profile/&scope=user_profile,user_media&response_type=code";
-      `https://api.instagram.com/oauth/authorize?client_id=1317539042184854&redirect_uri=${window.location.href}/&scope=user_profile,user_media&response_type=code`;
+      `https://api.instagram.com/oauth/authorize?client_id=1317539042184854&redirect_uri=${window.location.href}&scope=user_profile,user_media&response_type=code`;
   }, []);
 
   const { isLoading: isConnectingInstagram, mutate: sendConnectInstagram } =

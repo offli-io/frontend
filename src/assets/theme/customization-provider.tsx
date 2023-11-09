@@ -41,7 +41,7 @@ const createCustomizationTheme = (mode: PaletteMode = "light") => {
       },
     },
     typography: {
-      fontFamily: "Roboto",
+      fontFamily: "Instagram Sans",
     },
     components: {
       MuiOutlinedInput: {
@@ -76,34 +76,40 @@ const createCustomizationTheme = (mode: PaletteMode = "light") => {
       MuiTypography: {
         styleOverrides: {
           root: ({ theme }) => ({
-            fontFamily: "Roboto",
+            fontFamily: "Instagram Sans",
             color: theme?.palette?.text?.primary,
             // ...(mode === "dark" ? { filter: "invert(100%)" } : {}),
           }),
           h1: {
             fontSize: 28,
-            fontWeight: "bold",
-            fontFamily: "Open Sans",
+            fontWeight: "500",
+            fontFamily: "Instagram Sans",
           },
           h2: {
             fontSize: 24,
-            fontWeight: "bold",
-            fontFamily: "Open Sans",
+            fontWeight: "500",
+            fontFamily: "Instagram Sans",
           },
           h3: {
             fontSize: 20,
-            fontWeight: "bold",
-            fontFamily: "Open Sans",
+            fontWeight: "500",
+            fontFamily: "Instagram Sans",
           },
+          // TODO This is kinda good
+          // h4: {
+          //   fontSize: 20,
+          //   fontWeight: "500",
+          //   fontFamily: "Helvetica Neue",
+          // },
           h4: {
             fontSize: 20,
-            fontWeight: "600",
-            fontFamily: "Open Sans",
+            fontWeight: "500",
+            fontFamily: "Instagram Sans",
           },
           h5: {
             fontSize: 18,
-            fontWeight: "bold",
-            fontFamily: "Open Sans",
+            fontWeight: "500",
+            fontFamily: "Instagram Sans",
           },
           h6: {
             fontSize: 16,
@@ -123,7 +129,7 @@ const createCustomizationTheme = (mode: PaletteMode = "light") => {
       MuiSvgIcon: {
         styleOverrides: {
           root: ({ theme }) => ({
-            fontFamily: "Roboto",
+            fontFamily: "Instagram Sans",
             color: theme?.palette?.text?.primary,
             // ...(mode === "dark" ? { filter: "invert(100%)" } : {}),
           }),

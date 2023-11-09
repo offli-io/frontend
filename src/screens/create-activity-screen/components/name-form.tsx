@@ -31,10 +31,7 @@ export const NameForm: React.FC<INameFormProps> = ({
             width: "55%",
           }}
         >
-          <Typography
-            variant="h1"
-            sx={{ color: "primary.main", fontFamily: "Nunito" }}
-          >
+          <Typography variant="h1" sx={{ color: "primary.main" }}>
             Create
           </Typography>
           <Typography variant="h1" sx={{ color: palette.text.primary }}>
@@ -42,7 +39,11 @@ export const NameForm: React.FC<INameFormProps> = ({
           </Typography>
         </Box>
         <Box sx={{ width: "45%", display: "flex", justifyContent: "center" }}>
-          <img src={createActivityImg} style={{ height: 120 }} alt="Name form" />
+          <img
+            src={createActivityImg}
+            style={{ height: 120 }}
+            alt="Name form"
+          />
         </Box>
       </Box>
       <Box

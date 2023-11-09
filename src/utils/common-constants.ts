@@ -18,3 +18,5 @@ export const DATE_TIME_FORMAT = "dd.MM.yyyy HH:mm";
 export const TIME_FORMAT = "HH:mm";
 
 export const ACTIVITY_ASPECT_RATIO = 800 / 600;
+
+export const ACTIVITES_LIMIT = 20;
