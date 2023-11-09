@@ -30,7 +30,7 @@ import {
   getPlaceFromCoordinates,
 } from "api/activities/requests";
 import { useQuery } from "@tanstack/react-query";
-import { ILocation } from "types/activities/location.dto";
+import { ILocation, ILocationCoordinates } from "types/activities/location.dto";
 import WhereToVoteIcon from "@mui/icons-material/WhereToVote";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import SearchIcon from "@mui/icons-material/Search";
@@ -284,7 +284,8 @@ const Map: React.FC<ILabeledTileProps> = ({
               my: 1.5,
               bgcolor: "primary.light",
               borderRadius: 3,
-              color: "primary.main"
+              color: "primary.main",
+              "& .MuiAutocomplete-clearIndicator": { display: 'none' }
               }}
             loading={isLoading}
             onChange={(e, locationObject) => {
