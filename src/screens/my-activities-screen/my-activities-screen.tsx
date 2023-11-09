@@ -484,7 +484,7 @@ const ActivitiesScreen = () => {
                           )
                         }
                         onLongPress={openActivityActions}
-                        sx={{ mx: 0, my: 1.5, width: "100%" }}
+                        sx={{ mx: 0, my: 3, width: "100%" }}
                       />
                     ))}
                   </React.Fragment>
