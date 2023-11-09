@@ -98,7 +98,14 @@ const ActivityCard: React.FC<IProps> = ({
             overflow: "hidden",
           }}
         >
-          <Typography variant="h2" sx={{color: "background.default"}}>
+          <Typography variant="h2" sx={{
+            color: "background.default",
+            width: 280,
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap",
+                textAlign: "start",
+            }}>
             {activity?.title}
           </Typography>
             <Typography variant="subtitle1"
