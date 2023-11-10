@@ -11,7 +11,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { CustomizationContext } from "assets/theme/customization-provider";
 import { DrawerContext } from "assets/theme/drawer-provider";
 import Loader from "components/loader";
-import { format, isAfter } from "date-fns";
+import { format, isAfter, isWithinInterval } from "date-fns";
 import {
   ACTIVITIES_QUERY_KEY,
   PAGED_ACTIVITIES_QUERY_KEY,
@@ -331,6 +331,15 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
   const isPastActivity =
     !!activity?.datetime_until &&
     isAfter(new Date(), new Date(activity.datetime_until));
+
+  const isInProgress =
+    !!activity?.datetime_from &&
+    !!activity?.datetime_until &&
+    isWithinInterval(new Date(), {
+      start: new Date(activity?.datetime_from),
+      end: new Date(activity?.datetime_until),
+    });
+
   const isCreator = activity?.creator?.id === userInfo?.id;
 
   const dateTimeFrom = activity?.datetime_from
@@ -346,6 +355,10 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
     durationMinutes = 0,
     durationDays = 0,
   } = getTimeDifference(dateTimeFrom, dateTimeUntil) ?? {}; // useMemo??
+
+  const privateUninvitedActivity =
+    activity?.visibility === ActivityVisibilityEnum.private &&
+    !activity?.participant_status;
 
   const handleJoinButtonClick = React.useCallback(() => {
     isAlreadyParticipant
@@ -445,6 +458,8 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
           isAlreadyParticipant={isAlreadyParticipant}
           isPublic={activity?.visibility === ActivityVisibilityEnum.public}
           hasEnded={isPastActivity}
+          inProgress={isInProgress}
+          privateUninvitedActivity={privateUninvitedActivity}
         />
         <Box
           sx={{
