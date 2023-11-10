@@ -51,7 +51,7 @@ const ActivityCard: React.FC<IProps> = ({
     <OffliButton
       sx={{
         width: "96%",
-        height: 280,
+        height: 240,
         borderRadius: "10px",
         backgroundImage: `url(${baseUrl}/files/${activity?.title_picture})`,
         // backgroundImage: `url(${activity?.title_picture})`,
