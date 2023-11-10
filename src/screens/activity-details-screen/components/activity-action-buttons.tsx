@@ -8,6 +8,8 @@ import React from "react";
 import { useParams } from "react-router-dom";
 import { ActivityInviteDrawerContent } from "./activity-invite-drawer-content";
 import HistoryIcon from "@mui/icons-material/History";
+import CircleIcon from "@mui/icons-material/Circle";
+import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
 
 interface IActivityActionButtonsProps {
   isAlreadyParticipant?: boolean;
@@ -43,7 +45,7 @@ const ActivityActionButtons: React.FC<IActivityActionButtonsProps> = ({
         my: 2,
       }}
     >
-      {(isPublic || !privateUninvitedActivity) && !hasEnded ? (
+      {(isPublic || !privateUninvitedActivity) && !hasEnded && !inProgress ? (
         <>
           <OffliButton
             size="small"
@@ -113,7 +115,7 @@ const ActivityActionButtons: React.FC<IActivityActionButtonsProps> = ({
       {inProgress ? (
         <OffliButton
           color="secondary"
-          startIcon={<HistoryIcon sx={{ color: "primary.main" }} />}
+          startIcon={<FiberManualRecordIcon sx={{ color: "primary.main" }} />}
           sx={{ width: "80%", color: "primary.main", fontWeight: "bold" }}
         >
           Activity is in progress
