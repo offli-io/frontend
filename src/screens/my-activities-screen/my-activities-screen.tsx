@@ -284,11 +284,12 @@ const ActivitiesScreen = () => {
           variant="text"
           sx={{
             fontSize: 16,
-            justifyContent: "flex-end",
+            justifyContent: "flex-start",
             width: 200,
+            whiteSpace: "nowrap", 
             overflow: "hidden",
-            textOverflow: "ellipsis",
-            whiteSpace: "nowrap",           
+            textOverflow: "ellipsis",  
+            textAlign: "left"      
           }}
           startIcon={
             <PlaceIcon
@@ -331,7 +332,7 @@ const ActivitiesScreen = () => {
             sx={{
               "& input::placeholder": {
                 fontSize: 14,
-                color: "#4A148C",
+                color: "primary.main",
                 fontWeight: 400,
                 opacity: 1,
                 pl: 1,

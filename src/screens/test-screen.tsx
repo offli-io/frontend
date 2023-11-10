@@ -2,7 +2,7 @@ import { Box } from "@mui/material";
 import React from "react";
 
 import { DrawerContext } from "../assets/theme/drawer-provider";
-import Map from "../components/map";
+import Map from "../components/map/map";
 import { ICarouselItem, MobileCarousel } from "../components/mobile-carousel";
 
 const data = [

@@ -1,133 +1,27 @@
-import {
-  Autocomplete,
-  Box,
-  IconButton,
-  InputAdornment,
-  SxProps,
-  TextField,
-} from "@mui/material";
-import L, { LatLngTuple, map } from "leaflet";
+import { Autocomplete, Box, SxProps, TextField, } from "@mui/material";
+import L, { LatLngTuple } from "leaflet";
 import React from "react";
-import {
-  MapContainer,
-  Marker,
-  Popup,
-  TileLayer,
-  ZoomControl,
-  useMap,
-} from "react-leaflet";
+import { MapContainer, Marker, Popup, TileLayer, } from "react-leaflet";
 import MarkerClusterGroup from "react-leaflet-cluster";
-import markerIcon from "../assets/img/location-marker.svg";
-import { CustomizationContext } from "../assets/theme/customization-provider";
-import { DrawerContext } from "../assets/theme/drawer-provider";
-import MapDrawerDetail from "../screens/map-screen/components/map-drawer-detail";
-import { IActivity } from "../types/activities/activity.dto";
-import { IMapViewActivityDto } from "../types/activities/mapview-activities.dto";
-import wavePeople from "../assets/img/your-location.svg";
-import OffliButton from "./offli-button";
-import {
-  getLocationFromQueryFetch,
-  getPlaceFromCoordinates,
-} from "api/activities/requests";
+import markerIcon from "../../assets/img/location-marker.svg";
+import { CustomizationContext } from "../../assets/theme/customization-provider";
+import { DrawerContext } from "../../assets/theme/drawer-provider";
+import MapDrawerDetail from "../../screens/map-screen/components/map-drawer-detail";
+import { IActivity } from "../../types/activities/activity.dto";
+import { IMapViewActivityDto } from "../../types/activities/mapview-activities.dto";
+import wavePeople from "../../assets/img/your-location.svg";
+import { getLocationFromQueryFetch, getPlaceFromCoordinates } from "api/activities/requests";
 import { useQuery } from "@tanstack/react-query";
-import { ILocation, ILocationCoordinates } from "types/activities/location.dto";
-import WhereToVoteIcon from "@mui/icons-material/WhereToVote";
-import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
-import SearchIcon from "@mui/icons-material/Search";
-import MapControl from "./map-control";
-import TravelExploreIcon from "@mui/icons-material/TravelExplore";
+import { ILocation } from "types/activities/location.dto";
+import MapControl from "./components/map-control";
 import { mapExternalApiOptions } from "utils/map-location-value.util";
 import { useDebounce } from "use-debounce";
+import SaveButton from "./components/save-button";
+import RecenterAutomatically from "./components/recenter-automatically";
+import BackButton from "./components/back-button";
 
 // bratislava position
 const position = [48.1486, 17.1077] as LatLngTuple;
-
-const RecenterAutomatically = ({
-  lat,
-  lon,
-  selectedLocation,
-}: {
-  selectedLocation?: ILocation | null;
-  lat?: number;
-  lon?: number;
-}) => {
-  const map = useMap();
-  React.useEffect(() => {
-    if (lat && lon) {
-      map.setView([lat, lon]);
-    }
-  }, [lat, lon]);
-
-  React.useEffect(() => {
-    if (selectedLocation) {
-      map.setView([
-        selectedLocation?.coordinates?.lat ?? position[0],
-        selectedLocation?.coordinates?.lon ?? position[1],
-      ]);
-    }
-  }, [selectedLocation]);
-
-  return null;
-};
-
-//TODO outsource this
-const SaveButton = ({
-  onClick,
-  isLoading,
-}: {
-  onClick?: (location: L.LatLng) => void;
-  isLoading?: boolean;
-}) => {
-  const map = useMap();
-  return (
-    <OffliButton
-      sx={{
-        position: "fixed",
-        bottom: 65,
-        right: 20,
-        zIndex: 400,
-        fontSize: 20,
-        width: "45%",
-        bgcolor: ({ palette }) => palette?.primary?.main,
-        color: ({ palette }) => palette?.background?.default,
-        borderRadius: "15px",
-      }}
-      onClick={() => onClick?.(map.getCenter())}
-      startIcon={
-        <WhereToVoteIcon
-          sx={{ color: ({ palette }) => palette?.background?.default }}
-        />
-      }
-      isLoading={isLoading}
-    >
-      Use location
-    </OffliButton>
-  );
-};
-
-const BackButton = ({ onClick }: { onClick?: () => void }) => {
-  return (
-    <OffliButton
-      sx={{
-        position: "fixed",
-        bottom: 65,
-        left: 20,
-        zIndex: 400,
-        fontSize: 20,
-        color: "primary.main",
-        bgcolor: "primary.light",
-        // width: "45%",
-      }}
-      onClick={() => onClick?.()}
-      startIcon={
-        <ArrowBackIosNewIcon sx={{ color: ({ palette }) => "inherit" }} />
-      }
-      // variant="text"
-    >
-      Back
-    </OffliButton>
-  );
-};
 
 interface ILabeledTileProps {
   sx?: SxProps;
@@ -278,12 +172,12 @@ const Map: React.FC<ILabeledTileProps> = ({
             sx={{
               width: "95%",
               display: "flex",
-              justifyContentw: "center",
+              justifyContent: "center",
               my: 1.5,
               bgcolor: "primary.light",
               borderRadius: 3,
-              color: "primary.main",
-              "& .MuiAutocomplete-clearIndicator": { display: 'none' }
+              "& .MuiAutocomplete-clearIndicator": { display: 'none' },
+              "& .MuiSvgIcon-root": {color: "primary.main"}
               }}
             loading={isLoading}
             onChange={(e, locationObject) => {
@@ -297,15 +191,19 @@ const Map: React.FC<ILabeledTileProps> = ({
             renderInput={(params) => (
               <TextField
                 {...params}
-                // label="Location"
+                placeholder={"Search places"} 
                 onChange={(e) => setPlaceQuery(e.target.value)}
                 sx={{
-                  '& .MuiAutocomplete-inputRoot': {
-                    '&.MuiOutlinedInput-notchedOutline': {
-                      borderColor: 'primary.main',
-                    },
+                  "& input::placeholder": {
+                    fontSize: 16,
+                    color: "primary.main",
+                    fontWeight: 400,
+                    opacity: 1,
+                    pl: 1,
                   },
-
+                  "& fieldset": { border: "none" },
+                  backgroundColor: ({ palette }) => palette?.primary?.light,
+                  borderRadius: "10px",
                 }}
               />
             )}
@@ -390,6 +288,7 @@ const Map: React.FC<ILabeledTileProps> = ({
                 : currentLocation?.longitude
             }
             selectedLocation={selectedLocation}
+            position={position}
           />
         {/* )} */}
       </MapContainer>
