@@ -252,8 +252,6 @@ const Map: React.FC<ILabeledTileProps> = ({
     onLocationSave?.(null);
   };
 
-  console.log(selectedLocation);
-
   return (
     <Box sx={{ width: "100%", height: "100%" }}>
       <MapContainer
@@ -380,7 +378,6 @@ const Map: React.FC<ILabeledTileProps> = ({
           </Marker>
         ) : null}
 
-        {/* {setLocationByMap && !activities ? null : ( */}
           <RecenterAutomatically
             lat={
               isSingleActivity

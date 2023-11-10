@@ -129,12 +129,6 @@ const ActivityCard: React.FC<IProps> = ({
               mt: 0.4,
             }}
           >
-            {/* <LockIcon
-              sx={{
-                fontSize: 14,
-                ...(mode === "light" ? { filter: "invert(100%)" } : {}),
-              }}
-            /> */}
             <PeopleAltIcon
               sx={{
                 fontSize: 14,

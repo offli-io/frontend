@@ -52,6 +52,7 @@ import FirstTimeLoginContent from "./components/first-time-login-content";
 import { SetLocationContent } from "./components/set-location-content";
 import { addWeeks, addDays, isWithinInterval, startOfToday } from "date-fns";
 import { ACTIVITES_LIMIT } from "utils/common-constants";
+import { filterActivitiesForNext7Days } from "./utils/filter-activities-for-next-days";
 
 const ActivitiesScreen = () => {
   const { userInfo, isFirstTimeLogin, setIsFirstTimeLogin } = React.useContext(
@@ -241,20 +242,6 @@ const ActivitiesScreen = () => {
     [paginatedActivitiesData]
   );
 
-  function filterActivitiesForNext7Days(activities: any[]) {
-    const today = startOfToday();
-    const next7Days = addDays(today, 8);
-  
-    return activities.filter((activity) => {
-      if (activity?.datetime_from) {
-        const startDate = new Date(activity.datetime_from);
-  
-        return isWithinInterval(startDate, { start: today, end: next7Days });
-      }
-      return false;
-    });
-  }
-
   const handleLocationSelect = React.useCallback(() => {
     toggleDrawer({
       open: true,
@@ -298,15 +285,10 @@ const ActivitiesScreen = () => {
           sx={{
             fontSize: 16,
             justifyContent: "flex-end",
-            maxWidth: 200,
-            whiteSpace: "nowrap",
-
-            ' & .MuiButton-text' : {
-              width: 200,
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-            },
-            
+            width: 200,
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap",           
           }}
           startIcon={
             <PlaceIcon
