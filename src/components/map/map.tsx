@@ -172,12 +172,12 @@ const Map: React.FC<ILabeledTileProps> = ({
             sx={{
               width: "95%",
               display: "flex",
-              justifyContentw: "center",
+              justifyContent: "center",
               my: 1.5,
               bgcolor: "primary.light",
               borderRadius: 3,
-              color: "primary.main",
-              "& .MuiAutocomplete-clearIndicator": { display: 'none' }
+              "& .MuiAutocomplete-clearIndicator": { display: 'none' },
+              "& .MuiSvgIcon-root": {color: "primary.main"}
               }}
             loading={isLoading}
             onChange={(e, locationObject) => {
@@ -191,17 +191,19 @@ const Map: React.FC<ILabeledTileProps> = ({
             renderInput={(params) => (
               <TextField
                 {...params}
-                placeholder={"Search places"}                
+                placeholder={"Search places"} 
                 onChange={(e) => setPlaceQuery(e.target.value)}
                 sx={{
-                  '& .MuiInputBase-root': {
-                    color: 'primary.main',
+                  "& input::placeholder": {
+                    fontSize: 16,
+                    color: "primary.main",
+                    fontWeight: 400,
+                    opacity: 1,
+                    pl: 1,
                   },
-                  '& .MuiInputBase-input::placeholder': {
-                    color: 'primary.main',
-                  },
-                 
-
+                  "& fieldset": { borderColor: "primary.main" },
+                  backgroundColor: ({ palette }) => palette?.primary?.light,
+                  borderRadius: "10px",
                 }}
               />
             )}
