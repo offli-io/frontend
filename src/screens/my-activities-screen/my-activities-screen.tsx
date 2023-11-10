@@ -284,11 +284,12 @@ const ActivitiesScreen = () => {
           variant="text"
           sx={{
             fontSize: 16,
-            justifyContent: "flex-end",
+            justifyContent: "flex-start",
             width: 200,
+            whiteSpace: "nowrap", 
             overflow: "hidden",
-            textOverflow: "ellipsis",
-            whiteSpace: "nowrap",           
+            textOverflow: "ellipsis",  
+            textAlign: "left"      
           }}
           startIcon={
             <PlaceIcon

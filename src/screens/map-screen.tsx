@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import { getMapviewActivities } from "../api/activities/requests";
-import Map from "../components/map";
+import Map from "../components/map/map";
 import { useActivities } from "../hooks/use-activities";
 import { IActivityRestDto } from "../types/activities/activity-rest.dto";
 
