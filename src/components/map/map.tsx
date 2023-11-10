@@ -201,7 +201,7 @@ const Map: React.FC<ILabeledTileProps> = ({
                     opacity: 1,
                     pl: 1,
                   },
-                  "& fieldset": { borderColor: "primary.main" },
+                  "& fieldset": { border: "none" },
                   backgroundColor: ({ palette }) => palette?.primary?.light,
                   borderRadius: "10px",
                 }}
