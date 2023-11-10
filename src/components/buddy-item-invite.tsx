@@ -67,7 +67,7 @@ const BuddyItemInvite: React.FC<ILabeledDividerProps> = ({
         </Typography>
       </Box>
       <OffliButton
-        sx={{ height: 30, fontSize: 16, mr: 2 }}
+        sx={{ height: 38, fontSize: 16, mr: 2, width: 90, borderRadius: 4 }}
         onClick={() => onInviteClick && onInviteClick(buddy)}
         variant={invited ? "outlined" : "contained"}
         data-testid="toggle-buddy-invite-btn"

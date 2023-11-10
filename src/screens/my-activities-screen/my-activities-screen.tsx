@@ -6,7 +6,6 @@ import {
   Box,
   CircularProgress,
   InputAdornment,
-  Modal,
   TextField,
   Typography,
   useTheme,
@@ -47,13 +46,13 @@ import { ActivityInviteStateEnum } from "../../types/activities/activity-invite-
 import { IActivity } from "../../types/activities/activity.dto";
 import { ActivityActionsTypeEnumDto } from "../../types/common/activity-actions-type-enum.dto";
 import { ApplicationLocations } from "../../types/common/applications-locations.dto";
-import ActivityActions from "../my-activities-screen/components/activity-actions";
-import ActivityLeaveConfirmation from "../my-activities-screen/components/activity-leave-confirmation";
-import FirstTimeLoginContent from "../my-activities-screen/components/first-time-login-content";
-import { SetLocationContent } from "../my-activities-screen/components/set-location-content";
-import { addWeeks, endOfWeek, isWithinInterval, startOfToday } from "date-fns";
-import ImagePreviewModal from "components/image-preview-modal/image-preview-modal";
+import ActivityActions from "./components/activity-actions";
+import ActivityLeaveConfirmation from "./components/activity-leave-confirmation";
+import FirstTimeLoginContent from "./components/first-time-login-content";
+import { SetLocationContent } from "./components/set-location-content";
+import { addWeeks, addDays, isWithinInterval, startOfToday } from "date-fns";
 import { ACTIVITES_LIMIT } from "utils/common-constants";
+import { filterActivitiesForNext7Days } from "./utils/filter-activities-for-next-days";
 
 const ActivitiesScreen = () => {
   const { userInfo, isFirstTimeLogin, setIsFirstTimeLogin } = React.useContext(
@@ -238,28 +237,6 @@ const ActivitiesScreen = () => {
     [toggleDrawer]
   );
 
-  const myActivitiesWithintWeek = React.useMemo(
-    () =>
-      participantActivites.filter((activity) => {
-        if (activity?.datetime_from && activity?.datetime_until) {
-          const startDate = new Date(activity?.datetime_from);
-          const today = startOfToday();
-          const oneWeekFromNow = addWeeks(today, 1);
-
-          return isWithinInterval(startDate, {
-            start: today,
-            end: oneWeekFromNow,
-          });
-        } else return null;
-      }),
-    [participantActivites]
-  );
-
-  const anyMyActivities = React.useMemo(
-    () => myActivitiesWithintWeek?.length > 0,
-    [myActivitiesWithintWeek]
-  );
-
   const anyNearYouActivities = React.useMemo(
     () => paginatedActivitiesData?.pages?.some((page) => page?.length > 0),
     [paginatedActivitiesData]
@@ -307,11 +284,11 @@ const ActivitiesScreen = () => {
           variant="text"
           sx={{
             fontSize: 16,
-            maxWidth: 200,
-            justifyContent: "flex-start",
+            justifyContent: "flex-end",
+            width: 200,
             overflow: "hidden",
-            whiteSpace: "nowrap",
-            // fontWeight: "bold",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap",           
           }}
           startIcon={
             <PlaceIcon
@@ -374,7 +351,7 @@ const ActivitiesScreen = () => {
         </Box>
       ) : (
         <>
-          {!anyMyActivities && !anyNearYouActivities && (
+          {filterActivitiesForNext7Days(participantActivites).length < 1 && !anyNearYouActivities && (
             <Typography
               variant="h4"
               sx={{ my: 6, color: palette?.text?.primary }}
@@ -382,9 +359,8 @@ const ActivitiesScreen = () => {
               There are no activities
             </Typography>
           )}
-          {anyMyActivities && (
-            <>
-              {participantActivites.length > 0 && (
+          
+              {filterActivitiesForNext7Days(participantActivites).length > 0 && (
                 <Box>
                   <Box
                     sx={{
@@ -399,7 +375,7 @@ const ActivitiesScreen = () => {
                       variant="h4"
                       sx={{ color: palette?.text?.primary }}
                     >
-                      Your upcoming this week
+                      Your upcoming in week
                     </Typography>
                   </Box>
                   <Box
@@ -412,31 +388,31 @@ const ActivitiesScreen = () => {
                       "::-webkit-scrollbar": { display: "none" },
                     }}
                   >
-                    {participantActivites.map((activity) => {
-                      return (
-                        <MyActivityCard
-                          key={activity?.id}
-                          activity={activity}
-                          type="explore"
-                          onPress={() =>
-                            navigate(
-                              `${ApplicationLocations.ACTIVITY_DETAIL}/${activity?.id}`
-                            )
-                          }
-                          onLongPress={openActivityActions}
-                          sx={{
-                            minWidth:
-                              participantActivites?.length <= 1
-                                ? "100%"
-                                : "80%",
-                          }}
-                        />
-                      );
-                    })}
+                    {filterActivitiesForNext7Days(participantActivites).map(
+                      (activity) => {
+                        return (
+                          <MyActivityCard
+                            key={activity?.id}
+                            activity={activity}
+                            type="explore"
+                            onPress={() =>
+                              navigate(
+                                `${ApplicationLocations.ACTIVITY_DETAIL}/${activity?.id}`
+                              )
+                            }
+                            onLongPress={openActivityActions}
+                            sx={{
+                              minWidth:
+                                participantActivites?.length <= 1
+                                  ? "100%"
+                                  : "80%",
+                            }}
+                          />
+                        );
+                      }
+                    )}
                   </Box>
                 </Box>
-              )}
-            </>
           )}
           <>
             <Box
@@ -490,7 +466,7 @@ const ActivitiesScreen = () => {
                           )
                         }
                         onLongPress={openActivityActions}
-                        sx={{ mx: 0, my: 1.5, width: "100%" }}
+                        sx={{ mx: 0, my: 3, width: "100%" }}
                       />
                     ))}
                   </React.Fragment>

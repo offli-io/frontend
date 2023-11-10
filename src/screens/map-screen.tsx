@@ -12,7 +12,7 @@ interface ILocation {
 
 const MapScreen = <T extends unknown>() => {
   const { activityId } = useParams();
-
+  
   const { data: { data = {} } = {}, isLoading } = useActivities<T>({
     params: {
       id: activityId ? Number(activityId) : undefined,
@@ -31,7 +31,7 @@ const MapScreen = <T extends unknown>() => {
     ? (data as IActivityRestDto)?.activity
     : mapViewData?.activities;
 
-  return <Map activities={activityData} />;
+  return <Map activities={activityData} />
 };
 
 export default MapScreen;

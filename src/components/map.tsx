@@ -1,7 +1,21 @@
-import { Box, IconButton, SxProps } from "@mui/material";
-import L, { LatLngTuple } from "leaflet";
+import {
+  Autocomplete,
+  Box,
+  IconButton,
+  InputAdornment,
+  SxProps,
+  TextField,
+} from "@mui/material";
+import L, { LatLngTuple, map } from "leaflet";
 import React from "react";
-import { MapContainer, Marker, Popup, TileLayer, useMap } from "react-leaflet";
+import {
+  MapContainer,
+  Marker,
+  Popup,
+  TileLayer,
+  ZoomControl,
+  useMap,
+} from "react-leaflet";
 import MarkerClusterGroup from "react-leaflet-cluster";
 import markerIcon from "../assets/img/location-marker.svg";
 import { CustomizationContext } from "../assets/theme/customization-provider";
@@ -11,16 +25,29 @@ import { IActivity } from "../types/activities/activity.dto";
 import { IMapViewActivityDto } from "../types/activities/mapview-activities.dto";
 import wavePeople from "../assets/img/your-location.svg";
 import OffliButton from "./offli-button";
-import { getPlaceFromCoordinates } from "api/activities/requests";
+import {
+  getLocationFromQueryFetch,
+  getPlaceFromCoordinates,
+} from "api/activities/requests";
 import { useQuery } from "@tanstack/react-query";
-import { ILocation } from "types/activities/location.dto";
+import { ILocation, ILocationCoordinates } from "types/activities/location.dto";
 import WhereToVoteIcon from "@mui/icons-material/WhereToVote";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
+import SearchIcon from "@mui/icons-material/Search";
+import MapControl from "./map-control";
+import TravelExploreIcon from "@mui/icons-material/TravelExplore";
+import { mapExternalApiOptions } from "utils/map-location-value.util";
+import { useDebounce } from "use-debounce";
+
+// bratislava position
+const position = [48.1486, 17.1077] as LatLngTuple;
 
 const RecenterAutomatically = ({
   lat,
   lon,
+  selectedLocation,
 }: {
+  selectedLocation?: ILocation | null;
   lat?: number;
   lon?: number;
 }) => {
@@ -30,6 +57,16 @@ const RecenterAutomatically = ({
       map.setView([lat, lon]);
     }
   }, [lat, lon]);
+
+  React.useEffect(() => {
+    if (selectedLocation) {
+      map.setView([
+        selectedLocation?.coordinates?.lat ?? position[0],
+        selectedLocation?.coordinates?.lon ?? position[1],
+      ]);
+    }
+  }, [selectedLocation]);
+
   return null;
 };
 
@@ -113,9 +150,6 @@ const youAreHereIcon = new L.Icon({
   iconAnchor: [22.5, 22.5],
 });
 
-// bratislava position
-const position = [48.1486, 17.1077] as LatLngTuple;
-
 const Map: React.FC<ILabeledTileProps> = ({
   sx,
   activities,
@@ -130,13 +164,26 @@ const Map: React.FC<ILabeledTileProps> = ({
   const { mode } = React.useContext(CustomizationContext);
   const [pendingLatLngTuple, setPendingLatLngTuple] =
     React.useState<LatLngTuple | null>(null);
-  // const map = useMap();
+  //const map = useMap();
+  const [placeQuery, setPlaceQuery] = React.useState("");
+  const [selectedLocation, setSelectedLocation] =
+    React.useState<ILocation | null>(null);
 
   React.useEffect(() => {
     navigator.geolocation.getCurrentPosition(function (position) {
       setCurrentLocation(position.coords);
     });
   }, []);
+
+  const [queryString] = useDebounce(placeQuery, 1000);
+
+  const { data, isLoading } = useQuery(
+    ["locations", queryString],
+    (props) => getLocationFromQueryFetch(String(queryString)),
+    {
+      enabled: !!queryString,
+    }
+  );
 
   const {
     data: placeFromCoordinatesData,
@@ -212,7 +259,60 @@ const Map: React.FC<ILabeledTileProps> = ({
         zoom={13}
         scrollWheelZoom={false}
         style={{ width: "100%", height: "100%", position: "relative" }}
+        zoomControl={false}
       >
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            width: "100%",
+            zIndex: 400,
+            position: "fixed",
+            top: 50,
+          }}
+        >
+          <Autocomplete
+            value={selectedLocation}
+            options={mapExternalApiOptions(data?.results)}
+            sx={{
+              width: "95%",
+              display: "flex",
+              justifyContentw: "center",
+              my: 1.5,
+              bgcolor: "primary.light",
+              borderRadius: 3,
+              color: "primary.main",
+              "& .MuiAutocomplete-clearIndicator": { display: 'none' }
+              }}
+            loading={isLoading}
+            onChange={(e, locationObject) => {
+              setSelectedLocation({
+                name: locationObject?.name ?? "",
+                coordinates: locationObject?.coordinates,
+              });
+            }}
+            inputValue={selectedLocation?.name}
+            getOptionLabel={(option) => String(option?.name)}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                // label="Location"
+                onChange={(e) => setPlaceQuery(e.target.value)}
+                sx={{
+                  '& .MuiAutocomplete-inputRoot': {
+                    '&.MuiOutlinedInput-notchedOutline': {
+                      borderColor: 'primary.main',
+                    },
+                  },
+
+                }}
+              />
+            )}
+            data-testid="activity-place-input"
+          />
+        </Box>
+        <MapControl />
         <TileLayer
           // attribution='<a href="http://jawg.io" title="Tiles Courtesy of Jawg Maps" target="_blank">&copy; <b>Jawg</b>Maps</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           // url="https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png"
@@ -220,6 +320,7 @@ const Map: React.FC<ILabeledTileProps> = ({
             mode === "light" ? "sunny" : "dark"
           }/{z}/{x}/{y}{r}.png?access-token=dY2cc1f9EUuag5geOpQB30R31VnRRhl7O401y78cM0NWSvzLf7irQSUGfA4m7Va5`}
         />
+
         {setLocationByMap ? (
           <>
             <BackButton onClick={handleMapDismiss} />
@@ -277,7 +378,6 @@ const Map: React.FC<ILabeledTileProps> = ({
           </Marker>
         ) : null}
 
-        {setLocationByMap && !activities ? null : (
           <RecenterAutomatically
             lat={
               isSingleActivity
@@ -289,8 +389,9 @@ const Map: React.FC<ILabeledTileProps> = ({
                 ? latLonTupleSingle[1]
                 : currentLocation?.longitude
             }
+            selectedLocation={selectedLocation}
           />
-        )}
+        {/* )} */}
       </MapContainer>
     </Box>
   );

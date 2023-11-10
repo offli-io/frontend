@@ -1,4 +1,4 @@
-import { Box, TextField, Typography } from "@mui/material";
+import { Box, InputAdornment, TextField, Typography } from "@mui/material";
 import { useMutation } from "@tanstack/react-query";
 import Loader from "components/loader";
 import { useBuddies } from "hooks/use-buddies";
@@ -13,6 +13,7 @@ import { AuthenticationContext } from "../../../assets/theme/authentication-prov
 import BuddyItemInvite from "../../../components/buddy-item-invite";
 import { ActivityInviteStateEnum } from "../../../types/activities/activity-invite-state-enum.dto";
 import { IPerson } from "../../../types/activities/activity.dto";
+import SearchIcon from "@mui/icons-material/Search";
 
 interface IActivityTypeFormProps {
   activityId?: number;
@@ -91,8 +92,28 @@ export const ActivityInviteDrawerContent: React.FC<IActivityTypeFormProps> = ({
         <TextField
           value={queryString}
           onChange={(e) => setQueryString(e.target.value)}
-          sx={{ width: "100%" }}
-          label="Search within your buddies"
+          sx={{
+            width: "100%",
+            "& input::placeholder": {
+              fontSize: 14,
+              color: "#4A148C",
+              fontWeight: 400,
+              opacity: 1,
+              pl: 1,
+            },
+            "& fieldset": { border: "none" },
+            backgroundColor: ({ palette }) => palette?.primary?.light,
+            borderRadius: "10px",
+          }}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <SearchIcon
+                  sx={{ fontSize: "1.5rem", color: "primary.main" }}
+                />{" "}
+              </InputAdornment>
+            ),
+          }}
           placeholder="Type buddy username"
           data-testid="activity-invite-buddies-input"
         />

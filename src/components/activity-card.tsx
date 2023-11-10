@@ -51,9 +51,7 @@ const ActivityCard: React.FC<IProps> = ({
     <OffliButton
       sx={{
         width: "96%",
-        height: 200,
-        marginTop: "2%",
-        marginBottom: "2%",
+        height: 240,
         borderRadius: "10px",
         backgroundImage: `url(${baseUrl}/files/${activity?.title_picture})`,
         // backgroundImage: `url(${activity?.title_picture})`,
@@ -79,7 +77,7 @@ const ActivityCard: React.FC<IProps> = ({
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
-          padding: "3% 3% 2% 3%",
+          padding: "3%",
           borderBottomLeftRadius: "10px",
           borderBottomRightRadius: "10px",
           // this was before useing background gradient -> maybe use it for that if decided
@@ -98,38 +96,30 @@ const ActivityCard: React.FC<IProps> = ({
             width: "100%",
             whiteSpace: "nowrap",
             overflow: "hidden",
-            color: "white",
           }}
         >
-          <Typography
-            sx={{
-              fontSize: 22,
-              fontWeight: "bold",
-              lineHeight: 1,
-              ...(mode === "light" ? { filter: "invert(100%)" } : {}),
-              ...(mode === "light"
-                ? {
-                    textShadow: ({ palette }) =>
-                      `1px 1px 1px ${palette?.primary?.light}`,
-                  }
-                : {}),
-            }}
-          >
+          <Typography variant="h2" sx={{
+            color: "background.default",
+            width: 280,
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap",
+                textAlign: "start",
+            }}>
             {activity?.title}
           </Typography>
-          {activity?.location?.name && (
-            <Typography
+            <Typography variant="subtitle1"
               sx={{
-                lineHeight: 1,
-                fontSize: 12,
-                fontWeight: "bold",
-                ...(mode === "light" ? { filter: "invert(100%)" } : {}),
-                my: 0.5,
+                width: 270,
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap",
+                textAlign: "start",
+                color: "background.default"
               }}
             >
               {activity?.location?.name}
             </Typography>
-          )}
           <Box
             sx={{
               display: "flex",
@@ -139,28 +129,20 @@ const ActivityCard: React.FC<IProps> = ({
               mt: 0.4,
             }}
           >
-            <LockIcon
-              sx={{
-                fontSize: 14,
-                ...(mode === "light" ? { filter: "invert(100%)" } : {}),
-              }}
-            />
             <PeopleAltIcon
               sx={{
                 fontSize: 14,
-                ml: 1,
+                ml: 0.5,
                 mr: 0.5,
-                ...(mode === "light" ? { filter: "invert(100%)" } : {}),
+                color: "background.default"
               }}
             />
             {activity?.limit ? (
               <Box sx={{ display: "flex", justifyContent: "center" }}>
-                <Typography
+                <Typography variant="subtitle1"
                   sx={{
-                    fontSize: 16,
-                    // fontWeight: "bold",
                     lineHeight: 1,
-                    ...(mode === "light" ? { filter: "invert(100%)" } : {}),
+                    color: "background.default"
                   }}
                 >
                   {activity?.count_confirmed}/{activity?.limit}{" "}

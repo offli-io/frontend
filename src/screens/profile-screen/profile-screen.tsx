@@ -209,7 +209,7 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
                     ml: 0.75,
                   }}
                 >
-                  {`${data?.buddies?.length} Buddies`}
+                  {`${data?.buddies?.length} ${data?.buddies?.length === 1 ? "Buddy" : "Buddies"}`}
                 </Typography>
               </IconButton>
             )}
