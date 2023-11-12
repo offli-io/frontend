@@ -1,4 +1,3 @@
-import { DEFAULT_DEV_URL } from "../../assets/config";
 import { ILoginRequestDto } from "../../types/auth/login-request.dto";
 import { ILoginResponseDto } from "../../types/auth/login-response.dto";
 import axios from "axios";

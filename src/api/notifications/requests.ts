@@ -1,5 +1,4 @@
 import axios from "axios";
-import { DEFAULT_DEV_URL } from "../../assets/config";
 import { INotificationsResponse } from "../../types/notifications/notifications-response.dto";
 import { WEBPUSH_VAPID_PUBLIC_KEY } from "utils/common-constants";
 

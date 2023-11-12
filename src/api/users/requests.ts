@@ -1,5 +1,4 @@
 import axios from "axios";
-import { DEFAULT_DEV_URL } from "../../assets/config";
 import { IUpdateUserRequestDto } from "../../types/users/update-user-request.dto";
 import {
   IEmailUsernamePassword,
