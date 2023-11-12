@@ -49,6 +49,7 @@ const ActivityActionButtons: React.FC<IActivityActionButtonsProps> = ({
         <>
           <OffliButton
             size="small"
+            data-testid="activity-action-button-primary"
             sx={{
               fontSize: 18,
               width: "40%",
@@ -72,6 +73,7 @@ const ActivityActionButtons: React.FC<IActivityActionButtonsProps> = ({
           </OffliButton>
           <OffliButton
             size="small"
+            data-testid="activity-action-button-invite"
             disabled={!isAlreadyParticipant || areActionsLoading}
             sx={{
               fontSize: 18,

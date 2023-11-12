@@ -424,6 +424,7 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
         >
           <Typography
             variant="h1"
+            data-testid="activity-title"
             align="center"
             sx={{
               ml: 1,

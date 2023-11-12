@@ -52,7 +52,7 @@ const OffliGallery: React.FC<ITimePickerProps> = ({
               }}
               onClick={() => name && onPictureSelect(name)}
               key={`predefined_picture_${name}`}
-              data-testid="offli-gallery-img-btn"
+              data-testid={`offli-gallery-img-btn${index}`}
             >
               <img
                 src={`${baseUrl}/files/${name}`}
