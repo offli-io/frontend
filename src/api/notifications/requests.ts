@@ -1,7 +1,7 @@
 import axios from "axios";
-import { DEFAULT_DEV_URL } from "../../assets/config";
 import { INotificationsResponse } from "../../types/notifications/notifications-response.dto";
 import { WEBPUSH_VAPID_PUBLIC_KEY } from "utils/common-constants";
+import {ISubscriptionDeviceDto, ISubscriptionDto} from "../../types/notifications/subscription.dto";
 
 export const getNotifications = (userId: number) => {
   const CancelToken = axios.CancelToken;
@@ -48,45 +48,60 @@ export const deleteNotification = (
   return promise;
 };
 
-export async function subscribeBrowserPush(userId: number) {
+export const subscribeBrowserPush = async (userId: number) => {
   if (!("serviceWorker" in navigator)) {
     return;
   }
   try {
     let registration = await navigator.serviceWorker.ready;
-    let subscription = await registration.pushManager.getSubscription();
-    if (subscription === null) {
-      // TODO: VAPID Public Key from ENV
-      let vapidPublicKey = WEBPUSH_VAPID_PUBLIC_KEY;
-      subscription = await registration.pushManager.subscribe({
+    let pushSub = await registration.pushManager.getSubscription();
+    if (pushSub === null) {
+      pushSub = await registration.pushManager.subscribe({
         userVisibleOnly: true,
-        applicationServerKey: urlBase64ToUint8Array(vapidPublicKey),
+        applicationServerKey: urlBase64ToUint8Array(WEBPUSH_VAPID_PUBLIC_KEY),
       });
     }
-    // TODO: Check whether the user is already subscribed within Offli, if so and the endpoint is the same, do not
-    //  perform putSubscription
-    // axios.get(`/notifications/subscriptions`, {params: userId})
-    await putSubscription(subscription, userId); // TODO: ID of current user
+
+    let pushSubJson = pushSub?.toJSON();
+    let device: ISubscriptionDeviceDto = {
+      name: "iPhone 14", // TODO: From useragent
+      endpoint: `${pushSubJson?.endpoint}`,
+      auth: `${pushSubJson?.keys?.auth}`,
+      p256dh: `${pushSubJson?.keys?.p256dh}`,
+    };
+
+    await putSubscriptionDevice(userId, device); 
   } catch (err) {
     console.error(err);
   }
 }
 
-function urlBase64ToUint8Array(base64String: string) {
+const urlBase64ToUint8Array = (base64String: string) => {
   const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
   const base64 = (base64String + padding).replace(/-/g, "+").replace(/_/g, "/");
   const rawData = window.atob(base64);
   return Uint8Array.from(rawData.split("").map((char) => char.charCodeAt(0)));
 }
 
-async function putSubscription(subscription: PushSubscription, userId: number) {
-  let sub = subscription.toJSON();
-  console.log(subscription.toJSON()); // TODO: Remove logging
-  let url = `/notifications/subscriptions`;
-  let data = {
-    endpoint: sub.endpoint,
-    auth: sub.keys?.auth,
-    p256dh: sub.keys?.p256dh,
-  };
-  await axios.put(url, data, { params: { userId: userId } });
+// TODO: Handle exceptions within all API call functions below
+
+const getSubscription = async (userId: number): Promise<ISubscriptionDto> => {
+  const url = `/notifications/subscriptions`;
+  let response = await axios.get<ISubscriptionDto>(url, { params: { userId: userId } });
+  return response?.data
+}
+
+const putSubscription = async (subscription: ISubscriptionDto) =>{
+  const url = `/notifications/subscriptions`;
+  await axios.put(url, subscription, { params: { userId: subscription.user_id } });
+}
+
+const putSubscriptionDevice = async (userId: number, subscription: ISubscriptionDeviceDto) => {
+  const url = `/notifications/subscriptions/devices`;
+  await axios.put(url, subscription, { params: { userId: userId } });
+}
+
+const removeSubscriptionDevice = async (userId: number, deviceId: number)=> {
+  const url = `/notifications/subscriptions/devices/${deviceId}`;
+  await axios.delete(url, { params: { userId: userId } });
 }

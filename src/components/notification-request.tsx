@@ -1,10 +1,13 @@
-import { Box, Divider, Typography, useTheme } from "@mui/material";
+import { Box, Typography, useTheme } from "@mui/material";
 import { differenceInHours } from "date-fns";
 import React from "react";
-import userPlaceholder from "../assets/img/user-placeholder.svg";
 import { useGetApiUrl } from "../hooks/use-get-api-url";
-import { NotificationTypeEnum } from "../types/notifications/notification-type-enum";
-import { INotificationDto } from "../types/notifications/notification.dto";
+import {
+    getNotificationBody,
+    getNotificationPicture,
+    getNotificationTitle,
+    INotificationDto
+} from "../types/notifications/notification.dto";
 import SanitizedText from "./sanitized-text/sanitized-text";
 
 interface INotificationRequestProps {
@@ -46,26 +49,11 @@ const NotificationRequest: React.FC<INotificationRequestProps> = ({
   }, [notification?.timestamp]);
 
   const generateNotificationType = React.useCallback(() => {
-    if (notification?.type === NotificationTypeEnum.BUDDY_REQ) {
-      return `Buddy request`;
-    }
-    if (notification?.type === NotificationTypeEnum.ACTIVITY_REQ) {
-      return `Activity invite`;
-    }
-    return "";
+      return getNotificationTitle(notification);
   }, [notification]);
 
-  // console.log(
-  //   format(new Date(`${notification?.timestamp}` * 1000), DATE_TIME_FORMAT)
-  // );
   const generateNotificationMessage = React.useCallback(() => {
-    if (notification?.type === NotificationTypeEnum.BUDDY_REQ) {
-      return `${notification?.properties?.user?.username} wants to become buddies`;
-    }
-    if (notification?.type === NotificationTypeEnum.ACTIVITY_REQ) {
-      return `${notification?.properties?.user?.username} invited you to join <br><em>${notification?.properties?.activity?.title}</em>`;
-    }
-    return "";
+    return getNotificationBody(notification, true);
   }, [notification]);
 
   return (
@@ -115,9 +103,7 @@ const NotificationRequest: React.FC<INotificationRequestProps> = ({
                 boxShadow: shadows[4],
               }}
               src={
-                notification?.properties?.user?.profile_photo
-                  ? `${baseUrl}/files/${notification?.properties?.user?.profile_photo}`
-                  : userPlaceholder
+                `${baseUrl}/files/${getNotificationPicture(notification)}`
               }
               alt="profile"
             />
