@@ -28,6 +28,7 @@ import {
 import InfiniteScroll from "react-infinite-scroller";
 import Loader from "components/loader";
 import ActivityCard from "components/activity-card";
+import { LayoutContext } from "app/layout";
 
 const ActivitiesScreen = () => {
   const navigate = useNavigate();
@@ -37,20 +38,21 @@ const ActivitiesScreen = () => {
   const [currentTab, setCurrentTab] = React.useState<TabDefinitionsEnum>(
     TabDefinitionsEnum.UPCOMING
   );
-  const { location: userLocation } = React.useContext(LocationContext);
   const { userInfo } = React.useContext(AuthenticationContext);
+  const { setSwipeHandlers } = React.useContext(LayoutContext);
 
-  const handlers = useSwipeable({
-    onSwiped: (eventData) => console.log("User Swiped!", eventData),
-    onSwipedRight: () => {
-      const nextTab = detectSwipedTab("right", currentTab);
-      setCurrentTab(nextTab);
-    },
-    onSwipedLeft: () => {
-      const nextTab = detectSwipedTab("left", currentTab);
-      setCurrentTab(nextTab);
-    },
-  });
+  React.useEffect(() => {
+    setSwipeHandlers?.({
+      left: () => {
+        const nextTab = detectSwipedTab("left", currentTab);
+        setCurrentTab(nextTab);
+      },
+      right: () => {
+        const nextTab = detectSwipedTab("right", currentTab);
+        setCurrentTab(nextTab);
+      },
+    });
+  }, [currentTab]);
 
   const cachedTodaysDate = React.useMemo(() => new Date(), []);
 
@@ -100,8 +102,6 @@ const ActivitiesScreen = () => {
       enabled: !!userInfo?.id,
     }
   );
-
-  console.log(isFetchingNextPage);
 
   const handleTabChange = (
     event: React.SyntheticEvent,

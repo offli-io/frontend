@@ -3,10 +3,10 @@ import { differenceInHours } from "date-fns";
 import React from "react";
 import { useGetApiUrl } from "../hooks/use-get-api-url";
 import {
-    getNotificationBody,
-    getNotificationPicture,
-    getNotificationTitle,
-    INotificationDto
+  getNotificationBody,
+  getNotificationPicture,
+  getNotificationTitle,
+  INotificationDto,
 } from "../types/notifications/notification.dto";
 import SanitizedText from "./sanitized-text/sanitized-text";
 
@@ -49,7 +49,7 @@ const NotificationRequest: React.FC<INotificationRequestProps> = ({
   }, [notification?.timestamp]);
 
   const generateNotificationType = React.useCallback(() => {
-      return getNotificationTitle(notification);
+    return getNotificationTitle(notification);
   }, [notification]);
 
   const generateNotificationMessage = React.useCallback(() => {
@@ -96,15 +96,14 @@ const NotificationRequest: React.FC<INotificationRequestProps> = ({
 
             <img
               style={{
-                height: 45,
+                height: 40,
+                aspectRatio: 1,
                 borderRadius: "50%",
                 margin: 5,
-                // border: `2px solid ${palette?.primary?.main}`,
+                objectFit: "contain",
                 boxShadow: shadows[4],
               }}
-              src={
-                `${baseUrl}/files/${getNotificationPicture(notification)}`
-              }
+              src={`${baseUrl}/files/${getNotificationPicture(notification)}`}
               alt="profile"
             />
             <Box sx={{ display: "flex", flexDirection: "column" }}>

@@ -108,7 +108,7 @@ const BottomNavigator: React.FC<IBottomNavigatorProps> = ({ sx }) => {
           }}
         />
         <BottomNavigationAction
-          label="Activities"
+          label="My activities"
           icon={
             <LocalActivityIcon
               sx={{

@@ -5,7 +5,7 @@ export const mapLocationToNavigatorValue = (location: ApplicationLocations) => {
     [
       ApplicationLocations.EXPLORE,
       ApplicationLocations.CREATE,
-      ApplicationLocations.PROFILE,
+      ApplicationLocations.ACTIVITIES,
     ].includes(location)
   ) {
     return location;
