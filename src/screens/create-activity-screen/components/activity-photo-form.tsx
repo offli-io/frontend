@@ -186,7 +186,7 @@ export const ActivityPhotoForm: React.FC<IActivityPhotoFormProps> = ({
                   borderRadius: 5,
                   border: (theme) => `1px dashed ${theme.palette.primary.main}`,
                 }}
-                data-testid="open-gallery-btn"
+                data-testid="activity-photo-from-offli-gallery"
               >
                 <img
                   src={activityPhotoImg}

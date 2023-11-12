@@ -214,7 +214,7 @@ export const ActivityDetailsForm: React.FC<IPlaceFormProps> = ({
                             }
                             onChange(e?.target?.checked ? true : false);
                           }}
-                          data-testid="same-end-date-checkbox"
+                          // data-testid="same-end-date-checkbox"
                           sx={{
                             "& .MuiSvgIcon-root": {
                               color: "primary.main",

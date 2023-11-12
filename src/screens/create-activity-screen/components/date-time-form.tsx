@@ -179,7 +179,7 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
               select
               sx={{ width: "100%", mb: 1 }}
               variant="outlined"
-              data-testid="activitiy-from-time-picker"
+              data-testid="activity-from-time-picker"
               error={!!error}
               helperText={!!error && "Activity start time is required"}
               SelectProps={{
@@ -203,8 +203,13 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
                 ),
               }}
             >
-              {generateOptionsOrder("from")?.map((option) => (
-                <MenuItem key={option} value={option} divider>
+              {generateOptionsOrder("from")?.map((option, index) => (
+                <MenuItem
+                  key={option}
+                  value={option}
+                  divider
+                  data-testid="time-picker-options"
+                >
                   {option}
                 </MenuItem>
               ))}
@@ -230,7 +235,7 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
               // label="Duration"
               placeholder="Enter activity duration"
               helperText={!!error && "Activity duration is required"}
-              data-testid="activity-name-input"
+              data-testid="activity-duration-input"
             />
           )}
         />
@@ -253,6 +258,7 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
                 },
               }}
               color="primary.main"
+              data-testid="activity-duration-radio"
             >
               <FormControlLabel
                 value={ActivityDurationTypeEnumDto.MINUTES}

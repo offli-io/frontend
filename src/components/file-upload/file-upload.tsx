@@ -75,6 +75,7 @@ const FileUpload: React.FC<IFileUploadProps> = ({
           // setting empty string to always fire onChange event on input even when selecting same pictures 2 times in a row
           value={""}
           accept="image/*"
+          data-testid="activity-photo-from-phone"
         />
         <IconButton size="large" data-testid="upload-img-btn">
           <AddAPhotoIcon sx={{ color: "primary.main" }} />
