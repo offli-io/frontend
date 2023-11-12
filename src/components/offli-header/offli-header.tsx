@@ -13,6 +13,9 @@ import BackHeader from "./components/back-header";
 import { mapPathnameToHeaderTitle } from "./utils/header-utils";
 import { ICustomizedLocationStateDto } from "../../types/common/customized-location-state.dto";
 import { NOT_EXACT_UNALLOWED_URLS } from "../../app/layout";
+import { useUser } from "hooks/use-user";
+import { useGetApiUrl } from "hooks/use-get-api-url";
+import userPlaceholder from "../../assets/img/user-placeholder.svg";
 
 interface IProps {
   sx?: SxProps;
@@ -26,6 +29,11 @@ const OffliHeader: React.FC<IProps> = ({ sx }) => {
   const { userInfo } = React.useContext(AuthenticationContext);
   const { palette } = useTheme();
 
+  const { data: { data = {} } = {}, isLoading } = useUser({
+    id: userInfo?.id,
+  });
+
+  const baseUrl = useGetApiUrl();
   const { data: notificationsData } = useNotifications(userInfo?.id);
 
   //TODO add component non-depending logic like styles outside the components
@@ -104,6 +112,46 @@ const OffliHeader: React.FC<IProps> = ({ sx }) => {
               display: "flex",
             }}
           >
+            {location?.pathname === ApplicationLocations.PROFILE ? (
+              <IconButton
+                onClick={() => {
+                  navigate(ApplicationLocations.SETTINGS, {
+                    state: {
+                      from: location?.pathname,
+                    },
+                  });
+                }}
+                data-testid="settings-btn"
+              >
+                <SettingsIcon
+                  sx={{ iconStyle, ml: 0.5 }}
+                  // sx={{ color: 'primary.main' }}
+                />
+              </IconButton>
+            ) : (
+              <IconButton
+                onClick={() => navigate(ApplicationLocations.PROFILE)}
+                data-testid="profile-btn"
+                // sx={{ pr: 0 }}
+              >
+                <img
+                  src={
+                    data?.profile_photo
+                      ? `${baseUrl}/files/${data?.profile_photo}`
+                      : userPlaceholder
+                  }
+                  alt="profile"
+                  style={{
+                    height: 25,
+                    aspectRatio: 1,
+                    borderRadius: "50%",
+                    backgroundColor: palette?.background?.default,
+                    border: `1px solid ${palette?.primary?.main}`,
+                  }}
+                  data-testid="profile-img"
+                />
+              </IconButton>
+            )}
             <IconButton
               onClick={() => {
                 navigate(ApplicationLocations.NOTIFICATIONS, {
@@ -128,21 +176,6 @@ const OffliHeader: React.FC<IProps> = ({ sx }) => {
                   />
                 )}
               </Badge>
-            </IconButton>
-            <IconButton
-              onClick={() => {
-                navigate(ApplicationLocations.SETTINGS, {
-                  state: {
-                    from: location?.pathname,
-                  },
-                });
-              }}
-              data-testid="settings-btn"
-            >
-              <SettingsIcon
-                sx={{ iconStyle, ml: 0.5 }}
-                // sx={{ color: 'primary.main' }}
-              />
             </IconButton>
           </Box>
         </Box>

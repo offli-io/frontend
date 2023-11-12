@@ -68,6 +68,7 @@ const ActivitiesScreen = () => {
         offset: pageParam,
         limit: ACTIVITES_LIMIT,
         participantId: Number(userInfo?.id),
+        participantStatus: ActivitiyParticipantStatusEnum.CONFIRMED,
         ...(currentTab === TabDefinitionsEnum.INVITED
           ? { participantStatus: ActivitiyParticipantStatusEnum.INVITED }
           : {}),
@@ -97,14 +98,10 @@ const ActivitiesScreen = () => {
         return undefined;
       },
       enabled: !!userInfo?.id,
-      select: (data) => ({
-        pages: data?.pages?.map((page) =>
-          page?.filter((activity) => activity?.participant_status === null)
-        ),
-        pageParams: [...data.pageParams],
-      }),
     }
   );
+
+  console.log(isFetchingNextPage);
 
   const handleTabChange = (
     event: React.SyntheticEvent,
@@ -114,7 +111,7 @@ const ActivitiesScreen = () => {
   };
 
   return (
-    <Box sx={{ height: "100%" }} {...handlers}>
+    <>
       <Tabs
         value={currentTab}
         onChange={handleTabChange}
@@ -126,6 +123,11 @@ const ActivitiesScreen = () => {
         ))}
       </Tabs>
       {isLoading ? <Loader /> : null}
+      {!isLoading && paginatedActivitiesData?.pages?.[0]?.length === 0 ? (
+        <Typography variant="subtitle2" sx={{ mt: 4, textAlign: "center" }}>
+          There are no activities
+        </Typography>
+      ) : null}
       <InfiniteScroll
         pageStart={0}
         loadMore={() =>
@@ -157,7 +159,7 @@ const ActivitiesScreen = () => {
           ))}
         </>
       </InfiniteScroll>
-    </Box>
+    </>
   );
 };
 

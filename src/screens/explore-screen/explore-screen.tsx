@@ -4,7 +4,6 @@ import SearchIcon from "@mui/icons-material/Search";
 import {
   Autocomplete,
   Box,
-  CircularProgress,
   InputAdornment,
   TextField,
   Typography,
@@ -22,6 +21,7 @@ import InfiniteScroll from "react-infinite-scroller";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { ActivitySortColumnEnum } from "types/activities/activity-sort-enum.dto";
+import { ACTIVITES_LIMIT } from "utils/common-constants";
 import {
   changeActivityParticipantStatus,
   getActivitiesPromiseResolved,
@@ -31,16 +31,12 @@ import { LocationContext } from "../../app/providers/location-provider";
 import { AuthenticationContext } from "../../assets/theme/authentication-provider";
 import { DrawerContext } from "../../assets/theme/drawer-provider";
 import ActivityCard from "../../components/activity-card";
-import MyActivityCard from "../../components/my-activity-card";
 import OffliButton from "../../components/offli-button";
 import {
   ACTIVITIES_QUERY_KEY,
   PAGED_ACTIVITIES_QUERY_KEY,
 } from "../../hooks/use-activities";
-import {
-  PARTICIPANT_ACTIVITIES_QUERY_KEY,
-  useParticipantActivities,
-} from "../../hooks/use-participant-activities";
+import { PARTICIPANT_ACTIVITIES_QUERY_KEY } from "../../hooks/use-participant-activities";
 import { useUser } from "../../hooks/use-user";
 import { ActivityInviteStateEnum } from "../../types/activities/activity-invite-state-enum.dto";
 import { IActivity } from "../../types/activities/activity.dto";
@@ -50,9 +46,6 @@ import ActivityActions from "./components/activity-actions";
 import ActivityLeaveConfirmation from "./components/activity-leave-confirmation";
 import FirstTimeLoginContent from "./components/first-time-login-content";
 import { SetLocationContent } from "./components/set-location-content";
-import { addWeeks, addDays, isWithinInterval, startOfToday } from "date-fns";
-import { ACTIVITES_LIMIT } from "utils/common-constants";
-import { filterActivitiesForNext7Days } from "./utils/filter-activities-for-next-days";
 
 const ExploreScreen = () => {
   const { userInfo, isFirstTimeLogin, setIsFirstTimeLogin } = React.useContext(
@@ -111,15 +104,6 @@ const ExploreScreen = () => {
     }
   );
 
-  const {
-    data: { data: { activities: participantActivites = [] } = {} } = {},
-    isLoading: areParticipantActivitiesLoading,
-    invalidate: invalidateParticipantActivities,
-  } = useParticipantActivities({
-    participantId: userInfo?.id,
-    sort: ActivitySortColumnEnum.DATETIME_FROM,
-  });
-
   const { mutate: sendJoinActivity } = useMutation(
     ["join-activity-response"],
     (activityId?: number) => {
@@ -132,8 +116,9 @@ const ExploreScreen = () => {
     {
       onSuccess: (data, buddy) => {
         toast.success("You have successfully joined the activity");
-        invalidateParticipantActivities();
+        queryClient.invalidateQueries([PARTICIPANT_ACTIVITIES_QUERY_KEY]);
         queryClient.invalidateQueries(["activities"]);
+
         hideDrawer();
       },
       onError: (error) => {
@@ -345,133 +330,67 @@ const ExploreScreen = () => {
           />
         )}
       />
-      {areParticipantActivitiesLoading ? (
-        <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
-          <CircularProgress color="primary" />
-        </Box>
-      ) : (
-        <>
-          {filterActivitiesForNext7Days(participantActivites).length < 1 &&
-            !anyNearYouActivities && (
-              <Typography
-                variant="h4"
-                sx={{ my: 6, color: palette?.text?.primary }}
-              >
-                There are no activities
-              </Typography>
-            )}
 
-          {filterActivitiesForNext7Days(participantActivites).length > 0 && (
-            <Box>
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  width: "100%",
-                  my: 2,
-                }}
-              >
-                <Typography variant="h4" sx={{ color: palette?.text?.primary }}>
-                  Your upcoming in week
-                </Typography>
-              </Box>
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  gap: 1.5,
-                  overflowX: "scroll",
-                  width: "100%",
-                  "::-webkit-scrollbar": { display: "none" },
-                }}
-              >
-                {filterActivitiesForNext7Days(participantActivites).map(
-                  (activity) => {
-                    return (
-                      <MyActivityCard
-                        key={activity?.id}
-                        activity={activity}
-                        type="explore"
-                        onPress={() =>
-                          navigate(
-                            `${ApplicationLocations.ACTIVITY_DETAIL}/${activity?.id}`
-                          )
-                        }
-                        onLongPress={openActivityActions}
-                        sx={{
-                          minWidth:
-                            participantActivites?.length <= 1 ? "100%" : "80%",
-                        }}
-                      />
-                    );
-                  }
-                )}
-              </Box>
-            </Box>
-          )}
+      <>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            width: "100%",
+            mt: 2,
+            mb: 1,
+          }}
+        >
+          <Typography variant="h4" sx={{ color: palette?.text?.primary }}>
+            Near you
+          </Typography>
+          <OffliButton
+            variant="text"
+            sx={{ fontSize: 16 }}
+            startIcon={
+              <MapIcon
+                sx={{ fontSize: "1.2rem", ml: -0.7, color: "primary.main" }}
+              />
+            }
+            onClick={() => navigate(ApplicationLocations.MAP)}
+            data-testid="see-map-btn"
+          >
+            Show map
+          </OffliButton>
+        </Box>
+        <InfiniteScroll
+          pageStart={0}
+          loadMore={() =>
+            !isFetchingNextPage &&
+            [...(paginatedActivitiesData?.pages?.[0] ?? [])].length > 8 &&
+            fetchNextPage()
+          }
+          hasMore={hasNextPage}
+          loader={<Loader key={"loader"} />}
+          useWindow={false}
+        >
           <>
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                width: "100%",
-                mt: 2,
-                mb: 1,
-              }}
-            >
-              <Typography variant="h4" sx={{ color: palette?.text?.primary }}>
-                Near you
-              </Typography>
-              <OffliButton
-                variant="text"
-                sx={{ fontSize: 16 }}
-                startIcon={
-                  <MapIcon
-                    sx={{ fontSize: "1.2rem", ml: -0.7, color: "primary.main" }}
+            {paginatedActivitiesData?.pages?.map((group, i) => (
+              <React.Fragment key={i}>
+                {group?.map((activity) => (
+                  <ActivityCard
+                    key={activity?.id}
+                    activity={activity}
+                    onPress={() =>
+                      navigate(
+                        `${ApplicationLocations.ACTIVITY_DETAIL}/${activity?.id}`
+                      )
+                    }
+                    onLongPress={openActivityActions}
+                    sx={{ mx: 0, mb: 3, width: "100%" }}
                   />
-                }
-                onClick={() => navigate(ApplicationLocations.MAP)}
-                data-testid="see-map-btn"
-              >
-                Show map
-              </OffliButton>
-            </Box>
-            <InfiniteScroll
-              pageStart={0}
-              loadMore={() =>
-                !isFetchingNextPage &&
-                [...(paginatedActivitiesData?.pages?.[0] ?? [])].length > 8 &&
-                fetchNextPage()
-              }
-              hasMore={hasNextPage}
-              loader={<Loader key={"loader"} />}
-              useWindow={false}
-            >
-              <>
-                {paginatedActivitiesData?.pages?.map((group, i) => (
-                  <React.Fragment key={i}>
-                    {group?.map((activity) => (
-                      <ActivityCard
-                        key={activity?.id}
-                        activity={activity}
-                        onPress={() =>
-                          navigate(
-                            `${ApplicationLocations.ACTIVITY_DETAIL}/${activity?.id}`
-                          )
-                        }
-                        onLongPress={openActivityActions}
-                        sx={{ mx: 0, my: 3, width: "100%" }}
-                      />
-                    ))}
-                  </React.Fragment>
                 ))}
-              </>
-            </InfiniteScroll>
+              </React.Fragment>
+            ))}
           </>
-        </>
-      )}
+        </InfiniteScroll>
+      </>
     </>
   );
 };
