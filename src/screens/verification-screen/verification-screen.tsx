@@ -60,7 +60,7 @@ const VerificationScreen = () => {
         setUserInfo?.({ username: params?.username, id: data?.data?.user_id });
         localStorage.setItem("userId", String(data?.data?.user_id));
         setIsFirstTimeLogin?.(true);
-        navigate(ApplicationLocations.ACTIVITIES);
+        navigate(ApplicationLocations.EXPLORE);
       },
       onError: (error) => {
         toast.error("Failed to log in");

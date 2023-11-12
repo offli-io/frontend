@@ -170,8 +170,6 @@ export const ActivityMembersScreen: React.FC = () => {
     isAfter(new Date(), new Date(activity.datetime_until));
   const anySearchResults = [...(activityMembers ?? [])]?.length > 0;
 
-  const generateChipLabel = React.useCallback(() => {}, []);
-
   const renderActionContent = React.useCallback(
     (member: IParticipantDto): React.ReactNode => {
       // if creator is opening "Activity members"

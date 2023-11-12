@@ -52,7 +52,7 @@ const BackHeader: React.FC<IBackHeaderProps> = ({
     // ) {
     //   return navigate(to, {
     //     state: {
-    //       from: ApplicationLocations.ACTIVITIES,
+    //       from: ApplicationLocations.EXPLORE,
     //     },
     //   });
     // }
@@ -63,12 +63,12 @@ const BackHeader: React.FC<IBackHeaderProps> = ({
     // ) {
     //   return navigate(to, {
     //     state: {
-    //       from: ApplicationLocations.ACTIVITIES,
+    //       from: ApplicationLocations.EXPLORE,
     //     },
     //   });
     // }
     // if (location.startsWith(ApplicationLocations.ACTIVITY_DETAIL)) {
-    //   return navigate(ApplicationLocations.ACTIVITIES);
+    //   return navigate(ApplicationLocations.EXPLORE);
     // }
     // if (location.startsWith(ApplicationLocations.BUDDIES)) {
     //   return navigate(ApplicationLocations.PROFILE);

@@ -11,6 +11,7 @@ import { CustomizationContext } from "../../assets/theme/customization-provider"
 import { ApplicationLocations } from "../../types/common/applications-locations.dto";
 import { FOOTER_HEIGHT, HEADER_HEIGHT } from "../../utils/common-constants";
 import { mapLocationToNavigatorValue } from "./utils/map-location-to-navigator-value.util";
+import LocalActivityIcon from "@mui/icons-material/LocalActivity";
 
 interface IBottomNavigatorProps {
   sx?: SxProps;
@@ -19,7 +20,7 @@ interface IBottomNavigatorProps {
 const BottomNavigator: React.FC<IBottomNavigatorProps> = ({ sx }) => {
   const { palette } = useTheme();
   const [value, setValue] = React.useState<ApplicationLocations>(
-    ApplicationLocations.ACTIVITIES
+    ApplicationLocations.EXPLORE
   );
   const { userInfo } = React.useContext(AuthenticationContext);
   const { mode } = React.useContext(CustomizationContext);
@@ -72,15 +73,15 @@ const BottomNavigator: React.FC<IBottomNavigatorProps> = ({ sx }) => {
             <TravelExploreIcon
               sx={{
                 color:
-                  value === ApplicationLocations.ACTIVITIES
+                  value === ApplicationLocations.EXPLORE
                     ? "primary.main"
                     : undefined,
               }}
             />
           }
           component={Link}
-          value={ApplicationLocations.ACTIVITIES}
-          to={ApplicationLocations.ACTIVITIES}
+          value={ApplicationLocations.EXPLORE}
+          to={ApplicationLocations.EXPLORE}
           data-testid="navigator-activities"
           sx={{
             ...(mode === "dark" ? { color: palette?.text?.primary } : {}),
@@ -107,21 +108,21 @@ const BottomNavigator: React.FC<IBottomNavigatorProps> = ({ sx }) => {
           }}
         />
         <BottomNavigationAction
-          label="Profile"
+          label="Activities"
           icon={
-            <AccountCircleOutlinedIcon
+            <LocalActivityIcon
               sx={{
                 color:
-                  value === ApplicationLocations.PROFILE
+                  value === ApplicationLocations.ACTIVITIES
                     ? "primary.main"
                     : undefined,
               }}
             />
           }
           component={Link}
-          value={ApplicationLocations.PROFILE}
-          to={ApplicationLocations.PROFILE}
-          data-testid="navigator-profile"
+          value={ApplicationLocations.ACTIVITIES}
+          to={ApplicationLocations.ACTIVITIES}
+          data-testid="navigator-activities"
           sx={{
             ...(mode === "dark" ? { color: palette?.text?.primary } : {}),
           }}

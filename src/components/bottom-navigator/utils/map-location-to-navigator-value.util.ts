@@ -3,7 +3,7 @@ import { ApplicationLocations } from "../../../types/common/applications-locatio
 export const mapLocationToNavigatorValue = (location: ApplicationLocations) => {
   if (
     [
-      ApplicationLocations.ACTIVITIES,
+      ApplicationLocations.EXPLORE,
       ApplicationLocations.CREATE,
       ApplicationLocations.PROFILE,
     ].includes(location)
@@ -26,7 +26,7 @@ export const mapLocationToNavigatorValue = (location: ApplicationLocations) => {
         ApplicationLocations.ACTIVITY_DETAIL,
       ].includes(location)
     ) {
-      return ApplicationLocations.ACTIVITIES;
+      return ApplicationLocations.EXPLORE;
     }
   }
 };

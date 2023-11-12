@@ -6,7 +6,7 @@ import CreateActivityScreen from "../screens/create-activity-screen/create-activ
 import EditProfileScreen from "../screens/edit-profile-screen/edit-profile-screen";
 import LoadingScreen from "../screens/loading-screen";
 import LoginScreen from "../screens/login-screen";
-import ActivitiesScreen from "../screens/my-activities-screen/my-activities-screen";
+import ExploreScreen from "../screens/explore-screen/explore-screen";
 import MyBuddiesScreen from "../screens/my-buddies-screen/my-buddies-screen";
 import NewPasswordScreen from "../screens/new-password-screen";
 import NotificationsScreen from "../screens/notifications-screen/notifications-screen";
@@ -34,6 +34,7 @@ import EditActivityScreen from "../screens/edit-activity-screen/edit-activity-sc
 import { ApplicationLocations } from "../types/common/applications-locations.dto";
 import LoginOrRegisterScreen from "screens/login-or-register";
 import AccountSettingsScreen from "screens/account-settings-screen/account-settings-screen";
+import ActivitiesScreen from "screens/activities-screen/activities-screen";
 
 const Routes = () => {
   return (
@@ -103,8 +104,8 @@ const Routes = () => {
           element={<NewPasswordScreen />}
         />
         <Route
-          path={ApplicationLocations.ACTIVITIES}
-          element={<ActivitiesScreen />}
+          path={ApplicationLocations.EXPLORE}
+          element={<ExploreScreen />}
         />
         <Route
           path={ApplicationLocations.CHOOSE_LOCATION}
@@ -123,7 +124,7 @@ const Routes = () => {
           element={<ActivityDetailsScreen type="detail" />}
         />
         <Route
-          path={`${ApplicationLocations.ACTIVITIES}/request/:id`}
+          path={`${ApplicationLocations.EXPLORE}/request/:id`}
           element={<ActivityDetailsScreen type="request" />}
         />
         <Route
@@ -168,6 +169,11 @@ const Routes = () => {
         <Route
           path={ApplicationLocations.ACCOUNT_SETTINGS}
           element={<AccountSettingsScreen />}
+        />
+
+        <Route
+          path={ApplicationLocations.ACTIVITIES}
+          element={<ActivitiesScreen />}
         />
 
         <Route path={ApplicationLocations.CHAT} element={<ChatScreen />} />

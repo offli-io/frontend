@@ -90,7 +90,7 @@ const ChooseLocationScreen: React.FC = () => {
           queryClient.invalidateQueries(["user"]);
           //TODO display snackbar for first login? Idk too many windows (Welcome screen and snackbar)
 
-          navigate(ApplicationLocations.ACTIVITIES);
+          navigate(ApplicationLocations.EXPLORE);
         },
         onError: () => {
           toast.error("Failed to select location");

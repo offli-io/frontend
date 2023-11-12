@@ -46,7 +46,7 @@ const NotificationsScreen = () => {
   const navigateBasedOnType = React.useCallback(
     (type?: NotificationTypeEnum, id?: number, notificationId?: number) => {
       if (type === NotificationTypeEnum.ACTIVITY_INV) {
-        return navigate(`${ApplicationLocations.ACTIVITIES}/request/${id}`, {
+        return navigate(`${ApplicationLocations.EXPLORE}/request/${id}`, {
           state: {
             from: location?.pathname,
             notificationId,
