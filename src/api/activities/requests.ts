@@ -65,6 +65,10 @@ export const getActivitiesPromiseResolved = async ({
   lat,
   sort,
   participantId,
+  creatorId,
+  participantStatus,
+  datetimeFrom,
+  datetimeUntil,
 }: {
   id?: number;
   text?: string;
@@ -76,6 +80,10 @@ export const getActivitiesPromiseResolved = async ({
   lat?: number;
   sort?: string;
   participantId?: number;
+  creatorId?: number;
+  participantStatus?: ActivitiyParticipantStatusEnum;
+  datetimeFrom?: Date;
+  datetimeUntil?: Date;
 }) => {
   const CancelToken = axios.CancelToken;
   const source = CancelToken.source();
@@ -90,6 +98,10 @@ export const getActivitiesPromiseResolved = async ({
       offset,
       sort,
       participantId,
+      creatorId,
+      participantStatus,
+      datetimeFrom,
+      datetimeUntil,
     },
   });
 

@@ -18,6 +18,7 @@ export enum ApplicationLocations {
   SETTINGS = "/settings",
   BUDDIES = "/buddies",
   NOTIFICATIONS = "/notifications",
+  EXPLORE = "/explore",
   ACTIVITIES = "/activities",
   CHOOSE_USERNAME_GOOGLE = "/choose-username",
   CHOOSE_LOCATION = "/choose-location",

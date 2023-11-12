@@ -21,8 +21,8 @@ import { useDismissActivity } from "hooks/use-dismiss-activity";
 import { PARTICIPANT_ACTIVITIES_QUERY_KEY } from "hooks/use-participant-activities";
 import React from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import ActivityActions from "screens/my-activities-screen/components/activity-actions";
-import ActivityLeaveConfirmation from "screens/my-activities-screen/components/activity-leave-confirmation";
+import ActivityActions from "screens/explore-screen/components/activity-actions";
+import ActivityLeaveConfirmation from "screens/explore-screen/components/activity-leave-confirmation";
 import { toast } from "sonner";
 import { IActivity } from "types/activities/activity.dto";
 import {
@@ -82,7 +82,7 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
         queryClient.invalidateQueries(["activity-participants", id]);
         queryClient.invalidateQueries([ACTIVITIES_QUERY_KEY]);
         queryClient.invalidateQueries([PARTICIPANT_ACTIVITIES_QUERY_KEY]);
-        navigate(ApplicationLocations.ACTIVITIES);
+        navigate(ApplicationLocations.EXPLORE);
       },
     });
   const queryClient = useQueryClient();
@@ -291,7 +291,7 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
   React.useEffect(() => {
     if (state) {
       navigate(`${ApplicationLocations.ACTIVITY_DETAIL}/${state?.id}`, {
-        state: { from: ApplicationLocations.ACTIVITIES },
+        state: { from: ApplicationLocations.EXPLORE },
       });
     }
   }, [state]);

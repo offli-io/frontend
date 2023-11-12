@@ -58,7 +58,7 @@ const ChooseUsernameGooglePage = () => {
       onSuccess: (data) => {
         toast.success("Username successfully updated");
         queryClient.invalidateQueries(["users", userInfo?.id]);
-        navigate(ApplicationLocations.ACTIVITIES);
+        navigate(ApplicationLocations.EXPLORE);
       },
       onError: (error) => {
         toast.error("Failed to update username");

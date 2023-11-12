@@ -6,7 +6,7 @@ import { useParams } from "react-router-dom";
 import { useActivities } from "../../../hooks/use-activities";
 import { IActivityRestDto } from "../../../types/activities/activity-rest.dto";
 import { ActivityActionsTypeEnumDto } from "../../../types/common/activity-actions-type-enum.dto";
-import ActivityActions from "../../my-activities-screen/components/activity-actions";
+import ActivityActions from "../../explore-screen/components/activity-actions";
 
 interface IProps {
   onMenuItemClick?: (action?: ActivityActionsTypeEnumDto) => void;

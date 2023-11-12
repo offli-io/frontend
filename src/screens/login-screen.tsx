@@ -81,7 +81,7 @@ const LoginScreen: React.FC = () => {
             id: data?.data?.user_id,
           });
           localStorage.setItem("userId", String(data?.data?.user_id));
-          navigate(ApplicationLocations.ACTIVITIES);
+          navigate(ApplicationLocations.EXPLORE);
         },
         onError: (error) => {
           toast.error("Login with google failed");
@@ -101,7 +101,7 @@ const LoginScreen: React.FC = () => {
         setStateToken(data?.data?.token?.access_token ?? null);
         setUserInfo?.({ username: params?.username, id: data?.data?.user_id });
         localStorage.setItem("userId", String(data?.data?.user_id));
-        navigate(ApplicationLocations.ACTIVITIES);
+        navigate(ApplicationLocations.EXPLORE);
       },
       onError: (error) => {
         toast.error("Failed to log in");

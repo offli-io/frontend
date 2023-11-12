@@ -85,7 +85,7 @@ export const RegistrationScreen: React.FC = () => {
         !!setUserInfo && setUserInfo({ id: data?.data?.user_id });
         data?.data?.user_id &&
           localStorage.setItem("userId", String(data?.data?.user_id));
-        navigate(ApplicationLocations.ACTIVITIES);
+        navigate(ApplicationLocations.EXPLORE);
       },
       onError: (error) => {
         toast.error("Registration with google failed");

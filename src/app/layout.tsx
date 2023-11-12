@@ -120,7 +120,7 @@ export const Layout: React.FC<ILayoutProps> = ({ children }) => {
     ) {
       setStateToken(token);
       setUserInfo?.((values) => ({ ...values, id: Number(userIdFromStorage) }));
-      navigate(ApplicationLocations.ACTIVITIES);
+      navigate(ApplicationLocations.EXPLORE);
     }
   }, [token]);
 
@@ -152,7 +152,7 @@ export const Layout: React.FC<ILayoutProps> = ({ children }) => {
 
   const addContentPadding = React.useMemo(
     () =>
-      [ApplicationLocations.ACTIVITIES].includes(
+      [ApplicationLocations.EXPLORE].includes(
         location?.pathname as ApplicationLocations
       ),
     [location?.pathname]
