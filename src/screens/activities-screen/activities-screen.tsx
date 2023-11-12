@@ -1,40 +1,30 @@
-import { Box, CircularProgress, Tab, Tabs, Typography } from "@mui/material";
-import { LocationContext } from "app/providers/location-provider";
-import React from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-import { DrawerContext } from "../../assets/theme/drawer-provider";
-import ActivitySearchCard from "../../components/activity-search-card";
-import {
-  PAGED_ACTIVITIES_QUERY_KEY,
-  useActivities,
-} from "../../hooks/use-activities";
-import { IActivityListRestDto } from "../../types/activities/activity-list-rest.dto";
-import { ApplicationLocations } from "../../types/common/applications-locations.dto";
-import { TabDefinitionsEnum } from "./utils/tab-definitions";
-import { useSwipeable } from "react-swipeable";
-import {
-  SWIPE_ARRAY_ORDER,
-  detectSwipedTab,
-} from "./utils/detect-swiped-tab.util";
+import { Tab, Tabs, Typography } from "@mui/material";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { getActivitiesPromiseResolved } from "api/activities/requests";
-import { ACTIVITES_LIMIT } from "utils/common-constants";
+import { LayoutContext } from "app/layout";
 import { AuthenticationContext } from "assets/theme/authentication-provider";
+import ActivityCard from "components/activity-card";
+import Loader from "components/loader";
+import React from "react";
+import InfiniteScroll from "react-infinite-scroller";
+import { useLocation, useNavigate } from "react-router-dom";
 import { ActivitiyParticipantStatusEnum } from "types/activities/activity-participant-status-enum.dto";
 import {
   ActivitySortColumnEnum,
   ActivitySortDirectionEnum,
 } from "types/activities/activity-sort-enum.dto";
-import InfiniteScroll from "react-infinite-scroller";
-import Loader from "components/loader";
-import ActivityCard from "components/activity-card";
-import { LayoutContext } from "app/layout";
+import { ACTIVITES_LIMIT } from "utils/common-constants";
+import { PAGED_ACTIVITIES_QUERY_KEY } from "../../hooks/use-activities";
+import { ApplicationLocations } from "../../types/common/applications-locations.dto";
+import {
+  SWIPE_ARRAY_ORDER,
+  detectSwipedTab,
+} from "./utils/detect-swiped-tab.util";
+import { TabDefinitionsEnum } from "./utils/tab-definitions";
 
 const ActivitiesScreen = () => {
   const navigate = useNavigate();
-  // const history = useHistory()
   const location = useLocation();
-  const { toggleDrawer } = React.useContext(DrawerContext);
   const [currentTab, setCurrentTab] = React.useState<TabDefinitionsEnum>(
     TabDefinitionsEnum.UPCOMING
   );
@@ -115,7 +105,7 @@ const ActivitiesScreen = () => {
       <Tabs
         value={currentTab}
         onChange={handleTabChange}
-        variant="fullWidth"
+        variant="scrollable"
         sx={{ mt: 1, mx: 1, p: 0 }}
       >
         {SWIPE_ARRAY_ORDER.map((item) => (

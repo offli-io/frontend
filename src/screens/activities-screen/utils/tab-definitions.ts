@@ -1,6 +1,6 @@
 export enum TabDefinitionsEnum {
   UPCOMING = "Upcoming",
   PAST = "Past",
-  INVITED = "Invited",
+  INVITED = "Invited to",
   CREATED = "Created",
 }
