@@ -13,6 +13,13 @@ import { ExpirationPlugin } from "workbox-expiration";
 import { precacheAndRoute, createHandlerBoundToURL } from "workbox-precaching";
 import { registerRoute } from "workbox-routing";
 import { StaleWhileRevalidate } from "workbox-strategies";
+import {
+    getNotificationBody,
+    getNotificationPicture,
+    getNotificationTitle,
+    INotificationDto
+} from "./types/notifications/notification.dto";
+import {NotificationTypeEnum} from "./types/notifications/notification-type-enum";
 
 declare const self: ServiceWorkerGlobalScope;
 
@@ -81,22 +88,46 @@ self.addEventListener("message", (event) => {
 // Any other custom service worker logic can go here.
 
 self.addEventListener("push", async (event) => {
-  const name = event?.data?.json()?.user?.username;
-  const activityName = event?.data?.json()?.activity?.title ?? null;
-  const notificationPicture = activityName
-    ? event?.data?.json()?.activity?.title_picture
-    : event?.data?.json()?.user?.profile_photo;
+  const notification: INotificationDto | undefined = event?.data?.json();
+  if (!notification) {
+    return;
+  }
+  
+  // TODO: Refactor, maybe add some other data properties if needed
+  let data: any;
+  switch (notification.type) {
+    case NotificationTypeEnum.ACTIVITY_INV || NotificationTypeEnum.ACTIVITY_CHANGE:
+      data = { url: `https://app.offli.eu/activity/detail/${notification.properties?.activity?.id}`}
+        break;
+      case NotificationTypeEnum.BUDDY_REQ:
+        data = { url: `https://app.offli.eu/profile/user/${notification.properties?.user?.id}`}
+        break;
+      default:
+        return;
+  }
 
-  // TODO: Deserialize the event data and use it to build the title and options
-  const title = "Offli Browser Push";
-  const options = {
-    body: `${name} ${
-      activityName
-        ? `invited you to join ${activityName}`
-        : "sent you buddy request"
-    }`,
-    icon: `https://app.offli.eu/api/files/${notificationPicture}`, // TODO: From env?
-    badge: "https://app.offli.eu/logo192.png", // TODO: From env?
+  let actions: NotificationAction[] | undefined;
+  if (notification.type === NotificationTypeEnum.BUDDY_REQ || notification.type === NotificationTypeEnum.ACTIVITY_INV) {
+    actions = [{
+      action: "accept",
+      title: "accept",
+      // icon: "", // TODO: Add some icon?
+    }];
+  }
+  
+  const options: NotificationOptions = {
+    actions: actions,
+    body: getNotificationBody(notification, false),
+    icon: `https://app.offli.eu/api/files/${getNotificationPicture(notification)}`, // TODO: API URL from env
+    badge: `https://app.offli.eu/logo192.png`, // TODO: Base URL from env
+    data: data,
   };
-  event.waitUntil(self.registration.showNotification(title, options));
+  
+  event.waitUntil(self.registration.showNotification(getNotificationTitle(notification), options));
+});
+
+self.addEventListener('notificationclick', (event) => {
+  // TODO: Improve + implement actions click handling
+  event.notification.close();
+  self.clients.openWindow(event.notification.data.url);
 });

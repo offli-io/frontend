@@ -31,7 +31,7 @@ const NotificationsScreen = () => {
         queryClient.invalidateQueries(["notifications"]);
         navigateBasedOnType(
           variables?.type,
-          variables?.type === NotificationTypeEnum.ACTIVITY_REQ
+          variables?.type === NotificationTypeEnum.ACTIVITY_INV
             ? variables?.properties?.activity?.id
             : variables?.properties?.user?.id,
           variables?.id
@@ -45,7 +45,7 @@ const NotificationsScreen = () => {
 
   const navigateBasedOnType = React.useCallback(
     (type?: NotificationTypeEnum, id?: number, notificationId?: number) => {
-      if (type === NotificationTypeEnum.ACTIVITY_REQ) {
+      if (type === NotificationTypeEnum.ACTIVITY_INV) {
         return navigate(`${ApplicationLocations.ACTIVITIES}/request/${id}`, {
           state: {
             from: location?.pathname,
@@ -71,7 +71,7 @@ const NotificationsScreen = () => {
       return notification?.seen
         ? navigateBasedOnType(
             notification?.type,
-            notification?.type === NotificationTypeEnum.ACTIVITY_REQ
+            notification?.type === NotificationTypeEnum.ACTIVITY_INV
               ? notification?.properties?.activity?.id
               : notification?.properties?.user?.id,
             notification?.id
