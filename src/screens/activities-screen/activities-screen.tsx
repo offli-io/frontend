@@ -116,7 +116,12 @@ const ActivitiesScreen = () => {
         value={currentTab}
         onChange={handleTabChange}
         variant="fullWidth"
-        sx={{ mt: 1, mx: 1, p: 0 }}
+        sx={{ p: 0, 
+          '& .MuiTab-root': {
+          textTransform: 'capitalize',
+          fontSize: 16
+          },  
+        }}
       >
         {SWIPE_ARRAY_ORDER.map((item) => (
           <Tab label={item} value={item} />
