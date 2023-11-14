@@ -29,6 +29,7 @@ const BuddyItemCheckbox: React.FC<ILabeledDividerProps> = ({
     },
     [onClick, setChecked, id]
   );
+
   return (
     <Button
       onClick={() => handleClick(checked)}
