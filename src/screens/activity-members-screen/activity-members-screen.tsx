@@ -315,7 +315,11 @@ export const ActivityMembersScreen: React.FC = () => {
             onChange={handleTabChange}
             aria-label="basic tabs example"
             variant="fullWidth"
-            sx={{ mt: 1 }}
+            sx={{ 
+              '& .MuiTab-root': {
+              textTransform: 'capitalize',
+              fontSize: 16
+              }, }}
           >
             <Tab label="Confirmed" value={ITabs.CONFIRMED} />
             <Tab label="Invited" value={ITabs.INVITED} />
