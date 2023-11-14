@@ -163,9 +163,7 @@ const EditProfileScreen: React.FC = () => {
           ...(localProfileImageFile
             ? { profile_photo: data?.data?.filename }
             : {}),
-          ...(localTitleImageFile
-            ? { background_color: data?.data?.filename }
-            : {}),
+          ...(localTitleImageFile ? { title_photo: data?.data?.filename } : {}),
         });
         queryClient.invalidateQueries(["user"]);
         navigate(ApplicationLocations.PROFILE);
@@ -203,6 +201,7 @@ const EditProfileScreen: React.FC = () => {
       location: data?.location ?? null,
       // instagram: data?.instagram,
       profile_photo: data?.profile_photo,
+      title_photo: data?.title_photo,
       // background_color: data?.background_color,
     });
   }, [data]);
