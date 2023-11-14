@@ -72,7 +72,7 @@ const ProfileStatistics: React.FC<IProps> = ({
                 />
               </IconButton>
               <Typography variant="subtitle2">
-                You participated in{" "}
+                {id ? "Participated" : "You participated"} in{" "}
                 <b>
                   {participatedNum}{" "}
                   {participatedNum === 1 ? "activity" : "activities"}

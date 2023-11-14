@@ -28,6 +28,7 @@ import { useSendBuddyRequest } from "./hooks/use-send-buddy-request";
 import { useToggleBuddyRequest } from "./hooks/use-toggle-buddy-request";
 import { ProfileEntryTypeEnum } from "./types/profile-entry-type";
 import { generateBuddyActionButtonLabel } from "./utils/generate-buddy-action-button-label.util";
+import shadows from "@mui/material/styles/shadows";
 
 interface IProfileScreenProps {
   type: ProfileEntryTypeEnum;
@@ -178,6 +179,7 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
               height: 150,
               zIndex: 0,
               position: "relative",
+              boxShadow: shadows[2],
             }}
           >
             <img

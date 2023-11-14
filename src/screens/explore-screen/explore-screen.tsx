@@ -268,7 +268,8 @@ const ExploreScreen = () => {
         <OffliButton
           variant="text"
           sx={{
-            width: 200,
+            width: 180,
+            justifyContent: "flex-end",
           }}
           startIcon={
             <PlaceIcon
@@ -282,7 +283,7 @@ const ExploreScreen = () => {
             sx={{
               fontSize: 16,
               color: "primary.main",
-              width: "100%",
+              // width: "100%",
               overflow: "hidden",
               textOverflow: "ellipsis",
               whiteSpace: "nowrap",
