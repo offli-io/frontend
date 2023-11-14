@@ -268,12 +268,7 @@ const ExploreScreen = () => {
         <OffliButton
           variant="text"
           sx={{
-            fontSize: 16,
-            justifyContent: "flex-end",
             width: 200,
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            whiteSpace: "nowrap",
           }}
           startIcon={
             <PlaceIcon
@@ -283,7 +278,19 @@ const ExploreScreen = () => {
           onClick={handleLocationSelect}
           data-test-id="current-location-btn"
         >
-          {location?.name ?? "No location found"}
+          <Typography
+            sx={{
+              fontSize: 16,
+              color: "primary.main",
+              width: "100%",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
+              fontWeight: "bold",
+            }}
+          >
+            {location?.name ?? "No location found"}
+          </Typography>
         </OffliButton>
       </Box>
       {/* {TODO Outsource autocomplete} */}

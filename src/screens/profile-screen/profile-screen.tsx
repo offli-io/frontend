@@ -175,12 +175,24 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
             sx={{
               display: "flex",
               width: "100%",
-              height: 120,
-              bgcolor: data?.background_color ?? "#000000",
+              height: 150,
               zIndex: 0,
-              justifyContent: "flex-end",
+              position: "relative",
             }}
           >
+            <img
+              src={
+                data?.title_photo
+                  ? `${baseUrl}/files/${data?.title_photo}`
+                  : userPlaceholder
+              }
+              alt="title"
+              style={{ maxHeight: "100%", width: "100%" }}
+              onClick={() =>
+                !!data?.title_photo &&
+                setPreviewModalImageUrl(data?.title_photo)
+              }
+            />
             {type === ProfileEntryTypeEnum.PROFILE && (
               <IconButton
                 color="primary"
@@ -194,6 +206,8 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
                   borderWidth: 1,
                   borderStyle: "solid",
                   borderColor: (theme) => theme.palette.primary.main,
+                  position: "absolute",
+                  right: 0,
                 }}
                 onClick={() => navigate(ApplicationLocations.BUDDIES)}
                 data-testid="buddies-btn"
@@ -209,7 +223,9 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
                     ml: 0.75,
                   }}
                 >
-                  {`${data?.buddies?.length} ${data?.buddies?.length === 1 ? "Buddy" : "Buddies"}`}
+                  {`${data?.buddies?.length} ${
+                    data?.buddies?.length === 1 ? "Buddy" : "Buddies"
+                  }`}
                 </Typography>
               </IconButton>
             )}

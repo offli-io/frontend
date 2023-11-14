@@ -1,7 +1,7 @@
-import { Autocomplete, Box, SxProps, TextField, } from "@mui/material";
+import { Autocomplete, Box, SxProps, TextField } from "@mui/material";
 import L, { LatLngTuple } from "leaflet";
 import React from "react";
-import { MapContainer, Marker, Popup, TileLayer, } from "react-leaflet";
+import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
 import MarkerClusterGroup from "react-leaflet-cluster";
 import markerIcon from "../../assets/img/location-marker.svg";
 import { CustomizationContext } from "../../assets/theme/customization-provider";
@@ -10,7 +10,10 @@ import MapDrawerDetail from "../../screens/map-screen/components/map-drawer-deta
 import { IActivity } from "../../types/activities/activity.dto";
 import { IMapViewActivityDto } from "../../types/activities/mapview-activities.dto";
 import wavePeople from "../../assets/img/your-location.svg";
-import { getLocationFromQueryFetch, getPlaceFromCoordinates } from "api/activities/requests";
+import {
+  getLocationFromQueryFetch,
+  getPlaceFromCoordinates,
+} from "api/activities/requests";
 import { useQuery } from "@tanstack/react-query";
 import { ILocation } from "types/activities/location.dto";
 import MapControl from "./components/map-control";
@@ -19,6 +22,7 @@ import { useDebounce } from "use-debounce";
 import SaveButton from "./components/save-button";
 import RecenterAutomatically from "./components/recenter-automatically";
 import BackButton from "./components/back-button";
+import UserLocationLoader from "./components/user-location-loader";
 
 // bratislava position
 const position = [48.1486, 17.1077] as LatLngTuple;
@@ -55,6 +59,8 @@ const Map: React.FC<ILabeledTileProps> = ({
   const [currentLocation, setCurrentLocation] = React.useState<
     GeolocationCoordinates | undefined
   >();
+  const [isUserLocationLoading, setIsUserLocationLoading] =
+    React.useState(false);
   const { mode } = React.useContext(CustomizationContext);
   const [pendingLatLngTuple, setPendingLatLngTuple] =
     React.useState<LatLngTuple | null>(null);
@@ -64,9 +70,17 @@ const Map: React.FC<ILabeledTileProps> = ({
     React.useState<ILocation | null>(null);
 
   React.useEffect(() => {
-    navigator.geolocation.getCurrentPosition(function (position) {
-      setCurrentLocation(position.coords);
-    });
+    setIsUserLocationLoading(true);
+    navigator.geolocation.getCurrentPosition(
+      function (position) {
+        setIsUserLocationLoading(false);
+        setCurrentLocation(position.coords);
+      },
+      function (error) {
+        // Don't display nothing yet, just reset loader state
+        setIsUserLocationLoading(false);
+      }
+    );
   }, []);
 
   const [queryString] = useDebounce(placeQuery, 1000);
@@ -152,7 +166,13 @@ const Map: React.FC<ILabeledTileProps> = ({
         center={latLonTuple ?? position}
         zoom={13}
         scrollWheelZoom={false}
-        style={{ width: "100%", height: "100%", position: "relative" }}
+        style={{
+          width: "100%",
+          height: "100%",
+          position: "relative",
+          // filter: !isUserLocationLoading ? "brightness(0.5)" : undefined,
+          // filter: "brightness(0.5)",
+        }}
         zoomControl={false}
       >
         <Box
@@ -176,9 +196,9 @@ const Map: React.FC<ILabeledTileProps> = ({
               my: 1.5,
               bgcolor: "primary.light",
               borderRadius: 3,
-              "& .MuiAutocomplete-clearIndicator": { display: 'none' },
-              "& .MuiSvgIcon-root": {color: "primary.main"}
-              }}
+              "& .MuiAutocomplete-clearIndicator": { display: "none" },
+              "& .MuiSvgIcon-root": { color: "primary.main" },
+            }}
             loading={isLoading}
             onChange={(e, locationObject) => {
               setSelectedLocation({
@@ -191,7 +211,7 @@ const Map: React.FC<ILabeledTileProps> = ({
             renderInput={(params) => (
               <TextField
                 {...params}
-                placeholder={"Search places"} 
+                placeholder={"Search places"}
                 onChange={(e) => setPlaceQuery(e.target.value)}
                 sx={{
                   "& input::placeholder": {
@@ -276,22 +296,20 @@ const Map: React.FC<ILabeledTileProps> = ({
           </Marker>
         ) : null}
 
-          <RecenterAutomatically
-            lat={
-              isSingleActivity
-                ? latLonTupleSingle[0]
-                : currentLocation?.latitude
-            }
-            lon={
-              isSingleActivity
-                ? latLonTupleSingle[1]
-                : currentLocation?.longitude
-            }
-            selectedLocation={selectedLocation}
-            position={position}
-          />
-        {/* )} */}
+        <RecenterAutomatically
+          lat={
+            isSingleActivity ? latLonTupleSingle[0] : currentLocation?.latitude
+          }
+          lon={
+            isSingleActivity ? latLonTupleSingle[1] : currentLocation?.longitude
+          }
+          selectedLocation={selectedLocation}
+          position={position}
+        />
       </MapContainer>
+      {!isSingleActivity ? (
+        <UserLocationLoader isLoading={isUserLocationLoading} />
+      ) : null}
     </Box>
   );
 };

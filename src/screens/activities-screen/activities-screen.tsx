@@ -107,6 +107,8 @@ const ActivitiesScreen = () => {
         onChange={handleTabChange}
         variant="scrollable"
         sx={{ mt: 1, mx: 1, p: 0 }}
+        // allowScrollButtonsMobile
+        // scrollButtons="auto"
       >
         {SWIPE_ARRAY_ORDER.map((item) => (
           <Tab label={item} value={item} />
