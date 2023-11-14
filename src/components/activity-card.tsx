@@ -1,7 +1,7 @@
-import LockIcon from "@mui/icons-material/Lock";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import { Box, SxProps, Typography, useTheme } from "@mui/material";
-import { format, getDay } from "date-fns";
+import { LayoutContext } from "app/layout";
+import { format } from "date-fns";
 import useLongPress from "hooks/use-long-press";
 import React from "react";
 import { CustomizationContext } from "../assets/theme/customization-provider";
@@ -9,7 +9,6 @@ import { useGetApiUrl } from "../hooks/use-get-api-url";
 import { IActivity } from "../types/activities/activity.dto";
 import { TIME_FORMAT } from "../utils/common-constants";
 import OffliButton from "./offli-button";
-import { LayoutContext } from "app/layout";
 
 interface IProps {
   activity?: IActivity;
@@ -30,18 +29,12 @@ const ActivityCard: React.FC<IProps> = ({
   const { mode } = React.useContext(CustomizationContext);
   const baseUrl = useGetApiUrl();
 
-  const { contentDivRef, isScrolling } = React.useContext(LayoutContext);
+  const { contentDivRef } = React.useContext(LayoutContext);
 
   const { action, handlers } = useLongPress({
     onLongPress: () => onLongPress?.(activity),
     elementRef: contentDivRef?.current,
   });
-
-  // React.useEffect(() => {
-  //   if (action) {
-  //     onLongPress?.(activity);
-  //   }
-  // }, [action, onLongPress]);
 
   const startDate = activity?.datetime_from
     ? new Date(activity?.datetime_from)
@@ -98,28 +91,32 @@ const ActivityCard: React.FC<IProps> = ({
             overflow: "hidden",
           }}
         >
-          <Typography variant="h2" sx={{
-            color: "background.default",
-            width: 280,
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-                whiteSpace: "nowrap",
-                textAlign: "start",
-            }}>
+          <Typography
+            variant="h2"
+            sx={{
+              color: "background.default",
+              width: 280,
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
+              textAlign: "start",
+            }}
+          >
             {activity?.title}
           </Typography>
-            <Typography variant="subtitle1"
-              sx={{
-                width: 270,
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-                whiteSpace: "nowrap",
-                textAlign: "start",
-                color: "background.default"
-              }}
-            >
-              {activity?.location?.name}
-            </Typography>
+          <Typography
+            variant="subtitle1"
+            sx={{
+              width: 270,
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
+              textAlign: "start",
+              color: "background.default",
+            }}
+          >
+            {activity?.location?.name}
+          </Typography>
           <Box
             sx={{
               display: "flex",
@@ -134,15 +131,16 @@ const ActivityCard: React.FC<IProps> = ({
                 fontSize: 14,
                 ml: 0.5,
                 mr: 0.5,
-                color: "background.default"
+                color: "background.default",
               }}
             />
             {activity?.limit ? (
               <Box sx={{ display: "flex", justifyContent: "center" }}>
-                <Typography variant="subtitle1"
+                <Typography
+                  variant="subtitle1"
                   sx={{
                     lineHeight: 1,
-                    color: "background.default"
+                    color: "background.default",
                   }}
                 >
                   {activity?.count_confirmed}/{activity?.limit}{" "}

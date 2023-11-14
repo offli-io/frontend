@@ -172,9 +172,8 @@ const SearchScreen = () => {
           </Box>
         ) : activities?.length > 0 ? (
           activities?.map((activity) => (
-            <>
+            <React.Fragment key={activity?.id}>
               <ActivitySearchCard
-                key={activity?.id}
                 activity={activity}
                 onPress={({ id } = {}) =>
                   navigate(`${ApplicationLocations.ACTIVITY_DETAIL}/${id}`, {
@@ -184,7 +183,7 @@ const SearchScreen = () => {
                   })
                 }
               />
-            </>
+            </React.Fragment>
           ))
         ) : (
           <Typography sx={{ textAlign: "center" }} variant="subtitle2">

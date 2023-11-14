@@ -28,7 +28,7 @@ export interface IPersonExtended {
   instagram?: string;
   instagram_photos?: string[];
   userPreferredColor?: string | null;
-  background_color?: string | null;
+  title_photo?: string | null;
 }
 
 export interface IActivityLocation {
