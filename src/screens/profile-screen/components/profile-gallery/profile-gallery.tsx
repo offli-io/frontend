@@ -1,16 +1,17 @@
 import InstagramIcon from "@mui/icons-material/Instagram";
 import { Box, IconButton, Typography, useTheme } from "@mui/material";
 import React from "react";
-import { useGetApiUrl } from "../hooks/use-get-api-url";
-import ImagePreviewModal from "./image-preview-modal/image-preview-modal";
-import OffliButton from "./offli-button";
+import { useGetApiUrl } from "hooks/use-get-api-url";
+import ImagePreviewModal from "components/image-preview-modal/image-preview-modal";
+import OffliButton from "components/offli-button";
 import InstagramDrawerActions from "screens/profile-screen/components/instagram-drawer-actions";
 import { DrawerContext } from "assets/theme/drawer-provider";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { connectInstagram, unlinkInstagram } from "api/users/requests";
 import { AuthenticationContext } from "assets/theme/authentication-provider";
 import { toast } from "sonner";
-import Loader from "./loader";
+import Loader from "components/loader";
+import ProfileGalleryImageUploadContent from "./components/profile-gallery-image-upload-content";
 
 interface IProfileGalleryProps {
   photoUrls?: string[];
@@ -97,8 +98,13 @@ const ProfileGallery: React.FC<IProfileGalleryProps> = ({
     );
 
   React.useEffect(() => {
-    if (instagramCode && userInfo?.id) {
-      sendConnectInstagram(instagramCode);
+    // if (instagramCode && userInfo?.id) {
+    if (userInfo?.id) {
+      toggleDrawer({
+        open: true,
+        content: <ProfileGalleryImageUploadContent />,
+      });
+      // sendConnectInstagram(instagramCode);
     }
   }, [instagramCode, userInfo?.id]);
 
