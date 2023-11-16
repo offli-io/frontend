@@ -12,8 +12,9 @@ export const detectSwipedTab = (
   currentTab: TabDefinitionsEnum
 ) => {
   if (
-    (currentTab === TabDefinitionsEnum.UPCOMING && swipeDirection === "left") ||
-    (currentTab === TabDefinitionsEnum.CREATED && swipeDirection === "right")
+    (currentTab === TabDefinitionsEnum.UPCOMING &&
+      swipeDirection === "right") ||
+    (currentTab === TabDefinitionsEnum.CREATED && swipeDirection === "left")
   ) {
     return currentTab;
   }
@@ -21,10 +22,10 @@ export const detectSwipedTab = (
     (item) => item === currentTab
   );
   if (swipeDirection === "left") {
-    return SWIPE_ARRAY_ORDER[currentTabIndex - 1];
+    return SWIPE_ARRAY_ORDER[currentTabIndex + 1];
   }
   if (swipeDirection === "right") {
-    return SWIPE_ARRAY_ORDER[currentTabIndex + 1];
+    return SWIPE_ARRAY_ORDER[currentTabIndex - 1];
   }
 
   //fallback

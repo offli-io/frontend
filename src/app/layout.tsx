@@ -1,6 +1,8 @@
 import { Box, SxProps, useTheme } from "@mui/material";
 import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useSwipeable } from "react-swipeable";
+import { isIOS, isSafari } from "utils/is-ios-device.util";
 import { AuthenticationContext } from "../assets/theme/authentication-provider";
 import BottomNavigator from "../components/bottom-navigator/bottom-navigator";
 import OffliHeader from "../components/offli-header/offli-header";
@@ -9,11 +11,6 @@ import Routes from "../routes/routes";
 import { ApplicationLocations } from "../types/common/applications-locations.dto";
 import { getAuthToken } from "../utils/token.util";
 import { HeaderContext } from "./providers/header-provider";
-import {
-  detectSafariBottomBarHeight,
-  isIOS,
-  isSafari,
-} from "utils/is-ios-device.util";
 
 interface ILayoutProps {
   children?: React.ReactNode;
@@ -22,8 +19,10 @@ interface ILayoutProps {
 interface ILayoutContext {
   contentDivRef?: React.MutableRefObject<HTMLDivElement | null>;
   onScroll?: () => void;
-  isScrolling?: boolean;
   layoutStyle?: SxProps;
+  setSwipeHandlers?: React.Dispatch<
+    React.SetStateAction<ISwipeHandlers | null>
+  >;
 }
 
 export const LayoutContext = React.createContext<ILayoutContext>(
@@ -37,6 +36,11 @@ export const NOT_EXACT_UNALLOWED_URLS = [
   "/profile/user",
 ];
 
+export interface ISwipeHandlers {
+  right?: () => void;
+  left?: () => void;
+}
+
 export const Layout: React.FC<ILayoutProps> = ({ children }) => {
   const { stateToken, userInfo, setStateToken, setUserInfo } = React.useContext(
     AuthenticationContext
@@ -45,11 +49,18 @@ export const Layout: React.FC<ILayoutProps> = ({ children }) => {
   const userIdFromStorage = localStorage.getItem("userId");
   const { setHeaderRightContent } = React.useContext(HeaderContext);
   const contentDivRef = React.useRef<HTMLDivElement | null>(null);
-  const [isScrolling, setIsScrolling] = React.useState(false);
+  const [swipeHandlers, setSwipeHandlers] =
+    React.useState<ISwipeHandlers | null>(null);
 
   const location = useLocation();
   const navigate = useNavigate();
   const { palette } = useTheme();
+
+  const { ref, ...restHandlers } = useSwipeable({
+    onSwiped: (eventData) => console.log("User Swiped!", eventData),
+    onSwipedRight: swipeHandlers?.right,
+    onSwipedLeft: swipeHandlers?.left,
+  });
 
   const [displayHeader, setDisplayHeader] = React.useState(true);
   const [displayBottomNavigator, setDisplayBottomNavigator] =
@@ -126,29 +137,13 @@ export const Layout: React.FC<ILayoutProps> = ({ children }) => {
 
   let timer: any = null;
 
-  // contentDivRef?.current?.addEventListener(
-  //   "scroll",
-  //   function () {
-  //     if (timer !== null && !isScrolling) {
-  //       // console.log("scroll start");
-  //       setIsScrolling(true);
-  //       clearTimeout(timer);
-  //     }
-  //     timer = setTimeout(function () {
-  //       // console.log("scroll end");
-  //       setIsScrolling(false);
-  //     }, 550);
-  //   },
-  //   true
-  // );
+  const refPassthrough = (el?: any) => {
+    // call useSwipeable ref prop with el
+    ref(el);
 
-  contentDivRef?.current?.addEventListener("scroll", function () {
-    setIsScrolling(true);
-  });
-
-  contentDivRef?.current?.addEventListener("scrollend", function () {
-    setIsScrolling(false);
-  });
+    // set myRef el so you can access it yourself
+    contentDivRef.current = el;
+  };
 
   const addContentPadding = React.useMemo(
     () =>
@@ -164,7 +159,7 @@ export const Layout: React.FC<ILayoutProps> = ({ children }) => {
     <LayoutContext.Provider
       value={{
         contentDivRef,
-        isScrolling,
+        setSwipeHandlers,
         // layoutStyle
       }}
     >
@@ -185,7 +180,6 @@ export const Layout: React.FC<ILayoutProps> = ({ children }) => {
         {/* TODO backHeader and diusplayheader better naming */}
         {stateToken && displayHeader && <OffliHeader sx={{ width: "100%" }} />}
         <Box
-          ref={contentDivRef}
           // onScroll={onscroll}
           // onScrollEnd={() => console.log("scroll end")}
           sx={{
@@ -197,6 +191,8 @@ export const Layout: React.FC<ILayoutProps> = ({ children }) => {
             px: addContentPadding ? 1 : 0,
             // ...layoutStyle,
           }}
+          {...restHandlers}
+          ref={refPassthrough}
         >
           <Routes />
         </Box>

@@ -4,6 +4,7 @@ import InstagramIcon from "@mui/icons-material/Instagram";
 import {
   Autocomplete,
   Box,
+  IconButton,
   TextField,
   Typography,
   useTheme,
@@ -17,6 +18,8 @@ import { Controller, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { useDebounce } from "use-debounce";
+import EditIcon from "@mui/icons-material/Edit";
+
 import * as yup from "yup";
 import {
   getLocationFromQueryFetch,
@@ -48,7 +51,7 @@ export interface IEditProfile {
   // instagram?: string | null;
   placeQuery?: string;
   profile_photo?: string | null;
-  background_color?: string | null;
+  title_photo?: string | null;
 }
 
 const schema: () => yup.SchemaOf<IEditProfile> = () =>
@@ -71,7 +74,7 @@ const schema: () => yup.SchemaOf<IEditProfile> = () =>
     placeQuery: yup.string().notRequired(),
     // instagram: yup.string().nullable(true).notRequired(),
     profile_photo: yup.string().notRequired().nullable(true),
-    background_color: yup.string().notRequired(),
+    title_photo: yup.string().notRequired(),
   });
 
 const EditProfileScreen: React.FC = () => {
@@ -79,8 +82,12 @@ const EditProfileScreen: React.FC = () => {
   const { userInfo } = React.useContext(AuthenticationContext);
   const queryClient = useQueryClient();
   const { toggleDrawer } = React.useContext(DrawerContext);
-  const hiddenFileInput = React.useRef<HTMLInputElement | null>(null);
-  const [localImageFile, setLocalImageFile] = React.useState<any>();
+  const profilePictureFileInput = React.useRef<HTMLInputElement | null>(null);
+  const titlePictureFileInput = React.useRef<HTMLInputElement | null>(null);
+  const [localProfileImageFile, setLocalProfileImageFile] =
+    React.useState<any>();
+  const [localTitleImageFile, setLocalTitleImageFile] = React.useState<any>();
+
   const baseUrl = useGetApiUrl();
 
   const { mutate: sendUpdateProfile, isLoading: isSubmitting } = useMutation(
@@ -134,7 +141,7 @@ const EditProfileScreen: React.FC = () => {
   });
 
   const [queryString] = useDebounce(watch("placeQuery"), 1000);
-  const selectedColor = watch("background_color") ?? palette?.primary?.light;
+  // const selectedColor = watch("background_color") ?? palette?.primary?.light;
 
   const placeQuery = useQuery(
     ["locations", queryString],
@@ -144,13 +151,20 @@ const EditProfileScreen: React.FC = () => {
     }
   );
 
-  const { mutate: sendUploadProfilePhoto, isLoading } = useMutation(
+  const { mutate: sendUploadPhoto, isLoading } = useMutation(
     ["activity-photo-upload"],
     (formData?: FormData) => uploadFile(formData),
     {
       onSuccess: (data) => {
-        setLocalImageFile(null);
-        sendUpdateProfile({ profile_photo: data?.data?.filename });
+        setLocalProfileImageFile(null);
+        setLocalTitleImageFile(null);
+        //differentiate which photo should be updated
+        sendUpdateProfile({
+          ...(localProfileImageFile
+            ? { profile_photo: data?.data?.filename }
+            : {}),
+          ...(localTitleImageFile ? { title_photo: data?.data?.filename } : {}),
+        });
         queryClient.invalidateQueries(["user"]);
         navigate(ApplicationLocations.PROFILE);
       },
@@ -187,7 +201,8 @@ const EditProfileScreen: React.FC = () => {
       location: data?.location ?? null,
       // instagram: data?.instagram,
       profile_photo: data?.profile_photo,
-      background_color: data?.background_color,
+      title_photo: data?.title_photo,
+      // background_color: data?.background_color,
     });
   }, [data]);
 
@@ -200,47 +215,56 @@ const EditProfileScreen: React.FC = () => {
   );
 
   const handleProfilePhotoAction = React.useCallback(
-    (action?: ProfilePhotoActionsEnum) => {
+    (action?: ProfilePhotoActionsEnum, type?: "profile" | "title") => {
       switch (action) {
         case ProfilePhotoActionsEnum.SELECT_FROM_DEVICE:
-          return hiddenFileInput?.current?.click();
+          return type === "profile"
+            ? profilePictureFileInput?.current?.click()
+            : titlePictureFileInput?.current?.click();
         case ProfilePhotoActionsEnum.REMOVE_PICTURE:
           return sendUpdateProfile({ profile_photo: null });
         default:
           return;
       }
     },
-    [hiddenFileInput]
+    [profilePictureFileInput]
   );
 
-  const openColorPicker = React.useCallback(() => {
-    toggleDrawer({
-      open: true,
-      content: (
-        <ColorPicker
-          color={selectedColor}
-          onColorChange={(selectedColor) => {
-            if (selectedColor === null) {
-              return;
-            }
-            setValue("background_color", selectedColor, {
-              shouldDirty: true,
-            });
-            toggleDrawer({ open: false });
-          }}
-        />
-      ),
-    });
-  }, [selectedColor]);
+  // const openColorPicker = React.useCallback(() => {
+  //   toggleDrawer({
+  //     open: true,
+  //     content: (
+  //       <ColorPicker
+  //         color={selectedColor}
+  //         onColorChange={(selectedColor) => {
+  //           if (selectedColor === null) {
+  //             return;
+  //           }
+  //           setValue("background_color", selectedColor, {
+  //             shouldDirty: true,
+  //           });
+  //           toggleDrawer({ open: false });
+  //         }}
+  //       />
+  //     ),
+  //   });
+  // }, [selectedColor]);
 
-  const handlePictureClick = React.useCallback(() => {
-    toggleDrawer({
-      open: true,
-      content: <ProfilePhotoActions onActionClick={handleProfilePhotoAction} />,
-    });
-  }, [toggleDrawer]);
+  const handlePictureClick = React.useCallback(
+    (type: "profile" | "title") => {
+      toggleDrawer({
+        open: true,
+        content: (
+          <ProfilePhotoActions
+            onActionClick={(action) => handleProfilePhotoAction(action, type)}
+          />
+        ),
+      });
+    },
+    [toggleDrawer]
+  );
 
-  const handleFileUpload = React.useCallback(
+  const handleProfilePictureUpload = React.useCallback(
     async (e: React.ChangeEvent<HTMLInputElement>) => {
       const file = e?.target?.files?.[0];
       if (!file) {
@@ -253,20 +277,41 @@ const EditProfileScreen: React.FC = () => {
         toast.error("Unsupported file format");
         return;
       }
-      setLocalImageFile(URL.createObjectURL(file));
+      setLocalProfileImageFile(URL.createObjectURL(file));
+    },
+    []
+  );
+
+  const handleTitlePictureUpload = React.useCallback(
+    async (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e?.target?.files?.[0];
+      if (!file) {
+        return;
+      }
+
+      // check file format
+      const fileExtension = file.name.split(".").pop();
+      if (fileExtension && !ALLOWED_PHOTO_EXTENSIONS.includes(fileExtension)) {
+        toast.error("Unsupported file format");
+        return;
+      }
+      setLocalTitleImageFile(URL.createObjectURL(file));
     },
     []
   );
 
   return (
     <>
-      <PageWrapper>
+      <PageWrapper sxOverrides={{ mt: 0 }}>
         <FileUploadModal
-          uploadFunction={(formData) => sendUploadProfilePhoto(formData)}
-          localFile={localImageFile}
-          onClose={() => setLocalImageFile(null)}
-          aspectRatio={1}
-          cropShape="round"
+          uploadFunction={(formData) => sendUploadPhoto(formData)}
+          localFile={localProfileImageFile ?? localTitleImageFile}
+          onClose={() => {
+            setLocalTitleImageFile(null);
+            setLocalProfileImageFile(null);
+          }}
+          aspectRatio={localTitleImageFile ? 3 : 1}
+          cropShape={localTitleImageFile ? "rect" : "round"}
         />
         <Box
           sx={{
@@ -279,49 +324,113 @@ const EditProfileScreen: React.FC = () => {
         >
           {/* Hidden input for photo upload */}
           <input
-            onChange={handleFileUpload}
+            onChange={handleProfilePictureUpload}
             type="file"
             style={{ display: "none" }}
-            ref={hiddenFileInput}
+            ref={profilePictureFileInput}
             // setting empty string to always fire onChange event on input even when selecting same pictures 2 times in a row
             value={""}
           />
-          <Box sx={{ position: "relative" }} onClick={handlePictureClick}>
-            <img
-              src={
-                data?.profile_photo
-                  ? `${baseUrl}/files/${data?.profile_photo}`
-                  : userPlaceholder
-              }
-              alt="profile"
-              style={{
-                height: 100,
-                aspectRatio: 1,
-                borderRadius: "50%",
-                border: `2px solid ${palette.primary.main}`,
-                boxShadow: "5px 5px 20px 0px rgba(0,0,0,0.6)",
-              }}
-            />
-            <OffliButton
-              size="small"
+
+          <input
+            onChange={handleTitlePictureUpload}
+            type="file"
+            style={{ display: "none" }}
+            ref={titlePictureFileInput}
+            // setting empty string to always fire onChange event on input even when selecting same pictures 2 times in a row
+            value={""}
+          />
+          <Box
+            sx={{ width: "100%", height: 150, position: "relative", mb: 2 }}
+            onClick={(e: React.MouseEvent<HTMLDivElement>) => {
+              e.preventDefault();
+              e.stopPropagation();
+              handlePictureClick("title");
+            }}
+          >
+            <Box sx={{ height: "100%" }}>
+              <img
+                src={
+                  data?.title_photo
+                    ? `${baseUrl}/files/${data?.title_photo}`
+                    : userPlaceholder
+                }
+                alt="title"
+                style={{ height: "100%", width: "100%" }}
+              />
+              <IconButton
+                sx={{
+                  bgcolor: "primary.main",
+                  position: "absolute",
+                  right: 10,
+                  top: 10,
+                }}
+                size="small"
+              >
+                <EditIcon sx={{ color: "white", fontSize: 20 }} />
+              </IconButton>
+            </Box>
+            <Box
               sx={{
                 position: "absolute",
-                p: 0.5,
-                m: 0,
-                right: 10,
-                top: 2,
-                bgcolor: palette?.primary?.main,
-                width: 20,
-                height: 20,
-                minWidth: "unset",
+                top: "85%",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
               }}
             >
-              <AddIcon
-                sx={{
-                  color: "white",
+              <Box
+                sx={{ position: "relative" }}
+                onClick={(e: React.MouseEvent<HTMLDivElement>) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  handlePictureClick("profile");
                 }}
-              />
-            </OffliButton>
+              >
+                <img
+                  src={
+                    data?.profile_photo
+                      ? `${baseUrl}/files/${data?.profile_photo}`
+                      : userPlaceholder
+                  }
+                  alt="profile"
+                  style={{
+                    height: 100,
+                    aspectRatio: 1,
+                    borderRadius: "50%",
+                    border: `2px solid ${palette.primary.main}`,
+                    boxShadow: "5px 5px 20px 0px rgba(0,0,0,0.6)",
+                  }}
+                />
+                <IconButton
+                  sx={{
+                    position: "absolute",
+                    top: "10%",
+                    left: "85%",
+                    transform: "translate(-50%, -50%)",
+                    bgcolor: palette?.primary?.main,
+                  }}
+                  size="small"
+                >
+                  <EditIcon sx={{ color: "white", fontSize: 20 }} />
+                </IconButton>
+                {/* <OffliButton
+                  size="small"
+                  sx={{
+                    position: "absolute",
+                    p: 0.5,
+                    m: 0,
+                    right: 10,
+                    top: 2,
+                    bgcolor: palette?.primary?.main,
+                    width: 20,
+                    height: 20,
+                    minWidth: "unset",
+                  }}
+                >
+                  <EditIcon sx={{ color: "white", fontSize: 14 }} />
+                </OffliButton> */}
+              </Box>
+            </Box>
           </Box>
 
           <form
@@ -465,8 +574,7 @@ const EditProfileScreen: React.FC = () => {
               />
 
               {/* TODO outsource this on the Contexes and Adapters level in the App */}
-
-              <Box>
+              {/* <Box>
                 <Typography variant="h5">Profile background color</Typography>
                 <OffliButton
                   size="small"
@@ -498,7 +606,7 @@ const EditProfileScreen: React.FC = () => {
                 >
                   {selectedColor}
                 </OffliButton>
-              </Box>
+              </Box> */}
 
               {!!data?.instagram ? (
                 <Box
