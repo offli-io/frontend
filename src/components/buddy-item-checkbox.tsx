@@ -1,5 +1,4 @@
 import { Box, Button, Checkbox, styled, Typography } from "@mui/material";
-// import logo from '../assets/img/profilePicture.jpg'
 import React from "react";
 
 interface ILabeledDividerProps {

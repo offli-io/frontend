@@ -11,9 +11,15 @@ import { useGetApiUrl } from "hooks/use-get-api-url";
 import { usePredefinedPictures } from "hooks/use-predefined-pictures";
 import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
 import * as React from "react";
+import { useMutation } from "@tanstack/react-query";
+import { connectInstagram, fetchInstagramPhotos } from "api/users/requests";
+import { AuthenticationContext } from "assets/theme/authentication-provider";
+import { toast } from "sonner";
+import { DrawerContext } from "assets/theme/drawer-provider";
 
 interface IProfileGalleryImageUploadContentProps {
   //   imageUrls?: string[];
+  instagramCode?: string;
   tags?: string[];
 }
 
@@ -24,13 +30,16 @@ interface IImageSubmitState {
 
 const ProfileGalleryImageUploadContent: React.FC<
   IProfileGalleryImageUploadContentProps
-> = ({ tags }) => {
+> = ({ tags, instagramCode }) => {
   const baseUrl = useGetApiUrl();
   const [selectedPhotos, setSelectedPhotos] = React.useState<string[]>([]);
   const [imageSubmitStates, setImageSubmitStates] = React.useState<
     IImageSubmitState[] | null
   >(null);
   const { palette } = useTheme();
+  const { toggleDrawer } = React.useContext(DrawerContext);
+
+  const { userInfo } = React.useContext(AuthenticationContext);
 
   const imageUrls = [
     "54d86ed0-0cb7-4b7a-9bcf-c083b1a700d0.jpeg",
@@ -38,6 +47,44 @@ const ProfileGalleryImageUploadContent: React.FC<
     "0c4174ae-73f7-43e9-93da-c8196844859a.jpeg",
     "f149570a-e945-4c50-972d-b667a499a5cb.jpeg",
   ];
+
+  const {
+    data: { data: instagramPhotos = [] } = {},
+    isLoading: isConnectingInstagram,
+    mutate: sendFetchInstagramPhotos,
+  } = useMutation(
+    ["instagram-photos"],
+    (code?: string) => fetchInstagramPhotos(Number(userInfo?.id), String(code)),
+    {
+      //   onSuccess: () => {
+      //     // toast.success(
+      //     //   "Your instagram account has been successfully connected"
+      //     // );
+      //     queryClient.invalidateQueries(["user"]);
+      //     //didnt even notice the refresh -> this might work
+      //     window.history.pushState(
+      //       {},
+      //       document.title,
+      //       window.location.pathname
+      //     );
+      //   },
+      onError: () => {
+        toast.error("Failed to fetch instagram photos");
+        toggleDrawer({ open: false });
+        // window.history.pushState(
+        //   {},
+        //   document.title,
+        //   window.location.pathname
+        // );
+      },
+    }
+  );
+
+  React.useEffect(() => {
+    if (!!instagramCode) {
+      sendFetchInstagramPhotos(instagramCode);
+    }
+  }, [instagramCode]);
 
   const handlePhotoSelect = React.useCallback(
     (image: string) => {
@@ -51,6 +98,10 @@ const ProfileGalleryImageUploadContent: React.FC<
     },
     [selectedPhotos]
   );
+
+  const handleSubmitPhotos = React.useCallback(() => {
+    console.log(selectedPhotos);
+  }, [selectedPhotos]);
 
   const isImageSelected = React.useCallback(
     (image: string) => selectedPhotos?.some((photo) => photo === image),
@@ -78,7 +129,7 @@ const ProfileGalleryImageUploadContent: React.FC<
           my: 2,
         }}
       >
-        {imageUrls.map((image, index) => (
+        {instagramPhotos.map((image, index) => (
           <Box sx={{ position: "relative" }}>
             <img
               src={`${baseUrl}/files/${image}`}
@@ -132,7 +183,9 @@ const ProfileGalleryImageUploadContent: React.FC<
       <Box
         sx={{ display: "flex", width: "100%", justifyContent: "center", mt: 4 }}
       >
-        <OffliButton>{`Submit photos`}</OffliButton>
+        <OffliButton
+          onClick={handleSubmitPhotos}
+        >{`Submit photos`}</OffliButton>
       </Box>
     </Box>
   );

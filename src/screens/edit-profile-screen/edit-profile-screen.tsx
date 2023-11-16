@@ -310,7 +310,7 @@ const EditProfileScreen: React.FC = () => {
             setLocalTitleImageFile(null);
             setLocalProfileImageFile(null);
           }}
-          aspectRatio={localTitleImageFile ? 3 : 1}
+          aspectRatio={localTitleImageFile ? 375 / 150 : 1}
           cropShape={localTitleImageFile ? "rect" : "round"}
         />
         <Box

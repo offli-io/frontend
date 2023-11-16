@@ -3,15 +3,18 @@ import { Box, TextField, Typography } from "@mui/material";
 import OffliButton from "components/offli-button";
 import React from "react";
 import connectInstagramPhoto from "../../../assets/img/connect-instagram.svg";
+import LabeledDivider from "components/labeled-divider";
 
 export interface IActivityActionsProps {
   instagramUsername?: string | null;
   onButtonClick?: () => void;
+  onChangePhotosClicked?: () => void;
 }
 
 const InstagramDrawerActions: React.FC<IActivityActionsProps> = ({
   instagramUsername,
   onButtonClick,
+  onChangePhotosClicked,
 }) => {
   return (
     <Box
@@ -63,10 +66,24 @@ const InstagramDrawerActions: React.FC<IActivityActionsProps> = ({
               current account
             </Typography>
           </Box>
+          <OffliButton
+            sx={{ mt: 4, mb: 2, width: "70%" }}
+            onClick={onChangePhotosClicked}
+          >
+            Change photos
+          </OffliButton>
+          <LabeledDivider>
+            <Typography>or</Typography>
+          </LabeledDivider>
         </>
       ) : null}
-      <OffliButton sx={{ width: "70%", mt: 4 }} onClick={onButtonClick}>
-        {instagramUsername ? "Disconnect" : "Connect"}
+
+      <OffliButton
+        variant={instagramUsername ? "text" : "contained"}
+        sx={{ width: "70%", mt: instagramUsername ? 1 : 4 }}
+        onClick={onButtonClick}
+      >
+        {instagramUsername ? "Disconnect instagram" : "Connect"}
       </OffliButton>
     </Box>
   );

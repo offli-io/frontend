@@ -4,7 +4,7 @@ import SettingsIcon from "@mui/icons-material/Settings";
 import { Badge, Box, IconButton, SxProps, useTheme } from "@mui/material";
 import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import offliLogo from "../../assets/img/logoPurple.png";
+import offliLogo from "../../assets/img/logo-purple.png";
 import { AuthenticationContext } from "../../assets/theme/authentication-provider";
 import { useNotifications } from "../../hooks/use-notifications";
 import { ApplicationLocations } from "../../types/common/applications-locations.dto";
