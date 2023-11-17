@@ -1,16 +1,17 @@
 import InstagramIcon from "@mui/icons-material/Instagram";
 import { Box, IconButton, Typography, useTheme } from "@mui/material";
 import React from "react";
-import { useGetApiUrl } from "../hooks/use-get-api-url";
-import ImagePreviewModal from "./image-preview-modal/image-preview-modal";
-import OffliButton from "./offli-button";
+import { useGetApiUrl } from "hooks/use-get-api-url";
+import ImagePreviewModal from "components/image-preview-modal/image-preview-modal";
+import OffliButton from "components/offli-button";
 import InstagramDrawerActions from "screens/profile-screen/components/instagram-drawer-actions";
 import { DrawerContext } from "assets/theme/drawer-provider";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { connectInstagram, unlinkInstagram } from "api/users/requests";
 import { AuthenticationContext } from "assets/theme/authentication-provider";
 import { toast } from "sonner";
-import Loader from "./loader";
+import Loader from "components/loader";
+import ProfileGalleryImageUploadContent from "./components/profile-gallery-image-upload-content";
 
 interface IProfileGalleryProps {
   photoUrls?: string[];
@@ -47,7 +48,7 @@ const ProfileGallery: React.FC<IProfileGalleryProps> = ({
   });
 
   const handleConnectInstagram = React.useCallback(() => {
-    window.location.href = `https://api.instagram.com/oauth/authorize?client_id=1317539042184854&redirect_uri=${window.location.href}&scope=user_profile,user_media&response_type=code`;
+    window.location.href = `https://api.instagram.com/oauth/authorize?client_id=1317539042184854&redirect_uri=${window.location.href}/&scope=user_profile,user_media&response_type=code`;
   }, []);
 
   const { isLoading: isConnectingInstagram, mutate: sendConnectInstagram } =
@@ -97,8 +98,15 @@ const ProfileGallery: React.FC<IProfileGalleryProps> = ({
     );
 
   React.useEffect(() => {
+    // if (instagramCode && userInfo?.id) {
     if (instagramCode && userInfo?.id) {
-      sendConnectInstagram(instagramCode);
+      toggleDrawer({
+        open: true,
+        content: (
+          <ProfileGalleryImageUploadContent instagramCode={instagramCode} />
+        ),
+      });
+      // sendConnectInstagram(instagramCode);
     }
   }, [instagramCode, userInfo?.id]);
 
@@ -118,10 +126,16 @@ const ProfileGallery: React.FC<IProfileGalleryProps> = ({
         <InstagramDrawerActions
           instagramUsername={instagramUsername}
           onButtonClick={handleButtonClick}
+          onChangePhotosClicked={handleConnectInstagram}
         />
       ),
     });
-  }, [instagramUsername, isOtherProfile, handleButtonClick]);
+  }, [
+    instagramUsername,
+    isOtherProfile,
+    handleButtonClick,
+    handleConnectInstagram,
+  ]);
 
   return (
     <Box sx={{ px: 2, mb: 2, width: "100%", boxSizing: "border-box" }}>

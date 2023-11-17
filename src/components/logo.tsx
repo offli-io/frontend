@@ -1,6 +1,6 @@
 import React from "react";
 import { Box, SxProps } from "@mui/material";
-import logo from "../assets/img/logoPurple.png";
+import logo from "../assets/img/logo-purple.png";
 
 interface ILogoProps {
   sx?: SxProps;

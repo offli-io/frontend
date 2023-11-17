@@ -1,5 +1,5 @@
 import { Box, styled, Typography } from "@mui/material";
-import personPlaceholderImage from "../assets/img/person-placeholder-image.svg";
+import personPlaceholderImage from "../assets/img/user-placeholder.svg";
 import React from "react";
 import { IPerson } from "../types/activities/activity.dto";
 import OffliButton from "./offli-button";

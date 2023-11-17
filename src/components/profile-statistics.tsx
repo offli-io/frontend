@@ -2,18 +2,9 @@ import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import OfflineBoltIcon from "@mui/icons-material/OfflineBolt";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
-import {
-  Box,
-  CircularProgress,
-  Grid,
-  IconButton,
-  Typography,
-} from "@mui/material";
+import { Box, CircularProgress, IconButton, Typography } from "@mui/material";
 import React from "react";
 import { useParams } from "react-router-dom";
-import activitiesAttendedPicture from "../assets/img/activities-attended.svg";
-import enjoyedTimeTogetherPicture from "../assets/img/enjoyed-time-together.svg";
-import AlternativePicturetatistics from "./alternative-picture-statistics";
 
 interface IProps {
   participatedNum?: number;

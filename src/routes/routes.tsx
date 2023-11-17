@@ -1,17 +1,28 @@
 import { Routes as BaseRoutes, Route } from "react-router-dom";
+import AccountSettingsScreen from "screens/account-settings-screen/account-settings-screen";
+import ActivitiesScreen from "screens/activities-screen/activities-screen";
+import LoginOrRegisterScreen from "screens/login-or-register";
 import { PrivateRoutes } from "../components/private-routes";
 import ActivityDetailsScreen from "../screens/activity-details-screen/activity-details-screen";
-import ChatScreen from "../screens/chat-screen";
+import { ActivityInviteScreen } from "../screens/activity-invite-screen/activity-invite-screen";
+import { ActivityMembersScreen } from "../screens/activity-members-screen/activity-members-screen";
+import AuthenticationMethodScreen from "../screens/authentication-method-screen";
+import ChooseLocationScreen from "../screens/choose-location-screen";
+import ChooseUsernameGooglePage from "../screens/choose-username-google-page";
 import CreateActivityScreen from "../screens/create-activity-screen/create-activity-screen";
+import EditActivityScreen from "../screens/edit-activity-screen/edit-activity-screen";
 import EditProfileScreen from "../screens/edit-profile-screen/edit-profile-screen";
+import ExploreScreen from "../screens/explore-screen/explore-screen";
+import ForgottenPasswordScreen from "../screens/forgotten-password-screen/forgotten-password-screen";
 import LoadingScreen from "../screens/loading-screen";
 import LoginScreen from "../screens/login-screen";
-import ExploreScreen from "../screens/explore-screen/explore-screen";
+import MapScreen from "../screens/map-screen";
 import MyBuddiesScreen from "../screens/my-buddies-screen/my-buddies-screen";
 import NewPasswordScreen from "../screens/new-password-screen";
 import NotificationsScreen from "../screens/notifications-screen/notifications-screen";
 import PickUsernamePhotoScreen from "../screens/pick-username-photo-screen";
 import ProfileScreen from "../screens/profile-screen/profile-screen";
+import { ProfileEntryTypeEnum } from "../screens/profile-screen/types/profile-entry-type";
 import RegistrationScreen from "../screens/registration-screen";
 import ResetPasswordScreen from "../screens/reset-password-screen";
 import SearchScreen from "../screens/search-screen/search-screen";
@@ -19,22 +30,9 @@ import SelectProfilePictureScreen from "../screens/select-picture-screen";
 import SettingsScreen from "../screens/settings-screen/settings-screen";
 import TestScreen from "../screens/test-screen";
 import VerificationScreen from "../screens/verification-screen/verification-screen";
-import WelcomeScreen from "../screens/welcome-screen";
-import { ActivityInviteScreen } from "../screens/activity-invite-screen/activity-invite-screen";
-import { ActivityMembersScreen } from "../screens/activity-members-screen/activity-members-screen";
-import AuthenticationMethodScreen from "../screens/authentication-method-screen";
-import ChooseLocationScreen from "../screens/choose-location-screen";
-import ChooseUsernameGooglePage from "../screens/choose-username-google-page";
-import ForgottenPasswordScreen from "../screens/forgotten-password-screen/forgotten-password-screen";
-import MapScreen from "../screens/map-screen";
-import { ProfileEntryTypeEnum } from "../screens/profile-screen/types/profile-entry-type";
 import { IActivityListRestDto } from "../types/activities/activity-list-rest.dto";
 import { IActivityRestDto } from "../types/activities/activity-rest.dto";
-import EditActivityScreen from "../screens/edit-activity-screen/edit-activity-screen";
 import { ApplicationLocations } from "../types/common/applications-locations.dto";
-import LoginOrRegisterScreen from "screens/login-or-register";
-import AccountSettingsScreen from "screens/account-settings-screen/account-settings-screen";
-import ActivitiesScreen from "screens/activities-screen/activities-screen";
 
 const Routes = () => {
   return (
@@ -73,10 +71,6 @@ const Routes = () => {
         element={<SelectProfilePictureScreen />}
       />
       <Route element={<PrivateRoutes />}>
-        <Route
-          path={ApplicationLocations.WELCOME}
-          element={<WelcomeScreen />}
-        />
         <Route
           path={ApplicationLocations.PROFILE}
           element={<ProfileScreen type={ProfileEntryTypeEnum.PROFILE} />}
@@ -175,8 +169,6 @@ const Routes = () => {
           path={ApplicationLocations.ACTIVITIES}
           element={<ActivitiesScreen />}
         />
-
-        <Route path={ApplicationLocations.CHAT} element={<ChatScreen />} />
       </Route>
     </BaseRoutes>
   );

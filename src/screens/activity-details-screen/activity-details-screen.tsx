@@ -399,13 +399,6 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat",
           backgroundSize: "cover",
-          // backgroundImage: `linear-gradient(to top, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0)), url(${require("../assets/img/dune.webp")});`,
-          // maskImage:
-          //   "linear-gradient(to bottom, rgba(0, 0, 0, 1) 90%, rgba(0, 0, 0, 0.2))",
-          // maskImage: "linear-gradient(to top, transparent 0%, white 75%)",
-
-          // background:
-          //   "linear-gradient(to top, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0))",
         }}
         onClick={() => setImagePreviewModalOpen(true)}
       >

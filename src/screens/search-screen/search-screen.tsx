@@ -5,6 +5,8 @@ import {
   CircularProgress,
   IconButton,
   InputAdornment,
+  Tab,
+  Tabs,
   TextField,
   Typography,
 } from "@mui/material";
@@ -21,6 +23,11 @@ import { ApplicationLocations } from "../../types/common/applications-locations.
 import FiltersDrawerContent from "./components/filters-drawer-content";
 import { IFiltersDto } from "./types/filters.dto";
 import { generateSortValue } from "./utils/generate-sort-value.util";
+import { SearchTabDefinitionsEnum } from "./types/search-tab-definitions-enum.dto";
+import { LayoutContext } from "app/layout";
+import { useUsers } from "hooks/use-users";
+import BuddyItem from "components/buddy-item";
+import ClearIcon from "@mui/icons-material/Clear";
 
 const SearchScreen = () => {
   const navigate = useNavigate();
@@ -29,14 +36,29 @@ const SearchScreen = () => {
   const location = useLocation();
   const [currentSearch, setCurrentSearch] = React.useState("");
   const [queryStringDebounced] = useDebounce(currentSearch, 250);
+  const [currentTab, setCurrentTab] = React.useState<SearchTabDefinitionsEnum>(
+    SearchTabDefinitionsEnum.ACTIVITIES
+  );
   const [filters, setFilters] = React.useState<IFiltersDto | undefined>();
   const { toggleDrawer } = React.useContext(DrawerContext);
   const { location: userLocation } = React.useContext(LocationContext);
+  const { setSwipeHandlers } = React.useContext(LayoutContext);
 
   const { setHeaderRightContent, headerRightContent } =
     React.useContext(HeaderContext);
   const isTag = queryStringDebounced?.includes("tag");
   const todayFallbackDate = React.useMemo(() => new Date(), []);
+
+  React.useEffect(() => {
+    setSwipeHandlers?.({
+      left: () => {
+        setCurrentTab(SearchTabDefinitionsEnum.USERS);
+      },
+      right: () => {
+        setCurrentTab(SearchTabDefinitionsEnum.ACTIVITIES);
+      },
+    });
+  }, [currentTab]);
 
   const {
     data: { data: { activities = [] } = {} } = {},
@@ -51,6 +73,17 @@ const SearchScreen = () => {
       sort: filters?.filter
         ? (generateSortValue(filters?.filter) as any)
         : undefined,
+    },
+    enabled: currentTab === SearchTabDefinitionsEnum.ACTIVITIES,
+  });
+
+  const { users, isLoading: areUsersLoading } = useUsers({
+    params: {
+      username: queryStringDebounced,
+    },
+    queryOptions: {
+      enabled:
+        currentTab === SearchTabDefinitionsEnum.USERS && !!queryStringDebounced,
     },
   });
 
@@ -105,7 +138,10 @@ const SearchScreen = () => {
 
   React.useEffect(() => {
     //TODO fix this not to run on every re-render but I dont know how to solve this for now
-    if (!headerRightContent) {
+    if (
+      !headerRightContent &&
+      currentTab === SearchTabDefinitionsEnum.ACTIVITIES
+    ) {
       setHeaderRightContent(
         <IconButton
           onClick={toggleFilters}
@@ -117,6 +153,20 @@ const SearchScreen = () => {
       );
     }
   });
+
+  React.useEffect(() => {
+    currentTab === SearchTabDefinitionsEnum.USERS &&
+      setHeaderRightContent(undefined);
+  }, [currentTab]);
+
+  const handleTabChange = (
+    event: React.SyntheticEvent,
+    newValue: SearchTabDefinitionsEnum
+  ) => {
+    setCurrentTab(newValue);
+  };
+
+  const handleResetSearch = React.useCallback(() => setCurrentSearch(""), []);
 
   return (
     <Box>
@@ -151,7 +201,11 @@ const SearchScreen = () => {
             borderRadius: "10px",
           }}
           value={currentSearch}
-          placeholder="Search by text in activity"
+          placeholder={
+            currentTab === SearchTabDefinitionsEnum.ACTIVITIES
+              ? "Search by text in activity"
+              : "Search by username"
+          }
           InputProps={{
             startAdornment: (
               <InputAdornment position="start">
@@ -160,37 +214,89 @@ const SearchScreen = () => {
                 />
               </InputAdornment>
             ),
+            endAdornment: (
+              <InputAdornment position="end">
+                <IconButton onClick={handleResetSearch}>
+                  <ClearIcon sx={{ fontSize: 18 }} />
+                </IconButton>
+              </InputAdornment>
+            ),
           }}
           onChange={(e) => setCurrentSearch(e.target.value)}
           data-testid="search-activities-input"
         />
       </Box>
-      <Box sx={{ ml: 1.5, boxSizing: "border-box" }}>
-        {areActivitiesLoading ? (
-          <Box sx={{ display: "flex", justifyContent: "center" }}>
-            <CircularProgress color="primary" />
-          </Box>
-        ) : activities?.length > 0 ? (
-          activities?.map((activity) => (
-            <React.Fragment key={activity?.id}>
-              <ActivitySearchCard
-                activity={activity}
-                onPress={({ id } = {}) =>
-                  navigate(`${ApplicationLocations.ACTIVITY_DETAIL}/${id}`, {
-                    state: {
-                      from: ApplicationLocations.SEARCH,
-                    },
-                  })
+      <Tabs
+        value={currentTab}
+        onChange={handleTabChange}
+        variant="fullWidth"
+        sx={{ px: 1, mb: 1 }}
+        // allowScrollButtonsMobile
+        // scrollButtons="auto"
+      >
+        <Tab
+          label={SearchTabDefinitionsEnum.ACTIVITIES}
+          value={SearchTabDefinitionsEnum.ACTIVITIES}
+        ></Tab>
+        <Tab
+          label={SearchTabDefinitionsEnum.USERS}
+          value={SearchTabDefinitionsEnum.USERS}
+        ></Tab>
+      </Tabs>
+      {currentTab === SearchTabDefinitionsEnum.ACTIVITIES ? (
+        <Box sx={{ ml: 1.5, boxSizing: "border-box" }}>
+          {areActivitiesLoading ? (
+            <Box sx={{ display: "flex", justifyContent: "center" }}>
+              <CircularProgress color="primary" />
+            </Box>
+          ) : activities?.length > 0 ? (
+            activities?.map((activity) => (
+              <React.Fragment key={activity?.id}>
+                <ActivitySearchCard
+                  activity={activity}
+                  onPress={({ id } = {}) =>
+                    navigate(`${ApplicationLocations.ACTIVITY_DETAIL}/${id}`, {
+                      state: {
+                        from: ApplicationLocations.SEARCH,
+                      },
+                    })
+                  }
+                />
+              </React.Fragment>
+            ))
+          ) : (
+            <Typography sx={{ textAlign: "center", mt: 4 }} variant="subtitle2">
+              {!!queryStringDebounced
+                ? "No activities found"
+                : "Type activity name to see results"}
+            </Typography>
+          )}
+        </Box>
+      ) : (
+        <Box sx={{ ml: 1.5, boxSizing: "border-box" }}>
+          {areUsersLoading ? (
+            <Box sx={{ display: "flex", justifyContent: "center" }}>
+              <CircularProgress color="primary" />
+            </Box>
+          ) : users?.length > 0 ? (
+            users?.map((user) => (
+              <BuddyItem
+                key={user?.id}
+                buddy={user}
+                onClick={() =>
+                  navigate(`${ApplicationLocations.USER_PROFILE}/${user?.id}`)
                 }
               />
-            </React.Fragment>
-          ))
-        ) : (
-          <Typography sx={{ textAlign: "center" }} variant="subtitle2">
-            No activities found
-          </Typography>
-        )}
-      </Box>
+            ))
+          ) : (
+            <Typography sx={{ textAlign: "center", mt: 4 }} variant="subtitle2">
+              {!!queryStringDebounced
+                ? "No users found"
+                : "Type username to see results"}
+            </Typography>
+          )}
+        </Box>
+      )}
     </Box>
   );
 };

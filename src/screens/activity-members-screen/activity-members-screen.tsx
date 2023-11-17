@@ -54,7 +54,6 @@ export const ActivityMembersScreen: React.FC = () => {
   const [activeTab, setActiveTab] = React.useState<ITabs>(ITabs.CONFIRMED);
 
   const handlers = useSwipeable({
-    onSwiped: (eventData) => console.log("User Swiped!", eventData),
     onSwipedRight: () =>
       activeTab === ITabs.INVITED && setActiveTab(ITabs.CONFIRMED),
     onSwipedLeft: () =>
