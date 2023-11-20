@@ -210,6 +210,25 @@ export const connectInstagram = (userId?: number, authCode?: string) => {
   return promise;
 };
 
+export const fetchInstagramPhotos = (userId?: number, authCode?: string) => {
+  const CancelToken = axios.CancelToken;
+  const source = CancelToken.source();
+
+  const promise = axios.post<string[]>(
+    `/instagram/${userId}/fetch`,
+    { authCode },
+    {
+      cancelToken: source?.token,
+    }
+  );
+
+  //   queryFunctionContext?.signal?.addEventListener('abort', () => {
+  //     source.cancel('Query was cancelled by React Query')
+  //   })
+
+  return promise;
+};
+
 export const unlinkInstagram = (userId?: number, authCode?: string) => {
   const CancelToken = axios.CancelToken;
   const source = CancelToken.source();

@@ -7,7 +7,6 @@ import { ApplicationLocations } from "../types/common/applications-locations.dto
 import { useNavigate } from "react-router-dom";
 
 const AuthenticationMethodScreen: React.FC = () => {
-  const [showPassword, setShowPassword] = React.useState(false);
   const navigate = useNavigate();
 
   return (

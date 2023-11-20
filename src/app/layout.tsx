@@ -57,7 +57,6 @@ export const Layout: React.FC<ILayoutProps> = ({ children }) => {
   const { palette } = useTheme();
 
   const { ref, ...restHandlers } = useSwipeable({
-    onSwiped: (eventData) => console.log("User Swiped!", eventData),
     onSwipedRight: swipeHandlers?.right,
     onSwipedLeft: swipeHandlers?.left,
   });
@@ -134,8 +133,6 @@ export const Layout: React.FC<ILayoutProps> = ({ children }) => {
       navigate(ApplicationLocations.EXPLORE);
     }
   }, [token]);
-
-  let timer: any = null;
 
   const refPassthrough = (el?: any) => {
     // call useSwipeable ref prop with el

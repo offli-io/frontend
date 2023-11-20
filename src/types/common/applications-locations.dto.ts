@@ -8,7 +8,6 @@ export enum ApplicationLocations {
   SELECT_PROFILE_PICTURE = "/select-picture",
   RESET_PASSWORD = "/reset-password",
   NEW_PASSWORD = "/new-password",
-  WELCOME = "/welcome",
   PROFILE = "/profile",
   USER_PROFILE = "/profile/user",
   BUDDY_REQUEST = "/profile/request",

@@ -310,7 +310,7 @@ const EditProfileScreen: React.FC = () => {
             setLocalTitleImageFile(null);
             setLocalProfileImageFile(null);
           }}
-          aspectRatio={localTitleImageFile ? 3 : 1}
+          aspectRatio={localTitleImageFile ? 375 / 150 : 1}
           cropShape={localTitleImageFile ? "rect" : "round"}
         />
         <Box
@@ -330,6 +330,7 @@ const EditProfileScreen: React.FC = () => {
             ref={profilePictureFileInput}
             // setting empty string to always fire onChange event on input even when selecting same pictures 2 times in a row
             value={""}
+            accept="image/*"
           />
 
           <input
@@ -339,6 +340,7 @@ const EditProfileScreen: React.FC = () => {
             ref={titlePictureFileInput}
             // setting empty string to always fire onChange event on input even when selecting same pictures 2 times in a row
             value={""}
+            accept="image/*"
           />
           <Box
             sx={{ width: "100%", height: 150, position: "relative", mb: 2 }}

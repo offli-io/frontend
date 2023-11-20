@@ -1,16 +1,9 @@
-import React from "react";
-import { Box, Typography, TextField } from "@mui/material";
-import BackButton from "../components/back-button";
-import { Controller, useForm } from "react-hook-form";
-import * as yup from "yup";
-import { yupResolver } from "@hookform/resolvers/yup";
+import { Box } from "@mui/material";
 import Logo from "../components/logo";
 import OffliButton from "../components/offli-button";
-
-import backgroundImage from "../assets/img/undraw_real_life_blue.svg";
-import { PageWrapper } from "../components/page-wrapper";
-import { ApplicationLocations } from "types/common/applications-locations.dto";
 import { useNavigate } from "react-router-dom";
+import { ApplicationLocations } from "types/common/applications-locations.dto";
+import backgroundImage from "../assets/img/undraw_real_life_blue.svg";
 
 const LoginOrRegisterScreen = () => {
   const navigate = useNavigate();
@@ -33,10 +26,17 @@ const LoginOrRegisterScreen = () => {
         alt="Background"
         style={{ height: "25%", marginBottom: "30%" }}
       />
-      <OffliButton onClick={() => navigate(ApplicationLocations.LOGIN)} sx={{ width: "80%", mb: 1 }}>
+      <OffliButton
+        onClick={() => navigate(ApplicationLocations.LOGIN)}
+        sx={{ width: "80%", mb: 1 }}
+      >
         Login
       </OffliButton>
-      <OffliButton onClick={() => navigate(ApplicationLocations.REGISTER)} variant="text" sx={{ width: "80%", mb: 3 }}>
+      <OffliButton
+        onClick={() => navigate(ApplicationLocations.REGISTER)}
+        variant="text"
+        sx={{ width: "80%", mb: 3 }}
+      >
         Register
       </OffliButton>
     </Box>

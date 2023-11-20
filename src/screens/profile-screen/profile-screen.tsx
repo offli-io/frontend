@@ -15,7 +15,7 @@ import { AuthenticationContext } from "../../assets/theme/authentication-provide
 import ActionButton from "../../components/action-button";
 import OffliButton from "../../components/offli-button";
 import { PageWrapper } from "../../components/page-wrapper";
-import ProfileGallery from "../../components/profile-gallery";
+import ProfileGallery from "./components/profile-gallery/profile-gallery";
 import ProfileStatistics from "../../components/profile-statistics";
 import { useGetApiUrl } from "../../hooks/use-get-api-url";
 import { useUser } from "../../hooks/use-user";

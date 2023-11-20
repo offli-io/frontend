@@ -36,7 +36,7 @@ code {
 }
 
 .backgroundImage {
-  background-image: url(./assets/img//loadingImg.jpg);
+  background-image: url(./assets/img//loading-img.jpg);
   background-position: 0px 35vh;
   background-size: contain;
   background-repeat: no-repeat;

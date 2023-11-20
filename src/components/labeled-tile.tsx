@@ -1,11 +1,8 @@
-import { Box, CardActionArea, DividerProps, SxProps } from "@mui/material";
-import logo from "../assets/img/gym.svg";
-import React from "react";
-import Card from "@mui/material/Card";
-import CardActions from "@mui/material/CardActions";
-import CardContent from "@mui/material/CardContent";
+import { Box, SxProps } from "@mui/material";
 import Button from "@mui/material/Button";
+import Card from "@mui/material/Card";
 import Typography from "@mui/material/Typography";
+import React from "react";
 
 interface ILabeledTileProps {
   title: string;
@@ -49,7 +46,7 @@ const LabeledTile: React.FC<ILabeledTileProps> = ({
       >
         <img
           alt="Labeled tile"
-          src={imageUrl ?? logo}
+          src={imageUrl}
           style={{
             width: "100%",
             height: 115,
@@ -61,7 +58,15 @@ const LabeledTile: React.FC<ILabeledTileProps> = ({
             objectFit: "contain",
           }}
         ></img>
-        <Box sx={{ position: "absolute", bottom: 10, left: 10, width: "60%", textAlign: "start" }}>
+        <Box
+          sx={{
+            position: "absolute",
+            bottom: 10,
+            left: 10,
+            width: "60%",
+            textAlign: "start",
+          }}
+        >
           <Typography
             sx={{
               color: "primary.main",
