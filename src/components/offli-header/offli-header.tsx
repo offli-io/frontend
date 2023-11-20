@@ -142,7 +142,7 @@ const OffliHeader: React.FC<IProps> = ({ sx }) => {
                   }
                   alt="profile"
                   style={{
-                    height: 25,
+                    height: 26,
                     aspectRatio: 1,
                     borderRadius: "50%",
                     backgroundColor: palette?.background?.default,
