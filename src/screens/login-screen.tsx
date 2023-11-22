@@ -133,7 +133,6 @@ const LoginScreen: React.FC = () => {
       <form
         onSubmit={handleSubmit(handleFormSubmit)}
         style={{
-          height: "100%",
           display: "flex",
           flexDirection: "column",
           alignItems: "center",

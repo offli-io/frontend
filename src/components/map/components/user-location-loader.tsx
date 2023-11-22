@@ -1,7 +1,15 @@
-import { CircularProgress, Typography } from "@mui/material";
+import {
+  CircularProgress,
+  Typography,
+  useMediaQuery,
+  useTheme,
+} from "@mui/material";
 import OffliButton from "components/offli-button";
 
 const UserLocationLoader = ({ isLoading }: { isLoading?: boolean }) => {
+  const { breakpoints } = useTheme();
+  const upMd = useMediaQuery(breakpoints.up("md"));
+
   return isLoading ? (
     <OffliButton
       sx={{
@@ -11,7 +19,7 @@ const UserLocationLoader = ({ isLoading }: { isLoading?: boolean }) => {
         transform: "translate(-50%, -50%)",
         zIndex: 5000,
         bgcolor: "primary.light",
-        width: "75%",
+        width: upMd ? "25%" : "75%",
         display: "flex",
         py: 2,
       }}

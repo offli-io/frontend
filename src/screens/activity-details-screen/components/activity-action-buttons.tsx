@@ -115,8 +115,30 @@ const ActivityActionButtons: React.FC<IActivityActionButtonsProps> = ({
       {inProgress ? (
         <OffliButton
           color="secondary"
-          startIcon={<FiberManualRecordIcon sx={{ color: "primary.main" }} />}
-          sx={{ width: "80%", color: "primary.main", fontWeight: "bold" }}
+          startIcon={
+            <FiberManualRecordIcon
+              sx={{
+                color: "primary.main",
+                "@keyframes blink": {
+                  "25%": {
+                    opacity: 0.5,
+                  },
+                  "50%": {
+                    opacity: 0,
+                  },
+                  "75%": {
+                    opacity: 0.5,
+                  },
+                },
+                animation: "blink 1s linear infinite",
+              }}
+            />
+          }
+          sx={{
+            width: "80%",
+            color: "primary.main",
+            fontWeight: "bold",
+          }}
         >
           Activity is in progress
         </OffliButton>
