@@ -1,6 +1,12 @@
 import React from "react";
 
-import { SwipeableDrawer, Box, Paper } from "@mui/material";
+import {
+  SwipeableDrawer,
+  Box,
+  Paper,
+  useTheme,
+  useMediaQuery,
+} from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { useLocation } from "react-router-dom";
 
@@ -33,6 +39,8 @@ export const DrawerProvider = ({ children }: { children: React.ReactNode }) => {
   const [drawerData, toggleDrawer] = React.useState<IDrawerData>({
     open: false,
   });
+  const { breakpoints } = useTheme();
+  const upMd = useMediaQuery(breakpoints.up("md"));
 
   const { pathname } = useLocation();
 
@@ -79,7 +87,20 @@ export const DrawerProvider = ({ children }: { children: React.ReactNode }) => {
             pt: 5,
             pb: 2,
             px: 1,
+            ...(upMd
+              ? {
+                  width: 450,
+                  boxSizing: "border-box",
+                }
+              : {}),
           },
+          ...(upMd
+            ? {
+                left: "50%",
+                transform: "translate(-50%)",
+                width: 450,
+              }
+            : {}),
         }}
       >
         <Box

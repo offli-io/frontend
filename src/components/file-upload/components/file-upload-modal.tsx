@@ -1,4 +1,4 @@
-import { Box, Modal, useTheme } from "@mui/material";
+import { Box, Modal, useMediaQuery, useTheme } from "@mui/material";
 import OffliButton from "components/offli-button";
 import { useSnackbar } from "notistack";
 import React from "react";
@@ -33,8 +33,8 @@ const FileUploadModal: React.FC<IFileUploadModalProps> = ({
   const [crop, setCrop] = React.useState({ x: 0, y: 0 });
   const [zoom, setZoom] = React.useState(1);
   const [croppedAreaPixels, setCroppedAreaPixels] = React.useState(null);
-
-  const { palette } = useTheme();
+  const { breakpoints } = useTheme();
+  const upMd = useMediaQuery(breakpoints.up("md"));
 
   const onCropComplete = React.useCallback(
     (croppedArea: any, croppedAreaPixels: any) => {
@@ -95,7 +95,7 @@ const FileUploadModal: React.FC<IFileUploadModalProps> = ({
           // backgroundColor: (theme) => theme.palette.background.paper,
           // boxShadow: (theme) => theme.shadows[5],
           outline: "none",
-          width: "95%",
+          width: upMd ? "25%" : "95%",
         }}
       >
         <Box
