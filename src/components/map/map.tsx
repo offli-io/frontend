@@ -1,4 +1,11 @@
-import { Autocomplete, Box, SxProps, TextField } from "@mui/material";
+import {
+  Autocomplete,
+  Box,
+  SxProps,
+  TextField,
+  useMediaQuery,
+  useTheme,
+} from "@mui/material";
 import L, { LatLngTuple } from "leaflet";
 import React from "react";
 import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
@@ -65,6 +72,9 @@ const Map: React.FC<ILabeledTileProps> = ({
   const [pendingLatLngTuple, setPendingLatLngTuple] =
     React.useState<LatLngTuple | null>(null);
   //const map = useMap();
+  const { breakpoints } = useTheme();
+  const upMd = useMediaQuery(breakpoints.up("md"));
+
   const [placeQuery, setPlaceQuery] = React.useState("");
   const [selectedLocation, setSelectedLocation] =
     React.useState<ILocation | null>(null);
@@ -182,8 +192,8 @@ const Map: React.FC<ILabeledTileProps> = ({
             justifyContent: "center",
             width: "100%",
             zIndex: 400,
-            position: "fixed",
-            top: 50,
+            position: "absolute",
+            top: 0,
           }}
         >
           <Autocomplete

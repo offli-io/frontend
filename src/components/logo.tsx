@@ -1,5 +1,5 @@
-import React from "react";
 import { Box, SxProps } from "@mui/material";
+import React from "react";
 import logo from "../assets/img/logo-purple.png";
 
 interface ILogoProps {
@@ -11,13 +11,11 @@ const Logo: React.FC<ILogoProps> = ({ sx }) => {
     <Box
       component="img"
       sx={{
-        //   height: 233,
-        //   width: 350,
-        maxHeight: { xs: 120, md: 220 },
-        maxWidth: { xs: 170, md: 360 },
+        maxHeight: { xs: 120, md: 150 },
+        maxWidth: { xs: 170, md: 200 },
         ...sx,
       }}
-      alt="The house from the offer."
+      alt="logo"
       src={logo}
     />
   );

@@ -138,8 +138,7 @@ export const RegistrationScreen: React.FC = () => {
       <form onSubmit={handleSubmit(handleFormSubmit)}>
         <Box
           sx={{
-            height: "100vh",
-            width: "100vw",
+            width: "100%",
             display: "flex",
             flexDirection: "column",
             alignItems: "center",

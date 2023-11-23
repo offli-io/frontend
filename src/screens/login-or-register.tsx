@@ -10,11 +10,10 @@ const LoginOrRegisterScreen = () => {
   return (
     <Box
       sx={{
-        height: "100vh",
-        width: "100vw",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
+        overflow: "hidden",
         //   justifyContent: 'center',
       }}
     >
@@ -24,7 +23,7 @@ const LoginOrRegisterScreen = () => {
       <img
         src={backgroundImage}
         alt="Background"
-        style={{ height: "25%", marginBottom: "30%" }}
+        style={{ height: 250, marginBottom: "20%", marginTop: "10%" }}
       />
       <OffliButton
         onClick={() => navigate(ApplicationLocations.LOGIN)}
@@ -35,7 +34,7 @@ const LoginOrRegisterScreen = () => {
       <OffliButton
         onClick={() => navigate(ApplicationLocations.REGISTER)}
         variant="text"
-        sx={{ width: "80%", mb: 3 }}
+        sx={{ width: "80%" }}
       >
         Register
       </OffliButton>
