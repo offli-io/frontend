@@ -112,7 +112,7 @@ const ProfileGallery: React.FC<IProfileGalleryProps> = ({
       <ImagePreviewModal
         imageSrc={
           //TODO better check
-          previewModalImageUrl?.includes("https")
+          previewModalImageUrl?.includes("https:/")
             ? previewModalImageUrl
             : `${baseUrl}/files/${previewModalImageUrl}`
         }
