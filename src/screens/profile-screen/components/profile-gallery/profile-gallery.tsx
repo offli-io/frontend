@@ -176,7 +176,7 @@ const ProfileGallery: React.FC<IProfileGalleryProps> = ({
               {firstSplittedPhotos?.map((photo) => (
                 <img
                   key={photo}
-                  src={`${baseUrl}/files/${photo}`}
+                  src={photo}
                   alt="profile"
                   style={{
                     width: "100%",
@@ -195,7 +195,7 @@ const ProfileGallery: React.FC<IProfileGalleryProps> = ({
               {secondSplittedPhotos?.map((photo) => (
                 <img
                   key={photo}
-                  src={`${baseUrl}/files/${photo}`}
+                  src={photo}
                   alt="profile"
                   style={{
                     width: "100%",
