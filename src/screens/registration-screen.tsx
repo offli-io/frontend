@@ -26,6 +26,7 @@ import { useGoogleAuthorization } from "../hooks/use-google-authorization";
 import { ApplicationLocations } from "../types/common/applications-locations.dto";
 import { GoogleAuthCodeFromEnumDto } from "../types/google/google-auth-code-from-enum.dto";
 import { IEmailPassword } from "../types/users/user.dto";
+import { PickUsernameTypeEnum } from "types/common/pick-username-type-enum.dto";
 
 const schema: () => yup.SchemaOf<IEmailPassword> = () =>
   yup.object({
@@ -117,8 +118,10 @@ export const RegistrationScreen: React.FC = () => {
 
   const handleFormSubmit = React.useCallback((values: IEmailPassword) => {
     queryClient.setQueryData(["registration-email-password"], values);
-    navigate(ApplicationLocations.PICK_USERNAME);
-    // console.log(data?.data)
+    navigate(ApplicationLocations.PICK_USERNAME, {
+      state: { type: PickUsernameTypeEnum.REGULAR },
+    });
+    // TODO if navigating from google pass type GOOGLE
   }, []);
 
   React.useEffect(() => {

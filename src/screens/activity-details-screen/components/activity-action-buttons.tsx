@@ -1,15 +1,14 @@
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import EmailIcon from "@mui/icons-material/Email";
+import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
+import HistoryIcon from "@mui/icons-material/History";
 import { Box } from "@mui/material";
 import { DrawerContext } from "assets/theme/drawer-provider";
 import OffliButton from "components/offli-button";
 import React from "react";
 import { useParams } from "react-router-dom";
 import { ActivityInviteDrawerContent } from "./activity-invite-drawer-content";
-import HistoryIcon from "@mui/icons-material/History";
-import CircleIcon from "@mui/icons-material/Circle";
-import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
 
 interface IActivityActionButtonsProps {
   isAlreadyParticipant?: boolean;

@@ -54,7 +54,6 @@ const OffliHeader: React.FC<IProps> = ({ sx }) => {
         ApplicationLocations.CHOOSE_LOCATION,
         ApplicationLocations.MAP,
         ApplicationLocations.BUDDIES,
-        ApplicationLocations.CHOOSE_USERNAME_GOOGLE,
         ApplicationLocations.SEARCH,
         ApplicationLocations.NOTIFICATIONS,
         ApplicationLocations.ACCOUNT_SETTINGS,

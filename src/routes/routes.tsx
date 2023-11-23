@@ -8,26 +8,24 @@ import { ActivityInviteScreen } from "../screens/activity-invite-screen/activity
 import { ActivityMembersScreen } from "../screens/activity-members-screen/activity-members-screen";
 import AuthenticationMethodScreen from "../screens/authentication-method-screen";
 import ChooseLocationScreen from "../screens/choose-location-screen";
-import ChooseUsernameGooglePage from "../screens/choose-username-google-page";
 import CreateActivityScreen from "../screens/create-activity-screen/create-activity-screen";
 import EditActivityScreen from "../screens/edit-activity-screen/edit-activity-screen";
 import EditProfileScreen from "../screens/edit-profile-screen/edit-profile-screen";
 import ExploreScreen from "../screens/explore-screen/explore-screen";
 import ForgottenPasswordScreen from "../screens/forgotten-password-screen/forgotten-password-screen";
-import LoadingScreen from "../screens/loading-screen";
 import LoginScreen from "../screens/login-screen";
 import MapScreen from "../screens/map-screen";
 import MyBuddiesScreen from "../screens/my-buddies-screen/my-buddies-screen";
 import NewPasswordScreen from "../screens/new-password-screen";
 import NotificationsScreen from "../screens/notifications-screen/notifications-screen";
-import PickUsernamePhotoScreen from "../screens/pick-username-photo-screen";
+import PickUsernameScreen from "../screens/pick-username-screen";
 import ProfileScreen from "../screens/profile-screen/profile-screen";
 import { ProfileEntryTypeEnum } from "../screens/profile-screen/types/profile-entry-type";
 import RegistrationScreen from "../screens/registration-screen";
 import ResetPasswordScreen from "../screens/reset-password-screen";
 import SearchScreen from "../screens/search-screen/search-screen";
-import SelectProfilePictureScreen from "../screens/select-picture-screen";
 import SettingsScreen from "../screens/settings-screen/settings-screen";
+import LoadingScreen from "../screens/static-screens/loading-screen";
 import TestScreen from "../screens/test-screen";
 import VerificationScreen from "../screens/verification-screen/verification-screen";
 import { IActivityListRestDto } from "../types/activities/activity-list-rest.dto";
@@ -64,11 +62,7 @@ const Routes = () => {
       />
       <Route
         path={ApplicationLocations.PICK_USERNAME}
-        element={<PickUsernamePhotoScreen />}
-      />
-      <Route
-        path={ApplicationLocations.SELECT_PROFILE_PICTURE}
-        element={<SelectProfilePictureScreen />}
+        element={<PickUsernameScreen />}
       />
       <Route element={<PrivateRoutes />}>
         <Route
@@ -104,10 +98,6 @@ const Routes = () => {
         <Route
           path={ApplicationLocations.CHOOSE_LOCATION}
           element={<ChooseLocationScreen />}
-        />
-        <Route
-          path={ApplicationLocations.CHOOSE_USERNAME_GOOGLE}
-          element={<ChooseUsernameGooglePage />}
         />
         <Route
           path={`${ApplicationLocations.ACTIVITY_DETAIL}`}
