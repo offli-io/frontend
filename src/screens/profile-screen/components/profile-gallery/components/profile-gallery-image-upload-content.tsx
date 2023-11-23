@@ -11,11 +11,12 @@ import { useGetApiUrl } from "hooks/use-get-api-url";
 import { usePredefinedPictures } from "hooks/use-predefined-pictures";
 import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
 import * as React from "react";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { connectInstagram, fetchInstagramPhotos } from "api/users/requests";
 import { AuthenticationContext } from "assets/theme/authentication-provider";
 import { toast } from "sonner";
 import { DrawerContext } from "assets/theme/drawer-provider";
+import Loader from "components/loader";
 
 interface IProfileGalleryImageUploadContentProps {
   //   imageUrls?: string[];
@@ -38,39 +39,42 @@ const ProfileGalleryImageUploadContent: React.FC<
   >(null);
   const { palette } = useTheme();
   const { toggleDrawer } = React.useContext(DrawerContext);
+  const queryClient = useQueryClient();
 
   const { userInfo } = React.useContext(AuthenticationContext);
 
-  const imageUrls = [
-    "54d86ed0-0cb7-4b7a-9bcf-c083b1a700d0.jpeg",
-    "99155a39-d029-4d83-8415-97e3d91960aa.jpeg",
-    "0c4174ae-73f7-43e9-93da-c8196844859a.jpeg",
-    "f149570a-e945-4c50-972d-b667a499a5cb.jpeg",
-  ];
-
   const {
-    data: { data: instagramPhotos = [] } = {},
-    isLoading: isConnectingInstagram,
+    data: { data: { media: instagramPhotos = [] } = {} } = {},
+    isLoading: areInstagramPhotosLoading,
     mutate: sendFetchInstagramPhotos,
   } = useMutation(
     ["instagram-photos"],
     (code?: string) => fetchInstagramPhotos(Number(userInfo?.id), String(code)),
     {
-      //   onSuccess: () => {
-      //     // toast.success(
-      //     //   "Your instagram account has been successfully connected"
-      //     // );
-      //     queryClient.invalidateQueries(["user"]);
-      //     //didnt even notice the refresh -> this might work
-      //     window.history.pushState(
-      //       {},
-      //       document.title,
-      //       window.location.pathname
-      //     );
-      //   },
       onError: () => {
         toast.error("Failed to fetch instagram photos");
         toggleDrawer({ open: false });
+      },
+    }
+  );
+
+  const {
+    isLoading: areInstagramPhotosUploading,
+    mutate: sendUpdateInstagramPhotos,
+  } = useMutation(
+    ["instagram-photos-submit"],
+    (photoUrls?: string[]) => connectInstagram(Number(userInfo?.id), photoUrls),
+    {
+      onSuccess: () => {
+        toggleDrawer({ open: false });
+        toast.success("Your instagram account has been successfully connected");
+        queryClient.invalidateQueries(["user"]);
+        //didnt even notice the refresh -> this might work
+        window.history.pushState({}, document.title, window.location.pathname);
+      },
+      onError: () => {
+        toast.error("Failed to upload instagram photos");
+        // toggleDrawer({ open: false });
         // window.history.pushState(
         //   {},
         //   document.title,
@@ -100,86 +104,64 @@ const ProfileGalleryImageUploadContent: React.FC<
   );
 
   const handleSubmitPhotos = React.useCallback(() => {
-    console.log(selectedPhotos);
-  }, [selectedPhotos]);
+    sendUpdateInstagramPhotos(selectedPhotos);
+  }, [selectedPhotos, sendUpdateInstagramPhotos]);
 
   const isImageSelected = React.useCallback(
     (image: string) => selectedPhotos?.some((photo) => photo === image),
     [selectedPhotos]
   );
   return (
-    <Box>
-      {/* {isLoading ? (
+    <Box sx={{ maxHeight: 300 }}>
+      {areInstagramPhotosLoading ? (
+        <Loader />
+      ) : (
         <Box
           sx={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            mt: 4,
-          }}
-        >
-          <CircularProgress color="primary" />
-        </Box>
-      ) : count > 0 ? ( */}
-      <Box
-        sx={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fill, minmax(100px, 1fr))",
-          gap: 2,
-          my: 2,
-        }}
-      >
-        {instagramPhotos.map((image, index) => (
-          <Box sx={{ position: "relative" }}>
-            <img
-              src={`${baseUrl}/files/${image}`}
-              alt="gallery"
-              style={{
-                maxWidth: 100,
-                //TODO if we don't want to crop the photos
-                height: "100%",
-                objectFit: "cover",
-                alignSelf: "center",
-                boxShadow: isImageSelected(image) ? shadows[5] : shadows[2],
-                border: isImageSelected(image)
-                  ? `2px solid ${palette?.primary?.main}`
-                  : "unset",
-                opacity: isImageSelected(image) ? 0.6 : 1,
-              }}
-              key={`predefined_picture_${image}`}
-              data-testid="offli-gallery-img-btn"
-              onClick={() => handlePhotoSelect(image)}
-            />
-            {isImageSelected(image) ? (
-              <CheckCircleRoundedIcon
-                sx={{
-                  color: "primary.main",
-                  position: "absolute",
-                  top: "50%",
-                  left: "50%",
-                  transform: "translate(-50%, -50%)",
-                }}
-              />
-            ) : null}
-          </Box>
-        ))}
-      </Box>
-      {/* ) : (
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fill, minmax(100px, 1fr))",
+            gap: 2,
             my: 2,
           }}
         >
-          <Typography sx={{ color: (theme) => theme?.palette?.text?.primary }}>
-            There are no available pre-defined pictures
-          </Typography>
+          {instagramPhotos?.map((photoUrl, index) => (
+            <Box key={photoUrl} sx={{ position: "relative" }}>
+              <img
+                src={photoUrl}
+                alt="gallery"
+                style={{
+                  maxWidth: 100,
+                  //TODO if we don't want to crop the photos
+                  height: "100%",
+                  objectFit: "cover",
+                  alignSelf: "center",
+                  boxShadow: isImageSelected(photoUrl)
+                    ? shadows[5]
+                    : shadows[0],
+                  border: isImageSelected(photoUrl)
+                    ? `2px solid ${palette?.primary?.main}`
+                    : "2px solid transparent",
+                  opacity: isImageSelected(photoUrl) ? 0.6 : 1,
+                }}
+                key={`predefined_picture_${photoUrl}`}
+                data-testid="offli-gallery-img-btn"
+                onClick={() => handlePhotoSelect(photoUrl)}
+              />
+              {isImageSelected(photoUrl) ? (
+                <CheckCircleRoundedIcon
+                  sx={{
+                    color: "primary.main",
+                    position: "absolute",
+                    top: "50%",
+                    left: "50%",
+                    transform: "translate(-50%, -50%)",
+                  }}
+                />
+              ) : null}
+            </Box>
+          ))}
         </Box>
       )}
-      
-      */}
       <Box
         sx={{ display: "flex", width: "100%", justifyContent: "center", mt: 4 }}
       >

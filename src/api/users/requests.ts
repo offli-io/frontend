@@ -6,6 +6,7 @@ import {
 } from "../../types/users/user.dto";
 import { BuddyRequestActionEnum } from "../../types/users/buddy-request-action-enum.dto";
 import { IBuddyStateResponseDto } from "../../types/users/buddy-state-response.dto";
+import { IFetchInstagramPhotosResponseDto } from "types/instagram/fetch-instagram-photos-response.dto";
 
 export const preCreateUser = async (values: IEmailUsernamePassword) => {
   const CancelToken = axios.CancelToken;
@@ -191,13 +192,13 @@ export const addBuddy = (userId?: number, buddyId?: number) => {
   return promise;
 };
 
-export const connectInstagram = (userId?: number, authCode?: string) => {
+export const connectInstagram = (userId?: number, photoUrls?: string[]) => {
   const CancelToken = axios.CancelToken;
   const source = CancelToken.source();
 
   const promise = axios.post(
     `/instagram/${userId}/media`,
-    { authCode },
+    { instagramMediaUrls: photoUrls },
     {
       cancelToken: source?.token,
     }
@@ -214,7 +215,7 @@ export const fetchInstagramPhotos = (userId?: number, authCode?: string) => {
   const CancelToken = axios.CancelToken;
   const source = CancelToken.source();
 
-  const promise = axios.post<string[]>(
+  const promise = axios.post<IFetchInstagramPhotosResponseDto>(
     `/instagram/${userId}/fetch`,
     { authCode },
     {
