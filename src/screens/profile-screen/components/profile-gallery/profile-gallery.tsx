@@ -110,7 +110,12 @@ const ProfileGallery: React.FC<IProfileGalleryProps> = ({
   return (
     <Box sx={{ px: 2, mb: 2, width: "100%", boxSizing: "border-box" }}>
       <ImagePreviewModal
-        imageSrc={`${baseUrl}/files/${previewModalImageUrl}`}
+        imageSrc={
+          //TODO better check
+          previewModalImageUrl?.includes("https")
+            ? previewModalImageUrl
+            : `${baseUrl}/files/${previewModalImageUrl}`
+        }
         open={!!previewModalImageUrl}
         onClose={() => setPreviewModalImageUrl(null)}
       />
