@@ -230,7 +230,10 @@ const SearchScreen = () => {
         value={currentTab}
         onChange={handleTabChange}
         variant="fullWidth"
-        sx={{ px: 1, mb: 1 }}
+        sx={{ '& .MuiTab-root': {
+          textTransform: 'capitalize',
+          fontSize: 16
+          }, px:1, mb:1 }}
         // allowScrollButtonsMobile
         // scrollButtons="auto"
       >

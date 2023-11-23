@@ -1,17 +1,17 @@
-import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import TravelExploreIcon from "@mui/icons-material/TravelExplore";
 import { Paper, SxProps, useTheme } from "@mui/material";
 import BottomNavigation from "@mui/material/BottomNavigation";
 import BottomNavigationAction from "@mui/material/BottomNavigationAction";
 import * as React from "react";
-import { Link, useLocation } from "react-router-dom";
-import { AuthenticationContext } from "../../assets/theme/authentication-provider";
+import { Link } from "react-router-dom";
 import { CustomizationContext } from "../../assets/theme/customization-provider";
 import { ApplicationLocations } from "../../types/common/applications-locations.dto";
-import { FOOTER_HEIGHT, HEADER_HEIGHT } from "../../utils/common-constants";
+import { FOOTER_HEIGHT } from "../../utils/common-constants";
 import { mapLocationToNavigatorValue } from "./utils/map-location-to-navigator-value.util";
 import LocalActivityIcon from "@mui/icons-material/LocalActivity";
+import AddCircleIcon from '@mui/icons-material/AddCircle';
+import LocalActivityOutlinedIcon from '@mui/icons-material/LocalActivityOutlined';
 
 interface IBottomNavigatorProps {
   sx?: SxProps;
@@ -22,16 +22,7 @@ const BottomNavigator: React.FC<IBottomNavigatorProps> = ({ sx }) => {
   const [value, setValue] = React.useState<ApplicationLocations>(
     ApplicationLocations.EXPLORE
   );
-  const { userInfo } = React.useContext(AuthenticationContext);
   const { mode } = React.useContext(CustomizationContext);
-
-  const location = useLocation();
-  const paramsArray = location?.pathname.split("/");
-  const id = paramsArray[paramsArray.length - 1]
-    ? Number(paramsArray[paramsArray.length - 1])
-    : -1;
-
-  const isUserProfile = location?.pathname?.includes("/profile/user");
 
   return (
     <Paper
@@ -43,8 +34,6 @@ const BottomNavigator: React.FC<IBottomNavigatorProps> = ({ sx }) => {
         width: "100%",
         height: FOOTER_HEIGHT,
         bgcolor: palette?.background?.default,
-
-        // boxShadow: 15,
       }}
       //TODO either Box with boxShadow as sx or Paper with elevation 3 - need to compare
       // sx={sx}
@@ -89,15 +78,12 @@ const BottomNavigator: React.FC<IBottomNavigatorProps> = ({ sx }) => {
         />
         <BottomNavigationAction
           label="Create"
-          icon={
-            <AddCircleOutlineIcon
+          icon={ value === ApplicationLocations.CREATE ?
+            <AddCircleIcon
               sx={{
-                color:
-                  value === ApplicationLocations.CREATE
-                    ? "primary.main"
-                    : undefined,
+                color: "primary.main"
               }}
-            />
+            /> : <AddCircleOutlineIcon/>
           }
           component={Link}
           value={ApplicationLocations.CREATE}
@@ -108,16 +94,13 @@ const BottomNavigator: React.FC<IBottomNavigatorProps> = ({ sx }) => {
           }}
         />
         <BottomNavigationAction
-          label="My activities"
-          icon={
+          label="Activities"
+          icon={ value === ApplicationLocations.ACTIVITIES ?
             <LocalActivityIcon
               sx={{
-                color:
-                  value === ApplicationLocations.ACTIVITIES
-                    ? "primary.main"
-                    : undefined,
+                color: "primary.main"
               }}
-            />
+            /> : <LocalActivityOutlinedIcon/>
           }
           component={Link}
           value={ApplicationLocations.ACTIVITIES}

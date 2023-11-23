@@ -29,7 +29,7 @@ const ProfilePhotoActionDefinitions: IDrawerActionsType<ProfilePhotoActionsEnum>
       icon: <CollectionsIcon color="primary" />,
     },
     {
-      label: "Remove profile picture",
+      label: "Remove picture",
       type: ProfilePhotoActionsEnum.REMOVE_PICTURE,
       icon: <RemoveCircleOutlineIcon color="primary" />,
     },

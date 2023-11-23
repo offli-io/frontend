@@ -311,7 +311,7 @@ const ExploreScreen = () => {
         renderInput={(params) => (
           <TextField
             {...params}
-            placeholder="What kind of activity are you looking for?"
+            placeholder="What activity or user are you looking for?"
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
