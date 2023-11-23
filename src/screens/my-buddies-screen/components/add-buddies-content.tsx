@@ -34,6 +34,7 @@ import { ApplicationLocations } from "../../../types/common/applications-locatio
 import { useSendBuddyRequest } from "../../profile-screen/hooks/use-send-buddy-request";
 import { isBuddy } from "../utils/is-buddy.util";
 import AddBuddiesActionContent from "./add-buddies-action-content";
+import { USERS_LIMIT } from "utils/common-constants";
 
 interface IAddBuddiesContentProps {
   navigate?: NavigateFunction;
@@ -69,6 +70,7 @@ const AddBuddiesContent: React.FC<IAddBuddiesContentProps> = ({ navigate }) => {
     [PAGED_USERS_QUERY_KEY, usernameDebounced],
     ({ pageParam = 0 }) =>
       getUsersPromiseResolved({
+        limit: USERS_LIMIT,
         offset: pageParam,
         username: usernameDebounced,
         buddyIdToCheckInBuddies: userInfo?.id,
@@ -77,8 +79,11 @@ const AddBuddiesContent: React.FC<IAddBuddiesContentProps> = ({ navigate }) => {
       getNextPageParam: (lastPage, allPages) => {
         const nextPage: number = allPages?.length;
         // only return next page when this page has full array (20 items)
-        return lastPage?.length >= 20 ? nextPage : undefined;
+        return lastPage?.length >= USERS_LIMIT
+          ? nextPage * USERS_LIMIT
+          : undefined;
       },
+      enabled: !!usernameDebounced,
     }
   );
 
@@ -149,7 +154,7 @@ const AddBuddiesContent: React.FC<IAddBuddiesContentProps> = ({ navigate }) => {
     [handleSendBuddyRequest]
   );
 
-  console.log(hasNextPage);
+  console.log(paginatedUsersData?.pages);
 
   return (
     <Box
@@ -193,20 +198,22 @@ const AddBuddiesContent: React.FC<IAddBuddiesContentProps> = ({ navigate }) => {
       ) : null}
 
       <Box ref={usersContentDivRef} sx={{ overflowY: "auto" }} id="scrolik">
-        {[...(paginatedUsersData?.pages ?? [])]?.length < 1 &&
+        {[...(paginatedUsersData?.pages?.[0] ?? [])]?.length < 1 &&
         !isFetchingNextPage ? (
           <Box
             sx={{
               height: 100,
               width: "100%",
-              mt: 7,
+              my: 2,
               display: "flex",
               justifyContent: "center",
               alignItems: "center",
             }}
           >
             <Typography sx={{ color: (theme) => theme.palette.inactive.main }}>
-              No users found
+              {!!usernameDebounced
+                ? "No users found"
+                : "Start typing username to see results"}
             </Typography>
           </Box>
         ) : (

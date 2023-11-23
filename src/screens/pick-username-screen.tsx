@@ -3,7 +3,7 @@ import { Box, TextField, Typography } from "@mui/material";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import React from "react";
 import { Controller, useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { useDebounce } from "use-debounce";
 import * as yup from "yup";
@@ -19,15 +19,17 @@ import {
   IEmailUsernamePassword,
   IUsername,
 } from "../types/users/user.dto";
+import { PickUsernameTypeEnum } from "types/common/pick-username-type-enum.dto";
 
 const schema: () => yup.SchemaOf<IUsername> = () =>
   yup.object({
     username: yup.string().defined().required("Please enter your username"),
   });
 
-const PickUsernamePhotoScreen = () => {
-  const [username, setUsername] = React.useState<string>("");
+const PickUsernameScreen = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const type = (location?.state as { type?: PickUsernameTypeEnum })?.type;
 
   const { control, handleSubmit, setError, formState, watch } =
     useForm<IUsername>({
@@ -100,7 +102,6 @@ const PickUsernamePhotoScreen = () => {
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          // justifyContent: "center",
         }}
       >
         <Typography variant="h2" align="left" sx={{ width: "75%", mt: 15 }}>
@@ -112,9 +113,7 @@ const PickUsernamePhotoScreen = () => {
           control={control}
           render={({ field, fieldState: { error } }) => (
             <TextField
-              // autoFocus
               {...field}
-              //label="Username"
               placeholder="Username"
               error={!!error}
               helperText={error?.message}
@@ -136,4 +135,4 @@ const PickUsernamePhotoScreen = () => {
   );
 };
 
-export default PickUsernamePhotoScreen;
+export default PickUsernameScreen;

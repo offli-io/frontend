@@ -88,7 +88,7 @@ const ExploreScreen = () => {
       getNextPageParam: (lastPage, allPages) => {
         // don't need to add +1 because we are indexing offset from 0 (so length will handle + 1)
         if (lastPage?.length === ACTIVITES_LIMIT) {
-          const nextPage: number = allPages?.length;
+          const nextPage: number = allPages?.length * ACTIVITES_LIMIT;
           return nextPage;
         }
 

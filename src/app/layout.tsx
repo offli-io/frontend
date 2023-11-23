@@ -83,12 +83,6 @@ export const Layout: React.FC<ILayoutProps> = ({ children }) => {
   }, [location]);
 
   React.useEffect(() => {
-    if (!!data && !data?.username && stateToken) {
-      navigate(ApplicationLocations.CHOOSE_USERNAME_GOOGLE);
-    }
-  }, [data, stateToken]);
-
-  React.useEffect(() => {
     if (!!data && !data?.location && stateToken) {
       // TODO when on BE will be patch implemented
       navigate(ApplicationLocations.CHOOSE_LOCATION);
@@ -100,7 +94,6 @@ export const Layout: React.FC<ILayoutProps> = ({ children }) => {
       [
         // locations where we want to hide header
         ApplicationLocations.CHOOSE_LOCATION,
-        ApplicationLocations.CHOOSE_USERNAME_GOOGLE,
       ].includes(location?.pathname as ApplicationLocations)
     ) {
       setDisplayHeader(false);
@@ -111,10 +104,9 @@ export const Layout: React.FC<ILayoutProps> = ({ children }) => {
 
   React.useEffect(() => {
     if (
-      [
-        ApplicationLocations.CHOOSE_USERNAME_GOOGLE,
-        ApplicationLocations.CHOOSE_LOCATION,
-      ].includes(location?.pathname as ApplicationLocations)
+      [ApplicationLocations.CHOOSE_LOCATION].includes(
+        location?.pathname as ApplicationLocations
+      )
     ) {
       setDisplayBottomNavigator(false);
     } else {
