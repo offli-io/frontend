@@ -110,7 +110,12 @@ const ProfileGallery: React.FC<IProfileGalleryProps> = ({
   return (
     <Box sx={{ px: 2, mb: 2, width: "100%", boxSizing: "border-box" }}>
       <ImagePreviewModal
-        imageSrc={`${baseUrl}/files/${previewModalImageUrl}`}
+        imageSrc={
+          //TODO better check
+          previewModalImageUrl?.includes("https:/")
+            ? previewModalImageUrl
+            : `${baseUrl}/files/${previewModalImageUrl}`
+        }
         open={!!previewModalImageUrl}
         onClose={() => setPreviewModalImageUrl(null)}
       />
@@ -176,7 +181,7 @@ const ProfileGallery: React.FC<IProfileGalleryProps> = ({
               {firstSplittedPhotos?.map((photo) => (
                 <img
                   key={photo}
-                  src={`${baseUrl}/files/${photo}`}
+                  src={photo}
                   alt="profile"
                   style={{
                     width: "100%",
@@ -195,7 +200,7 @@ const ProfileGallery: React.FC<IProfileGalleryProps> = ({
               {secondSplittedPhotos?.map((photo) => (
                 <img
                   key={photo}
-                  src={`${baseUrl}/files/${photo}`}
+                  src={photo}
                   alt="profile"
                   style={{
                     width: "100%",
