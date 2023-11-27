@@ -20,6 +20,9 @@ import {
   IUsername,
 } from "../types/users/user.dto";
 import { PickUsernameTypeEnum } from "types/common/pick-username-type-enum.dto";
+import { registerViaGoogle } from "api/auth/requests";
+import { IGoogleRegisterUserValuesDto } from "types/google/google-register-user-values.dto";
+import { AuthenticationContext } from "assets/theme/authentication-provider";
 
 const schema: () => yup.SchemaOf<IUsername> = () =>
   yup.object({
@@ -30,6 +33,10 @@ const PickUsernameScreen = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const type = (location?.state as { type?: PickUsernameTypeEnum })?.type;
+  const abortControllerRef = React.useRef<AbortController | null>(null);
+  const { setUserInfo, setStateToken } = React.useContext(
+    AuthenticationContext
+  );
 
   const { control, handleSubmit, setError, formState, watch } =
     useForm<IUsername>({
@@ -67,19 +74,54 @@ const PickUsernameScreen = () => {
     }
   );
 
-  const handleFormSubmit = React.useCallback((values: IUsername) => {
-    queryClient.setQueryData(["registration-username"], values);
+  const { mutate: sendRegisterViaGoogle } = useMutation(
+    ["google-registration"],
+    (values: IGoogleRegisterUserValuesDto) => {
+      abortControllerRef.current = new AbortController();
+      return registerViaGoogle(values, abortControllerRef?.current?.signal);
+    },
+    {
+      onSuccess: (data, params) => {
+        toast.success("Your account has been successfully registered");
+        setStateToken(data?.data?.token?.access_token ?? null);
+        !!setUserInfo && setUserInfo({ id: data?.data?.user_id });
+        data?.data?.user_id &&
+          localStorage.setItem("userId", String(data?.data?.user_id));
+        navigate(ApplicationLocations.EXPLORE);
+      },
+      onError: (error) => {
+        toast.error("Registration with google failed");
+      },
+    }
+  );
 
-    const registrationEmailPassword = queryClient.getQueryData<IEmailPassword>([
-      "registration-email-password",
-    ]);
+  const handleFormSubmit = React.useCallback(
+    (values: IUsername) => {
+      queryClient.setQueryData(["registration-username"], values);
 
-    sendPresignupUser({
-      email: registrationEmailPassword?.email,
-      username: values?.username,
-      password: registrationEmailPassword?.password,
-    });
-  }, []);
+      const registrationEmailPassword =
+        queryClient.getQueryData<IEmailPassword>([
+          "registration-email-password",
+        ]);
+
+      if (type === PickUsernameTypeEnum.GOOGLE) {
+        const googleToken = queryClient.getQueryData<string | undefined>([
+          "google-token",
+        ]);
+        sendRegisterViaGoogle({
+          username: values?.username,
+          googleBearerToken: googleToken,
+        });
+      } else {
+        sendPresignupUser({
+          email: registrationEmailPassword?.email,
+          username: values?.username,
+          password: registrationEmailPassword?.password,
+        });
+      }
+    },
+    [sendRegisterViaGoogle, sendPresignupUser]
+  );
 
   React.useEffect(() => {
     if (usernameAlreadyTaken?.data) {
@@ -128,7 +170,7 @@ const PickUsernameScreen = () => {
           disabled={isUsernameInUse}
           isLoading={isLoading}
         >
-          Next
+          {type === PickUsernameTypeEnum.GOOGLE ? "Register" : "Next"}
         </OffliButton>
       </Box>
     </form>

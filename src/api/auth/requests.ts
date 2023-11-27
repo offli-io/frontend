@@ -8,6 +8,7 @@ import { IGoogleLoginRequestDto } from "../../types/auth/google-login-request.dt
 import { CLIENT_ID } from "../../utils/common-constants";
 import { GoogleAuthCodeFromEnumDto } from "../../types/google/google-auth-code-from-enum.dto";
 import { IChangePasswordRequestDto } from "types/auth/change-password-request.dto";
+import { IGoogleRegisterUserValuesDto } from "types/google/google-register-user-values.dto";
 
 export const refreshTokenSetup = (res: any) => {
   const refreshTiming = (res.tokenObj.expires_in || 3600 - 5 * 60) * 1000;
@@ -114,7 +115,7 @@ export const getGoogleAuthCode = (
 };
 
 export const registerViaGoogle = async (
-  accessToken?: string,
+  values?: IGoogleRegisterUserValuesDto,
   signal?: AbortSignal
 ) => {
   const CancelToken = axios.CancelToken;
@@ -122,7 +123,7 @@ export const registerViaGoogle = async (
 
   const promise = axios.post<ILoginResponseDto>(
     `/google/authorization`,
-    { googleBearerToken: accessToken },
+    values,
     {
       cancelToken: source?.token,
     }

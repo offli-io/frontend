@@ -27,6 +27,7 @@ import { ApplicationLocations } from "../types/common/applications-locations.dto
 import { GoogleAuthCodeFromEnumDto } from "../types/google/google-auth-code-from-enum.dto";
 import { IEmailPassword } from "../types/users/user.dto";
 import { PickUsernameTypeEnum } from "types/common/pick-username-type-enum.dto";
+import { IGoogleRegisterUserValuesDto } from "types/google/google-register-user-values.dto";
 
 const schema: () => yup.SchemaOf<IEmailPassword> = () =>
   yup.object({
@@ -70,30 +71,6 @@ export const RegistrationScreen: React.FC = () => {
     }
   );
 
-  const { mutate: sendRegisterViaGoogle } = useMutation(
-    ["google-registration"],
-    (authorizationCode?: string) => {
-      abortControllerRef.current = new AbortController();
-      return registerViaGoogle(
-        authorizationCode,
-        abortControllerRef?.current?.signal
-      );
-    },
-    {
-      onSuccess: (data, params) => {
-        toast.success("Your account has been successfully registered");
-        setStateToken(data?.data?.token?.access_token ?? null);
-        !!setUserInfo && setUserInfo({ id: data?.data?.user_id });
-        data?.data?.user_id &&
-          localStorage.setItem("userId", String(data?.data?.user_id));
-        navigate(ApplicationLocations.EXPLORE);
-      },
-      onError: (error) => {
-        toast.error("Registration with google failed");
-      },
-    }
-  );
-
   const handleClickShowPassword = () => setShowPassword(!showPassword);
 
   const { control, handleSubmit, watch, setError, formState } =
@@ -110,7 +87,12 @@ export const RegistrationScreen: React.FC = () => {
 
   React.useEffect(() => {
     if (googleToken) {
-      sendRegisterViaGoogle(googleToken);
+      queryClient.setQueryData(["google-token"], googleToken);
+      navigate(ApplicationLocations.PICK_USERNAME, {
+        state: {
+          type: PickUsernameTypeEnum.GOOGLE,
+        },
+      });
     }
   }, [googleToken]);
 
