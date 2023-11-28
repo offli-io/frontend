@@ -244,7 +244,7 @@ export const ActivityMembersScreen: React.FC = () => {
   };
 
   return (
-    <Box sx={{ px: 2, height: "100%" }} {...handlers}>
+    <Box sx={{ px: 2 }} {...handlers}>
       <Box
         sx={{
           display: "flex",

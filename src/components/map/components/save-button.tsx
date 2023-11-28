@@ -1,7 +1,6 @@
+import WhereToVoteIcon from "@mui/icons-material/WhereToVote";
 import OffliButton from "components/offli-button";
 import { useMap } from "react-leaflet";
-import WhereToVoteIcon from "@mui/icons-material/WhereToVote";
-import { useMediaQuery, useTheme } from "@mui/material";
 
 const SaveButton = ({
   onClick,
@@ -10,8 +9,6 @@ const SaveButton = ({
   onClick?: (location: L.LatLng) => void;
   isLoading?: boolean;
 }) => {
-  const { breakpoints } = useTheme();
-  const upMd = useMediaQuery(breakpoints.up("md"));
   const map = useMap();
   return (
     <OffliButton
