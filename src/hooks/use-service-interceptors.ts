@@ -60,7 +60,7 @@ export const useServiceInterceptors = ({
         queryClient.removeQueries();
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
-        navigate(ApplicationLocations.LOGIN);
+        // navigate(ApplicationLocations.LOGIN);
       }
       //TODO uncomment
       // const originalConfig = err.config;

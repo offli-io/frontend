@@ -11,11 +11,14 @@ export function convertDateToUTC(inputDateString?: string) {
   const formattedDate = new Date(
     date.getFullYear(),
     date.getMonth(),
-    date.getDate()
+    date.getDate(),
+    date.getHours(),
+    date.getMinutes()
   );
 
   // Step 3: Set the timezone offset to UTC+2 hours
-  const timezoneOffsetHours = 2;
+  //TODO are we offsetting now or BE sends correct data?
+  const timezoneOffsetHours = 0;
   const dateWithOffset = addHours(formattedDate, timezoneOffsetHours);
 
   // Step 4: Format the Date object into the desired output string format

@@ -80,6 +80,8 @@ export const Layout: React.FC<ILayoutProps> = ({ children }) => {
   React.useEffect(() => {
     //reset the header right content on route changes, in the future might be subject to change
     setHeaderRightContent(null);
+    // scroll to top when location changes
+    window.scrollTo(0, 0);
   }, [location]);
 
   React.useEffect(() => {

@@ -3,10 +3,11 @@ import React from "react";
 import { Controller, UseFormReturn } from "react-hook-form";
 import OffliButton from "../../../components/offli-button";
 import createActivityImg from "../../../assets/img/create-activity.svg";
+import { FormValues } from "../utils/validation-schema";
 
 interface INameFormProps {
   onNextClicked: () => void;
-  methods: UseFormReturn;
+  methods: UseFormReturn<FormValues, object>;
 }
 
 export const NameForm: React.FC<INameFormProps> = ({
@@ -18,7 +19,7 @@ export const NameForm: React.FC<INameFormProps> = ({
 
   const errors = React.useMemo(() => formState.errors, [formState]);
   const isFormValid =
-    Object.keys(errors)?.length === 0 && watch("title")?.length > 0;
+    Object.keys(errors)?.length === 0 && (watch("title") ?? "")?.length > 0;
 
   return (
     <>

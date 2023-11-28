@@ -171,156 +171,156 @@ const Map: React.FC<ILabeledTileProps> = ({
   };
 
   return (
-    <Box sx={{ width: "100%", height: "100%" }}>
-      <MapContainer
-        center={latLonTuple ?? position}
-        zoom={13}
-        scrollWheelZoom={false}
-        style={{
+    <MapContainer
+      center={latLonTuple ?? position}
+      zoom={13}
+      scrollWheelZoom={false}
+      style={{
+        width: "100%",
+        height: "100%",
+        position: "relative",
+        // filter: !isUserLocationLoading ? "brightness(0.5)" : undefined,
+        // filter: "brightness(0.5)",
+      }}
+      zoomControl={false}
+    >
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
           width: "100%",
-          height: "100%",
-          position: "relative",
-          // filter: !isUserLocationLoading ? "brightness(0.5)" : undefined,
-          // filter: "brightness(0.5)",
+          zIndex: 400,
+          position: "absolute",
+          top: 0,
         }}
-        zoomControl={false}
       >
-        <Box
+        <Autocomplete
+          value={selectedLocation}
+          options={mapExternalApiOptions(data?.results)}
           sx={{
+            width: "95%",
             display: "flex",
-            alignItems: "center",
             justifyContent: "center",
-            width: "100%",
-            zIndex: 400,
-            position: "absolute",
-            top: 0,
+            my: 1.5,
+            bgcolor: "primary.light",
+            borderRadius: 3,
+            "& .MuiAutocomplete-clearIndicator": { display: "none" },
+            "& .MuiSvgIcon-root": { color: "primary.main" },
           }}
-        >
-          <Autocomplete
-            value={selectedLocation}
-            options={mapExternalApiOptions(data?.results)}
-            sx={{
-              width: "95%",
-              display: "flex",
-              justifyContent: "center",
-              my: 1.5,
-              bgcolor: "primary.light",
-              borderRadius: 3,
-              "& .MuiAutocomplete-clearIndicator": { display: "none" },
-              "& .MuiSvgIcon-root": { color: "primary.main" },
-            }}
-            loading={isLoading}
-            onChange={(e, locationObject) => {
-              setSelectedLocation({
-                name: locationObject?.name ?? "",
-                coordinates: locationObject?.coordinates,
-              });
-            }}
-            inputValue={selectedLocation?.name}
-            getOptionLabel={(option) => String(option?.name)}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                placeholder={"Search places"}
-                onChange={(e) => setPlaceQuery(e.target.value)}
-                sx={{
-                  "& input::placeholder": {
-                    fontSize: 16,
-                    color: "primary.main",
-                    fontWeight: 400,
-                    opacity: 1,
-                    pl: 1,
-                  },
-                  "& fieldset": { border: "none" },
-                  backgroundColor: ({ palette }) => palette?.primary?.light,
-                  borderRadius: "10px",
-                }}
-              />
-            )}
-            data-testid="activity-place-input"
-          />
-        </Box>
-        <MapControl />
-        <TileLayer
-          // attribution='<a href="http://jawg.io" title="Tiles Courtesy of Jawg Maps" target="_blank">&copy; <b>Jawg</b>Maps</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-          // url="https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png"
-          url={`https://{s}.tile.jawg.io/jawg-${
-            mode === "light" ? "sunny" : "dark"
-          }/{z}/{x}/{y}{r}.png?access-token=dY2cc1f9EUuag5geOpQB30R31VnRRhl7O401y78cM0NWSvzLf7irQSUGfA4m7Va5`}
-        />
-
-        {setLocationByMap ? (
-          <>
-            <BackButton onClick={handleMapDismiss} />
-            <SaveButton
-              onClick={handleLocationSave}
-              isLoading={isPlaceFromCoordinatesDataLoading}
-            />
-            <img
-              src={markerIcon}
-              alt="marker"
-              style={{
-                position: "fixed",
-                top: "50%",
-                left: "50%",
-                transform: "translate(-50%, -50%)",
-                zIndex: 400,
+          loading={isLoading}
+          onChange={(e, locationObject) => {
+            setSelectedLocation({
+              name: locationObject?.name ?? "",
+              coordinates: locationObject?.coordinates,
+            });
+          }}
+          inputValue={selectedLocation?.name}
+          getOptionLabel={(option) => String(option?.name)}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              placeholder={"Search places"}
+              onChange={(e) => setPlaceQuery(e.target.value)}
+              sx={{
+                "& input::placeholder": {
+                  fontSize: 16,
+                  color: "primary.main",
+                  fontWeight: 400,
+                  opacity: 1,
+                  pl: 1,
+                },
+                "& fieldset": { border: "none" },
+                backgroundColor: ({ palette }) => palette?.primary?.light,
+                borderRadius: "10px",
               }}
             />
-          </>
-        ) : (
-          <MarkerClusterGroup chunkedLoading>
-            {isSingleActivity ? (
-              <Marker
-                // key={`activity_${id}`}
-                position={[
-                  latLonTupleSingle[0] ?? position[0],
-                  latLonTupleSingle[1] ?? position[1],
-                ]}
-                eventHandlers={{
-                  click: () => handleMarkerClick(activities?.id),
-                }}
-                icon={offliMarkerIcon}
-              ></Marker>
-            ) : (
-              activities?.map(
-                ({ id, lat, lon }) =>
-                  id && (
-                    <Marker
-                      key={`activity_${id}`}
-                      position={[lat ?? position[0], lon ?? position[1]]}
-                      eventHandlers={{
-                        click: () => handleMarkerClick(id),
-                      }}
-                      icon={offliMarkerIcon}
-                    ></Marker>
-                  )
-              )
-            )}
-          </MarkerClusterGroup>
-        )}
-
-        {latLonTuple ? (
-          <Marker position={latLonTuple} icon={youAreHereIcon}>
-            <Popup>You are here</Popup>
-          </Marker>
-        ) : null}
-
-        <RecenterAutomatically
-          lat={
-            isSingleActivity ? latLonTupleSingle[0] : currentLocation?.latitude
-          }
-          lon={
-            isSingleActivity ? latLonTupleSingle[1] : currentLocation?.longitude
-          }
-          selectedLocation={selectedLocation}
-          position={position}
+          )}
+          data-testid="activity-place-input"
         />
-      </MapContainer>
+      </Box>
+      <MapControl />
+      <TileLayer
+        // attribution='<a href="http://jawg.io" title="Tiles Courtesy of Jawg Maps" target="_blank">&copy; <b>Jawg</b>Maps</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        // url="https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png"
+        url={`https://{s}.tile.jawg.io/jawg-${
+          mode === "light" ? "sunny" : "dark"
+        }/{z}/{x}/{y}{r}.png?access-token=dY2cc1f9EUuag5geOpQB30R31VnRRhl7O401y78cM0NWSvzLf7irQSUGfA4m7Va5`}
+      />
+
+      {setLocationByMap ? (
+        <>
+          <BackButton onClick={handleMapDismiss} />
+          <SaveButton
+            onClick={handleLocationSave}
+            isLoading={isPlaceFromCoordinatesDataLoading}
+          />
+          <img
+            src={markerIcon}
+            alt="marker"
+            style={{
+              position: "fixed",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              zIndex: 400,
+            }}
+          />
+        </>
+      ) : (
+        <MarkerClusterGroup chunkedLoading>
+          {isSingleActivity ? (
+            <Marker
+              // key={`activity_${id}`}
+              position={[
+                latLonTupleSingle[0] ?? position[0],
+                latLonTupleSingle[1] ?? position[1],
+              ]}
+              eventHandlers={{
+                click: () => handleMarkerClick(activities?.id),
+              }}
+              icon={offliMarkerIcon}
+            ></Marker>
+          ) : (
+            activities?.map(
+              ({ id, lat, lon }) =>
+                id && (
+                  <Marker
+                    key={`activity_${id}`}
+                    position={[lat ?? position[0], lon ?? position[1]]}
+                    eventHandlers={{
+                      click: () => handleMarkerClick(id),
+                    }}
+                    icon={offliMarkerIcon}
+                  ></Marker>
+                )
+            )
+          )}
+        </MarkerClusterGroup>
+      )}
+
+      {latLonTuple ? (
+        <Marker position={latLonTuple} icon={youAreHereIcon}>
+          <Popup>You are here</Popup>
+        </Marker>
+      ) : null}
+
+      <RecenterAutomatically
+        lat={
+          isSingleActivity ? latLonTupleSingle[0] : currentLocation?.latitude
+        }
+        lon={
+          isSingleActivity ? latLonTupleSingle[1] : currentLocation?.longitude
+        }
+        selectedLocation={selectedLocation}
+        position={position}
+      />
+
       {!isSingleActivity ? (
         <UserLocationLoader isLoading={isUserLocationLoading} />
       ) : null}
-    </Box>
+    </MapContainer>
   );
 };
+
 export default Map;

@@ -16,6 +16,7 @@ import { NOT_EXACT_UNALLOWED_URLS } from "../../app/layout";
 import { useUser } from "hooks/use-user";
 import { useGetApiUrl } from "hooks/use-get-api-url";
 import userPlaceholder from "../../assets/img/user-placeholder.svg";
+import App from "App";
 
 interface IProps {
   sx?: SxProps;
@@ -105,6 +106,7 @@ const OffliHeader: React.FC<IProps> = ({ sx }) => {
             alt="Offli logo"
             style={{ height: "40px" }}
             data-testid="offli-logo"
+            onClick={() => navigate(ApplicationLocations.EXPLORE)}
           />
           <Box
             sx={{

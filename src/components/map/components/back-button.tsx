@@ -1,11 +1,7 @@
-import OffliButton from "components/offli-button";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
-import { useMediaQuery, useTheme } from "@mui/material";
+import OffliButton from "components/offli-button";
 
 const BackButton = ({ onClick }: { onClick?: () => void }) => {
-  const { breakpoints } = useTheme();
-  const upMd = useMediaQuery(breakpoints.up("md"));
-
   return (
     <OffliButton
       sx={{
