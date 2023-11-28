@@ -359,10 +359,10 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
         ) : null}
         <LastAttendedActivities />
 
-        {displayStatistics ? (
           <Box
             sx={{
               width: "90%",
+              mb:3  
             }}
           >
             <Typography
@@ -374,7 +374,6 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
             </Typography>
             <ProfileStatistics
               participatedNum={data?.activities_participated_last_month_count}
-              enjoyedNum={data?.enjoyed_together_last_month_count}
               createdNum={
                 isBuddy || [ProfileEntryTypeEnum.PROFILE].includes(type)
                   ? data?.activities_created_last_month_count
@@ -385,10 +384,10 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
                   ? data?.new_buddies_last_month_count
                   : undefined
               }
+              user={data?.username}
               isLoading={isLoading}
             />
           </Box>
-        ) : null}
 
         {isOtherProfile && !data?.instagram ? null : (
           <ProfileGallery

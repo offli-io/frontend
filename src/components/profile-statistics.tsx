@@ -1,5 +1,4 @@
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
-import FavoriteIcon from "@mui/icons-material/Favorite";
 import OfflineBoltIcon from "@mui/icons-material/OfflineBolt";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import { Box, CircularProgress, IconButton, Typography } from "@mui/material";
@@ -8,17 +7,17 @@ import { useParams } from "react-router-dom";
 
 interface IProps {
   participatedNum?: number;
-  enjoyedNum?: number;
   createdNum?: number;
   metNum?: number;
+  user?:string;
   isLoading?: boolean;
 }
 
 const ProfileStatistics: React.FC<IProps> = ({
   participatedNum,
-  enjoyedNum,
   createdNum,
   metNum,
+  user,
   isLoading,
 }) => {
   const { id } = useParams();
@@ -49,94 +48,93 @@ const ProfileStatistics: React.FC<IProps> = ({
         </Box>
       ) : (
         <>
-          {participatedNum ? (
-            <Box
-              sx={{
-                display: "flex",
-                alignItems: "center",
-              }}
-              data-testid="participated-statistics"
-            >
-              <IconButton>
-                <OfflineBoltIcon
-                  sx={{ fontSize: 30, color: "primary.main", mr: 2 }}
-                />
-              </IconButton>
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              mb:metNum ? 1:2
+            }}
+            data-testid="participated-statistics"
+          >
+            <IconButton>
+              <OfflineBoltIcon
+                sx={{ fontSize: 30, color: "primary.main", mr: 2 }}
+              />
+            </IconButton>
+            {participatedNum ? (
               <Typography variant="subtitle2">
-                {id ? "Participated" : "You participated"} in{" "}
+                {id ? `${user} participated` : "You participated"} in{" "}
                 <b>
                   {participatedNum}{" "}
                   {participatedNum === 1 ? "activity" : "activities"}
                 </b>
                 .
-              </Typography>
-            </Box>
-          ) : null}
-          {enjoyedNum ? (
-            <Box
-              sx={{
-                display: "flex",
-                alignItems: "center",
-              }}
-              data-testid="enjoyed-statistics"
-            >
-              <IconButton>
-                <FavoriteIcon
-                  sx={{ fontSize: 30, color: "primary.main", mr: 2 }}
-                />
-              </IconButton>
+              </Typography>              
+            ) : (
               <Typography variant="subtitle2">
-                <b>{enjoyedNum} people</b> enjoyed activities,{" "}
-                {id ? "he" : "you've"} created.
+                {id ?  `${user} haven't joined any activities.` : 
+                "No activities joined? Make the most of your time by joining others!"} 
               </Typography>
-            </Box>
-          ) : null}
-          {!id ? (
-            <>
-              {createdNum ? (
-                <Box
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                  }}
-                  data-testid="created-statistics"
-                >
-                  <IconButton>
-                    <AddRoundedIcon
-                      sx={{ fontSize: 30, color: "primary.main", mr: 2 }}
-                    />
-                  </IconButton>
-                  <Typography variant="subtitle2">
-                    {id ? "Created" : "You created"}{" "}
-                    <b>
-                      {createdNum}{" "}
-                      {createdNum === 1 ? "activity" : "activities"}
-                    </b>
-                    .
-                  </Typography>
-                </Box>
-              ) : null}
-              {metNum ? (
-                <Box
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                  }}
-                  data-testid="new-buddies-statistics"
-                >
-                  <IconButton>
-                    <PeopleAltIcon
-                      sx={{ fontSize: 30, color: "primary.main", mr: 2 }}
-                    />
-                  </IconButton>
-                  <Typography variant="subtitle2">
-                    You`ve met <b>{metNum}</b> new{" "}
-                    <b>{metNum === 1 ? "buddy" : "buddies"}</b>.
-                  </Typography>
-                </Box>
-              ) : null}
-            </>
-          ) : null}
+            )}
+          </Box>
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              mb:metNum ? 1:2
+            }}
+            data-testid="created-statistics"
+          >
+            <IconButton>
+              <AddRoundedIcon
+                sx={{ fontSize: 30, color: "primary.main", mr: 2 }}
+              />
+            </IconButton>
+            {createdNum ? (
+              <Typography variant="subtitle2">
+                {id ? `${user} created` : "You created"}{" "}
+                <b>
+                  {createdNum}{" "}
+                  {createdNum === 1 ? "activity" : "activities"}
+                </b>
+                .
+              </Typography>
+            ) : (            
+              <Typography variant="subtitle2">
+                {id ?  `${user} haven't organized any activities.` : 
+                "You haven't created any activities. Get creative and organize something fun!"}
+              </Typography>
+            )}
+          </Box>          
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              mb:metNum ? 1:2
+            }}
+            data-testid="new-buddies-statistics"
+          >
+            <IconButton>
+              <PeopleAltIcon
+                sx={{ fontSize: 30, color: "primary.main", mr: 2 }}
+              />
+            </IconButton>
+            {metNum ? (
+              <Typography variant="subtitle2">
+                {id ? `${user} has met` : "You've met"}{" "}
+                <b>
+                  {createdNum}{" "}
+                  {createdNum === 1 ? "new buddy" : "new buddies"}
+                </b>
+                .
+              </Typography>            
+            ) : (            
+              <Typography variant="subtitle2">
+                {id ?  `${user} haven't made any new friends.` : 
+                "No new buddies? Expand your circle and make new connections."}
+              </Typography>
+            )}
+          </Box>
         </>
       )}
     </Box>
