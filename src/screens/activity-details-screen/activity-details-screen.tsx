@@ -54,6 +54,7 @@ import ActivityVisibilityDuration from "./components/activity-visibility-duratio
 import { convertDateToUTC } from "./utils/convert-date-to-utc";
 import ActivityActionButtons from "./components/activity-action-buttons";
 import ImagePreviewModal from "components/image-preview-modal/image-preview-modal";
+import { useActivityParticipants } from "hooks/use-activity-participants";
 
 interface IProps {
   type: "detail" | "request";
@@ -109,13 +110,7 @@ const ActivityDetailsScreen: React.FC<IProps> = ({ type }) => {
   const {
     data: { data: { participants = null } = {} } = {},
     isLoading: areActivityParticipantsLoading,
-  } = useQuery(
-    ["activity-participants", id],
-    () => getActivityParticipants({ activityId: Number(id) }),
-    {
-      enabled: !!id,
-    }
-  );
+  } = useActivityParticipants({ params: { id } });
 
   const { mutate: sendLeaveActivity, isLoading: isLeavingActivity } =
     useMutation(

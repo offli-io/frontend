@@ -2,7 +2,9 @@ import { useQuery } from "@tanstack/react-query";
 import { AxiosResponse } from "axios";
 import { toast } from "sonner";
 import { IActivitiesParamsDto } from "types/activities/activities-params.dto";
-import { getActivity } from "../api/activities/requests";
+import { getActivity, getActivityAnonymous } from "../api/activities/requests";
+import { AuthenticationContext } from "assets/theme/authentication-provider";
+import React from "react";
 
 export const ACTIVITIES_QUERY_KEY = "activities";
 export const PAGED_ACTIVITIES_QUERY_KEY = "paged-activities";
@@ -31,6 +33,9 @@ export const useActivities = <T>({
   onSuccess,
   enabled,
 }: IUseActivitiesReturn<T>) => {
+  const { userInfo: { id: userId = null } = {} } = React.useContext(
+    AuthenticationContext
+  );
   const { data, isLoading, isFetching } = useQuery(
     [
       ACTIVITIES_QUERY_KEY,
@@ -48,20 +53,35 @@ export const useActivities = <T>({
       sort,
     ],
     () =>
-      getActivity<T>({
-        id,
-        text: !!text && text?.length > 0 ? text : undefined,
-        tag,
-        datetimeUntil,
-        datetimeFrom,
-        limit,
-        offset,
-        lon,
-        lat,
-        participantId,
-        participantStatus,
-        sort,
-      }),
+      userId
+        ? getActivity<T>({
+            id,
+            text: !!text && text?.length > 0 ? text : undefined,
+            tag,
+            datetimeUntil,
+            datetimeFrom,
+            limit,
+            offset,
+            lon,
+            lat,
+            participantId,
+            participantStatus,
+            sort,
+          })
+        : getActivityAnonymous<T>({
+            id,
+            text: !!text && text?.length > 0 ? text : undefined,
+            tag,
+            datetimeUntil,
+            datetimeFrom,
+            limit,
+            offset,
+            lon,
+            lat,
+            participantId,
+            participantStatus,
+            sort,
+          }),
     {
       onSuccess,
       onError: () => {

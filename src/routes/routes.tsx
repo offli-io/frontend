@@ -31,8 +31,14 @@ import VerificationScreen from "../screens/verification-screen/verification-scre
 import { IActivityListRestDto } from "../types/activities/activity-list-rest.dto";
 import { IActivityRestDto } from "../types/activities/activity-rest.dto";
 import { ApplicationLocations } from "../types/common/applications-locations.dto";
+import { AuthenticationContext } from "assets/theme/authentication-provider";
+import React from "react";
+import RegistrationNeededScreen from "screens/static-screens/registration-needed-screen";
 
 const Routes = () => {
+  const { userInfo: { id: userId = null } = {} } = React.useContext(
+    AuthenticationContext
+  );
   return (
     <BaseRoutes>
       <Route path={ApplicationLocations.LOADING} element={<LoadingScreen />} />
@@ -64,102 +70,101 @@ const Routes = () => {
         path={ApplicationLocations.PICK_USERNAME}
         element={<PickUsernameScreen />}
       />
-      <Route element={<PrivateRoutes />}>
-        <Route
-          path={ApplicationLocations.PROFILE}
-          element={<ProfileScreen type={ProfileEntryTypeEnum.PROFILE} />}
-        />
-        <Route
-          path={`${ApplicationLocations.PROFILE}/request/:id`}
-          element={<ProfileScreen type={ProfileEntryTypeEnum.REQUEST} />}
-        />
+      {/* <Route element={<PrivateRoutes />}> */}
+      <Route
+        path={ApplicationLocations.PROFILE}
+        element={<ProfileScreen type={ProfileEntryTypeEnum.PROFILE} />}
+      />
+      <Route
+        path={`${ApplicationLocations.PROFILE}/request/:id`}
+        element={<ProfileScreen type={ProfileEntryTypeEnum.REQUEST} />}
+      />
 
-        <Route
-          path={`${ApplicationLocations.PROFILE}/user/:id`}
-          element={<ProfileScreen type={ProfileEntryTypeEnum.USER_PROFILE} />}
-        />
-        <Route
-          path={ApplicationLocations.EDIT_PROFILE}
-          element={<EditProfileScreen />}
-        />
-        <Route
-          path={ApplicationLocations.RESET_PASSWORD}
-          element={<ResetPasswordScreen />}
-        />
+      <Route
+        path={`${ApplicationLocations.PROFILE}/user/:id`}
+        element={<ProfileScreen type={ProfileEntryTypeEnum.USER_PROFILE} />}
+      />
+      <Route
+        path={ApplicationLocations.EDIT_PROFILE}
+        element={<EditProfileScreen />}
+      />
+      <Route
+        path={ApplicationLocations.RESET_PASSWORD}
+        element={<ResetPasswordScreen />}
+      />
 
-        <Route
-          path={ApplicationLocations.NEW_PASSWORD}
-          element={<NewPasswordScreen />}
-        />
-        <Route
-          path={ApplicationLocations.EXPLORE}
-          element={<ExploreScreen />}
-        />
-        <Route
-          path={ApplicationLocations.CHOOSE_LOCATION}
-          element={<ChooseLocationScreen />}
-        />
-        <Route
-          path={`${ApplicationLocations.ACTIVITY_DETAIL}`}
-          element={<ActivityDetailsScreen type="detail" />}
-        />
-        <Route
-          path={`${ApplicationLocations.ACTIVITY_DETAIL}/:id`}
-          element={<ActivityDetailsScreen type="detail" />}
-        />
-        <Route
-          path={`${ApplicationLocations.EXPLORE}/request/:id`}
-          element={<ActivityDetailsScreen type="request" />}
-        />
-        <Route
-          path={`${ApplicationLocations.ACTIVITY_MEMBERS}/:id`}
-          element={<ActivityMembersScreen />}
-        />
-        <Route
-          path={`${ApplicationLocations.EDIT_ACTIVITY}/:id`}
-          element={<EditActivityScreen />}
-        />
-        <Route
-          path={`${ApplicationLocations.ACTIVITY_INVITE_MEMBERS}/:id`}
-          element={<ActivityInviteScreen />}
-        />
-        <Route
-          path={ApplicationLocations.CREATE}
-          element={<CreateActivityScreen />}
-        />
-        <Route path={ApplicationLocations.SEARCH} element={<SearchScreen />} />
-        <Route
-          path={ApplicationLocations.MAP}
-          element={<MapScreen<IActivityListRestDto> />}
-        />
-        <Route
-          path={`${ApplicationLocations.MAP}/:activityId`}
-          element={<MapScreen<IActivityRestDto> />}
-        />
+      <Route
+        path={ApplicationLocations.NEW_PASSWORD}
+        element={<NewPasswordScreen />}
+      />
+      <Route path={ApplicationLocations.EXPLORE} element={<ExploreScreen />} />
+      <Route
+        path={ApplicationLocations.CHOOSE_LOCATION}
+        element={<ChooseLocationScreen />}
+      />
+      <Route
+        path={`${ApplicationLocations.ACTIVITY_DETAIL}`}
+        element={<ActivityDetailsScreen type="detail" />}
+      />
+      <Route
+        path={`${ApplicationLocations.ACTIVITY_DETAIL}/:id`}
+        element={<ActivityDetailsScreen type="detail" />}
+      />
+      <Route
+        path={`${ApplicationLocations.EXPLORE}/request/:id`}
+        element={<ActivityDetailsScreen type="request" />}
+      />
+      <Route
+        path={`${ApplicationLocations.ACTIVITY_MEMBERS}/:id`}
+        element={<ActivityMembersScreen />}
+      />
+      <Route
+        path={`${ApplicationLocations.EDIT_ACTIVITY}/:id`}
+        element={<EditActivityScreen />}
+      />
+      <Route
+        path={`${ApplicationLocations.ACTIVITY_INVITE_MEMBERS}/:id`}
+        element={<ActivityInviteScreen />}
+      />
+      <Route
+        path={ApplicationLocations.CREATE}
+        element={
+          userId ? <CreateActivityScreen /> : <RegistrationNeededScreen />
+        }
+      />
+      <Route path={ApplicationLocations.SEARCH} element={<SearchScreen />} />
+      <Route
+        path={ApplicationLocations.MAP}
+        element={<MapScreen<IActivityListRestDto> />}
+      />
+      <Route
+        path={`${ApplicationLocations.MAP}/:activityId`}
+        element={<MapScreen<IActivityRestDto> />}
+      />
 
-        <Route
-          path={ApplicationLocations.SETTINGS}
-          element={<SettingsScreen />}
-        />
-        <Route
-          path={ApplicationLocations.NOTIFICATIONS}
-          element={<NotificationsScreen />}
-        />
-        <Route
-          path={ApplicationLocations.BUDDIES}
-          element={<MyBuddiesScreen />}
-        />
+      <Route
+        path={ApplicationLocations.SETTINGS}
+        element={<SettingsScreen />}
+      />
+      <Route
+        path={ApplicationLocations.NOTIFICATIONS}
+        element={<NotificationsScreen />}
+      />
+      <Route
+        path={ApplicationLocations.BUDDIES}
+        element={<MyBuddiesScreen />}
+      />
 
-        <Route
-          path={ApplicationLocations.ACCOUNT_SETTINGS}
-          element={<AccountSettingsScreen />}
-        />
+      <Route
+        path={ApplicationLocations.ACCOUNT_SETTINGS}
+        element={<AccountSettingsScreen />}
+      />
 
-        <Route
-          path={ApplicationLocations.ACTIVITIES}
-          element={<ActivitiesScreen />}
-        />
-      </Route>
+      <Route
+        path={ApplicationLocations.ACTIVITIES}
+        element={userId ? <ActivitiesScreen /> : <RegistrationNeededScreen />}
+      />
+      {/* </Route> */}
     </BaseRoutes>
   );
 };

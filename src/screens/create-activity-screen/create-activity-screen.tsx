@@ -3,7 +3,7 @@ import { Box, useTheme } from "@mui/material";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import React from "react";
 import { useForm } from "react-hook-form";
-import { unstable_useBlocker, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { ActivityDurationTypeEnumDto } from "types/activities/activity-duration-type-enum.dto";
 import { createActivity } from "../../api/activities/requests";
