@@ -1,8 +1,11 @@
+import { AuthenticationContext } from "assets/theme/authentication-provider";
+import React from "react";
 import { Routes as BaseRoutes, Route } from "react-router-dom";
 import AccountSettingsScreen from "screens/account-settings-screen/account-settings-screen";
 import ActivitiesScreen from "screens/activities-screen/activities-screen";
 import LoginOrRegisterScreen from "screens/login-or-register";
-import { PrivateRoutes } from "../components/private-routes";
+import RegistrationNeededScreen from "screens/static-screens/registration-needed-screen";
+import { getAuthToken } from "utils/token.util";
 import ActivityDetailsScreen from "../screens/activity-details-screen/activity-details-screen";
 import { ActivityInviteScreen } from "../screens/activity-invite-screen/activity-invite-screen";
 import { ActivityMembersScreen } from "../screens/activity-members-screen/activity-members-screen";
@@ -31,14 +34,29 @@ import VerificationScreen from "../screens/verification-screen/verification-scre
 import { IActivityListRestDto } from "../types/activities/activity-list-rest.dto";
 import { IActivityRestDto } from "../types/activities/activity-rest.dto";
 import { ApplicationLocations } from "../types/common/applications-locations.dto";
-import { AuthenticationContext } from "assets/theme/authentication-provider";
-import React from "react";
-import RegistrationNeededScreen from "screens/static-screens/registration-needed-screen";
 
 const Routes = () => {
-  const { userInfo: { id: userId = null } = {} } = React.useContext(
+  const { userInfo, stateToken, setStateToken, setUserInfo } = React.useContext(
     AuthenticationContext
   );
+
+  // moved functionality from private routes in future outsource this in separate hook
+  // or when again implementing private routes keep it there
+  const token = getAuthToken();
+  const userIdFromStorage = localStorage.getItem("userId");
+
+  React.useEffect(() => {
+    if (!stateToken && !!token) {
+      setStateToken(token);
+    }
+  }, [stateToken, token]);
+
+  React.useEffect(() => {
+    if (!userInfo && !!userIdFromStorage) {
+      setUserInfo && setUserInfo({ id: Number(userIdFromStorage) });
+    }
+  }, [userInfo, userIdFromStorage]);
+
   return (
     <BaseRoutes>
       <Route path={ApplicationLocations.LOADING} element={<LoadingScreen />} />
@@ -129,7 +147,7 @@ const Routes = () => {
       <Route
         path={ApplicationLocations.CREATE}
         element={
-          userId ? <CreateActivityScreen /> : <RegistrationNeededScreen />
+          userInfo?.id ? <CreateActivityScreen /> : <RegistrationNeededScreen />
         }
       />
       <Route path={ApplicationLocations.SEARCH} element={<SearchScreen />} />
@@ -162,7 +180,9 @@ const Routes = () => {
 
       <Route
         path={ApplicationLocations.ACTIVITIES}
-        element={userId ? <ActivitiesScreen /> : <RegistrationNeededScreen />}
+        element={
+          userInfo?.id ? <ActivitiesScreen /> : <RegistrationNeededScreen />
+        }
       />
       {/* </Route> */}
     </BaseRoutes>
