@@ -1,6 +1,6 @@
 import { Box, SxProps, useTheme } from "@mui/material";
 import React from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { matchPath, useLocation, useNavigate } from "react-router-dom";
 import { useSwipeable } from "react-swipeable";
 import { isIOS, isSafari } from "utils/is-ios-device.util";
 import { AuthenticationContext } from "../assets/theme/authentication-provider";
@@ -85,6 +85,8 @@ export const Layout: React.FC<ILayoutProps> = ({ children }) => {
     window.scrollTo(0, 0);
   }, [location]);
 
+  console.log(displayHeader);
+
   React.useEffect(() => {
     if (!!data && !data?.location && stateToken) {
       // TODO when on BE will be patch implemented
@@ -158,7 +160,7 @@ export const Layout: React.FC<ILayoutProps> = ({ children }) => {
         ApplicationLocations.AUTHENTICATION_METHOD,
         ApplicationLocations.LOADING,
         ApplicationLocations.FORGOTTEN_PASSWORD,
-      ].some((route) => pathname?.includes(route)),
+      ].some((route) => matchPath({ path: route }, pathname)),
     [pathname]
   );
 
@@ -203,9 +205,10 @@ export const Layout: React.FC<ILayoutProps> = ({ children }) => {
         >
           <Routes />
         </Box>
-        {displayBottomNavigator && !isBuddyRequest && !isUserProfile && (
-          <BottomNavigator sx={{ height: "100%" }} />
-        )}
+        {!isNotAuthorizedRoute &&
+          displayBottomNavigator &&
+          !isBuddyRequest &&
+          !isUserProfile && <BottomNavigator sx={{ height: "100%" }} />}
       </Box>
     </LayoutContext.Provider>
   );
