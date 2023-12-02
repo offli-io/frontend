@@ -9,69 +9,28 @@ import { AuthenticationContext } from '../../context/providers/authentication-pr
 import NotificationRequest from '../../components/notification-request';
 import { useNotifications } from '../../hooks/use-notifications';
 import { ApplicationLocations } from '../../types/common/applications-locations.dto';
+import { ICustomizedLocationStateDto } from '../../types/common/customized-location-state.dto';
 import { NotificationTypeEnum } from '../../types/notifications/notification-type-enum';
 import { INotificationDto } from '../../types/notifications/notification.dto';
+import { DrawerContext } from 'assets/theme/drawer-provider';
+import FeedbackDrawer from './components/feedback-drawer';
+import { ICreatorFeedback } from 'types/users/user-feedback.dto';
+import { useReactBasedOnNotificationType } from './utils/use-react-based-on-notification-type';
 
 const NotificationsScreen = () => {
   const { userInfo } = React.useContext(AuthenticationContext);
   const navigate = useNavigate();
   const location = useLocation();
-  const { data, isLoading } = useNotifications(userInfo?.id);
   const queryClient = useQueryClient();
 
-  const { mutate: sendMarkNotification } = useMutation(
-    ['mark-notification'],
-    (notification: INotificationDto) => markNotificationAsSeen(notification?.id),
-    {
-      onSuccess: (data, variables) => {
-        queryClient.invalidateQueries(['notifications']);
-        navigateBasedOnType(
-          variables?.type,
-          variables?.type === NotificationTypeEnum.ACTIVITY_INV
-            ? variables?.properties?.activity?.id
-            : variables?.properties?.user?.id,
-          variables?.id
-        );
-      },
-      onError: () => {
-        toast.error('Failed to load notification detail');
-      }
-    }
-  );
+  const from = (location?.state as ICustomizedLocationStateDto)?.from;
+  const { data, isLoading } = useNotifications(userInfo?.id);
+  const { reactBasedOnNotificationType } = useReactBasedOnNotificationType();
 
-  const navigateBasedOnType = React.useCallback(
-    (type?: NotificationTypeEnum, id?: number, notificationId?: number) => {
-      if (type === NotificationTypeEnum.ACTIVITY_INV) {
-        return navigate(`${ApplicationLocations.EXPLORE}/request/${id}`, {
-          state: {
-            from: location?.pathname,
-            notificationId
-          }
-        });
-      }
-      if (type === NotificationTypeEnum.BUDDY_REQ) {
-        return navigate(`${ApplicationLocations.PROFILE}/request/${id}`, {
-          state: {
-            from: location?.pathname,
-            notificationId
-          }
-        });
-      }
-      return;
-    },
-    [navigate]
-  );
+  const abortControllerRef = React.useRef<AbortController | null>(null);
 
   const handleNotificationClick = React.useCallback((notification: INotificationDto) => {
-    return notification?.seen
-      ? navigateBasedOnType(
-          notification?.type,
-          notification?.type === NotificationTypeEnum.ACTIVITY_INV
-            ? notification?.properties?.activity?.id
-            : notification?.properties?.user?.id,
-          notification?.id
-        )
-      : sendMarkNotification(notification);
+    reactBasedOnNotificationType(notification);
   }, []);
 
   const areAnyNotifications = data?.data?.notifications && data?.data?.notifications?.length > 0;

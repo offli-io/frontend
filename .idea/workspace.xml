@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="29f87148-db71-4d8f-ae3b-9426c6422337" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/src/api/users/requests.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/users/requests.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/hooks/use-react-based-on-notification-type.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/hooks/use-react-based-on-notification-type.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/screens/activity-details-screen/activity-details-screen.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/screens/activity-details-screen/activity-details-screen.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/screens/notifications-screen/components/feedback-drawer.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/screens/notifications-screen/components/feedback-drawer.tsx" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 8
+}</component>
+  <component name="ProjectId" id="2ahlWWd69OMt9uexU4Gmup4PiUc" />
+  <component name="ProjectViewState">
+    <option name="autoscrollFromSource" value="true" />
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "feature/feedback",
+    "last_opened_file_path": "/Users/martinz/Desktop/backbone/offli/frontend",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.standard": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.standard": "",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "prettierjs.PrettierConfiguration.Package": "/Users/martinz/Desktop/backbone/offli/frontend/node_modules/prettier",
+    "settings.editor.selected.configurable": "actions.on.save",
+    "ts.external.directory.path": "/Users/martinz/Desktop/backbone/offli/frontend/node_modules/typescript/lib",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/hooks" />
+    </key>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="29f87148-db71-4d8f-ae3b-9426c6422337" name="Changes" comment="" />
+      <created>1704778724711</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1704778724711</updated>
+      <workItem from="1704778725915" duration="15578000" />
+      <workItem from="1705130316438" duration="4165000" />
+      <workItem from="1705134980357" duration="60000" />
+      <workItem from="1705135173131" duration="8291000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+</project>
