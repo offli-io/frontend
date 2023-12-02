@@ -50,9 +50,6 @@ export const RegistrationScreen: React.FC = () => {
   const [showPassword, setShowPassword] = React.useState(false);
   const [email, setEmail] = React.useState<string | undefined>();
   const { shadows, palette } = useTheme();
-  const { setUserInfo, setStateToken } = React.useContext(
-    AuthenticationContext
-  );
 
   const abortControllerRef = React.useRef<AbortController | null>(null);
 

@@ -45,6 +45,7 @@ export const Layout: React.FC<ILayoutProps> = ({ children }) => {
   const { stateToken, userInfo, setStateToken, setUserInfo } = React.useContext(
     AuthenticationContext
   );
+  const { pathname } = useLocation();
   const token = getAuthToken();
   const userIdFromStorage = localStorage.getItem("userId");
   const { setHeaderRightContent } = React.useContext(HeaderContext);
@@ -146,6 +147,21 @@ export const Layout: React.FC<ILayoutProps> = ({ children }) => {
 
   const isIOSSafari = isIOS() && isSafari();
 
+  const isNotAuthorizedRoute = React.useMemo(
+    () =>
+      [
+        ApplicationLocations.LOGIN,
+        ApplicationLocations.REGISTER,
+        ApplicationLocations.RESET_PASSWORD,
+        ApplicationLocations.LOGIN_OR_REGISTER,
+        ApplicationLocations.PICK_USERNAME,
+        ApplicationLocations.AUTHENTICATION_METHOD,
+        ApplicationLocations.LOADING,
+        ApplicationLocations.FORGOTTEN_PASSWORD,
+      ].some((route) => pathname?.includes(route)),
+    [pathname]
+  );
+
   return (
     <LayoutContext.Provider
       value={{
@@ -187,10 +203,9 @@ export const Layout: React.FC<ILayoutProps> = ({ children }) => {
         >
           <Routes />
         </Box>
-        {stateToken &&
-          displayBottomNavigator &&
-          !isBuddyRequest &&
-          !isUserProfile && <BottomNavigator sx={{ height: "100%" }} />}
+        {displayBottomNavigator && !isBuddyRequest && !isUserProfile && (
+          <BottomNavigator sx={{ height: "100%" }} />
+        )}
       </Box>
     </LayoutContext.Provider>
   );

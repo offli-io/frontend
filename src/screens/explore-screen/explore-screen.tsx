@@ -25,6 +25,7 @@ import { ACTIVITES_LIMIT } from "utils/common-constants";
 import {
   changeActivityParticipantStatus,
   getActivitiesPromiseResolved,
+  getActivitiesPromiseResolvedAnonymous,
   removePersonFromActivity,
 } from "../../api/activities/requests";
 import { LocationContext } from "../../app/providers/location-provider";
@@ -73,17 +74,26 @@ const ExploreScreen = () => {
   } = useInfiniteQuery(
     [PAGED_ACTIVITIES_QUERY_KEY, location],
     ({ pageParam = 0 }) =>
-      getActivitiesPromiseResolved({
-        offset: pageParam,
-        limit: ACTIVITES_LIMIT,
-        lon: location?.coordinates?.lon,
-        lat: location?.coordinates?.lat,
-        participantId: Number(userInfo?.id),
-        sort:
-          location?.coordinates?.lon && location?.coordinates?.lat
-            ? ActivitySortColumnEnum.LOCATION
-            : undefined,
-      }),
+      !!userInfo?.id
+        ? getActivitiesPromiseResolved({
+            offset: pageParam,
+            limit: ACTIVITES_LIMIT,
+            lon: location?.coordinates?.lon,
+            lat: location?.coordinates?.lat,
+            participantId: Number(userInfo?.id),
+            sort:
+              location?.coordinates?.lon && location?.coordinates?.lat
+                ? ActivitySortColumnEnum.LOCATION
+                : undefined,
+          })
+        : getActivitiesPromiseResolvedAnonymous({
+            offset: pageParam,
+            limit: ACTIVITES_LIMIT,
+            sort:
+              location?.coordinates?.lon && location?.coordinates?.lat
+                ? ActivitySortColumnEnum.LOCATION
+                : undefined,
+          }),
     {
       getNextPageParam: (lastPage, allPages) => {
         // don't need to add +1 because we are indexing offset from 0 (so length will handle + 1)
@@ -94,7 +104,7 @@ const ExploreScreen = () => {
 
         return undefined;
       },
-      enabled: !!userInfo?.id,
+      // enabled:
       select: (data) => ({
         pages: data?.pages?.map((page) =>
           page?.filter((activity) => activity?.participant_status === null)
@@ -220,11 +230,6 @@ const ExploreScreen = () => {
       });
     },
     [toggleDrawer]
-  );
-
-  const anyNearYouActivities = React.useMemo(
-    () => paginatedActivitiesData?.pages?.some((page) => page?.length > 0),
-    [paginatedActivitiesData]
   );
 
   const handleLocationSelect = React.useCallback(() => {

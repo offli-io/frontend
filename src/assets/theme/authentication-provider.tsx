@@ -60,7 +60,7 @@ export const AuthenticationProvider = ({
     }
   }, [userInfo?.id]);
 
-  useServiceInterceptors({ setStateToken, setUserInfo });
+  useServiceInterceptors({ setStateToken, setUserInfo, userId: userInfo?.id });
   React.useEffect(() => {
     if (stateToken) {
       setAuthToken(stateToken);
