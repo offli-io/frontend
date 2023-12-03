@@ -40,7 +40,7 @@ export const useServiceInterceptors = ({
             config.headers["Authorization"] = "Bearer " + _token;
           }
           if (userId) {
-            config.headers["USER_ID"] = userId;
+            config.headers["user-id"] = userId;
           }
           return config;
         }
