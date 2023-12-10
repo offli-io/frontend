@@ -52,7 +52,7 @@ const ProfileGallery: React.FC<IProfileGalleryProps> = ({
       ? window.location.href.slice(0, -1)
       : window.location.href;
     window.location.href = `https://api.instagram.com/oauth/authorize?client_id=1317539042184854&redirect_uri=${location}/&scope=user_profile,user_media&response_type=code`;
-  }, []);
+  }, [window.location.href]);
 
   const { isLoading: isUnlinkingInstagram, mutate: sendUnlinkInstagram } =
     useMutation(
