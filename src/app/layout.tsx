@@ -85,8 +85,6 @@ export const Layout: React.FC<ILayoutProps> = ({ children }) => {
     window.scrollTo(0, 0);
   }, [location]);
 
-  console.log(displayHeader);
-
   React.useEffect(() => {
     if (!!data && !data?.location && stateToken) {
       // TODO when on BE will be patch implemented
