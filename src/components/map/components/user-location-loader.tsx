@@ -10,7 +10,7 @@ const UserLocationLoader = ({ isLoading }: { isLoading?: boolean }) => {
   const { breakpoints } = useTheme();
   const upMd = useMediaQuery(breakpoints.up("md"));
 
-  return isLoading ? (
+  return true ? (
     <OffliButton
       sx={{
         position: "absolute",
@@ -19,7 +19,7 @@ const UserLocationLoader = ({ isLoading }: { isLoading?: boolean }) => {
         transform: "translate(-50%, -50%)",
         zIndex: 5000,
         bgcolor: "primary.light",
-        width: upMd ? "25%" : "75%",
+        width: "75%",
         display: "flex",
         py: 2,
       }}
