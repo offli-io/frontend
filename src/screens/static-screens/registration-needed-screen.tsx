@@ -1,10 +1,10 @@
 import { Box, Typography } from "@mui/material";
-import React from "react";
-
-import activityCreatedImg from "../../assets/img/activity-created.svg";
+import LabeledDivider from "components/labeled-divider";
 import OffliButton from "components/offli-button";
+import React from "react";
 import { useNavigate } from "react-router-dom";
 import { ApplicationLocations } from "types/common/applications-locations.dto";
+import registrationNeededImg from "../../assets/img/registration-needed.svg";
 
 interface IRegistrationNeededScreenProps {}
 
@@ -17,7 +17,6 @@ interface LottieProps {
 const RegistrationNeededScreen: React.FC<
   IRegistrationNeededScreenProps
 > = ({}) => {
-  const element = React.useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
 
   return (
@@ -29,21 +28,35 @@ const RegistrationNeededScreen: React.FC<
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        padding: "0px !important;",
+        px: 2,
+        boxSizing: "border-box",
       }}
     >
-      <Box sx={{ position: "absolute", zIndex: 500 }}>
-        <Typography variant="h4" sx={{ mb: 4 }}>
-          Activity created !
-        </Typography>
-        <img
-          src={activityCreatedImg}
-          alt="Offli logo"
-          style={{ height: "150px" }}
-        />
-      </Box>
-      <OffliButton onClick={() => navigate(ApplicationLocations.REGISTER)}>
-        Register
+      <Typography variant="h2" sx={{ textAlign: "center", mb: 4 }}>
+        Elevate your free time by installing the Offli app for free.
+      </Typography>
+      <img
+        src={registrationNeededImg}
+        alt="Offli logo"
+        style={{ height: 200 }}
+      />
+      <OffliButton
+        //TODO navigate to app store / google store
+        // onClick={() => navigate(ApplicationLocations.REGISTER)}
+        sx={{ mt: 4, width: "60%" }}
+      >
+        Download App
+      </OffliButton>
+
+      <LabeledDivider sx={{ mt: 1 }}>
+        <Typography variant="subtitle1">or</Typography>
+      </LabeledDivider>
+      <OffliButton
+        onClick={() => navigate(ApplicationLocations.REGISTER)}
+        sx={{ width: "60%" }}
+        variant="text"
+      >
+        Sign up or Log in
       </OffliButton>
     </Box>
   );

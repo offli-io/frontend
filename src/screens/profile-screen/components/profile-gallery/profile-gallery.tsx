@@ -48,7 +48,10 @@ const ProfileGallery: React.FC<IProfileGalleryProps> = ({
   });
 
   const handleConnectInstagram = React.useCallback(() => {
-    window.location.href = `https://api.instagram.com/oauth/authorize?client_id=1317539042184854&redirect_uri=${window.location.href}/&scope=user_profile,user_media&response_type=code`;
+    const location = window.location.href.endsWith("/")
+      ? window.location.href.slice(0, -1)
+      : window.location.href;
+    window.location.href = `https://api.instagram.com/oauth/authorize?client_id=1317539042184854&redirect_uri=${location}/&scope=user_profile,user_media&response_type=code`;
   }, []);
 
   const { isLoading: isUnlinkingInstagram, mutate: sendUnlinkInstagram } =
