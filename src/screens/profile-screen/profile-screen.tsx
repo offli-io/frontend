@@ -1,34 +1,30 @@
-import LocationOnIcon from "@mui/icons-material/LocationOn";
-import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
-import { Box, IconButton, Typography, useTheme } from "@mui/material";
+import { Box, Typography, useTheme } from "@mui/material";
+import shadows from "@mui/material/styles/shadows";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { DrawerContext } from "assets/theme/drawer-provider";
 import ImagePreviewModal from "components/image-preview-modal/image-preview-modal";
 import Loader from "components/loader";
 import React from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
-import { ActivitiyParticipantStatusEnum } from "types/activities/activity-participant-status-enum.dto";
 import { getBuddyState } from "../../api/users/requests";
 import userPlaceholder from "../../assets/img/user-placeholder.svg";
 import { AuthenticationContext } from "../../assets/theme/authentication-provider";
 import ActionButton from "../../components/action-button";
 import OffliButton from "../../components/offli-button";
 import { PageWrapper } from "../../components/page-wrapper";
-import ProfileGallery from "./components/profile-gallery/profile-gallery";
 import ProfileStatistics from "../../components/profile-statistics";
 import { useGetApiUrl } from "../../hooks/use-get-api-url";
 import { useUser } from "../../hooks/use-user";
 import { ApplicationLocations } from "../../types/common/applications-locations.dto";
 import { BuddyRequestActionEnum } from "../../types/users/buddy-request-action-enum.dto";
 import { BuddyStateEnum } from "../../types/users/buddy-state-enum.dto";
+import BuddyButton from "./components/buddies-button";
 import LastAttendedActivities from "./components/last-attended-activites";
-import { useGetLastAttendedActivities } from "./hooks/use-get-last-attended-activities";
+import ProfileGallery from "./components/profile-gallery/profile-gallery";
 import { useSendBuddyRequest } from "./hooks/use-send-buddy-request";
 import { useToggleBuddyRequest } from "./hooks/use-toggle-buddy-request";
 import { ProfileEntryTypeEnum } from "./types/profile-entry-type";
 import { generateBuddyActionButtonLabel } from "./utils/generate-buddy-action-button-label.util";
-import shadows from "@mui/material/styles/shadows";
 
 interface IProfileScreenProps {
   type: ProfileEntryTypeEnum;
@@ -45,7 +41,6 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
   const [previewModalImageUrl, setPreviewModalImageUrl] = React.useState<
     string | null
   >(null);
-  const { toggleDrawer } = React.useContext(DrawerContext);
 
   const { handleToggleBuddyRequest, isTogglingBuddyRequest } =
     useToggleBuddyRequest({
@@ -196,40 +191,7 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
               }
             />
             {type === ProfileEntryTypeEnum.PROFILE && (
-              <IconButton
-                color="primary"
-                sx={{
-                  backgroundColor: (theme) => theme.palette.background.default,
-                  height: 40,
-                  px: 1.5,
-                  mt: 1,
-                  mr: 1,
-                  borderRadius: "15px",
-                  borderWidth: 1,
-                  borderStyle: "solid",
-                  borderColor: (theme) => theme.palette.primary.main,
-                  position: "absolute",
-                  right: 0,
-                }}
-                onClick={() => navigate(ApplicationLocations.BUDDIES)}
-                data-testid="buddies-btn"
-              >
-                <PeopleAltIcon
-                  sx={{ fontSize: 18, padding: 0, color: "primary.main" }}
-                />
-                <Typography
-                  variant="subtitle1"
-                  color="primary"
-                  sx={{
-                    fontWeight: "bold",
-                    ml: 0.75,
-                  }}
-                >
-                  {`${data?.buddies?.length} ${
-                    data?.buddies?.length === 1 ? "Buddy" : "Buddies"
-                  }`}
-                </Typography>
-              </IconButton>
+              <BuddyButton buddyCount={data?.buddies_count} />
             )}
           </Box>
           <Box
@@ -305,9 +267,17 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
                 </Box>
               </Box>
             </Box>
-            <Box sx={{ display: "flex", justifyContent: "center", mt: 1 }}>
-              <Typography variant="subtitle1">{data?.about_me}</Typography>
-            </Box>
+            <Typography
+              variant="subtitle1"
+              sx={{
+                textAlign: "center",
+                mt: 2,
+                boxSizing: "border-box",
+                px: 2,
+              }}
+            >
+              {data?.about_me}
+            </Typography>
           </Box>
         </Box>
         {type === ProfileEntryTypeEnum.PROFILE && (

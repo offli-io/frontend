@@ -33,7 +33,10 @@ import { IBuddiesResponseDto } from "types/users/buddies-response.dto";
 import { IUsersResponseDto } from "types/users/users-response.dto";
 import { IUsersSearchParamsDto } from "types/users/users-search-params.dto";
 import { ActivitySortColumnEnum } from "types/activities/activity-sort-enum.dto";
-import { ACTIVITES_LIMIT } from "utils/common-constants";
+import {
+  ACTIVITES_LIMIT,
+  BRATISLAVA_CENTER_COORDS_OBJECT,
+} from "utils/common-constants";
 
 export const getActivities = async ({
   queryFunctionContext,
@@ -258,7 +261,8 @@ export const getLocationFromQuery = (queryString: string) => {
 };
 
 export const getLocationFromQueryFetch = (
-  queryString: string
+  queryString: string,
+  location: { lat?: number; lon?: number } = BRATISLAVA_CENTER_COORDS_OBJECT
 ): Promise<IPlaceExternalApiFetchDto> => {
   const CancelToken = axios.CancelToken;
   const source = CancelToken.source();
@@ -277,7 +281,7 @@ export const getLocationFromQueryFetch = (
   };
 
   const promise = fetch(
-    `https://api.geoapify.com/v1/geocode/search?name=${queryString}&limit=10&format=json&apiKey=86a10638b4cf4c339ade6ab08f753b16`,
+    `https://api.geoapify.com/v1/geocode/search?name=${queryString}&limit=10&bias=proximity:${location?.lon},${location?.lat}&filter=countrycode:sk,cz&format=json&apiKey=86a10638b4cf4c339ade6ab08f753b16`,
     requestOptions
   ).then((response) => response.json());
 

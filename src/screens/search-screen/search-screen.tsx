@@ -230,10 +230,14 @@ const SearchScreen = () => {
         value={currentTab}
         onChange={handleTabChange}
         variant="fullWidth"
-        sx={{ '& .MuiTab-root': {
-          textTransform: 'capitalize',
-          fontSize: 16
-          }, px:1, mb:1 }}
+        sx={{
+          "& .MuiTab-root": {
+            textTransform: "capitalize",
+            fontSize: 16,
+          },
+          px: 1,
+          mb: 1,
+        }}
         // allowScrollButtonsMobile
         // scrollButtons="auto"
       >
@@ -249,7 +253,7 @@ const SearchScreen = () => {
       {currentTab === SearchTabDefinitionsEnum.ACTIVITIES ? (
         <Box sx={{ ml: 1.5, boxSizing: "border-box" }}>
           {areActivitiesLoading ? (
-            <Box sx={{ display: "flex", justifyContent: "center" }}>
+            <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
               <CircularProgress color="primary" />
             </Box>
           ) : activities?.length > 0 ? (

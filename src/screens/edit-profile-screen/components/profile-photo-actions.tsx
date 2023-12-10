@@ -17,12 +17,6 @@ export enum ProfilePhotoActionsEnum {
 
 const ProfilePhotoActionDefinitions: IDrawerActionsType<ProfilePhotoActionsEnum>[] =
   [
-    // TODO idk if this option is somehow different from one below
-    // {
-    //   label: "Take a new picture",
-    //   type: ProfilePhotoActionsEnum.TAKE_PICTURE,
-    //   icon: <AddAPhotoIcon color="primary" />,
-    // },
     {
       label: "Select from your device",
       type: ProfilePhotoActionsEnum.SELECT_FROM_DEVICE,
