@@ -1,10 +1,11 @@
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import NotificationsNoneOutlinedIcon from "@mui/icons-material/NotificationsNoneOutlined";
 import SettingsIcon from "@mui/icons-material/Settings";
-import { Badge, Box, IconButton, SxProps, useTheme } from "@mui/material";
+import { Badge, Box, IconButton, SxProps, ThemeProvider, useTheme } from "@mui/material";
 import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import offliLogo from "../../assets/img/logo-purple.png";
+import offliLogoDark from "../../assets/img/offli-logo-dark.svg";
+import offliLogoLight from "../../assets/img/offli-logo-light.svg";
 import { AuthenticationContext } from "../../assets/theme/authentication-provider";
 import { useNotifications } from "../../hooks/use-notifications";
 import { ApplicationLocations } from "../../types/common/applications-locations.dto";
@@ -68,6 +69,8 @@ const OffliHeader: React.FC<IProps> = ({ sx }) => {
     [location]
   );
 
+  const logoSrc = palette.mode === 'light' ? offliLogoDark : offliLogoLight;
+
   return (
     <Box
       ref={headerRef}
@@ -102,7 +105,7 @@ const OffliHeader: React.FC<IProps> = ({ sx }) => {
           }}
         >
           <img
-            src={offliLogo}
+            src={logoSrc}
             alt="Offli logo"
             style={{ height: "40px" }}
             data-testid="offli-logo"
