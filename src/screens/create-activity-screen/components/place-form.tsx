@@ -20,7 +20,7 @@ import {
   mapExternalApiOptions,
   mapLocationValue,
 } from "../../../utils/map-location-value.util";
-import { FormValues } from "../create-activity-screen";
+import { FormValues } from "../utils/validation-schema";
 import LocationSearchingIcon from "@mui/icons-material/LocationSearching";
 import AddLocationAltIcon from "@mui/icons-material/AddLocationAlt";
 

@@ -1,16 +1,13 @@
-import { Box, CircularProgress, Divider, Typography } from "@mui/material";
+import { Box, Divider, Typography } from "@mui/material";
+import { isAfter } from "date-fns";
 import React from "react";
 import { AuthenticationContext } from "../../../assets/theme/authentication-provider";
 import MenuItem from "../../../components/menu-item";
+import { ActivitiyParticipantStatusEnum } from "../../../types/activities/activity-participant-status-enum.dto";
+import { ActivityVisibilityEnum } from "../../../types/activities/activity-visibility-enum.dto";
 import { IActivity } from "../../../types/activities/activity.dto";
 import { ActivityActionsTypeEnumDto } from "../../../types/common/activity-actions-type-enum.dto";
 import { useActivityMenuItems } from "../hooks/use-activity-menu-items";
-import { getActivityParticipants } from "../../../api/activities/requests";
-import { useQuery } from "@tanstack/react-query";
-import { ActivityVisibilityEnum } from "../../../types/activities/activity-visibility-enum.dto";
-import Loader from "../../../components/loader";
-import { ActivitiyParticipantStatusEnum } from "../../../types/activities/activity-participant-status-enum.dto";
-import { isAfter } from "date-fns";
 
 export interface IActivityActionsProps {
   onActionClick?: (

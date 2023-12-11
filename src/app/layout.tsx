@@ -1,6 +1,6 @@
 import { Box, SxProps, useTheme } from "@mui/material";
 import React from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { matchPath, useLocation, useNavigate } from "react-router-dom";
 import { useSwipeable } from "react-swipeable";
 import { isIOS, isSafari } from "utils/is-ios-device.util";
 import { AuthenticationContext } from "../assets/theme/authentication-provider";
@@ -45,6 +45,7 @@ export const Layout: React.FC<ILayoutProps> = ({ children }) => {
   const { stateToken, userInfo, setStateToken, setUserInfo } = React.useContext(
     AuthenticationContext
   );
+  const { pathname } = useLocation();
   const token = getAuthToken();
   const userIdFromStorage = localStorage.getItem("userId");
   const { setHeaderRightContent } = React.useContext(HeaderContext);
@@ -80,13 +81,9 @@ export const Layout: React.FC<ILayoutProps> = ({ children }) => {
   React.useEffect(() => {
     //reset the header right content on route changes, in the future might be subject to change
     setHeaderRightContent(null);
+    // scroll to top when location changes
+    window.scrollTo(0, 0);
   }, [location]);
-
-  React.useEffect(() => {
-    if (!!data && !data?.username && stateToken) {
-      navigate(ApplicationLocations.CHOOSE_USERNAME_GOOGLE);
-    }
-  }, [data, stateToken]);
 
   React.useEffect(() => {
     if (!!data && !data?.location && stateToken) {
@@ -100,7 +97,6 @@ export const Layout: React.FC<ILayoutProps> = ({ children }) => {
       [
         // locations where we want to hide header
         ApplicationLocations.CHOOSE_LOCATION,
-        ApplicationLocations.CHOOSE_USERNAME_GOOGLE,
       ].includes(location?.pathname as ApplicationLocations)
     ) {
       setDisplayHeader(false);
@@ -111,10 +107,9 @@ export const Layout: React.FC<ILayoutProps> = ({ children }) => {
 
   React.useEffect(() => {
     if (
-      [
-        ApplicationLocations.CHOOSE_USERNAME_GOOGLE,
-        ApplicationLocations.CHOOSE_LOCATION,
-      ].includes(location?.pathname as ApplicationLocations)
+      [ApplicationLocations.CHOOSE_LOCATION].includes(
+        location?.pathname as ApplicationLocations
+      )
     ) {
       setDisplayBottomNavigator(false);
     } else {
@@ -151,6 +146,21 @@ export const Layout: React.FC<ILayoutProps> = ({ children }) => {
   );
 
   const isIOSSafari = isIOS() && isSafari();
+
+  const isNotAuthorizedRoute = React.useMemo(
+    () =>
+      [
+        ApplicationLocations.LOGIN,
+        ApplicationLocations.REGISTER,
+        ApplicationLocations.RESET_PASSWORD,
+        ApplicationLocations.LOGIN_OR_REGISTER,
+        ApplicationLocations.PICK_USERNAME,
+        ApplicationLocations.AUTHENTICATION_METHOD,
+        ApplicationLocations.LOADING,
+        ApplicationLocations.FORGOTTEN_PASSWORD,
+      ].some((route) => matchPath({ path: route }, pathname)),
+    [pathname]
+  );
 
   return (
     <LayoutContext.Provider
@@ -193,7 +203,7 @@ export const Layout: React.FC<ILayoutProps> = ({ children }) => {
         >
           <Routes />
         </Box>
-        {stateToken &&
+        {!isNotAuthorizedRoute &&
           displayBottomNavigator &&
           !isBuddyRequest &&
           !isUserProfile && <BottomNavigator sx={{ height: "100%" }} />}

@@ -33,7 +33,10 @@ import { IBuddiesResponseDto } from "types/users/buddies-response.dto";
 import { IUsersResponseDto } from "types/users/users-response.dto";
 import { IUsersSearchParamsDto } from "types/users/users-search-params.dto";
 import { ActivitySortColumnEnum } from "types/activities/activity-sort-enum.dto";
-import { ACTIVITES_LIMIT } from "utils/common-constants";
+import {
+  ACTIVITES_LIMIT,
+  BRATISLAVA_CENTER_COORDS_OBJECT,
+} from "utils/common-constants";
 
 export const getActivities = async ({
   queryFunctionContext,
@@ -111,6 +114,52 @@ export const getActivitiesPromiseResolved = async ({
   return response?.data?.activities;
 };
 
+export const getActivitiesPromiseResolvedAnonymous = async ({
+  limit = ACTIVITES_LIMIT,
+  offset,
+  sort,
+  creatorId,
+  datetimeFrom,
+  datetimeUntil,
+}: {
+  id?: number;
+  text?: string;
+  tag?: string[];
+  date?: Date | null;
+  limit?: number;
+  offset?: number;
+  lon?: number;
+  lat?: number;
+  sort?: string;
+  creatorId?: number;
+  datetimeFrom?: Date;
+  datetimeUntil?: Date;
+}) => {
+  const CancelToken = axios.CancelToken;
+  const source = CancelToken.source();
+
+  const response = await axios.get<IActivityListRestDto>(
+    `/anonymous/activities`,
+    {
+      cancelToken: source?.token,
+      params: {
+        limit,
+        offset,
+        sort,
+        creatorId,
+        datetimeFrom,
+        datetimeUntil,
+      },
+    }
+  );
+
+  // queryFunctionContext?.signal?.addEventListener("abort", () => {
+  //   source.cancel("Query was cancelled by React Query");
+  // });
+
+  return response?.data?.activities;
+};
+
 export const getActivity = <T>(params: IActivitiesParamsDto) => {
   const promise = axios.get<T>(
     `/activities${params?.id ? `/${params?.id}` : ""}`,
@@ -130,6 +179,20 @@ export const getActivity = <T>(params: IActivitiesParamsDto) => {
   // queryFunctionContext?.signal?.addEventListener('abort', () => {
   //   source.cancel('Query was cancelled by React Query')
   // })
+
+  return promise;
+};
+
+export const getActivityAnonymous = <T>(params: IActivitiesParamsDto) => {
+  const promise = axios.get<T>(
+    `/anonymous/activities${params?.id ? `/${params?.id}` : ""}`,
+    {
+      params,
+      paramsSerializer: (params) => {
+        return qs.stringify(params, { arrayFormat: "repeat" });
+      },
+    }
+  );
 
   return promise;
 };
@@ -198,7 +261,8 @@ export const getLocationFromQuery = (queryString: string) => {
 };
 
 export const getLocationFromQueryFetch = (
-  queryString: string
+  queryString: string,
+  location: { lat?: number; lon?: number } = BRATISLAVA_CENTER_COORDS_OBJECT
 ): Promise<IPlaceExternalApiFetchDto> => {
   const CancelToken = axios.CancelToken;
   const source = CancelToken.source();
@@ -217,7 +281,7 @@ export const getLocationFromQueryFetch = (
   };
 
   const promise = fetch(
-    `https://api.geoapify.com/v1/geocode/search?name=${queryString}&limit=10&format=json&apiKey=86a10638b4cf4c339ade6ab08f753b16`,
+    `https://api.geoapify.com/v1/geocode/search?name=${queryString}&limit=10&bias=proximity:${location?.lon},${location?.lat}&filter=countrycode:sk,cz&format=json&apiKey=86a10638b4cf4c339ade6ab08f753b16`,
     requestOptions
   ).then((response) => response.json());
 
@@ -618,6 +682,31 @@ export const getActivityParticipants = ({
 
   const promise = axios.get<IListParticipantsResponseDto>(
     `/activities/${activityId}/participants`,
+    {
+      // params: searchParams,
+      cancelToken: source?.token,
+    }
+  );
+
+  // queryFunctionContext?.signal?.addEventListener("abort", () => {
+  //   source.cancel("Query was cancelled by React Query");
+  // });
+
+  return promise;
+};
+
+export const getActivityParticipantsAnonymous = ({
+  activityId,
+}: // searchParams,
+{
+  activityId: number;
+  // searchParams?: IActivitySearchParams | undefined;
+}) => {
+  const CancelToken = axios.CancelToken;
+  const source = CancelToken.source();
+
+  const promise = axios.get<IListParticipantsResponseDto>(
+    `/anonymous/activities/${activityId}/participants`,
     {
       // params: searchParams,
       cancelToken: source?.token,

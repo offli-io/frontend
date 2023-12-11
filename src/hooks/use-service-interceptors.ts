@@ -6,22 +6,24 @@ import { IPersonExtended } from "types/activities/activity.dto";
 import { ApplicationLocations } from "types/common/applications-locations.dto";
 import { getAuthToken, setAuthToken } from "../utils/token.util";
 import { useGetApiUrl } from "./use-get-api-url";
+import { AuthenticationContext } from "assets/theme/authentication-provider";
 
 interface IUseServiceInterceptorsProps {
   setStateToken: React.Dispatch<React.SetStateAction<string | null>>;
   setUserInfo?: React.Dispatch<
     React.SetStateAction<IPersonExtended | undefined>
   >;
+  userId?: number;
 }
 
 export const useServiceInterceptors = ({
   setStateToken,
   setUserInfo,
+  userId,
 }: IUseServiceInterceptorsProps) => {
   const abortControllerRef = React.useRef<AbortController | null>(null);
   const baseUrl = useGetApiUrl();
   const queryClient = useQueryClient();
-  const navigate = useNavigate();
 
   axios.interceptors.request.use(
     (config) => {
@@ -36,6 +38,9 @@ export const useServiceInterceptors = ({
           const explicitToken = config.headers["Authorization"];
           if (_token && !explicitToken) {
             config.headers["Authorization"] = "Bearer " + _token;
+          }
+          if (userId) {
+            config.headers["user-id"] = userId;
           }
           return config;
         }
@@ -60,7 +65,7 @@ export const useServiceInterceptors = ({
         queryClient.removeQueries();
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
-        navigate(ApplicationLocations.LOGIN);
+        // navigate(ApplicationLocations.LOGIN);
       }
       //TODO uncomment
       // const originalConfig = err.config;

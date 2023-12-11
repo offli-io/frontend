@@ -19,4 +19,8 @@ export const TIME_FORMAT = "HH:mm";
 
 export const ACTIVITY_ASPECT_RATIO = 800 / 600;
 
+export const USERS_LIMIT = 20;
 export const ACTIVITES_LIMIT = 20;
+
+export const BRATISLAVA_CENTER_COORDS_ARRAY = [48.1486, 17.1077];
+export const BRATISLAVA_CENTER_COORDS_OBJECT = { lat: 48.1486, lon: 17.1077 };

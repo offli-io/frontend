@@ -1,1 +1,3 @@
-export interface IFetchInstagramPhotosResponseDto {}
+export interface IFetchInstagramPhotosResponseDto {
+  media?: string[];
+}

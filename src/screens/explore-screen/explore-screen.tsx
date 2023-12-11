@@ -9,22 +9,19 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
-import {
-  useInfiniteQuery,
-  useMutation,
-  useQueryClient,
-} from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import Loader from "components/loader";
+import {
+  PAGED_ACTIVITIES_QUERY_KEY,
+  useActivitiesInfiniteQuery,
+} from "hooks/use-activities-infinite-query";
 import { useDismissActivity } from "hooks/use-dismiss-activity";
 import React from "react";
 import InfiniteScroll from "react-infinite-scroller";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { ActivitySortColumnEnum } from "types/activities/activity-sort-enum.dto";
-import { ACTIVITES_LIMIT } from "utils/common-constants";
 import {
   changeActivityParticipantStatus,
-  getActivitiesPromiseResolved,
   removePersonFromActivity,
 } from "../../api/activities/requests";
 import { LocationContext } from "../../app/providers/location-provider";
@@ -32,10 +29,7 @@ import { AuthenticationContext } from "../../assets/theme/authentication-provide
 import { DrawerContext } from "../../assets/theme/drawer-provider";
 import ActivityCard from "../../components/activity-card";
 import OffliButton from "../../components/offli-button";
-import {
-  ACTIVITIES_QUERY_KEY,
-  PAGED_ACTIVITIES_QUERY_KEY,
-} from "../../hooks/use-activities";
+import { ACTIVITIES_QUERY_KEY } from "../../hooks/use-activities";
 import { PARTICIPANT_ACTIVITIES_QUERY_KEY } from "../../hooks/use-participant-activities";
 import { useUser } from "../../hooks/use-user";
 import { ActivityInviteStateEnum } from "../../types/activities/activity-invite-state-enum.dto";
@@ -64,45 +58,8 @@ const ExploreScreen = () => {
     id: userInfo?.id,
   });
 
-  const {
-    data: paginatedActivitiesData,
-    isSuccess,
-    hasNextPage,
-    fetchNextPage,
-    isFetchingNextPage,
-  } = useInfiniteQuery(
-    [PAGED_ACTIVITIES_QUERY_KEY, location],
-    ({ pageParam = 0 }) =>
-      getActivitiesPromiseResolved({
-        offset: pageParam,
-        limit: ACTIVITES_LIMIT,
-        lon: location?.coordinates?.lon,
-        lat: location?.coordinates?.lat,
-        participantId: Number(userInfo?.id),
-        sort:
-          location?.coordinates?.lon && location?.coordinates?.lat
-            ? ActivitySortColumnEnum.LOCATION
-            : undefined,
-      }),
-    {
-      getNextPageParam: (lastPage, allPages) => {
-        // don't need to add +1 because we are indexing offset from 0 (so length will handle + 1)
-        if (lastPage?.length === ACTIVITES_LIMIT) {
-          const nextPage: number = allPages?.length;
-          return nextPage;
-        }
-
-        return undefined;
-      },
-      enabled: !!userInfo?.id,
-      select: (data) => ({
-        pages: data?.pages?.map((page) =>
-          page?.filter((activity) => activity?.participant_status === null)
-        ),
-        pageParams: [...data.pageParams],
-      }),
-    }
-  );
+  const { pages, isFetchingNextPage, fetchNextPage, hasNextPage } =
+    useActivitiesInfiniteQuery();
 
   const { mutate: sendJoinActivity } = useMutation(
     ["join-activity-response"],
@@ -220,11 +177,6 @@ const ExploreScreen = () => {
       });
     },
     [toggleDrawer]
-  );
-
-  const anyNearYouActivities = React.useMemo(
-    () => paginatedActivitiesData?.pages?.some((page) => page?.length > 0),
-    [paginatedActivitiesData]
   );
 
   const handleLocationSelect = React.useCallback(() => {
@@ -371,7 +323,7 @@ const ExploreScreen = () => {
           pageStart={0}
           loadMore={() =>
             !isFetchingNextPage &&
-            [...(paginatedActivitiesData?.pages?.[0] ?? [])].length > 8 &&
+            [...(pages?.[0] ?? [])].length > 8 &&
             fetchNextPage()
           }
           hasMore={hasNextPage}
@@ -379,7 +331,7 @@ const ExploreScreen = () => {
           useWindow={false}
         >
           <>
-            {paginatedActivitiesData?.pages?.map((group, i) => (
+            {pages?.map((group, i) => (
               <React.Fragment key={i}>
                 {group?.map((activity) => (
                   <ActivityCard

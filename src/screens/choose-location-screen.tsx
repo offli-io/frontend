@@ -1,12 +1,7 @@
-import { yupResolver } from "@hookform/resolvers/yup";
 import NearMeIcon from "@mui/icons-material/NearMe";
 import { Autocomplete, Box, TextField, Typography } from "@mui/material";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import React from "react";
-import { useForm } from "react-hook-form";
-import * as yup from "yup";
-import OffliButton from "../components/offli-button";
-
 import { useGeolocated } from "react-geolocated";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
@@ -19,18 +14,10 @@ import { updateProfileInfo } from "../api/users/requests";
 import { LocationContext } from "../app/providers/location-provider";
 import chooseLocationUrl from "../assets/img/choose-location.svg";
 import { AuthenticationContext } from "../assets/theme/authentication-provider";
+import OffliButton from "../components/offli-button";
 import { ILocation } from "../types/activities/location.dto";
 import { IPlaceExternalApiResultDto } from "../types/activities/place-external-api.dto";
 import { ApplicationLocations } from "../types/common/applications-locations.dto";
-
-export interface FormValues {
-  placeQuery: string;
-}
-
-const schema: () => yup.SchemaOf<FormValues> = () =>
-  yup.object({
-    placeQuery: yup.string().defined().required(),
-  });
 
 const ChooseLocationScreen: React.FC = () => {
   const [placeQuery, setPlaceQuery] = React.useState("");
@@ -49,8 +36,6 @@ const ChooseLocationScreen: React.FC = () => {
       positionOptions: {
         enableHighAccuracy: false,
       },
-      //   userDecisionTimeout: 5000,
-      //   suppressLocationOnMount: true,
     });
 
   const {
@@ -99,15 +84,6 @@ const ChooseLocationScreen: React.FC = () => {
     );
 
   const navigate = useNavigate();
-
-  //TODO remove validation it is not needed here
-  const { control, handleSubmit, watch, setValue } = useForm<FormValues>({
-    defaultValues: {
-      placeQuery: "",
-    },
-    resolver: yupResolver(schema()),
-    mode: "onChange",
-  });
 
   const handleLocationSelect = React.useCallback(
     (e: any, locationObject: IPlaceExternalApiResultDto | null) => {
@@ -195,6 +171,7 @@ const ChooseLocationScreen: React.FC = () => {
         sx={{ width: "100%", my: 2, fontSize: 16 }}
         onClick={handleUseCurrentLocation}
         disabled={!coords}
+        isLoading={isGeolocationAvailable && isGeolocationEnabled && !coords}
         variant="text"
       >
         Use my current location

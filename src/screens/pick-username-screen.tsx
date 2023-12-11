@@ -3,7 +3,7 @@ import { Box, TextField, Typography } from "@mui/material";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import React from "react";
 import { Controller, useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { useDebounce } from "use-debounce";
 import * as yup from "yup";
@@ -19,15 +19,24 @@ import {
   IEmailUsernamePassword,
   IUsername,
 } from "../types/users/user.dto";
+import { PickUsernameTypeEnum } from "types/common/pick-username-type-enum.dto";
+import { registerViaGoogle } from "api/auth/requests";
+import { IGoogleRegisterUserValuesDto } from "types/google/google-register-user-values.dto";
+import { AuthenticationContext } from "assets/theme/authentication-provider";
 
 const schema: () => yup.SchemaOf<IUsername> = () =>
   yup.object({
     username: yup.string().defined().required("Please enter your username"),
   });
 
-const PickUsernamePhotoScreen = () => {
-  const [username, setUsername] = React.useState<string>("");
+const PickUsernameScreen = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const type = (location?.state as { type?: PickUsernameTypeEnum })?.type;
+  const abortControllerRef = React.useRef<AbortController | null>(null);
+  const { setUserInfo, setStateToken } = React.useContext(
+    AuthenticationContext
+  );
 
   const { control, handleSubmit, setError, formState, watch } =
     useForm<IUsername>({
@@ -65,19 +74,54 @@ const PickUsernamePhotoScreen = () => {
     }
   );
 
-  const handleFormSubmit = React.useCallback((values: IUsername) => {
-    queryClient.setQueryData(["registration-username"], values);
+  const { mutate: sendRegisterViaGoogle } = useMutation(
+    ["google-registration"],
+    (values: IGoogleRegisterUserValuesDto) => {
+      abortControllerRef.current = new AbortController();
+      return registerViaGoogle(values, abortControllerRef?.current?.signal);
+    },
+    {
+      onSuccess: (data, params) => {
+        toast.success("Your account has been successfully registered");
+        setStateToken(data?.data?.token?.access_token ?? null);
+        !!setUserInfo && setUserInfo({ id: data?.data?.user_id });
+        data?.data?.user_id &&
+          localStorage.setItem("userId", String(data?.data?.user_id));
+        navigate(ApplicationLocations.EXPLORE);
+      },
+      onError: (error) => {
+        toast.error("Registration with google failed");
+      },
+    }
+  );
 
-    const registrationEmailPassword = queryClient.getQueryData<IEmailPassword>([
-      "registration-email-password",
-    ]);
+  const handleFormSubmit = React.useCallback(
+    (values: IUsername) => {
+      queryClient.setQueryData(["registration-username"], values);
 
-    sendPresignupUser({
-      email: registrationEmailPassword?.email,
-      username: values?.username,
-      password: registrationEmailPassword?.password,
-    });
-  }, []);
+      const registrationEmailPassword =
+        queryClient.getQueryData<IEmailPassword>([
+          "registration-email-password",
+        ]);
+
+      if (type === PickUsernameTypeEnum.GOOGLE) {
+        const googleToken = queryClient.getQueryData<string | undefined>([
+          "google-token",
+        ]);
+        sendRegisterViaGoogle({
+          username: values?.username,
+          googleBearerToken: googleToken,
+        });
+      } else {
+        sendPresignupUser({
+          email: registrationEmailPassword?.email,
+          username: values?.username,
+          password: registrationEmailPassword?.password,
+        });
+      }
+    },
+    [sendRegisterViaGoogle, sendPresignupUser]
+  );
 
   React.useEffect(() => {
     if (usernameAlreadyTaken?.data) {
@@ -100,7 +144,6 @@ const PickUsernamePhotoScreen = () => {
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          // justifyContent: "center",
         }}
       >
         <Typography variant="h2" align="left" sx={{ width: "75%", mt: 15 }}>
@@ -112,9 +155,7 @@ const PickUsernamePhotoScreen = () => {
           control={control}
           render={({ field, fieldState: { error } }) => (
             <TextField
-              // autoFocus
               {...field}
-              //label="Username"
               placeholder="Username"
               error={!!error}
               helperText={error?.message}
@@ -129,11 +170,11 @@ const PickUsernamePhotoScreen = () => {
           disabled={isUsernameInUse}
           isLoading={isLoading}
         >
-          Next
+          {type === PickUsernameTypeEnum.GOOGLE ? "Register" : "Next"}
         </OffliButton>
       </Box>
     </form>
   );
 };
 
-export default PickUsernamePhotoScreen;
+export default PickUsernameScreen;

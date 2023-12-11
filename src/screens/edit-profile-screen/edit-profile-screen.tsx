@@ -222,12 +222,15 @@ const EditProfileScreen: React.FC = () => {
             ? profilePictureFileInput?.current?.click()
             : titlePictureFileInput?.current?.click();
         case ProfilePhotoActionsEnum.REMOVE_PICTURE:
-          return sendUpdateProfile({ profile_photo: null });
+          return sendUpdateProfile({
+            profile_photo: type === "profile" ? "" : undefined,
+            title_photo: type === "title" ? "" : undefined,
+          });
         default:
           return;
       }
     },
-    [profilePictureFileInput]
+    [profilePictureFileInput, titlePictureFileInput]
   );
 
   // const openColorPicker = React.useCallback(() => {
@@ -375,8 +378,8 @@ const EditProfileScreen: React.FC = () => {
             <Box
               sx={{
                 position: "absolute",
-                top: "85%",
-                left: "50%",
+                top: "95%",
+                left: "15%",
                 transform: "translate(-50%, -50%)",
               }}
             >
@@ -415,22 +418,6 @@ const EditProfileScreen: React.FC = () => {
                 >
                   <EditIcon sx={{ color: "white", fontSize: 20 }} />
                 </IconButton>
-                {/* <OffliButton
-                  size="small"
-                  sx={{
-                    position: "absolute",
-                    p: 0.5,
-                    m: 0,
-                    right: 10,
-                    top: 2,
-                    bgcolor: palette?.primary?.main,
-                    width: 20,
-                    height: 20,
-                    minWidth: "unset",
-                  }}
-                >
-                  <EditIcon sx={{ color: "white", fontSize: 14 }} />
-                </OffliButton> */}
               </Box>
             </Box>
           </Box>
@@ -448,7 +435,7 @@ const EditProfileScreen: React.FC = () => {
             )}
             data-testid="edit-profile-form"
           >
-            <Box sx={{ width: "90%", mt: 2 }}>
+            <Box sx={{ width: "90%", mt: 6 }}>
               <Controller
                 name="username"
                 control={control}

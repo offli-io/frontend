@@ -1,9 +1,4 @@
-import {
-  Autocomplete,
-  Box,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Autocomplete, Box, TextField, Typography } from "@mui/material";
 import React from "react";
 import PlaceIcon from "@mui/icons-material/Place";
 import OffliButton from "../../../components/offli-button";
@@ -14,9 +9,7 @@ import {
   getPlaceFromCoordinates,
 } from "../../../api/activities/requests";
 import { useDebounce } from "use-debounce";
-import {
-  IPlaceExternalApiResultDto,
-} from "../../../types/activities/place-external-api.dto";
+import { IPlaceExternalApiResultDto } from "../../../types/activities/place-external-api.dto";
 import { ILocation } from "../../../types/activities/location.dto";
 import NearMeIcon from "@mui/icons-material/NearMe";
 import { useGeolocated } from "react-geolocated";
@@ -106,6 +99,9 @@ export const SetLocationContent: React.FC<IPlaceFormProps> = ({
     // onLocationSelect({ name: null, coordinates: });
   }, [coords]);
 
+  const isCurrentLocationLoading =
+    !coords && isGeolocationAvailable && isGeolocationEnabled;
+
   return (
     <Box
       sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}
@@ -117,7 +113,7 @@ export const SetLocationContent: React.FC<IPlaceFormProps> = ({
           alignItems: "flex-end",
           justifyContent: "space-between",
           mt: 2,
-          gap: -2
+          gap: -2,
         }}
       >
         <Box
@@ -157,20 +153,17 @@ export const SetLocationContent: React.FC<IPlaceFormProps> = ({
             width: "100%",
             display: "flex",
             justifyContent: "center",
-            alignItems: "center"
+            alignItems: "center",
           }}
           loading={isLoading}
-          onChange={
-            (e, locationObject) =>
-              onLocationSelect({
-                name: locationObject?.name ?? locationObject?.city,
-                coordinates: {
-                  lat: locationObject?.lat,
-                  lon: locationObject?.lon,
-                },
-              })
-
-            // locationObject && setSelectedLocation(locationObject)
+          onChange={(e, locationObject) =>
+            onLocationSelect({
+              name: locationObject?.name ?? locationObject?.city,
+              coordinates: {
+                lat: locationObject?.lat,
+                lon: locationObject?.lon,
+              },
+            })
           }
           getOptionLabel={(option) => String(option?.formatted)}
           renderInput={(params) => (
@@ -183,7 +176,7 @@ export const SetLocationContent: React.FC<IPlaceFormProps> = ({
                   fontSize: 14,
                   color: "primary.main",
                   opacity: 1,
-                  pl:1,
+                  pl: 1,
                 },
                 "& fieldset": { border: "none" },
                 backgroundColor: ({ palette }) => palette?.primary?.light,
@@ -193,10 +186,15 @@ export const SetLocationContent: React.FC<IPlaceFormProps> = ({
           )}
         />
         <OffliButton
-          startIcon={<NearMeIcon sx={{color: "background.default"}}/>}
+          startIcon={
+            !isCurrentLocationLoading ? (
+              <NearMeIcon sx={{ color: "background.default" }} />
+            ) : undefined
+          }
           sx={{ width: "80%", my: 4, fontSize: 16, height: 48 }}
           onClick={handleUseCurrentLocation}
           disabled={!coords}
+          isLoading={!coords && isGeolocationAvailable && isGeolocationEnabled}
         >
           Use my current location
         </OffliButton>

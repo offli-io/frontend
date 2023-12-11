@@ -1,16 +1,16 @@
 import InstagramIcon from "@mui/icons-material/Instagram";
 import { Box, IconButton, Typography, useTheme } from "@mui/material";
-import React from "react";
-import { useGetApiUrl } from "hooks/use-get-api-url";
-import ImagePreviewModal from "components/image-preview-modal/image-preview-modal";
-import OffliButton from "components/offli-button";
-import InstagramDrawerActions from "screens/profile-screen/components/instagram-drawer-actions";
-import { DrawerContext } from "assets/theme/drawer-provider";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { connectInstagram, unlinkInstagram } from "api/users/requests";
+import { unlinkInstagram } from "api/users/requests";
 import { AuthenticationContext } from "assets/theme/authentication-provider";
-import { toast } from "sonner";
+import { DrawerContext } from "assets/theme/drawer-provider";
+import ImagePreviewModal from "components/image-preview-modal/image-preview-modal";
 import Loader from "components/loader";
+import OffliButton from "components/offli-button";
+import { useGetApiUrl } from "hooks/use-get-api-url";
+import React from "react";
+import InstagramDrawerActions from "screens/profile-screen/components/instagram-drawer-actions";
+import { toast } from "sonner";
 import ProfileGalleryImageUploadContent from "./components/profile-gallery-image-upload-content";
 
 interface IProfileGalleryProps {
@@ -48,36 +48,11 @@ const ProfileGallery: React.FC<IProfileGalleryProps> = ({
   });
 
   const handleConnectInstagram = React.useCallback(() => {
-    window.location.href = `https://api.instagram.com/oauth/authorize?client_id=1317539042184854&redirect_uri=${window.location.href}/&scope=user_profile,user_media&response_type=code`;
-  }, []);
-
-  const { isLoading: isConnectingInstagram, mutate: sendConnectInstagram } =
-    useMutation(
-      ["instagram-connection"],
-      (code?: string) => connectInstagram(Number(userInfo?.id), String(code)),
-      {
-        onSuccess: () => {
-          toast.success(
-            "Your instagram account has been successfully connected"
-          );
-          queryClient.invalidateQueries(["user"]);
-          //didnt even notice the refresh -> this might work
-          window.history.pushState(
-            {},
-            document.title,
-            window.location.pathname
-          );
-        },
-        onError: () => {
-          toast.error("Failed to connect your instagram account");
-          window.history.pushState(
-            {},
-            document.title,
-            window.location.pathname
-          );
-        },
-      }
-    );
+    const location = window.location.href.endsWith("/")
+      ? window.location.href.slice(0, -1)
+      : window.location.href;
+    window.location.href = `https://api.instagram.com/oauth/authorize?client_id=1317539042184854&redirect_uri=${location}/&scope=user_profile,user_media&response_type=code`;
+  }, [window.location.href]);
 
   const { isLoading: isUnlinkingInstagram, mutate: sendUnlinkInstagram } =
     useMutation(
@@ -98,7 +73,6 @@ const ProfileGallery: React.FC<IProfileGalleryProps> = ({
     );
 
   React.useEffect(() => {
-    // if (instagramCode && userInfo?.id) {
     if (instagramCode && userInfo?.id) {
       toggleDrawer({
         open: true,
@@ -106,7 +80,6 @@ const ProfileGallery: React.FC<IProfileGalleryProps> = ({
           <ProfileGalleryImageUploadContent instagramCode={instagramCode} />
         ),
       });
-      // sendConnectInstagram(instagramCode);
     }
   }, [instagramCode, userInfo?.id]);
 
@@ -140,7 +113,12 @@ const ProfileGallery: React.FC<IProfileGalleryProps> = ({
   return (
     <Box sx={{ px: 2, mb: 2, width: "100%", boxSizing: "border-box" }}>
       <ImagePreviewModal
-        imageSrc={`${baseUrl}/files/${previewModalImageUrl}`}
+        imageSrc={
+          //TODO better check
+          previewModalImageUrl?.includes("https:/")
+            ? previewModalImageUrl
+            : `${baseUrl}/files/${previewModalImageUrl}`
+        }
         open={!!previewModalImageUrl}
         onClose={() => setPreviewModalImageUrl(null)}
       />
@@ -192,7 +170,7 @@ const ProfileGallery: React.FC<IProfileGalleryProps> = ({
           </>
         ) : null}
       </Box>
-      {isConnectingInstagram || isUnlinkingInstagram ? <Loader /> : null}
+      {isUnlinkingInstagram ? <Loader /> : null}
       {[...(firstSplittedPhotos ?? [])]?.length > 0 ? (
         <Box
           sx={{
@@ -206,7 +184,7 @@ const ProfileGallery: React.FC<IProfileGalleryProps> = ({
               {firstSplittedPhotos?.map((photo) => (
                 <img
                   key={photo}
-                  src={`${baseUrl}/files/${photo}`}
+                  src={photo}
                   alt="profile"
                   style={{
                     width: "100%",
@@ -225,7 +203,7 @@ const ProfileGallery: React.FC<IProfileGalleryProps> = ({
               {secondSplittedPhotos?.map((photo) => (
                 <img
                   key={photo}
-                  src={`${baseUrl}/files/${photo}`}
+                  src={photo}
                   alt="profile"
                   style={{
                     width: "100%",

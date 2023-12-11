@@ -26,6 +26,8 @@ import { useGoogleAuthorization } from "../hooks/use-google-authorization";
 import { ApplicationLocations } from "../types/common/applications-locations.dto";
 import { GoogleAuthCodeFromEnumDto } from "../types/google/google-auth-code-from-enum.dto";
 import { IEmailPassword } from "../types/users/user.dto";
+import { PickUsernameTypeEnum } from "types/common/pick-username-type-enum.dto";
+import { IGoogleRegisterUserValuesDto } from "types/google/google-register-user-values.dto";
 
 const schema: () => yup.SchemaOf<IEmailPassword> = () =>
   yup.object({
@@ -48,9 +50,6 @@ export const RegistrationScreen: React.FC = () => {
   const [showPassword, setShowPassword] = React.useState(false);
   const [email, setEmail] = React.useState<string | undefined>();
   const { shadows, palette } = useTheme();
-  const { setUserInfo, setStateToken } = React.useContext(
-    AuthenticationContext
-  );
 
   const abortControllerRef = React.useRef<AbortController | null>(null);
 
@@ -66,30 +65,6 @@ export const RegistrationScreen: React.FC = () => {
     () => checkIfEmailAlreadyTaken(email),
     {
       enabled: !!email,
-    }
-  );
-
-  const { mutate: sendRegisterViaGoogle } = useMutation(
-    ["google-registration"],
-    (authorizationCode?: string) => {
-      abortControllerRef.current = new AbortController();
-      return registerViaGoogle(
-        authorizationCode,
-        abortControllerRef?.current?.signal
-      );
-    },
-    {
-      onSuccess: (data, params) => {
-        toast.success("Your account has been successfully registered");
-        setStateToken(data?.data?.token?.access_token ?? null);
-        !!setUserInfo && setUserInfo({ id: data?.data?.user_id });
-        data?.data?.user_id &&
-          localStorage.setItem("userId", String(data?.data?.user_id));
-        navigate(ApplicationLocations.EXPLORE);
-      },
-      onError: (error) => {
-        toast.error("Registration with google failed");
-      },
     }
   );
 
@@ -109,7 +84,12 @@ export const RegistrationScreen: React.FC = () => {
 
   React.useEffect(() => {
     if (googleToken) {
-      sendRegisterViaGoogle(googleToken);
+      queryClient.setQueryData(["google-token"], googleToken);
+      navigate(ApplicationLocations.PICK_USERNAME, {
+        state: {
+          type: PickUsernameTypeEnum.GOOGLE,
+        },
+      });
     }
   }, [googleToken]);
 
@@ -117,8 +97,10 @@ export const RegistrationScreen: React.FC = () => {
 
   const handleFormSubmit = React.useCallback((values: IEmailPassword) => {
     queryClient.setQueryData(["registration-email-password"], values);
-    navigate(ApplicationLocations.PICK_USERNAME);
-    // console.log(data?.data)
+    navigate(ApplicationLocations.PICK_USERNAME, {
+      state: { type: PickUsernameTypeEnum.REGULAR },
+    });
+    // TODO if navigating from google pass type GOOGLE
   }, []);
 
   React.useEffect(() => {
