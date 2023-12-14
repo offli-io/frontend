@@ -6,12 +6,15 @@ import React from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import OffliButton from "./offli-button";
 import { ApplicationLocations } from "types/common/applications-locations.dto";
+import { IPersonExtended } from "types/activities/activity.dto";
+import { useUser } from "hooks/use-user";
+import { AuthenticationContext } from "assets/theme/authentication-provider";
 
 interface IProps {
   participatedNum?: number;
   createdNum?: number;
   metNum?: number;
-  user?:string;
+  user?: IPersonExtended;
   isLoading?: boolean;
 }
 
@@ -19,12 +22,18 @@ const ProfileStatistics: React.FC<IProps> = ({
   participatedNum,
   createdNum,
   metNum,
-  user,
   isLoading,
 }) => {
   const { id } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
+  const { userInfo } = React.useContext(AuthenticationContext);
+  const user = useUser({
+    id: id ? Number(id) : userInfo?.id,
+    requestingInfoUserId: id ? userInfo?.id : undefined,
+  });
+
+  const username = user?.data?.data?.username;
 
   //this was used before when we used picture statistics on other profile
   // <AlternativePicturetatistics
@@ -56,7 +65,7 @@ const ProfileStatistics: React.FC<IProps> = ({
             sx={{
               display: "flex",
               alignItems: "center",
-              mb:metNum ? 1:2
+              mb: metNum ? 1 : 2,
             }}
             data-testid="participated-statistics"
           >
@@ -67,39 +76,47 @@ const ProfileStatistics: React.FC<IProps> = ({
             </IconButton>
             {participatedNum ? (
               <Typography variant="subtitle2">
-                {id ? `${user} participated` : "You participated"} in{" "}
+                {id ? `${username} participated` : "You participated"} in{" "}
                 <b>
                   {participatedNum}{" "}
                   {participatedNum === 1 ? "activity" : "activities"}
                 </b>
                 .
-              </Typography>              
+              </Typography>
             ) : (
-              <Box sx={{display: "flex", flexDirection: "column", justifyContent: "flex-start"}}>
-                {id ?  
-                <Typography variant="subtitle2">                
-                  {user} hasn't joined any activities.
-                </Typography>
-                 : <Box>
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "flex-start",
+                }}
+              >
+                {id ? (
+                  <Typography variant="subtitle2">
+                    {username} hasn't joined any activities.
+                  </Typography>
+                ) : (
+                  <Box>
                     <Typography variant="subtitle2">
-                    No activities joined?
+                      No activities joined?
                     </Typography>
-                    <OffliButton 
-                      variant="text" 
-                      sx={{fontSize: 16, p:0, m: 0}}
-                      onClick={() => {navigate(ApplicationLocations.EXPLORE)}}>
+                    <OffliButton
+                      variant="text"
+                      sx={{ fontSize: 16, p: 0, m: 0 }}
+                      onClick={() => navigate(ApplicationLocations.EXPLORE)}
+                    >
                       Find exciting options!
                     </OffliButton>
-                 </Box>                  
-                }
-                </Box>
+                  </Box>
+                )}
+              </Box>
             )}
           </Box>
           <Box
             sx={{
               display: "flex",
               alignItems: "center",
-              mb:metNum ? 1:2
+              mb: metNum ? 1 : 2,
             }}
             data-testid="created-statistics"
           >
@@ -110,39 +127,46 @@ const ProfileStatistics: React.FC<IProps> = ({
             </IconButton>
             {createdNum ? (
               <Typography variant="subtitle2">
-                {id ? `${user} created` : "You created"}{" "}
+                {id ? `${username} created` : "You created"}{" "}
                 <b>
-                  {createdNum}{" "}
-                  {createdNum === 1 ? "activity" : "activities"}
+                  {createdNum} {createdNum === 1 ? "activity" : "activities"}
                 </b>
                 .
               </Typography>
-            ) : (        
-              <Box sx={{display: "flex", flexDirection: "column", justifyContent: "flex-start"}}>
-                {id ?  
-                <Typography variant="subtitle2">                
-                  {user} hasn't organized any activities.
-                </Typography>
-                 : <Box>
+            ) : (
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "flex-start",
+                }}
+              >
+                {id ? (
+                  <Typography variant="subtitle2">
+                    {username} hasn't organized any activities.
+                  </Typography>
+                ) : (
+                  <Box>
                     <Typography variant="subtitle2">
                       You haven't created any activities.
                     </Typography>
-                    <OffliButton 
-                      variant="text" 
-                      sx={{fontSize: 16, p:0, m: 0}}
-                      onClick={() => {navigate(ApplicationLocations.CREATE)}}>
+                    <OffliButton
+                      variant="text"
+                      sx={{ fontSize: 16, p: 0, m: 0 }}
+                      onClick={() => navigate(ApplicationLocations.CREATE)}
+                    >
                       Organize something fun!
                     </OffliButton>
-                 </Box>                  
-                }
-                </Box>
+                  </Box>
+                )}
+              </Box>
             )}
-          </Box>          
+          </Box>
           <Box
             sx={{
               display: "flex",
               alignItems: "center",
-              mb:metNum ? 1:2
+              mb: metNum ? 1 : 2,
             }}
             data-testid="new-buddies-statistics"
           >
@@ -153,32 +177,37 @@ const ProfileStatistics: React.FC<IProps> = ({
             </IconButton>
             {metNum ? (
               <Typography variant="subtitle2">
-                {id ? `${user} has met` : "You've met"}{" "}
+                {id ? `${username} has met` : "You've met"}{" "}
                 <b>
-                  {createdNum}{" "}
-                  {createdNum === 1 ? "new buddy" : "new buddies"}
+                  {createdNum} {createdNum === 1 ? "new buddy" : "new buddies"}
                 </b>
                 .
-              </Typography>            
-            ) : (    
-              <Box sx={{display: "flex", flexDirection: "column", justifyContent: "flex-start"}}>
-              {id ?  
-              <Typography variant="subtitle2">                
-                {user} hasn't made any new buddies.
               </Typography>
-               : <Box>
+            ) : (
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "flex-start",
+                }}
+              >
+                {id ? (
                   <Typography variant="subtitle2">
-                  No new buddies?
+                    {username} hasn't made any new buddies.
                   </Typography>
-                  <OffliButton 
-                    variant="text" 
-                    sx={{fontSize: 16, p:0, m: 0}}
-                    onClick={() => {navigate(ApplicationLocations.BUDDIES)}}>
-                    Make new connections!
-                  </OffliButton>
-               </Box>                  
-              }
-              </Box>     
+                ) : (
+                  <Box>
+                    <Typography variant="subtitle2">No new buddies?</Typography>
+                    <OffliButton
+                      variant="text"
+                      sx={{ fontSize: 16, p: 0, m: 0 }}
+                      onClick={() => navigate(ApplicationLocations.BUDDIES)}
+                    >
+                      Make new connections!
+                    </OffliButton>
+                  </Box>
+                )}
+              </Box>
             )}
           </Box>
         </>
