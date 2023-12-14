@@ -116,16 +116,6 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
     });
   }, [handleToggleBuddyRequest, id]);
 
-  const displayStatistics = React.useMemo(() => {
-    return id
-      ? (data?.enjoyed_together_last_month_count ?? 0) > 0 ||
-          (data?.activities_participated_last_month_count ?? 0)
-      : (data?.activities_participated_last_month_count ?? 0) ||
-          (data?.enjoyed_together_last_month_count ?? 0) > 0 ||
-          (data?.activities_created_last_month_count ?? 0) ||
-          (data?.new_buddies_last_month_count ?? 0) > 0;
-  }, [data]);
-
   const handleBuddyRequest = React.useCallback(() => {
     // don't need to check sender id because when I have already sent buddy request button is disabled
     if (buddyState === BuddyStateEnum.PENDING) {
@@ -329,10 +319,10 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
         ) : null}
         <LastAttendedActivities />
 
-        {displayStatistics ? (
           <Box
             sx={{
               width: "90%",
+              mb: 3  
             }}
           >
             <Typography
@@ -344,7 +334,6 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
             </Typography>
             <ProfileStatistics
               participatedNum={data?.activities_participated_last_month_count}
-              enjoyedNum={data?.enjoyed_together_last_month_count}
               createdNum={
                 isBuddy || [ProfileEntryTypeEnum.PROFILE].includes(type)
                   ? data?.activities_created_last_month_count
@@ -355,10 +344,10 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
                   ? data?.new_buddies_last_month_count
                   : undefined
               }
+              user={data}
               isLoading={isLoading}
             />
           </Box>
-        ) : null}
 
         {isOtherProfile && !data?.instagram ? null : (
           <ProfileGallery

@@ -110,6 +110,13 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
         selected: false,
       }));
       const _fromOptions = [...fromOptions, item];
+      const addedItemIndex = _fromOptions.findIndex((option) => option.id === item.id);
+      
+      _fromOptions[addedItemIndex] = {
+        ..._fromOptions[addedItemIndex],
+        selected: true,
+      };
+
       setDate((prevDate) => ({ ...prevDate, fromOptions: _fromOptions }));
     },
     [date]
