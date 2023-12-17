@@ -1,58 +1,45 @@
-import { yupResolver } from "@hookform/resolvers/yup";
+import { yupResolver } from '@hookform/resolvers/yup';
+import AddLocationAltIcon from '@mui/icons-material/AddLocationAlt';
 import {
   Autocomplete,
   Box,
   FormControlLabel,
-  FormLabel,
   IconButton,
   Radio,
   RadioGroup,
-  Switch,
   TextField,
-  Typography,
-  useTheme,
-} from "@mui/material";
-import { DateTimePicker, LocalizationProvider } from "@mui/x-date-pickers";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { AuthenticationContext } from "assets/theme/authentication-provider";
-import FileUploadModal from "components/file-upload/components/file-upload-modal";
-import OffliButton from "components/offli-button";
-import "dayjs/locale/sk";
-import React, { useEffect } from "react";
-import { Controller, useForm } from "react-hook-form";
-import { useNavigate, useParams } from "react-router-dom";
-import { toast } from "sonner";
-import { IActivity } from "types/activities/activity.dto";
-import { useDebounce } from "use-debounce";
-import {
-  ACTIVITY_ASPECT_RATIO,
-  ALLOWED_PHOTO_EXTENSIONS,
-} from "utils/common-constants";
+  Typography
+} from '@mui/material';
+import { DateTimePicker, LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { AuthenticationContext } from 'assets/theme/authentication-provider';
+import FileUploadModal from 'components/file-upload/components/file-upload-modal';
+import OffliButton from 'components/offli-button';
+import 'dayjs/locale/sk';
+import React, { useEffect } from 'react';
+import { Controller, useForm } from 'react-hook-form';
+import { useNavigate, useParams } from 'react-router-dom';
+import SetOnMapScreen from 'screens/set-on-map-screen/set-on-map-screen';
+import { toast } from 'sonner';
+import { IActivity } from 'types/activities/activity.dto';
+import { ILocation } from 'types/activities/location.dto';
+import { useDebounce } from 'use-debounce';
+import { ACTIVITY_ASPECT_RATIO, ALLOWED_PHOTO_EXTENSIONS } from 'utils/common-constants';
 import {
   getLocationFromQueryFetch,
   updateActivity,
-  uploadFile,
-} from "../../api/activities/requests";
-import { PageWrapper } from "../../components/page-wrapper";
-import {
-  ACTIVITIES_QUERY_KEY,
-  useActivities,
-} from "../../hooks/use-activities";
-import { useGetApiUrl } from "../../hooks/use-get-api-url";
-import { useTags } from "../../hooks/use-tags";
-import { IActivityRestDto } from "../../types/activities/activity-rest.dto";
-import { ActivityVisibilityEnum } from "../../types/activities/activity-visibility-enum.dto";
-import { ApplicationLocations } from "../../types/common/applications-locations.dto";
-import { mapLocationValue } from "../../utils/map-location-value.util";
-import {
-  IAdditionalHelperActivityInterface,
-  validationSchema,
-} from "./utils/validation-schema";
-import AddLocationAltIcon from "@mui/icons-material/AddLocationAlt";
-import MapScreen from "screens/map-screen";
-import SetOnMapScreen from "screens/set-on-map-screen/set-on-map-screen";
-import { ILocation } from "types/activities/location.dto";
+  uploadFile
+} from '../../api/activities/requests';
+import { PageWrapper } from '../../components/page-wrapper';
+import { ACTIVITIES_QUERY_KEY, useActivities } from '../../hooks/use-activities';
+import { useGetApiUrl } from '../../hooks/use-get-api-url';
+import { useTags } from '../../hooks/use-tags';
+import { IActivityRestDto } from '../../types/activities/activity-rest.dto';
+import { ActivityVisibilityEnum } from '../../types/activities/activity-visibility-enum.dto';
+import { ApplicationLocations } from '../../types/common/applications-locations.dto';
+import { mapLocationValue } from '../../utils/map-location-value.util';
+import { IAdditionalHelperActivityInterface, validationSchema } from './utils/validation-schema';
 
 const EditActivityScreen: React.FC = () => {
   const [localFile, setLocalFile] = React.useState<any>();
@@ -62,36 +49,31 @@ const EditActivityScreen: React.FC = () => {
   const navigate = useNavigate();
   const baseUrl = useGetApiUrl();
   const { userInfo } = React.useContext(AuthenticationContext);
-  const { palette } = useTheme();
   const [showMap, setShowMap] = React.useState(false);
   const { data: { data: { tags: predefinedTags = [] } = {} } = {} } = useTags();
 
   const mappedTags = predefinedTags?.map(({ title }) => title);
 
-  const { data: { data: { activity = {} } = {} } = {}, isLoading } =
-    useActivities<IActivityRestDto>({
-      params: {
-        id: Number(id),
-      },
-    });
+  const { data: { data: { activity = {} } = {} } = {} } = useActivities<IActivityRestDto>({
+    params: {
+      id: Number(id)
+    }
+  });
 
-  const handleFileUpload = React.useCallback(
-    async (e: React.ChangeEvent<HTMLInputElement>) => {
-      const file = e?.target?.files?.[0];
-      if (!file) {
-        return;
-      }
+  const handleFileUpload = React.useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e?.target?.files?.[0];
+    if (!file) {
+      return;
+    }
 
-      // check file format
-      const fileExtension = file.name.split(".").pop();
-      if (fileExtension && !ALLOWED_PHOTO_EXTENSIONS.includes(fileExtension)) {
-        toast.error("Unsupported file format");
-        return;
-      }
-      setLocalFile(URL.createObjectURL(file));
-    },
-    []
-  );
+    // check file format
+    const fileExtension = file.name.split('.').pop();
+    if (fileExtension && !ALLOWED_PHOTO_EXTENSIONS.includes(fileExtension)) {
+      toast.error('Unsupported file format');
+      return;
+    }
+    setLocalFile(URL.createObjectURL(file));
+  }, []);
 
   const {
     control,
@@ -100,30 +82,30 @@ const EditActivityScreen: React.FC = () => {
     setValue,
     watch,
     getValues,
-    formState: { dirtyFields = [], isValid },
+    formState: { dirtyFields = [], isValid }
   } = useForm<IActivity & IAdditionalHelperActivityInterface>({
     defaultValues: {
-      title: "",
-      description: "",
+      title: '',
+      description: '',
       location: null,
       datetime_from: new Date(),
       datetime_until: new Date(), // TODO: pridava 2 hodiny kvoli timezone
       visibility: ActivityVisibilityEnum.public,
       // limit: '',
       // price: 0,
-      tags: [],
+      tags: []
     },
     resolver: yupResolver(validationSchema()),
-    mode: "onChange",
+    mode: 'onChange'
   });
 
-  const [queryString] = useDebounce(watch("placeQuery"), 1000);
+  const [queryString] = useDebounce(watch('placeQuery'), 1000);
 
   const placeQuery = useQuery(
-    ["locations", queryString],
-    (props) => getLocationFromQueryFetch(String(queryString)),
+    ['locations', queryString],
+    () => getLocationFromQueryFetch(String(queryString)),
     {
-      enabled: !!queryString,
+      enabled: !!queryString
     }
   );
 
@@ -131,62 +113,60 @@ const EditActivityScreen: React.FC = () => {
     reset({
       ...activity,
       datetime_from: activity?.datetime_from?.toString(),
-      datetime_until: activity?.datetime_until?.toString(),
+      datetime_until: activity?.datetime_until?.toString()
     });
   }, [activity]);
 
-  const { mutate: sendUpdateActivity, isLoading: isUpdatingActivity } =
-    useMutation(
-      ["update-profile-info"],
-      (values: IActivity) => updateActivity(Number(id), values),
-      {
-        onSuccess: (data, variables) => {
-          !!localFile && setLocalFile(null);
-          queryClient.invalidateQueries([ACTIVITIES_QUERY_KEY]);
-          queryClient.invalidateQueries(["activity-participants"]);
-          toast.success("Activity information was successfully updated");
-          navigate(`${ApplicationLocations.ACTIVITY_DETAIL}/${id}`, {
-            state: {
-              from: ApplicationLocations.EDIT_ACTIVITY,
-            },
-          });
-        },
-        onError: () => {
-          !!localFile && setLocalFile(null);
-          toast.error("Failed to update activity info");
-        },
+  const { mutate: sendUpdateActivity, isLoading: isUpdatingActivity } = useMutation(
+    ['update-profile-info'],
+    (values: IActivity) => updateActivity(Number(id), values),
+    {
+      onSuccess: () => {
+        !!localFile && setLocalFile(null);
+        queryClient.invalidateQueries([ACTIVITIES_QUERY_KEY]);
+        queryClient.invalidateQueries(['activity-participants']);
+        toast.success('Activity information was successfully updated');
+        navigate(`${ApplicationLocations.ACTIVITY_DETAIL}/${id}`, {
+          state: {
+            from: ApplicationLocations.EDIT_ACTIVITY
+          }
+        });
+      },
+      onError: () => {
+        !!localFile && setLocalFile(null);
+        toast.error('Failed to update activity info');
       }
-    );
+    }
+  );
 
-  const { mutate: sendUploadActivityPhoto, isLoading: isPhotoUploading } =
-    useMutation(
-      ["activity-photo-upload"],
-      (formData?: FormData) => uploadFile(formData),
-      {
-        onSuccess: (data) => {
-          const values = getValues();
-          sendUpdateActivity({
-            ...values,
-            creator_id: Number(userInfo?.id),
-            title_picture: data?.data?.filename,
-          });
-          setValue("title_picture", data?.data?.filename);
-          // setLocalFile(null);
-        },
-        onError: (error) => {
-          setLocalFile(null);
-          toast.error("Failed to upload activity photo");
-        },
+  const { mutate: sendUploadActivityPhoto } = useMutation(
+    ['activity-photo-upload'],
+    (formData?: FormData) => uploadFile(formData),
+    {
+      onSuccess: (data) => {
+        const values = getValues();
+        sendUpdateActivity({
+          ...values,
+          creator_id: Number(userInfo?.id),
+          title_picture: data?.data?.filename
+        });
+        setValue('title_picture', data?.data?.filename);
+        // setLocalFile(null);
+      },
+      onError: () => {
+        setLocalFile(null);
+        toast.error('Failed to upload activity photo');
       }
-    );
+    }
+  );
 
-  const dateFrom = watch("datetime_from");
-  const dateUntil = watch("datetime_until");
+  const dateFrom = watch('datetime_from');
+  const dateUntil = watch('datetime_until');
 
   const handleLocationSaveFromMap = React.useCallback(
     (location: ILocation | null) => {
       if (location) {
-        setValue("location", location);
+        setValue('location', location);
       }
       setShowMap(false);
     },
@@ -214,59 +194,52 @@ const EditActivityScreen: React.FC = () => {
         aspectRatio={390 / 300}
       />
       {showMap ? (
-        <SetOnMapScreen
-          onLocationSave={handleLocationSaveFromMap}
-          activity={activity}
-        />
+        <SetOnMapScreen onLocationSave={handleLocationSaveFromMap} activity={activity} />
       ) : (
         <PageWrapper sxOverrides={{ mt: 0 }}>
           <Box
             sx={{
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
-              alignItems: "center",
-              width: "100%",
-            }}
-          >
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              alignItems: 'center',
+              width: '100%'
+            }}>
             <input
               onChange={handleFileUpload}
               type="file"
-              style={{ display: "none" }}
+              style={{ display: 'none' }}
               ref={hiddenFileInput}
               // setting empty string to always fire onChange event on input even when selecting same pictures 2 times in a row
-              value={""}
+              value={''}
               accept="image/*"
             />
             {activity?.title_picture ? (
-              <Box
-                sx={{ height: 200, position: "relative", overflow: "hidden" }}
-              >
-                <Box sx={{ width: "100%" }}>
+              <Box sx={{ height: 200, position: 'relative', overflow: 'hidden' }}>
+                <Box sx={{ width: '100%' }}>
                   <img
-                    onClick={() => console.log("change profile photo")}
+                    onClick={() => console.log('change profile photo')}
                     // todo add default picture in case of missing photo
                     src={`${baseUrl}/files/${activity?.title_picture}`}
                     alt="profile"
                     style={{
-                      width: "100%",
-                      aspectRatio: ACTIVITY_ASPECT_RATIO,
+                      width: '100%',
+                      aspectRatio: ACTIVITY_ASPECT_RATIO
                     }}
                   />
                 </Box>
                 <OffliButton
                   size="small"
                   sx={{
-                    position: "absolute",
+                    position: 'absolute',
                     bottom: 150,
                     right: 10,
                     opacity: 0.8,
                     px: 2,
                     py: 1,
-                    fontSize: 14,
+                    fontSize: 14
                   }}
-                  onClick={() => hiddenFileInput?.current?.click()}
-                >
+                  onClick={() => hiddenFileInput?.current?.click()}>
                   Edit photo
                 </OffliButton>
               </Box>
@@ -274,26 +247,24 @@ const EditActivityScreen: React.FC = () => {
 
             <form
               style={{
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
-                alignItems: "center",
-                width: "86%",
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
+                alignItems: 'center',
+                width: '86%'
               }}
-              onSubmit={handleSubmit(handleFormSubmit)}
-            >
+              onSubmit={handleSubmit(handleFormSubmit)}>
               <Controller
                 name="title"
                 control={control}
                 render={({ field, fieldState: { error } }) => (
                   <Box
                     sx={{
-                      display: "flex",
-                      width: "100%",
-                      flexDirection: "column",
-                      mt: 3,
-                    }}
-                  >
+                      display: 'flex',
+                      width: '100%',
+                      flexDirection: 'column',
+                      mt: 3
+                    }}>
                     <Typography variant="h4">General information</Typography>
                     <TextField
                       {...field}
@@ -302,7 +273,7 @@ const EditActivityScreen: React.FC = () => {
                       error={!!error}
                       helperText={error?.message}
                       //disabled={methodSelectionDisabled}
-                      sx={{ width: "100%", mt: 3, mb: 2 }}
+                      sx={{ width: '100%', mt: 3, mb: 2 }}
                     />
                   </Box>
                 )}
@@ -310,15 +281,14 @@ const EditActivityScreen: React.FC = () => {
               <Controller
                 name="location"
                 control={control}
-                render={({ field, fieldState: { error } }) => (
+                render={({ field }) => (
                   <Box
                     sx={{
-                      display: "flex",
-                      alignItems: "center",
-                      width: "100%",
-                      justifyContent: "center",
-                    }}
-                  >
+                      display: 'flex',
+                      alignItems: 'center',
+                      width: '100%',
+                      justifyContent: 'center'
+                    }}>
                     <Autocomplete
                       {...field}
                       options={placeQuery?.data?.results ?? []}
@@ -327,9 +297,9 @@ const EditActivityScreen: React.FC = () => {
                         option?.formatted === (value?.formatted ?? value?.name)
                       }
                       sx={{
-                        width: "100%",
-                        display: "flex",
-                        justifyContent: "center",
+                        width: '100%',
+                        display: 'flex',
+                        justifyContent: 'center'
                       }}
                       loading={placeQuery?.isLoading}
                       onChange={(e, locationObject) => {
@@ -339,8 +309,8 @@ const EditActivityScreen: React.FC = () => {
                                 name: locationObject?.formatted,
                                 coordinates: {
                                   lat: locationObject?.lat,
-                                  lon: locationObject?.lon,
-                                },
+                                  lon: locationObject?.lon
+                                }
                               }
                             : null
                         );
@@ -351,9 +321,7 @@ const EditActivityScreen: React.FC = () => {
                         <TextField
                           {...params}
                           label="Search place"
-                          onChange={(e) =>
-                            setValue("placeQuery", e.target.value)
-                          }
+                          onChange={(e) => setValue('placeQuery', e.target.value)}
                         />
                       )}
                       data-testid="activity-place-input"
@@ -364,25 +332,19 @@ const EditActivityScreen: React.FC = () => {
                           color: ({ palette }) => palette?.primary?.main,
                           ml: 1,
                           bgcolor: ({ palette }) => palette?.primary?.light,
-                          borderRadius: "10px",
-                          p: 1.75,
+                          borderRadius: '10px',
+                          p: 1.75
                         }}
                       />
                     </IconButton>
                   </Box>
                 )}
               />
-              <LocalizationProvider
-                dateAdapter={AdapterDayjs}
-                adapterLocale="sk"
-              >
+              <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="sk">
                 <Controller
                   name="datetime_from"
                   control={control}
-                  render={({
-                    field: { onChange, ...field },
-                    fieldState: { error },
-                  }) => (
+                  render={({ field: { onChange, ...field }, fieldState: { error } }) => (
                     <DateTimePicker
                       {...field}
                       disablePast
@@ -396,8 +358,8 @@ const EditActivityScreen: React.FC = () => {
                           error={!!error}
                           helperText={error?.message}
                           sx={{
-                            width: "100%",
-                            mt: 3,
+                            width: '100%',
+                            mt: 3
                           }}
                         />
                       )}
@@ -407,10 +369,7 @@ const EditActivityScreen: React.FC = () => {
                 <Controller
                   name="datetime_until"
                   control={control}
-                  render={({
-                    field: { onChange, ...field },
-                    fieldState: { error },
-                  }) => (
+                  render={({ field: { onChange, ...field }, fieldState: { error } }) => (
                     <DateTimePicker
                       {...field}
                       label="End date"
@@ -424,8 +383,8 @@ const EditActivityScreen: React.FC = () => {
                           error={!!error}
                           helperText={error?.message}
                           sx={{
-                            width: "100%",
-                            mt: 3,
+                            width: '100%',
+                            mt: 3
                           }}
                         />
                       )}
@@ -438,7 +397,7 @@ const EditActivityScreen: React.FC = () => {
                 <Controller
                   name="tags"
                   control={control}
-                  render={({ field, fieldState: { error } }) => (
+                  render={({ field }) => (
                     <Autocomplete
                       {...field}
                       multiple
@@ -449,11 +408,11 @@ const EditActivityScreen: React.FC = () => {
                       }}
                       defaultValue={[]}
                       sx={{
-                        minWidth: "100%",
-                        "& .MuiOutlinedInput-root": {
-                          height: "auto",
+                        minWidth: '100%',
+                        '& .MuiOutlinedInput-root': {
+                          height: 'auto'
                         },
-                        mt: 2,
+                        mt: 2
                       }}
                       renderInput={(params) => (
                         <TextField
@@ -467,7 +426,13 @@ const EditActivityScreen: React.FC = () => {
                   )}
                 />
               ) : null}
-              <Box sx={{display: "flex", width: "100%", alignItems: "center", justifyContent: "space-between"}}>
+              <Box
+                sx={{
+                  display: 'flex',
+                  width: '100%',
+                  alignItems: 'center',
+                  justifyContent: 'space-between'
+                }}>
                 <Controller
                   name="limit"
                   control={control}
@@ -481,7 +446,7 @@ const EditActivityScreen: React.FC = () => {
                       helperText={error?.message}
                       InputLabelProps={{ shrink: true }}
                       //disabled={methodSelectionDisabled}
-                      sx={{ width: "55%", mt: 3 }}
+                      sx={{ width: '55%', mt: 3 }}
                     />
                   )}
                 />
@@ -498,45 +463,40 @@ const EditActivityScreen: React.FC = () => {
                       helperText={error?.message}
                       InputLabelProps={{ shrink: true }}
                       //disabled={methodSelectionDisabled}
-                      sx={{ width: "40%", mt: 3 }}
+                      sx={{ width: '40%', mt: 3 }}
                     />
                   )}
                 />
               </Box>
-              
 
               <Controller
                 name="visibility"
                 control={control}
-                render={({ field, fieldState: { error } }) => (
+                render={({ field }) => (
                   <Box
                     sx={{
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "flex-start",
-                      width: "100%",
-                      justifyContent: "space-around",
-                      mt: 2,
-                    }}
-                  >
-                    <Typography sx={{ fontWeight: 600 }}>
-                      Who can join the activity ?
-                    </Typography>
-                    <Box sx={{ display: "flex", alignItems: "center" }}>
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'flex-start',
+                      width: '100%',
+                      justifyContent: 'space-around',
+                      mt: 2
+                    }}>
+                    <Typography sx={{ fontWeight: 600 }}>Who can join the activity ?</Typography>
+                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
                       <RadioGroup
                         {...field}
                         aria-labelledby="demo-row-radio-buttons-group-label"
                         name="row-radio-buttons-group"
                         sx={{
-                          justifyContent: "center",
+                          justifyContent: 'center',
                           mt: 1,
-                          "& .MuiSvgIcon-root": {
-                            color: "primary.main",
+                          '& .MuiSvgIcon-root': {
+                            color: 'primary.main'
                           },
-                          ml: 2,
+                          ml: 2
                         }}
-                        color="primary.main"
-                      >
+                        color="primary.main">
                         <FormControlLabel
                           value={ActivityVisibilityEnum.public}
                           control={<Radio />}
@@ -565,10 +525,10 @@ const EditActivityScreen: React.FC = () => {
                     placeholder="Type more info about the activity"
                     sx={{
                       mt: 3,
-                      width: "100%",
-                      "& .MuiOutlinedInput-root": {
-                        height: "unset",
-                      },
+                      width: '100%',
+                      '& .MuiOutlinedInput-root': {
+                        height: 'unset'
+                      }
                     }}
                     inputProps={{ maxLength: 200 }}
                     helperText={`${field?.value?.length ?? 0}/200`}
@@ -580,10 +540,9 @@ const EditActivityScreen: React.FC = () => {
               <OffliButton
                 size="small"
                 type="submit"
-                sx={{ my: 4, width: "60%" }}
+                sx={{ my: 4, width: '60%' }}
                 disabled={!isValid}
-                isLoading={isUpdatingActivity}
-              >
+                isLoading={isUpdatingActivity}>
                 Save
               </OffliButton>
             </form>

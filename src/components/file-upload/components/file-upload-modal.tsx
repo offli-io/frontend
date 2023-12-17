@@ -1,9 +1,8 @@
-import { Box, Modal, useMediaQuery, useTheme } from "@mui/material";
-import OffliButton from "components/offli-button";
-import { useSnackbar } from "notistack";
-import React from "react";
-import Cropper from "react-easy-crop";
-import getCroppedImg from "../utils/crop-utils";
+import { Box, Modal, useMediaQuery, useTheme } from '@mui/material';
+import OffliButton from 'components/offli-button';
+import React from 'react';
+import Cropper from 'react-easy-crop';
+import getCroppedImg from '../utils/crop-utils';
 
 export interface IResolution {
   width: number;
@@ -16,7 +15,7 @@ interface IFileUploadModalProps {
   onClose?: () => void;
   localFile: string;
   aspectRatio?: number;
-  cropShape?: "rect" | "round";
+  cropShape?: 'rect' | 'round';
   resizeResolution?: IResolution;
 }
 
@@ -25,23 +24,19 @@ const FileUploadModal: React.FC<IFileUploadModalProps> = ({
   onClose,
   localFile,
   aspectRatio = 1,
-  cropShape = "rect",
-  resizeResolution,
-  ...rest
+  cropShape = 'rect',
+  resizeResolution
 }) => {
   const [isImageUploading, setIsImageUploading] = React.useState(false);
   const [crop, setCrop] = React.useState({ x: 0, y: 0 });
   const [zoom, setZoom] = React.useState(1);
   const [croppedAreaPixels, setCroppedAreaPixels] = React.useState(null);
   const { breakpoints } = useTheme();
-  const upMd = useMediaQuery(breakpoints.up("md"));
+  const upMd = useMediaQuery(breakpoints.up('md'));
 
-  const onCropComplete = React.useCallback(
-    (croppedArea: any, croppedAreaPixels: any) => {
-      setCroppedAreaPixels(croppedAreaPixels);
-    },
-    []
-  );
+  const onCropComplete = React.useCallback((croppedArea: any, croppedAreaPixels: any) => {
+    setCroppedAreaPixels(croppedAreaPixels);
+  }, []);
 
   const handleCloseModal = React.useCallback(() => {
     onClose?.();
@@ -51,17 +46,13 @@ const FileUploadModal: React.FC<IFileUploadModalProps> = ({
     setIsImageUploading(true);
 
     try {
-      const croppedImage: any = await getCroppedImg(
-        localFile,
-        croppedAreaPixels,
-        resizeResolution
-      );
-      if (!!croppedImage) {
+      const croppedImage: any = await getCroppedImg(localFile, croppedAreaPixels, resizeResolution);
+      if (croppedImage) {
         const formData = new FormData();
         // we now only have string from createObjectURL, now we need to resolve it
         // Creates a 'blob:nodedata:...' URL string that represents the given <Blob> object and can be used to retrieve the Blob later.
-        let blobImage = await fetch(croppedImage).then((r) => r.blob());
-        formData.append("file", blobImage, "Idk.jpg");
+        const blobImage = await fetch(croppedImage).then((r) => r.blob());
+        formData.append('file', blobImage, 'Idk.jpg');
 
         uploadFunction?.(formData);
       }
@@ -78,37 +69,34 @@ const FileUploadModal: React.FC<IFileUploadModalProps> = ({
       aria-describedby="modal-description"
       open={!!localFile}
       sx={{
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        backdropFilter: "blur(4px)", // Add backdrop filter to blur the background
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        backdropFilter: 'blur(4px)' // Add backdrop filter to blur the background
         // zIndex: theme.zIndex.modal + 1,
       }}
-      onClose={handleCloseModal}
-    >
+      onClose={handleCloseModal}>
       <Box
         sx={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
           // backgroundColor: (theme) => theme.palette.background.paper,
           // boxShadow: (theme) => theme.shadows[5],
-          outline: "none",
-          width: upMd ? "25%" : "95%",
-        }}
-      >
+          outline: 'none',
+          width: upMd ? '25%' : '95%'
+        }}>
         <Box
           sx={{
-            position: "relative",
+            position: 'relative',
             height: 400,
-            width: "90%",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-          }}
-        >
-          <Box sx={{ position: "relative", height: 350, width: "100%" }}>
+            width: '90%',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center'
+          }}>
+          <Box sx={{ position: 'relative', height: 350, width: '100%' }}>
             <Cropper
               image={localFile}
               crop={crop}
@@ -119,18 +107,17 @@ const FileUploadModal: React.FC<IFileUploadModalProps> = ({
               onZoomChange={setZoom}
               style={{
                 containerStyle: {
-                  color: "transparent",
-                },
+                  color: 'transparent'
+                }
               }}
               cropShape={cropShape}
               //   objectFit="cover"
             />
           </Box>
           <OffliButton
-            sx={{ mt: 4, width: "80%" }}
+            sx={{ mt: 4, width: '80%' }}
             onClick={cropAndUploadImage}
-            isLoading={isImageUploading}
-          >
+            isLoading={isImageUploading}>
             Crop
           </OffliButton>
         </Box>

@@ -1,12 +1,10 @@
-import { Box } from '@mui/system'
-import React from 'react'
-import PeopleAltIcon from '@mui/icons-material/PeopleAlt'
-import LockIcon from '@mui/icons-material/Lock'
-import { Typography } from '@mui/material'
+import { Typography } from '@mui/material';
+import { Box } from '@mui/system';
+import React from 'react';
 
 interface IProps {
-  text?: string
-  Icon?: React.ReactNode
+  text?: string;
+  Icon?: React.ReactNode;
 }
 
 const TransparentChip: React.FC<IProps> = ({ text, Icon }) => {
@@ -18,9 +16,8 @@ const TransparentChip: React.FC<IProps> = ({ text, Icon }) => {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        color: 'white',
-      }}
-    >
+        color: 'white'
+      }}>
       <Box
         sx={{
           // width: '10%',
@@ -31,22 +28,20 @@ const TransparentChip: React.FC<IProps> = ({ text, Icon }) => {
           borderRadius: '12px',
           backdropFilter: 'blur(2px)',
           backgroundColor: 'rgba(0,0,0,.25)',
-          padding: '5%',
-        }}
-      >
+          padding: '5%'
+        }}>
         {Icon}
         <Typography
           variant="subtitle2"
           sx={{
             ml: 0.5,
-            fontSize: '16px',
-          }}
-        >
+            fontSize: '16px'
+          }}>
           {text}
         </Typography>
       </Box>
     </Box>
-  )
-}
+  );
+};
 
-export default TransparentChip
+export default TransparentChip;

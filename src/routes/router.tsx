@@ -1,8 +1,6 @@
-import React, { ReactElement, Suspense } from "react";
-import { BrowserRouter } from "react-router-dom";
-import { Layout } from "../app/layout";
-import { AuthenticationContext } from "../assets/theme/authentication-provider";
-import LoadingScreen from "../screens/static-screens/loading-screen";
+import React, { ReactElement, Suspense } from 'react';
+import { Layout } from '../app/layout';
+import LoadingScreen from '../screens/static-screens/loading-screen';
 
 const Router: React.FC = (): ReactElement => {
   return (

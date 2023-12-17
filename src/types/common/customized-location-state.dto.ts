@@ -1,3 +1,3 @@
 export interface ICustomizedLocationStateDto {
-  from?: string
+  from?: string;
 }

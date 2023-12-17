@@ -1,13 +1,13 @@
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { toast } from "sonner";
-import { ActivitySortColumnEnum } from "types/activities/activity-sort-enum.dto";
-import { getParticipantActivities } from "../api/activities/requests";
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'sonner';
+import { ActivitySortColumnEnum } from 'types/activities/activity-sort-enum.dto';
+import { getParticipantActivities } from '../api/activities/requests';
 
-export const PARTICIPANT_ACTIVITIES_QUERY_KEY = "participant-activities";
+export const PARTICIPANT_ACTIVITIES_QUERY_KEY = 'participant-activities';
 
 export const useParticipantActivities = ({
   participantId,
-  sort,
+  sort
 }: { participantId?: number; sort?: ActivitySortColumnEnum } = {}) => {
   const queryClient = useQueryClient();
   // const todaysDate = React.useMemo(() => new Date(), []);
@@ -16,7 +16,7 @@ export const useParticipantActivities = ({
     () =>
       getParticipantActivities({
         participantId,
-        sort,
+        sort
         // datetimeFrom: todaysDate,
       }),
     {
@@ -26,13 +26,13 @@ export const useParticipantActivities = ({
       refetchOnMount: true,
       refetchOnWindowFocus: true,
       refetchOnReconnect: true,
-      enabled: !!participantId,
+      enabled: !!participantId
     }
   );
 
   const invalidate = () =>
     queryClient.invalidateQueries({
-      queryKey: [PARTICIPANT_ACTIVITIES_QUERY_KEY],
+      queryKey: [PARTICIPANT_ACTIVITIES_QUERY_KEY]
     });
 
   return { data, isLoading, invalidate };

@@ -1,5 +1,5 @@
-import { IActivity, IPerson } from "../activities/activity.dto";
-import { NotificationTypeEnum } from "./notification-type-enum";
+import { IActivity, IPerson } from '../activities/activity.dto';
+import { NotificationTypeEnum } from './notification-type-enum';
 
 export interface INotificationDto {
   id: number;
@@ -19,35 +19,41 @@ export interface INotificationDto {
 export const getNotificationTitle = (notification: INotificationDto): string => {
   switch (notification.type) {
     case NotificationTypeEnum.ACTIVITY_INV:
-      return "Activity invitation";
+      return 'Activity invitation';
     case NotificationTypeEnum.ACTIVITY_CHANGE:
-      return "Changes in activity";
+      return 'Changes in activity';
     case NotificationTypeEnum.BUDDY_REQ:
-      return "Buddy request";
+      return 'Buddy request';
     default:
-      return "";
+      return '';
   }
-}
+};
 
-export const getNotificationBody = (notification: INotificationDto, htmlEnhance: boolean): string => {
+export const getNotificationBody = (
+  notification: INotificationDto,
+  htmlEnhance: boolean
+): string => {
   switch (notification.type) {
     case NotificationTypeEnum.ACTIVITY_INV:
-      return `${notification?.properties?.user?.username} invited you to join ${makeActivityTitle(notification, htmlEnhance)}`;
+      return `${notification?.properties?.user?.username} invited you to join ${makeActivityTitle(
+        notification,
+        htmlEnhance
+      )}`;
     case NotificationTypeEnum.ACTIVITY_CHANGE:
       return `There have been some changes in ${makeActivityTitle(notification, htmlEnhance)}`;
     case NotificationTypeEnum.BUDDY_REQ:
       return `${notification?.properties?.user?.username} sent you a buddy request`;
     default:
-      return "";
+      return '';
   }
-}
+};
 
 const makeActivityTitle = (notification: INotificationDto, htmlEnhance: boolean): string => {
   if (htmlEnhance) {
     return `<br><em>${notification?.properties?.activity?.title}</em>`; // TODO: Remove <br>
   }
-   return `${notification?.properties?.activity?.title}`;
-}
+  return `${notification?.properties?.activity?.title}`;
+};
 
 export const getNotificationPicture = (notification: INotificationDto): string => {
   switch (notification.type) {
@@ -58,6 +64,6 @@ export const getNotificationPicture = (notification: INotificationDto): string =
     case NotificationTypeEnum.BUDDY_REQ:
       return `${notification?.properties?.user?.profile_photo}`;
     default:
-      return "";
+      return '';
   }
-}
+};

@@ -1,39 +1,34 @@
-import { Box, Typography } from "@mui/material";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { getRecommendedBuddies } from "api/activities/requests";
-import { AuthenticationContext } from "assets/theme/authentication-provider";
-import BuddySuggestCard from "components/buddy-suggest-card";
-import React from "react";
-import { useNavigate } from "react-router-dom";
-import { useSendBuddyRequest } from "screens/profile-screen/hooks/use-send-buddy-request";
-import { toast } from "sonner";
-import { IPerson } from "types/activities/activity.dto";
-import { ApplicationLocations } from "types/common/applications-locations.dto";
+import { Box, Typography } from '@mui/material';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { getRecommendedBuddies } from 'api/activities/requests';
+import { AuthenticationContext } from 'assets/theme/authentication-provider';
+import BuddySuggestCard from 'components/buddy-suggest-card';
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useSendBuddyRequest } from 'screens/profile-screen/hooks/use-send-buddy-request';
+import { toast } from 'sonner';
+import { IPerson } from 'types/activities/activity.dto';
+import { ApplicationLocations } from 'types/common/applications-locations.dto';
 
 const RecommendedBuddiesContent = () => {
   const navigate = useNavigate();
   const { userInfo } = React.useContext(AuthenticationContext);
   const queryClient = useQueryClient();
 
-  const { handleSendBuddyRequest, isSendingBuddyRequest } = useSendBuddyRequest(
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries(["recommended-buddies"]);
-      },
+  const { handleSendBuddyRequest, isSendingBuddyRequest } = useSendBuddyRequest({
+    onSuccess: () => {
+      queryClient.invalidateQueries(['recommended-buddies']);
     }
-  );
+  });
 
-  const {
-    data: recommendedBuddiesData,
-    isLoading: areBuddiesRecommendationsLoading,
-  } = useQuery(
-    ["recommended-buddies", userInfo?.id],
+  const { data: recommendedBuddiesData } = useQuery(
+    ['recommended-buddies', userInfo?.id],
     () => getRecommendedBuddies(userInfo?.id ?? -1),
     {
       onError: () => {
         toast.error(`Failed to load recommended buddies`);
       },
-      enabled: !!userInfo?.id,
+      enabled: !!userInfo?.id
     }
   );
 
@@ -54,21 +49,18 @@ const RecommendedBuddiesContent = () => {
           </Typography>
           <Box
             sx={{
-              display: "flex",
-              overflowX: "scroll",
-              width: "100%",
-              "::-webkit-scrollbar": { display: "none" },
-            }}
-          >
+              display: 'flex',
+              overflowX: 'scroll',
+              width: '100%',
+              '::-webkit-scrollbar': { display: 'none' }
+            }}>
             {recommendedBuddiesData?.data?.map((buddy) => (
               <BuddySuggestCard
                 key={buddy?.id}
                 buddy={buddy}
                 onAddBuddyClick={handleBuddySuggestAddClick}
                 isLoading={isSendingBuddyRequest}
-                onClick={(buddy) =>
-                  navigate(`${ApplicationLocations.USER_PROFILE}/${buddy?.id}`)
-                }
+                onClick={(buddy) => navigate(`${ApplicationLocations.USER_PROFILE}/${buddy?.id}`)}
               />
             ))}
           </Box>

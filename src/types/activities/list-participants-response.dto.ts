@@ -1,4 +1,4 @@
-import { ActivitiyParticipantStatusEnum } from "./activity-participant-status-enum.dto";
+import { ActivitiyParticipantStatusEnum } from './activity-participant-status-enum.dto';
 
 export interface IListParticipantsResponseDto {
   success: boolean;

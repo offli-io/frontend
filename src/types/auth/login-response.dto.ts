@@ -1,4 +1,4 @@
-import { ITokenDto } from "./token.dto";
+import { ITokenDto } from './token.dto';
 
 export interface ILoginResponseDto {
   token: ITokenDto;

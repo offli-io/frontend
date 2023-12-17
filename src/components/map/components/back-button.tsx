@@ -1,23 +1,21 @@
-import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
-import OffliButton from "components/offli-button";
+import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
+import OffliButton from 'components/offli-button';
 
 const BackButton = ({ onClick }: { onClick?: () => void }) => {
   return (
     <OffliButton
       sx={{
-        position: "absolute",
+        position: 'absolute',
         bottom: 15,
         left: 20,
         zIndex: 400,
         fontSize: 20,
-        color: "primary.main",
-        bgcolor: "primary.light",
+        color: 'primary.main',
+        bgcolor: 'primary.light'
         // width: "45%",
       }}
       onClick={() => onClick?.()}
-      startIcon={
-        <ArrowBackIosNewIcon sx={{ color: ({ palette }) => "inherit" }} />
-      }
+      startIcon={<ArrowBackIosNewIcon sx={{ color: 'inherit' }} />}
       // variant="text"
     >
       Back

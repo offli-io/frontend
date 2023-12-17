@@ -1,21 +1,21 @@
-import React from "react";
+import React from 'react';
 
-type AllowedInputTypes = "password" | "text" | "number" | "tel";
+type AllowedInputTypes = 'password' | 'text' | 'number' | 'tel';
 
 type InputProps = Required<
   Pick<
     React.InputHTMLAttributes<HTMLInputElement>,
-    | "value"
-    | "onChange"
-    | "onFocus"
-    | "onBlur"
-    | "onKeyDown"
-    | "onPaste"
-    | "aria-label"
-    | "maxLength"
-    | "autoComplete"
-    | "style"
-    | "disabled"
+    | 'value'
+    | 'onChange'
+    | 'onFocus'
+    | 'onBlur'
+    | 'onKeyDown'
+    | 'onPaste'
+    | 'aria-label'
+    | 'maxLength'
+    | 'autoComplete'
+    | 'style'
+    | 'disabled'
   > & {
     ref: React.RefCallback<HTMLInputElement>;
     placeholder: string | undefined;
@@ -48,27 +48,26 @@ interface OTPInputProps {
   otpDisabled?: boolean | undefined;
 }
 
-const isStyleObject = (obj: unknown) => typeof obj === "object" && obj !== null;
+const isStyleObject = (obj: unknown) => typeof obj === 'object' && obj !== null;
 
 const OTPInput = ({
-  value = "",
+  value = '',
   numInputs = 4,
   onChange,
   renderInput,
   shouldAutoFocus = false,
-  inputType = "number",
+  inputType = 'number',
   renderSeparator,
   placeholder,
-  containerStyle,
   inputStyle,
-  otpDisabled,
+  otpDisabled
 }: OTPInputProps) => {
   const [activeInput, setActiveInput] = React.useState(0);
   const inputRefs = React.useRef<Array<HTMLInputElement | null>>([]);
 
-  const getOTPValue = () => (value ? value.toString().split("") : []);
+  const getOTPValue = () => (value ? value.toString().split('') : []);
 
-  const isInputNum = inputType === "number" || inputType === "tel";
+  const isInputNum = inputType === 'number' || inputType === 'tel';
 
   React.useEffect(() => {
     inputRefs.current = inputRefs.current.slice(0, numInputs);
@@ -81,24 +80,20 @@ const OTPInput = ({
   }, [shouldAutoFocus]);
 
   const getPlaceholderValue = () => {
-    if (typeof placeholder === "string") {
+    if (typeof placeholder === 'string') {
       if (placeholder.length === numInputs) {
         return placeholder;
       }
 
       if (placeholder.length > 0) {
-        console.error(
-          "Length of the placeholder should be equal to the number of inputs."
-        );
+        console.error('Length of the placeholder should be equal to the number of inputs.');
       }
     }
     return undefined;
   };
 
   const isInputValueValid = (value: string) => {
-    const isTypeValid = isInputNum
-      ? !isNaN(Number(value))
-      : typeof value === "string";
+    const isTypeValid = isInputNum ? !isNaN(Number(value)) : typeof value === 'string';
     return isTypeValid && value.trim().length === 1;
   };
 
@@ -118,17 +113,16 @@ const OTPInput = ({
       //   nativeEvent.inputType === "deleteContentBackward"
       // ) {
       event.preventDefault();
-      changeCodeAtFocus("");
+      changeCodeAtFocus('');
       focusInput(activeInput - 1);
     }
     // }
   };
 
-  const handleFocus =
-    (event: React.FocusEvent<HTMLInputElement>) => (index: number) => {
-      setActiveInput(index);
-      event.target.select();
-    };
+  const handleFocus = (event: React.FocusEvent<HTMLInputElement>) => (index: number) => {
+    setActiveInput(index);
+    event.target.select();
+  };
 
   const handleBlur = () => {
     setActiveInput(activeInput - 1);
@@ -136,17 +130,17 @@ const OTPInput = ({
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     const otp = getOTPValue();
-    if ([event.code, event.key].includes("Backspace")) {
+    if ([event.code, event.key].includes('Backspace')) {
       event.preventDefault();
-      changeCodeAtFocus("");
+      changeCodeAtFocus('');
       focusInput(activeInput - 1);
-    } else if (event.code === "Delete") {
+    } else if (event.code === 'Delete') {
       event.preventDefault();
-      changeCodeAtFocus("");
-    } else if (event.code === "ArrowLeft") {
+      changeCodeAtFocus('');
+    } else if (event.code === 'ArrowLeft') {
       event.preventDefault();
       focusInput(activeInput - 1);
-    } else if (event.code === "ArrowRight") {
+    } else if (event.code === 'ArrowRight') {
       event.preventDefault();
       focusInput(activeInput + 1);
     }
@@ -156,10 +150,10 @@ const OTPInput = ({
       event.preventDefault();
       focusInput(activeInput + 1);
     } else if (
-      event.code === "Spacebar" ||
-      event.code === "Space" ||
-      event.code === "ArrowUp" ||
-      event.code === "ArrowDown"
+      event.code === 'Spacebar' ||
+      event.code === 'Space' ||
+      event.code === 'ArrowUp' ||
+      event.code === 'ArrowDown'
     ) {
       event.preventDefault();
     } else if (isInputNum && !isInputValueValid(event.key)) {
@@ -184,7 +178,7 @@ const OTPInput = ({
   };
 
   const handleOTPChange = (otp: Array<string>) => {
-    const otpValue = otp.join("");
+    const otpValue = otp.join('');
     onChange(otpValue);
   };
 
@@ -196,9 +190,9 @@ const OTPInput = ({
 
     // Get pastedData in an array of max size (num of inputs - current position)
     const pastedData = event.clipboardData
-      .getData("text/plain")
+      .getData('text/plain')
       .slice(0, numInputs - activeInput)
-      .split("");
+      .split('');
 
     // Prevent pasting if the clipboard data contains non-numeric values for number inputs
     if (isInputNum && pastedData.some((value) => isNaN(Number(value)))) {
@@ -208,7 +202,7 @@ const OTPInput = ({
     // Paste data from focused input onwards
     for (let pos = 0; pos < numInputs; ++pos) {
       if (pos >= activeInput && pastedData.length > 0) {
-        otp[pos] = pastedData.shift() ?? "";
+        otp[pos] = pastedData.shift() ?? '';
         nextActiveInput++;
       }
     }
@@ -220,9 +214,9 @@ const OTPInput = ({
   return (
     <div
       style={{
-        display: "flex",
-        alignItems: "center",
-        width: "75%",
+        display: 'flex',
+        alignItems: 'center',
+        width: '75%'
       }}
       // style={Object.assign(
       //   { display: "flex", alignItems: "center" },
@@ -236,7 +230,7 @@ const OTPInput = ({
         <React.Fragment key={index}>
           {renderInput(
             {
-              value: getOTPValue()[index] ?? "",
+              value: getOTPValue()[index] ?? '',
               placeholder: getPlaceholderValue()?.[index] ?? undefined,
               ref: (element) => (inputRefs.current[index] = element),
               onChange: handleChange,
@@ -244,34 +238,31 @@ const OTPInput = ({
               onBlur: handleBlur,
               onKeyDown: handleKeyDown,
               onPaste: handlePaste,
-              autoComplete: "off",
+              autoComplete: 'off',
               maxLength: 1,
               disabled: !!otpDisabled,
-              "aria-label": `Please enter OTP character ${index + 1}`,
+              'aria-label': `Please enter OTP character ${index + 1}`,
               style: Object.assign(
                 {
-                  width: "2em",
-                  height: "2em",
-                  textAlign: "center",
-                  margin: "auto",
-                  fontSize: "16px",
-                  fontWeight: "bold",
-                  borderRadius: "8px",
-                  borderWidth: "1px",
-                  borderColor: "grey",
+                  width: '2em',
+                  height: '2em',
+                  textAlign: 'center',
+                  margin: 'auto',
+                  fontSize: '16px',
+                  fontWeight: 'bold',
+                  borderRadius: '8px',
+                  borderWidth: '1px',
+                  borderColor: 'grey'
                 } as const,
                 isStyleObject(inputStyle) && inputStyle
               ),
-              className:
-                typeof inputStyle === "string" ? inputStyle : undefined,
-              type: inputType,
+              className: typeof inputStyle === 'string' ? inputStyle : undefined,
+              type: inputType
             },
             index
           )}
           {index < numInputs - 1 &&
-            (typeof renderSeparator === "function"
-              ? renderSeparator(index)
-              : renderSeparator)}
+            (typeof renderSeparator === 'function' ? renderSeparator(index) : renderSeparator)}
         </React.Fragment>
       ))}
     </div>

@@ -4,7 +4,7 @@ export const getNavigatorLanguage = () =>
     : // : navigator.userLanguage ||
       navigator.language ||
       //   navigator.browserLanguage ||
-      "sk";
+      'sk';
 
 // export const getCurrentLocale = () => {
 //   const localeString = "en-US"; // The string representing the locale

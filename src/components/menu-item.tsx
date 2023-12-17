@@ -1,10 +1,10 @@
-import { Box, SxProps, Typography } from "@mui/material";
-import React from "react";
-import NavigateNextIcon from "@mui/icons-material/NavigateNext";
-import { SettingsTypeEnumDto } from "../types/common/settings-type-enum.dto";
-import { ActivityActionsTypeEnumDto } from "../types/common/activity-actions-type-enum.dto";
-import { BuddyActionTypeEnum } from "../types/common/buddy-actions-type-enum.dto";
-import { ProfilePhotoActionsEnum } from "../screens/edit-profile-screen/components/profile-photo-actions";
+import NavigateNextIcon from '@mui/icons-material/NavigateNext';
+import { Box, Typography } from '@mui/material';
+import React from 'react';
+import { ProfilePhotoActionsEnum } from '../screens/edit-profile-screen/components/profile-photo-actions';
+import { ActivityActionsTypeEnumDto } from '../types/common/activity-actions-type-enum.dto';
+import { BuddyActionTypeEnum } from '../types/common/buddy-actions-type-enum.dto';
+import { SettingsTypeEnumDto } from '../types/common/settings-type-enum.dto';
 
 interface ILabeledDividerProps {
   label?: string;
@@ -41,18 +41,17 @@ const MenuItem: React.FC<ILabeledDividerProps> = ({
     <Box
       onClick={() => !disabled && onMenuItemClick?.(type)}
       sx={{
-        display: "flex",
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "space-between",
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
         p: 1.5,
-        textTransform: "none",
-        width: "100%",
-        boxSizing: "border-box",
+        textTransform: 'none',
+        width: '100%',
+        boxSizing: 'border-box'
       }}
-      {...rest}
-    >
-      <Box sx={{ display: "flex", alignItems: "center" }}>
+      {...rest}>
+      <Box sx={{ display: 'flex', alignItems: 'center' }}>
         {icon}
         <Typography
           sx={{
@@ -60,11 +59,10 @@ const MenuItem: React.FC<ILabeledDividerProps> = ({
             color: ({ palette }) => palette?.text?.primary,
             ...(contrastText
               ? {
-                  filter: "invert(100%)",
+                  filter: 'invert(100%)'
                 }
-              : {}),
-          }}
-        >
+              : {})
+          }}>
           {label}
         </Typography>
       </Box>
@@ -74,9 +72,9 @@ const MenuItem: React.FC<ILabeledDividerProps> = ({
             color: ({ palette }) => palette?.text?.primary,
             ...(contrastText
               ? {
-                  filter: "invert(100%)",
+                  filter: 'invert(100%)'
                 }
-              : {}),
+              : {})
           }}
         />
       )}

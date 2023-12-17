@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 
 const DateTimePicker = () => {
   return <div>date-time-picker</div>;

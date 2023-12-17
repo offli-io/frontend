@@ -1,10 +1,10 @@
-import WhereToVoteIcon from "@mui/icons-material/WhereToVote";
-import OffliButton from "components/offli-button";
-import { useMap } from "react-leaflet";
+import WhereToVoteIcon from '@mui/icons-material/WhereToVote';
+import OffliButton from 'components/offli-button';
+import { useMap } from 'react-leaflet';
 
 const SaveButton = ({
   onClick,
-  isLoading,
+  isLoading
 }: {
   onClick?: (location: L.LatLng) => void;
   isLoading?: boolean;
@@ -13,20 +13,19 @@ const SaveButton = ({
   return (
     <OffliButton
       sx={{
-        position: "absolute",
+        position: 'absolute',
         bottom: 15,
         right: 20,
         zIndex: 400,
         fontSize: 20,
-        width: "45%",
+        width: '45%',
         bgcolor: ({ palette }) => palette?.primary?.main,
         color: ({ palette }) => palette?.background?.default,
-        borderRadius: "15px",
+        borderRadius: '15px'
       }}
       onClick={() => onClick?.(map.getCenter())}
-      startIcon={<WhereToVoteIcon sx={{ color: "background.default" }} />}
-      isLoading={isLoading}
-    >
+      startIcon={<WhereToVoteIcon sx={{ color: 'background.default' }} />}
+      isLoading={isLoading}>
       Use location
     </OffliButton>
   );

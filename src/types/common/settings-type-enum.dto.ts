@@ -5,5 +5,5 @@ export enum SettingsTypeEnumDto {
   HELP_SUPPORT,
   DARK_THEME,
   ABOUT,
-  LOGOUT,
+  LOGOUT
 }

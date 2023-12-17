@@ -1,5 +1,5 @@
 export enum ActivitiyParticipantStatusEnum {
-  CONFIRMED = "confirmed",
-  INVITED = "invited",
-  REJECTED = "rejected",
+  CONFIRMED = 'confirmed',
+  INVITED = 'invited',
+  REJECTED = 'rejected'
 }

@@ -1,13 +1,14 @@
-import React from "react";
+import React from 'react';
 
 export default function useLongPress({
   onLongPress,
-  elementRef,
+  elementRef
 }: {
   onLongPress?: () => void;
   elementRef?: HTMLDivElement | null;
 }) {
-  const [action, setAction] = React.useState<string | undefined>();
+  //TODO why not using setAction?
+  const [action] = React.useState<string | undefined>();
 
   const timerRef = React.useRef<any>();
   const isLongPress = React.useRef<boolean>();
@@ -36,21 +37,21 @@ export default function useLongPress({
     }, 500);
   }
 
-  function handleOnMouseDown(e: any) {
+  function handleOnMouseDown() {
     startPressTimer();
   }
 
-  function handleOnMouseUp(e: any) {
+  function handleOnMouseUp() {
     clearTimeout(timerRef.current);
   }
 
-  function handleOnTouchStart(e: any) {
+  function handleOnTouchStart() {
     const yOffset = elementRef?.scrollTop;
     startPressTimer(yOffset);
   }
 
-  function handleOnTouchEnd(e: any) {
-    if (action === "longpress") return;
+  function handleOnTouchEnd() {
+    if (action === 'longpress') return;
     clearTimeout(timerRef.current);
   }
 
@@ -61,7 +62,7 @@ export default function useLongPress({
       onMouseDown: handleOnMouseDown,
       onMouseUp: handleOnMouseUp,
       onTouchStart: handleOnTouchStart,
-      onTouchEnd: handleOnTouchEnd,
-    },
+      onTouchEnd: handleOnTouchEnd
+    }
   };
 }

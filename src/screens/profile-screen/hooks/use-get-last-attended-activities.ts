@@ -1,11 +1,11 @@
-import { useActivities } from "hooks/use-activities";
-import React from "react";
-import { IActivitiesParamsDto } from "types/activities/activities-params.dto";
-import { IActivityListRestDto } from "types/activities/activity-list-rest.dto";
+import { useActivities } from 'hooks/use-activities';
+import React from 'react';
+import { IActivitiesParamsDto } from 'types/activities/activities-params.dto';
+import { IActivityListRestDto } from 'types/activities/activity-list-rest.dto';
 import {
   ActivitySortColumnEnum,
-  ActivitySortDirectionEnum,
-} from "types/activities/activity-sort-enum.dto";
+  ActivitySortDirectionEnum
+} from 'types/activities/activity-sort-enum.dto';
 
 interface IUseSendBuddyRequestProps {
   params?: IActivitiesParamsDto;
@@ -14,24 +14,23 @@ interface IUseSendBuddyRequestProps {
 
 export const useGetLastAttendedActivities = ({
   params: { limit = 2, participantId, ...rest } = {},
-  enabled,
+  enabled
 }: IUseSendBuddyRequestProps = {}) => {
-  const abortControllerRef = React.useRef<AbortController | null>(null);
   const currentDate = React.useMemo(() => new Date(), []);
 
   const {
     data: { data: { activities = [] } = {} } = {},
     isLoading,
-    isFetching,
+    isFetching
   } = useActivities<IActivityListRestDto>({
     params: {
       datetimeUntil: currentDate,
       sort: `${ActivitySortColumnEnum.DATETOME_UNTIL}:${ActivitySortDirectionEnum.DESC}` as any,
       limit,
       participantId,
-      ...rest,
+      ...rest
     },
-    enabled,
+    enabled
   });
 
   return { activities, isLoading, isFetching };

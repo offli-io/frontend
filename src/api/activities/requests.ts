@@ -1,46 +1,38 @@
-import axios from "axios";
-import qs from "qs";
-import { ActivitiyParticipantStatusEnum } from "../../types/activities/activity-participant-status-enum.dto";
+import axios from 'axios';
+import qs from 'qs';
+import { IActivitiesParamsDto } from 'types/activities/activities-params.dto';
+import { IUsersParamsDto } from 'types/users';
+import { IBuddiesResponseDto } from 'types/users/buddies-response.dto';
+import { IUsersResponseDto } from 'types/users/users-response.dto';
+import { IUsersSearchParamsDto } from 'types/users/users-search-params.dto';
+import { ACTIVITES_LIMIT, BRATISLAVA_CENTER_COORDS_OBJECT } from 'utils/common-constants';
+import { ActivityInviteStateEnum } from '../../types/activities/activity-invite-state-enum.dto';
+import { IActivityInviteValuesDto } from '../../types/activities/activity-invite-values.dto';
+import { IActivityListRestDto } from '../../types/activities/activity-list-rest.dto';
+import { ActivitiyParticipantStatusEnum } from '../../types/activities/activity-participant-status-enum.dto';
 import {
   IActivity,
   IActivitySearchParams,
   IPerson,
-  IPersonExtended,
-} from "../../types/activities/activity.dto";
-import { ICreateActivityParticipantRequestDto } from "../../types/activities/create-activity-participant-request.dto";
-import { ICreateActivityRequestDto } from "../../types/activities/create-activity-request.dto";
-import { IListActivitiesResponseDto } from "../../types/activities/list-activities-response.dto";
+  IPersonExtended
+} from '../../types/activities/activity.dto';
+import { ICreateActivityParticipantRequestDto } from '../../types/activities/create-activity-participant-request.dto';
+import { ICreateActivityRequestDto } from '../../types/activities/create-activity-request.dto';
+import { ICreateGoogleEventWithTokenRequestDto } from '../../types/activities/create-google-event-with-token-request.dto';
+import { IListActivitiesResponseDto } from '../../types/activities/list-activities-response.dto';
+import { IListParticipantsResponseDto } from '../../types/activities/list-participants-response.dto';
+import { IMapViewActivitiesResponseDto } from '../../types/activities/mapview-activities.dto';
 import {
   IPlaceExternalApiDto,
-  IPlaceExternalApiFetchDto,
-} from "../../types/activities/place-external-api.dto";
-import {
-  IPredefinedPictureDto,
-  IPredefinedPictureResponseDto,
-} from "../../types/activities/predefined-picture.dto";
-import { IPredefinedTagDto } from "../../types/activities/predefined-tag.dto";
-import { IUpdateActivityRequestDto } from "./../../types/activities/update-activity-request.dto";
-import { IListParticipantsResponseDto } from "../../types/activities/list-participants-response.dto";
-import { ActivityInviteStateEnum } from "../../types/activities/activity-invite-state-enum.dto";
-import { ICreateGoogleEventWithTokenRequestDto } from "../../types/activities/create-google-event-with-token-request.dto";
-import { IActivityInviteValuesDto } from "../../types/activities/activity-invite-values.dto";
-import { IActivityRestDto } from "../../types/activities/activity-rest.dto";
-import { IActivityListRestDto } from "../../types/activities/activity-list-rest.dto";
-import { IActivitiesParamsDto } from "types/activities/activities-params.dto";
-import { IUsersParamsDto } from "types/users";
-import { IMapViewActivitiesResponseDto } from "../../types/activities/mapview-activities.dto";
-import { IBuddiesResponseDto } from "types/users/buddies-response.dto";
-import { IUsersResponseDto } from "types/users/users-response.dto";
-import { IUsersSearchParamsDto } from "types/users/users-search-params.dto";
-import { ActivitySortColumnEnum } from "types/activities/activity-sort-enum.dto";
-import {
-  ACTIVITES_LIMIT,
-  BRATISLAVA_CENTER_COORDS_OBJECT,
-} from "utils/common-constants";
+  IPlaceExternalApiFetchDto
+} from '../../types/activities/place-external-api.dto';
+import { IPredefinedPictureResponseDto } from '../../types/activities/predefined-picture.dto';
+import { IPredefinedTagDto } from '../../types/activities/predefined-tag.dto';
+import { IUpdateActivityRequestDto } from './../../types/activities/update-activity-request.dto';
 
 export const getActivities = async ({
   queryFunctionContext,
-  searchParams,
+  searchParams
 }: {
   queryFunctionContext: any;
   searchParams?: IActivitySearchParams | undefined;
@@ -50,11 +42,11 @@ export const getActivities = async ({
 
   const promise = axios.get<any>(`/activities`, {
     params: searchParams,
-    cancelToken: source?.token,
+    cancelToken: source?.token
   });
 
-  queryFunctionContext?.signal?.addEventListener("abort", () => {
-    source.cancel("Query was cancelled by React Query");
+  queryFunctionContext?.signal?.addEventListener('abort', () => {
+    source.cancel('Query was cancelled by React Query');
   });
 
   return promise;
@@ -70,7 +62,7 @@ export const getActivitiesPromiseResolved = async ({
   creatorId,
   participantStatus,
   datetimeFrom,
-  datetimeUntil,
+  datetimeUntil
 }: {
   id?: number;
   text?: string;
@@ -103,8 +95,8 @@ export const getActivitiesPromiseResolved = async ({
       creatorId,
       participantStatus,
       datetimeFrom,
-      datetimeUntil,
-    },
+      datetimeUntil
+    }
   });
 
   // queryFunctionContext?.signal?.addEventListener("abort", () => {
@@ -120,7 +112,7 @@ export const getActivitiesPromiseResolvedAnonymous = async ({
   sort,
   creatorId,
   datetimeFrom,
-  datetimeUntil,
+  datetimeUntil
 }: {
   id?: number;
   text?: string;
@@ -138,20 +130,17 @@ export const getActivitiesPromiseResolvedAnonymous = async ({
   const CancelToken = axios.CancelToken;
   const source = CancelToken.source();
 
-  const response = await axios.get<IActivityListRestDto>(
-    `/anonymous/activities`,
-    {
-      cancelToken: source?.token,
-      params: {
-        limit,
-        offset,
-        sort,
-        creatorId,
-        datetimeFrom,
-        datetimeUntil,
-      },
+  const response = await axios.get<IActivityListRestDto>(`/anonymous/activities`, {
+    cancelToken: source?.token,
+    params: {
+      limit,
+      offset,
+      sort,
+      creatorId,
+      datetimeFrom,
+      datetimeUntil
     }
-  );
+  });
 
   // queryFunctionContext?.signal?.addEventListener("abort", () => {
   //   source.cancel("Query was cancelled by React Query");
@@ -162,12 +151,12 @@ export const getActivitiesPromiseResolvedAnonymous = async ({
 
 export const getActivity = <T>(params: IActivitiesParamsDto) => {
   const promise = axios.get<T>(
-    `/activities${params?.id ? `/${params?.id}` : ""}`,
+    `/activities${params?.id ? `/${params?.id}` : ''}`,
     {
       params,
       paramsSerializer: (params) => {
-        return qs.stringify(params, { arrayFormat: "repeat" });
-      },
+        return qs.stringify(params, { arrayFormat: 'repeat' });
+      }
     }
     // {
 
@@ -184,15 +173,12 @@ export const getActivity = <T>(params: IActivitiesParamsDto) => {
 };
 
 export const getActivityAnonymous = <T>(params: IActivitiesParamsDto) => {
-  const promise = axios.get<T>(
-    `/anonymous/activities${params?.id ? `/${params?.id}` : ""}`,
-    {
-      params,
-      paramsSerializer: (params) => {
-        return qs.stringify(params, { arrayFormat: "repeat" });
-      },
+  const promise = axios.get<T>(`/anonymous/activities${params?.id ? `/${params?.id}` : ''}`, {
+    params,
+    paramsSerializer: (params) => {
+      return qs.stringify(params, { arrayFormat: 'repeat' });
     }
-  );
+  });
 
   return promise;
 };
@@ -200,15 +186,15 @@ export const getActivityAnonymous = <T>(params: IActivitiesParamsDto) => {
 export const getParticipantActivities = ({
   participantId,
   sort,
-  datetimeFrom,
+  datetimeFrom
 }: IActivitiesParamsDto) => {
   const promise = axios.get<IListActivitiesResponseDto>(`/activities`, {
     params: {
       sort,
       participantId,
       participantStatus: ActivitiyParticipantStatusEnum.CONFIRMED,
-      datetimeFrom,
-    },
+      datetimeFrom
+    }
   });
 
   // queryFunctionContext?.signal?.addEventListener('abort', () => {
@@ -220,14 +206,12 @@ export const getParticipantActivities = ({
 
 export const removePersonFromActivity = ({
   personId,
-  activityId,
+  activityId
 }: {
   personId?: number;
   activityId?: number;
 }) => {
-  const promise = axios.delete<void>(
-    `/activities/${activityId}/participants/${personId}`
-  );
+  const promise = axios.delete<void>(`/activities/${activityId}/participants/${personId}`);
 
   // queryFunctionContext?.signal?.addEventListener('abort', () => {
   //   source.cancel('Query was cancelled by React Query')
@@ -247,9 +231,9 @@ export const getLocationFromQuery = (queryString: string) => {
     {
       cancelToken: source?.token,
       headers: {
-        origin: "https://localhost:3000/",
-        "Access-Control-Allow-Origin": "*",
-      },
+        origin: 'https://localhost:3000/',
+        'Access-Control-Allow-Origin': '*'
+      }
     }
   );
 
@@ -264,9 +248,6 @@ export const getLocationFromQueryFetch = (
   queryString: string,
   location: { lat?: number; lon?: number } = BRATISLAVA_CENTER_COORDS_OBJECT
 ): Promise<IPlaceExternalApiFetchDto> => {
-  const CancelToken = axios.CancelToken;
-  const source = CancelToken.source();
-
   // const promise = axios.get<IPlaceExternalApiDto[]>(
   //   // `https://nominatim.openstreetmap.org/search?q=${queryString}&format=jsonv2`,
   //   `https://api.geoapify.com/v1/geocode/search?name=${queryString}&limit=10&format=json&apiKey=86a10638b4cf4c339ade6ab08f753b16
@@ -276,8 +257,8 @@ export const getLocationFromQueryFetch = (
   //   }
   // );
 
-  var requestOptions = {
-    method: "GET",
+  const requestOptions = {
+    method: 'GET'
   };
 
   const promise = fetch(
@@ -296,8 +277,8 @@ export const getPlaceFromCoordinates = (
   lat: number,
   lon: number
 ): Promise<IPlaceExternalApiFetchDto> => {
-  var requestOptions = {
-    method: "GET",
+  const requestOptions = {
+    method: 'GET'
   };
 
   const promise = fetch(
@@ -317,7 +298,7 @@ export const createActivity = async (values: IActivity) => {
   const source = CancelToken.source();
 
   const promise = axios.post<ICreateActivityRequestDto>(`/activities`, values, {
-    cancelToken: source?.token,
+    cancelToken: source?.token
   });
 
   //   queryFunctionContext?.signal?.addEventListener('abort', () => {
@@ -331,13 +312,9 @@ export const updateActivity = async (id: number, values: IActivity) => {
   const CancelToken = axios.CancelToken;
   const source = CancelToken.source();
 
-  const promise = axios.patch<IUpdateActivityRequestDto>(
-    `/activities/${id}`,
-    values,
-    {
-      cancelToken: source?.token,
-    }
-  );
+  const promise = axios.patch<IUpdateActivityRequestDto>(`/activities/${id}`, values, {
+    cancelToken: source?.token
+  });
 
   //   queryFunctionContext?.signal?.addEventListener('abort', () => {
   //     source.cancel('Query was cancelled by React Query')
@@ -349,7 +326,7 @@ export const updateActivity = async (id: number, values: IActivity) => {
 export const getUsers = ({ username, ...params }: IUsersSearchParamsDto) => {
   // const CancelToken = axios.CancelToken;
   // const source = CancelToken.source();
-  const validUsername = username ?? localStorage.getItem("username");
+  const validUsername = username ?? localStorage.getItem('username');
 
   // params
   // sentRequestFilter
@@ -359,8 +336,8 @@ export const getUsers = ({ username, ...params }: IUsersSearchParamsDto) => {
   const promise = axios.get<IUsersResponseDto>(`/users`, {
     params: {
       username: username ? validUsername : undefined,
-      ...params,
-    },
+      ...params
+    }
     // cancelToken: source?.token,
   });
   // .then((response) => {
@@ -380,17 +357,14 @@ export const getUsers = ({ username, ...params }: IUsersSearchParamsDto) => {
   return promise;
 };
 
-export const getUsersPromiseResolved = async ({
-  username,
-  ...params
-}: IUsersSearchParamsDto) => {
-  const validUsername = username ?? localStorage.getItem("username");
+export const getUsersPromiseResolved = async ({ username, ...params }: IUsersSearchParamsDto) => {
+  const validUsername = username ?? localStorage.getItem('username');
 
   const promise = await axios.get<IUsersResponseDto>(`/users`, {
     params: {
       username: username ? validUsername : undefined,
-      ...params,
-    },
+      ...params
+    }
     // cancelToken: source?.token,
   });
 
@@ -401,11 +375,11 @@ export const getUser = ({ id, requestingInfoUserId }: IUsersParamsDto) => {
   const CancelToken = axios.CancelToken;
   const source = CancelToken.source();
 
-  const promise = axios.get<IPersonExtended>(`/users${id ? `/${id}` : ""}`, {
+  const promise = axios.get<IPersonExtended>(`/users${id ? `/${id}` : ''}`, {
     cancelToken: source?.token,
     params: {
-      requestingInfoUserId,
-    },
+      requestingInfoUserId
+    }
   });
 
   // queryFunctionContext?.signal?.addEventListener('abort', () => {
@@ -421,9 +395,9 @@ export const getBuddies = (userId: number, queryString?: string) => {
 
   const promise = axios.get<IBuddiesResponseDto>(`/users/${userId}/buddies`, {
     params: {
-      buddyName: queryString,
+      buddyName: queryString
     },
-    cancelToken: source?.token,
+    cancelToken: source?.token
   });
 
   // queryFunctionContext?.signal?.addEventListener('abort', () => {
@@ -437,12 +411,9 @@ export const getRecommendedBuddies = (userId: number) => {
   const CancelToken = axios.CancelToken;
   const source = CancelToken.source();
 
-  const promise = axios.get<IPerson[]>(
-    `/users/${userId}/buddies-recommendation`,
-    {
-      cancelToken: source?.token,
-    }
-  );
+  const promise = axios.get<IPerson[]>(`/users/${userId}/buddies-recommendation`, {
+    cancelToken: source?.token
+  });
 
   // queryFunctionContext?.signal?.addEventListener('abort', () => {
   //   source.cancel('Query was cancelled by React Query')
@@ -456,7 +427,7 @@ export const getPredefinedTags = () => {
   const source = CancelToken.source();
 
   const promise = axios.get<{ tags: IPredefinedTagDto[] }>(`/predefined/tags`, {
-    cancelToken: source?.token,
+    cancelToken: source?.token
   });
 
   // queryFunctionContext?.signal?.addEventListener('abort', () => {
@@ -473,7 +444,7 @@ export const getMapviewActivities = () => {
   const promise = axios.get<IMapViewActivitiesResponseDto>(
     `/mapview/activities?lon=-180&lat=-90&maxLon=180&maxLat=90`,
     {
-      cancelToken: source?.token,
+      cancelToken: source?.token
     }
   );
 
@@ -492,13 +463,9 @@ export const changeActivityParticipantStatus = (
   const CancelToken = axios.CancelToken;
   const source = CancelToken.source();
 
-  const promise = axios.put(
-    `/activities/${activityId}/participants/${userId}`,
-    userInfo,
-    {
-      cancelToken: source?.token,
-    }
-  );
+  const promise = axios.put(`/activities/${activityId}/participants/${userId}`, userInfo, {
+    cancelToken: source?.token
+  });
 
   //   queryFunctionContext?.signal?.addEventListener('abort', () => {
   //     source.cancel('Query was cancelled by React Query')
@@ -519,7 +486,7 @@ export const changeParticipantStatus = (
     `/activities/${activityId}/participants/${participantId}`,
     { status },
     {
-      cancelToken: source?.token,
+      cancelToken: source?.token
     }
   );
 
@@ -538,13 +505,9 @@ export const inviteBuddyToActivity = (
   const CancelToken = axios.CancelToken;
   const source = CancelToken.source();
 
-  const promise = axios.put(
-    `/activities/${activityId}/participants/${buddyId}`,
-    values,
-    {
-      cancelToken: source?.token,
-    }
-  );
+  const promise = axios.put(`/activities/${activityId}/participants/${buddyId}`, values, {
+    cancelToken: source?.token
+  });
 
   //   queryFunctionContext?.signal?.addEventListener('abort', () => {
   //     source.cancel('Query was cancelled by React Query')
@@ -557,12 +520,9 @@ export const uninviteBuddy = (activityId: number, userId: number) => {
   const CancelToken = axios.CancelToken;
   const source = CancelToken.source();
 
-  const promise = axios.delete(
-    `/activities/${activityId}/participants/${userId}`,
-    {
-      cancelToken: source?.token,
-    }
-  );
+  const promise = axios.delete(`/activities/${activityId}/participants/${userId}`, {
+    cancelToken: source?.token
+  });
 
   //   queryFunctionContext?.signal?.addEventListener('abort', () => {
   //     source.cancel('Query was cancelled by React Query')
@@ -575,18 +535,15 @@ export const getPredefinedPhotos = (tag?: string[]) => {
   const CancelToken = axios.CancelToken;
   const source = CancelToken.source();
 
-  const promise = axios.get<IPredefinedPictureResponseDto>(
-    `/predefined/pictures`,
-    {
-      cancelToken: source?.token,
-      params: {
-        tag,
-      },
-      paramsSerializer: (params) => {
-        return qs.stringify(params, { arrayFormat: "repeat" });
-      },
+  const promise = axios.get<IPredefinedPictureResponseDto>(`/predefined/pictures`, {
+    cancelToken: source?.token,
+    params: {
+      tag
+    },
+    paramsSerializer: (params) => {
+      return qs.stringify(params, { arrayFormat: 'repeat' });
     }
-  );
+  });
 
   // queryFunctionContext?.signal?.addEventListener('abort', () => {
   //   source.cancel('Query was cancelled by React Query')
@@ -599,12 +556,9 @@ export const kickUserFromActivity = (activityId: number, personId: number) => {
   const CancelToken = axios.CancelToken;
   const source = CancelToken.source();
 
-  const promise = axios.delete<void>(
-    `/activities/${activityId}/participants/${personId}`,
-    {
-      cancelToken: source?.token,
-    }
-  );
+  const promise = axios.delete<void>(`/activities/${activityId}/participants/${personId}`, {
+    cancelToken: source?.token
+  });
 
   //   queryFunctionContext?.signal?.addEventListener('abort', () => {
   //     source.cancel('Query was cancelled by React Query')
@@ -613,19 +567,13 @@ export const kickUserFromActivity = (activityId: number, personId: number) => {
   return promise;
 };
 
-export const acceptActivityInvitation = (
-  activityId?: number,
-  userId?: number
-) => {
+export const acceptActivityInvitation = (activityId?: number, userId?: number) => {
   const CancelToken = axios.CancelToken;
   const source = CancelToken.source();
 
-  const promise = axios.patch(
-    `/activities/${activityId}/participants/${userId}`,
-    {
-      cancelToken: source?.token,
-    }
-  );
+  const promise = axios.patch(`/activities/${activityId}/participants/${userId}`, {
+    cancelToken: source?.token
+  });
 
   //   queryFunctionContext?.signal?.addEventListener('abort', () => {
   //     source.cancel('Query was cancelled by React Query')
@@ -641,10 +589,10 @@ export const sendBuddyRequest = (userId?: number, buddy_to_be_id?: number) => {
   const promise = axios.post(
     `/users/${userId}/buddies`,
     {
-      buddy_to_be_id,
+      buddy_to_be_id
     },
     {
-      cancelToken: source?.token,
+      cancelToken: source?.token
     }
   );
 
@@ -660,7 +608,7 @@ export const uploadFile = (formData?: FormData) => {
   const source = CancelToken.source();
 
   const promise = axios.post<{ filename?: string }>(`/files`, formData, {
-    cancelToken: source?.token,
+    cancelToken: source?.token
   });
 
   //   queryFunctionContext?.signal?.addEventListener('abort', () => {
@@ -671,7 +619,7 @@ export const uploadFile = (formData?: FormData) => {
 };
 
 export const getActivityParticipants = ({
-  activityId,
+  activityId
 }: // searchParams,
 {
   activityId: number;
@@ -684,7 +632,7 @@ export const getActivityParticipants = ({
     `/activities/${activityId}/participants`,
     {
       // params: searchParams,
-      cancelToken: source?.token,
+      cancelToken: source?.token
     }
   );
 
@@ -696,7 +644,7 @@ export const getActivityParticipants = ({
 };
 
 export const getActivityParticipantsAnonymous = ({
-  activityId,
+  activityId
 }: // searchParams,
 {
   activityId: number;
@@ -709,7 +657,7 @@ export const getActivityParticipantsAnonymous = ({
     `/anonymous/activities/${activityId}/participants`,
     {
       // params: searchParams,
-      cancelToken: source?.token,
+      cancelToken: source?.token
     }
   );
 
@@ -729,11 +677,11 @@ export const addActivityToCalendar = (
   const source = CancelToken.source();
 
   const promise = axios.post(`/google/events/${userId}`, values, {
-    cancelToken: source?.token,
+    cancelToken: source?.token
   });
 
-  signal?.addEventListener("abort", () => {
-    source.cancel("Query was cancelled by React Query");
+  signal?.addEventListener('abort', () => {
+    source.cancel('Query was cancelled by React Query');
   });
 
   return promise;

@@ -1,5 +1,5 @@
-import axios from "axios";
-import { CLIENT_ID, SCOPE } from "../../utils/common-constants";
+import axios from 'axios';
+import { CLIENT_ID, SCOPE } from '../../utils/common-constants';
 
 //TODO add interface for google event
 export const addEventToCalendar = (calendarId?: string, event?: any) => {
@@ -16,14 +16,14 @@ export const addEventToCalendar = (calendarId?: string, event?: any) => {
             {
               headers: {
                 Authorization: `Bearer ${tokenResponse.access_token}`,
-                "Content-Type": "application/json",
-              },
+                'Content-Type': 'application/json'
+              }
             }
           );
           console.log(promise);
           return promise;
         }
-      },
+      }
     });
     googleTokenClient?.requestAccessToken();
   } catch (err) {

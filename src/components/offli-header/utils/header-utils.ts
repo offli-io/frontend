@@ -1,56 +1,56 @@
-import { ApplicationLocations } from "../../../types/common/applications-locations.dto";
+import { ApplicationLocations } from '../../../types/common/applications-locations.dto';
 
 export const mapPathnameToHeaderTitle = (pathname?: ApplicationLocations) => {
   //TODO move this to switch
 
   if (pathname?.startsWith(ApplicationLocations.ACTIVITY_INVITE)) {
-    return "Activity invite";
+    return 'Activity invite';
   }
 
   if (pathname?.startsWith(ApplicationLocations.USER_PROFILE)) {
-    return "User profile";
+    return 'User profile';
   }
 
   if (pathname?.startsWith(ApplicationLocations.BUDDY_REQUEST)) {
-    return "Buddy request";
+    return 'Buddy request';
   }
 
   if (pathname?.startsWith(ApplicationLocations.ACTIVITY_DETAIL)) {
-    return "Activity detail";
+    return 'Activity detail';
   }
 
   if (pathname?.startsWith(ApplicationLocations.ACTIVITY_MEMBERS)) {
-    return "Activity members";
+    return 'Activity members';
   }
 
   if (pathname?.startsWith(ApplicationLocations.NOTIFICATIONS)) {
-    return "Notifications";
+    return 'Notifications';
   }
 
   if (pathname?.startsWith(ApplicationLocations.ACTIVITY_INVITE_MEMBERS)) {
-    return "Invite buddies";
+    return 'Invite buddies';
   }
 
   // assuming there is ID behind the slash TODO in the future better handling of these paths
   if (pathname?.startsWith(`${ApplicationLocations.MAP}/`)) {
-    return "Activity location";
+    return 'Activity location';
   }
 
   switch (pathname) {
     case ApplicationLocations.EDIT_PROFILE:
-      return "Edit profile";
+      return 'Edit profile';
     case ApplicationLocations.BUDDIES:
-      return "Buddies";
+      return 'Buddies';
     case ApplicationLocations.SEARCH:
-      return "Search activities";
+      return 'Search activities';
     case ApplicationLocations.SETTINGS:
-      return "Settings";
+      return 'Settings';
     case ApplicationLocations.MAP:
-      return "Map";
+      return 'Map';
     case ApplicationLocations.ACCOUNT_SETTINGS:
-      return "Account settings";
+      return 'Account settings';
     default:
-      return "";
+      return '';
   }
 };
 

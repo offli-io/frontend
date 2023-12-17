@@ -1,4 +1,4 @@
-import { ActivityInviteStateEnum } from "./activity-invite-state-enum.dto";
+import { ActivityInviteStateEnum } from './activity-invite-state-enum.dto';
 
 export interface IActivityInviteValuesDto {
   status: ActivityInviteStateEnum;

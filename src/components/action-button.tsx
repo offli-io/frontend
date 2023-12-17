@@ -1,16 +1,10 @@
-import React from "react";
+import React from 'react';
 
-import {
-  Button,
-  ButtonProps,
-  CircularProgress,
-  SxProps,
-  Typography,
-} from "@mui/material";
-import { Link } from "react-router-dom";
+import { Button, ButtonProps, CircularProgress, SxProps, Typography } from '@mui/material';
+import { Link } from 'react-router-dom';
 
 interface IProps extends ButtonProps {
-  type?: "button" | "reset" | "submit" | undefined;
+  type?: 'button' | 'reset' | 'submit' | undefined;
   text: string;
   sx?: SxProps;
   onClick?: () => void;
@@ -33,35 +27,29 @@ const ActionButton: React.FC<IProps> = ({
     <Button
       sx={{
         ...sx,
-        width: "60%",
-        borderRadius: "15px",
+        width: '60%',
+        borderRadius: '15px',
         backgroundColor: (theme) =>
-          disabled
-            ? theme?.palette?.inactive?.main
-            : theme.palette.primary.light,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        padding: "2%",
+          disabled ? theme?.palette?.inactive?.main : theme.palette.primary.light,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: '2%'
       }}
       type={type}
       onClick={onClick}
       data-testid="action-button"
       disabled={isLoading || disabled}
-      {...rest}
-    >
-      {isLoading ? (
-        <CircularProgress size={20} color="primary" sx={{ mr: 1.5 }} />
-      ) : null}
+      {...rest}>
+      {isLoading ? <CircularProgress size={20} color="primary" sx={{ mr: 1.5 }} /> : null}
       {href ? (
-        <Link to={href!} style={{ textDecoration: "none" }}>
+        <Link to={href!} style={{ textDecoration: 'none' }}>
           <Typography
             variant="h6"
             sx={{
-              color: "primary.main",
-              fontWeight: "bold",
-            }}
-          >
+              color: 'primary.main',
+              fontWeight: 'bold'
+            }}>
             {text}
           </Typography>
         </Link>
@@ -69,10 +57,9 @@ const ActionButton: React.FC<IProps> = ({
         <Typography
           variant="h6"
           sx={{
-            color: "primary.main",
-            fontWeight: "bold",
-          }}
-        >
+            color: 'primary.main',
+            fontWeight: 'bold'
+          }}>
           {text}
         </Typography>
       )}

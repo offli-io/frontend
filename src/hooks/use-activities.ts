@@ -1,13 +1,12 @@
-import { useQuery } from "@tanstack/react-query";
-import { AxiosResponse } from "axios";
-import { toast } from "sonner";
-import { IActivitiesParamsDto } from "types/activities/activities-params.dto";
-import { getActivity, getActivityAnonymous } from "../api/activities/requests";
-import { AuthenticationContext } from "assets/theme/authentication-provider";
-import React from "react";
+import { useQuery } from '@tanstack/react-query';
+import { AxiosResponse } from 'axios';
+import { toast } from 'sonner';
+import { IActivitiesParamsDto } from 'types/activities/activities-params.dto';
+import { getActivity, getActivityAnonymous } from '../api/activities/requests';
+import { AuthenticationContext } from 'assets/theme/authentication-provider';
+import React from 'react';
 
-export const ACTIVITIES_QUERY_KEY = "activities";
-export const PAGED_ACTIVITIES_QUERY_KEY = "paged-activities";
+export const ACTIVITIES_QUERY_KEY = 'activities';
 
 export interface IUseActivitiesReturn<T> {
   params?: IActivitiesParamsDto;
@@ -28,14 +27,12 @@ export const useActivities = <T>({
     lat,
     participantId,
     participantStatus,
-    sort,
+    sort
   } = {},
   onSuccess,
-  enabled,
+  enabled
 }: IUseActivitiesReturn<T>) => {
-  const { userInfo: { id: userId = null } = {} } = React.useContext(
-    AuthenticationContext
-  );
+  const { userInfo: { id: userId = null } = {} } = React.useContext(AuthenticationContext);
   const { data, isLoading, isFetching } = useQuery(
     [
       ACTIVITIES_QUERY_KEY,
@@ -50,7 +47,7 @@ export const useActivities = <T>({
       lon,
       participantId,
       participantStatus,
-      sort,
+      sort
     ],
     () =>
       userId
@@ -66,7 +63,7 @@ export const useActivities = <T>({
             lat,
             participantId,
             participantStatus,
-            sort,
+            sort
           })
         : getActivityAnonymous<T>({
             id,
@@ -80,17 +77,17 @@ export const useActivities = <T>({
             lat,
             participantId,
             participantStatus,
-            sort,
+            sort
           }),
     {
       onSuccess,
       onError: () => {
-        toast.error(`Failed to load activit${id ? "y" : "ies"}`);
+        toast.error(`Failed to load activit${id ? 'y' : 'ies'}`);
       },
       refetchOnMount: true,
       refetchOnWindowFocus: true,
       refetchOnReconnect: true,
-      enabled,
+      enabled
     }
   );
 

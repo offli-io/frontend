@@ -1,5 +1,5 @@
 export enum ActivityMembersActionTypeDto {
-  KICK = "KICK",
-  PROMOTE = "PROMOTE",
-  UNINVITE = "UNINVITE",
+  KICK = 'KICK',
+  PROMOTE = 'PROMOTE',
+  UNINVITE = 'UNINVITE'
 }

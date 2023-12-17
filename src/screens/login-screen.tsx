@@ -1,30 +1,23 @@
-import { yupResolver } from "@hookform/resolvers/yup";
-import GoogleIcon from "@mui/icons-material/Google";
-import VisibilityIcon from "@mui/icons-material/Visibility";
-import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
-import {
-  Box,
-  IconButton,
-  InputAdornment,
-  TextField,
-  Typography,
-  useTheme,
-} from "@mui/material";
-import { useMutation } from "@tanstack/react-query";
-import React from "react";
-import { Controller, useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
-import { toast } from "sonner";
-import * as yup from "yup";
-import { loginUser, loginViaGoogle } from "../api/auth/requests";
-import { AuthenticationContext } from "../assets/theme/authentication-provider";
-import LabeledDivider from "../components/labeled-divider";
-import Logo from "../components/logo";
-import OffliBackButton from "../components/offli-back-button";
-import OffliButton from "../components/offli-button";
-import { useGoogleAuthorization } from "../hooks/use-google-authorization";
-import { ApplicationLocations } from "../types/common/applications-locations.dto";
-import { GoogleAuthCodeFromEnumDto } from "../types/google/google-auth-code-from-enum.dto";
+import { yupResolver } from '@hookform/resolvers/yup';
+import GoogleIcon from '@mui/icons-material/Google';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
+import { Box, IconButton, InputAdornment, TextField, Typography, useTheme } from '@mui/material';
+import { useMutation } from '@tanstack/react-query';
+import React from 'react';
+import { Controller, useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
+import * as yup from 'yup';
+import { loginUser, loginViaGoogle } from '../api/auth/requests';
+import { AuthenticationContext } from '../assets/theme/authentication-provider';
+import LabeledDivider from '../components/labeled-divider';
+import Logo from '../components/logo';
+import OffliBackButton from '../components/offli-back-button';
+import OffliButton from '../components/offli-button';
+import { useGoogleAuthorization } from '../hooks/use-google-authorization';
+import { ApplicationLocations } from '../types/common/applications-locations.dto';
+import { GoogleAuthCodeFromEnumDto } from '../types/google/google-auth-code-from-enum.dto';
 
 export interface FormValues {
   username: string;
@@ -34,62 +27,56 @@ export interface FormValues {
 const schema: () => yup.SchemaOf<FormValues> = () =>
   yup.object({
     username: yup.string().defined().required(),
-    password: yup.string().defined().required(),
+    password: yup.string().defined().required()
   });
 
 const LoginScreen: React.FC = () => {
   const [showPassword, setShowPassword] = React.useState(false);
-  const { setUserInfo, setStateToken } = React.useContext(
-    AuthenticationContext
-  );
-  const { shadows, palette } = useTheme();
+  const { setUserInfo, setStateToken } = React.useContext(AuthenticationContext);
+  const { palette } = useTheme();
   const navigate = useNavigate();
   const {
     googleToken,
     handleGoogleAuthorization,
-    isLoading: isGoogleAuthorizationLoading,
+    isLoading: isGoogleAuthorizationLoading
   } = useGoogleAuthorization({
-    from: GoogleAuthCodeFromEnumDto.LOGIN,
+    from: GoogleAuthCodeFromEnumDto.LOGIN
   });
   const abortControllerRef = React.useRef<AbortController | null>(null);
 
   const handleClickShowPassword = () => setShowPassword(!showPassword);
 
-  const { control, handleSubmit, watch, formState } = useForm<FormValues>({
+  const { control, handleSubmit, formState } = useForm<FormValues>({
     defaultValues: {
-      username: "",
-      password: "",
+      username: '',
+      password: ''
     },
     resolver: yupResolver(schema()),
-    mode: "onChange",
+    mode: 'onChange'
   });
 
-  const { isLoading: isGoogleLoginLoading, mutate: sendLoginViaGoogle } =
-    useMutation(
-      ["google-login"],
-      (authorizationCode?: string) => {
-        abortControllerRef.current = new AbortController();
-        return loginViaGoogle(
-          authorizationCode,
-          abortControllerRef?.current?.signal
-        );
+  const { isLoading: isGoogleLoginLoading, mutate: sendLoginViaGoogle } = useMutation(
+    ['google-login'],
+    (authorizationCode?: string) => {
+      abortControllerRef.current = new AbortController();
+      return loginViaGoogle(authorizationCode, abortControllerRef?.current?.signal);
+    },
+    {
+      onSuccess: (data) => {
+        setStateToken(data?.data?.token?.access_token ?? null);
+        setUserInfo?.({
+          id: data?.data?.user_id
+        });
+        localStorage.setItem('userId', String(data?.data?.user_id));
+        navigate(ApplicationLocations.EXPLORE);
       },
-      {
-        onSuccess: (data, params) => {
-          setStateToken(data?.data?.token?.access_token ?? null);
-          setUserInfo?.({
-            id: data?.data?.user_id,
-          });
-          localStorage.setItem("userId", String(data?.data?.user_id));
-          navigate(ApplicationLocations.EXPLORE);
-        },
-        onError: (error) => {
-          toast.error("Login with google failed");
-        },
+      onError: () => {
+        toast.error('Login with google failed');
       }
-    );
+    }
+  );
   const { isLoading, mutate: sendLogin } = useMutation(
-    ["login"],
+    ['login'],
     (formValues: FormValues) => {
       return loginUser(formValues);
     },
@@ -100,12 +87,12 @@ const LoginScreen: React.FC = () => {
         //TODO refresh user Id after refresh
         setStateToken(data?.data?.token?.access_token ?? null);
         setUserInfo?.({ username: params?.username, id: data?.data?.user_id });
-        localStorage.setItem("userId", String(data?.data?.user_id));
+        localStorage.setItem('userId', String(data?.data?.user_id));
         navigate(ApplicationLocations.EXPLORE);
       },
-      onError: (error) => {
-        toast.error("Failed to log in");
-      },
+      onError: () => {
+        toast.error('Failed to log in');
+      }
     }
   );
 
@@ -126,37 +113,29 @@ const LoginScreen: React.FC = () => {
     <>
       <OffliBackButton
         onClick={() => navigate(ApplicationLocations.LOGIN_OR_REGISTER)}
-        sx={{ alignSelf: "flex-start", m: 1, color: palette?.primary?.main }}
-      >
+        sx={{ alignSelf: 'flex-start', m: 1, color: palette?.primary?.main }}>
         Back
       </OffliBackButton>
       <form
         onSubmit={handleSubmit(handleFormSubmit)}
         style={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-        }}
-      >
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center'
+        }}>
         <Logo sx={{ mb: 5, mt: 2 }} />
         <Box
           sx={{
-            display: "flex",
-            flexDirection: "column",
-            width: "100%",
-            alignItems: "center",
-          }}
-        >
+            display: 'flex',
+            flexDirection: 'column',
+            width: '100%',
+            alignItems: 'center'
+          }}>
           <OffliButton
-            startIcon={
-              <GoogleIcon sx={{ color: palette?.background?.default }} />
-            }
+            startIcon={<GoogleIcon sx={{ color: palette?.background?.default }} />}
             onClick={handleGoogleAuthorization}
             sx={{ mb: 1 }}
-            disabled={
-              isLoading || isGoogleAuthorizationLoading || isGoogleLoginLoading
-            }
-          >
+            disabled={isLoading || isGoogleAuthorizationLoading || isGoogleLoginLoading}>
             Log in with Google
           </OffliButton>
 
@@ -172,7 +151,7 @@ const LoginScreen: React.FC = () => {
                 data-testid="username-input"
                 label="Email or username"
                 error={!!error}
-                sx={{ width: "80%", mb: 2 }}
+                sx={{ width: '80%', mb: 2 }}
               />
             )}
           />
@@ -184,21 +163,17 @@ const LoginScreen: React.FC = () => {
                 {...field}
                 data-testid="password-input"
                 label="Password"
-                type={showPassword ? "text" : "password"}
+                type={showPassword ? 'text' : 'password'}
                 error={!!error}
-                sx={{ width: "80%" }}
+                sx={{ width: '80%' }}
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">
                       <IconButton onClick={handleClickShowPassword}>
-                        {showPassword ? (
-                          <VisibilityIcon />
-                        ) : (
-                          <VisibilityOffIcon />
-                        )}
+                        {showPassword ? <VisibilityIcon /> : <VisibilityOffIcon />}
                       </IconButton>
                     </InputAdornment>
-                  ),
+                  )
                 }}
               />
             )}
@@ -209,20 +184,16 @@ const LoginScreen: React.FC = () => {
             disabled={isLoading}
             sx={{ fontSize: 14, mt: 1, mb: 7 }}
             onClick={() => navigate(ApplicationLocations.FORGOTTEN_PASSWORD)}
-            data-testid="forgot-password-btn"
-          >
+            data-testid="forgot-password-btn">
             Forgot your password?
           </OffliButton>
         </Box>
         <OffliButton
           data-testid="submit-btn"
-          sx={{ width: "80%", mb: 5 }}
+          sx={{ width: '80%', mb: 5 }}
           type="submit"
-          isLoading={
-            isLoading || isGoogleAuthorizationLoading || isGoogleLoginLoading
-          }
-          disabled={!formState?.isValid}
-        >
+          isLoading={isLoading || isGoogleAuthorizationLoading || isGoogleLoginLoading}
+          disabled={!formState?.isValid}>
           Login
         </OffliButton>
       </form>

@@ -1,5 +1,5 @@
 export enum BuddyRequestActionEnum {
-  CONFIRM = "Confirm",
-  REJECT = "Reject",
-  LIFT = "Lift",
+  CONFIRM = 'Confirm',
+  REJECT = 'Reject',
+  LIFT = 'Lift'
 }

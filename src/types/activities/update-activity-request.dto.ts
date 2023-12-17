@@ -1,6 +1,5 @@
-import { ActivityPriceOptionsEnum } from "../common/types";
-import { ActivityVisibilityEnum } from "./activity-visibility-enum.dto";
-import { ILocation } from "./location.dto";
+import { ActivityVisibilityEnum } from './activity-visibility-enum.dto';
+import { ILocation } from './location.dto';
 
 export interface IUpdateActivityRequestDto {
   title?: string;

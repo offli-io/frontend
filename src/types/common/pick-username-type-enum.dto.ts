@@ -1,4 +1,4 @@
 export enum PickUsernameTypeEnum {
-  GOOGLE = "GOOGLE",
-  REGULAR = "REGULAR",
+  GOOGLE = 'GOOGLE',
+  REGULAR = 'REGULAR'
 }

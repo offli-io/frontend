@@ -1,5 +1,5 @@
 export enum ActivityInviteStateEnum {
-  INVITED = "invited",
-  CONFIRMED = "confirmed",
-  REJECTED = "rejected",
+  INVITED = 'invited',
+  CONFIRMED = 'confirmed',
+  REJECTED = 'rejected'
 }

@@ -1,5 +1,5 @@
-import { BuddiesActionDefinitions } from "../buddies-action-definitions";
-import { BuddyActionTypeEnum } from "../../../types/common/buddy-actions-type-enum.dto";
+import { BuddiesActionDefinitions } from '../buddies-action-definitions';
+import { BuddyActionTypeEnum } from '../../../types/common/buddy-actions-type-enum.dto';
 
 export interface IUseActivityMenuItemsProps {
   isCreator?: boolean;

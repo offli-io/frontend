@@ -1,4 +1,4 @@
 export enum ActivityVisibilityEnum {
-  public = "public",
-  private = "private",
+  public = 'public',
+  private = 'private'
 }

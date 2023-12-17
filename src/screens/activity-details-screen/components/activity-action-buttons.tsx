@@ -1,14 +1,14 @@
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
-import EmailIcon from "@mui/icons-material/Email";
-import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
-import HistoryIcon from "@mui/icons-material/History";
-import { Box } from "@mui/material";
-import { DrawerContext } from "assets/theme/drawer-provider";
-import OffliButton from "components/offli-button";
-import React from "react";
-import { useParams } from "react-router-dom";
-import { ActivityInviteDrawerContent } from "./activity-invite-drawer-content";
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import EmailIcon from '@mui/icons-material/Email';
+import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
+import HistoryIcon from '@mui/icons-material/History';
+import { Box } from '@mui/material';
+import { DrawerContext } from 'assets/theme/drawer-provider';
+import OffliButton from 'components/offli-button';
+import React from 'react';
+import { useParams } from 'react-router-dom';
+import { ActivityInviteDrawerContent } from './activity-invite-drawer-content';
 
 interface IActivityActionButtonsProps {
   isAlreadyParticipant?: boolean;
@@ -30,7 +30,7 @@ const ActivityActionButtons: React.FC<IActivityActionButtonsProps> = ({
   isPublic,
   hasEnded,
   inProgress = false,
-  privateUninvitedActivity,
+  privateUninvitedActivity
 }) => {
   const { id } = useParams();
   const { toggleDrawer } = React.useContext(DrawerContext);
@@ -38,65 +38,56 @@ const ActivityActionButtons: React.FC<IActivityActionButtonsProps> = ({
   return (
     <Box
       sx={{
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-evenly",
-        my: 2,
-      }}
-    >
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-evenly',
+        my: 2
+      }}>
       {(isPublic || !privateUninvitedActivity) && !hasEnded && !inProgress ? (
         <>
           <OffliButton
             size="small"
             sx={{
               fontSize: 18,
-              width: "40%",
+              width: '40%',
               height: 48,
-              color: isAlreadyParticipant
-                ? "primary.main"
-                : "background.default",
+              color: isAlreadyParticipant ? 'primary.main' : 'background.default'
             }}
             onClick={onJoinClick}
-            color={!isAlreadyParticipant ? "primary" : "secondary"}
+            color={!isAlreadyParticipant ? 'primary' : 'secondary'}
             isLoading={areActionsLoading}
             startIcon={
               isAlreadyParticipant ? (
-                <CheckCircleIcon sx={{ color: "primary.main" }} />
+                <CheckCircleIcon sx={{ color: 'primary.main' }} />
               ) : (
-                <CheckCircleOutlineIcon sx={{ color: "background.default" }} />
+                <CheckCircleOutlineIcon sx={{ color: 'background.default' }} />
               )
-            }
-          >
-            {isAlreadyParticipant ? (isCreator ? "Dismiss" : "Joined") : "Join"}
+            }>
+            {isAlreadyParticipant ? (isCreator ? 'Dismiss' : 'Joined') : 'Join'}
           </OffliButton>
           <OffliButton
             size="small"
             disabled={!isAlreadyParticipant || areActionsLoading}
             sx={{
               fontSize: 18,
-              width: "40%",
+              width: '40%',
               height: 48,
-              bgcolor: "primary.light",
-              color: "primary.main",
+              bgcolor: 'primary.light',
+              color: 'primary.main'
             }}
             onClick={() =>
               toggleDrawer({
                 open: true,
-                content: (
-                  <ActivityInviteDrawerContent activityId={Number(id)} />
-                ),
+                content: <ActivityInviteDrawerContent activityId={Number(id)} />
               })
             }
             startIcon={
               <EmailIcon
                 sx={{
-                  color: isAlreadyParticipant
-                    ? "primary.main"
-                    : "inactiveFont.main",
+                  color: isAlreadyParticipant ? 'primary.main' : 'inactiveFont.main'
                 }}
               />
-            }
-          >
+            }>
             Invite
           </OffliButton>
         </>
@@ -104,9 +95,8 @@ const ActivityActionButtons: React.FC<IActivityActionButtonsProps> = ({
       {hasEnded ? (
         <OffliButton
           color="secondary"
-          startIcon={<HistoryIcon sx={{ color: "primary.main" }} />}
-          sx={{ width: "80%", color: "primary.main", fontWeight: "bold" }}
-        >
+          startIcon={<HistoryIcon sx={{ color: 'primary.main' }} />}
+          sx={{ width: '80%', color: 'primary.main', fontWeight: 'bold' }}>
           Activity has finished
         </OffliButton>
       ) : null}
@@ -117,28 +107,27 @@ const ActivityActionButtons: React.FC<IActivityActionButtonsProps> = ({
           startIcon={
             <FiberManualRecordIcon
               sx={{
-                color: "primary.main",
-                "@keyframes blink": {
-                  "25%": {
-                    opacity: 0.5,
+                color: 'primary.main',
+                '@keyframes blink': {
+                  '25%': {
+                    opacity: 0.5
                   },
-                  "50%": {
-                    opacity: 0,
+                  '50%': {
+                    opacity: 0
                   },
-                  "75%": {
-                    opacity: 0.5,
-                  },
+                  '75%': {
+                    opacity: 0.5
+                  }
                 },
-                animation: "blink 1s linear infinite",
+                animation: 'blink 1s linear infinite'
               }}
             />
           }
           sx={{
-            width: "80%",
-            color: "primary.main",
-            fontWeight: "bold",
-          }}
-        >
+            width: '80%',
+            color: 'primary.main',
+            fontWeight: 'bold'
+          }}>
           Activity is in progress
         </OffliButton>
       ) : null}

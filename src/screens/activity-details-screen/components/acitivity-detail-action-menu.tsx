@@ -1,12 +1,8 @@
-import MenuIcon from "@mui/icons-material/Menu";
-import { ClickAwayListener, Fade, IconButton, Popper } from "@mui/material";
-import { Box } from "@mui/system";
-import React from "react";
-import { useParams } from "react-router-dom";
-import { useActivities } from "../../../hooks/use-activities";
-import { IActivityRestDto } from "../../../types/activities/activity-rest.dto";
-import { ActivityActionsTypeEnumDto } from "../../../types/common/activity-actions-type-enum.dto";
-import ActivityActions from "../../explore-screen/components/activity-actions";
+import React from 'react';
+import { useActivities } from '../../../hooks/use-activities';
+import { IActivityRestDto } from '../../../types/activities/activity-rest.dto';
+import { ActivityActionsTypeEnumDto } from '../../../types/common/activity-actions-type-enum.dto';
+import ActivityActions from '../../explore-screen/components/activity-actions';
 
 interface IProps {
   onMenuItemClick?: (action?: ActivityActionsTypeEnumDto) => void;
@@ -14,12 +10,12 @@ interface IProps {
 
 const ActivityDetailActionMenu: React.FC<IProps> = ({ onMenuItemClick }) => {
   // cant use useParams() hook because this Provider is outside <Router> context
-  const pathnameArray = window.location.href.split("/");
+  const pathnameArray = window.location.href.split('/');
   const activityId = pathnameArray[pathnameArray.length - 1];
-  const { data, isLoading } = useActivities<IActivityRestDto>({
+  const { data } = useActivities<IActivityRestDto>({
     params: {
-      id: Number(activityId),
-    },
+      id: Number(activityId)
+    }
   });
 
   return (

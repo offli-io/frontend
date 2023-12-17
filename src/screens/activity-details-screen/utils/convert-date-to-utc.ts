@@ -1,4 +1,4 @@
-import { addHours, format, parseISO } from "date-fns";
+import { addHours, format, parseISO } from 'date-fns';
 
 export function convertDateToUTC(inputDateString?: string) {
   if (!inputDateString) {

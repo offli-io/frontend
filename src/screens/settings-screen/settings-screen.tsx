@@ -1,28 +1,22 @@
-import DarkModeIcon from "@mui/icons-material/DarkMode";
-import InfoIcon from "@mui/icons-material/Info";
-import LogoutIcon from "@mui/icons-material/Logout";
-import { Box, Switch } from "@mui/material";
-import { useQueryClient } from "@tanstack/react-query";
-import React from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-import { AuthenticationContext } from "../../assets/theme/authentication-provider";
-import { CustomizationContext } from "../../assets/theme/customization-provider";
-import MenuItem from "../../components/menu-item";
-import { ApplicationLocations } from "../../types/common/applications-locations.dto";
-import { ICustomizedLocationStateDto } from "../../types/common/customized-location-state.dto";
-import { SettingsTypeEnumDto } from "../../types/common/settings-type-enum.dto";
-import { setAuthToken } from "../../utils/token.util";
-import { SettingsItemsObject } from "./settings-items-object";
+import DarkModeIcon from '@mui/icons-material/DarkMode';
+import InfoIcon from '@mui/icons-material/Info';
+import LogoutIcon from '@mui/icons-material/Logout';
+import { Box, Switch } from '@mui/material';
+import { useQueryClient } from '@tanstack/react-query';
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import { AuthenticationContext } from '../../assets/theme/authentication-provider';
+import { CustomizationContext } from '../../assets/theme/customization-provider';
+import MenuItem from '../../components/menu-item';
+import { ApplicationLocations } from '../../types/common/applications-locations.dto';
+import { SettingsTypeEnumDto } from '../../types/common/settings-type-enum.dto';
+import { setAuthToken } from '../../utils/token.util';
+import { SettingsItemsObject } from './settings-items-object';
 
 const SettingsScreen = () => {
-  const { setStateToken, setUserInfo } = React.useContext(
-    AuthenticationContext
-  );
+  const { setStateToken, setUserInfo } = React.useContext(AuthenticationContext);
   const navigate = useNavigate();
-  const location = useLocation();
   const queryClient = useQueryClient();
-  const state = location?.state as ICustomizedLocationStateDto;
-  const { from } = state;
   const { setMode, mode } = React.useContext(CustomizationContext);
 
   const handleLogout = React.useCallback(() => {
@@ -32,8 +26,8 @@ const SettingsScreen = () => {
     setUserInfo?.({ username: undefined, id: undefined });
     queryClient.invalidateQueries();
     queryClient.removeQueries();
-    localStorage.removeItem("token");
-    localStorage.removeItem("userId");
+    localStorage.removeItem('token');
+    localStorage.removeItem('userId');
     navigate(ApplicationLocations.LOGIN);
   }, [setStateToken]);
 
@@ -54,13 +48,12 @@ const SettingsScreen = () => {
   return (
     <Box
       sx={{
-        display: "flex",
-        flexDirection: "column",
-        width: "100%",
-        height: "100vh",
-      }}
-    >
-      <Box sx={{ display: "flex", flexDirection: "column", width: "100%" }}>
+        display: 'flex',
+        flexDirection: 'column',
+        width: '100%',
+        height: '100vh'
+      }}>
+      <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
         {SettingsItemsObject.map((item) => (
           <MenuItem
             label={item?.label}
@@ -76,8 +69,8 @@ const SettingsScreen = () => {
           icon={<DarkModeIcon color="primary" />}
           headerRight={
             <Switch
-              checked={mode === "dark"}
-              onChange={() => setMode(mode === "dark" ? "light" : "dark")}
+              checked={mode === 'dark'}
+              onChange={() => setMode(mode === 'dark' ? 'light' : 'dark')}
             />
           }
         />

@@ -1,10 +1,10 @@
-import AddRoundedIcon from "@mui/icons-material/AddRounded";
-import FavoriteIcon from "@mui/icons-material/Favorite";
-import OfflineBoltIcon from "@mui/icons-material/OfflineBolt";
-import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
-import { Box, CircularProgress, IconButton, Typography } from "@mui/material";
-import React from "react";
-import { useParams } from "react-router-dom";
+import AddRoundedIcon from '@mui/icons-material/AddRounded';
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import OfflineBoltIcon from '@mui/icons-material/OfflineBolt';
+import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
+import { Box, CircularProgress, IconButton, Typography } from '@mui/material';
+import React from 'react';
+import { useParams } from 'react-router-dom';
 
 interface IProps {
   participatedNum?: number;
@@ -19,7 +19,7 @@ const ProfileStatistics: React.FC<IProps> = ({
   enjoyedNum,
   createdNum,
   metNum,
-  isLoading,
+  isLoading
 }) => {
   const { id } = useParams();
 
@@ -31,20 +31,18 @@ const ProfileStatistics: React.FC<IProps> = ({
   return (
     <Box
       sx={{
-        width: "100%",
-        mt: 2,
-      }}
-    >
+        width: '100%',
+        mt: 2
+      }}>
       {isLoading ? (
         <Box
           sx={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            width: "100%",
-            mt: 2,
-          }}
-        >
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            width: '100%',
+            mt: 2
+          }}>
           <CircularProgress color="primary" />
         </Box>
       ) : (
@@ -52,21 +50,17 @@ const ProfileStatistics: React.FC<IProps> = ({
           {participatedNum ? (
             <Box
               sx={{
-                display: "flex",
-                alignItems: "center",
+                display: 'flex',
+                alignItems: 'center'
               }}
-              data-testid="participated-statistics"
-            >
+              data-testid="participated-statistics">
               <IconButton>
-                <OfflineBoltIcon
-                  sx={{ fontSize: 30, color: "primary.main", mr: 2 }}
-                />
+                <OfflineBoltIcon sx={{ fontSize: 30, color: 'primary.main', mr: 2 }} />
               </IconButton>
               <Typography variant="subtitle2">
-                {id ? "Participated" : "You participated"} in{" "}
+                {id ? 'Participated' : 'You participated'} in{' '}
                 <b>
-                  {participatedNum}{" "}
-                  {participatedNum === 1 ? "activity" : "activities"}
+                  {participatedNum} {participatedNum === 1 ? 'activity' : 'activities'}
                 </b>
                 .
               </Typography>
@@ -75,19 +69,15 @@ const ProfileStatistics: React.FC<IProps> = ({
           {enjoyedNum ? (
             <Box
               sx={{
-                display: "flex",
-                alignItems: "center",
+                display: 'flex',
+                alignItems: 'center'
               }}
-              data-testid="enjoyed-statistics"
-            >
+              data-testid="enjoyed-statistics">
               <IconButton>
-                <FavoriteIcon
-                  sx={{ fontSize: 30, color: "primary.main", mr: 2 }}
-                />
+                <FavoriteIcon sx={{ fontSize: 30, color: 'primary.main', mr: 2 }} />
               </IconButton>
               <Typography variant="subtitle2">
-                <b>{enjoyedNum} people</b> enjoyed activities,{" "}
-                {id ? "he" : "you've"} created.
+                <b>{enjoyedNum} people</b> enjoyed activities, {id ? 'he' : "you've"} created.
               </Typography>
             </Box>
           ) : null}
@@ -96,21 +86,17 @@ const ProfileStatistics: React.FC<IProps> = ({
               {createdNum ? (
                 <Box
                   sx={{
-                    display: "flex",
-                    alignItems: "center",
+                    display: 'flex',
+                    alignItems: 'center'
                   }}
-                  data-testid="created-statistics"
-                >
+                  data-testid="created-statistics">
                   <IconButton>
-                    <AddRoundedIcon
-                      sx={{ fontSize: 30, color: "primary.main", mr: 2 }}
-                    />
+                    <AddRoundedIcon sx={{ fontSize: 30, color: 'primary.main', mr: 2 }} />
                   </IconButton>
                   <Typography variant="subtitle2">
-                    {id ? "Created" : "You created"}{" "}
+                    {id ? 'Created' : 'You created'}{' '}
                     <b>
-                      {createdNum}{" "}
-                      {createdNum === 1 ? "activity" : "activities"}
+                      {createdNum} {createdNum === 1 ? 'activity' : 'activities'}
                     </b>
                     .
                   </Typography>
@@ -119,19 +105,15 @@ const ProfileStatistics: React.FC<IProps> = ({
               {metNum ? (
                 <Box
                   sx={{
-                    display: "flex",
-                    alignItems: "center",
+                    display: 'flex',
+                    alignItems: 'center'
                   }}
-                  data-testid="new-buddies-statistics"
-                >
+                  data-testid="new-buddies-statistics">
                   <IconButton>
-                    <PeopleAltIcon
-                      sx={{ fontSize: 30, color: "primary.main", mr: 2 }}
-                    />
+                    <PeopleAltIcon sx={{ fontSize: 30, color: 'primary.main', mr: 2 }} />
                   </IconButton>
                   <Typography variant="subtitle2">
-                    You`ve met <b>{metNum}</b> new{" "}
-                    <b>{metNum === 1 ? "buddy" : "buddies"}</b>.
+                    You`ve met <b>{metNum}</b> new <b>{metNum === 1 ? 'buddy' : 'buddies'}</b>.
                   </Typography>
                 </Box>
               ) : null}

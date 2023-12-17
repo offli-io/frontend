@@ -1,4 +1,4 @@
-import { gapi } from 'gapi-script'
+import { gapi } from 'gapi-script';
 
 // simple event format
 // const event = {
@@ -24,33 +24,33 @@ import { gapi } from 'gapi-script'
 //   };
 
 export const useGoogleCalendar = () => {
-  const calendarID = process.env.REACT_APP_CALENDAR_ID
-  const apiKey = process.env.REACT_APP_GOOGLE_API_KEY
-  const accessToken = process.env.REACT_APP_GOOGLE_ACCESS_TOKEN
+  // const calendarID = process.env.REACT_APP_CALENDAR_ID;
+  // const apiKey = process.env.REACT_APP_GOOGLE_API_KEY;
+  // const accessToken = process.env.REACT_APP_GOOGLE_ACCESS_TOKEN;
 
   const getEvents = (calendarID?: string, apiKey?: string) => {
     function initiate() {
       gapi.client
         .init({
-          apiKey: apiKey,
+          apiKey: apiKey
         })
         .then(function () {
           return gapi.client.request({
-            path: `https://www.googleapis.com/calendar/v3/calendars/${calendarID}/events`,
-          })
+            path: `https://www.googleapis.com/calendar/v3/calendars/${calendarID}/events`
+          });
         })
         .then(
           (response: any) => {
-            const events = response.result.items
-            console.log(events)
+            const events = response.result.items;
+            console.log(events);
           },
           function (err: any) {
-            return [false, err]
+            return [false, err];
           }
-        )
+        );
     }
-    gapi.load('client', initiate)
-  }
+    gapi.load('client', initiate);
+  };
 
   const addEvent = (calendarID?: string, event?: any, accessToken?: string) => {
     function initiate() {
@@ -64,21 +64,21 @@ export const useGoogleCalendar = () => {
           body: event,
           headers: {
             'Content-type': 'application/json',
-            Authorization: `Bearer ${accessToken}`,
-          },
+            Authorization: `Bearer ${accessToken}`
+          }
         })
         .then(
           (response: any) => {
-            return [true, response]
+            return [true, response];
           },
           function (err: any) {
-            console.log(err)
-            return [false, err]
+            console.log(err);
+            return [false, err];
           }
-        )
+        );
     }
-    gapi.load('client', initiate)
-  }
+    gapi.load('client', initiate);
+  };
 
-  return { addEvent, getEvents }
-}
+  return { addEvent, getEvents };
+};
