@@ -5,7 +5,7 @@ interface ILabeledDividerProps {
   sx?: SxProps;
 }
 
-const LabeledDivider: React.FC<ILabeledDividerProps> = () => {
+const LabeledDivider: React.FC<ILabeledDividerProps> = ({ children, sx }: ILabeledDividerProps) => {
   return (
     <Box sx={{ display: 'flex', alignItems: 'center', width: '70%', ...sx }}>
       <Box

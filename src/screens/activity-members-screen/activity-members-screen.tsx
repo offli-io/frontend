@@ -74,11 +74,9 @@ export const ActivityMembersScreen: React.FC = () => {
         ...data,
         data: {
           ...data?.data,
-          participants: [
-            [...(data?.data?.participants ?? [])].sort((participant) =>
-              participant?.id === activity?.creator?.id ? -1 : 1
-            )
-          ]
+          participants: [...(data?.data?.participants ?? [])].sort((participant) =>
+            participant?.id === activity?.creator?.id ? -1 : 1
+          )
         }
       })
     }

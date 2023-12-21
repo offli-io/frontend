@@ -152,6 +152,7 @@ const ActivityDetailsGrid: React.FC<IProps> = ({ activity, onActionClick }) => {
         </OffliButton>
         <StyledText align="center" variant="subtitle1">
           {activity?.price ?? '-'}
+          {'€'}
         </StyledText>
       </StyledBox>
     </Box>
