@@ -1,8 +1,8 @@
 import {
   ActivitySortColumnEnum,
-  ActivitySortDirectionEnum,
-} from "types/activities/activity-sort-enum.dto";
-import { RadioGroupDataDefinitionsEnum } from "./radio-group-data-definitions";
+  ActivitySortDirectionEnum
+} from 'types/activities/activity-sort-enum.dto';
+import { RadioGroupDataDefinitionsEnum } from './radio-group-data-definitions';
 
 export const generateSortValue = (filterValue?: string) => {
   switch (filterValue) {

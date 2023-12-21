@@ -1,32 +1,28 @@
-import { UseQueryOptions, useQuery } from "@tanstack/react-query";
-import { toast } from "sonner";
-import { IUsersSearchParamsDto } from "types/users/users-search-params.dto";
-import { getUsers } from "../api/activities/requests";
+import { UseQueryOptions, useQuery } from '@tanstack/react-query';
+import { toast } from 'sonner';
+import { IUsersSearchParamsDto } from 'types/users/users-search-params.dto';
+import { getUsers } from '../api/activities/requests';
 
 export interface IUseUsersParams {
   params?: IUsersSearchParamsDto;
   queryOptions?: UseQueryOptions;
 }
 
-export const PAGED_USERS_QUERY_KEY = "paged-users";
+export const PAGED_USERS_QUERY_KEY = 'paged-users';
 
 export const useUsers = ({
   params: { username, ...restParams } = {},
-  queryOptions,
+  queryOptions
 }: IUseUsersParams) => {
-  const {
-    data: { data: { users = [], buddieStates = [] } = {} } = {},
-    isLoading,
-    isFetching,
-  } = useQuery(
-    ["users", username],
+  const { data: { data: { users = [], buddieStates = [] } = {} } = {}, isFetching } = useQuery(
+    ['users', username],
     () => getUsers({ username, ...restParams }),
     {
       onError: () => {
         //some generic toast for every hook
-        toast.error("Failed to load users");
+        toast.error('Failed to load users');
       },
-      enabled: queryOptions?.enabled,
+      enabled: queryOptions?.enabled
     }
   );
 

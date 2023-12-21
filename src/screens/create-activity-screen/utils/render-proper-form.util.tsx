@@ -1,14 +1,14 @@
-import ActivityCreatedScreen from "screens/static-screens/activity-created-screen";
-import { ActivityDetailsForm } from "../components/activity-details-form";
-import { ActivityPhotoForm } from "../components/activity-photo-form";
-import { ActivityTypeForm } from "../components/activity-type-form";
-import { DateTimeForm } from "../components/date-time-form";
-import { NameForm } from "../components/name-form";
-import { PlaceForm } from "../components/place-form";
-import { UseFormReturn } from "react-hook-form";
-import { FormValues } from "./validation-schema";
-import { NavigateFunction } from "react-router-dom";
-import { ApplicationLocations } from "types/common/applications-locations.dto";
+import ActivityCreatedScreen from 'screens/static-screens/activity-created-screen';
+import { ActivityDetailsForm } from '../components/activity-details-form';
+import { ActivityPhotoForm } from '../components/activity-photo-form';
+import { ActivityTypeForm } from '../components/activity-type-form';
+import { DateTimeForm } from '../components/date-time-form';
+import { NameForm } from '../components/name-form';
+import { PlaceForm } from '../components/place-form';
+import { UseFormReturn } from 'react-hook-form';
+import { FormValues } from './validation-schema';
+import { NavigateFunction } from 'react-router-dom';
+import { ApplicationLocations } from 'types/common/applications-locations.dto';
 
 interface IRenderProperFormProps {
   activeStep?: number;
@@ -27,7 +27,7 @@ export const renderProperForm = ({
   isMap,
   toggleMap,
   navigate,
-  pendingRedirectActivityId,
+  pendingRedirectActivityId
 }: IRenderProperFormProps) => {
   switch (activeStep) {
     case 0:
@@ -82,14 +82,11 @@ export const renderProperForm = ({
       return (
         <ActivityCreatedScreen
           onDismiss={() =>
-            navigate(
-              `${ApplicationLocations.ACTIVITY_DETAIL}/${pendingRedirectActivityId}`,
-              {
-                state: {
-                  openInviteDrawer: true,
-                },
+            navigate(`${ApplicationLocations.ACTIVITY_DETAIL}/${pendingRedirectActivityId}`, {
+              state: {
+                openInviteDrawer: true
               }
-            )
+            })
           }
         />
       );

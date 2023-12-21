@@ -1,22 +1,12 @@
-import * as React from "react";
-import { SxProps, useTheme } from "@mui/material/styles";
-import MobileStepper from "@mui/material/MobileStepper";
-import Button from "@mui/material/Button";
-import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
-import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
-import { Box } from "@mui/material";
+import MobileStepper from '@mui/material/MobileStepper';
+import { SxProps } from '@mui/material/styles';
 
 interface IDotsMobileStepperProps {
   containerSx?: SxProps;
   activeStep: number;
 }
 
-export default function DotsMobileStepper({
-  containerSx,
-  activeStep,
-}: IDotsMobileStepperProps) {
-  const theme = useTheme();
-
+export default function DotsMobileStepper({ containerSx, activeStep }: IDotsMobileStepperProps) {
   return (
     <MobileStepper
       variant="progress"
@@ -24,16 +14,16 @@ export default function DotsMobileStepper({
       position="static"
       activeStep={activeStep}
       sx={{
-        width: "100%",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
+        width: '100%',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
         height: 5,
-        "& span": {
-          width: "100%",
-          height: "100%",
+        '& span': {
+          width: '100%',
+          height: '100%'
         },
-        ...containerSx,
+        ...containerSx
       }}
       nextButton={<></>}
       backButton={<></>}

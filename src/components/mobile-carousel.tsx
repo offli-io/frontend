@@ -1,15 +1,8 @@
-import * as React from "react";
-import {
-  Card,
-  Typography,
-  Box,
-  IconButton,
-  useTheme,
-  SxProps,
-} from "@mui/material";
-import { MobileDatePicker } from "@mui/x-date-pickers";
-import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
-import { format } from "date-fns";
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
+import { Box, Card, IconButton, SxProps, Typography, useTheme } from '@mui/material';
+import { MobileDatePicker } from '@mui/x-date-pickers';
+import { format } from 'date-fns';
+import * as React from 'react';
 
 export interface ICarouselItem {
   title?: string;
@@ -36,7 +29,7 @@ export const MobileCarousel: React.FC<IMobileCarouselProps> = ({
   onItemSelect,
   onSlotAdd,
   onDuplicateEntry,
-  sx,
+  sx
 }) => {
   const { palette } = useTheme();
 
@@ -52,26 +45,22 @@ export const MobileCarousel: React.FC<IMobileCarouselProps> = ({
         return;
       }
       //check if there isn't any of items already added to only select it
-      if (
-        items?.some(
-          (item) => item?.id === `date_slot_${format(date, "dd.MM.yyyy")}`
-        )
-      ) {
+      if (items?.some((item) => item?.id === `date_slot_${format(date, 'dd.MM.yyyy')}`)) {
         onItemSelect?.({
           dateValue: date,
-          title: format(date, "EEEE").slice(0, 3),
-          description: format(date, "dd.MM.yyyy"),
+          title: format(date, 'EEEE').slice(0, 3),
+          description: format(date, 'dd.MM.yyyy'),
           selected: true,
-          id: `date_slot_${format(date, "dd.MM.yyyy")}`,
+          id: `date_slot_${format(date, 'dd.MM.yyyy')}`
         });
       } else {
         onSlotAdd?.({
           dateValue: date,
-          title: format(date, "EEEE").slice(0, 3),
-          description: format(date, "dd.MM.yyyy"),
+          title: format(date, 'EEEE').slice(0, 3),
+          description: format(date, 'dd.MM.yyyy'),
           disabled: false,
           selected: false,
-          id: `date_slot_${format(date, "dd.MM.yyyy")}`,
+          id: `date_slot_${format(date, 'dd.MM.yyyy')}`
         });
       }
     },
@@ -81,63 +70,56 @@ export const MobileCarousel: React.FC<IMobileCarouselProps> = ({
   return (
     <>
       {title && (
-        <Typography
-          variant="h4"
-          sx={{ my: 1.5, color: palette?.text?.primary }}
-        >
+        <Typography variant="h4" sx={{ my: 1.5, color: palette?.text?.primary }}>
           {title}
         </Typography>
       )}
       <Box
         sx={{
-          display: "flex",
-          overflow: "auto",
-          scrollSnapType: "x mandatory",
-          "& > *": {
-            scrollSnapAlign: "center",
+          display: 'flex',
+          overflow: 'auto',
+          scrollSnapType: 'x mandatory',
+          '& > *': {
+            scrollSnapAlign: 'center'
           },
-          "::-webkit-scrollbar": { display: "none" },
-          p: 1,
-        }}
-      >
+          '::-webkit-scrollbar': { display: 'none' },
+          p: 1
+        }}>
         {items?.map((item) => (
           <Card
             key={item.id}
             sx={{
               minWidth: 100,
               minHeight: 70,
-              bgcolor: (theme) =>
-                item?.selected ? theme.palette.primary.main : "transparent",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
+              bgcolor: (theme) => (item?.selected ? theme.palette.primary.main : 'transparent'),
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
               borderRadius: 3,
               mr: 2,
               ...(item.selected
                 ? { border: (theme) => `2px solid ${theme.palette.primary.main}` }
                 : { border: (theme) => `2px solid ${theme.palette.primary.light}` }),
-              ...sx,
+              ...sx
             }}
             onClick={() => onItemSelect?.(item)}
-            data-testid="mobile-carousel-item"
-          >
-            <Typography variant="h5"
+            data-testid="mobile-carousel-item">
+            <Typography
+              variant="h5"
               sx={{
                 //TODO fix this,
-                color: item?.selected ? "white" : palette?.text?.primary,
+                color: item?.selected ? 'white' : palette?.text?.primary
                 // color: item?.selected ? "white" : "black"
-              }}
-            >
+              }}>
               {item.title}
             </Typography>
             {item?.description && (
               <Typography
                 sx={{
                   fontSize: 14,
-                  color: item?.selected ? "white" : palette?.text?.primary,
-                }}
-              >
+                  color: item?.selected ? 'white' : palette?.text?.primary
+                }}>
                 {item.description}
               </Typography>
             )}
@@ -148,18 +130,17 @@ export const MobileCarousel: React.FC<IMobileCarouselProps> = ({
           sx={{
             minWidth: 100,
             minHeight: 70,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
             borderRadius: 3,
             ...(selected
               ? { border: (theme) => `2px solid ${theme.palette.primary.main}` }
               : { border: (theme) => `2px solid ${theme.palette.primary.light}` }),
-            
-            ...sx,
-          }}
-        >
+
+            ...sx
+          }}>
           <MobileDatePicker
             onChange={handleDatePick}
             closeOnSelect

@@ -1,61 +1,45 @@
-import SearchIcon from "@mui/icons-material/Search";
+import SearchIcon from '@mui/icons-material/Search';
 import {
   Box,
   CircularProgress,
   InputAdornment,
   TextField,
   Typography,
-  useTheme,
-} from "@mui/material";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import React from "react";
-import { useNavigate } from "react-router-dom";
-import { toast } from "sonner";
-import { useDebounce } from "use-debounce";
-import {
-  getActivityParticipants,
-  inviteBuddyToActivity,
-} from "../../../api/activities/requests";
-import { AuthenticationContext } from "../../../assets/theme/authentication-provider";
-import { DrawerContext } from "../../../assets/theme/drawer-provider";
-import BuddyItem from "../../../components/buddy-item";
-import OffliButton from "../../../components/offli-button";
-import { useBuddies } from "../../../hooks/use-buddies";
-import { ActivityInviteStateEnum } from "../../../types/activities/activity-invite-state-enum.dto";
-import {
-  IPerson,
-  IPersonExtended,
-} from "../../../types/activities/activity.dto";
-import { ApplicationLocations } from "../../../types/common/applications-locations.dto";
-import { isAlreadyParticipant } from "../../../utils/person.util";
-import { isBuddy } from "../../my-buddies-screen/utils/is-buddy.util";
+  useTheme
+} from '@mui/material';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import React from 'react';
+import { toast } from 'sonner';
+import { useDebounce } from 'use-debounce';
+import { getActivityParticipants, inviteBuddyToActivity } from '../../../api/activities/requests';
+import { AuthenticationContext } from '../../../assets/theme/authentication-provider';
+import BuddyItem from '../../../components/buddy-item';
+import OffliButton from '../../../components/offli-button';
+import { useBuddies } from '../../../hooks/use-buddies';
+import { ActivityInviteStateEnum } from '../../../types/activities/activity-invite-state-enum.dto';
+import { IPerson, IPersonExtended } from '../../../types/activities/activity.dto';
+import { isAlreadyParticipant } from '../../../utils/person.util';
 
 interface IAddBuddiesContentProps {
   activityId?: number;
 }
 
-const SearchBuddiesContent: React.FC<IAddBuddiesContentProps> = ({
-  activityId,
-}) => {
-  const [username, setUsername] = React.useState("");
+const SearchBuddiesContent: React.FC<IAddBuddiesContentProps> = ({ activityId }) => {
+  const [username, setUsername] = React.useState('');
   const { userInfo } = React.useContext(AuthenticationContext);
   const { shadows } = useTheme();
-  const navigate = useNavigate();
-
   const [usernameDebounced] = useDebounce(username, 150);
-  const { toggleDrawer } = React.useContext(DrawerContext);
-
   const queryClient = useQueryClient();
 
   const {
     data: { data: { participants = [] } = {} } = {},
-    isLoading: areActivityParticipantsLoading,
-  } = useQuery(["activity-participants", activityId], () =>
+    isLoading: areActivityParticipantsLoading
+  } = useQuery(['activity-participants', activityId], () =>
     getActivityParticipants({ activityId: Number(activityId) })
   );
 
   const { buddies, isLoading: areBuddiesLoading } = useBuddies({
-    text: usernameDebounced,
+    text: usernameDebounced
     // select: (data) => ({
     //   ...data,
     //   data: data?.data?.filter(
@@ -65,44 +49,26 @@ const SearchBuddiesContent: React.FC<IAddBuddiesContentProps> = ({
   });
 
   const { mutate: sendInviteBuddy, isLoading: isInviting } = useMutation(
-    ["invite-participant"],
+    ['invite-participant'],
     (buddy?: IPerson) =>
       inviteBuddyToActivity(Number(activityId), Number(buddy?.id), {
         status: ActivityInviteStateEnum.INVITED,
-        invited_by_id: Number(userInfo?.id),
+        invited_by_id: Number(userInfo?.id)
       }),
     {
-      onSuccess: (data, buddy) => {
-        queryClient.invalidateQueries(["activity-participants"]);
+      onSuccess: () => {
+        queryClient.invalidateQueries(['activity-participants']);
         // setInvitedBuddies([...invitedBuddies, Number(buddy?.id)]);
       },
-      onError: (error) => {
-        toast.error("Failed to invite user");
-      },
+      onError: () => {
+        toast.error('Failed to invite user');
+      }
     }
   );
 
   const invitableBuddies = React.useMemo(
-    () =>
-      buddies?.filter?.((buddy) => !isAlreadyParticipant(participants, buddy)),
+    () => buddies?.filter?.((buddy) => !isAlreadyParticipant(participants, buddy)),
     [buddies, participants]
-  );
-
-  const handleBuddyActionsClick = React.useCallback(
-    (buddy?: IPerson) => {
-      toggleDrawer({ open: false });
-      navigate?.(
-        `${ApplicationLocations.PROFILE}/${
-          isBuddy(buddies, buddy?.id) ? "buddy" : "user"
-        }/${buddy?.id}`,
-        {
-          state: {
-            from: ApplicationLocations.BUDDIES,
-          },
-        }
-      );
-    },
-    [toggleDrawer]
   );
 
   const handleBuddyInviteClick = React.useCallback(
@@ -113,55 +79,53 @@ const SearchBuddiesContent: React.FC<IAddBuddiesContentProps> = ({
     [sendInviteBuddy]
   );
 
-  const isLoading =
-    areBuddiesLoading || areActivityParticipantsLoading || isInviting;
+  const isLoading = areBuddiesLoading || areActivityParticipantsLoading || isInviting;
 
   return (
-    <Box sx={{ height: 450, position: "relative", overflow: "hidden" }}>
+    <Box sx={{ height: 450, position: 'relative', overflow: 'hidden' }}>
       <TextField
         sx={{
-          width: "100%",
-          display: "flex",
-          justifyContent: "center",
-          "& .MuiOutlinedInput-root": {
+          width: '100%',
+          display: 'flex',
+          justifyContent: 'center',
+          '& .MuiOutlinedInput-root': {
             pr: 0,
-            boxShadow: shadows[1],
+            boxShadow: shadows[1]
           },
-          "& input::placeholder": {
-            fontSize: 14,
+          '& input::placeholder': {
+            fontSize: 14
           },
           // TODO searchbar is scrolling with its content
-          position: "sticky",
+          position: 'sticky',
           top: 0,
-          bgcolor: "white",
+          bgcolor: 'white',
           maxHeight: 50,
           zIndex: 555,
-          my: 1,
+          my: 1
         }}
         value={username}
         placeholder="Search among users"
         InputProps={{
           startAdornment: (
             <InputAdornment position="start">
-              <SearchIcon sx={{ fontSize: "1.2rem" }} />
+              <SearchIcon sx={{ fontSize: '1.2rem' }} />
             </InputAdornment>
-          ),
+          )
         }}
         onChange={(e) => setUsername(e.target.value)}
       />
 
-      <Box sx={{ overflowY: "auto", height: "100%", px: 1.5 }}>
+      <Box sx={{ overflowY: 'auto', height: '100%', px: 1.5 }}>
         {invitableBuddies?.length < 1 && !isLoading ? (
           <Box
             sx={{
               height: 100,
-              width: "100%",
+              width: '100%',
               mt: 7,
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center'
+            }}>
             <Typography sx={{ color: (theme) => theme.palette.inactive.main }}>
               No users found
             </Typography>
@@ -170,11 +134,10 @@ const SearchBuddiesContent: React.FC<IAddBuddiesContentProps> = ({
           <Box
             sx={{
               height: 300,
-              width: "100%",
-            }}
-          >
+              width: '100%'
+            }}>
             {isLoading ? (
-              <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
+              <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
                 <CircularProgress color="primary" />
               </Box>
             ) : (
@@ -186,8 +149,7 @@ const SearchBuddiesContent: React.FC<IAddBuddiesContentProps> = ({
                     <OffliButton
                       sx={{ fontSize: 16 }}
                       size="small"
-                      onClick={(e) => handleBuddyInviteClick(e, user)}
-                    >
+                      onClick={(e) => handleBuddyInviteClick(e, user)}>
                       Invite
                     </OffliButton>
                   }

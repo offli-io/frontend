@@ -1,4 +1,4 @@
-import { ILocation } from "../activities/location.dto";
+import { ILocation } from '../activities/location.dto';
 
 export interface IUpdateUserRequestDto {
   username?: any;

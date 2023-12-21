@@ -1,11 +1,10 @@
-import { LatLngTuple } from "leaflet";
-import { ILocationCoordinates } from "../types/activities/location.dto";
+import { ILocationCoordinates } from '../types/activities/location.dto';
 
 //This function takes in latitude and longitude of two location and returns the distance between them as the crow flies (in km)
 //
 
 const degreesToRadians = (degrees: number) => {
-  var radians = (degrees * Math.PI) / 180;
+  const radians = (degrees * Math.PI) / 180;
   return radians;
 };
 
@@ -29,9 +28,7 @@ export const calculateDistance = (
   const distanceInKilometers: number =
     Math.acos(
       Math.sin(startingLat) * Math.sin(destinationLat) +
-        Math.cos(startingLat) *
-          Math.cos(destinationLat) *
-          Math.cos(startingLong - destinationLong)
+        Math.cos(startingLat) * Math.cos(destinationLat) * Math.cos(startingLong - destinationLong)
     ) * radius;
 
   return Math.round(Math.floor(distanceInKilometers * 100) / 100);

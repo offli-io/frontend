@@ -1,4 +1,4 @@
 export enum BuddyActionTypeEnum {
-  REMOVE = "REMOVE",
-  PROFILE = "PROFILE",
+  REMOVE = 'REMOVE',
+  PROFILE = 'PROFILE'
 }

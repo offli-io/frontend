@@ -1,18 +1,18 @@
-import { Box, Button } from "@mui/material";
-import { LocalizationProvider } from "@mui/x-date-pickers";
-import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import { SnackbarKey, SnackbarProvider } from "notistack";
-import React from "react";
-import { BrowserRouter } from "react-router-dom";
-import "./App.css";
-import { HeaderProvider } from "./app/providers/header-provider";
-import { LocationProvider } from "./app/providers/location-provider";
-import { AuthenticationProvider } from "./assets/theme/authentication-provider";
-import { CustomizationProvider } from "./assets/theme/customization-provider";
-import { DrawerProvider } from "./assets/theme/drawer-provider";
-import Router from "./routes/router";
+import { Box, Button } from '@mui/material';
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import { SnackbarKey, SnackbarProvider } from 'notistack';
+import React from 'react';
+import { BrowserRouter } from 'react-router-dom';
+import './App.css';
+import { HeaderProvider } from './app/providers/header-provider';
+import { LocationProvider } from './app/providers/location-provider';
+import { AuthenticationProvider } from './assets/theme/authentication-provider';
+import { CustomizationProvider } from './assets/theme/customization-provider';
+import { DrawerProvider } from './assets/theme/drawer-provider';
+import Router from './routes/router';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -25,16 +25,16 @@ const queryClient = new QueryClient({
       refetchInterval: 1000 * 300, //5 minutes
       refetchIntervalInBackground: false,
       suspense: false,
-      staleTime: 1000 * 300,
+      staleTime: 1000 * 300
     },
     mutations: {
-      retry: false,
-    },
-  },
+      retry: false
+    }
+  }
 });
 
 function App() {
-  window.addEventListener("load", function () {
+  window.addEventListener('load', function () {
     setTimeout(function () {
       // This hides the address bar:
       window.scrollTo(0, 1);
@@ -55,20 +55,19 @@ function App() {
         maxSnack={1}
         autoHideDuration={3000}
         anchorOrigin={{
-          horizontal: "left",
-          vertical: "bottom",
+          horizontal: 'left',
+          vertical: 'bottom'
         }}
         action={(key) => (
-          <Button onClick={() => handleDismiss(key)} sx={{ color: "white" }}>
+          <Button onClick={() => handleDismiss(key)} sx={{ color: 'white' }}>
             Dismiss
           </Button>
-        )}
-      >
+        )}>
         <BrowserRouter>
           <AuthenticationProvider>
             <LocalizationProvider dateAdapter={AdapterDateFns}>
               <CustomizationProvider>
-                <Box sx={{ height: "100vh", overflow: "hidden" }}>
+                <Box sx={{ height: '100vh', overflow: 'hidden' }}>
                   <HeaderProvider>
                     <DrawerProvider>
                       <LocationProvider>

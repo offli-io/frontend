@@ -1,34 +1,25 @@
-import React from "react";
+import React from 'react';
 
-import { SwipeableDrawer, Box } from "@mui/material";
-import { useUser } from "../../hooks/use-user";
-import { AuthenticationContext } from "../../assets/theme/authentication-provider";
-import { ILocation } from "../../types/activities/location.dto";
+import { AuthenticationContext } from '../../assets/theme/authentication-provider';
+import { useUser } from '../../hooks/use-user';
+import { ILocation } from '../../types/activities/location.dto';
 
 interface ILocationContext {
   location?: ILocation | null;
   setLocation?: (location?: ILocation | null) => void;
 }
 
-export const LocationContext = React.createContext<ILocationContext>(
-  {} as ILocationContext
-);
+export const LocationContext = React.createContext<ILocationContext>({} as ILocationContext);
 
-export const LOCATION_STORAGE_KEY = "current_location";
+export const LOCATION_STORAGE_KEY = 'current_location';
 
-export const LocationProvider = ({
-  children,
-}: {
-  children: React.ReactNode;
-}) => {
+export const LocationProvider = ({ children }: { children: React.ReactNode }) => {
   const { userInfo } = React.useContext(AuthenticationContext);
   const storageLocation = sessionStorage.getItem(LOCATION_STORAGE_KEY);
-  const _storageLocation = !!storageLocation
-    ? JSON.parse(storageLocation)
-    : null;
+  const _storageLocation = storageLocation ? JSON.parse(storageLocation) : null;
 
   const { data: { data: userData = {} } = {} } = useUser({
-    id: userInfo?.id,
+    id: userInfo?.id
   });
 
   const [location, _setLocation] = React.useState<ILocation | undefined | null>(
@@ -43,9 +34,9 @@ export const LocationProvider = ({
   React.useEffect(() => {
     // set default location value when component completely renders
     if (!location) {
-      if (!!_storageLocation) {
+      if (_storageLocation) {
         _setLocation(_storageLocation);
-      } else if (!!userData?.location) {
+      } else if (userData?.location) {
         _setLocation(userData?.location);
       }
     }

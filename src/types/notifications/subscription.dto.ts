@@ -9,9 +9,9 @@ export interface ISubscriptionDto {
 }
 
 export interface ISubscriptionDeviceDto {
-  id?: number // Ignored by BE during PUT request
-  name: string
-  endpoint: string
-  auth: string
-  p256dh: string
+  id?: number; // Ignored by BE during PUT request
+  name: string;
+  endpoint: string;
+  auth: string;
+  p256dh: string;
 }

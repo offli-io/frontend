@@ -1,5 +1,5 @@
-import FilterListIcon from "@mui/icons-material/FilterList";
-import SearchIcon from "@mui/icons-material/Search";
+import FilterListIcon from '@mui/icons-material/FilterList';
+import SearchIcon from '@mui/icons-material/Search';
 import {
   Box,
   CircularProgress,
@@ -8,33 +8,33 @@ import {
   Tab,
   Tabs,
   TextField,
-  Typography,
-} from "@mui/material";
-import { LocationContext } from "app/providers/location-provider";
-import React from "react";
-import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
-import { useDebounce } from "use-debounce";
-import { HeaderContext } from "../../app/providers/header-provider";
-import { DrawerContext } from "../../assets/theme/drawer-provider";
-import ActivitySearchCard from "../../components/activity-search-card";
-import { useActivities } from "../../hooks/use-activities";
-import { IActivityListRestDto } from "../../types/activities/activity-list-rest.dto";
-import { ApplicationLocations } from "../../types/common/applications-locations.dto";
-import FiltersDrawerContent from "./components/filters-drawer-content";
-import { IFiltersDto } from "./types/filters.dto";
-import { generateSortValue } from "./utils/generate-sort-value.util";
-import { SearchTabDefinitionsEnum } from "./types/search-tab-definitions-enum.dto";
-import { LayoutContext } from "app/layout";
-import { useUsers } from "hooks/use-users";
-import BuddyItem from "components/buddy-item";
-import ClearIcon from "@mui/icons-material/Clear";
+  Typography
+} from '@mui/material';
+import { LocationContext } from 'app/providers/location-provider';
+import React from 'react';
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
+import { useDebounce } from 'use-debounce';
+import { HeaderContext } from '../../app/providers/header-provider';
+import { DrawerContext } from '../../assets/theme/drawer-provider';
+import ActivitySearchCard from '../../components/activity-search-card';
+import { useActivities } from '../../hooks/use-activities';
+import { IActivityListRestDto } from '../../types/activities/activity-list-rest.dto';
+import { ApplicationLocations } from '../../types/common/applications-locations.dto';
+import FiltersDrawerContent from './components/filters-drawer-content';
+import { IFiltersDto } from './types/filters.dto';
+import { generateSortValue } from './utils/generate-sort-value.util';
+import { SearchTabDefinitionsEnum } from './types/search-tab-definitions-enum.dto';
+import { LayoutContext } from 'app/layout';
+import { useUsers } from 'hooks/use-users';
+import BuddyItem from 'components/buddy-item';
+import ClearIcon from '@mui/icons-material/Clear';
 
 const SearchScreen = () => {
   const navigate = useNavigate();
-  let [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   // const history = useHistory()
   const location = useLocation();
-  const [currentSearch, setCurrentSearch] = React.useState("");
+  const [currentSearch, setCurrentSearch] = React.useState('');
   const [queryStringDebounced] = useDebounce(currentSearch, 250);
   const [currentTab, setCurrentTab] = React.useState<SearchTabDefinitionsEnum>(
     SearchTabDefinitionsEnum.ACTIVITIES
@@ -44,9 +44,8 @@ const SearchScreen = () => {
   const { location: userLocation } = React.useContext(LocationContext);
   const { setSwipeHandlers } = React.useContext(LayoutContext);
 
-  const { setHeaderRightContent, headerRightContent } =
-    React.useContext(HeaderContext);
-  const isTag = queryStringDebounced?.includes("tag");
+  const { setHeaderRightContent, headerRightContent } = React.useContext(HeaderContext);
+  const isTag = queryStringDebounced?.includes('tag');
   const todayFallbackDate = React.useMemo(() => new Date(), []);
 
   React.useEffect(() => {
@@ -56,35 +55,30 @@ const SearchScreen = () => {
       },
       right: () => {
         setCurrentTab(SearchTabDefinitionsEnum.ACTIVITIES);
-      },
+      }
     });
   }, [currentTab]);
 
-  const {
-    data: { data: { activities = [] } = {} } = {},
-    isLoading: areActivitiesLoading,
-  } = useActivities<IActivityListRestDto>({
-    params: {
-      text: isTag ? undefined : queryStringDebounced,
-      tag: filters?.tags,
-      datetimeFrom: filters?.date ?? todayFallbackDate,
-      lat: userLocation?.coordinates?.lat,
-      lon: userLocation?.coordinates?.lon,
-      sort: filters?.filter
-        ? (generateSortValue(filters?.filter) as any)
-        : undefined,
-    },
-    enabled: currentTab === SearchTabDefinitionsEnum.ACTIVITIES,
-  });
+  const { data: { data: { activities = [] } = {} } = {}, isLoading: areActivitiesLoading } =
+    useActivities<IActivityListRestDto>({
+      params: {
+        text: isTag ? undefined : queryStringDebounced,
+        tag: filters?.tags,
+        datetimeFrom: filters?.date ?? todayFallbackDate,
+        lat: userLocation?.coordinates?.lat,
+        lon: userLocation?.coordinates?.lon,
+        sort: filters?.filter ? (generateSortValue(filters?.filter) as any) : undefined
+      },
+      enabled: currentTab === SearchTabDefinitionsEnum.ACTIVITIES
+    });
 
   const { users, isLoading: areUsersLoading } = useUsers({
     params: {
-      username: queryStringDebounced,
+      username: queryStringDebounced
     },
     queryOptions: {
-      enabled:
-        currentTab === SearchTabDefinitionsEnum.USERS && !!queryStringDebounced,
-    },
+      enabled: currentTab === SearchTabDefinitionsEnum.USERS && !!queryStringDebounced
+    }
   });
 
   const handleApplyFilters = React.useCallback(
@@ -92,17 +86,17 @@ const SearchScreen = () => {
     (newFilters: IFiltersDto) => {
       const currentParams = new URLSearchParams();
       if (newFilters?.filter) {
-        currentParams.set("filter", newFilters?.filter);
+        currentParams.set('filter', newFilters?.filter);
       }
       if (newFilters?.date) {
         const epochTime = newFilters?.date?.getTime();
-        currentParams.set("date", String(epochTime));
+        currentParams.set('date', String(epochTime));
       }
       if (newFilters?.tags && newFilters?.tags?.length > 0) {
-        newFilters.tags.forEach((tag) => currentParams.append("tags", tag));
+        newFilters.tags.forEach((tag) => currentParams.append('tags', tag));
       }
       setSearchParams(currentParams, {
-        state: location?.state,
+        state: location?.state
       });
       toggleDrawer({ open: false, content: undefined });
     },
@@ -110,15 +104,15 @@ const SearchScreen = () => {
   );
 
   React.useEffect(() => {
-    const filter = searchParams?.get("filter");
-    const epochDate = searchParams?.get("date");
+    const filter = searchParams?.get('filter');
+    const epochDate = searchParams?.get('date');
     const date = epochDate ? new Date(Number(epochDate)) : null;
-    const tags = searchParams?.getAll("tags");
+    const tags = searchParams?.getAll('tags');
     if (filter || date || (!!tags && tags?.length > 0))
       setFilters({
         filter: filter,
         date: date ?? undefined,
-        tags,
+        tags
       });
   }, [searchParams]);
 
@@ -127,91 +121,75 @@ const SearchScreen = () => {
   const toggleFilters = React.useCallback(() => {
     toggleDrawer({
       open: true,
-      content: (
-        <FiltersDrawerContent
-          onApplyFilters={handleApplyFilters}
-          filters={filters}
-        />
-      ),
+      content: <FiltersDrawerContent onApplyFilters={handleApplyFilters} filters={filters} />
     });
   }, [filters, handleApplyFilters]);
 
   React.useEffect(() => {
     //TODO fix this not to run on every re-render but I dont know how to solve this for now
-    if (
-      !headerRightContent &&
-      currentTab === SearchTabDefinitionsEnum.ACTIVITIES
-    ) {
+    if (!headerRightContent && currentTab === SearchTabDefinitionsEnum.ACTIVITIES) {
       setHeaderRightContent(
         <IconButton
           onClick={toggleFilters}
-          color={!!filters ? "primary" : undefined}
-          data-testid="toggle-filters-btn"
-        >
-          <FilterListIcon sx={{ color: "primary.main" }} />
+          color={filters ? 'primary' : undefined}
+          data-testid="toggle-filters-btn">
+          <FilterListIcon sx={{ color: 'primary.main' }} />
         </IconButton>
       );
     }
   });
 
   React.useEffect(() => {
-    currentTab === SearchTabDefinitionsEnum.USERS &&
-      setHeaderRightContent(undefined);
+    currentTab === SearchTabDefinitionsEnum.USERS && setHeaderRightContent(undefined);
   }, [currentTab]);
 
-  const handleTabChange = (
-    event: React.SyntheticEvent,
-    newValue: SearchTabDefinitionsEnum
-  ) => {
+  const handleTabChange = (event: React.SyntheticEvent, newValue: SearchTabDefinitionsEnum) => {
     setCurrentTab(newValue);
   };
 
-  const handleResetSearch = React.useCallback(() => setCurrentSearch(""), []);
+  const handleResetSearch = React.useCallback(() => setCurrentSearch(''), []);
 
   return (
     <Box>
       <Box
         sx={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          width: "100%",
-          position: "sticky",
-          backgroundColor: ({ palette }) => palette?.background?.default,
-        }}
-      >
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          width: '100%',
+          position: 'sticky',
+          backgroundColor: ({ palette }) => palette?.background?.default
+        }}>
         <TextField
           sx={{
-            width: "95%",
-            display: "flex",
-            justifyContent: "center",
+            width: '95%',
+            display: 'flex',
+            justifyContent: 'center',
             my: 1,
-            "& .MuiOutlinedInput-root": {
-              pr: 0,
+            '& .MuiOutlinedInput-root': {
+              pr: 0
             },
-            "& input::placeholder": {
+            '& input::placeholder': {
               fontSize: 14,
-              color: "primary.main",
+              color: 'primary.main',
               fontWeight: 500,
               opacity: 1,
-              pl: 1,
+              pl: 1
             },
-            "& fieldset": { border: "none" },
+            '& fieldset': { border: 'none' },
             backgroundColor: ({ palette }) => palette?.primary?.light,
-            borderRadius: "10px",
+            borderRadius: '10px'
           }}
           value={currentSearch}
           placeholder={
             currentTab === SearchTabDefinitionsEnum.ACTIVITIES
-              ? "Search by text in activity"
-              : "Search by username"
+              ? 'Search by text in activity'
+              : 'Search by username'
           }
           InputProps={{
             startAdornment: (
               <InputAdornment position="start">
-                <SearchIcon
-                  sx={{ fontSize: "1.4rem", color: "primary.main" }}
-                />
+                <SearchIcon sx={{ fontSize: '1.4rem', color: 'primary.main' }} />
               </InputAdornment>
             ),
             endAdornment: (
@@ -220,7 +198,7 @@ const SearchScreen = () => {
                   <ClearIcon sx={{ fontSize: 18 }} />
                 </IconButton>
               </InputAdornment>
-            ),
+            )
           }}
           onChange={(e) => setCurrentSearch(e.target.value)}
           data-testid="search-activities-input"
@@ -231,29 +209,25 @@ const SearchScreen = () => {
         onChange={handleTabChange}
         variant="fullWidth"
         sx={{
-          "& .MuiTab-root": {
-            textTransform: "capitalize",
-            fontSize: 16,
+          '& .MuiTab-root': {
+            textTransform: 'capitalize',
+            fontSize: 16
           },
           px: 1,
-          mb: 1,
+          mb: 1
         }}
         // allowScrollButtonsMobile
         // scrollButtons="auto"
       >
         <Tab
           label={SearchTabDefinitionsEnum.ACTIVITIES}
-          value={SearchTabDefinitionsEnum.ACTIVITIES}
-        ></Tab>
-        <Tab
-          label={SearchTabDefinitionsEnum.USERS}
-          value={SearchTabDefinitionsEnum.USERS}
-        ></Tab>
+          value={SearchTabDefinitionsEnum.ACTIVITIES}></Tab>
+        <Tab label={SearchTabDefinitionsEnum.USERS} value={SearchTabDefinitionsEnum.USERS}></Tab>
       </Tabs>
       {currentTab === SearchTabDefinitionsEnum.ACTIVITIES ? (
-        <Box sx={{ ml: 1.5, boxSizing: "border-box" }}>
+        <Box sx={{ ml: 1.5, boxSizing: 'border-box' }}>
           {areActivitiesLoading ? (
-            <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
+            <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
               <CircularProgress color="primary" />
             </Box>
           ) : activities?.length > 0 ? (
@@ -264,25 +238,23 @@ const SearchScreen = () => {
                   onPress={({ id } = {}) =>
                     navigate(`${ApplicationLocations.ACTIVITY_DETAIL}/${id}`, {
                       state: {
-                        from: ApplicationLocations.SEARCH,
-                      },
+                        from: ApplicationLocations.SEARCH
+                      }
                     })
                   }
                 />
               </React.Fragment>
             ))
           ) : (
-            <Typography sx={{ textAlign: "center", mt: 4 }} variant="subtitle2">
-              {!!queryStringDebounced
-                ? "No activities found"
-                : "Type activity name to see results"}
+            <Typography sx={{ textAlign: 'center', mt: 4 }} variant="subtitle2">
+              {queryStringDebounced ? 'No activities found' : 'Type activity name to see results'}
             </Typography>
           )}
         </Box>
       ) : (
-        <Box sx={{ ml: 1.5, boxSizing: "border-box" }}>
+        <Box sx={{ ml: 1.5, boxSizing: 'border-box' }}>
           {areUsersLoading ? (
-            <Box sx={{ display: "flex", justifyContent: "center" }}>
+            <Box sx={{ display: 'flex', justifyContent: 'center' }}>
               <CircularProgress color="primary" />
             </Box>
           ) : users?.length > 0 ? (
@@ -290,16 +262,12 @@ const SearchScreen = () => {
               <BuddyItem
                 key={user?.id}
                 buddy={user}
-                onClick={() =>
-                  navigate(`${ApplicationLocations.USER_PROFILE}/${user?.id}`)
-                }
+                onClick={() => navigate(`${ApplicationLocations.USER_PROFILE}/${user?.id}`)}
               />
             ))
           ) : (
-            <Typography sx={{ textAlign: "center", mt: 4 }} variant="subtitle2">
-              {!!queryStringDebounced
-                ? "No users found"
-                : "Type username to see results"}
+            <Typography sx={{ textAlign: 'center', mt: 4 }} variant="subtitle2">
+              {queryStringDebounced ? 'No users found' : 'Type username to see results'}
             </Typography>
           )}
         </Box>

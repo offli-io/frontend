@@ -1,4 +1,4 @@
-import { BuddyStateEnum } from "./buddy-state-enum.dto";
+import { BuddyStateEnum } from './buddy-state-enum.dto';
 
 export interface IBuddyStateDto {
   state?: BuddyStateEnum;

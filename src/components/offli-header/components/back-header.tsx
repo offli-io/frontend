@@ -1,9 +1,8 @@
-import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
-import { Box, IconButton, SxProps, Typography } from "@mui/material";
-import React from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-import { HeaderContext } from "../../../app/providers/header-provider";
-import { ApplicationLocations } from "types/common/applications-locations.dto";
+import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
+import { Box, IconButton, SxProps, Typography } from '@mui/material';
+import React from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { HeaderContext } from '../../../app/providers/header-provider';
 
 interface IBackHeaderProps {
   title?: string;
@@ -13,9 +12,7 @@ interface IBackHeaderProps {
 }
 
 const BackHeader: React.FC<IBackHeaderProps> = ({
-  title,
-  sx,
-  to,
+  title
   //   headerRightContent,
 }) => {
   const location = useLocation().pathname;
@@ -85,40 +82,35 @@ const BackHeader: React.FC<IBackHeaderProps> = ({
   return (
     <Box
       sx={{
-        width: "100%",
+        width: '100%',
         // borderBottom: '1px solid lightgrey',
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        position: "relative",
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        position: 'relative',
         // pt: 1,
-        boxSizing: "border-box",
-        height: "100%",
-      }}
-    >
+        boxSizing: 'border-box',
+        height: '100%'
+      }}>
       <IconButton
         onClick={handleBackNavigation}
         color="primary"
         sx={{
           flex: 1,
-          position: "absolute",
+          position: 'absolute',
           left: 0,
-          textTransform: "none",
+          textTransform: 'none',
           p: 0,
-          pl: 1,
-        }}
-      >
-        <ArrowBackIosNewIcon sx={{ color: "primary.main" }} />
+          pl: 1
+        }}>
+        <ArrowBackIosNewIcon sx={{ color: 'primary.main' }} />
       </IconButton>
       <Box>
-        <Typography
-          variant="h4"
-          sx={{ color: ({ palette }) => palette?.text.primary }}
-        >
+        <Typography variant="h4" sx={{ color: ({ palette }) => palette?.text.primary }}>
           {title}
         </Typography>
       </Box>
-      <Box sx={{ position: "absolute", right: 0 }}>{headerRightContent}</Box>
+      <Box sx={{ position: 'absolute', right: 0 }}>{headerRightContent}</Box>
     </Box>
   );
 };

@@ -1,7 +1,7 @@
-import React from "react";
-import { Button, SxProps, Typography } from "@mui/material";
-import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
-import OffliButton from "./offli-button";
+import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
+import { SxProps } from '@mui/material';
+import React from 'react';
+import OffliButton from './offli-button';
 
 export interface IOffliBackButtonProps {
   onClick?: () => void;
@@ -9,25 +9,20 @@ export interface IOffliBackButtonProps {
   sx?: SxProps;
 }
 
-const OffliBackButton: React.FC<IOffliBackButtonProps> = ({
-  onClick,
-  children,
-  sx,
-}) => {
+const OffliBackButton: React.FC<IOffliBackButtonProps> = ({ onClick, children, sx }) => {
   return (
     <OffliButton
-      startIcon={<ArrowBackIosNewIcon sx={{color: ({ palette }) => palette?.primary?.main}} />}
+      startIcon={<ArrowBackIosNewIcon sx={{ color: ({ palette }) => palette?.primary?.main }} />}
       variant="text"
       sx={{
         fontSize: 16,
         color: ({ palette }) => palette?.text?.primary,
-        "& .MuiButton-startIcon": {
-          mr: 0.4,
+        '& .MuiButton-startIcon': {
+          mr: 0.4
         },
-        ...sx,
+        ...sx
       }}
-      onClick={onClick}
-    >
+      onClick={onClick}>
       {children}
     </OffliButton>
   );

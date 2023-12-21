@@ -1,17 +1,17 @@
-import { Box, DividerProps, SxProps } from '@mui/material'
+import { Box, SxProps } from '@mui/material';
 
 interface ILabeledDividerProps {
-  children: React.ReactElement
-  sx?: SxProps
+  children: React.ReactElement;
+  sx?: SxProps;
 }
 
-const LabeledDivider: React.FC<ILabeledDividerProps> = ({ children, sx }) => {
+const LabeledDivider: React.FC<ILabeledDividerProps> = ({ children, sx }: ILabeledDividerProps) => {
   return (
     <Box sx={{ display: 'flex', alignItems: 'center', width: '70%', ...sx }}>
       <Box
         sx={{
-          borderBottom: theme => `1px solid ${theme.palette.inactive.main}`,
-          width: '100%',
+          borderBottom: (theme) => `1px solid ${theme.palette.inactive.main}`,
+          width: '100%'
         }}
       />
       <Box
@@ -23,18 +23,17 @@ const LabeledDivider: React.FC<ILabeledDividerProps> = ({ children, sx }) => {
           paddingLeft: 2,
           fontWeight: 500,
           fontSize: 22,
-          color: 'inactive.main',
-        }}
-      >
+          color: 'inactive.main'
+        }}>
         {children}
       </Box>
       <Box
         sx={{
-          borderBottom: theme => `1px solid ${theme.palette.inactive.main}`,
-          width: '100%',
+          borderBottom: (theme) => `1px solid ${theme.palette.inactive.main}`,
+          width: '100%'
         }}
       />
     </Box>
-  )
-}
-export default LabeledDivider
+  );
+};
+export default LabeledDivider;

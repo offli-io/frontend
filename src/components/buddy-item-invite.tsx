@@ -1,10 +1,10 @@
-import { Box, Typography, useTheme } from "@mui/material";
-import React from "react";
-import userPlaceholder from "../assets/img/user-placeholder.svg";
+import { Box, Typography, useTheme } from '@mui/material';
+import React from 'react';
+import userPlaceholder from '../assets/img/user-placeholder.svg';
 
-import { useGetApiUrl } from "../hooks/use-get-api-url";
-import { IPerson } from "../types/activities/activity.dto";
-import OffliButton from "./offli-button";
+import { useGetApiUrl } from '../hooks/use-get-api-url';
+import { IPerson } from '../types/activities/activity.dto';
+import OffliButton from './offli-button';
 
 interface ILabeledDividerProps {
   imageSource?: string;
@@ -16,7 +16,6 @@ interface ILabeledDividerProps {
 }
 
 const BuddyItemInvite: React.FC<ILabeledDividerProps> = ({
-  children,
   buddy,
   onInviteClick,
   invited,
@@ -29,51 +28,42 @@ const BuddyItemInvite: React.FC<ILabeledDividerProps> = ({
     <Box
       //onClick={() => handleClick(checked)}
       sx={{
-        display: "grid",
-        gridTemplateColumns: "7fr 1fr",
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "space-between",
+        display: 'grid',
+        gridTemplateColumns: '7fr 1fr',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
         py: 2,
-        textTransform: "none",
-        width: "100%",
+        textTransform: 'none',
+        width: '100%'
       }}
-      {...rest}
-    >
+      {...rest}>
       <Box
         sx={{
-          display: "flex",
-          alignItems: "center",
-          overflow: "hidden",
-          mr: 1,
-        }}
-      >
+          display: 'flex',
+          alignItems: 'center',
+          overflow: 'hidden',
+          mr: 1
+        }}>
         <img
-          src={
-            buddy?.profile_photo
-              ? `${baseUrl}/files/${buddy?.profile_photo}`
-              : userPlaceholder
-          }
+          src={buddy?.profile_photo ? `${baseUrl}/files/${buddy?.profile_photo}` : userPlaceholder}
           style={{
             margin: 0.5,
             height: 40,
-            borderRadius: "50%",
-            boxShadow: shadows?.[2],
+            borderRadius: '50%',
+            boxShadow: shadows?.[2]
           }}
           alt="profile"
         />
-        <Typography sx={{ ml: 2, color: "black" }}>
-          {buddy?.username}
-        </Typography>
+        <Typography sx={{ ml: 2, color: 'black' }}>{buddy?.username}</Typography>
       </Box>
       <OffliButton
         sx={{ height: 38, fontSize: 16, mr: 2, width: 90, borderRadius: 4 }}
         onClick={() => onInviteClick && onInviteClick(buddy)}
-        variant={invited ? "outlined" : "contained"}
+        variant={invited ? 'outlined' : 'contained'}
         data-testid="toggle-buddy-invite-btn"
-        disabled={isLoading}
-      >
-        {invited ? "Cancel" : "Invite"}
+        disabled={isLoading}>
+        {invited ? 'Cancel' : 'Invite'}
       </OffliButton>
     </Box>
   );

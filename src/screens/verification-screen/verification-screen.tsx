@@ -1,17 +1,17 @@
-import { Box, Typography } from "@mui/material";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import Loader from "components/loader";
-import React from "react";
-import { useNavigate } from "react-router-dom";
-import { toast } from "sonner";
-import { loginUser, resendCode } from "../../api/auth/requests";
-import { verifyCodeAndRetrieveUserId } from "../../api/users/requests";
-import { AuthenticationContext } from "../../assets/theme/authentication-provider";
-import OffliBackButton from "../../components/offli-back-button";
-import OffliButton from "../../components/offli-button";
-import { ApplicationLocations } from "../../types/common/applications-locations.dto";
-import { IEmailPassword, IUsername } from "../../types/users/user.dto";
-import OTPInput from "./components/otp-input";
+import { Box, Typography } from '@mui/material';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import Loader from 'components/loader';
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
+import { loginUser, resendCode } from '../../api/auth/requests';
+import { verifyCodeAndRetrieveUserId } from '../../api/users/requests';
+import { AuthenticationContext } from '../../assets/theme/authentication-provider';
+import OffliBackButton from '../../components/offli-back-button';
+import OffliButton from '../../components/offli-button';
+import { ApplicationLocations } from '../../types/common/applications-locations.dto';
+import { IEmailPassword, IUsername } from '../../types/users/user.dto';
+import OTPInput from './components/otp-input';
 
 interface LoginValues {
   username: string;
@@ -19,13 +19,12 @@ interface LoginValues {
 }
 
 const VerificationScreen = () => {
-  const [{ otp, numInputs, placeholder, inputType }, setConfig] =
-    React.useState({
-      otp: "",
-      numInputs: 6,
-      placeholder: "",
-      inputType: "number" as const,
-    });
+  const [{ otp, numInputs, placeholder, inputType }, setConfig] = React.useState({
+    otp: '',
+    numInputs: 6,
+    placeholder: '',
+    inputType: 'number' as const
+  });
 
   const handleOTPChange = (otp: string) => {
     setConfig((prevConfig) => ({ ...prevConfig, otp }));
@@ -37,20 +36,17 @@ const VerificationScreen = () => {
 
   const queryClient = useQueryClient();
   const navigate = useNavigate();
-  const { setIsFirstTimeLogin, setStateToken, setUserInfo } = React.useContext(
-    AuthenticationContext
-  );
+  const { setIsFirstTimeLogin, setStateToken, setUserInfo } =
+    React.useContext(AuthenticationContext);
 
   const precreatedEmailPassword = queryClient.getQueryData<IEmailPassword>([
-    "registration-email-password",
+    'registration-email-password'
   ]);
 
-  const precreatedUsername = queryClient.getQueryData<IUsername>([
-    "registration-username",
-  ]);
+  const precreatedUsername = queryClient.getQueryData<IUsername>(['registration-username']);
 
   const { isLoading: isLoggingUser, mutate: sendLoginUser } = useMutation(
-    ["login"],
+    ['login'],
     (values: LoginValues) => {
       return loginUser(values);
     },
@@ -58,52 +54,52 @@ const VerificationScreen = () => {
       onSuccess: (data, params) => {
         setStateToken(data?.data?.token?.access_token ?? null);
         setUserInfo?.({ username: params?.username, id: data?.data?.user_id });
-        localStorage.setItem("userId", String(data?.data?.user_id));
+        localStorage.setItem('userId', String(data?.data?.user_id));
         setIsFirstTimeLogin?.(true);
         navigate(ApplicationLocations.EXPLORE);
       },
-      onError: (error) => {
-        toast.error("Failed to log in");
-      },
+      onError: () => {
+        toast.error('Failed to log in');
+      }
     }
   );
   const { mutate: sendVerifyCode, isLoading: isVerifyingCode } = useMutation(
-    ["user-id"],
+    ['user-id'],
     (code: string) =>
       verifyCodeAndRetrieveUserId({
         email: precreatedEmailPassword?.email,
-        verification_code: code,
+        verification_code: code
       }),
     {
       onSuccess: (data) => {
         console.log(data?.data);
         sendLoginUser({
-          username: precreatedUsername?.username ?? "",
-          password: precreatedEmailPassword?.password ?? "",
+          username: precreatedUsername?.username ?? '',
+          password: precreatedEmailPassword?.password ?? ''
         });
       },
-      onError: (error) => {
-        toast.error("Entered code is not correct, please try again.");
+      onError: () => {
+        toast.error('Entered code is not correct, please try again.');
 
-        setConfig((prevConfig) => ({ ...prevConfig, otp: "" }));
-      },
+        setConfig((prevConfig) => ({ ...prevConfig, otp: '' }));
+      }
     }
   );
 
   const { isLoading: isResendingCode, mutate: sendResendCode } = useMutation(
-    ["resend-code"],
+    ['resend-code'],
     () => {
       return resendCode({
-        email: precreatedEmailPassword?.email,
+        email: precreatedEmailPassword?.email
       });
     },
     {
-      onSuccess: (data, code) => {
-        toast.success("Verification code was re-sent to your email");
+      onSuccess: () => {
+        toast.success('Verification code was re-sent to your email');
       },
-      onError: (error) => {
-        toast.error("Failed to re-send verification code to given email");
-      },
+      onError: () => {
+        toast.error('Failed to re-send verification code to given email');
+      }
     }
   );
 
@@ -117,29 +113,23 @@ const VerificationScreen = () => {
   return (
     <Box
       sx={{
-        height: "100vh",
-        width: "100vw",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
+        height: '100vh',
+        width: '100vw',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center'
         //   justifyContent: 'center',
-      }}
-    >
+      }}>
       <OffliBackButton
         onClick={() => navigate(ApplicationLocations.REGISTER)}
-        sx={{ alignSelf: "flex-start", m: 1 }}
-      >
+        sx={{ alignSelf: 'flex-start', m: 1 }}>
         Username
       </OffliBackButton>
-      <Typography variant="h2" sx={{ mt: 15, width: "75%" }} align="left">
-        <Box sx={{ color: "primary.main" }}>Confirm</Box>verification code
+      <Typography variant="h2" sx={{ mt: 15, width: '75%' }} align="left">
+        <Box sx={{ color: 'primary.main' }}>Confirm</Box>verification code
       </Typography>
-      <Typography
-        align="center"
-        variant="subtitle2"
-        sx={{ width: "75%", mt: 2, mb: 3 }}
-      >
-        Take a look for the verification code we just sent you to{" "}
+      <Typography align="center" variant="subtitle2" sx={{ width: '75%', mt: 2, mb: 3 }}>
+        Take a look for the verification code we just sent you to{' '}
         <b>{precreatedEmailPassword?.email}</b>.
       </Typography>
       {isLoading ? <Loader containerSx={{ mt: 1 }} /> : null}
@@ -156,17 +146,10 @@ const VerificationScreen = () => {
         shouldAutoFocus
         otpDisabled={isLoading}
       />
-      <Box sx={{ display: "flex", mr: -15, alignItems: "center" }}>
+      <Box sx={{ display: 'flex', mr: -15, alignItems: 'center' }}>
         <Typography variant="subtitle2">No email?</Typography>
-        <OffliButton
-          variant="text"
-          onClick={handleResendCode}
-          isLoading={isResendingCode}
-        >
-          <Typography
-            variant="subtitle2"
-            sx={{ color: "primary.main", ml: -1 }}
-          >
+        <OffliButton variant="text" onClick={handleResendCode} isLoading={isResendingCode}>
+          <Typography variant="subtitle2" sx={{ color: 'primary.main', ml: -1 }}>
             &nbsp;<b>Resend code</b>
           </Typography>
         </OffliButton>

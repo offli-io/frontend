@@ -1,11 +1,11 @@
-import { ApplicationLocations } from "../../../types/common/applications-locations.dto";
+import { ApplicationLocations } from '../../../types/common/applications-locations.dto';
 
 export const mapLocationToNavigatorValue = (location: ApplicationLocations) => {
   if (
     [
       ApplicationLocations.EXPLORE,
       ApplicationLocations.CREATE,
-      ApplicationLocations.ACTIVITIES,
+      ApplicationLocations.ACTIVITIES
     ].includes(location)
   ) {
     return location;
@@ -14,7 +14,7 @@ export const mapLocationToNavigatorValue = (location: ApplicationLocations) => {
       [
         ApplicationLocations.EDIT_PROFILE,
         ApplicationLocations.BUDDIES,
-        ApplicationLocations.USER_PROFILE,
+        ApplicationLocations.USER_PROFILE
       ].includes(location)
     ) {
       return ApplicationLocations.PROFILE;
@@ -23,7 +23,7 @@ export const mapLocationToNavigatorValue = (location: ApplicationLocations) => {
       [
         ApplicationLocations.SEARCH,
         ApplicationLocations.MAP,
-        ApplicationLocations.ACTIVITY_DETAIL,
+        ApplicationLocations.ACTIVITY_DETAIL
       ].includes(location)
     ) {
       return ApplicationLocations.EXPLORE;

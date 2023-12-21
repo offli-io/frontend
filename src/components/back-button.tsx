@@ -1,6 +1,6 @@
-import React from "react";
-import { Button, SxProps, Typography } from "@mui/material";
-import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
+import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
+import { Button, SxProps, Typography } from '@mui/material';
+import React from 'react';
 
 export interface IBackButtonProps {
   href?: string;
@@ -9,26 +9,20 @@ export interface IBackButtonProps {
   onClick?: () => void;
 }
 
-const BackButton: React.FC<IBackButtonProps> = ({
-  href,
-  text,
-  sxOverrides,
-  onClick,
-}) => {
+const BackButton: React.FC<IBackButtonProps> = ({ href, text, sxOverrides, onClick }) => {
   return (
     <Button
       sx={{
-        position: "absolute",
+        position: 'absolute',
         top: 40,
         left: 15,
-        textTransform: "none",
-        ...sxOverrides,
+        textTransform: 'none',
+        ...sxOverrides
       }}
       href={href}
-      onClick={onClick}
-    >
-      <ArrowBackIosNewIcon sx={{ height: "20px" }} />
-      <Typography variant="subtitle2" sx={{ color: "black", fontSize: 16 }}>
+      onClick={onClick}>
+      <ArrowBackIosNewIcon sx={{ height: '20px' }} />
+      <Typography variant="subtitle2" sx={{ color: 'black', fontSize: 16 }}>
         {text}
       </Typography>
     </Button>

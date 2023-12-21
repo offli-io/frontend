@@ -1,8 +1,7 @@
-import { IBuddyStateDto } from "types/users/buddy-state.dto";
-import { ActivitiyParticipantStatusEnum } from "../types/activities/activity-participant-status-enum.dto";
-import { IPerson } from "../types/activities/activity.dto";
-import { IParticipantDto } from "../types/activities/list-participants-response.dto";
-import { BuddyStateEnum } from "types/users";
+import { BuddyStateEnum } from 'types/users';
+import { IBuddyStateDto } from 'types/users/buddy-state.dto';
+import { IPerson } from '../types/activities/activity.dto';
+import { IParticipantDto } from '../types/activities/list-participants-response.dto';
 
 export const isAlreadyParticipant = (
   participants: IParticipantDto[] = [],
@@ -21,7 +20,7 @@ export const userSentYouBuddyRequest = (
   senderId: number
 ) => {
   return !!buddyStates?.find(
-    ({ receiverId: potentialReceiverId, senderId: potentialSenderId }) =>
+    ({ receiverId: potentialReceiverId }) =>
       potentialReceiverId === receiverId && potentialReceiverId === senderId
   );
 };

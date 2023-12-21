@@ -1,4 +1,4 @@
-import { BuddyStateEnum } from "../../../types/users/buddy-state-enum.dto";
+import { BuddyStateEnum } from '../../../types/users/buddy-state-enum.dto';
 
 export const generateBuddyActionButtonLabel = (
   buddyState?: BuddyStateEnum | null,
@@ -7,17 +7,17 @@ export const generateBuddyActionButtonLabel = (
 ) => {
   if (buddyState === BuddyStateEnum.PENDING) {
     if (senderId === userId) {
-      return "Buddy request sent";
+      return 'Buddy request sent';
     } else {
-      return "Accept buddy request";
+      return 'Accept buddy request';
     }
   }
   if (buddyState === BuddyStateEnum.BLOCKED) {
-    return "Rejected";
+    return 'Rejected';
   }
 
   if (buddyState === BuddyStateEnum.CONFIRMED) {
-    return "Buddies";
+    return 'Buddies';
   }
-  return "Add buddy";
+  return 'Add buddy';
 };

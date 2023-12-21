@@ -1,5 +1,5 @@
-import { ActivitiyParticipantStatusEnum } from "./activity-participant-status-enum.dto";
-import { ActivitySortColumnEnum } from "./activity-sort-enum.dto";
+import { ActivitiyParticipantStatusEnum } from './activity-participant-status-enum.dto';
+import { ActivitySortColumnEnum } from './activity-sort-enum.dto';
 
 export interface IActivitiesParamsDto {
   id?: number;

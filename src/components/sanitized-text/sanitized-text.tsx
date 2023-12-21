@@ -1,6 +1,6 @@
-import React, { ReactHTML } from "react";
-import sanitize from "sanitize-html";
-import { SANITIZED_TEXT_CONFIG_DEFAULT } from "utils/sanitize-text-config";
+import React, { ReactHTML } from 'react';
+import sanitize from 'sanitize-html';
+import { SANITIZED_TEXT_CONFIG_DEFAULT } from 'utils/sanitize-text-config';
 
 interface SanitizedTextProps {
   text: string;
@@ -13,16 +13,16 @@ interface SanitizedTextProps {
 export const SanitizedText: React.FC<SanitizedTextProps> = ({
   text,
   config = SANITIZED_TEXT_CONFIG_DEFAULT,
-  tagName = "div",
+  tagName = 'div',
   className,
-  style,
+  style
 }) => {
   return React.createElement(tagName, {
     style,
     className,
     dangerouslySetInnerHTML: {
-      __html: sanitize(text, config),
-    },
+      __html: sanitize(text, config)
+    }
   });
 };
 

@@ -1,4 +1,4 @@
 export enum SearchTabDefinitionsEnum {
-  ACTIVITIES = "Activities",
-  USERS = "Users",
+  ACTIVITIES = 'Activities',
+  USERS = 'Users'
 }

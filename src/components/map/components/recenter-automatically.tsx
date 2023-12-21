@@ -1,13 +1,13 @@
-import { LatLngTuple } from "leaflet";
-import React from "react";
-import { useMap } from "react-leaflet";
-import { ILocation } from "types/activities/location.dto";
+import { LatLngTuple } from 'leaflet';
+import React from 'react';
+import { useMap } from 'react-leaflet';
+import { ILocation } from 'types/activities/location.dto';
 
 const RecenterAutomatically = ({
   lat,
   lon,
   selectedLocation,
-  position,
+  position
 }: {
   selectedLocation?: ILocation | null;
   lat?: number;
@@ -25,7 +25,7 @@ const RecenterAutomatically = ({
     if (selectedLocation) {
       map.setView([
         selectedLocation?.coordinates?.lat ?? position[0],
-        selectedLocation?.coordinates?.lon ?? position[1],
+        selectedLocation?.coordinates?.lon ?? position[1]
       ]);
     }
   }, [selectedLocation]);

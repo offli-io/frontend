@@ -1,47 +1,33 @@
-import { yupResolver } from "@hookform/resolvers/yup";
-import AddIcon from "@mui/icons-material/Add";
-import InstagramIcon from "@mui/icons-material/Instagram";
-import {
-  Autocomplete,
-  Box,
-  IconButton,
-  TextField,
-  Typography,
-  useTheme,
-} from "@mui/material";
-import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import FileUploadModal from "components/file-upload/components/file-upload-modal";
-import React, { useEffect } from "react";
-import { Controller, useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
-import { toast } from "sonner";
-import { useDebounce } from "use-debounce";
-import EditIcon from "@mui/icons-material/Edit";
+import { yupResolver } from '@hookform/resolvers/yup';
+import EditIcon from '@mui/icons-material/Edit';
+import InstagramIcon from '@mui/icons-material/Instagram';
+import { Autocomplete, Box, IconButton, TextField, Typography, useTheme } from '@mui/material';
+import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import FileUploadModal from 'components/file-upload/components/file-upload-modal';
+import React, { useEffect } from 'react';
+import { Controller, useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
+import { useDebounce } from 'use-debounce';
 
-import * as yup from "yup";
-import {
-  getLocationFromQueryFetch,
-  uploadFile,
-} from "../../api/activities/requests";
-import { unlinkInstagram, updateProfileInfo } from "../../api/users/requests";
-import userPlaceholder from "../../assets/img/user-placeholder.svg";
-import { AuthenticationContext } from "../../assets/theme/authentication-provider";
-import { DrawerContext } from "../../assets/theme/drawer-provider";
-import OffliButton from "../../components/offli-button";
-import { PageWrapper } from "../../components/page-wrapper";
-import { useGetApiUrl } from "../../hooks/use-get-api-url";
-import { useUser } from "../../hooks/use-user";
-import { ILocation } from "../../types/activities/location.dto";
-import { ApplicationLocations } from "../../types/common/applications-locations.dto";
-import { ALLOWED_PHOTO_EXTENSIONS } from "../../utils/common-constants";
-import { mapExternalApiOptions } from "../../utils/map-location-value.util";
-import ProfilePhotoActions, {
-  ProfilePhotoActionsEnum,
-} from "./components/profile-photo-actions";
-import { getMatchingProperties } from "./utils/get-matching-properties.util";
-import ColorPicker from "./components/color-picker";
+import * as yup from 'yup';
+import { getLocationFromQueryFetch, uploadFile } from '../../api/activities/requests';
+import { unlinkInstagram, updateProfileInfo } from '../../api/users/requests';
+import userPlaceholder from '../../assets/img/user-placeholder.svg';
+import { AuthenticationContext } from '../../assets/theme/authentication-provider';
+import { DrawerContext } from '../../assets/theme/drawer-provider';
+import OffliButton from '../../components/offli-button';
+import { PageWrapper } from '../../components/page-wrapper';
+import { useGetApiUrl } from '../../hooks/use-get-api-url';
+import { useUser } from '../../hooks/use-user';
+import { ILocation } from '../../types/activities/location.dto';
+import { ApplicationLocations } from '../../types/common/applications-locations.dto';
+import { ALLOWED_PHOTO_EXTENSIONS } from '../../utils/common-constants';
+import { mapExternalApiOptions } from '../../utils/map-location-value.util';
+import ProfilePhotoActions, { ProfilePhotoActionsEnum } from './components/profile-photo-actions';
+import { getMatchingProperties } from './utils/get-matching-properties.util';
 
 export interface IEditProfile {
   username?: string;
@@ -56,7 +42,7 @@ export interface IEditProfile {
 
 const schema: () => yup.SchemaOf<IEditProfile> = () =>
   yup.object({
-    username: yup.string().defined().required("Please enter your username"),
+    username: yup.string().defined().required('Please enter your username'),
     about_me: yup.string().notRequired(),
     location: yup
       .object({
@@ -64,17 +50,17 @@ const schema: () => yup.SchemaOf<IEditProfile> = () =>
         coordinates: yup
           .object({
             lat: yup.number().defined().required(),
-            lon: yup.number().defined().required(),
+            lon: yup.number().defined().required()
           })
           .defined()
-          .required(),
+          .required()
       })
       .nullable(true),
     birthdate: yup.date().nullable(true).notRequired(),
     placeQuery: yup.string().notRequired(),
     // instagram: yup.string().nullable(true).notRequired(),
     profile_photo: yup.string().notRequired().nullable(true),
-    title_photo: yup.string().notRequired(),
+    title_photo: yup.string().notRequired()
   });
 
 const EditProfileScreen: React.FC = () => {
@@ -84,38 +70,37 @@ const EditProfileScreen: React.FC = () => {
   const { toggleDrawer } = React.useContext(DrawerContext);
   const profilePictureFileInput = React.useRef<HTMLInputElement | null>(null);
   const titlePictureFileInput = React.useRef<HTMLInputElement | null>(null);
-  const [localProfileImageFile, setLocalProfileImageFile] =
-    React.useState<any>();
+  const [localProfileImageFile, setLocalProfileImageFile] = React.useState<any>();
   const [localTitleImageFile, setLocalTitleImageFile] = React.useState<any>();
 
   const baseUrl = useGetApiUrl();
 
   const { mutate: sendUpdateProfile, isLoading: isSubmitting } = useMutation(
-    ["update-profile-info"],
+    ['update-profile-info'],
     (values: IEditProfile) =>
       //TODO handle location through autocomplete
       updateProfileInfo(userInfo?.id, {
-        ...values,
+        ...values
       }),
     {
-      onSuccess: (data, variables) => {
+      onSuccess: () => {
         toggleDrawer({
           open: false,
-          content: undefined,
+          content: undefined
         });
-        queryClient.invalidateQueries(["user"]);
-        toast.success("Your personal information was successfully updated");
+        queryClient.invalidateQueries(['user']);
+        toast.success('Your personal information was successfully updated');
         navigate(-1);
         // navigate(ApplicationLocations.PROFILE);
       },
       onError: () => {
-        toast.error("Failed to update your personal info");
-      },
+        toast.error('Failed to update your personal info');
+      }
     }
   );
 
   const { data: { data = {} } = {} } = useUser({
-    id: userInfo?.id,
+    id: userInfo?.id
   });
 
   const navigate = useNavigate();
@@ -124,35 +109,34 @@ const EditProfileScreen: React.FC = () => {
     control,
     handleSubmit,
     watch,
-    setError,
     formState: { dirtyFields },
     reset,
-    setValue,
+    setValue
   } = useForm<IEditProfile>({
     defaultValues: {
-      username: "",
-      about_me: "",
+      username: '',
+      about_me: '',
       birthdate: null,
-      location: null,
+      location: null
       // instagram: "",
     },
     resolver: yupResolver(schema()),
-    mode: "onChange",
+    mode: 'onChange'
   });
 
-  const [queryString] = useDebounce(watch("placeQuery"), 1000);
+  const [queryString] = useDebounce(watch('placeQuery'), 1000);
   // const selectedColor = watch("background_color") ?? palette?.primary?.light;
 
   const placeQuery = useQuery(
-    ["locations", queryString],
-    (props) => getLocationFromQueryFetch(String(queryString)),
+    ['locations', queryString],
+    () => getLocationFromQueryFetch(String(queryString)),
     {
-      enabled: !!queryString,
+      enabled: !!queryString
     }
   );
 
-  const { mutate: sendUploadPhoto, isLoading } = useMutation(
-    ["activity-photo-upload"],
+  const { mutate: sendUploadPhoto } = useMutation(
+    ['activity-photo-upload'],
     (formData?: FormData) => uploadFile(formData),
     {
       onSuccess: (data) => {
@@ -160,48 +144,43 @@ const EditProfileScreen: React.FC = () => {
         setLocalTitleImageFile(null);
         //differentiate which photo should be updated
         sendUpdateProfile({
-          ...(localProfileImageFile
-            ? { profile_photo: data?.data?.filename }
-            : {}),
-          ...(localTitleImageFile ? { title_photo: data?.data?.filename } : {}),
+          ...(localProfileImageFile ? { profile_photo: data?.data?.filename } : {}),
+          ...(localTitleImageFile ? { title_photo: data?.data?.filename } : {})
         });
-        queryClient.invalidateQueries(["user"]);
+        queryClient.invalidateQueries(['user']);
         navigate(ApplicationLocations.PROFILE);
       },
-      onError: (error) => {
-        toast.error("Failed to upload profile photo");
-      },
+      onError: () => {
+        toast.error('Failed to upload profile photo');
+      }
     }
   );
 
-  const { isLoading: isUnlinkingInstagram, mutate: sendUnlinkInstagram } =
-    useMutation(
-      ["instagram-unlink"],
-      () => unlinkInstagram(Number(userInfo?.id)),
-      {
-        onSuccess: () => {
-          toast.success(
-            "Your instagram account has been successfully unlinked"
-          );
-          queryClient.invalidateQueries(["user"]);
-        },
-        onError: () => {
-          toast.error("Failed unlinking your instagram account");
-        },
+  const { isLoading: isUnlinkingInstagram, mutate: sendUnlinkInstagram } = useMutation(
+    ['instagram-unlink'],
+    () => unlinkInstagram(Number(userInfo?.id)),
+    {
+      onSuccess: () => {
+        toast.success('Your instagram account has been successfully unlinked');
+        queryClient.invalidateQueries(['user']);
+      },
+      onError: () => {
+        toast.error('Failed unlinking your instagram account');
       }
-    );
+    }
+  );
 
   useEffect(() => {
     // alebo setValue ak bude resetu kurovat
 
     reset({
-      username: data?.username ?? "",
-      about_me: data?.about_me ?? "",
+      username: data?.username ?? '',
+      about_me: data?.about_me ?? '',
       birthdate: (data?.birthdate as Date) ?? null,
       location: data?.location ?? null,
       // instagram: data?.instagram,
       profile_photo: data?.profile_photo,
-      title_photo: data?.title_photo,
+      title_photo: data?.title_photo
       // background_color: data?.background_color,
     });
   }, [data]);
@@ -215,16 +194,16 @@ const EditProfileScreen: React.FC = () => {
   );
 
   const handleProfilePhotoAction = React.useCallback(
-    (action?: ProfilePhotoActionsEnum, type?: "profile" | "title") => {
+    (action?: ProfilePhotoActionsEnum, type?: 'profile' | 'title') => {
       switch (action) {
         case ProfilePhotoActionsEnum.SELECT_FROM_DEVICE:
-          return type === "profile"
+          return type === 'profile'
             ? profilePictureFileInput?.current?.click()
             : titlePictureFileInput?.current?.click();
         case ProfilePhotoActionsEnum.REMOVE_PICTURE:
           return sendUpdateProfile({
-            profile_photo: type === "profile" ? "" : undefined,
-            title_photo: type === "title" ? "" : undefined,
+            profile_photo: type === 'profile' ? '' : undefined,
+            title_photo: type === 'title' ? '' : undefined
           });
         default:
           return;
@@ -254,14 +233,12 @@ const EditProfileScreen: React.FC = () => {
   // }, [selectedColor]);
 
   const handlePictureClick = React.useCallback(
-    (type: "profile" | "title") => {
+    (type: 'profile' | 'title') => {
       toggleDrawer({
         open: true,
         content: (
-          <ProfilePhotoActions
-            onActionClick={(action) => handleProfilePhotoAction(action, type)}
-          />
-        ),
+          <ProfilePhotoActions onActionClick={(action) => handleProfilePhotoAction(action, type)} />
+        )
       });
     },
     [toggleDrawer]
@@ -275,9 +252,9 @@ const EditProfileScreen: React.FC = () => {
       }
 
       // check file format
-      const fileExtension = file.name.split(".").pop();
+      const fileExtension = file.name.split('.').pop();
       if (fileExtension && !ALLOWED_PHOTO_EXTENSIONS.includes(fileExtension)) {
-        toast.error("Unsupported file format");
+        toast.error('Unsupported file format');
         return;
       }
       setLocalProfileImageFile(URL.createObjectURL(file));
@@ -293,9 +270,9 @@ const EditProfileScreen: React.FC = () => {
       }
 
       // check file format
-      const fileExtension = file.name.split(".").pop();
+      const fileExtension = file.name.split('.').pop();
       if (fileExtension && !ALLOWED_PHOTO_EXTENSIONS.includes(fileExtension)) {
-        toast.error("Unsupported file format");
+        toast.error('Unsupported file format');
         return;
       }
       setLocalTitleImageFile(URL.createObjectURL(file));
@@ -314,83 +291,74 @@ const EditProfileScreen: React.FC = () => {
             setLocalProfileImageFile(null);
           }}
           aspectRatio={localTitleImageFile ? 375 / 150 : 1}
-          cropShape={localTitleImageFile ? "rect" : "round"}
+          cropShape={localTitleImageFile ? 'rect' : 'round'}
         />
         <Box
           sx={{
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            alignItems: "center",
-            width: "100%",
-          }}
-        >
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            alignItems: 'center',
+            width: '100%'
+          }}>
           {/* Hidden input for photo upload */}
           <input
             onChange={handleProfilePictureUpload}
             type="file"
-            style={{ display: "none" }}
+            style={{ display: 'none' }}
             ref={profilePictureFileInput}
             // setting empty string to always fire onChange event on input even when selecting same pictures 2 times in a row
-            value={""}
+            value={''}
             accept="image/*"
           />
 
           <input
             onChange={handleTitlePictureUpload}
             type="file"
-            style={{ display: "none" }}
+            style={{ display: 'none' }}
             ref={titlePictureFileInput}
             // setting empty string to always fire onChange event on input even when selecting same pictures 2 times in a row
-            value={""}
+            value={''}
             accept="image/*"
           />
           <Box
-            sx={{ width: "100%", height: 150, position: "relative", mb: 2 }}
+            sx={{ width: '100%', height: 150, position: 'relative', mb: 2 }}
             onClick={(e: React.MouseEvent<HTMLDivElement>) => {
               e.preventDefault();
               e.stopPropagation();
-              handlePictureClick("title");
-            }}
-          >
-            <Box sx={{ height: "100%" }}>
+              handlePictureClick('title');
+            }}>
+            <Box sx={{ height: '100%' }}>
               <img
-                src={
-                  data?.title_photo
-                    ? `${baseUrl}/files/${data?.title_photo}`
-                    : userPlaceholder
-                }
+                src={data?.title_photo ? `${baseUrl}/files/${data?.title_photo}` : userPlaceholder}
                 alt="title"
-                style={{ height: "100%", width: "100%" }}
+                style={{ height: '100%', width: '100%' }}
               />
               <IconButton
                 sx={{
-                  bgcolor: "primary.main",
-                  position: "absolute",
+                  bgcolor: 'primary.main',
+                  position: 'absolute',
                   right: 10,
-                  top: 10,
+                  top: 10
                 }}
-                size="small"
-              >
-                <EditIcon sx={{ color: "white", fontSize: 20 }} />
+                size="small">
+                <EditIcon sx={{ color: 'white', fontSize: 20 }} />
               </IconButton>
             </Box>
             <Box
               sx={{
-                position: "absolute",
-                top: "95%",
-                left: "15%",
-                transform: "translate(-50%, -50%)",
-              }}
-            >
+                position: 'absolute',
+                top: '95%',
+                left: '15%',
+                transform: 'translate(-50%, -50%)'
+              }}>
               <Box
-                sx={{ position: "relative" }}
+                sx={{ position: 'relative' }}
                 onClick={(e: React.MouseEvent<HTMLDivElement>) => {
                   e.preventDefault();
                   e.stopPropagation();
-                  handlePictureClick("profile");
-                }}
-              >
+                  handlePictureClick('profile');
+                }}>
                 <img
                   src={
                     data?.profile_photo
@@ -401,22 +369,21 @@ const EditProfileScreen: React.FC = () => {
                   style={{
                     height: 100,
                     aspectRatio: 1,
-                    borderRadius: "50%",
+                    borderRadius: '50%',
                     border: `2px solid ${palette.primary.main}`,
-                    boxShadow: "5px 5px 20px 0px rgba(0,0,0,0.6)",
+                    boxShadow: '5px 5px 20px 0px rgba(0,0,0,0.6)'
                   }}
                 />
                 <IconButton
                   sx={{
-                    position: "absolute",
-                    top: "10%",
-                    left: "85%",
-                    transform: "translate(-50%, -50%)",
-                    bgcolor: palette?.primary?.main,
+                    position: 'absolute',
+                    top: '10%',
+                    left: '85%',
+                    transform: 'translate(-50%, -50%)',
+                    bgcolor: palette?.primary?.main
                   }}
-                  size="small"
-                >
-                  <EditIcon sx={{ color: "white", fontSize: 20 }} />
+                  size="small">
+                  <EditIcon sx={{ color: 'white', fontSize: 20 }} />
                 </IconButton>
               </Box>
             </Box>
@@ -424,18 +391,15 @@ const EditProfileScreen: React.FC = () => {
 
           <form
             style={{
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
-              alignItems: "center",
-              width: "100%",
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              alignItems: 'center',
+              width: '100%'
             }}
-            onSubmit={handleSubmit(handleFormSubmit, (data, e) =>
-              console.log(data, e)
-            )}
-            data-testid="edit-profile-form"
-          >
-            <Box sx={{ width: "90%", mt: 6 }}>
+            onSubmit={handleSubmit(handleFormSubmit, (data, e) => console.log(data, e))}
+            data-testid="edit-profile-form">
+            <Box sx={{ width: '90%', mt: 6 }}>
               <Controller
                 name="username"
                 control={control}
@@ -446,7 +410,7 @@ const EditProfileScreen: React.FC = () => {
                       {...field}
                       error={!!error}
                       helperText={error?.message}
-                      sx={{ width: "100%", my: 1.5 }}
+                      sx={{ width: '100%', my: 1.5 }}
                       data-testid="name-input"
                       // label="Name"
                     />
@@ -457,10 +421,7 @@ const EditProfileScreen: React.FC = () => {
                 <Controller
                   name="birthdate"
                   control={control}
-                  render={({
-                    field: { onChange, value },
-                    fieldState: { error },
-                  }) => (
+                  render={({ field: { onChange, value }, fieldState: { error } }) => (
                     <>
                       <Typography variant="h5" sx={{ mt: 1 }}>
                         Birthdate
@@ -477,7 +438,7 @@ const EditProfileScreen: React.FC = () => {
                         renderInput={(params) => (
                           <TextField
                             {...params}
-                            sx={{ width: "100%", my: 1.5 }}
+                            sx={{ width: '100%', my: 1.5 }}
                             error={!!error}
                             helperText={error?.message}
                             // label="Birthdate"
@@ -504,16 +465,16 @@ const EditProfileScreen: React.FC = () => {
                       options={mapExternalApiOptions(placeQuery?.data?.results)}
                       value={field?.value}
                       sx={{
-                        width: "100%",
-                        display: "flex",
-                        justifyContentw: "center",
-                        my: 1.5,
+                        width: '100%',
+                        display: 'flex',
+                        justifyContentw: 'center',
+                        my: 1.5
                       }}
                       loading={placeQuery?.isLoading}
                       onChange={(e, locationObject) => {
                         field.onChange({
-                          name: locationObject?.name ?? "",
-                          coordinates: locationObject?.coordinates,
+                          name: locationObject?.name ?? '',
+                          coordinates: locationObject?.coordinates
                         });
                       }}
                       inputValue={field?.value?.name}
@@ -522,11 +483,9 @@ const EditProfileScreen: React.FC = () => {
                         <TextField
                           {...params}
                           // label="Location"
-                          onChange={(e) =>
-                            setValue("placeQuery", e.target.value)
-                          }
+                          onChange={(e) => setValue('placeQuery', e.target.value)}
                           error={!!error}
-                          helperText={!!error && "Location is required"}
+                          helperText={!!error && 'Location is required'}
                         />
                       )}
                       data-testid="activity-place-input"
@@ -537,7 +496,7 @@ const EditProfileScreen: React.FC = () => {
               <Controller
                 name="about_me"
                 control={control}
-                render={({ field, fieldState: { error } }) => (
+                render={({ field }) => (
                   <>
                     <Typography variant="h5" sx={{ mt: 2 }}>
                       About me
@@ -548,11 +507,11 @@ const EditProfileScreen: React.FC = () => {
                       rows={3}
                       placeholder="Type something about you"
                       sx={{
-                        width: "100%",
-                        "& .MuiOutlinedInput-root": {
-                          height: "unset",
+                        width: '100%',
+                        '& .MuiOutlinedInput-root': {
+                          height: 'unset'
                         },
-                        my: 1.5,
+                        my: 1.5
                       }}
                       helperText={`${field?.value?.length ?? 0}/200`}
                       inputProps={{ maxLength: 200 }}
@@ -597,22 +556,20 @@ const EditProfileScreen: React.FC = () => {
                 </OffliButton>
               </Box> */}
 
-              {!!data?.instagram ? (
+              {data?.instagram ? (
                 <Box
                   sx={{
-                    display: "flex",
-                    width: "100%",
-                    justifyContent: "center",
-                  }}
-                >
+                    display: 'flex',
+                    width: '100%',
+                    justifyContent: 'center'
+                  }}>
                   <OffliButton
                     onClick={() => sendUnlinkInstagram()}
                     size="small"
                     variant="outlined"
-                    sx={{ fontSize: 16, mt: 1, width: "55%" }}
-                    startIcon={<InstagramIcon sx={{ color: "inherit" }} />}
-                    isLoading={isUnlinkingInstagram}
-                  >
+                    sx={{ fontSize: 16, mt: 1, width: '55%' }}
+                    startIcon={<InstagramIcon sx={{ color: 'inherit' }} />}
+                    isLoading={isUnlinkingInstagram}>
                     Unlink Instagram
                   </OffliButton>
                 </Box>
@@ -620,11 +577,10 @@ const EditProfileScreen: React.FC = () => {
             </Box>
             <OffliButton
               type="submit"
-              sx={{ mt: 4, mb: 2, width: "65%" }}
+              sx={{ mt: 4, mb: 2, width: '65%' }}
               isLoading={isSubmitting}
               disabled={isUnlinkingInstagram}
-              data-testid="submit-btn"
-            >
+              data-testid="submit-btn">
               Save
             </OffliButton>
           </form>

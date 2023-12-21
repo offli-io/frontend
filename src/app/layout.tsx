@@ -1,16 +1,15 @@
-import { Box, SxProps, useTheme } from "@mui/material";
-import React from "react";
-import { matchPath, useLocation, useNavigate } from "react-router-dom";
-import { useSwipeable } from "react-swipeable";
-import { isIOS, isSafari } from "utils/is-ios-device.util";
-import { AuthenticationContext } from "../assets/theme/authentication-provider";
-import BottomNavigator from "../components/bottom-navigator/bottom-navigator";
-import OffliHeader from "../components/offli-header/offli-header";
-import { useUser } from "../hooks/use-user";
-import Routes from "../routes/routes";
-import { ApplicationLocations } from "../types/common/applications-locations.dto";
-import { getAuthToken } from "../utils/token.util";
-import { HeaderContext } from "./providers/header-provider";
+import { Box, SxProps, useTheme } from '@mui/material';
+import React from 'react';
+import { matchPath, useLocation, useNavigate } from 'react-router-dom';
+import { useSwipeable } from 'react-swipeable';
+import { AuthenticationContext } from '../assets/theme/authentication-provider';
+import BottomNavigator from '../components/bottom-navigator/bottom-navigator';
+import OffliHeader from '../components/offli-header/offli-header';
+import { useUser } from '../hooks/use-user';
+import Routes from '../routes/routes';
+import { ApplicationLocations } from '../types/common/applications-locations.dto';
+import { getAuthToken } from '../utils/token.util';
+import { HeaderContext } from './providers/header-provider';
 
 interface ILayoutProps {
   children?: React.ReactNode;
@@ -20,38 +19,27 @@ interface ILayoutContext {
   contentDivRef?: React.MutableRefObject<HTMLDivElement | null>;
   onScroll?: () => void;
   layoutStyle?: SxProps;
-  setSwipeHandlers?: React.Dispatch<
-    React.SetStateAction<ISwipeHandlers | null>
-  >;
+  setSwipeHandlers?: React.Dispatch<React.SetStateAction<ISwipeHandlers | null>>;
 }
 
-export const LayoutContext = React.createContext<ILayoutContext>(
-  {} as ILayoutContext
-);
+export const LayoutContext = React.createContext<ILayoutContext>({} as ILayoutContext);
 
-export const NOT_EXACT_UNALLOWED_URLS = [
-  "/request",
-  "/map/",
-  "/profile/buddy",
-  "/profile/user",
-];
+export const NOT_EXACT_UNALLOWED_URLS = ['/request', '/map/', '/profile/buddy', '/profile/user'];
 
 export interface ISwipeHandlers {
   right?: () => void;
   left?: () => void;
 }
 
-export const Layout: React.FC<ILayoutProps> = ({ children }) => {
-  const { stateToken, userInfo, setStateToken, setUserInfo } = React.useContext(
-    AuthenticationContext
-  );
+export const Layout: React.FC<ILayoutProps> = () => {
+  const { stateToken, userInfo, setStateToken, setUserInfo } =
+    React.useContext(AuthenticationContext);
   const { pathname } = useLocation();
   const token = getAuthToken();
-  const userIdFromStorage = localStorage.getItem("userId");
+  const userIdFromStorage = localStorage.getItem('userId');
   const { setHeaderRightContent } = React.useContext(HeaderContext);
   const contentDivRef = React.useRef<HTMLDivElement | null>(null);
-  const [swipeHandlers, setSwipeHandlers] =
-    React.useState<ISwipeHandlers | null>(null);
+  const [swipeHandlers, setSwipeHandlers] = React.useState<ISwipeHandlers | null>(null);
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -59,24 +47,23 @@ export const Layout: React.FC<ILayoutProps> = ({ children }) => {
 
   const { ref, ...restHandlers } = useSwipeable({
     onSwipedRight: swipeHandlers?.right,
-    onSwipedLeft: swipeHandlers?.left,
+    onSwipedLeft: swipeHandlers?.left
   });
 
   const [displayHeader, setDisplayHeader] = React.useState(true);
-  const [displayBottomNavigator, setDisplayBottomNavigator] =
-    React.useState(true);
+  const [displayBottomNavigator, setDisplayBottomNavigator] = React.useState(true);
 
-  const { data: { data } = {}, isLoading } = useUser({
+  const { data: { data } = {} } = useUser({
     id: userInfo?.id,
     onSuccess: (data) =>
       setUserInfo?.((basicInfo) => ({
         ...basicInfo,
-        email: data?.data?.email,
-      })),
+        email: data?.data?.email
+      }))
   });
 
-  const isBuddyRequest = location?.pathname?.includes("/profile/request");
-  const isUserProfile = location?.pathname?.includes("/profile/user");
+  const isBuddyRequest = location?.pathname?.includes('/profile/request');
+  const isUserProfile = location?.pathname?.includes('/profile/user');
 
   React.useEffect(() => {
     //reset the header right content on route changes, in the future might be subject to change
@@ -96,7 +83,7 @@ export const Layout: React.FC<ILayoutProps> = ({ children }) => {
     if (
       [
         // locations where we want to hide header
-        ApplicationLocations.CHOOSE_LOCATION,
+        ApplicationLocations.CHOOSE_LOCATION
       ].includes(location?.pathname as ApplicationLocations)
     ) {
       setDisplayHeader(false);
@@ -107,9 +94,7 @@ export const Layout: React.FC<ILayoutProps> = ({ children }) => {
 
   React.useEffect(() => {
     if (
-      [ApplicationLocations.CHOOSE_LOCATION].includes(
-        location?.pathname as ApplicationLocations
-      )
+      [ApplicationLocations.CHOOSE_LOCATION].includes(location?.pathname as ApplicationLocations)
     ) {
       setDisplayBottomNavigator(false);
     } else {
@@ -121,7 +106,7 @@ export const Layout: React.FC<ILayoutProps> = ({ children }) => {
     if (
       !!token &&
       !!userIdFromStorage &&
-      ["/", "/login", "/register"].includes(location?.pathname)
+      ['/', '/login', '/register'].includes(location?.pathname)
     ) {
       setStateToken(token);
       setUserInfo?.((values) => ({ ...values, id: Number(userIdFromStorage) }));
@@ -145,8 +130,6 @@ export const Layout: React.FC<ILayoutProps> = ({ children }) => {
     [location?.pathname]
   );
 
-  const isIOSSafari = isIOS() && isSafari();
-
   const isNotAuthorizedRoute = React.useMemo(
     () =>
       [
@@ -157,7 +140,7 @@ export const Layout: React.FC<ILayoutProps> = ({ children }) => {
         ApplicationLocations.PICK_USERNAME,
         ApplicationLocations.AUTHENTICATION_METHOD,
         ApplicationLocations.LOADING,
-        ApplicationLocations.FORGOTTEN_PASSWORD,
+        ApplicationLocations.FORGOTTEN_PASSWORD
       ].some((route) => matchPath({ path: route }, pathname)),
     [pathname]
   );
@@ -166,47 +149,43 @@ export const Layout: React.FC<ILayoutProps> = ({ children }) => {
     <LayoutContext.Provider
       value={{
         contentDivRef,
-        setSwipeHandlers,
+        setSwipeHandlers
         // layoutStyle
-      }}
-    >
+      }}>
       <Box
         sx={{
-          width: "100%",
+          width: '100%',
           // height: isIOSSafari ? `calc(100vh - 20px)` : "100vh",
           // height: isIOSSafari ? "98vh" : "100vh",
-          height: "100vh",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "stretch",
-          overflow: "hidden",
+          height: '100vh',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'stretch',
+          overflow: 'hidden'
         }}
-        className="layout-parent"
-      >
+        className="layout-parent">
         {/* TODO backHeader and diusplayheader better naming */}
-        {stateToken && displayHeader && <OffliHeader sx={{ width: "100%" }} />}
+        {stateToken && displayHeader && <OffliHeader sx={{ width: '100%' }} />}
         <Box
           // onScroll={onscroll}
           // onScrollEnd={() => console.log("scroll end")}
           sx={{
-            width: "100%",
-            height: "100%",
-            overflow: "auto",
+            width: '100%',
+            height: '100%',
+            overflow: 'auto',
             bgcolor: palette.background.default,
-            boxSizing: "border-box",
-            px: addContentPadding ? 1 : 0,
+            boxSizing: 'border-box',
+            px: addContentPadding ? 1 : 0
             // ...layoutStyle,
           }}
           {...restHandlers}
-          ref={refPassthrough}
-        >
+          ref={refPassthrough}>
           <Routes />
         </Box>
-        {!isNotAuthorizedRoute &&
-          displayBottomNavigator &&
-          !isBuddyRequest &&
-          !isUserProfile && <BottomNavigator sx={{ height: "100%" }} />}
+        {!isNotAuthorizedRoute && displayBottomNavigator && !isBuddyRequest && !isUserProfile && (
+          <BottomNavigator sx={{ height: '100%' }} />
+        )}
       </Box>
     </LayoutContext.Provider>
   );

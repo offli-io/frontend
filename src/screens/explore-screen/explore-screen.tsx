@@ -1,105 +1,94 @@
-import MapIcon from "@mui/icons-material/Map";
-import PlaceIcon from "@mui/icons-material/Place";
-import SearchIcon from "@mui/icons-material/Search";
-import {
-  Autocomplete,
-  Box,
-  InputAdornment,
-  TextField,
-  Typography,
-  useTheme,
-} from "@mui/material";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import Loader from "components/loader";
+import MapIcon from '@mui/icons-material/Map';
+import PlaceIcon from '@mui/icons-material/Place';
+import SearchIcon from '@mui/icons-material/Search';
+import { Autocomplete, Box, InputAdornment, TextField, Typography, useTheme } from '@mui/material';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import Loader from 'components/loader';
 import {
   PAGED_ACTIVITIES_QUERY_KEY,
-  useActivitiesInfiniteQuery,
-} from "hooks/use-activities-infinite-query";
-import { useDismissActivity } from "hooks/use-dismiss-activity";
-import React from "react";
-import InfiniteScroll from "react-infinite-scroller";
-import { useNavigate } from "react-router-dom";
-import { toast } from "sonner";
+  useActivitiesInfiniteQuery
+} from 'hooks/use-activities-infinite-query';
+import { useDismissActivity } from 'hooks/use-dismiss-activity';
+import React from 'react';
+import InfiniteScroll from 'react-infinite-scroller';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
 import {
   changeActivityParticipantStatus,
-  removePersonFromActivity,
-} from "../../api/activities/requests";
-import { LocationContext } from "../../app/providers/location-provider";
-import { AuthenticationContext } from "../../assets/theme/authentication-provider";
-import { DrawerContext } from "../../assets/theme/drawer-provider";
-import ActivityCard from "../../components/activity-card";
-import OffliButton from "../../components/offli-button";
-import { ACTIVITIES_QUERY_KEY } from "../../hooks/use-activities";
-import { PARTICIPANT_ACTIVITIES_QUERY_KEY } from "../../hooks/use-participant-activities";
-import { useUser } from "../../hooks/use-user";
-import { ActivityInviteStateEnum } from "../../types/activities/activity-invite-state-enum.dto";
-import { IActivity } from "../../types/activities/activity.dto";
-import { ActivityActionsTypeEnumDto } from "../../types/common/activity-actions-type-enum.dto";
-import { ApplicationLocations } from "../../types/common/applications-locations.dto";
-import ActivityActions from "./components/activity-actions";
-import ActivityLeaveConfirmation from "./components/activity-leave-confirmation";
-import FirstTimeLoginContent from "./components/first-time-login-content";
-import { SetLocationContent } from "./components/set-location-content";
+  removePersonFromActivity
+} from '../../api/activities/requests';
+import { LocationContext } from '../../app/providers/location-provider';
+import { AuthenticationContext } from '../../assets/theme/authentication-provider';
+import { DrawerContext } from '../../assets/theme/drawer-provider';
+import ActivityCard from '../../components/activity-card';
+import OffliButton from '../../components/offli-button';
+import { ACTIVITIES_QUERY_KEY } from '../../hooks/use-activities';
+import { PARTICIPANT_ACTIVITIES_QUERY_KEY } from '../../hooks/use-participant-activities';
+import { useUser } from '../../hooks/use-user';
+import { ActivityInviteStateEnum } from '../../types/activities/activity-invite-state-enum.dto';
+import { IActivity } from '../../types/activities/activity.dto';
+import { ActivityActionsTypeEnumDto } from '../../types/common/activity-actions-type-enum.dto';
+import { ApplicationLocations } from '../../types/common/applications-locations.dto';
+import ActivityActions from './components/activity-actions';
+import ActivityLeaveConfirmation from './components/activity-leave-confirmation';
+import FirstTimeLoginContent from './components/first-time-login-content';
+import { SetLocationContent } from './components/set-location-content';
 
 const ExploreScreen = () => {
-  const { userInfo, isFirstTimeLogin, setIsFirstTimeLogin } = React.useContext(
-    AuthenticationContext
-  );
+  const { userInfo, isFirstTimeLogin, setIsFirstTimeLogin } =
+    React.useContext(AuthenticationContext);
   const { location, setLocation } = React.useContext(LocationContext);
   const { toggleDrawer } = React.useContext(DrawerContext);
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { palette } = useTheme();
-  const { sendDismissActivity, isLoading: isDismissingActivity } =
-    useDismissActivity();
+  const { sendDismissActivity, isLoading: isDismissingActivity } = useDismissActivity();
 
   //TODO either call it like this or set user info once useUsers request in layout.tsx got Promise resolved
   const { data: { data: userData = {} } = {} } = useUser({
-    id: userInfo?.id,
+    id: userInfo?.id
   });
 
-  const { pages, isFetchingNextPage, fetchNextPage, hasNextPage } =
-    useActivitiesInfiniteQuery();
+  const { pages, isFetchingNextPage, fetchNextPage, hasNextPage } = useActivitiesInfiniteQuery();
 
   const { mutate: sendJoinActivity } = useMutation(
-    ["join-activity-response"],
+    ['join-activity-response'],
     (activityId?: number) => {
       const { id = undefined } = { ...userData };
       return changeActivityParticipantStatus(Number(activityId), Number(id), {
-        status: ActivityInviteStateEnum.CONFIRMED,
+        status: ActivityInviteStateEnum.CONFIRMED
       });
     },
 
     {
-      onSuccess: (data, buddy) => {
-        toast.success("You have successfully joined the activity");
+      onSuccess: () => {
+        toast.success('You have successfully joined the activity');
         queryClient.invalidateQueries([PARTICIPANT_ACTIVITIES_QUERY_KEY]);
-        queryClient.invalidateQueries(["activities"]);
+        queryClient.invalidateQueries(['activities']);
 
         hideDrawer();
       },
-      onError: (error) => {
-        toast.error("Failed to join selected activity");
-      },
+      onError: () => {
+        toast.error('Failed to join selected activity');
+      }
     }
   );
 
   const hideDrawer = React.useCallback(() => {
     return toggleDrawer({
       open: false,
-      content: undefined,
+      content: undefined
     });
   }, [toggleDrawer]);
 
   const { mutate: sendLeaveActivity } = useMutation(
-    ["leave-activity-response"],
-    (activityId?: number) =>
-      removePersonFromActivity({ activityId, personId: userInfo?.id }),
+    ['leave-activity-response'],
+    (activityId?: number) => removePersonFromActivity({ activityId, personId: userInfo?.id }),
     {
       onSuccess: (data, activityId) => {
         hideDrawer();
         //TODO add generic jnaming for activites / activity
-        queryClient.invalidateQueries(["activity", activityId]);
+        queryClient.invalidateQueries(['activity', activityId]);
         queryClient.invalidateQueries([ACTIVITIES_QUERY_KEY]);
         queryClient.invalidateQueries([PAGED_ACTIVITIES_QUERY_KEY]);
         queryClient.invalidateQueries([PARTICIPANT_ACTIVITIES_QUERY_KEY]);
@@ -108,8 +97,8 @@ const ExploreScreen = () => {
         //TODO display success notification?
       },
       onError: () => {
-        toast.error("Failed to leave activity");
-      },
+        toast.error('Failed to leave activity');
+      }
     }
   );
 
@@ -117,9 +106,7 @@ const ExploreScreen = () => {
     (action?: ActivityActionsTypeEnumDto, activityId?: number) => {
       switch (action) {
         case ActivityActionsTypeEnumDto.ACTIVITY_MEMBERS:
-          return navigate(
-            `${ApplicationLocations.ACTIVITY_MEMBERS}/${activityId}`
-          );
+          return navigate(`${ApplicationLocations.ACTIVITY_MEMBERS}/${activityId}`);
         case ActivityActionsTypeEnumDto.LEAVE:
           return toggleDrawer({
             open: true,
@@ -129,20 +116,16 @@ const ExploreScreen = () => {
                 onLeaveCancel={hideDrawer}
                 onLeaveConfirm={sendLeaveActivity}
               />
-            ),
+            )
           });
         case ActivityActionsTypeEnumDto.MORE_INFORMATION:
-          return navigate(
-            `${ApplicationLocations.ACTIVITY_DETAIL}/${activityId}`
-          );
+          return navigate(`${ApplicationLocations.ACTIVITY_DETAIL}/${activityId}`);
         case ActivityActionsTypeEnumDto.MAP:
           return navigate(`${ApplicationLocations.MAP}/${activityId}`);
         case ActivityActionsTypeEnumDto.JOIN:
           return sendJoinActivity(activityId);
         case ActivityActionsTypeEnumDto.EDIT:
-          return navigate(
-            `${ApplicationLocations.EDIT_ACTIVITY}/${activityId}`
-          );
+          return navigate(`${ApplicationLocations.EDIT_ACTIVITY}/${activityId}`);
         case ActivityActionsTypeEnumDto.DISMISS:
           return toggleDrawer({
             open: true,
@@ -154,7 +137,7 @@ const ExploreScreen = () => {
                 isLeaving={isDismissingActivity}
                 type="dismiss"
               />
-            ),
+            )
           });
 
         default:
@@ -168,12 +151,7 @@ const ExploreScreen = () => {
     (activity?: IActivity) => {
       toggleDrawer({
         open: true,
-        content: (
-          <ActivityActions
-            onActionClick={handleActionClick}
-            activity={activity}
-          />
-        ),
+        content: <ActivityActions onActionClick={handleActionClick} activity={activity} />
       });
     },
     [toggleDrawer]
@@ -190,7 +168,7 @@ const ExploreScreen = () => {
           }}
           externalLocation={location}
         />
-      ),
+      )
       // onClose: () => setIsFirstTimeLogin?.(false),
     });
   }, [location]);
@@ -200,7 +178,7 @@ const ExploreScreen = () => {
       toggleDrawer({
         open: true,
         content: <FirstTimeLoginContent />,
-        onClose: () => setIsFirstTimeLogin?.(false),
+        onClose: () => setIsFirstTimeLogin?.(false)
       });
   }, [isFirstTimeLogin, toggleDrawer]);
 
@@ -208,12 +186,11 @@ const ExploreScreen = () => {
     <>
       <Box
         sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          my: 1,
-        }}
-      >
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          my: 1
+        }}>
         <Typography variant="h4" sx={{ color: palette?.text?.primary }}>
           Explore
         </Typography>
@@ -221,28 +198,22 @@ const ExploreScreen = () => {
           variant="text"
           sx={{
             width: 180,
-            justifyContent: "flex-end",
+            justifyContent: 'flex-end'
           }}
-          startIcon={
-            <PlaceIcon
-              sx={{ fontSize: "1.4rem", mr: -0.5, color: "primary.main" }}
-            />
-          }
+          startIcon={<PlaceIcon sx={{ fontSize: '1.4rem', mr: -0.5, color: 'primary.main' }} />}
           onClick={handleLocationSelect}
-          data-test-id="current-location-btn"
-        >
+          data-test-id="current-location-btn">
           <Typography
             sx={{
               fontSize: 16,
-              color: "primary.main",
+              color: 'primary.main',
               // width: "100%",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              whiteSpace: "nowrap",
-              fontWeight: "bold",
-            }}
-          >
-            {location?.name ?? "No location found"}
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
+              fontWeight: 'bold'
+            }}>
+            {location?.name ?? 'No location found'}
           </Typography>
         </OffliButton>
       </Box>
@@ -251,13 +222,13 @@ const ExploreScreen = () => {
         options={[]}
         forcePopupIcon={false}
         sx={{
-          width: "100%",
-          display: "flex",
-          justifyContent: "center",
+          width: '100%',
+          display: 'flex',
+          justifyContent: 'center',
           mb: 1,
-          "& .MuiOutlinedInput-root": {
-            pr: 0,
-          },
+          '& .MuiOutlinedInput-root': {
+            pr: 0
+          }
         }}
         onFocus={() => navigate(ApplicationLocations.SEARCH)}
         renderInput={(params) => (
@@ -267,23 +238,21 @@ const ExploreScreen = () => {
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
-                  <SearchIcon
-                    sx={{ fontSize: "1.5rem", color: "primary.main" }}
-                  />{" "}
+                  <SearchIcon sx={{ fontSize: '1.5rem', color: 'primary.main' }} />{' '}
                 </InputAdornment>
-              ),
+              )
             }}
             sx={{
-              "& input::placeholder": {
+              '& input::placeholder': {
                 fontSize: 14,
-                color: "#4A148C",
+                color: '#4A148C',
                 fontWeight: 400,
                 opacity: 1,
-                pl: 1,
+                pl: 1
               },
-              "& fieldset": { border: "none" },
+              '& fieldset': { border: 'none' },
               backgroundColor: ({ palette }) => palette?.primary?.light,
-              borderRadius: "10px",
+              borderRadius: '10px'
             }}
             data-testid="activities-search-input"
             // onChange={(e) => setValue("placeQuery", e.target.value)}
@@ -294,42 +263,33 @@ const ExploreScreen = () => {
       <>
         <Box
           sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            width: "100%",
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            width: '100%',
             mt: 2,
-            mb: 1,
-          }}
-        >
+            mb: 1
+          }}>
           <Typography variant="h4" sx={{ color: palette?.text?.primary }}>
             Near you
           </Typography>
           <OffliButton
             variant="text"
             sx={{ fontSize: 16 }}
-            startIcon={
-              <MapIcon
-                sx={{ fontSize: "1.2rem", ml: -0.7, color: "primary.main" }}
-              />
-            }
+            startIcon={<MapIcon sx={{ fontSize: '1.2rem', ml: -0.7, color: 'primary.main' }} />}
             onClick={() => navigate(ApplicationLocations.MAP)}
-            data-testid="see-map-btn"
-          >
+            data-testid="see-map-btn">
             Show map
           </OffliButton>
         </Box>
         <InfiniteScroll
           pageStart={0}
           loadMore={() =>
-            !isFetchingNextPage &&
-            [...(pages?.[0] ?? [])].length > 8 &&
-            fetchNextPage()
+            !isFetchingNextPage && [...(pages?.[0] ?? [])].length > 8 && fetchNextPage()
           }
           hasMore={hasNextPage}
-          loader={<Loader key={"loader"} />}
-          useWindow={false}
-        >
+          loader={<Loader key={'loader'} />}
+          useWindow={false}>
           <>
             {pages?.map((group, i) => (
               <React.Fragment key={i}>
@@ -338,12 +298,10 @@ const ExploreScreen = () => {
                     key={activity?.id}
                     activity={activity}
                     onPress={() =>
-                      navigate(
-                        `${ApplicationLocations.ACTIVITY_DETAIL}/${activity?.id}`
-                      )
+                      navigate(`${ApplicationLocations.ACTIVITY_DETAIL}/${activity?.id}`)
                     }
                     onLongPress={openActivityActions}
-                    sx={{ mx: 0, mb: 3, width: "100%" }}
+                    sx={{ mx: 0, mb: 3, width: '100%' }}
                   />
                 ))}
               </React.Fragment>

@@ -1,5 +1,5 @@
 export enum ActivityDurationTypeEnumDto {
-  MINUTES = "minutes",
-  HOURS = "hours",
-  DAYS = "days",
+  MINUTES = 'minutes',
+  HOURS = 'hours',
+  DAYS = 'days'
 }

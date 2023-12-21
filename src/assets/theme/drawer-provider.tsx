@@ -1,19 +1,13 @@
-import React from "react";
+import React from 'react';
 
-import {
-  SwipeableDrawer,
-  Box,
-  Paper,
-  useTheme,
-  useMediaQuery,
-} from "@mui/material";
-import { styled } from "@mui/material/styles";
-import { useLocation } from "react-router-dom";
+import { Box, SwipeableDrawer, useMediaQuery, useTheme } from '@mui/material';
+import { styled } from '@mui/material/styles';
+import { useLocation } from 'react-router-dom';
 
 interface IDrawerData {
   open?: boolean;
   content?: React.ReactElement;
-  variant?: "permanent" | "persistent" | "temporary";
+  variant?: 'permanent' | 'persistent' | 'temporary';
   onClose?: () => void;
 }
 
@@ -26,21 +20,19 @@ const Puller = styled(Box)(({ theme }) => ({
   height: 8,
   backgroundColor: theme.palette.primary.main,
   borderRadius: 30,
-  position: "absolute",
+  position: 'absolute',
   top: 15,
-  left: "calc(50% - 25px)",
+  left: 'calc(50% - 25px)'
 }));
 
-export const DrawerContext = React.createContext<IDrawerContext>(
-  {} as IDrawerContext
-);
+export const DrawerContext = React.createContext<IDrawerContext>({} as IDrawerContext);
 
 export const DrawerProvider = ({ children }: { children: React.ReactNode }) => {
   const [drawerData, toggleDrawer] = React.useState<IDrawerData>({
-    open: false,
+    open: false
   });
   const { breakpoints } = useTheme();
-  const upMd = useMediaQuery(breakpoints.up("md"));
+  const upMd = useMediaQuery(breakpoints.up('md'));
 
   const { pathname } = useLocation();
 
@@ -60,7 +52,7 @@ export const DrawerProvider = ({ children }: { children: React.ReactNode }) => {
     // on pathname change close the drawer
     if (!!pathname && pathname?.length > 0) {
       toggleDrawer({
-        open: false,
+        open: false
       });
     }
   }, [pathname]);
@@ -72,7 +64,7 @@ export const DrawerProvider = ({ children }: { children: React.ReactNode }) => {
         anchor="bottom"
         // variant="persistent"
         open={Boolean(drawerData?.open)}
-        onOpen={() => console.log("wtf")}
+        onOpen={() => console.log('wtf')}
         onClose={() => {
           drawerData?.onClose?.();
           toggleDrawer({ open: false, content: undefined });
@@ -81,7 +73,7 @@ export const DrawerProvider = ({ children }: { children: React.ReactNode }) => {
         disableSwipeToOpen
         // allowSwipeInChildren
         sx={{
-          "& .MuiPaper-root": {
+          '& .MuiPaper-root': {
             borderTopLeftRadius: 30,
             borderTopRightRadius: 30,
             pt: 5,
@@ -90,25 +82,23 @@ export const DrawerProvider = ({ children }: { children: React.ReactNode }) => {
             ...(upMd
               ? {
                   width: 450,
-                  boxSizing: "border-box",
+                  boxSizing: 'border-box'
                 }
-              : {}),
+              : {})
           },
           ...(upMd
             ? {
-                left: "50%",
-                transform: "translate(-50%)",
-                width: 450,
+                left: '50%',
+                transform: 'translate(-50%)',
+                width: 450
               }
-            : {}),
-        }}
-      >
+            : {})
+        }}>
         <Box
           style={{
             // height: "400px", // Specify the desired height for the drawer
-            overflow: "auto", // Enable scrolling for overflowing content
-          }}
-        >
+            overflow: 'auto' // Enable scrolling for overflowing content
+          }}>
           <Puller />
           {drawerData?.content}
         </Box>

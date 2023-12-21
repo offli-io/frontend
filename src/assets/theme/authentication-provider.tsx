@@ -1,22 +1,17 @@
-import { subscribeBrowserPush } from "api/notifications/requests";
-import axios from "axios";
-import { useSnackbar } from "notistack";
-import React from "react";
-import { useServiceInterceptors } from "../../hooks/use-service-interceptors";
-import { IPersonExtended } from "../../types/activities/activity.dto";
-import { setAuthToken } from "../../utils/token.util";
+import { subscribeBrowserPush } from 'api/notifications/requests';
+import axios from 'axios';
+import React from 'react';
+import { useServiceInterceptors } from '../../hooks/use-service-interceptors';
+import { IPersonExtended } from '../../types/activities/activity.dto';
+import { setAuthToken } from '../../utils/token.util';
 
 interface IAuthenticationContext {
   stateToken: string | null;
   setStateToken: React.Dispatch<React.SetStateAction<string | null>>;
   userInfo?: IPersonExtended | undefined;
-  setUserInfo?: React.Dispatch<
-    React.SetStateAction<IPersonExtended | undefined>
-  >;
+  setUserInfo?: React.Dispatch<React.SetStateAction<IPersonExtended | undefined>>;
   isFirstTimeLogin?: boolean;
-  setIsFirstTimeLogin?: React.Dispatch<
-    React.SetStateAction<boolean | undefined>
-  >;
+  setIsFirstTimeLogin?: React.Dispatch<React.SetStateAction<boolean | undefined>>;
   googleTokenClient: any;
   instagramCode: string | null;
   setInstagramCode: React.Dispatch<React.SetStateAction<string | null>>;
@@ -29,29 +24,24 @@ declare global {
 }
 
 FormData.prototype.getHeaders = () => {
-  return { "Content-Type": "multipart/form-data" };
+  return { 'Content-Type': 'multipart/form-data' };
 };
 
 export const CLIENT_ID =
-  "1080578312208-8vm5lbg7kctt890d0lagj46sphae7odu.apps.googleusercontent.com";
+  '1080578312208-8vm5lbg7kctt890d0lagj46sphae7odu.apps.googleusercontent.com';
 
-export const SCOPE = "https://www.googleapis.com/auth/calendar";
+export const SCOPE = 'https://www.googleapis.com/auth/calendar';
 
-export const AuthenticationContext =
-  React.createContext<IAuthenticationContext>({} as IAuthenticationContext);
+export const AuthenticationContext = React.createContext<IAuthenticationContext>(
+  {} as IAuthenticationContext
+);
 
-export const AuthenticationProvider = ({
-  children,
-}: {
-  children: React.ReactNode;
-}) => {
+export const AuthenticationProvider = ({ children }: { children: React.ReactNode }) => {
   const [stateToken, setStateToken] = React.useState<null | string>(null);
   const [userInfo, setUserInfo] = React.useState<IPersonExtended | undefined>();
   const [googleTokenClient] = React.useState<any>();
   const [instagramCode, setInstagramCode] = React.useState<string | null>(null);
-  const [isFirstTimeLogin, setIsFirstTimeLogin] = React.useState<
-    boolean | undefined
-  >(false);
+  const [isFirstTimeLogin, setIsFirstTimeLogin] = React.useState<boolean | undefined>(false);
 
   React.useEffect(() => {
     if (userInfo?.id) {
@@ -71,16 +61,16 @@ export const AuthenticationProvider = ({
     // if I get instagram code, exchange it for access token
     if (instagramCode) {
       const form = new FormData();
-      form.append("client_id", "738841197888411");
-      form.append("client_secret", "a6f0b1f9dc0a180df400e4205addf792");
-      form.append("grant_type", "authorization_code");
-      form.append("redirect_uri", "https://localhost:3000/profile/");
-      form.append("code", instagramCode);
+      form.append('client_id', '738841197888411');
+      form.append('client_secret', 'a6f0b1f9dc0a180df400e4205addf792');
+      form.append('grant_type', 'authorization_code');
+      form.append('redirect_uri', 'https://localhost:3000/profile/');
+      form.append('code', instagramCode);
 
-      axios.post("https://api.instagram.com/oauth/access_token", form, {
+      axios.post('https://api.instagram.com/oauth/access_token', form, {
         headers: {
-          ...form.getHeaders(),
-        },
+          ...form.getHeaders()
+        }
       });
     }
   }, [instagramCode]);
@@ -96,9 +86,8 @@ export const AuthenticationProvider = ({
         instagramCode,
         setInstagramCode,
         isFirstTimeLogin,
-        setIsFirstTimeLogin,
-      }}
-    >
+        setIsFirstTimeLogin
+      }}>
       {children}
     </AuthenticationContext.Provider>
   );

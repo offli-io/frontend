@@ -1,83 +1,72 @@
-import MapIcon from "@mui/icons-material/Map";
-import PlaceIcon from "@mui/icons-material/Place";
-import SearchIcon from "@mui/icons-material/Search";
+import MapIcon from '@mui/icons-material/Map';
+import PlaceIcon from '@mui/icons-material/Place';
+import SearchIcon from '@mui/icons-material/Search';
 import {
   Autocomplete,
   Box,
   CircularProgress,
   InputAdornment,
-  Modal,
   TextField,
   Typography,
-  useTheme,
-} from "@mui/material";
-import {
-  useInfiniteQuery,
-  useMutation,
-  useQueryClient,
-} from "@tanstack/react-query";
-import Loader from "components/loader";
-import { useDismissActivity } from "hooks/use-dismiss-activity";
-import React from "react";
-import InfiniteScroll from "react-infinite-scroller";
-import { useNavigate } from "react-router-dom";
-import { toast } from "sonner";
-import { ActivitySortColumnEnum } from "types/activities/activity-sort-enum.dto";
+  useTheme
+} from '@mui/material';
+import { useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import Loader from 'components/loader';
+import { addWeeks, isWithinInterval, startOfToday } from 'date-fns';
+import { PAGED_ACTIVITIES_QUERY_KEY } from 'hooks/use-activities-infinite-query';
+import { useDismissActivity } from 'hooks/use-dismiss-activity';
+import React from 'react';
+import InfiniteScroll from 'react-infinite-scroller';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
+import { ActivitySortColumnEnum } from 'types/activities/activity-sort-enum.dto';
+import { ACTIVITES_LIMIT } from 'utils/common-constants';
 import {
   changeActivityParticipantStatus,
   getActivitiesPromiseResolved,
-  removePersonFromActivity,
-} from "../../api/activities/requests";
-import { LocationContext } from "../../app/providers/location-provider";
-import { AuthenticationContext } from "../../assets/theme/authentication-provider";
-import { DrawerContext } from "../../assets/theme/drawer-provider";
-import ActivityCard from "../../components/activity-card";
-import MyActivityCard from "../../components/my-activity-card";
-import OffliButton from "../../components/offli-button";
-import {
-  ACTIVITIES_QUERY_KEY,
-  PAGED_ACTIVITIES_QUERY_KEY,
-} from "../../hooks/use-activities";
+  removePersonFromActivity
+} from '../../api/activities/requests';
+import { LocationContext } from '../../app/providers/location-provider';
+import { AuthenticationContext } from '../../assets/theme/authentication-provider';
+import { DrawerContext } from '../../assets/theme/drawer-provider';
+import ActivityCard from '../../components/activity-card';
+import MyActivityCard from '../../components/my-activity-card';
+import OffliButton from '../../components/offli-button';
+import { ACTIVITIES_QUERY_KEY } from '../../hooks/use-activities';
 import {
   PARTICIPANT_ACTIVITIES_QUERY_KEY,
-  useParticipantActivities,
-} from "../../hooks/use-participant-activities";
-import { useUser } from "../../hooks/use-user";
-import { ActivityInviteStateEnum } from "../../types/activities/activity-invite-state-enum.dto";
-import { IActivity } from "../../types/activities/activity.dto";
-import { ActivityActionsTypeEnumDto } from "../../types/common/activity-actions-type-enum.dto";
-import { ApplicationLocations } from "../../types/common/applications-locations.dto";
-import ActivityActions from "../explore-screen/components/activity-actions";
-import ActivityLeaveConfirmation from "../explore-screen/components/activity-leave-confirmation";
-import FirstTimeLoginContent from "../explore-screen/components/first-time-login-content";
-import { SetLocationContent } from "../explore-screen/components/set-location-content";
-import { addWeeks, endOfWeek, isWithinInterval, startOfToday } from "date-fns";
-import ImagePreviewModal from "components/image-preview-modal/image-preview-modal";
-import { ACTIVITES_LIMIT } from "utils/common-constants";
+  useParticipantActivities
+} from '../../hooks/use-participant-activities';
+import { useUser } from '../../hooks/use-user';
+import { ActivityInviteStateEnum } from '../../types/activities/activity-invite-state-enum.dto';
+import { IActivity } from '../../types/activities/activity.dto';
+import { ActivityActionsTypeEnumDto } from '../../types/common/activity-actions-type-enum.dto';
+import { ApplicationLocations } from '../../types/common/applications-locations.dto';
+import ActivityActions from '../explore-screen/components/activity-actions';
+import ActivityLeaveConfirmation from '../explore-screen/components/activity-leave-confirmation';
+import FirstTimeLoginContent from '../explore-screen/components/first-time-login-content';
+import { SetLocationContent } from '../explore-screen/components/set-location-content';
 
 const ActivitiesScreen = () => {
-  const { userInfo, isFirstTimeLogin, setIsFirstTimeLogin } = React.useContext(
-    AuthenticationContext
-  );
+  const { userInfo, isFirstTimeLogin, setIsFirstTimeLogin } =
+    React.useContext(AuthenticationContext);
   const { location, setLocation } = React.useContext(LocationContext);
   const { toggleDrawer } = React.useContext(DrawerContext);
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { palette } = useTheme();
-  const { sendDismissActivity, isLoading: isDismissingActivity } =
-    useDismissActivity();
+  const { sendDismissActivity, isLoading: isDismissingActivity } = useDismissActivity();
 
   //TODO either call it like this or set user info once useUsers request in layout.tsx got Promise resolved
   const { data: { data: userData = {} } = {} } = useUser({
-    id: userInfo?.id,
+    id: userInfo?.id
   });
 
   const {
     data: paginatedActivitiesData,
-    isSuccess,
     hasNextPage,
     fetchNextPage,
-    isFetchingNextPage,
+    isFetchingNextPage
   } = useInfiniteQuery(
     [PAGED_ACTIVITIES_QUERY_KEY, location],
     ({ pageParam = 0 }) =>
@@ -90,7 +79,7 @@ const ActivitiesScreen = () => {
         sort:
           location?.coordinates?.lon && location?.coordinates?.lat
             ? ActivitySortColumnEnum.LOCATION
-            : undefined,
+            : undefined
       }),
     {
       getNextPageParam: (lastPage, allPages) => {
@@ -104,61 +93,60 @@ const ActivitiesScreen = () => {
       },
       enabled: !!userInfo?.id,
       select: (data) => ({
-        pages: data?.pages?.map((page) =>
-          page?.filter((activity) => activity?.participant_status === null)
+        pages: data?.pages?.map(
+          (page) => page?.filter((activity) => activity?.participant_status === null)
         ),
-        pageParams: [...data.pageParams],
-      }),
+        pageParams: [...data.pageParams]
+      })
     }
   );
 
   const {
     data: { data: { activities: participantActivites = [] } = {} } = {},
     isLoading: areParticipantActivitiesLoading,
-    invalidate: invalidateParticipantActivities,
+    invalidate: invalidateParticipantActivities
   } = useParticipantActivities({
     participantId: userInfo?.id,
-    sort: ActivitySortColumnEnum.DATETIME_FROM,
+    sort: ActivitySortColumnEnum.DATETIME_FROM
   });
 
   const { mutate: sendJoinActivity } = useMutation(
-    ["join-activity-response"],
+    ['join-activity-response'],
     (activityId?: number) => {
       const { id = undefined } = { ...userData };
       return changeActivityParticipantStatus(Number(activityId), Number(id), {
-        status: ActivityInviteStateEnum.CONFIRMED,
+        status: ActivityInviteStateEnum.CONFIRMED
       });
     },
 
     {
-      onSuccess: (data, buddy) => {
-        toast.success("You have successfully joined the activity");
+      onSuccess: () => {
+        toast.success('You have successfully joined the activity');
         invalidateParticipantActivities();
-        queryClient.invalidateQueries(["activities"]);
+        queryClient.invalidateQueries(['activities']);
         hideDrawer();
       },
-      onError: (error) => {
-        toast.error("Failed to join selected activity");
-      },
+      onError: () => {
+        toast.error('Failed to join selected activity');
+      }
     }
   );
 
   const hideDrawer = React.useCallback(() => {
     return toggleDrawer({
       open: false,
-      content: undefined,
+      content: undefined
     });
   }, [toggleDrawer]);
 
   const { mutate: sendLeaveActivity } = useMutation(
-    ["leave-activity-response"],
-    (activityId?: number) =>
-      removePersonFromActivity({ activityId, personId: userInfo?.id }),
+    ['leave-activity-response'],
+    (activityId?: number) => removePersonFromActivity({ activityId, personId: userInfo?.id }),
     {
       onSuccess: (data, activityId) => {
         hideDrawer();
         //TODO add generic jnaming for activites / activity
-        queryClient.invalidateQueries(["activity", activityId]);
+        queryClient.invalidateQueries(['activity', activityId]);
         queryClient.invalidateQueries([ACTIVITIES_QUERY_KEY]);
         queryClient.invalidateQueries([PAGED_ACTIVITIES_QUERY_KEY]);
         queryClient.invalidateQueries([PARTICIPANT_ACTIVITIES_QUERY_KEY]);
@@ -167,8 +155,8 @@ const ActivitiesScreen = () => {
         //TODO display success notification?
       },
       onError: () => {
-        toast.error("Failed to leave activity");
-      },
+        toast.error('Failed to leave activity');
+      }
     }
   );
 
@@ -176,9 +164,7 @@ const ActivitiesScreen = () => {
     (action?: ActivityActionsTypeEnumDto, activityId?: number) => {
       switch (action) {
         case ActivityActionsTypeEnumDto.ACTIVITY_MEMBERS:
-          return navigate(
-            `${ApplicationLocations.ACTIVITY_MEMBERS}/${activityId}`
-          );
+          return navigate(`${ApplicationLocations.ACTIVITY_MEMBERS}/${activityId}`);
         case ActivityActionsTypeEnumDto.LEAVE:
           return toggleDrawer({
             open: true,
@@ -188,20 +174,16 @@ const ActivitiesScreen = () => {
                 onLeaveCancel={hideDrawer}
                 onLeaveConfirm={sendLeaveActivity}
               />
-            ),
+            )
           });
         case ActivityActionsTypeEnumDto.MORE_INFORMATION:
-          return navigate(
-            `${ApplicationLocations.ACTIVITY_DETAIL}/${activityId}`
-          );
+          return navigate(`${ApplicationLocations.ACTIVITY_DETAIL}/${activityId}`);
         case ActivityActionsTypeEnumDto.MAP:
           return navigate(`${ApplicationLocations.MAP}/${activityId}`);
         case ActivityActionsTypeEnumDto.JOIN:
           return sendJoinActivity(activityId);
         case ActivityActionsTypeEnumDto.EDIT:
-          return navigate(
-            `${ApplicationLocations.EDIT_ACTIVITY}/${activityId}`
-          );
+          return navigate(`${ApplicationLocations.EDIT_ACTIVITY}/${activityId}`);
         case ActivityActionsTypeEnumDto.DISMISS:
           return toggleDrawer({
             open: true,
@@ -213,7 +195,7 @@ const ActivitiesScreen = () => {
                 isLeaving={isDismissingActivity}
                 type="dismiss"
               />
-            ),
+            )
           });
 
         default:
@@ -227,12 +209,7 @@ const ActivitiesScreen = () => {
     (activity?: IActivity) => {
       toggleDrawer({
         open: true,
-        content: (
-          <ActivityActions
-            onActionClick={handleActionClick}
-            activity={activity}
-          />
-        ),
+        content: <ActivityActions onActionClick={handleActionClick} activity={activity} />
       });
     },
     [toggleDrawer]
@@ -248,7 +225,7 @@ const ActivitiesScreen = () => {
 
           return isWithinInterval(startDate, {
             start: today,
-            end: oneWeekFromNow,
+            end: oneWeekFromNow
           });
         } else return null;
       }),
@@ -276,7 +253,7 @@ const ActivitiesScreen = () => {
           }}
           externalLocation={location}
         />
-      ),
+      )
       // onClose: () => setIsFirstTimeLogin?.(false),
     });
   }, [location]);
@@ -286,7 +263,7 @@ const ActivitiesScreen = () => {
       toggleDrawer({
         open: true,
         content: <FirstTimeLoginContent />,
-        onClose: () => setIsFirstTimeLogin?.(false),
+        onClose: () => setIsFirstTimeLogin?.(false)
       });
   }, [isFirstTimeLogin, toggleDrawer]);
 
@@ -294,12 +271,11 @@ const ActivitiesScreen = () => {
     <>
       <Box
         sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          my: 1,
-        }}
-      >
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          my: 1
+        }}>
         <Typography variant="h4" sx={{ color: palette?.text?.primary }}>
           Explore
         </Typography>
@@ -308,20 +284,15 @@ const ActivitiesScreen = () => {
           sx={{
             fontSize: 16,
             maxWidth: 200,
-            justifyContent: "flex-start",
-            overflow: "hidden",
-            whiteSpace: "nowrap",
+            justifyContent: 'flex-start',
+            overflow: 'hidden',
+            whiteSpace: 'nowrap'
             // fontWeight: "bold",
           }}
-          startIcon={
-            <PlaceIcon
-              sx={{ fontSize: "1.4rem", mr: -0.5, color: "primary.main" }}
-            />
-          }
+          startIcon={<PlaceIcon sx={{ fontSize: '1.4rem', mr: -0.5, color: 'primary.main' }} />}
           onClick={handleLocationSelect}
-          data-test-id="current-location-btn"
-        >
-          {location?.name ?? "No location found"}
+          data-test-id="current-location-btn">
+          {location?.name ?? 'No location found'}
         </OffliButton>
       </Box>
       {/* {TODO Outsource autocomplete} */}
@@ -329,13 +300,13 @@ const ActivitiesScreen = () => {
         options={[]}
         forcePopupIcon={false}
         sx={{
-          width: "100%",
-          display: "flex",
-          justifyContent: "center",
+          width: '100%',
+          display: 'flex',
+          justifyContent: 'center',
           mb: 1,
-          "& .MuiOutlinedInput-root": {
-            pr: 0,
-          },
+          '& .MuiOutlinedInput-root': {
+            pr: 0
+          }
         }}
         onFocus={() => navigate(ApplicationLocations.SEARCH)}
         renderInput={(params) => (
@@ -345,23 +316,21 @@ const ActivitiesScreen = () => {
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
-                  <SearchIcon
-                    sx={{ fontSize: "1.5rem", color: "primary.main" }}
-                  />{" "}
+                  <SearchIcon sx={{ fontSize: '1.5rem', color: 'primary.main' }} />{' '}
                 </InputAdornment>
-              ),
+              )
             }}
             sx={{
-              "& input::placeholder": {
+              '& input::placeholder': {
                 fontSize: 14,
-                color: "primary.main",
+                color: 'primary.main',
                 fontWeight: 400,
                 opacity: 1,
-                pl: 1,
+                pl: 1
               },
-              "& fieldset": { border: "none" },
+              '& fieldset': { border: 'none' },
               backgroundColor: ({ palette }) => palette?.primary?.light,
-              borderRadius: "10px",
+              borderRadius: '10px'
             }}
             data-testid="activities-search-input"
             // onChange={(e) => setValue("placeQuery", e.target.value)}
@@ -369,16 +338,13 @@ const ActivitiesScreen = () => {
         )}
       />
       {areParticipantActivitiesLoading ? (
-        <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
+        <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
           <CircularProgress color="primary" />
         </Box>
       ) : (
         <>
           {!anyMyActivities && !anyNearYouActivities && (
-            <Typography
-              variant="h4"
-              sx={{ my: 6, color: palette?.text?.primary }}
-            >
+            <Typography variant="h4" sx={{ my: 6, color: palette?.text?.primary }}>
               There are no activities
             </Typography>
           )}
@@ -388,30 +354,25 @@ const ActivitiesScreen = () => {
                 <Box>
                   <Box
                     sx={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                      width: "100%",
-                      my: 2,
-                    }}
-                  >
-                    <Typography
-                      variant="h4"
-                      sx={{ color: palette?.text?.primary }}
-                    >
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      width: '100%',
+                      my: 2
+                    }}>
+                    <Typography variant="h4" sx={{ color: palette?.text?.primary }}>
                       Your upcoming this week
                     </Typography>
                   </Box>
                   <Box
                     sx={{
-                      display: "flex",
-                      justifyContent: "space-between",
+                      display: 'flex',
+                      justifyContent: 'space-between',
                       gap: 1.5,
-                      overflowX: "scroll",
-                      width: "100%",
-                      "::-webkit-scrollbar": { display: "none" },
-                    }}
-                  >
+                      overflowX: 'scroll',
+                      width: '100%',
+                      '::-webkit-scrollbar': { display: 'none' }
+                    }}>
                     {participantActivites.map((activity) => {
                       return (
                         <MyActivityCard
@@ -419,16 +380,11 @@ const ActivitiesScreen = () => {
                           activity={activity}
                           type="explore"
                           onPress={() =>
-                            navigate(
-                              `${ApplicationLocations.ACTIVITY_DETAIL}/${activity?.id}`
-                            )
+                            navigate(`${ApplicationLocations.ACTIVITY_DETAIL}/${activity?.id}`)
                           }
                           onLongPress={openActivityActions}
                           sx={{
-                            minWidth:
-                              participantActivites?.length <= 1
-                                ? "100%"
-                                : "80%",
+                            minWidth: participantActivites?.length <= 1 ? '100%' : '80%'
                           }}
                         />
                       );
@@ -441,28 +397,22 @@ const ActivitiesScreen = () => {
           <>
             <Box
               sx={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                width: "100%",
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                width: '100%',
                 mt: 2,
-                mb: 1,
-              }}
-            >
+                mb: 1
+              }}>
               <Typography variant="h4" sx={{ color: palette?.text?.primary }}>
                 Near you
               </Typography>
               <OffliButton
                 variant="text"
                 sx={{ fontSize: 16 }}
-                startIcon={
-                  <MapIcon
-                    sx={{ fontSize: "1.2rem", ml: -0.7, color: "primary.main" }}
-                  />
-                }
+                startIcon={<MapIcon sx={{ fontSize: '1.2rem', ml: -0.7, color: 'primary.main' }} />}
                 onClick={() => navigate(ApplicationLocations.MAP)}
-                data-testid="see-map-btn"
-              >
+                data-testid="see-map-btn">
                 Show map
               </OffliButton>
             </Box>
@@ -474,9 +424,8 @@ const ActivitiesScreen = () => {
                 fetchNextPage()
               }
               hasMore={hasNextPage}
-              loader={<Loader key={"loader"} />}
-              useWindow={false}
-            >
+              loader={<Loader key={'loader'} />}
+              useWindow={false}>
               <>
                 {paginatedActivitiesData?.pages?.map((group, i) => (
                   <React.Fragment key={i}>
@@ -485,12 +434,10 @@ const ActivitiesScreen = () => {
                         key={activity?.id}
                         activity={activity}
                         onPress={() =>
-                          navigate(
-                            `${ApplicationLocations.ACTIVITY_DETAIL}/${activity?.id}`
-                          )
+                          navigate(`${ApplicationLocations.ACTIVITY_DETAIL}/${activity?.id}`)
                         }
                         onLongPress={openActivityActions}
-                        sx={{ mx: 0, my: 1.5, width: "100%" }}
+                        sx={{ mx: 0, my: 1.5, width: '100%' }}
                       />
                     ))}
                   </React.Fragment>

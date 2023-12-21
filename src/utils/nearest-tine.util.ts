@@ -46,23 +46,23 @@ export const timeSlots = [
   '10:00 PM',
   '10:30 PM',
   '11:00 PM',
-  '11:30 PM',
-]
+  '11:30 PM'
+];
 
 export const getNearestTime = () => {
-  const currentTime = new Date()
-  const currentHour = currentTime.getHours()
+  const currentTime = new Date();
+  const currentHour = currentTime.getHours();
 
-  const convertedHours = timeSlots.map(date => {
-    const time = parseInt(date.split(' ')[0])
-    const period = date.split(' ')[1]
+  const convertedHours = timeSlots.map((date) => {
+    const time = parseInt(date.split(' ')[0]);
+    const period = date.split(' ')[1];
 
-    if (time === 12 && period === 'PM') return time
+    if (time === 12 && period === 'PM') return time;
 
-    if (time < 12 && period === 'AM') return time
+    if (time < 12 && period === 'AM') return time;
 
-    return time + 12
-  })
+    return time + 12;
+  });
 
   //   const timeSlots = Array.from(new Array(24 * 2)).map(
   //     (_, index) =>
@@ -70,21 +70,20 @@ export const getNearestTime = () => {
   //         index % 2 === 0 ? '00' : '30'
   //       }`
   //   )
-  let nearestTime
+  let nearestTime;
   const minValue =
     convertedHours[0] > currentHour
       ? convertedHours[0] - currentHour
-      : currentHour - convertedHours[0]
+      : currentHour - convertedHours[0];
   convertedHours.reduce((minVal, hour) => {
-    const hourDiff =
-      currentHour > hour ? currentHour - hour : hour - currentHour
+    const hourDiff = currentHour > hour ? currentHour - hour : hour - currentHour;
     if (hourDiff <= minVal) {
-      nearestTime = hour
-      return hourDiff
+      nearestTime = hour;
+      return hourDiff;
     } else {
-      return minVal
+      return minVal;
     }
-  }, minValue)
+  }, minValue);
 
-  return !!nearestTime && timeSlots[convertedHours.indexOf(nearestTime)]
-}
+  return !!nearestTime && timeSlots[convertedHours.indexOf(nearestTime)];
+};

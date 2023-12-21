@@ -1,24 +1,21 @@
-import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
-import { Box, IconButton } from "@mui/material";
-import React from "react";
-import { DrawerContext } from "../../../assets/theme/drawer-provider";
-import { ActivitiyParticipantStatusEnum } from "../../../types/activities/activity-participant-status-enum.dto";
-import { ActivityMembersActionTypeDto } from "../../../types/common/activity-members-action-type.dto";
-import { BuddyActionDrawerContent } from "./buddy-action-drawer-content";
+import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
+import { Box, IconButton } from '@mui/material';
+import React from 'react';
+import { DrawerContext } from '../../../assets/theme/drawer-provider';
+import { ActivitiyParticipantStatusEnum } from '../../../types/activities/activity-participant-status-enum.dto';
+import { ActivityMembersActionTypeDto } from '../../../types/common/activity-members-action-type.dto';
+import { BuddyActionDrawerContent } from './buddy-action-drawer-content';
 
 interface IBuddyActionContentProps {
   userId?: number;
-  onActionClick?: (
-    actionType: ActivityMembersActionTypeDto,
-    userId?: number
-  ) => void;
+  onActionClick?: (actionType: ActivityMembersActionTypeDto, userId?: number) => void;
   userStatus?: ActivitiyParticipantStatusEnum;
 }
 
 export const BuddyActionContent: React.FC<IBuddyActionContentProps> = ({
   userId,
   userStatus,
-  onActionClick,
+  onActionClick
 }) => {
   const { toggleDrawer } = React.useContext(DrawerContext);
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -31,7 +28,7 @@ export const BuddyActionContent: React.FC<IBuddyActionContentProps> = ({
           userStatus={userStatus}
           userId={userId}
         />
-      ),
+      )
     });
   };
 
