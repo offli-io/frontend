@@ -37,7 +37,7 @@ const MapControl: React.FC = () => {
         zIndex: 400,
         position: 'absolute',
         top: 75,
-        left: 5
+        right: 5
       }}>
       <Box
         sx={{

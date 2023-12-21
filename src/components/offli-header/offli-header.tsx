@@ -7,7 +7,8 @@ import { useUser } from 'hooks/use-user';
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { NOT_EXACT_UNALLOWED_URLS } from '../../app/layout';
-import offliLogo from '../../assets/img/logo-purple.png';
+import offliLogoDark from '../../assets/img/offli-logo-dark.svg';
+import offliLogoLight from '../../assets/img/offli-logo-light.svg';
 import userPlaceholder from '../../assets/img/user-placeholder.svg';
 import { AuthenticationContext } from '../../assets/theme/authentication-provider';
 import { useNotifications } from '../../hooks/use-notifications';
@@ -65,6 +66,8 @@ const OffliHeader: React.FC<IProps> = ({ sx }) => {
     [location]
   );
 
+  const logoSrc = palette.mode === 'light' ? offliLogoDark : offliLogoLight;
+
   return (
     <Box
       ref={headerRef}
@@ -95,7 +98,7 @@ const OffliHeader: React.FC<IProps> = ({ sx }) => {
             justifyContent: 'space-between'
           }}>
           <img
-            src={offliLogo}
+            src={logoSrc}
             alt="Offli logo"
             style={{ height: '40px' }}
             data-testid="offli-logo"

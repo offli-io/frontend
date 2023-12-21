@@ -1,27 +1,39 @@
 import AddRoundedIcon from '@mui/icons-material/AddRounded';
-import FavoriteIcon from '@mui/icons-material/Favorite';
 import OfflineBoltIcon from '@mui/icons-material/OfflineBolt';
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 import { Box, CircularProgress, IconButton, Typography } from '@mui/material';
+import { AuthenticationContext } from 'assets/theme/authentication-provider';
+import { useUser } from 'hooks/use-user';
 import React from 'react';
-import { useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { IPersonExtended } from 'types/activities/activity.dto';
+import { ApplicationLocations } from 'types/common/applications-locations.dto';
+import OffliButton from './offli-button';
 
 interface IProps {
   participatedNum?: number;
-  enjoyedNum?: number;
   createdNum?: number;
   metNum?: number;
+  user?: IPersonExtended;
   isLoading?: boolean;
 }
 
 const ProfileStatistics: React.FC<IProps> = ({
   participatedNum,
-  enjoyedNum,
   createdNum,
   metNum,
   isLoading
 }) => {
   const { id } = useParams();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { userInfo } = React.useContext(AuthenticationContext);
+  const user = useUser({
+    id: id ? Number(id) : userInfo?.id,
+    requestingInfoUserId: id ? userInfo?.id : undefined
+  });
+
+  const username = user?.data?.data?.username;
 
   //this was used before when we used picture statistics on other profile
   // <AlternativePicturetatistics
@@ -47,78 +59,135 @@ const ProfileStatistics: React.FC<IProps> = ({
         </Box>
       ) : (
         <>
-          {participatedNum ? (
-            <Box
-              sx={{
-                display: 'flex',
-                alignItems: 'center'
-              }}
-              data-testid="participated-statistics">
-              <IconButton>
-                <OfflineBoltIcon sx={{ fontSize: 30, color: 'primary.main', mr: 2 }} />
-              </IconButton>
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              mb: metNum ? 1 : 2
+            }}
+            data-testid="participated-statistics">
+            <IconButton>
+              <OfflineBoltIcon sx={{ fontSize: 30, color: 'primary.main', mr: 2 }} />
+            </IconButton>
+            {participatedNum ? (
               <Typography variant="subtitle2">
-                {id ? 'Participated' : 'You participated'} in{' '}
+                {id ? `${username} participated` : 'You participated'} in{' '}
                 <b>
                   {participatedNum} {participatedNum === 1 ? 'activity' : 'activities'}
                 </b>
                 .
               </Typography>
-            </Box>
-          ) : null}
-          {enjoyedNum ? (
-            <Box
-              sx={{
-                display: 'flex',
-                alignItems: 'center'
-              }}
-              data-testid="enjoyed-statistics">
-              <IconButton>
-                <FavoriteIcon sx={{ fontSize: 30, color: 'primary.main', mr: 2 }} />
-              </IconButton>
+            ) : (
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'flex-start'
+                }}>
+                {id ? (
+                  <Typography variant="subtitle2">
+                    {username} hasn't joined any activities.
+                  </Typography>
+                ) : (
+                  <Box>
+                    <Typography variant="subtitle2">No activities joined?</Typography>
+                    <OffliButton
+                      variant="text"
+                      sx={{ fontSize: 16, p: 0, m: 0 }}
+                      onClick={() => navigate(ApplicationLocations.EXPLORE)}>
+                      Find exciting options!
+                    </OffliButton>
+                  </Box>
+                )}
+              </Box>
+            )}
+          </Box>
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              mb: metNum ? 1 : 2
+            }}
+            data-testid="created-statistics">
+            <IconButton>
+              <AddRoundedIcon sx={{ fontSize: 30, color: 'primary.main', mr: 2 }} />
+            </IconButton>
+            {createdNum ? (
               <Typography variant="subtitle2">
-                <b>{enjoyedNum} people</b> enjoyed activities, {id ? 'he' : "you've"} created.
+                {id ? `${username} created` : 'You created'}{' '}
+                <b>
+                  {createdNum} {createdNum === 1 ? 'activity' : 'activities'}
+                </b>
+                .
               </Typography>
-            </Box>
-          ) : null}
-          {!id ? (
-            <>
-              {createdNum ? (
-                <Box
-                  sx={{
-                    display: 'flex',
-                    alignItems: 'center'
-                  }}
-                  data-testid="created-statistics">
-                  <IconButton>
-                    <AddRoundedIcon sx={{ fontSize: 30, color: 'primary.main', mr: 2 }} />
-                  </IconButton>
+            ) : (
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'flex-start'
+                }}>
+                {id ? (
                   <Typography variant="subtitle2">
-                    {id ? 'Created' : 'You created'}{' '}
-                    <b>
-                      {createdNum} {createdNum === 1 ? 'activity' : 'activities'}
-                    </b>
-                    .
+                    {username} hasn't organized any activities.
                   </Typography>
-                </Box>
-              ) : null}
-              {metNum ? (
-                <Box
-                  sx={{
-                    display: 'flex',
-                    alignItems: 'center'
-                  }}
-                  data-testid="new-buddies-statistics">
-                  <IconButton>
-                    <PeopleAltIcon sx={{ fontSize: 30, color: 'primary.main', mr: 2 }} />
-                  </IconButton>
+                ) : (
+                  <Box>
+                    <Typography variant="subtitle2">You haven't created any activities.</Typography>
+                    <OffliButton
+                      variant="text"
+                      sx={{ fontSize: 16, p: 0, m: 0 }}
+                      onClick={() => navigate(ApplicationLocations.CREATE)}>
+                      Organize something fun!
+                    </OffliButton>
+                  </Box>
+                )}
+              </Box>
+            )}
+          </Box>
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              mb: metNum ? 1 : 2
+            }}
+            data-testid="new-buddies-statistics">
+            <IconButton>
+              <PeopleAltIcon sx={{ fontSize: 30, color: 'primary.main', mr: 2 }} />
+            </IconButton>
+            {metNum ? (
+              <Typography variant="subtitle2">
+                {id ? `${username} has met` : "You've met"}{' '}
+                <b>
+                  {createdNum} {createdNum === 1 ? 'new buddy' : 'new buddies'}
+                </b>
+                .
+              </Typography>
+            ) : (
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'flex-start'
+                }}>
+                {id ? (
                   <Typography variant="subtitle2">
-                    You`ve met <b>{metNum}</b> new <b>{metNum === 1 ? 'buddy' : 'buddies'}</b>.
+                    {username} hasn't made any new buddies.
                   </Typography>
-                </Box>
-              ) : null}
-            </>
-          ) : null}
+                ) : (
+                  <Box>
+                    <Typography variant="subtitle2">No new buddies?</Typography>
+                    <OffliButton
+                      variant="text"
+                      sx={{ fontSize: 16, p: 0, m: 0 }}
+                      onClick={() => navigate(ApplicationLocations.BUDDIES)}>
+                      Make new connections!
+                    </OffliButton>
+                  </Box>
+                )}
+              </Box>
+            )}
+          </Box>
         </>
       )}
     </Box>
