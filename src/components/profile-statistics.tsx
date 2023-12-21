@@ -5,7 +5,7 @@ import { Box, CircularProgress, IconButton, Typography } from '@mui/material';
 import { AuthenticationContext } from 'assets/theme/authentication-provider';
 import { useUser } from 'hooks/use-user';
 import React from 'react';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { IPersonExtended } from 'types/activities/activity.dto';
 import { ApplicationLocations } from 'types/common/applications-locations.dto';
 import OffliButton from './offli-button';
@@ -26,7 +26,6 @@ const ProfileStatistics: React.FC<IProps> = ({
 }) => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const location = useLocation();
   const { userInfo } = React.useContext(AuthenticationContext);
   const user = useUser({
     id: id ? Number(id) : userInfo?.id,
@@ -85,9 +84,7 @@ const ProfileStatistics: React.FC<IProps> = ({
                   justifyContent: 'flex-start'
                 }}>
                 {id ? (
-                  <Typography variant="subtitle2">
-                    {username} hasn't joined any activities.
-                  </Typography>
+                  <Typography variant="subtitle2">{`Hasn't joined any activities.`}</Typography>
                 ) : (
                   <Box>
                     <Typography variant="subtitle2">No activities joined?</Typography>
@@ -128,12 +125,10 @@ const ProfileStatistics: React.FC<IProps> = ({
                   justifyContent: 'flex-start'
                 }}>
                 {id ? (
-                  <Typography variant="subtitle2">
-                    {username} hasn't organized any activities.
-                  </Typography>
+                  <Typography variant="subtitle2">{`Hasn't organized any activities.`}</Typography>
                 ) : (
                   <Box>
-                    <Typography variant="subtitle2">You haven't created any activities.</Typography>
+                    <Typography variant="subtitle2">{`Haven't created any activities`}</Typography>
                     <OffliButton
                       variant="text"
                       sx={{ fontSize: 16, p: 0, m: 0 }}
@@ -171,9 +166,7 @@ const ProfileStatistics: React.FC<IProps> = ({
                   justifyContent: 'flex-start'
                 }}>
                 {id ? (
-                  <Typography variant="subtitle2">
-                    {username} hasn't made any new buddies.
-                  </Typography>
+                  <Typography variant="subtitle2">{`Hasn't made any new buddies.`}</Typography>
                 ) : (
                   <Box>
                     <Typography variant="subtitle2">No new buddies?</Typography>
