@@ -66,10 +66,10 @@ const ProfileStatistics: React.FC<IProps> = ({
             }}
             data-testid="participated-statistics">
             <IconButton>
-              <OfflineBoltIcon sx={{ fontSize: 30, color: 'primary.main', mr: 2 }} />
+              <OfflineBoltIcon sx={{ fontSize: 30, color: 'inactiveFont.main' }} />
             </IconButton>
             {participatedNum ? (
-              <Typography variant="subtitle2">
+              <Typography variant="subtitle2" sx={{ ml: 2 }}>
                 {id ? `${username} participated` : 'You participated'} in{' '}
                 <b>
                   {participatedNum} {participatedNum === 1 ? 'activity' : 'activities'}
@@ -84,15 +84,19 @@ const ProfileStatistics: React.FC<IProps> = ({
                   justifyContent: 'flex-start'
                 }}>
                 {id ? (
-                  <Typography variant="subtitle2">{`Hasn't joined any activities.`}</Typography>
+                  <Typography
+                    variant="subtitle2"
+                    sx={{ ml: 2 }}>{`Hasn't joined any activities.`}</Typography>
                 ) : (
                   <Box>
-                    <Typography variant="subtitle2">No activities joined?</Typography>
+                    <Typography
+                      variant="subtitle2"
+                      sx={{ ml: 2 }}>{`No activities joined?`}</Typography>
                     <OffliButton
                       variant="text"
-                      sx={{ fontSize: 16, p: 0, m: 0 }}
+                      sx={{ fontSize: 16, p: 0, m: 0, ml: 2 }}
                       onClick={() => navigate(ApplicationLocations.EXPLORE)}>
-                      Find exciting options!
+                      {`Find exciting options!`}
                     </OffliButton>
                   </Box>
                 )}
@@ -107,10 +111,10 @@ const ProfileStatistics: React.FC<IProps> = ({
             }}
             data-testid="created-statistics">
             <IconButton>
-              <AddRoundedIcon sx={{ fontSize: 30, color: 'primary.main', mr: 2 }} />
+              <AddRoundedIcon sx={{ fontSize: 30, color: 'inactiveFont.main' }} />
             </IconButton>
             {createdNum ? (
-              <Typography variant="subtitle2">
+              <Typography variant="subtitle2" sx={{ ml: 2 }}>
                 {id ? `${username} created` : 'You created'}{' '}
                 <b>
                   {createdNum} {createdNum === 1 ? 'activity' : 'activities'}
@@ -125,15 +129,19 @@ const ProfileStatistics: React.FC<IProps> = ({
                   justifyContent: 'flex-start'
                 }}>
                 {id ? (
-                  <Typography variant="subtitle2">{`Hasn't organized any activities.`}</Typography>
+                  <Typography
+                    variant="subtitle2"
+                    sx={{ ml: 2 }}>{`Hasn't organized any activities.`}</Typography>
                 ) : (
                   <Box>
-                    <Typography variant="subtitle2">{`Haven't created any activities`}</Typography>
+                    <Typography
+                      variant="subtitle2"
+                      sx={{ ml: 2 }}>{`Haven't created any activities`}</Typography>
                     <OffliButton
                       variant="text"
-                      sx={{ fontSize: 16, p: 0, m: 0 }}
+                      sx={{ fontSize: 16, p: 0, m: 0, ml: 2 }}
                       onClick={() => navigate(ApplicationLocations.CREATE)}>
-                      Organize something fun!
+                      {`Organize something fun!`}
                     </OffliButton>
                   </Box>
                 )}
@@ -148,7 +156,7 @@ const ProfileStatistics: React.FC<IProps> = ({
             }}
             data-testid="new-buddies-statistics">
             <IconButton>
-              <PeopleAltIcon sx={{ fontSize: 30, color: 'primary.main', mr: 2 }} />
+              <PeopleAltIcon sx={{ fontSize: 30, color: 'inactiveFont.main', mr: 2 }} />
             </IconButton>
             {metNum ? (
               <Typography variant="subtitle2">
@@ -169,12 +177,12 @@ const ProfileStatistics: React.FC<IProps> = ({
                   <Typography variant="subtitle2">{`Hasn't made any new buddies.`}</Typography>
                 ) : (
                   <Box>
-                    <Typography variant="subtitle2">No new buddies?</Typography>
+                    <Typography variant="subtitle2">{`No new buddies?`}</Typography>
                     <OffliButton
                       variant="text"
                       sx={{ fontSize: 16, p: 0, m: 0 }}
                       onClick={() => navigate(ApplicationLocations.BUDDIES)}>
-                      Make new connections!
+                      {`Make new connections!`}
                     </OffliButton>
                   </Box>
                 )}
