@@ -445,12 +445,13 @@ const ActivityDetailsScreen: React.FC<IProps> = () => {
                 size={0.8}
                 style={{
                   position: 'absolute',
-                  left: -4,
-                  top: -7,
+                  left: -8,
+                  top: -8,
                   fontSize: 12,
                   color: palette?.primary?.main,
-                  border: '0.5px solid palette?.background?.default',
+                  border: '1px solid palette?.background?.default',
                   borderRadius: '50%',
+                  padding: 1,
                   backgroundColor: palette?.background?.default
                   // boxShadow: shadows[1],
                 }}
