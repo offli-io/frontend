@@ -18,7 +18,7 @@ export default function DotsMobileStepper({ containerSx, activeStep }: IDotsMobi
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        height: 5,
+        height: 8,
         '& span': {
           width: '100%',
           height: '100%'
