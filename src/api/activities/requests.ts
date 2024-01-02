@@ -216,6 +216,7 @@ export const removePersonFromActivity = ({
   // queryFunctionContext?.signal?.addEventListener('abort', () => {
   //   source.cancel('Query was cancelled by React Query')
   // })
+  // comment
 
   return promise;
 };
