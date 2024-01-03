@@ -268,7 +268,7 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
             ) : null}
           </Box>
         ) : null}
-        <LastAttendedActivities />
+        <LastAttendedActivities isBuddy={isBuddy} />
 
         <Box
           sx={{

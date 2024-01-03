@@ -44,13 +44,14 @@ enum ITabs {
 }
 
 export const ActivityMembersScreen: React.FC = () => {
-  const { userInfo } = React.useContext(AuthenticationContext);
+  const { userInfo, stateToken } = React.useContext(AuthenticationContext);
   const { id } = useParams();
   const navigate = useNavigate();
   const { toggleDrawer } = React.useContext(DrawerContext);
   const { pathname } = useLocation();
   const { palette } = useTheme();
   const [activeTab, setActiveTab] = React.useState<ITabs>(ITabs.CONFIRMED);
+  const isAuthorizedUser = !!stateToken;
 
   const handlers = useSwipeable({
     onSwipedRight: () => activeTab === ITabs.INVITED && setActiveTab(ITabs.CONFIRMED),
@@ -349,6 +350,7 @@ export const ActivityMembersScreen: React.FC = () => {
                     actionContent={!isPastActivity && renderActionContent(member)}
                     onClick={() =>
                       member?.id !== userInfo?.id &&
+                      isAuthorizedUser &&
                       navigate(`${ApplicationLocations.USER_PROFILE}/${member?.id}`, {
                         state: {
                           from: pathname
