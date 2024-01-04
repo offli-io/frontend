@@ -1,10 +1,12 @@
 import { Autocomplete, Box, SxProps, TextField } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import { getLocationFromQueryFetch, getPlaceFromCoordinates } from 'api/activities/requests';
+import { useActivities } from 'hooks/use-activities';
 import L, { LatLngTuple } from 'leaflet';
 import React from 'react';
 import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
 import MarkerClusterGroup from 'react-leaflet-cluster';
+import { IActivityRestDto } from 'types/activities/activity-rest.dto';
 import { ILocation } from 'types/activities/location.dto';
 import { useDebounce } from 'use-debounce';
 import { mapExternalApiOptions } from 'utils/map-location-value.util';
@@ -24,13 +26,14 @@ import UserLocationLoader from './components/user-location-loader';
 // bratislava position
 const position = [48.1486, 17.1077] as LatLngTuple;
 
-interface ILabeledTileProps {
+interface IMapScreenProps {
   sx?: SxProps;
   activities?: IActivity | IMapViewActivityDto[];
   onClick?: (title: string) => void;
   centerPosition?: GeolocationCoordinates;
   setLocationByMap?: boolean;
   onLocationSave?: (location: ILocation | null) => void;
+  activityMapId?: number;
 }
 
 const offliMarkerIcon = new L.Icon({
@@ -45,18 +48,28 @@ const youAreHereIcon = new L.Icon({
   iconAnchor: [22.5, 22.5]
 });
 
-const Map: React.FC<ILabeledTileProps> = ({
+const Map: React.FC<IMapScreenProps> = ({
   activities,
   setLocationByMap = false,
-  onLocationSave
+  onLocationSave,
+  activityMapId
 }) => {
   const [currentLocation, setCurrentLocation] = React.useState<
     GeolocationCoordinates | undefined
   >();
+
   const [isUserLocationLoading, setIsUserLocationLoading] = React.useState(false);
   const { mode } = React.useContext(CustomizationContext);
   const [pendingLatLngTuple, setPendingLatLngTuple] = React.useState<LatLngTuple | null>(null);
   //const map = useMap();
+
+  const { data: { data: { activity: activityFromBackMap = null } = {} } = {} } =
+    useActivities<IActivityRestDto>({
+      params: {
+        id: activityMapId ? Number(activityMapId) : undefined
+      },
+      enabled: !!activityMapId
+    });
 
   const [placeQuery, setPlaceQuery] = React.useState('');
   const [selectedLocation, setSelectedLocation] = React.useState<ILocation | null>(null);
@@ -271,12 +284,23 @@ const Map: React.FC<ILabeledTileProps> = ({
         </Marker>
       ) : null}
 
-      <RecenterAutomatically
-        lat={isSingleActivity ? latLonTupleSingle[0] : currentLocation?.latitude}
-        lon={isSingleActivity ? latLonTupleSingle[1] : currentLocation?.longitude}
-        selectedLocation={selectedLocation}
-        position={position}
-      />
+      {!activityFromBackMap ? (
+        <RecenterAutomatically
+          lat={isSingleActivity ? latLonTupleSingle[0] : currentLocation?.latitude}
+          lon={isSingleActivity ? latLonTupleSingle[1] : currentLocation?.longitude}
+          selectedLocation={selectedLocation}
+          position={position}
+        />
+      ) : null}
+
+      {activityFromBackMap ? (
+        <RecenterAutomatically
+          lat={activityFromBackMap?.location?.coordinates?.lat}
+          lon={activityFromBackMap?.location?.coordinates?.lon}
+          selectedLocation={activityFromBackMap?.location}
+          position={position}
+        />
+      ) : null}
 
       {!isSingleActivity ? <UserLocationLoader isLoading={isUserLocationLoading} /> : null}
     </MapContainer>

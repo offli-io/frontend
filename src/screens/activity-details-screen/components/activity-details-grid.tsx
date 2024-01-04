@@ -3,6 +3,7 @@ import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 import RoomIcon from '@mui/icons-material/Room';
 import { Box, Card, IconButton, Typography, styled } from '@mui/material';
+import { AuthenticationContext } from 'assets/theme/authentication-provider';
 import { format, isAfter } from 'date-fns';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -46,9 +47,12 @@ const StyledText = styled(Typography)(() => ({
 }));
 
 const ActivityDetailsGrid: React.FC<IProps> = ({ activity, onActionClick }) => {
+  const { stateToken } = React.useContext(AuthenticationContext);
   const navigate = useNavigate();
   const isPastActivity =
     !!activity?.datetime_until && isAfter(new Date(), new Date(activity.datetime_until));
+
+  const isAuthorizedUser = !!stateToken;
 
   return (
     <Box
@@ -74,7 +78,8 @@ const ActivityDetailsGrid: React.FC<IProps> = ({ activity, onActionClick }) => {
             fontSize: 16,
             mt: 0.5
             // fontWeight: "500",
-          }}>
+          }}
+          disabled={!isAuthorizedUser}>
           Show participants
         </OffliButton>
         <StyledText align="center" variant="subtitle1">

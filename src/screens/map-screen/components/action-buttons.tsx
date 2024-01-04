@@ -68,7 +68,9 @@ const ActionButtons: React.FC<IActionButtonsProps> = ({
               color: 'primary.main'
             }}
             onClick={() => {
-              navigate(`${ApplicationLocations.ACTIVITY_DETAIL}/${activity?.id}`);
+              navigate(`${ApplicationLocations.ACTIVITY_DETAIL}/${activity?.id}`, {
+                state: { id: activity?.id }
+              });
             }}
             startIcon={
               <PageviewIcon

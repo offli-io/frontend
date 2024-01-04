@@ -2,8 +2,7 @@ import { mdiCrown } from '@mdi/js';
 import Icon from '@mdi/react';
 import LockIcon from '@mui/icons-material/Lock';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
-import MenuIcon from '@mui/icons-material/Menu';
-import { Box, IconButton, Typography, useTheme } from '@mui/material';
+import { Box, Typography, useTheme } from '@mui/material';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { CustomizationContext } from 'assets/theme/customization-provider';
 import { DrawerContext } from 'assets/theme/drawer-provider';
@@ -25,7 +24,6 @@ import {
   changeActivityParticipantStatus,
   removePersonFromActivity
 } from '../../api/activities/requests';
-import { HeaderContext } from '../../app/providers/header-provider';
 import userPlaceholder from '../../assets/img/user-placeholder.svg';
 import { AuthenticationContext } from '../../assets/theme/authentication-provider';
 import { useGetApiUrl } from '../../hooks/use-get-api-url';
@@ -61,7 +59,6 @@ const ActivityDetailsScreen: React.FC<IProps> = () => {
   const shouldOpenInviteDrawer =
     (location?.state as ICustomizedLocationState)?.openInviteDrawer ?? false;
   const { toggleDrawer } = React.useContext(DrawerContext);
-  const { setHeaderRightContent } = React.useContext(HeaderContext);
   const { userInfo } = React.useContext(AuthenticationContext);
   const { sendDismissActivity } = useDismissActivity({
     onSuccess: () => {
@@ -224,6 +221,11 @@ const ActivityDetailsScreen: React.FC<IProps> = () => {
               />
             )
           });
+        case ActivityActionsTypeEnumDto.INVITE:
+          return toggleDrawer({
+            open: true,
+            content: <ActivityInviteDrawerContent activityId={Number(id)} />
+          });
         default:
           return;
       }
@@ -240,17 +242,6 @@ const ActivityDetailsScreen: React.FC<IProps> = () => {
     },
     [toggleDrawer, handleMenuItemClick]
   );
-
-  React.useEffect(() => {
-    setHeaderRightContent(
-      <IconButton
-        color="primary"
-        data-testid="toggle-activity-menu-btn"
-        onClick={() => handleActivityActionsCLick(activity)}>
-        <MenuIcon />
-      </IconButton>
-    );
-  }, [activity, handleActivityActionsCLick, setHeaderRightContent]);
 
   React.useEffect(() => {
     if (state) {
@@ -393,6 +384,7 @@ const ActivityDetailsScreen: React.FC<IProps> = () => {
         }}>
         <ActivityActionButtons
           onJoinClick={handleJoinButtonClick}
+          onManageClick={handleActivityActionsCLick}
           areActionsLoading={areActionsLoading}
           isCreator={isCreator}
           isAlreadyParticipant={isAlreadyParticipant}

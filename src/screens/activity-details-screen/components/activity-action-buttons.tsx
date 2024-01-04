@@ -1,19 +1,17 @@
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
-import EmailIcon from '@mui/icons-material/Email';
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import HistoryIcon from '@mui/icons-material/History';
+import SettingsIcon from '@mui/icons-material/Settings';
 import { Box } from '@mui/material';
-import { DrawerContext } from 'assets/theme/drawer-provider';
 import OffliButton from 'components/offli-button';
 import React from 'react';
-import { useParams } from 'react-router-dom';
-import { ActivityInviteDrawerContent } from './activity-invite-drawer-content';
 
 interface IActivityActionButtonsProps {
   isAlreadyParticipant?: boolean;
   isCreator?: boolean;
   onJoinClick?: () => void;
+  onManageClick?: () => void;
   areActionsLoading?: boolean;
   isPublic?: boolean;
   hasEnded?: boolean;
@@ -25,6 +23,7 @@ const ActivityActionButtons: React.FC<IActivityActionButtonsProps> = ({
   isAlreadyParticipant,
   isCreator,
   onJoinClick,
+  onManageClick,
   areActionsLoading,
   //TODO just get activity and define all these properties in this component
   isPublic,
@@ -32,9 +31,6 @@ const ActivityActionButtons: React.FC<IActivityActionButtonsProps> = ({
   inProgress = false,
   privateUninvitedActivity
 }) => {
-  const { id } = useParams();
-  const { toggleDrawer } = React.useContext(DrawerContext);
-
   return (
     <Box
       sx={{
@@ -67,28 +63,26 @@ const ActivityActionButtons: React.FC<IActivityActionButtonsProps> = ({
           </OffliButton>
           <OffliButton
             size="small"
-            disabled={!isAlreadyParticipant || areActionsLoading}
+            disabled={areActionsLoading}
             sx={{
               fontSize: 18,
               width: '40%',
               height: 48,
               bgcolor: 'primary.light',
-              color: 'primary.main'
+              color: 'primary.main',
+              '&:hover': {
+                bgcolor: 'primary.light'
+              }
             }}
-            onClick={() =>
-              toggleDrawer({
-                open: true,
-                content: <ActivityInviteDrawerContent activityId={Number(id)} />
-              })
-            }
+            onClick={onManageClick}
             startIcon={
-              <EmailIcon
+              <SettingsIcon
                 sx={{
-                  color: isAlreadyParticipant ? 'primary.main' : 'inactiveFont.main'
+                  color: 'primary.main'
                 }}
               />
             }>
-            Invite
+            Manage
           </OffliButton>
         </>
       ) : null}
