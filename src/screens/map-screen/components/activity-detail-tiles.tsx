@@ -1,7 +1,7 @@
-import TimelapseIcon from '@mui/icons-material/Timelapse';
 import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
 import NearMeIcon from '@mui/icons-material/NearMe';
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
+import TimelapseIcon from '@mui/icons-material/Timelapse';
 import { Typography } from '@mui/material';
 import { Box, styled } from '@mui/system';
 import React from 'react';

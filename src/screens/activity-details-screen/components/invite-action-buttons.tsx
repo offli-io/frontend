@@ -1,9 +1,9 @@
-import { Box } from '@mui/material';
-import OffliButton from 'components/offli-button';
-import React, { useState } from 'react';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import DoneIcon from '@mui/icons-material/Done';
 import IosShareIcon from '@mui/icons-material/IosShare';
+import { Box } from '@mui/material';
+import OffliButton from 'components/offli-button';
+import React, { useState } from 'react';
 
 interface IInviteActionButtonsProps {
   areActionsLoading?: boolean;
@@ -21,13 +21,17 @@ const InviteActionButtons: React.FC<IInviteActionButtonsProps> = ({ areActionsLo
   };
 
   const data = {
-    title: 'title',
-    text: 'text',
-    url: window.location.href
+    text: 'Activity detail',
+    title: 'Lol',
+    url: 'https://app.offli.eu/activity/detail/2081'
   };
 
-  const handleShareActivity = () => {
-    navigator.share(data);
+  const handleShareActivity = async () => {
+    try {
+      await navigator.share(data);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (

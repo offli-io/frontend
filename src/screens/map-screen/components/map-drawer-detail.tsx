@@ -5,6 +5,7 @@ import { changeActivityParticipantStatus, removePersonFromActivity } from 'api/a
 import { format } from 'date-fns';
 import { sk } from 'date-fns/esm/locale';
 import { PAGED_ACTIVITIES_QUERY_KEY } from 'hooks/use-activities-infinite-query';
+import { useCurrentLocation } from 'hooks/use-current-location';
 import { PARTICIPANT_ACTIVITIES_QUERY_KEY } from 'hooks/use-participant-activities';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -15,7 +16,6 @@ import { ApplicationLocations } from 'types/common/applications-locations.dto';
 import { AuthenticationContext } from '../../../assets/theme/authentication-provider';
 import { ACTIVITIES_QUERY_KEY, useActivities } from '../../../hooks/use-activities';
 import { useGetApiUrl } from '../../../hooks/use-get-api-url';
-import { useUser } from '../../../hooks/use-user';
 import { ActivitiyParticipantStatusEnum as ActivityParticipantStatusEnum } from '../../../types/activities/activity-participant-status-enum.dto';
 import { IActivityRestDto } from '../../../types/activities/activity-rest.dto';
 import { calculateDistance } from '../../../utils/calculate-distance.util';
@@ -51,11 +51,7 @@ const MapDrawerDetail: React.FC<IProps> = ({ activityId }) => {
       }
     });
 
-  const { data: { data = {} } = {} } = useUser({
-    id: userInfo?.id
-  });
-
-  const myLocation = data?.location?.coordinates;
+  const currentLocation = useCurrentLocation();
   const baseUrl = useGetApiUrl();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
@@ -70,6 +66,7 @@ const MapDrawerDetail: React.FC<IProps> = ({ activityId }) => {
   const dateTimeCreatedAt = activity?.created_at ? new Date(activity?.created_at) : null;
 
   const timeDifference = getTimeDifference(dateTimeFrom, dateTimeUntil); // useMemo??
+  console.log(timeDifference);
   const durationMinutes = timeDifference?.durationMinutes;
   const durationHours = timeDifference?.durationHours;
 
@@ -187,7 +184,10 @@ const MapDrawerDetail: React.FC<IProps> = ({ activityId }) => {
               durationMinutes={`${
                 durationMinutes === 1 ? '1 minute' : String(durationMinutes) + ' minutes'
               }`}
-              distance={calculateDistance(activity?.location?.coordinates, myLocation)}
+              distance={calculateDistance(activity?.location?.coordinates, {
+                lat: currentLocation?.latitude,
+                lon: currentLocation?.longitude
+              })}
               price={activity?.price}
             />
 
