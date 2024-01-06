@@ -8,6 +8,7 @@ import BottomNavigation from '@mui/material/BottomNavigation';
 import BottomNavigationAction from '@mui/material/BottomNavigationAction';
 import * as React from 'react';
 import { Link } from 'react-router-dom';
+import { ThemeOptionsEnumDto } from 'types/settings/theme-options.dto';
 import { CustomizationContext } from '../../assets/theme/customization-provider';
 import { ApplicationLocations } from '../../types/common/applications-locations.dto';
 import { FOOTER_HEIGHT } from '../../utils/common-constants';
@@ -20,7 +21,7 @@ interface IBottomNavigatorProps {
 const BottomNavigator: React.FC<IBottomNavigatorProps> = () => {
   const { palette } = useTheme();
   const [value, setValue] = React.useState<ApplicationLocations>(ApplicationLocations.EXPLORE);
-  const { mode } = React.useContext(CustomizationContext);
+  const { theme } = React.useContext(CustomizationContext);
 
   return (
     <Paper
@@ -66,7 +67,7 @@ const BottomNavigator: React.FC<IBottomNavigatorProps> = () => {
           to={ApplicationLocations.EXPLORE}
           data-testid="navigator-activities"
           sx={{
-            ...(mode === 'dark' ? { color: palette?.text?.primary } : {})
+            ...(theme === ThemeOptionsEnumDto.DARK ? { color: palette?.text?.primary } : {})
           }}
         />
         <BottomNavigationAction
@@ -87,7 +88,7 @@ const BottomNavigator: React.FC<IBottomNavigatorProps> = () => {
           to={ApplicationLocations.CREATE}
           data-testid="navigator-create"
           sx={{
-            ...(mode === 'dark' ? { color: palette?.text?.primary } : {})
+            ...(theme === ThemeOptionsEnumDto.DARK ? { color: palette?.text?.primary } : {})
           }}
         />
         <BottomNavigationAction
@@ -108,7 +109,7 @@ const BottomNavigator: React.FC<IBottomNavigatorProps> = () => {
           to={ApplicationLocations.ACTIVITIES}
           data-testid="navigator-activities"
           sx={{
-            ...(mode === 'dark' ? { color: palette?.text?.primary } : {})
+            ...(theme === ThemeOptionsEnumDto.DARK ? { color: palette?.text?.primary } : {})
           }}
         />
       </BottomNavigation>

@@ -8,6 +8,7 @@ import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
 import MarkerClusterGroup from 'react-leaflet-cluster';
 import { IActivityRestDto } from 'types/activities/activity-rest.dto';
 import { ILocation } from 'types/activities/location.dto';
+import { ThemeOptionsEnumDto } from 'types/settings/theme-options.dto';
 import { useDebounce } from 'use-debounce';
 import { mapExternalApiOptions } from 'utils/map-location-value.util';
 import markerIcon from '../../assets/img/location-marker.svg';
@@ -59,7 +60,7 @@ const Map: React.FC<IMapScreenProps> = ({
   >();
 
   const [isUserLocationLoading, setIsUserLocationLoading] = React.useState(false);
-  const { mode } = React.useContext(CustomizationContext);
+  const { theme } = React.useContext(CustomizationContext);
   const [pendingLatLngTuple, setPendingLatLngTuple] = React.useState<LatLngTuple | null>(null);
   //const map = useMap();
 
@@ -231,7 +232,7 @@ const Map: React.FC<IMapScreenProps> = ({
         // attribution='<a href="http://jawg.io" title="Tiles Courtesy of Jawg Maps" target="_blank">&copy; <b>Jawg</b>Maps</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         // url="https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png"
         url={`https://{s}.tile.jawg.io/jawg-${
-          mode === 'light' ? 'sunny' : 'dark'
+          theme === ThemeOptionsEnumDto.LIGHT ? 'sunny' : 'dark'
         }/{z}/{x}/{y}{r}.png?access-token=dY2cc1f9EUuag5geOpQB30R31VnRRhl7O401y78cM0NWSvzLf7irQSUGfA4m7Va5`}
       />
 

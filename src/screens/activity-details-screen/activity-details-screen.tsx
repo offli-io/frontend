@@ -19,6 +19,7 @@ import ActivityActions from 'screens/explore-screen/components/activity-actions'
 import ActivityLeaveConfirmation from 'screens/explore-screen/components/activity-leave-confirmation';
 import { toast } from 'sonner';
 import { IActivity } from 'types/activities/activity.dto';
+import { ThemeOptionsEnumDto } from 'types/settings/theme-options.dto';
 import {
   addActivityToCalendar,
   changeActivityParticipantStatus,
@@ -53,7 +54,7 @@ interface ICustomizedLocationState {
 
 const ActivityDetailsScreen: React.FC<IProps> = () => {
   const { id } = useParams();
-  const { mode } = React.useContext(CustomizationContext);
+  const { theme } = React.useContext(CustomizationContext);
   const navigate = useNavigate();
   const location = useLocation();
   const shouldOpenInviteDrawer =
@@ -366,8 +367,8 @@ const ActivityDetailsScreen: React.FC<IProps> = () => {
               wordWrap: 'break-word',
               // filter: "invert(100%)",
               textShadow: `1px 0px 1px black`,
-              ...(mode === 'light' ? { filter: 'invert(100%)' } : {}),
-              ...(mode === 'light'
+              ...(theme === ThemeOptionsEnumDto.LIGHT ? { filter: 'invert(100%)' } : {}),
+              ...(theme === ThemeOptionsEnumDto.LIGHT
                 ? {
                     textShadow: ({ palette }) => `1px 1px 1px ${palette?.primary?.light}`
                   }
