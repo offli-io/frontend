@@ -11,6 +11,7 @@ import { AuthenticationContext } from '../../../assets/theme/authentication-prov
 import BuddyItemInvite from '../../../components/buddy-item-invite';
 import { ActivityInviteStateEnum } from '../../../types/activities/activity-invite-state-enum.dto';
 import { IPerson } from '../../../types/activities/activity.dto';
+import InviteActionButtons from './invite-action-buttons';
 
 interface IActivityTypeFormProps {
   activityId?: number;
@@ -152,6 +153,7 @@ export const ActivityInviteDrawerContent: React.FC<IActivityTypeFormProps> = ({ 
           </Box>
         )}
       </Box>
+      <InviteActionButtons />
     </Box>
   );
 };

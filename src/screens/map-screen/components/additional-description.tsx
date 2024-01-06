@@ -28,7 +28,7 @@ const AdditionalDescription: React.FC<IProps> = ({ description }) => {
   const [showTruncated, setShowTruncated] = useState(true);
 
   const truncatedDescription =
-    description && description.length > 200 ? `${description.slice(0, 200)}...` : description;
+    description && description.length > 100 ? `${description.slice(0, 100)}...` : description;
 
   const toggleShowMore = () => {
     setShowFullText(!showFullText);
@@ -42,7 +42,7 @@ const AdditionalDescription: React.FC<IProps> = ({ description }) => {
         <Typography variant="subtitle1">
           {showFullText ? description : truncatedDescription}
 
-          {description && description.length > 200 && (
+          {description && description.length > 100 && (
             <OffliButton variant="text" sx={{ fontSize: 14 }} onClick={toggleShowMore}>
               {showTruncated ? 'See more' : 'Hide'}
             </OffliButton>
