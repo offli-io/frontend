@@ -8,6 +8,7 @@ import React from 'react';
 
 interface IProps {
   participantsNum?: string;
+  durationDays?: string;
   durationHours?: string;
   durationMinutes?: string;
   distance?: number | null;
@@ -34,6 +35,7 @@ const StyledText = styled(Typography)(() => ({
 
 const ActivityDetailTiles: React.FC<IProps> = ({
   participantsNum,
+  durationDays,
   durationHours,
   durationMinutes,
   distance,
@@ -57,8 +59,19 @@ const ActivityDetailTiles: React.FC<IProps> = ({
       <StyledBox>
         <TimelapseIcon sx={{ color: 'primary.main' }} />
         <StyledText align="center" variant="subtitle1">
-          {durationMinutes} <br />
-          {durationHours}
+          {durationDays !== undefined && (
+            <>
+              {durationDays}
+              <br />
+            </>
+          )}
+          {durationHours !== undefined && (
+            <>
+              {durationHours}
+              <br />
+            </>
+          )}
+          {durationMinutes !== undefined && <>{durationMinutes}</>}
         </StyledText>
       </StyledBox>
       {distance !== null && distance !== undefined && (
@@ -66,15 +79,15 @@ const ActivityDetailTiles: React.FC<IProps> = ({
           <NearMeIcon sx={{ color: 'primary.main' }} />
           <StyledText align="center" variant="subtitle1">
             {distance > 1000
-              ? `${(distance / 1000).toFixed(0)} km \n from you`
-              : `${distance} m \nfrom you`}
+              ? `${(distance / 1000).toFixed(0)} km\nfrom you`
+              : `${distance} m\nfrom you`}
           </StyledText>
         </StyledBox>
       )}
       <StyledBox>
         <MonetizationOnIcon sx={{ color: 'primary.main' }} />
         <StyledText align="center" variant="subtitle1">
-          {price}
+          {price === 0 ? 'Free' : price}
         </StyledText>
       </StyledBox>
     </Box>

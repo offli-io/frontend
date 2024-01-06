@@ -159,14 +159,19 @@ const MapDrawerDetail: React.FC<IProps> = ({ activityId }) => {
               <Typography
                 variant="h2"
                 sx={{
-                  textAlign: 'center'
+                  textAlign: 'center',
+                  mb: 0.5
                 }}>
                 {activity?.title}
               </Typography>
               <Typography
                 variant="h6"
                 sx={{
-                  textAlign: 'center'
+                  textAlign: 'center',
+                  overflow: 'hidden',
+                  whiteSpace: 'nowrap',
+                  textOverflow: 'ellipsis',
+                  mx: 2
                 }}>
                 {activity?.location?.name}
               </Typography>
