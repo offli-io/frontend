@@ -19,14 +19,11 @@ import { useUser } from '../../../hooks/use-user';
 import { ActivitiyParticipantStatusEnum as ActivityParticipantStatusEnum } from '../../../types/activities/activity-participant-status-enum.dto';
 import { IActivityRestDto } from '../../../types/activities/activity-rest.dto';
 import { calculateDistance } from '../../../utils/calculate-distance.util';
-import { DATE_TIME_FORMAT, TIME_FORMAT } from '../../../utils/common-constants';
-import ActivityTags from '../../activity-details-screen/components/activity-tags';
+import { DATE_TIME_FORMAT } from '../../../utils/common-constants';
 import { getTimeDifference } from '../utils/get-time-difference';
 import ActionButtons from './action-buttons';
 import ActivityDetailTiles from './activity-detail-tiles';
-import ActivityDuration from './activity-duration';
 import AdditionalDescription from './additional-description';
-import BasicInformation from './basic-information';
 import CreatedTimestamp from './created-timestamp';
 import { CreatorVisibilityRow } from './creator-visibility-row';
 
@@ -63,7 +60,10 @@ const MapDrawerDetail: React.FC<IProps> = ({ activityId }) => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
 
-  const participantsNum = `${activity?.count_confirmed}/${activity?.limit}`;
+  const participantsNum =
+    activity?.limit !== undefined && activity?.count_confirmed !== undefined
+      ? `${String(activity?.limit - activity?.count_confirmed)} spots remaining`
+      : 'Unlimited attendace';
 
   const dateTimeFrom = activity?.datetime_from ? new Date(activity?.datetime_from) : null;
   const dateTimeUntil = activity?.datetime_until ? new Date(activity?.datetime_until) : null;
@@ -147,26 +147,46 @@ const MapDrawerDetail: React.FC<IProps> = ({ activityId }) => {
         <MainBox>
           <Box
             sx={{
-              width: '95%',
+              width: '100%',
               display: 'flex',
               flexDirection: 'column',
               alignContent: 'center',
               justifyContent: 'center',
-              ml: 0.5,
               wordWrap: 'break-word',
               overflow: 'hidden'
             }}>
-            <Typography
-              variant="h2"
+            <Box
               sx={{
-                textAlign: 'center',
                 my: 1
               }}>
-              {activity?.title}
-            </Typography>
+              <Typography
+                variant="h2"
+                sx={{
+                  textAlign: 'center'
+                }}>
+                {activity?.title}
+              </Typography>
+              <Typography
+                variant="h6"
+                sx={{
+                  textAlign: 'center'
+                }}>
+                {activity?.location?.name}
+              </Typography>
+              <Typography
+                variant="h6"
+                sx={{
+                  textAlign: 'center'
+                }}>
+                {dateTimeFrom ? format(dateTimeFrom, DATE_TIME_FORMAT, { locale: sk }) : '-'}
+              </Typography>
+            </Box>
             <ActivityDetailTiles
               participantsNum={participantsNum}
-              dateTime={dateTimeFrom ? format(dateTimeFrom, TIME_FORMAT, { locale: sk }) : '-'}
+              durationHours={`${durationHours === 1 ? '1 hour' : String(durationHours) + ' hours'}`}
+              durationMinutes={`${
+                durationMinutes === 1 ? '1 minute' : String(durationMinutes) + ' minutes'
+              }`}
               distance={calculateDistance(activity?.location?.coordinates, myLocation)}
               price={activity?.price}
             />
@@ -195,20 +215,6 @@ const MapDrawerDetail: React.FC<IProps> = ({ activityId }) => {
             {activity?.creator ? (
               <CreatorVisibilityRow creator={activity?.creator} activityId={activityId} />
             ) : null}
-            <BasicInformation
-              locationName={activity?.location?.name}
-              dateTime={
-                dateTimeFrom
-                  ? `${format(dateTimeFrom, DATE_TIME_FORMAT, {
-                      locale: sk
-                    })}`
-                  : '-'
-              }
-              price={activity?.price}
-              participantsNum={participantsNum}
-            />
-            <ActivityDuration duration={`${durationHours} hours, ${durationMinutes} minutes`} />
-            <ActivityTags tags={activity?.tags} sx={{ my: 1 }} />
             {activity?.description ? (
               <AdditionalDescription description={activity?.description} />
             ) : null}
