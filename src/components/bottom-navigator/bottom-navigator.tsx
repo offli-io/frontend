@@ -43,11 +43,6 @@ const BottomNavigator: React.FC<IBottomNavigatorProps> = () => {
           setValue(newValue);
         }}
         sx={{
-          margin: 'auto',
-          '& .Mui-selected': {
-            fontSize: '12px !important'
-            // color: "primary.main",
-          },
           color: palette?.background?.default,
           bgcolor: palette?.background?.default
         }}
@@ -55,17 +50,27 @@ const BottomNavigator: React.FC<IBottomNavigatorProps> = () => {
         <BottomNavigationAction
           label="Explore"
           icon={
-            <TravelExploreIcon
-              sx={{
-                color: value === ApplicationLocations.EXPLORE ? 'primary.main' : undefined
-              }}
-            />
+            value === ApplicationLocations.EXPLORE ? (
+              <TravelExploreIcon
+                sx={{
+                  color: 'primary.main'
+                }}
+              />
+            ) : (
+              <TravelExploreIcon
+                sx={{
+                  fontSize: 20,
+                  color: undefined
+                }}
+              />
+            )
           }
           component={Link}
           value={ApplicationLocations.EXPLORE}
           to={ApplicationLocations.EXPLORE}
           data-testid="navigator-activities"
           sx={{
+            fontSize: value === ApplicationLocations.EXPLORE ? 10 : 8,
             ...(mode === 'dark' ? { color: palette?.text?.primary } : {})
           }}
         />
@@ -79,7 +84,7 @@ const BottomNavigator: React.FC<IBottomNavigatorProps> = () => {
                 }}
               />
             ) : (
-              <AddCircleOutlineIcon />
+              <AddCircleOutlineIcon sx={{ fontSize: 20 }} />
             )
           }
           component={Link}
@@ -87,6 +92,7 @@ const BottomNavigator: React.FC<IBottomNavigatorProps> = () => {
           to={ApplicationLocations.CREATE}
           data-testid="navigator-create"
           sx={{
+            fontSize: value === ApplicationLocations.CREATE ? 10 : 8,
             ...(mode === 'dark' ? { color: palette?.text?.primary } : {})
           }}
         />
@@ -100,7 +106,7 @@ const BottomNavigator: React.FC<IBottomNavigatorProps> = () => {
                 }}
               />
             ) : (
-              <LocalActivityOutlinedIcon />
+              <LocalActivityOutlinedIcon sx={{ fontSize: 20 }} />
             )
           }
           component={Link}
@@ -108,6 +114,7 @@ const BottomNavigator: React.FC<IBottomNavigatorProps> = () => {
           to={ApplicationLocations.ACTIVITIES}
           data-testid="navigator-activities"
           sx={{
+            fontSize: value === ApplicationLocations.ACTIVITIES ? 10 : 8,
             ...(mode === 'dark' ? { color: palette?.text?.primary } : {})
           }}
         />
