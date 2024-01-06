@@ -26,13 +26,11 @@ const StyledBox = styled(Card)(() => ({
   alignItems: 'center',
   flexDirection: 'column',
   borderRadius: '12px',
-  // backgroundColor: "#E4E3FF",
   paddingTop: '5%',
   paddingBottom: '5%',
   marginBottom: '16px',
   borderStyle: 'solid',
   borderWidth: 1
-  // maxWidth: "45vw",
 }));
 
 const StyledText = styled(Typography)(() => ({
@@ -43,7 +41,6 @@ const StyledText = styled(Typography)(() => ({
   overflow: 'hidden',
   maxHeight: '1.4rem',
   lineHeight: '1.4rem'
-  // fontWeight: "bold",
 }));
 
 const ActivityDetailsGrid: React.FC<IProps> = ({ activity, onActionClick }) => {
@@ -77,7 +74,6 @@ const ActivityDetailsGrid: React.FC<IProps> = ({ activity, onActionClick }) => {
             textDecoration: 'none',
             fontSize: 16,
             mt: 0.5
-            // fontWeight: "500",
           }}
           disabled={!isAuthorizedUser}>
           Show participants
@@ -114,24 +110,19 @@ const ActivityDetailsGrid: React.FC<IProps> = ({ activity, onActionClick }) => {
         <IconButton color="primary" sx={{ p: 0 }}>
           <RoomIcon sx={{ fontSize: 26, color: 'primary.main' }} />
         </IconButton>
-        {/* <Typography variant="h5" sx={{ mb: 1 }}>
-          Where?
-        </Typography> */}
+
         <OffliButton
           onClick={() =>
-            // navigate(`${ApplicationLocations.MAP}/${activity?.id}`)
             window.open(
               `https://www.google.com/maps?q=${activity?.location?.coordinates?.lat},${activity?.location?.coordinates?.lon}`
             )
           }
-          // endIcon={<RoomIcon sx={{ fontSize: 26 }} />}
           size="small"
           variant="text"
           sx={{
             textDecoration: 'none',
             fontSize: 15,
             mt: 0.5
-            // fontWeight: "400",
           }}>
           Get directions
         </OffliButton>
@@ -151,13 +142,11 @@ const ActivityDetailsGrid: React.FC<IProps> = ({ activity, onActionClick }) => {
             textDecoration: 'none',
             fontSize: 15,
             mt: 0.5
-            // fontWeight: "bold",
           }}>
           Initial price
         </OffliButton>
         <StyledText align="center" variant="subtitle1">
-          {activity?.price ?? '-'}
-          {'€'}
+          {activity?.price ? `${activity?.price}€` : 'free'}
         </StyledText>
       </StyledBox>
     </Box>

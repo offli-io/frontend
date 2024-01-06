@@ -1,7 +1,7 @@
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import { Box, IconButton, SxProps, Typography } from '@mui/material';
 import React from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { ApplicationLocations } from 'types/common/applications-locations.dto';
 import { HeaderContext } from '../../../app/providers/header-provider';
 
@@ -20,6 +20,7 @@ const BackHeader: React.FC<IBackHeaderProps> = ({
   const pathname = location?.pathname;
   const activityMapId = (location?.state as any)?.id;
   const navigate = useNavigate();
+  const { activityId } = useParams();
   const { headerRightContent } = React.useContext(HeaderContext);
 
   //why was this done?
@@ -38,6 +39,9 @@ const BackHeader: React.FC<IBackHeaderProps> = ({
     //   });
     // }
 
+    if (pathname?.startsWith(ApplicationLocations.MAP) && !activityId) {
+      return navigate(ApplicationLocations.EXPLORE);
+    }
     if (pathname?.startsWith(ApplicationLocations.ACTIVITY_DETAIL) && activityMapId) {
       //cant do navigate(-1) with params hence hacky
       return navigate(ApplicationLocations.MAP, { state: { activityMapId } });
@@ -85,7 +89,7 @@ const BackHeader: React.FC<IBackHeaderProps> = ({
     //     from: location,
     //   },
     // });
-  }, [pathname, activityMapId, navigate]);
+  }, [pathname, activityMapId, activityId, navigate]);
 
   return (
     <Box

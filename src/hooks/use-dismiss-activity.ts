@@ -3,6 +3,7 @@ import { updateActivity } from 'api/activities/requests';
 import { toast } from 'sonner';
 import { PAGED_ACTIVITIES_QUERY_KEY } from './use-activities-infinite-query';
 import { PARTICIPANT_ACTIVITIES_QUERY_KEY } from './use-participant-activities';
+import { ActivityStatusEnumDto } from 'types/activities/activity-status-enum.dto';
 
 interface IUseSendBuddyRequestProps {
   activityId?: number;
@@ -14,7 +15,8 @@ export const useDismissActivity = ({ onSuccess }: IUseSendBuddyRequestProps = {}
 
   const { mutate: sendDismissActivity, isLoading } = useMutation(
     ['dismiss-activity'],
-    (activityId?: number) => updateActivity(Number(activityId), { canceled: true }),
+    (activityId?: number) =>
+      updateActivity(Number(activityId), { status: ActivityStatusEnumDto.CANCELED }),
     {
       onSuccess: () => {
         queryClient.invalidateQueries([PAGED_ACTIVITIES_QUERY_KEY]);
