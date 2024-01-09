@@ -157,8 +157,7 @@ interface ICustomizationProviderProps {
 }
 
 export const CustomizationProvider: React.FC<ICustomizationProviderProps> = ({ children }) => {
-  const { data: { data: { data: { theme = ThemeOptionsEnumDto.LIGHT } = {} } = {} } = {} } =
-    useUserSettings();
+  const { data: { data: { theme = ThemeOptionsEnumDto.LIGHT } = {} } = {} } = useUserSettings();
 
   return (
     <CustomizationContext.Provider value={{ theme }}>
