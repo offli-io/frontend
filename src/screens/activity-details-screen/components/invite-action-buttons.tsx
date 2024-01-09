@@ -4,6 +4,7 @@ import IosShareIcon from '@mui/icons-material/IosShare';
 import { Box } from '@mui/material';
 import { AuthenticationContext } from 'assets/theme/authentication-provider';
 import OffliButton from 'components/offli-button';
+import { useUser } from 'hooks/use-user';
 import React, { useState } from 'react';
 
 interface IInviteActionButtonsProps {
@@ -16,6 +17,11 @@ const InviteActionButtons: React.FC<IInviteActionButtonsProps> = ({
   activityTitle
 }) => {
   const [toggleCopyButton, setToggleCopyButton] = useState(false);
+  const { userInfo } = React.useContext(AuthenticationContext);
+
+  const { data: { data: userData = {} } = {} } = useUser({
+    id: userInfo?.id
+  });
 
   const handleCopyLink = () => {
     const linkToCopy = window.location.href;
@@ -25,11 +31,9 @@ const InviteActionButtons: React.FC<IInviteActionButtonsProps> = ({
       .catch((error) => console.error('Unable to copy text: ', error));
   };
 
-  const { userInfo } = React.useContext(AuthenticationContext);
-
   const data = {
-    text: `${userInfo?.username} wants to show you activity ${activityTitle}`,
-    title: activityTitle === undefined ? 'Activity title' : activityTitle,
+    text: `${userData?.username} wants to show you activity ${activityTitle}`,
+    title: activityTitle ?? 'Activity title',
     url: window.location.href
   };
 

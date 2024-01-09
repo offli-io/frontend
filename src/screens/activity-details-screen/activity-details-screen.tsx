@@ -261,6 +261,7 @@ const ActivityDetailsScreen: React.FC<IProps> = () => {
   }, [state]);
 
   React.useEffect(() => {
+    //invite drawer once you create activity
     if (shouldOpenInviteDrawer) {
       toggleDrawer({
         open: true,
@@ -402,6 +403,7 @@ const ActivityDetailsScreen: React.FC<IProps> = () => {
           hasEnded={isPastActivity}
           inProgress={isInProgress}
           privateUninvitedActivity={privateUninvitedActivity}
+          activityTitle={activity?.title}
         />
         <Box
           sx={{

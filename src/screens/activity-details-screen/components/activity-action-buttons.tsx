@@ -19,6 +19,7 @@ interface IActivityActionButtonsProps {
   hasEnded?: boolean;
   inProgress?: boolean;
   privateUninvitedActivity?: boolean;
+  activityTitle?: string;
 }
 
 const ActivityActionButtons: React.FC<IActivityActionButtonsProps> = ({
@@ -30,7 +31,8 @@ const ActivityActionButtons: React.FC<IActivityActionButtonsProps> = ({
   isPublic,
   hasEnded,
   inProgress = false,
-  privateUninvitedActivity
+  privateUninvitedActivity,
+  activityTitle
 }) => {
   const { id } = useParams();
   const { toggleDrawer } = React.useContext(DrawerContext);
@@ -78,7 +80,12 @@ const ActivityActionButtons: React.FC<IActivityActionButtonsProps> = ({
             onClick={() =>
               toggleDrawer({
                 open: true,
-                content: <ActivityInviteDrawerContent activityId={Number(id)} />
+                content: (
+                  <ActivityInviteDrawerContent
+                    activityId={Number(id)}
+                    activityTitle={activityTitle}
+                  />
+                )
               })
             }
             startIcon={
