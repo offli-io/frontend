@@ -259,6 +259,7 @@ const ActivityDetailsScreen: React.FC<IProps> = () => {
   }, [state]);
 
   React.useEffect(() => {
+    //invite drawer once you create activity
     if (shouldOpenInviteDrawer) {
       toggleDrawer({
         open: true,

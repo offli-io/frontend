@@ -18,6 +18,7 @@ const InviteActionButtons: React.FC<IInviteActionButtonsProps> = ({
   activityPhoto
 }) => {
   const [toggleCopyButton, setToggleCopyButton] = useState(false);
+  const { userInfo } = React.useContext(AuthenticationContext);
 
   const handleCopyLink = () => {
     const linkToCopy = window.location.href;
@@ -26,8 +27,6 @@ const InviteActionButtons: React.FC<IInviteActionButtonsProps> = ({
       .then(() => setToggleCopyButton(!toggleCopyButton))
       .catch((error) => console.error('Unable to copy text: ', error));
   };
-
-  const { userInfo } = React.useContext(AuthenticationContext);
 
   const handleShareActivity = async () => {
     try {
