@@ -9,11 +9,13 @@ import React, { useState } from 'react';
 interface IInviteActionButtonsProps {
   areActionsLoading?: boolean;
   activityTitle?: string;
+  activityPhoto?: string;
 }
 
 const InviteActionButtons: React.FC<IInviteActionButtonsProps> = ({
   areActionsLoading,
-  activityTitle
+  activityTitle,
+  activityPhoto
 }) => {
   const [toggleCopyButton, setToggleCopyButton] = useState(false);
 
@@ -27,15 +29,22 @@ const InviteActionButtons: React.FC<IInviteActionButtonsProps> = ({
 
   const { userInfo } = React.useContext(AuthenticationContext);
 
-  const data = {
-    text: `${userInfo?.username} wants to show you activity ${activityTitle}`,
-    title: activityTitle === undefined ? 'Activity title' : activityTitle,
-    url: window.location.href
-  };
-
   const handleShareActivity = async () => {
     try {
-      await navigator.share(data);
+      if (activityPhoto) {
+        const response = await fetch(activityPhoto);
+        const blob = await response.blob();
+        const file = new File([blob], 'rick.jpg', { type: blob.type });
+
+        await navigator.share({
+          url: window.location.href,
+          title: activityTitle ?? 'Activity title',
+          text: `${userInfo?.username} wants to show you activity ${activityTitle}`,
+          files: [file]
+        });
+      } else {
+        console.error('Activity photo is undefined.');
+      }
     } catch (error) {
       console.error(error);
     }

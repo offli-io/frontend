@@ -5,5 +5,6 @@ export enum ActivityActionsTypeEnumDto {
   DISMISS = 'DISMISS',
   LEAVE = 'LEAVE',
   JOIN = 'JOIN',
-  EDIT = 'EDIT'
+  EDIT = 'EDIT',
+  INVITE = 'INVITE'
 }

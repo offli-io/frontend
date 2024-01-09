@@ -4,6 +4,7 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import MenuIcon from '@mui/icons-material/Menu';
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 import PublicIcon from '@mui/icons-material/Public';
+import EmailIcon from '@mui/icons-material/Email';
 import { useTheme } from '@mui/material';
 import { ActivityActionsTypeEnumDto } from '../../../types/common/activity-actions-type-enum.dto';
 
@@ -43,6 +44,23 @@ export const useActivityActionsDefinitions = ({
       label: 'Edit activity',
       icon: (
         <EditIcon
+          sx={{
+            color: palette?.text?.primary,
+            ...(contrastText
+              ? {
+                  filter: 'invert(100%)'
+                }
+              : {})
+          }}
+        />
+      )
+    },
+    {
+      type: ActivityActionsTypeEnumDto.INVITE,
+      label: 'Invite people',
+      icon: (
+        <EmailIcon
+          color="primary"
           sx={{
             color: palette?.text?.primary,
             ...(contrastText

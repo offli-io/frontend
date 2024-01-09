@@ -1,19 +1,17 @@
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
-import EmailIcon from '@mui/icons-material/Email';
+import MenuIcon from '@mui/icons-material/Menu';
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import HistoryIcon from '@mui/icons-material/History';
 import { Box } from '@mui/material';
-import { DrawerContext } from 'assets/theme/drawer-provider';
 import OffliButton from 'components/offli-button';
 import React from 'react';
-import { useParams } from 'react-router-dom';
-import { ActivityInviteDrawerContent } from './activity-invite-drawer-content';
 
 interface IActivityActionButtonsProps {
   isAlreadyParticipant?: boolean;
   isCreator?: boolean;
   onJoinClick?: () => void;
+  onMoreClick?: () => void;
   areActionsLoading?: boolean;
   isPublic?: boolean;
   hasEnded?: boolean;
@@ -25,6 +23,7 @@ const ActivityActionButtons: React.FC<IActivityActionButtonsProps> = ({
   isAlreadyParticipant,
   isCreator,
   onJoinClick,
+  onMoreClick,
   areActionsLoading,
   //TODO just get activity and define all these properties in this component
   isPublic,
@@ -32,9 +31,6 @@ const ActivityActionButtons: React.FC<IActivityActionButtonsProps> = ({
   inProgress = false,
   privateUninvitedActivity
 }) => {
-  const { id } = useParams();
-  const { toggleDrawer } = React.useContext(DrawerContext);
-
   return (
     <Box
       sx={{
@@ -75,20 +71,15 @@ const ActivityActionButtons: React.FC<IActivityActionButtonsProps> = ({
               bgcolor: 'primary.light',
               color: 'primary.main'
             }}
-            onClick={() =>
-              toggleDrawer({
-                open: true,
-                content: <ActivityInviteDrawerContent activityId={Number(id)} />
-              })
-            }
+            onClick={onMoreClick}
             startIcon={
-              <EmailIcon
+              <MenuIcon
                 sx={{
                   color: isAlreadyParticipant ? 'primary.main' : 'inactiveFont.main'
                 }}
               />
             }>
-            Invite
+            More
           </OffliButton>
         </>
       ) : null}
