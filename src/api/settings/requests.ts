@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { IUserSettingsRequestDto } from 'types/settings/user-settings-request.dto';
+import { IUserSettingsResponseDto } from 'types/settings/user-settings-response.dto';
 
 export const changeUserSettings = (userId?: number, values?: IUserSettingsRequestDto) => {
   const CancelToken = axios.CancelToken;
@@ -20,7 +21,7 @@ export const getUserSettings = (userId?: number) => {
   const CancelToken = axios.CancelToken;
   const source = CancelToken.source();
 
-  const promise = axios.get<IUserSettingsRequestDto>(`/users/${userId}/settings`, {
+  const promise = axios.get<IUserSettingsResponseDto>(`/users/${userId}/settings`, {
     cancelToken: source?.token
   });
 

@@ -19,7 +19,8 @@ const SettingsScreen = () => {
   const { setStateToken, setUserInfo } = React.useContext(AuthenticationContext);
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const { data: { data: { theme = ThemeOptionsEnumDto.LIGHT } = {} } = {} } = useUserSettings();
+  const { data: { data: { data: { theme = ThemeOptionsEnumDto.LIGHT } = {} } = {} } = {} } =
+    useUserSettings();
   const { handleToggleTheme } = useToggleTheme();
 
   const handleLogout = React.useCallback(() => {
