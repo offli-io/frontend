@@ -15,9 +15,13 @@ import InviteActionButtons from './invite-action-buttons';
 
 interface IActivityTypeFormProps {
   activityId?: number;
+  activityTitle?: string;
 }
 
-export const ActivityInviteDrawerContent: React.FC<IActivityTypeFormProps> = ({ activityId }) => {
+export const ActivityInviteDrawerContent: React.FC<IActivityTypeFormProps> = ({
+  activityId,
+  activityTitle
+}) => {
   const { userInfo } = React.useContext(AuthenticationContext);
   const [invitedBuddies, setInvitedBuddies] = React.useState<number[]>([]);
   const [queryString, setQueryString] = React.useState<string | undefined>();
@@ -110,12 +114,14 @@ export const ActivityInviteDrawerContent: React.FC<IActivityTypeFormProps> = ({ 
           placeholder="Type buddy username"
           data-testid="activity-invite-buddies-input"
         />
+        <InviteActionButtons activityTitle={activityTitle} />
+
         {buddies && buddies?.length < 1 && !isLoading ? (
           <Box
             sx={{
-              height: 100,
+              height: 220,
               width: '100%',
-              my: 3,
+              my: 1,
               display: 'flex',
               justifyContent: 'center',
               alignItems: 'center',
@@ -153,7 +159,6 @@ export const ActivityInviteDrawerContent: React.FC<IActivityTypeFormProps> = ({ 
           </Box>
         )}
       </Box>
-      <InviteActionButtons />
     </Box>
   );
 };

@@ -264,10 +264,12 @@ const ActivityDetailsScreen: React.FC<IProps> = () => {
     if (shouldOpenInviteDrawer) {
       toggleDrawer({
         open: true,
-        content: <ActivityInviteDrawerContent activityId={Number(id)} />
+        content: (
+          <ActivityInviteDrawerContent activityId={Number(id)} activityTitle={activity?.title} />
+        )
       });
     }
-  }, [shouldOpenInviteDrawer, id]);
+  }, [shouldOpenInviteDrawer, id, activity?.title]);
 
   const handleGridClick = React.useCallback(
     (action: IGridAction) => {

@@ -2,14 +2,19 @@ import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import DoneIcon from '@mui/icons-material/Done';
 import IosShareIcon from '@mui/icons-material/IosShare';
 import { Box } from '@mui/material';
+import { AuthenticationContext } from 'assets/theme/authentication-provider';
 import OffliButton from 'components/offli-button';
 import React, { useState } from 'react';
 
 interface IInviteActionButtonsProps {
   areActionsLoading?: boolean;
+  activityTitle?: string;
 }
 
-const InviteActionButtons: React.FC<IInviteActionButtonsProps> = ({ areActionsLoading }) => {
+const InviteActionButtons: React.FC<IInviteActionButtonsProps> = ({
+  areActionsLoading,
+  activityTitle
+}) => {
   const [toggleCopyButton, setToggleCopyButton] = useState(false);
 
   const handleCopyLink = () => {
@@ -20,10 +25,12 @@ const InviteActionButtons: React.FC<IInviteActionButtonsProps> = ({ areActionsLo
       .catch((error) => console.error('Unable to copy text: ', error));
   };
 
+  const { userInfo } = React.useContext(AuthenticationContext);
+
   const data = {
-    text: 'Activity detail',
-    title: 'Lol',
-    url: 'https://app.offli.eu/activity/detail/2081'
+    text: `${userInfo?.username} wants to show you activity ${activityTitle}`,
+    title: activityTitle === undefined ? 'Activity title' : activityTitle,
+    url: window.location.href
   };
 
   const handleShareActivity = async () => {
@@ -37,10 +44,11 @@ const InviteActionButtons: React.FC<IInviteActionButtonsProps> = ({ areActionsLo
   return (
     <Box
       sx={{
+        width: '100%',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-evenly',
-        my: 2
+        my: 1
       }}>
       <OffliButton
         size="small"
@@ -52,6 +60,7 @@ const InviteActionButtons: React.FC<IInviteActionButtonsProps> = ({ areActionsLo
         }}
         onClick={handleShareActivity}
         color="secondary"
+        variant="text"
         isLoading={areActionsLoading}
         startIcon={<IosShareIcon sx={{ color: 'primary.main' }} />}>
         Share to
@@ -65,6 +74,7 @@ const InviteActionButtons: React.FC<IInviteActionButtonsProps> = ({ areActionsLo
           color: 'primary.main'
         }}
         color="secondary"
+        variant="text"
         onClick={handleCopyLink}
         isLoading={areActionsLoading}
         startIcon={
