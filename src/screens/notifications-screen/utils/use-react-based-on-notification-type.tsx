@@ -25,7 +25,7 @@ const reactAfter = (
   const notificationId = notification.id;
 
   switch (notification?.type) {
-    case NotificationTypeEnum.ACTIVITY_INV:
+    case NotificationTypeEnum.FEEDBACK_REQ:
       navigate(
         `${ApplicationLocations.EXPLORE}/request/${notification?.properties?.activity?.id}`,
         {
