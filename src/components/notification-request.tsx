@@ -9,8 +9,6 @@ import {
   getNotificationTitle
 } from '../types/notifications/notification.dto';
 import SanitizedText from './sanitized-text/sanitized-text';
-import { NotificationTypeEnum } from 'types/notifications/notification-type-enum';
-import { ACTIVITY_ASPECT_RATIO } from 'utils/common-constants';
 
 interface INotificationRequestProps {
   notification: INotificationDto;
@@ -52,14 +50,6 @@ const NotificationRequest: React.FC<INotificationRequestProps> = ({ notification
   const generateNotificationMessage = React.useCallback(() => {
     return getNotificationBody(notification, true);
   }, [notification]);
-
-  const isActivityNotification = React.useMemo(
-    () =>
-      [NotificationTypeEnum.ACTIVITY_CHANGE, NotificationTypeEnum.ACTIVITY_INV].includes(
-        notification?.type
-      ),
-    [notification?.type]
-  );
 
   return (
     <>
@@ -103,13 +93,12 @@ const NotificationRequest: React.FC<INotificationRequestProps> = ({ notification
 
               <img
                 style={{
-                  height: isActivityNotification ? 35 : 40,
-                  aspectRatio: isActivityNotification ? ACTIVITY_ASPECT_RATIO : 1,
-                  borderRadius: isActivityNotification ? 5 : '50%',
-                  margin: 5,
-                  objectFit: isActivityNotification ? 'contain' : 'fill',
+                  height: 40,
+                  aspectRatio: 1,
+                  borderRadius: '50%',
+                  margin: 2,
+                  objectFit: 'cover',
                   boxShadow: shadows[2]
-                  // border: `1px solid ${palette?.primary?.main}`
                 }}
                 src={`${baseUrl}/files/${getNotificationPicture(notification)}`}
                 alt="profile"
