@@ -1,5 +1,5 @@
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
-import { IconButton, Typography } from '@mui/material';
+import OffliButton from 'components/offli-button';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ApplicationLocations } from 'types/common/applications-locations.dto';
@@ -11,10 +11,8 @@ export interface IBuddiesButtonProps {
 const BuddyButton: React.FC<IBuddiesButtonProps> = ({ buddyCount }) => {
   const navigate = useNavigate();
   return (
-    <IconButton
-      color="primary"
+    <OffliButton
       sx={{
-        backgroundColor: (theme) => theme.palette.background.default,
         height: 40,
         px: 1.5,
         mt: 1,
@@ -22,23 +20,18 @@ const BuddyButton: React.FC<IBuddiesButtonProps> = ({ buddyCount }) => {
         borderRadius: '15px',
         borderWidth: 1,
         borderStyle: 'solid',
-        borderColor: (theme) => theme.palette.primary.main,
+        // borderColor: (theme) => theme.palette.primary.light,
+        bgcolor: (theme) => theme.palette.primary.light,
+        fontSize: 16,
+        color: 'primary.main',
         position: 'absolute',
         right: 0
       }}
+      startIcon={<PeopleAltIcon sx={{ fontSize: 18, padding: 0, color: 'primary.main' }} />}
       onClick={() => navigate(ApplicationLocations.BUDDIES)}
       data-testid="buddies-btn">
-      <PeopleAltIcon sx={{ fontSize: 18, padding: 0, color: 'primary.main' }} />
-      <Typography
-        variant="subtitle1"
-        color="primary"
-        sx={{
-          fontWeight: 'bold',
-          ml: 0.75
-        }}>
-        {`${buddyCount} ${buddyCount === 1 ? 'Buddy' : 'Buddies'}`}
-      </Typography>
-    </IconButton>
+      {`${buddyCount} ${buddyCount === 1 ? 'Buddy' : 'Buddies'}`}
+    </OffliButton>
   );
 };
 

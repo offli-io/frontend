@@ -366,13 +366,14 @@ const ActivityDetailsScreen: React.FC<IProps> = () => {
               overflow: 'hidden',
               wordWrap: 'break-word',
               // filter: "invert(100%)",
-              textShadow: `1px 0px 1px black`,
-              ...(theme === ThemeOptionsEnumDto.LIGHT ? { filter: 'invert(100%)' } : {}),
+              // ...(theme === ThemeOptionsEnumDto.LIGHT ? { filter: 'invert(100%)' } : {}),
               ...(theme === ThemeOptionsEnumDto.LIGHT
                 ? {
                     textShadow: ({ palette }) => `1px 1px 1px ${palette?.primary?.light}`
                   }
-                : {})
+                : {
+                    textShadow: ({ palette }) => `1px 1px 1px ${palette?.primary?.dark}`
+                  })
             }}>
             {activity?.title}
           </Typography>

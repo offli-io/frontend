@@ -9,6 +9,8 @@ import {
   getNotificationTitle
 } from '../types/notifications/notification.dto';
 import SanitizedText from './sanitized-text/sanitized-text';
+import { NotificationTypeEnum } from 'types/notifications/notification-type-enum';
+import { ACTIVITY_ASPECT_RATIO } from 'utils/common-constants';
 
 interface INotificationRequestProps {
   notification: INotificationDto;
@@ -51,6 +53,14 @@ const NotificationRequest: React.FC<INotificationRequestProps> = ({ notification
     return getNotificationBody(notification, true);
   }, [notification]);
 
+  const isActivityNotification = React.useMemo(
+    () =>
+      [NotificationTypeEnum.ACTIVITY_CHANGE, NotificationTypeEnum.ACTIVITY_INV].includes(
+        notification?.type
+      ),
+    [notification?.type]
+  );
+
   return (
     <>
       <Box
@@ -67,77 +77,92 @@ const NotificationRequest: React.FC<INotificationRequestProps> = ({ notification
         <Box
           sx={{
             width: '100%',
-            display: 'grid',
-            gridTemplateColumns: '5fr 1fr',
-            gap: 2,
-            alignItems: 'center',
-            overflow: 'hidden',
-            textOverflow: 'ellipsis'
+            display: 'flex',
+            justifyContent: 'space-between',
+            overflow: 'hidden'
           }}>
-          <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            {!notification?.seen ? (
-              <Box
-                sx={{
-                  backgroundColor: ({ palette }) => palette.primary.main,
-                  height: 10,
-                  minWidth: 10,
-                  borderRadius: 5,
-                  mr: 1.5
-                }}
-              />
-            ) : null}
-
-            <img
-              style={{
-                height: 40,
-                aspectRatio: 1,
-                borderRadius: '50%',
-                margin: 5,
-                objectFit: 'contain',
-                boxShadow: shadows[4]
-              }}
-              src={`${baseUrl}/files/${getNotificationPicture(notification)}`}
-              alt="profile"
-            />
-            <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-              <Typography
-                sx={{
-                  fontWeight: notification?.seen ? 'normal' : 'bold',
-                  fontSize: 'h5',
-                  ml: 2
-                }}>
-                {generateNotificationType()}
-              </Typography>
-              <Typography
-                sx={{
-                  ml: 2,
-                  color: 'black',
-                  overflowWrap: 'anywhere',
-                  fontWeight: notification?.seen ? 'normal' : 'bold'
-                }}
-                variant="subtitle1">
-                <SanitizedText
-                  style={{
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                    whiteSpace: 'nowrap',
-                    maxWidth: 200
+          <Box
+            sx={{
+              flexGrow: 1,
+              whiteSpace: 'nowrap',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis'
+            }}>
+            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+              {!notification?.seen ? (
+                <Box
+                  sx={{
+                    backgroundColor: ({ palette }) => palette.primary.main,
+                    height: 8,
+                    minWidth: 8,
+                    borderRadius: 5,
+                    mr: 1
                   }}
-                  text={generateNotificationMessage()}
                 />
-              </Typography>
+              ) : null}
+
+              <img
+                style={{
+                  height: isActivityNotification ? 35 : 40,
+                  aspectRatio: isActivityNotification ? ACTIVITY_ASPECT_RATIO : 1,
+                  borderRadius: isActivityNotification ? 5 : '50%',
+                  margin: 5,
+                  objectFit: isActivityNotification ? 'contain' : 'fill',
+                  boxShadow: shadows[2]
+                  // border: `1px solid ${palette?.primary?.main}`
+                }}
+                src={`${baseUrl}/files/${getNotificationPicture(notification)}`}
+                alt="profile"
+              />
+              <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+                <Typography
+                  sx={{
+                    fontWeight: notification?.seen ? 'normal' : 'bold',
+                    fontSize: 'h5',
+                    ml: 2
+                  }}>
+                  {generateNotificationType()}
+                </Typography>
+                <Typography
+                  sx={{
+                    ml: 2,
+                    overflowWrap: 'anywhere',
+                    fontWeight: notification?.seen ? 'normal' : 'bold'
+                  }}
+                  variant="subtitle1">
+                  <SanitizedText
+                    style={{
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      whiteSpace: 'nowrap',
+                      maxWidth: 200
+                    }}
+                    text={generateNotificationMessage()}
+                  />
+                </Typography>
+              </Box>
             </Box>
           </Box>
-          <Typography
+          <Box
             sx={{
-              // ml: 2,
-              color: (theme) => theme.palette.inactiveFont.main,
-              fontSize: '0.8rem',
-              textAlign: 'center',
-              minWidth: 60
+              display: 'flex',
+              alignItems: 'center',
+              flexShrink: 0,
+              whiteSpace: 'nowrap',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis'
             }}>
-            {hourDifference()}
-          </Typography>
+            <Typography
+              sx={{
+                // ml: 2,
+                color: (theme) => theme.palette.inactiveFont.main,
+                fontSize: '0.8rem',
+                textAlign: 'center',
+                minWidth: 60
+              }}>
+              {hourDifference()}
+            </Typography>
+          </Box>
         </Box>
       </Box>
     </>

@@ -4,12 +4,12 @@ import { LayoutContext } from 'app/layout';
 import { format } from 'date-fns';
 import useLongPress from 'hooks/use-long-press';
 import React from 'react';
-import { ThemeOptionsEnumDto } from 'types/settings/theme-options.dto';
-import { CustomizationContext } from '../assets/theme/customization-provider';
 import { useGetApiUrl } from '../hooks/use-get-api-url';
 import { IActivity } from '../types/activities/activity.dto';
 import { TIME_FORMAT } from '../utils/common-constants';
 import OffliButton from './offli-button';
+import { CustomizationContext } from 'assets/theme/customization-provider';
+import { ThemeOptionsEnumDto } from 'types/settings/theme-options.dto';
 
 interface IProps {
   activity?: IActivity;
@@ -83,12 +83,12 @@ const ActivityCard: React.FC<IProps> = ({ activity, onPress, onLongPress, sx, ..
           <Typography
             variant="h2"
             sx={{
-              color: 'background.default',
               width: 280,
               overflow: 'hidden',
               textOverflow: 'ellipsis',
               whiteSpace: 'nowrap',
-              textAlign: 'start'
+              textAlign: 'start',
+              ...(theme === ThemeOptionsEnumDto.LIGHT ? { filter: 'invert(100%)' } : {})
             }}>
             {activity?.title}
           </Typography>
@@ -100,7 +100,7 @@ const ActivityCard: React.FC<IProps> = ({ activity, onPress, onLongPress, sx, ..
               textOverflow: 'ellipsis',
               whiteSpace: 'nowrap',
               textAlign: 'start',
-              color: 'background.default'
+              ...(theme === ThemeOptionsEnumDto.LIGHT ? { filter: 'invert(100%)' } : {})
             }}>
             {activity?.location?.name}
           </Typography>
@@ -117,7 +117,7 @@ const ActivityCard: React.FC<IProps> = ({ activity, onPress, onLongPress, sx, ..
                 fontSize: 14,
                 ml: 0.5,
                 mr: 0.5,
-                color: 'background.default'
+                ...(theme === ThemeOptionsEnumDto.LIGHT ? { filter: 'invert(100%)' } : {})
               }}
             />
             {activity?.limit ? (
@@ -126,7 +126,7 @@ const ActivityCard: React.FC<IProps> = ({ activity, onPress, onLongPress, sx, ..
                   variant="subtitle1"
                   sx={{
                     lineHeight: 1,
-                    color: 'background.default'
+                    ...(theme === ThemeOptionsEnumDto.LIGHT ? { filter: 'invert(100%)' } : {})
                   }}>
                   {activity?.count_confirmed}/{activity?.limit}{' '}
                 </Typography>
@@ -154,9 +154,8 @@ const ActivityCard: React.FC<IProps> = ({ activity, onPress, onLongPress, sx, ..
               <Typography
                 sx={{
                   fontSize: 16,
-                  // fontWeight: "bold",
-                  lineHeight: 1,
-                  ...(theme === ThemeOptionsEnumDto.LIGHT ? { filter: 'invert(100%)' } : {})
+                  ...(theme === ThemeOptionsEnumDto.LIGHT ? { filter: 'invert(100%)' } : {}),
+                  lineHeight: 1
                 }}>
                 {activity?.count_confirmed} 0
               </Typography>

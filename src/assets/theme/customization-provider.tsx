@@ -29,7 +29,7 @@ const createCustomizationTheme = (userTheme: ThemeOptionsEnumDto) => {
       // for dark mode
       mode: userTheme === ThemeOptionsEnumDto.DARK ? 'dark' : 'light',
       primary: {
-        main: userTheme === ThemeOptionsEnumDto.LIGHT ? '#4A148C' : '#7D3FC8',
+        main: userTheme === ThemeOptionsEnumDto.LIGHT ? '#4A148C' : '#A763FA',
         light: '#DED5EA'
       },
       secondary: {
@@ -40,6 +40,9 @@ const createCustomizationTheme = (userTheme: ThemeOptionsEnumDto) => {
       },
       inactiveFont: {
         main: '#757575'
+      },
+      background: {
+        default: userTheme === ThemeOptionsEnumDto.DARK ? '#121212' : 'white'
       }
     },
     typography: {
@@ -73,7 +76,6 @@ const createCustomizationTheme = (userTheme: ThemeOptionsEnumDto) => {
           root: ({ theme }) => ({
             fontFamily: 'Instagram Sans',
             color: theme?.palette?.text?.primary
-            // ...(mode === "dark" ? { filter: "invert(100%)" } : {}),
           }),
           h1: {
             fontSize: 28,
@@ -158,6 +160,7 @@ interface ICustomizationProviderProps {
 
 export const CustomizationProvider: React.FC<ICustomizationProviderProps> = ({ children }) => {
   const { data: { data: { theme = ThemeOptionsEnumDto.LIGHT } = {} } = {} } = useUserSettings();
+  console.log(theme);
 
   return (
     <CustomizationContext.Provider value={{ theme }}>

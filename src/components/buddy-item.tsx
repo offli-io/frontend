@@ -61,7 +61,6 @@ const BuddyItem: React.FC<IBuddyItemProps> = ({
         <Typography
           sx={{
             ml: 2,
-            color: 'black',
             maxWidth: '100%', // Add this line
             overflow: 'hidden', // Add this line
             textOverflow: 'ellipsis', // Add this line
