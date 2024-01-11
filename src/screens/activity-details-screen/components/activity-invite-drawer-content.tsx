@@ -12,6 +12,7 @@ import BuddyItemInvite from '../../../components/buddy-item-invite';
 import { ActivityInviteStateEnum } from '../../../types/activities/activity-invite-state-enum.dto';
 import { IPerson } from '../../../types/activities/activity.dto';
 import InviteActionButtons from './invite-action-buttons';
+import { useActivity } from 'hooks/use-activity';
 
 interface IActivityTypeFormProps {
   activityId?: number;
@@ -28,6 +29,10 @@ export const ActivityInviteDrawerContent: React.FC<IActivityTypeFormProps> = ({
   const [invitedBuddies, setInvitedBuddies] = React.useState<number[]>([]);
   const [queryString, setQueryString] = React.useState<string | undefined>();
   const [queryStringDebounced] = useDebounce(queryString, 1000);
+  const { data: { data: activityData = {} } = {}, isLoading: isActivityLoading } = useActivity({
+    id: Number(activityId)
+  });
+  //tu si vies vytiahnut activityData?.title atd
 
   const { buddies, isLoading } = useBuddies({
     text: queryStringDebounced
