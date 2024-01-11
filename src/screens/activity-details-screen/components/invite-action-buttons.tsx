@@ -14,8 +14,7 @@ interface IInviteActionButtonsProps {
 
 const InviteActionButtons: React.FC<IInviteActionButtonsProps> = ({
   areActionsLoading,
-  activityTitle,
-  activityPhoto
+  activityTitle
 }) => {
   const [toggleCopyButton, setToggleCopyButton] = useState(false);
   const { userInfo } = React.useContext(AuthenticationContext);
@@ -30,22 +29,15 @@ const InviteActionButtons: React.FC<IInviteActionButtonsProps> = ({
 
   const handleShareActivity = async () => {
     try {
-      if (activityPhoto) {
-        const response = await fetch(activityPhoto);
-        const blob = await response.blob();
-        const file = new File([blob], 'rick.jpg', { type: blob.type });
+      const shareData = {
+        title: activityTitle ?? 'Offli',
+        text: `${userInfo?.username} wants to show you activity ${activityTitle}`,
+        url: window.location.href
+      };
 
-        await navigator.share({
-          url: window.location.href,
-          title: activityTitle ?? 'Activity title',
-          text: `${userInfo?.username} wants to show you activity ${activityTitle}`,
-          files: [file]
-        });
-      } else {
-        console.error('Activity photo is undefined.');
-      }
+      await navigator.share(shareData);
     } catch (error) {
-      console.error(error);
+      console.error('Error sharing activity:', error);
     }
   };
 
