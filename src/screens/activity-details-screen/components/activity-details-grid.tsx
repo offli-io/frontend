@@ -3,7 +3,7 @@ import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 import RoomIcon from '@mui/icons-material/Room';
 import { Box, Card, IconButton, Typography, styled } from '@mui/material';
-import { AuthenticationContext } from 'assets/theme/authentication-provider';
+import { AuthenticationContext } from 'context/providers/authentication-provider';
 import { format, isAfter } from 'date-fns';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';

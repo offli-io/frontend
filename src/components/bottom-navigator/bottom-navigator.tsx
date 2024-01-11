@@ -8,11 +8,11 @@ import BottomNavigation from '@mui/material/BottomNavigation';
 import BottomNavigationAction from '@mui/material/BottomNavigationAction';
 import * as React from 'react';
 import { Link } from 'react-router-dom';
-import { ThemeOptionsEnumDto } from 'types/settings/theme-options.dto';
-import { CustomizationContext } from '../../assets/theme/customization-provider';
+import { CustomizationContext } from '../../context/providers/customization-provider';
 import { ApplicationLocations } from '../../types/common/applications-locations.dto';
 import { FOOTER_HEIGHT } from '../../utils/common-constants';
 import { mapLocationToNavigatorValue } from './utils/map-location-to-navigator-value.util';
+import { ThemeOptionsEnumDto } from 'types/settings/theme-options.dto';
 
 interface IBottomNavigatorProps {
   sx?: SxProps;

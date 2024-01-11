@@ -4,8 +4,8 @@ import LockIcon from '@mui/icons-material/Lock';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
 import { Box, Typography, useTheme } from '@mui/material';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { CustomizationContext } from 'assets/theme/customization-provider';
-import { DrawerContext } from 'assets/theme/drawer-provider';
+import { CustomizationContext } from 'context/providers/customization-provider';
+import { DrawerContext } from 'context/providers/drawer-provider';
 import ImagePreviewModal from 'components/image-preview-modal/image-preview-modal';
 import Loader from 'components/loader';
 import { format, isAfter, isWithinInterval } from 'date-fns';
@@ -26,7 +26,7 @@ import {
   removePersonFromActivity
 } from '../../api/activities/requests';
 import userPlaceholder from '../../assets/img/user-placeholder.svg';
-import { AuthenticationContext } from '../../assets/theme/authentication-provider';
+import { AuthenticationContext } from '../../context/providers/authentication-provider';
 import { useGetApiUrl } from '../../hooks/use-get-api-url';
 import { useGoogleAuthorization } from '../../hooks/use-google-authorization';
 import { ActivityInviteStateEnum } from '../../types/activities/activity-invite-state-enum.dto';

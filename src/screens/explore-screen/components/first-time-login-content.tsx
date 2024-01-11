@@ -1,7 +1,7 @@
 import { Box, Typography } from '@mui/material';
 import React from 'react';
 import firstTimeLoginUrl from '../../../assets/img/first-time-login.svg';
-import { AuthenticationContext } from '../../../assets/theme/authentication-provider';
+import { AuthenticationContext } from '../../../context/providers/authentication-provider';
 
 export interface IActivityActionsProps {
   onLeaveConfirm?: (activityId?: number) => void;

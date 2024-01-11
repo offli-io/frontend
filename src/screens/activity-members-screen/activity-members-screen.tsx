@@ -26,8 +26,8 @@ import {
   kickUserFromActivity,
   uninviteBuddy
 } from '../../api/activities/requests';
-import { AuthenticationContext } from '../../assets/theme/authentication-provider';
-import { DrawerContext } from '../../assets/theme/drawer-provider';
+import { AuthenticationContext } from '../../context/providers/authentication-provider';
+import { DrawerContext } from '../../context/providers/drawer-provider';
 import BuddyItem from '../../components/buddy-item';
 import { useActivities } from '../../hooks/use-activities';
 import { ActivitiyParticipantStatusEnum } from '../../types/activities/activity-participant-status-enum.dto';

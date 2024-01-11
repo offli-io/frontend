@@ -1,7 +1,7 @@
 import { Box, Divider, Typography } from '@mui/material';
 import { isAfter } from 'date-fns';
 import React from 'react';
-import { AuthenticationContext } from '../../../assets/theme/authentication-provider';
+import { AuthenticationContext } from '../../../context/providers/authentication-provider';
 import MenuItem from '../../../components/menu-item';
 import { ActivitiyParticipantStatusEnum } from '../../../types/activities/activity-participant-status-enum.dto';
 import { ActivityVisibilityEnum } from '../../../types/activities/activity-visibility-enum.dto';

@@ -4,7 +4,7 @@ import OffliButton from 'components/offli-button';
 import React from 'react';
 import { IBuddyStateDto } from 'types/users/buddy-state.dto';
 import { isExistingPendingBuddyState } from 'utils/person.util';
-import { AuthenticationContext } from '../../../assets/theme/authentication-provider';
+import { AuthenticationContext } from '../../../context/providers/authentication-provider';
 import { useBuddies } from '../../../hooks/use-buddies';
 import { isBuddy } from '../utils/is-buddy.util';
 

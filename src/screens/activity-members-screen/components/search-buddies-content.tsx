@@ -12,7 +12,7 @@ import React from 'react';
 import { toast } from 'sonner';
 import { useDebounce } from 'use-debounce';
 import { getActivityParticipants, inviteBuddyToActivity } from '../../../api/activities/requests';
-import { AuthenticationContext } from '../../../assets/theme/authentication-provider';
+import { AuthenticationContext } from '../../../context/providers/authentication-provider';
 import BuddyItem from '../../../components/buddy-item';
 import OffliButton from '../../../components/offli-button';
 import { useBuddies } from '../../../hooks/use-buddies';

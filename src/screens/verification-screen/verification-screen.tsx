@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { loginUser, resendCode } from '../../api/auth/requests';
 import { verifyCodeAndRetrieveUserId } from '../../api/users/requests';
-import { AuthenticationContext } from '../../assets/theme/authentication-provider';
+import { AuthenticationContext } from '../../context/providers/authentication-provider';
 import OffliBackButton from '../../components/offli-back-button';
 import OffliButton from '../../components/offli-button';
 import { ApplicationLocations } from '../../types/common/applications-locations.dto';

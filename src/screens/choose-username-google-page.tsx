@@ -8,7 +8,7 @@ import { toast } from 'sonner';
 import { useDebounce } from 'use-debounce';
 import * as yup from 'yup';
 import { checkIfUsernameAlreadyTaken, updateProfileInfo } from '../api/users/requests';
-import { AuthenticationContext } from '../assets/theme/authentication-provider';
+import { AuthenticationContext } from '../context/providers/authentication-provider';
 import OffliButton from '../components/offli-button';
 import { ApplicationLocations } from '../types/common/applications-locations.dto';
 import { IUsername } from '../types/users/user.dto';

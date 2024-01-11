@@ -6,14 +6,14 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useUserSettings } from 'hooks/use-user-settings';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ThemeOptionsEnumDto } from 'types/settings/theme-options.dto';
-import { AuthenticationContext } from '../../assets/theme/authentication-provider';
 import MenuItem from '../../components/menu-item';
+import { AuthenticationContext } from '../../context/providers/authentication-provider';
 import { ApplicationLocations } from '../../types/common/applications-locations.dto';
 import { SettingsTypeEnumDto } from '../../types/common/settings-type-enum.dto';
 import { setAuthToken } from '../../utils/token.util';
 import { useToggleTheme } from './hooks/use-toggle-theme';
 import { SettingsItemsObject } from './settings-items-object';
+import { ThemeOptionsEnumDto } from 'types/settings/theme-options.dto';
 
 const SettingsScreen = () => {
   const { setStateToken, setUserInfo } = React.useContext(AuthenticationContext);

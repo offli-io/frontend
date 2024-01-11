@@ -6,7 +6,7 @@ import React from 'react';
 import { IActivity } from '../types/activities/activity.dto';
 import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
 import activityPlaceholderImage from '../assets/img/activity-placeholder-image.svg';
-import { AuthenticationContext } from '../assets/theme/authentication-provider';
+import { AuthenticationContext } from '../context/providers/authentication-provider';
 import { useGetApiUrl } from '../hooks/use-get-api-url';
 import { useUser } from '../hooks/use-user';
 import { calculateDistance } from '../utils/calculate-distance.util';

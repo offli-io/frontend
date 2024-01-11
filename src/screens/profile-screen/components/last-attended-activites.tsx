@@ -1,7 +1,7 @@
 import { Box, Typography, useTheme } from '@mui/material';
-import { AuthenticationContext } from 'assets/theme/authentication-provider';
 import Loader from 'components/loader';
 import MyActivityCard from 'components/my-activity-card';
+import { AuthenticationContext } from 'context/providers/authentication-provider';
 import React from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ActivitiyParticipantStatusEnum } from 'types/activities/activity-participant-status-enum.dto';

@@ -10,7 +10,7 @@ import {
   inviteBuddyToActivity,
   uninviteBuddy
 } from '../../api/activities/requests';
-import { AuthenticationContext } from '../../assets/theme/authentication-provider';
+import { AuthenticationContext } from '../../context/providers/authentication-provider';
 import BuddyItemInvite from '../../components/buddy-item-invite';
 import { ActivityInviteStateEnum } from '../../types/activities/activity-invite-state-enum.dto';
 import { ActivitiyParticipantStatusEnum } from '../../types/activities/activity-participant-status-enum.dto';

@@ -1,7 +1,6 @@
-import React from 'react';
-
 import { Box, SwipeableDrawer, useMediaQuery, useTheme } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import React from 'react';
 import { useLocation } from 'react-router-dom';
 
 interface IDrawerData {

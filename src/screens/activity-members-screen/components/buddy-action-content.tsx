@@ -1,7 +1,7 @@
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import { Box, IconButton } from '@mui/material';
 import React from 'react';
-import { DrawerContext } from '../../../assets/theme/drawer-provider';
+import { DrawerContext } from '../../../context/providers/drawer-provider';
 import { ActivitiyParticipantStatusEnum } from '../../../types/activities/activity-participant-status-enum.dto';
 import { ActivityMembersActionTypeDto } from '../../../types/common/activity-members-action-type.dto';
 import { BuddyActionDrawerContent } from './buddy-action-drawer-content';

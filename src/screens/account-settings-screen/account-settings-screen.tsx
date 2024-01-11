@@ -8,7 +8,7 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import { useMutation } from '@tanstack/react-query';
 import { changePassword } from 'api/auth/requests';
-import { AuthenticationContext } from 'assets/theme/authentication-provider';
+import { AuthenticationContext } from 'context/providers/authentication-provider';
 import OffliButton from 'components/offli-button';
 import { PageWrapper } from 'components/page-wrapper';
 import { useNavigate } from 'react-router-dom';

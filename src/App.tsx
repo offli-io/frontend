@@ -7,11 +7,11 @@ import { SnackbarKey, SnackbarProvider } from 'notistack';
 import React from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import './App.css';
-import { HeaderProvider } from './app/providers/header-provider';
-import { LocationProvider } from './app/providers/location-provider';
-import { AuthenticationProvider } from './assets/theme/authentication-provider';
-import { CustomizationProvider } from './assets/theme/customization-provider';
-import { DrawerProvider } from './assets/theme/drawer-provider';
+import { HeaderProvider } from './context/providers/header-provider';
+import { LocationProvider } from './context/providers/location-provider';
+import { AuthenticationProvider } from './context/providers/authentication-provider';
+import { CustomizationProvider } from './context/providers/customization-provider';
+import { DrawerProvider } from './context/providers/drawer-provider';
 import Router from './routes/router';
 
 const queryClient = new QueryClient({

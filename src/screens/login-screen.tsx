@@ -10,7 +10,7 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import * as yup from 'yup';
 import { loginUser, loginViaGoogle } from '../api/auth/requests';
-import { AuthenticationContext } from '../assets/theme/authentication-provider';
+import { AuthenticationContext } from '../context/providers/authentication-provider';
 import LabeledDivider from '../components/labeled-divider';
 import Logo from '../components/logo';
 import OffliBackButton from '../components/offli-back-button';

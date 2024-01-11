@@ -4,12 +4,12 @@ import { LayoutContext } from 'app/layout';
 import { format } from 'date-fns';
 import useLongPress from 'hooks/use-long-press';
 import React from 'react';
+import { ThemeOptionsEnumDto } from 'types/settings/theme-options.dto';
+import { CustomizationContext } from '../context/providers/customization-provider';
 import { useGetApiUrl } from '../hooks/use-get-api-url';
 import { IActivity } from '../types/activities/activity.dto';
 import { TIME_FORMAT } from '../utils/common-constants';
 import OffliButton from './offli-button';
-import { CustomizationContext } from 'assets/theme/customization-provider';
-import { ThemeOptionsEnumDto } from 'types/settings/theme-options.dto';
 
 interface IProps {
   activity?: IActivity;

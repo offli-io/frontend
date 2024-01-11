@@ -4,7 +4,7 @@ import { USER_SETTINGS_QUERY_KEY } from 'hooks/use-user-settings';
 import React from 'react';
 import { toast } from 'sonner';
 import { ThemeOptionsEnumDto } from 'types/settings/theme-options.dto';
-import { AuthenticationContext } from '../../../assets/theme/authentication-provider';
+import { AuthenticationContext } from 'context/providers/authentication-provider';
 
 export const useToggleTheme = () => {
   const { userInfo } = React.useContext(AuthenticationContext);
