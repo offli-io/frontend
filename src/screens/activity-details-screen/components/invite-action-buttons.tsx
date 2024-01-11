@@ -9,7 +9,6 @@ import React, { useState } from 'react';
 interface IInviteActionButtonsProps {
   areActionsLoading?: boolean;
   activityTitle?: string;
-  activityPhoto?: string;
 }
 
 const InviteActionButtons: React.FC<IInviteActionButtonsProps> = ({

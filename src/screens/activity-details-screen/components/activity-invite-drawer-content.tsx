@@ -16,15 +16,9 @@ import { useActivity } from 'hooks/use-activity';
 
 interface IActivityTypeFormProps {
   activityId?: number;
-  activityTitle?: string;
-  activityPhoto?: string;
 }
 
-export const ActivityInviteDrawerContent: React.FC<IActivityTypeFormProps> = ({
-  activityId,
-  activityTitle,
-  activityPhoto
-}) => {
+export const ActivityInviteDrawerContent: React.FC<IActivityTypeFormProps> = ({ activityId }) => {
   const { userInfo } = React.useContext(AuthenticationContext);
   const [invitedBuddies, setInvitedBuddies] = React.useState<number[]>([]);
   const [queryString, setQueryString] = React.useState<string | undefined>();
@@ -32,7 +26,6 @@ export const ActivityInviteDrawerContent: React.FC<IActivityTypeFormProps> = ({
   const { data: { data: activityData = {} } = {}, isLoading: isActivityLoading } = useActivity({
     id: Number(activityId)
   });
-  //tu si vies vytiahnut activityData?.title atd
 
   const { buddies, isLoading } = useBuddies({
     text: queryStringDebounced
@@ -121,7 +114,10 @@ export const ActivityInviteDrawerContent: React.FC<IActivityTypeFormProps> = ({
           placeholder="Type buddy username"
           data-testid="activity-invite-buddies-input"
         />
-        <InviteActionButtons activityTitle={activityTitle} activityPhoto={activityPhoto} />
+        <InviteActionButtons
+          activityTitle={activityData?.title}
+          areActionsLoading={isActivityLoading}
+        />
 
         {buddies && buddies?.length < 1 && !isLoading ? (
           <Box

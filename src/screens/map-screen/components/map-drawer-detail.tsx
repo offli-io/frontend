@@ -66,7 +66,6 @@ const MapDrawerDetail: React.FC<IProps> = ({ activityId }) => {
   const dateTimeCreatedAt = activity?.created_at ? new Date(activity?.created_at) : null;
 
   const timeDifference = getTimeDifference(dateTimeFrom, dateTimeUntil); // useMemo??
-  console.log(timeDifference);
   const durationMinutes = timeDifference?.durationMinutes;
   const durationHours = timeDifference?.durationHours;
 

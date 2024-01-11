@@ -3,8 +3,6 @@ const timeSlots = Array.from(new Array(24 * 2)).map(
 );
 
 export const generateOptionsOrder = () => {
-  //const currentHour = new Date().getHours();
-  //const time = `${currentHour}:00`;
   const time = `$17:00`;
   const index = timeSlots?.indexOf(time);
   return timeSlots.slice(index).concat(timeSlots.slice(0, index));

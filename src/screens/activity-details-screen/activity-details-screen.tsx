@@ -225,13 +225,7 @@ const ActivityDetailsScreen: React.FC<IProps> = () => {
         case ActivityActionsTypeEnumDto.INVITE:
           return toggleDrawer({
             open: true,
-            content: (
-              <ActivityInviteDrawerContent
-                activityId={Number(id)}
-                activityTitle={activity?.title}
-                activityPhoto={`${baseUrl}/files/${activity?.title_picture}`}
-              />
-            )
+            content: <ActivityInviteDrawerContent />
           });
         default:
           return;
@@ -263,13 +257,7 @@ const ActivityDetailsScreen: React.FC<IProps> = () => {
     if (shouldOpenInviteDrawer) {
       toggleDrawer({
         open: true,
-        content: (
-          <ActivityInviteDrawerContent
-            activityId={Number(id)}
-            activityTitle={activity?.title}
-            activityPhoto={`${baseUrl}/files/${activity?.title_picture}`}
-          />
-        )
+        content: <ActivityInviteDrawerContent activityId={Number(id)} />
       });
     }
   }, [shouldOpenInviteDrawer, id, activity?.title]);

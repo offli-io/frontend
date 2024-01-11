@@ -74,7 +74,7 @@ const ActivityDetailTiles: React.FC<IProps> = ({
           {durationMinutes !== undefined && <>{durationMinutes}</>}
         </StyledText>
       </StyledBox>
-      {distance !== null && distance !== undefined && (
+      {!!distance && (
         <StyledBox>
           <NearMeIcon sx={{ color: 'primary.main' }} />
           <StyledText align="center" variant="subtitle1">

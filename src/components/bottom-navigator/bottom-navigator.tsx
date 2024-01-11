@@ -50,20 +50,12 @@ const BottomNavigator: React.FC<IBottomNavigatorProps> = () => {
         <BottomNavigationAction
           label="Explore"
           icon={
-            value === ApplicationLocations.EXPLORE ? (
-              <TravelExploreIcon
-                sx={{
-                  color: 'primary.main'
-                }}
-              />
-            ) : (
-              <TravelExploreIcon
-                sx={{
-                  fontSize: 20,
-                  color: undefined
-                }}
-              />
-            )
+            <TravelExploreIcon
+              sx={{
+                color: value === ApplicationLocations.EXPLORE ? 'primary.main' : undefined,
+                fontSize: value === ApplicationLocations.EXPLORE ? 24 : 20
+              }}
+            />
           }
           component={Link}
           value={ApplicationLocations.EXPLORE}
