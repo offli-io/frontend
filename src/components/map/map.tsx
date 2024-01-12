@@ -23,6 +23,10 @@ import MapControl from './components/map-control';
 import RecenterAutomatically from './components/recenter-automatically';
 import SaveButton from './components/save-button';
 import UserLocationLoader from './components/user-location-loader';
+import {
+  getHistorySearchesFromStorage,
+  pushSearchResultIntoStorage
+} from 'utils/search-history-utils';
 
 // bratislava position
 const position = [48.1486, 17.1077] as LatLngTuple;
@@ -160,6 +164,19 @@ const Map: React.FC<IMapScreenProps> = ({
     onLocationSave?.(null);
   };
 
+  const handleLocationSelect = React.useCallback(
+    (e: React.SyntheticEvent<Element, Event>, location: ILocation | null) => {
+      setSelectedLocation({
+        name: location?.name ?? '',
+        coordinates: location?.coordinates
+      });
+      if (location && data?.results) {
+        pushSearchResultIntoStorage(location);
+      }
+    },
+    [data?.results]
+  );
+
   return (
     <MapContainer
       center={latLonTuple ?? position}
@@ -185,7 +202,9 @@ const Map: React.FC<IMapScreenProps> = ({
         }}>
         <Autocomplete
           value={selectedLocation}
-          options={mapExternalApiOptions(data?.results)}
+          options={
+            data?.results ? mapExternalApiOptions(data?.results) : getHistorySearchesFromStorage()
+          }
           sx={{
             width: '95%',
             display: 'flex',
@@ -197,12 +216,7 @@ const Map: React.FC<IMapScreenProps> = ({
             '& .MuiSvgIcon-root': { color: 'primary.main' }
           }}
           loading={isLoading}
-          onChange={(e, locationObject) => {
-            setSelectedLocation({
-              name: locationObject?.name ?? '',
-              coordinates: locationObject?.coordinates
-            });
-          }}
+          onChange={handleLocationSelect}
           inputValue={selectedLocation?.name}
           getOptionLabel={(option) => String(option?.name)}
           renderInput={(params) => (

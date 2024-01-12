@@ -3,7 +3,7 @@ import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import { Autocomplete, Box, IconButton, TextField, Typography, useTheme } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import React, { SetStateAction } from 'react';
-import { Controller, UseFormReturn } from 'react-hook-form';
+import { Controller, ControllerRenderProps, UseFormReturn } from 'react-hook-form';
 import SetOnMapScreen from 'screens/set-on-map-screen/set-on-map-screen';
 import { ILocation } from 'types/activities/location.dto';
 import { useDebounce } from 'use-debounce';
@@ -12,6 +12,10 @@ import activityLocation from '../../../assets/img/activity-location.svg';
 import OffliButton from '../../../components/offli-button';
 import { mapExternalApiOptions } from '../../../utils/map-location-value.util';
 import { FormValues } from '../utils/validation-schema';
+import {
+  getHistorySearchesFromStorage,
+  pushSearchResultIntoStorage
+} from 'utils/search-history-utils';
 
 interface IPlaceFormProps {
   onNextClicked: () => void;
@@ -50,6 +54,20 @@ export const PlaceForm: React.FC<IPlaceFormProps> = ({
       toggleMap?.(false);
     },
     [setValue]
+  );
+
+  const handleLocationSelect = React.useCallback(
+    (field: ControllerRenderProps<FormValues, 'location'>) =>
+      (e: React.SyntheticEvent<Element, Event>, location: ILocation | null) => {
+        field.onChange({
+          name: location?.name ?? '',
+          coordinates: location?.coordinates
+        });
+        if (location && placeQuery?.data?.results) {
+          pushSearchResultIntoStorage(location);
+        }
+      },
+    [setValue, placeQuery?.data?.results]
   );
 
   return (
@@ -101,7 +119,11 @@ export const PlaceForm: React.FC<IPlaceFormProps> = ({
                   }}>
                   <Autocomplete
                     {...field}
-                    options={mapExternalApiOptions(placeQuery?.data?.results)}
+                    options={
+                      placeQuery?.data?.results
+                        ? mapExternalApiOptions(placeQuery?.data?.results)
+                        : getHistorySearchesFromStorage()
+                    }
                     value={field?.value}
                     sx={{
                       width: '100%',
@@ -109,12 +131,7 @@ export const PlaceForm: React.FC<IPlaceFormProps> = ({
                       justifyContent: 'center'
                     }}
                     loading={placeQuery?.isLoading}
-                    onChange={(e, locationObject) =>
-                      field.onChange({
-                        name: locationObject?.name ?? '',
-                        coordinates: locationObject?.coordinates
-                      })
-                    }
+                    onChange={handleLocationSelect(field)}
                     getOptionLabel={(option) => String(option?.name)}
                     inputValue={field?.value?.name}
                     // inputValue={inputValue ?? ""}

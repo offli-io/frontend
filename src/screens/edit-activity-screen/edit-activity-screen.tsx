@@ -18,7 +18,7 @@ import FileUploadModal from 'components/file-upload/components/file-upload-modal
 import OffliButton from 'components/offli-button';
 import 'dayjs/locale/sk';
 import React, { useEffect } from 'react';
-import { Controller, useForm } from 'react-hook-form';
+import { Controller, ControllerRenderProps, FieldValues, useForm } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router-dom';
 import SetOnMapScreen from 'screens/set-on-map-screen/set-on-map-screen';
 import { toast } from 'sonner';
@@ -40,6 +40,11 @@ import { ActivityVisibilityEnum } from '../../types/activities/activity-visibili
 import { ApplicationLocations } from '../../types/common/applications-locations.dto';
 import { mapLocationValue } from '../../utils/map-location-value.util';
 import { IAdditionalHelperActivityInterface, validationSchema } from './utils/validation-schema';
+import { IPlaceExternalApiResultDto } from 'types/activities/place-external-api.dto';
+import {
+  getHistorySearchesFromStorage,
+  pushSearchResultIntoStorage
+} from 'utils/search-history-utils';
 
 const EditActivityScreen: React.FC = () => {
   const [localFile, setLocalFile] = React.useState<any>();
@@ -185,6 +190,30 @@ const EditActivityScreen: React.FC = () => {
     [dirtyFields]
   );
 
+  const handleLocationSelect = React.useCallback(
+    (field: ControllerRenderProps<FieldValues, 'location'>) =>
+      (
+        e: React.SyntheticEvent<Element, Event>,
+        locationObject: IPlaceExternalApiResultDto | null
+      ) => {
+        field.onChange(
+          locationObject
+            ? {
+                name: locationObject?.formatted,
+                coordinates: {
+                  lat: locationObject?.lat,
+                  lon: locationObject?.lon
+                }
+              }
+            : null
+        );
+        if (locationObject && placeQuery?.data?.results) {
+          pushSearchResultIntoStorage(locationObject);
+        }
+      },
+    [setValue, placeQuery?.data?.results]
+  );
+
   return (
     <>
       <FileUploadModal
@@ -291,7 +320,7 @@ const EditActivityScreen: React.FC = () => {
                     }}>
                     <Autocomplete
                       {...field}
-                      options={placeQuery?.data?.results ?? []}
+                      options={placeQuery?.data?.results ?? getHistorySearchesFromStorage()}
                       value={mapLocationValue(field?.value)}
                       isOptionEqualToValue={(option, value) =>
                         option?.formatted === (value?.formatted ?? value?.name)
@@ -302,19 +331,7 @@ const EditActivityScreen: React.FC = () => {
                         justifyContent: 'center'
                       }}
                       loading={placeQuery?.isLoading}
-                      onChange={(e, locationObject) => {
-                        field.onChange(
-                          locationObject
-                            ? {
-                                name: locationObject?.formatted,
-                                coordinates: {
-                                  lat: locationObject?.lat,
-                                  lon: locationObject?.lon
-                                }
-                              }
-                            : null
-                        );
-                      }}
+                      onChange={handleLocationSelect(field)}
                       getOptionLabel={(option) => String(option?.formatted)}
                       // inputValue={inputValue ?? ""}
                       renderInput={(params) => (
