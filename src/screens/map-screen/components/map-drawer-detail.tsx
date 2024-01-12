@@ -51,7 +51,6 @@ const MapDrawerDetail: React.FC<IProps> = ({ activityId, userLocation }) => {
       }
     });
 
-  const currentLocation = userLocation;
   const baseUrl = useGetApiUrl();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
@@ -189,8 +188,8 @@ const MapDrawerDetail: React.FC<IProps> = ({ activityId, userLocation }) => {
                 durationMinutes === 1 ? '1 minute' : String(durationMinutes) + ' minutes'
               }`}
               distance={calculateDistance(activity?.location?.coordinates, {
-                lat: currentLocation?.latitude,
-                lon: currentLocation?.longitude
+                lat: userLocation?.latitude,
+                lon: userLocation?.longitude
               })}
               price={activity?.price}
             />
