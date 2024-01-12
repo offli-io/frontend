@@ -12,6 +12,7 @@ export const useUserSettings = () => {
   return useQuery([USER_SETTINGS_QUERY_KEY, userInfo?.id], () => getUserSettings(userInfo?.id), {
     onError: () => {
       toast.error('Failed to get user settings');
-    }
+    },
+    enabled: !!userInfo?.id
   });
 };

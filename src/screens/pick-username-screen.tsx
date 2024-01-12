@@ -93,10 +93,11 @@ const PickUsernameScreen = () => {
       ]);
 
       if (type === PickUsernameTypeEnum.GOOGLE) {
-        const googleToken = queryClient.getQueryData<string | undefined>(['google-token']);
+        const authCode = queryClient.getQueryData<string | undefined>(['google-token']);
         sendRegisterViaGoogle({
+          googleBearerToken: '',
           username: values?.username,
-          googleBearerToken: googleToken
+          auth_code: authCode
         });
       } else {
         sendPresignupUser({
