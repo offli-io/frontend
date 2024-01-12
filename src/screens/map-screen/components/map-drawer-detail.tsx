@@ -5,7 +5,6 @@ import { changeActivityParticipantStatus, removePersonFromActivity } from 'api/a
 import { format } from 'date-fns';
 import { sk } from 'date-fns/esm/locale';
 import { PAGED_ACTIVITIES_QUERY_KEY } from 'hooks/use-activities-infinite-query';
-import { useCurrentLocation } from 'hooks/use-current-location';
 import { PARTICIPANT_ACTIVITIES_QUERY_KEY } from 'hooks/use-participant-activities';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -29,6 +28,7 @@ import { CreatorVisibilityRow } from './creator-visibility-row';
 
 interface IProps {
   activityId?: number;
+  userLocation?: GeolocationCoordinates;
 }
 
 const MainBox = styled(Box)(() => ({
@@ -42,7 +42,7 @@ const MainBox = styled(Box)(() => ({
   height: 450
 }));
 
-const MapDrawerDetail: React.FC<IProps> = ({ activityId }) => {
+const MapDrawerDetail: React.FC<IProps> = ({ activityId, userLocation }) => {
   const { userInfo } = React.useContext(AuthenticationContext);
   const { data: { data: { activity = {} } = {} } = {}, isLoading } =
     useActivities<IActivityRestDto>({
@@ -51,7 +51,7 @@ const MapDrawerDetail: React.FC<IProps> = ({ activityId }) => {
       }
     });
 
-  const currentLocation = useCurrentLocation();
+  const currentLocation = userLocation;
   const baseUrl = useGetApiUrl();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
