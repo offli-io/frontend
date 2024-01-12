@@ -40,8 +40,9 @@ export const RegistrationScreen: React.FC = () => {
   const [email, setEmail] = React.useState<string | undefined>();
   const { palette } = useTheme();
 
-  const { googleToken, handleGoogleAuthorization } = useGoogleAuthorization({
-    from: GoogleAuthCodeFromEnumDto.REGISTER
+  const { googleAuthCode, handleGoogleAuthorization } = useGoogleAuthorization({
+    from: GoogleAuthCodeFromEnumDto.REGISTER,
+    omitTokenGetting: true
   });
 
   const queryClient = useQueryClient();
@@ -69,15 +70,15 @@ export const RegistrationScreen: React.FC = () => {
   // console.log(formState?.errors)
 
   React.useEffect(() => {
-    if (googleToken) {
-      queryClient.setQueryData(['google-token'], googleToken);
+    if (googleAuthCode) {
+      queryClient.setQueryData(['google-token'], googleAuthCode);
       navigate(ApplicationLocations.PICK_USERNAME, {
         state: {
           type: PickUsernameTypeEnum.GOOGLE
         }
       });
     }
-  }, [googleToken]);
+  }, [googleAuthCode]);
 
   const isEmailInUse = Object.keys(formState?.errors)?.length !== 0;
 

@@ -7,9 +7,14 @@ import { GoogleAuthCodeFromEnumDto } from '../types/google/google-auth-code-from
 interface IUseGoogleAuthorizationProps {
   from: GoogleAuthCodeFromEnumDto;
   state?: any;
+  omitTokenGetting?: boolean;
 }
 
-export const useGoogleAuthorization = ({ from, state }: IUseGoogleAuthorizationProps) => {
+export const useGoogleAuthorization = ({
+  from,
+  state,
+  omitTokenGetting = false
+}: IUseGoogleAuthorizationProps) => {
   const [googleToken, setGoogleToken] = React.useState<string | null>(null);
   const abortControllerRef = React.useRef<AbortController | null>(null);
 
@@ -39,12 +44,13 @@ export const useGoogleAuthorization = ({ from, state }: IUseGoogleAuthorizationP
   }, []);
 
   React.useEffect(() => {
-    if (authorizationCode) {
+    if (authorizationCode && !omitTokenGetting) {
       sendGetBearerToken(authorizationCode);
     }
   }, [authorizationCode]);
 
   return {
+    googleAuthCode: authorizationCode,
     googleToken,
     handleGoogleAuthorization,
     state: paramsStateParsed,

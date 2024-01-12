@@ -3,6 +3,7 @@ import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 import RoomIcon from '@mui/icons-material/Room';
 import { Box, Card, IconButton, Typography, styled } from '@mui/material';
+import { AuthenticationContext } from 'context/providers/authentication-provider';
 import { format, isAfter } from 'date-fns';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -25,13 +26,11 @@ const StyledBox = styled(Card)(() => ({
   alignItems: 'center',
   flexDirection: 'column',
   borderRadius: '12px',
-  // backgroundColor: "#E4E3FF",
   paddingTop: '5%',
   paddingBottom: '5%',
   marginBottom: '16px',
   borderStyle: 'solid',
   borderWidth: 1
-  // maxWidth: "45vw",
 }));
 
 const StyledText = styled(Typography)(() => ({
@@ -42,13 +41,15 @@ const StyledText = styled(Typography)(() => ({
   overflow: 'hidden',
   maxHeight: '1.4rem',
   lineHeight: '1.4rem'
-  // fontWeight: "bold",
 }));
 
 const ActivityDetailsGrid: React.FC<IProps> = ({ activity, onActionClick }) => {
+  const { stateToken } = React.useContext(AuthenticationContext);
   const navigate = useNavigate();
   const isPastActivity =
     !!activity?.datetime_until && isAfter(new Date(), new Date(activity.datetime_until));
+
+  const isAuthorizedUser = !!stateToken;
 
   return (
     <Box
@@ -73,8 +74,8 @@ const ActivityDetailsGrid: React.FC<IProps> = ({ activity, onActionClick }) => {
             textDecoration: 'none',
             fontSize: 16,
             mt: 0.5
-            // fontWeight: "500",
-          }}>
+          }}
+          disabled={!isAuthorizedUser}>
           Show participants
         </OffliButton>
         <StyledText align="center" variant="subtitle1">
@@ -109,24 +110,19 @@ const ActivityDetailsGrid: React.FC<IProps> = ({ activity, onActionClick }) => {
         <IconButton color="primary" sx={{ p: 0 }}>
           <RoomIcon sx={{ fontSize: 26, color: 'primary.main' }} />
         </IconButton>
-        {/* <Typography variant="h5" sx={{ mb: 1 }}>
-          Where?
-        </Typography> */}
+
         <OffliButton
           onClick={() =>
-            // navigate(`${ApplicationLocations.MAP}/${activity?.id}`)
             window.open(
               `https://www.google.com/maps?q=${activity?.location?.coordinates?.lat},${activity?.location?.coordinates?.lon}`
             )
           }
-          // endIcon={<RoomIcon sx={{ fontSize: 26 }} />}
           size="small"
           variant="text"
           sx={{
             textDecoration: 'none',
             fontSize: 15,
             mt: 0.5
-            // fontWeight: "400",
           }}>
           Get directions
         </OffliButton>
@@ -146,13 +142,11 @@ const ActivityDetailsGrid: React.FC<IProps> = ({ activity, onActionClick }) => {
             textDecoration: 'none',
             fontSize: 15,
             mt: 0.5
-            // fontWeight: "bold",
           }}>
           Initial price
         </OffliButton>
         <StyledText align="center" variant="subtitle1">
-          {activity?.price ?? '-'}
-          {'€'}
+          {activity?.price ? `${activity?.price}€` : 'free'}
         </StyledText>
       </StyledBox>
     </Box>

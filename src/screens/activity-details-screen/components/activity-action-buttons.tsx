@@ -3,6 +3,7 @@ import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import MenuIcon from '@mui/icons-material/Menu';
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import HistoryIcon from '@mui/icons-material/History';
+import SettingsIcon from '@mui/icons-material/Settings';
 import { Box } from '@mui/material';
 import OffliButton from 'components/offli-button';
 import React from 'react';
@@ -63,19 +64,22 @@ const ActivityActionButtons: React.FC<IActivityActionButtonsProps> = ({
           </OffliButton>
           <OffliButton
             size="small"
-            disabled={!isAlreadyParticipant || areActionsLoading}
+            disabled={areActionsLoading}
             sx={{
               fontSize: 18,
               width: '40%',
               height: 48,
               bgcolor: 'primary.light',
-              color: 'primary.main'
+              color: 'primary.main',
+              '&:hover': {
+                bgcolor: 'primary.light'
+              }
             }}
             onClick={onMoreClick}
             startIcon={
               <MenuIcon
                 sx={{
-                  color: isAlreadyParticipant ? 'primary.main' : 'inactiveFont.main'
+                  color: 'primary.main'
                 }}
               />
             }>

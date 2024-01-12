@@ -2,8 +2,8 @@ import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import DoneIcon from '@mui/icons-material/Done';
 import IosShareIcon from '@mui/icons-material/IosShare';
 import { Box } from '@mui/material';
-import { AuthenticationContext } from 'assets/theme/authentication-provider';
 import OffliButton from 'components/offli-button';
+import { AuthenticationContext } from 'context/providers/authentication-provider';
 import React, { useState } from 'react';
 
 interface IInviteActionButtonsProps {

@@ -51,6 +51,9 @@ export const useActivityMenuItems = ({
       ) {
         return menuItem;
       }
+      if (menuItem?.type === ActivityActionsTypeEnumDto.INVITE && (isCreator || isParticipant)) {
+        return menuItem;
+      }
     }
 
     return undefined;

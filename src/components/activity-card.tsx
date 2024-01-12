@@ -4,7 +4,8 @@ import { LayoutContext } from 'app/layout';
 import { format } from 'date-fns';
 import useLongPress from 'hooks/use-long-press';
 import React from 'react';
-import { CustomizationContext } from '../assets/theme/customization-provider';
+import { ThemeOptionsEnumDto } from 'types/settings/theme-options.dto';
+import { CustomizationContext } from '../context/providers/customization-provider';
 import { useGetApiUrl } from '../hooks/use-get-api-url';
 import { IActivity } from '../types/activities/activity.dto';
 import { TIME_FORMAT } from '../utils/common-constants';
@@ -20,7 +21,7 @@ interface IProps {
 const ActivityCard: React.FC<IProps> = ({ activity, onPress, onLongPress, sx, ...rest }) => {
   //TODO maybe in later use also need some refactoring
   const { shadows } = useTheme();
-  const { mode } = React.useContext(CustomizationContext);
+  const { theme } = React.useContext(CustomizationContext);
   const baseUrl = useGetApiUrl();
 
   const { contentDivRef } = React.useContext(LayoutContext);
@@ -82,12 +83,12 @@ const ActivityCard: React.FC<IProps> = ({ activity, onPress, onLongPress, sx, ..
           <Typography
             variant="h2"
             sx={{
-              color: 'background.default',
               width: 280,
               overflow: 'hidden',
               textOverflow: 'ellipsis',
               whiteSpace: 'nowrap',
-              textAlign: 'start'
+              textAlign: 'start',
+              ...(theme === ThemeOptionsEnumDto.LIGHT ? { filter: 'invert(100%)' } : {})
             }}>
             {activity?.title}
           </Typography>
@@ -99,7 +100,7 @@ const ActivityCard: React.FC<IProps> = ({ activity, onPress, onLongPress, sx, ..
               textOverflow: 'ellipsis',
               whiteSpace: 'nowrap',
               textAlign: 'start',
-              color: 'background.default'
+              ...(theme === ThemeOptionsEnumDto.LIGHT ? { filter: 'invert(100%)' } : {})
             }}>
             {activity?.location?.name}
           </Typography>
@@ -116,7 +117,7 @@ const ActivityCard: React.FC<IProps> = ({ activity, onPress, onLongPress, sx, ..
                 fontSize: 14,
                 ml: 0.5,
                 mr: 0.5,
-                color: 'background.default'
+                ...(theme === ThemeOptionsEnumDto.LIGHT ? { filter: 'invert(100%)' } : {})
               }}
             />
             {activity?.limit ? (
@@ -125,7 +126,7 @@ const ActivityCard: React.FC<IProps> = ({ activity, onPress, onLongPress, sx, ..
                   variant="subtitle1"
                   sx={{
                     lineHeight: 1,
-                    color: 'background.default'
+                    ...(theme === ThemeOptionsEnumDto.LIGHT ? { filter: 'invert(100%)' } : {})
                   }}>
                   {activity?.count_confirmed}/{activity?.limit}{' '}
                 </Typography>
@@ -153,9 +154,8 @@ const ActivityCard: React.FC<IProps> = ({ activity, onPress, onLongPress, sx, ..
               <Typography
                 sx={{
                   fontSize: 16,
-                  // fontWeight: "bold",
-                  lineHeight: 1,
-                  ...(mode === 'light' ? { filter: 'invert(100%)' } : {})
+                  ...(theme === ThemeOptionsEnumDto.LIGHT ? { filter: 'invert(100%)' } : {}),
+                  lineHeight: 1
                 }}>
                 {activity?.count_confirmed} 0
               </Typography>
@@ -174,7 +174,7 @@ const ActivityCard: React.FC<IProps> = ({ activity, onPress, onLongPress, sx, ..
                 fontSize: 22,
                 lineHeight: 1,
                 fontWeight: 'bold',
-                ...(mode === 'light' ? { filter: 'invert(100%)' } : {})
+                ...(theme === ThemeOptionsEnumDto.LIGHT ? { filter: 'invert(100%)' } : {})
               }}>
               {startDate ? format(startDate, 'dd') : '-'}
             </Typography>
@@ -187,7 +187,7 @@ const ActivityCard: React.FC<IProps> = ({ activity, onPress, onLongPress, sx, ..
                 letterSpacing: 0,
                 fontWeight: 'bold',
                 my: 0.5,
-                ...(mode === 'light' ? { filter: 'invert(100%)' } : {})
+                ...(theme === ThemeOptionsEnumDto.LIGHT ? { filter: 'invert(100%)' } : {})
               }}>
               {startDate ? format(startDate, 'MMMM') : '-'}
             </Typography>
@@ -198,7 +198,7 @@ const ActivityCard: React.FC<IProps> = ({ activity, onPress, onLongPress, sx, ..
                 fontSize: 22,
                 lineHeight: 1,
                 fontWeight: 'semi-bold',
-                ...(mode === 'light' ? { filter: 'invert(100%)' } : {})
+                ...(theme === ThemeOptionsEnumDto.LIGHT ? { filter: 'invert(100%)' } : {})
               }}>
               {startDate ? format(startDate, TIME_FORMAT) : '-'}
             </Typography>

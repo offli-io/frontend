@@ -1,7 +1,9 @@
-import { PaletteMode, ThemeProvider } from '@mui/material';
+import { ThemeProvider } from '@mui/material';
 import { createTheme } from '@mui/material/styles';
+import { useUserSettings } from 'hooks/use-user-settings';
 import React from 'react';
 import { Toaster } from 'sonner';
+import { ThemeOptionsEnumDto } from 'types/settings/theme-options.dto';
 
 declare module '@mui/material/styles' {
   // If we would like to declare something on the theme
@@ -21,13 +23,13 @@ declare module '@mui/material/styles' {
     inactiveFont: PaletteOptions['primary'];
   }
 }
-const createCustomizationTheme = (mode: PaletteMode = 'light') => {
+const createCustomizationTheme = (userTheme: ThemeOptionsEnumDto) => {
   const theme = createTheme({
     palette: {
       // for dark mode
-      mode,
+      mode: userTheme === ThemeOptionsEnumDto.DARK ? 'dark' : 'light',
       primary: {
-        main: mode === 'light' ? '#4A148C' : '#7D3FC8',
+        main: userTheme === ThemeOptionsEnumDto.LIGHT ? '#4A148C' : '#A763FA',
         light: '#DED5EA'
       },
       secondary: {
@@ -38,6 +40,9 @@ const createCustomizationTheme = (mode: PaletteMode = 'light') => {
       },
       inactiveFont: {
         main: '#757575'
+      },
+      background: {
+        default: userTheme === ThemeOptionsEnumDto.DARK ? '#121212' : 'white'
       }
     },
     typography: {
@@ -71,7 +76,6 @@ const createCustomizationTheme = (mode: PaletteMode = 'light') => {
           root: ({ theme }) => ({
             fontFamily: 'Instagram Sans',
             color: theme?.palette?.text?.primary
-            // ...(mode === "dark" ? { filter: "invert(100%)" } : {}),
           }),
           h1: {
             fontSize: 28,
@@ -144,8 +148,7 @@ const createCustomizationTheme = (mode: PaletteMode = 'light') => {
 };
 
 interface ICustomizationContext {
-  mode: PaletteMode;
-  setMode: React.Dispatch<React.SetStateAction<PaletteMode>>;
+  theme?: ThemeOptionsEnumDto;
 }
 
 export const CustomizationContext = React.createContext<ICustomizationContext>(
@@ -157,12 +160,12 @@ interface ICustomizationProviderProps {
 }
 
 export const CustomizationProvider: React.FC<ICustomizationProviderProps> = ({ children }) => {
-  const [mode, setMode] = React.useState<PaletteMode>('light');
+  const { data: { data: { theme = ThemeOptionsEnumDto.LIGHT } = {} } = {} } = useUserSettings();
 
   return (
-    <CustomizationContext.Provider value={{ mode, setMode }}>
-      <ThemeProvider theme={createCustomizationTheme(mode)}>
-        <Toaster richColors invert={mode === 'dark'} />
+    <CustomizationContext.Provider value={{ theme }}>
+      <ThemeProvider theme={createCustomizationTheme(theme)}>
+        <Toaster richColors invert={theme === ThemeOptionsEnumDto.DARK} />
         {children}
       </ThemeProvider>
     </CustomizationContext.Provider>

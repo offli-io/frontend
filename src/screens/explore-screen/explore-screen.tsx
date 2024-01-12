@@ -1,7 +1,7 @@
 import MapIcon from '@mui/icons-material/Map';
 import PlaceIcon from '@mui/icons-material/Place';
 import SearchIcon from '@mui/icons-material/Search';
-import { Autocomplete, Box, InputAdornment, TextField, Typography, useTheme } from '@mui/material';
+import { Autocomplete, Box, InputAdornment, TextField, Typography } from '@mui/material';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import Loader from 'components/loader';
 import {
@@ -17,9 +17,9 @@ import {
   changeActivityParticipantStatus,
   removePersonFromActivity
 } from '../../api/activities/requests';
-import { LocationContext } from '../../app/providers/location-provider';
-import { AuthenticationContext } from '../../assets/theme/authentication-provider';
-import { DrawerContext } from '../../assets/theme/drawer-provider';
+import { LocationContext } from '../../context/providers/location-provider';
+import { AuthenticationContext } from '../../context/providers/authentication-provider';
+import { DrawerContext } from '../../context/providers/drawer-provider';
 import ActivityCard from '../../components/activity-card';
 import OffliButton from '../../components/offli-button';
 import { ACTIVITIES_QUERY_KEY } from '../../hooks/use-activities';
@@ -41,7 +41,6 @@ const ExploreScreen = () => {
   const { toggleDrawer } = React.useContext(DrawerContext);
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const { palette } = useTheme();
   const { sendDismissActivity, isLoading: isDismissingActivity } = useDismissActivity();
 
   //TODO either call it like this or set user info once useUsers request in layout.tsx got Promise resolved
@@ -191,9 +190,7 @@ const ExploreScreen = () => {
           alignItems: 'center',
           my: 1
         }}>
-        <Typography variant="h4" sx={{ color: palette?.text?.primary }}>
-          Explore
-        </Typography>
+        <Typography variant="h4">Explore</Typography>
         <OffliButton
           variant="text"
           sx={{
@@ -270,9 +267,7 @@ const ExploreScreen = () => {
             mt: 2,
             mb: 1
           }}>
-          <Typography variant="h4" sx={{ color: palette?.text?.primary }}>
-            Near you
-          </Typography>
+          <Typography variant="h4">Near you</Typography>
           <OffliButton
             variant="text"
             sx={{ fontSize: 16 }}

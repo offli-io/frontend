@@ -1,17 +1,20 @@
 import { Autocomplete, Box, SxProps, TextField } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import { getLocationFromQueryFetch, getPlaceFromCoordinates } from 'api/activities/requests';
+import { useActivities } from 'hooks/use-activities';
 import L, { LatLngTuple } from 'leaflet';
 import React from 'react';
 import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
 import MarkerClusterGroup from 'react-leaflet-cluster';
+import { IActivityRestDto } from 'types/activities/activity-rest.dto';
 import { ILocation } from 'types/activities/location.dto';
+import { ThemeOptionsEnumDto } from 'types/settings/theme-options.dto';
 import { useDebounce } from 'use-debounce';
 import { mapExternalApiOptions } from 'utils/map-location-value.util';
 import markerIcon from '../../assets/img/location-marker.svg';
 import wavePeople from '../../assets/img/your-location.svg';
-import { CustomizationContext } from '../../assets/theme/customization-provider';
-import { DrawerContext } from '../../assets/theme/drawer-provider';
+import { CustomizationContext } from '../../context/providers/customization-provider';
+import { DrawerContext } from '../../context/providers/drawer-provider';
 import MapDrawerDetail from '../../screens/map-screen/components/map-drawer-detail';
 import { IActivity } from '../../types/activities/activity.dto';
 import { IMapViewActivityDto } from '../../types/activities/mapview-activities.dto';
@@ -20,17 +23,22 @@ import MapControl from './components/map-control';
 import RecenterAutomatically from './components/recenter-automatically';
 import SaveButton from './components/save-button';
 import UserLocationLoader from './components/user-location-loader';
+import {
+  getHistorySearchesFromStorage,
+  pushSearchResultIntoStorage
+} from 'utils/search-history-utils';
 
 // bratislava position
 const position = [48.1486, 17.1077] as LatLngTuple;
 
-interface ILabeledTileProps {
+interface IMapScreenProps {
   sx?: SxProps;
   activities?: IActivity | IMapViewActivityDto[];
   onClick?: (title: string) => void;
   centerPosition?: GeolocationCoordinates;
   setLocationByMap?: boolean;
   onLocationSave?: (location: ILocation | null) => void;
+  activityMapId?: number;
 }
 
 const offliMarkerIcon = new L.Icon({
@@ -45,18 +53,28 @@ const youAreHereIcon = new L.Icon({
   iconAnchor: [22.5, 22.5]
 });
 
-const Map: React.FC<ILabeledTileProps> = ({
+const Map: React.FC<IMapScreenProps> = ({
   activities,
   setLocationByMap = false,
-  onLocationSave
+  onLocationSave,
+  activityMapId
 }) => {
   const [currentLocation, setCurrentLocation] = React.useState<
     GeolocationCoordinates | undefined
   >();
+
   const [isUserLocationLoading, setIsUserLocationLoading] = React.useState(false);
-  const { mode } = React.useContext(CustomizationContext);
+  const { theme } = React.useContext(CustomizationContext);
   const [pendingLatLngTuple, setPendingLatLngTuple] = React.useState<LatLngTuple | null>(null);
   //const map = useMap();
+
+  const { data: { data: { activity: activityFromBackMap = null } = {} } = {} } =
+    useActivities<IActivityRestDto>({
+      params: {
+        id: activityMapId ? Number(activityMapId) : undefined
+      },
+      enabled: !!activityMapId
+    });
 
   const [placeQuery, setPlaceQuery] = React.useState('');
   const [selectedLocation, setSelectedLocation] = React.useState<ILocation | null>(null);
@@ -146,6 +164,19 @@ const Map: React.FC<ILabeledTileProps> = ({
     onLocationSave?.(null);
   };
 
+  const handleLocationSelect = React.useCallback(
+    (e: React.SyntheticEvent<Element, Event>, location: ILocation | null) => {
+      setSelectedLocation({
+        name: location?.name ?? '',
+        coordinates: location?.coordinates
+      });
+      if (location && data?.results) {
+        pushSearchResultIntoStorage(location);
+      }
+    },
+    [data?.results]
+  );
+
   return (
     <MapContainer
       center={latLonTuple ?? position}
@@ -171,7 +202,9 @@ const Map: React.FC<ILabeledTileProps> = ({
         }}>
         <Autocomplete
           value={selectedLocation}
-          options={mapExternalApiOptions(data?.results)}
+          options={
+            data?.results ? mapExternalApiOptions(data?.results) : getHistorySearchesFromStorage()
+          }
           sx={{
             width: '95%',
             display: 'flex',
@@ -183,12 +216,7 @@ const Map: React.FC<ILabeledTileProps> = ({
             '& .MuiSvgIcon-root': { color: 'primary.main' }
           }}
           loading={isLoading}
-          onChange={(e, locationObject) => {
-            setSelectedLocation({
-              name: locationObject?.name ?? '',
-              coordinates: locationObject?.coordinates
-            });
-          }}
+          onChange={handleLocationSelect}
           inputValue={selectedLocation?.name}
           getOptionLabel={(option) => String(option?.name)}
           renderInput={(params) => (
@@ -218,7 +246,7 @@ const Map: React.FC<ILabeledTileProps> = ({
         // attribution='<a href="http://jawg.io" title="Tiles Courtesy of Jawg Maps" target="_blank">&copy; <b>Jawg</b>Maps</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         // url="https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png"
         url={`https://{s}.tile.jawg.io/jawg-${
-          mode === 'light' ? 'sunny' : 'dark'
+          theme === ThemeOptionsEnumDto.LIGHT ? 'sunny' : 'dark'
         }/{z}/{x}/{y}{r}.png?access-token=dY2cc1f9EUuag5geOpQB30R31VnRRhl7O401y78cM0NWSvzLf7irQSUGfA4m7Va5`}
       />
 
@@ -271,12 +299,23 @@ const Map: React.FC<ILabeledTileProps> = ({
         </Marker>
       ) : null}
 
-      <RecenterAutomatically
-        lat={isSingleActivity ? latLonTupleSingle[0] : currentLocation?.latitude}
-        lon={isSingleActivity ? latLonTupleSingle[1] : currentLocation?.longitude}
-        selectedLocation={selectedLocation}
-        position={position}
-      />
+      {!activityFromBackMap ? (
+        <RecenterAutomatically
+          lat={isSingleActivity ? latLonTupleSingle[0] : currentLocation?.latitude}
+          lon={isSingleActivity ? latLonTupleSingle[1] : currentLocation?.longitude}
+          selectedLocation={selectedLocation}
+          position={position}
+        />
+      ) : null}
+
+      {activityFromBackMap ? (
+        <RecenterAutomatically
+          lat={activityFromBackMap?.location?.coordinates?.lat}
+          lon={activityFromBackMap?.location?.coordinates?.lon}
+          selectedLocation={activityFromBackMap?.location}
+          position={position}
+        />
+      ) : null}
 
       {!isSingleActivity ? <UserLocationLoader isLoading={isUserLocationLoading} /> : null}
     </MapContainer>

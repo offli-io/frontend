@@ -4,8 +4,8 @@ import LockIcon from '@mui/icons-material/Lock';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
 import { Box, Typography, useTheme } from '@mui/material';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { CustomizationContext } from 'assets/theme/customization-provider';
-import { DrawerContext } from 'assets/theme/drawer-provider';
+import { CustomizationContext } from 'context/providers/customization-provider';
+import { DrawerContext } from 'context/providers/drawer-provider';
 import ImagePreviewModal from 'components/image-preview-modal/image-preview-modal';
 import Loader from 'components/loader';
 import { format, isAfter, isWithinInterval } from 'date-fns';
@@ -19,13 +19,14 @@ import ActivityActions from 'screens/explore-screen/components/activity-actions'
 import ActivityLeaveConfirmation from 'screens/explore-screen/components/activity-leave-confirmation';
 import { toast } from 'sonner';
 import { IActivity } from 'types/activities/activity.dto';
+import { ThemeOptionsEnumDto } from 'types/settings/theme-options.dto';
 import {
   addActivityToCalendar,
   changeActivityParticipantStatus,
   removePersonFromActivity
 } from '../../api/activities/requests';
 import userPlaceholder from '../../assets/img/user-placeholder.svg';
-import { AuthenticationContext } from '../../assets/theme/authentication-provider';
+import { AuthenticationContext } from '../../context/providers/authentication-provider';
 import { useGetApiUrl } from '../../hooks/use-get-api-url';
 import { useGoogleAuthorization } from '../../hooks/use-google-authorization';
 import { ActivityInviteStateEnum } from '../../types/activities/activity-invite-state-enum.dto';
@@ -53,13 +54,12 @@ interface ICustomizedLocationState {
 
 const ActivityDetailsScreen: React.FC<IProps> = () => {
   const { id } = useParams();
-  const { mode } = React.useContext(CustomizationContext);
+  const { theme } = React.useContext(CustomizationContext);
   const navigate = useNavigate();
   const location = useLocation();
   const shouldOpenInviteDrawer =
     (location?.state as ICustomizedLocationState)?.openInviteDrawer ?? false;
   const { toggleDrawer } = React.useContext(DrawerContext);
-  //const { setHeaderRightContent } = React.useContext(HeaderContext);
   const { userInfo } = React.useContext(AuthenticationContext);
   const { sendDismissActivity } = useDismissActivity({
     onSuccess: () => {
@@ -367,13 +367,14 @@ const ActivityDetailsScreen: React.FC<IProps> = () => {
               overflow: 'hidden',
               wordWrap: 'break-word',
               // filter: "invert(100%)",
-              textShadow: `1px 0px 1px black`,
-              ...(mode === 'light' ? { filter: 'invert(100%)' } : {}),
-              ...(mode === 'light'
+              // ...(theme === ThemeOptionsEnumDto.LIGHT ? { filter: 'invert(100%)' } : {}),
+              ...(theme === ThemeOptionsEnumDto.LIGHT
                 ? {
                     textShadow: ({ palette }) => `1px 1px 1px ${palette?.primary?.light}`
                   }
-                : {})
+                : {
+                    textShadow: ({ palette }) => `1px 1px 1px ${palette?.primary?.dark}`
+                  })
             }}>
             {activity?.title}
           </Typography>

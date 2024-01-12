@@ -24,13 +24,14 @@ export const loginUser = (values: ILoginRequestDto) => {
   return promise;
 };
 
-export const loginViaGoogle = (accessToken?: string, signal?: AbortSignal) => {
+export const loginViaGoogle = (googleAuthCode?: string, signal?: AbortSignal) => {
   const CancelToken = axios.CancelToken;
   const source = CancelToken.source();
+  const currentUrl = window.location.href.split('/').slice(0, -1).join('/');
 
   const promise = axios.post<ILoginResponseDto>(
     `/google/authorization`,
-    { googleBearerToken: accessToken },
+    { auth_code: googleAuthCode, googleBearerToken: '', redirect_uri: currentUrl },
     {
       cancelToken: source?.token
     }

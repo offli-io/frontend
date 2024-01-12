@@ -2,14 +2,14 @@ import { Box, SxProps, useTheme } from '@mui/material';
 import React from 'react';
 import { matchPath, useLocation, useNavigate } from 'react-router-dom';
 import { useSwipeable } from 'react-swipeable';
-import { AuthenticationContext } from '../assets/theme/authentication-provider';
+import { AuthenticationContext } from '../context/providers/authentication-provider';
 import BottomNavigator from '../components/bottom-navigator/bottom-navigator';
 import OffliHeader from '../components/offli-header/offli-header';
 import { useUser } from '../hooks/use-user';
 import Routes from '../routes/routes';
 import { ApplicationLocations } from '../types/common/applications-locations.dto';
 import { getAuthToken } from '../utils/token.util';
-import { HeaderContext } from './providers/header-provider';
+import { HeaderContext } from '../context/providers/header-provider';
 
 interface ILayoutProps {
   children?: React.ReactNode;

@@ -10,7 +10,7 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import * as yup from 'yup';
 import { loginUser, loginViaGoogle } from '../api/auth/requests';
-import { AuthenticationContext } from '../assets/theme/authentication-provider';
+import { AuthenticationContext } from '../context/providers/authentication-provider';
 import LabeledDivider from '../components/labeled-divider';
 import Logo from '../components/logo';
 import OffliBackButton from '../components/offli-back-button';
@@ -36,11 +36,13 @@ const LoginScreen: React.FC = () => {
   const { palette } = useTheme();
   const navigate = useNavigate();
   const {
-    googleToken,
+    // googleToken,
+    googleAuthCode,
     handleGoogleAuthorization,
     isLoading: isGoogleAuthorizationLoading
   } = useGoogleAuthorization({
-    from: GoogleAuthCodeFromEnumDto.LOGIN
+    from: GoogleAuthCodeFromEnumDto.LOGIN,
+    omitTokenGetting: true
   });
   const abortControllerRef = React.useRef<AbortController | null>(null);
 
@@ -102,12 +104,10 @@ const LoginScreen: React.FC = () => {
   );
 
   React.useEffect(() => {
-    if (googleToken) {
-      sendLoginViaGoogle(googleToken);
+    if (googleAuthCode) {
+      sendLoginViaGoogle(googleAuthCode);
     }
-  }, [googleToken]);
-
-  console.log(isGoogleAuthorizationLoading);
+  }, [googleAuthCode]);
 
   return (
     <>

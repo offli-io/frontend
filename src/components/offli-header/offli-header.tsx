@@ -10,7 +10,7 @@ import { NOT_EXACT_UNALLOWED_URLS } from '../../app/layout';
 import offliLogoDark from '../../assets/img/offli-logo-dark.svg';
 import offliLogoLight from '../../assets/img/offli-logo-light.svg';
 import userPlaceholder from '../../assets/img/user-placeholder.svg';
-import { AuthenticationContext } from '../../assets/theme/authentication-provider';
+import { AuthenticationContext } from '../../context/providers/authentication-provider';
 import { useNotifications } from '../../hooks/use-notifications';
 import { ApplicationLocations } from '../../types/common/applications-locations.dto';
 import { ICustomizedLocationStateDto } from '../../types/common/customized-location-state.dto';

@@ -10,12 +10,12 @@ import {
   TextField,
   Typography
 } from '@mui/material';
-import { LocationContext } from 'app/providers/location-provider';
+import { LocationContext } from 'context/providers/location-provider';
 import React from 'react';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { useDebounce } from 'use-debounce';
-import { HeaderContext } from '../../app/providers/header-provider';
-import { DrawerContext } from '../../assets/theme/drawer-provider';
+import { HeaderContext } from '../../context/providers/header-provider';
+import { DrawerContext } from '../../context/providers/drawer-provider';
 import ActivitySearchCard from '../../components/activity-search-card';
 import { useActivities } from '../../hooks/use-activities';
 import { IActivityListRestDto } from '../../types/activities/activity-list-rest.dto';

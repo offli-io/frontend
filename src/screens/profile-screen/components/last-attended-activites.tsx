@@ -1,16 +1,18 @@
 import { Box, Typography, useTheme } from '@mui/material';
+import Loader from 'components/loader';
 import MyActivityCard from 'components/my-activity-card';
+import { AuthenticationContext } from 'context/providers/authentication-provider';
 import React from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ActivitiyParticipantStatusEnum } from 'types/activities/activity-participant-status-enum.dto';
 import { ApplicationLocations } from 'types/common/applications-locations.dto';
 import { useGetLastAttendedActivities } from '../hooks/use-get-last-attended-activities';
-import Loader from 'components/loader';
-import { AuthenticationContext } from 'assets/theme/authentication-provider';
 
-interface ILastAttendedActivitiesProps {}
+interface ILastAttendedActivitiesProps {
+  isBuddy?: boolean;
+}
 
-const LastAttendedActivities: React.FC<ILastAttendedActivitiesProps> = () => {
+const LastAttendedActivities: React.FC<ILastAttendedActivitiesProps> = ({ isBuddy }) => {
   const { userInfo } = React.useContext(AuthenticationContext);
   const { palette } = useTheme();
   const navigate = useNavigate();
@@ -26,8 +28,13 @@ const LastAttendedActivities: React.FC<ILastAttendedActivitiesProps> = () => {
       enabled: !!id || !!userInfo?.id
     });
 
-  return !areLastAttendedActivitiesLoading &&
-    [...(lastAttendedActivties ?? [])].length < 1 ? null : (
+  // I am allowed to browse only through buddy last activities or mine
+  const allowedToDisplay = id ? isBuddy : true;
+
+  console.log(!allowedToDisplay);
+
+  return !allowedToDisplay ||
+    (!areLastAttendedActivitiesLoading && [...(lastAttendedActivties ?? [])].length < 1) ? null : (
     <Box
       sx={{
         width: '90%'

@@ -26,9 +26,9 @@ import {
   getActivitiesPromiseResolved,
   removePersonFromActivity
 } from '../../api/activities/requests';
-import { LocationContext } from '../../app/providers/location-provider';
-import { AuthenticationContext } from '../../assets/theme/authentication-provider';
-import { DrawerContext } from '../../assets/theme/drawer-provider';
+import { LocationContext } from '../../context/providers/location-provider';
+import { AuthenticationContext } from '../../context/providers/authentication-provider';
+import { DrawerContext } from '../../context/providers/drawer-provider';
 import ActivityCard from '../../components/activity-card';
 import MyActivityCard from '../../components/my-activity-card';
 import OffliButton from '../../components/offli-button';

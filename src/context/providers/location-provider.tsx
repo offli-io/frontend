@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { AuthenticationContext } from '../../assets/theme/authentication-provider';
+import { AuthenticationContext } from './authentication-provider';
 import { useUser } from '../../hooks/use-user';
 import { ILocation } from '../../types/activities/location.dto';
 

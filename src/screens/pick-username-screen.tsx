@@ -2,7 +2,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { Box, TextField, Typography } from '@mui/material';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { registerViaGoogle } from 'api/auth/requests';
-import { AuthenticationContext } from 'assets/theme/authentication-provider';
+import { AuthenticationContext } from 'context/providers/authentication-provider';
 import React from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -93,10 +93,14 @@ const PickUsernameScreen = () => {
       ]);
 
       if (type === PickUsernameTypeEnum.GOOGLE) {
-        const googleToken = queryClient.getQueryData<string | undefined>(['google-token']);
+        const currentUrl = window.location.href.split('/').slice(0, -1).join('/');
+
+        const authCode = queryClient.getQueryData<string | undefined>(['google-token']);
         sendRegisterViaGoogle({
+          googleBearerToken: '',
           username: values?.username,
-          googleBearerToken: googleToken
+          auth_code: authCode,
+          redirect_uri: currentUrl
         });
       } else {
         sendPresignupUser({

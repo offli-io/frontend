@@ -4,7 +4,7 @@ import LockIcon from '@mui/icons-material/Lock';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
 import { Typography, useTheme } from '@mui/material';
 import { Box } from '@mui/system';
-import { AuthenticationContext } from 'assets/theme/authentication-provider';
+import { AuthenticationContext } from 'context/providers/authentication-provider';
 import { useActivities } from 'hooks/use-activities';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';

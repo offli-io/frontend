@@ -5,7 +5,7 @@ import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { markNotificationAsSeen } from '../../api/notifications/requests';
-import { AuthenticationContext } from '../../assets/theme/authentication-provider';
+import { AuthenticationContext } from '../../context/providers/authentication-provider';
 import NotificationRequest from '../../components/notification-request';
 import { useNotifications } from '../../hooks/use-notifications';
 import { ApplicationLocations } from '../../types/common/applications-locations.dto';

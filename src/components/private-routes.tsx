@@ -1,5 +1,5 @@
 import { Outlet, Navigate } from 'react-router-dom';
-import { AuthenticationContext } from '../assets/theme/authentication-provider';
+import { AuthenticationContext } from '../context/providers/authentication-provider';
 import React from 'react';
 import { getAuthToken } from '../utils/token.util';
 

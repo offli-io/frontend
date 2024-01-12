@@ -3,7 +3,7 @@ import { AxiosResponse } from 'axios';
 import { toast } from 'sonner';
 import { IActivitiesParamsDto } from 'types/activities/activities-params.dto';
 import { getActivity, getActivityAnonymous } from '../api/activities/requests';
-import { AuthenticationContext } from 'assets/theme/authentication-provider';
+import { AuthenticationContext } from 'context/providers/authentication-provider';
 import React from 'react';
 
 export const ACTIVITIES_QUERY_KEY = 'activities';

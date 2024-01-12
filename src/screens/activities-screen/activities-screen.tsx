@@ -2,7 +2,7 @@ import { Tab, Tabs, Typography } from '@mui/material';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { getActivitiesPromiseResolved } from 'api/activities/requests';
 import { LayoutContext } from 'app/layout';
-import { AuthenticationContext } from 'assets/theme/authentication-provider';
+import { AuthenticationContext } from 'context/providers/authentication-provider';
 import ActivityCard from 'components/activity-card';
 import Loader from 'components/loader';
 import { PAGED_ACTIVITIES_QUERY_KEY } from 'hooks/use-activities-infinite-query';

@@ -10,7 +10,7 @@ import 'react-image-crop/dist/ReactCrop.css';
 import { toast } from 'sonner';
 import { uploadFile } from '../../../api/activities/requests';
 import activityPhotoImg from '../../../assets/img/activity-photo.svg';
-import { DrawerContext } from '../../../assets/theme/drawer-provider';
+import { DrawerContext } from '../../../context/providers/drawer-provider';
 import LabeledDivider from '../../../components/labeled-divider';
 import OffliButton from '../../../components/offli-button';
 import { useGetApiUrl } from '../../../hooks/use-get-api-url';

@@ -3,21 +3,24 @@ import InfoIcon from '@mui/icons-material/Info';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { Box, Switch } from '@mui/material';
 import { useQueryClient } from '@tanstack/react-query';
+import { useUserSettings } from 'hooks/use-user-settings';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { AuthenticationContext } from '../../assets/theme/authentication-provider';
-import { CustomizationContext } from '../../assets/theme/customization-provider';
 import MenuItem from '../../components/menu-item';
+import { AuthenticationContext } from '../../context/providers/authentication-provider';
 import { ApplicationLocations } from '../../types/common/applications-locations.dto';
 import { SettingsTypeEnumDto } from '../../types/common/settings-type-enum.dto';
 import { setAuthToken } from '../../utils/token.util';
+import { useToggleTheme } from './hooks/use-toggle-theme';
 import { SettingsItemsObject } from './settings-items-object';
+import { ThemeOptionsEnumDto } from 'types/settings/theme-options.dto';
 
 const SettingsScreen = () => {
   const { setStateToken, setUserInfo } = React.useContext(AuthenticationContext);
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const { setMode, mode } = React.useContext(CustomizationContext);
+  const { data: { data: { theme = ThemeOptionsEnumDto.LIGHT } = {} } = {} } = useUserSettings();
+  const { handleToggleTheme } = useToggleTheme();
 
   const handleLogout = React.useCallback(() => {
     //TODO double check if any security issues aren't here I am not sure about using tokens from 2 places
@@ -69,8 +72,14 @@ const SettingsScreen = () => {
           icon={<DarkModeIcon color="primary" />}
           headerRight={
             <Switch
-              checked={mode === 'dark'}
-              onChange={() => setMode(mode === 'dark' ? 'light' : 'dark')}
+              checked={theme === ThemeOptionsEnumDto.DARK}
+              onChange={() =>
+                handleToggleTheme(
+                  theme === ThemeOptionsEnumDto.LIGHT
+                    ? ThemeOptionsEnumDto.DARK
+                    : ThemeOptionsEnumDto.LIGHT
+                )
+              }
             />
           }
         />

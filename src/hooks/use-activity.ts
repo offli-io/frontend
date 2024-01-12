@@ -1,9 +1,9 @@
 import { useQuery } from '@tanstack/react-query';
-import { AuthenticationContext } from 'assets/theme/authentication-provider';
 import React from 'react';
 import { toast } from 'sonner';
 import { IActivity } from 'types/activities/activity.dto';
 import { getActivity, getActivityAnonymous } from '../api/activities/requests';
+import { AuthenticationContext } from 'context/providers/authentication-provider';
 
 export const ACTIVITY_QUERY_KEY = 'activity';
 
