@@ -225,7 +225,7 @@ const ActivityDetailsScreen: React.FC<IProps> = () => {
         case ActivityActionsTypeEnumDto.INVITE:
           return toggleDrawer({
             open: true,
-            content: <ActivityInviteDrawerContent activityId={Number(id)} />
+            content: <ActivityInviteDrawerContent />
           });
         default:
           return;
@@ -253,13 +253,14 @@ const ActivityDetailsScreen: React.FC<IProps> = () => {
   }, [state]);
 
   React.useEffect(() => {
+    //invite drawer once you create activity
     if (shouldOpenInviteDrawer) {
       toggleDrawer({
         open: true,
         content: <ActivityInviteDrawerContent activityId={Number(id)} />
       });
     }
-  }, [shouldOpenInviteDrawer, id]);
+  }, [shouldOpenInviteDrawer, id, activity?.title]);
 
   const handleGridClick = React.useCallback(
     (action: IGridAction) => {
@@ -386,7 +387,7 @@ const ActivityDetailsScreen: React.FC<IProps> = () => {
         }}>
         <ActivityActionButtons
           onJoinClick={handleJoinButtonClick}
-          onManageClick={handleActivityActionsCLick}
+          onMoreClick={() => handleActivityActionsCLick(activity)}
           areActionsLoading={areActionsLoading}
           isCreator={isCreator}
           isAlreadyParticipant={isAlreadyParticipant}
@@ -439,12 +440,13 @@ const ActivityDetailsScreen: React.FC<IProps> = () => {
                 size={0.8}
                 style={{
                   position: 'absolute',
-                  left: -4,
-                  top: -7,
+                  left: -8,
+                  top: -8,
                   fontSize: 12,
                   color: palette?.primary?.main,
-                  border: '0.5px solid palette?.background?.default',
+                  border: '1px solid palette?.background?.default',
                   borderRadius: '50%',
+                  padding: 1,
                   backgroundColor: palette?.background?.default
                   // boxShadow: shadows[1],
                 }}

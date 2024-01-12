@@ -109,7 +109,8 @@ const createCustomizationTheme = (userTheme: ThemeOptionsEnumDto) => {
             fontFamily: 'Instagram Sans'
           },
           h6: {
-            fontSize: 16
+            fontSize: 16,
+            fontWeight: '400'
           },
           subtitle1: {
             fontSize: 14

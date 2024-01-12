@@ -21,7 +21,7 @@ const MapControl: React.FC = () => {
     if ('geolocation' in navigator) {
       navigator.geolocation.getCurrentPosition((position) => {
         const { latitude, longitude } = position.coords;
-        map.setView([latitude, longitude], 15);
+        map.setView([latitude, longitude], 13);
       });
     } else {
       toast.error('Geolocation is not available');

@@ -45,7 +45,7 @@ const ActionButton: React.FC<IProps> = ({
       {href ? (
         <Link to={href!} style={{ textDecoration: 'none' }}>
           <Typography
-            variant="h6"
+            variant="h5"
             sx={{
               color: 'primary.main',
               fontWeight: 'bold'
@@ -55,7 +55,7 @@ const ActionButton: React.FC<IProps> = ({
         </Link>
       ) : (
         <Typography
-          variant="h6"
+          variant="h5"
           sx={{
             color: 'primary.main',
             fontWeight: 'bold'

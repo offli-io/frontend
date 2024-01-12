@@ -11,6 +11,8 @@ import { AuthenticationContext } from '../../../context/providers/authentication
 import BuddyItemInvite from '../../../components/buddy-item-invite';
 import { ActivityInviteStateEnum } from '../../../types/activities/activity-invite-state-enum.dto';
 import { IPerson } from '../../../types/activities/activity.dto';
+import InviteActionButtons from './invite-action-buttons';
+import { useActivity } from 'hooks/use-activity';
 
 interface IActivityTypeFormProps {
   activityId?: number;
@@ -21,6 +23,9 @@ export const ActivityInviteDrawerContent: React.FC<IActivityTypeFormProps> = ({ 
   const [invitedBuddies, setInvitedBuddies] = React.useState<number[]>([]);
   const [queryString, setQueryString] = React.useState<string | undefined>();
   const [queryStringDebounced] = useDebounce(queryString, 1000);
+  const { data: { data: activityData = {} } = {}, isLoading: isActivityLoading } = useActivity({
+    id: Number(activityId)
+  });
 
   const { buddies, isLoading } = useBuddies({
     text: queryStringDebounced
@@ -109,12 +114,17 @@ export const ActivityInviteDrawerContent: React.FC<IActivityTypeFormProps> = ({ 
           placeholder="Type buddy username"
           data-testid="activity-invite-buddies-input"
         />
+        <InviteActionButtons
+          activityTitle={activityData?.title}
+          areActionsLoading={isActivityLoading}
+        />
+
         {buddies && buddies?.length < 1 && !isLoading ? (
           <Box
             sx={{
-              height: 100,
+              height: 220,
               width: '100%',
-              my: 3,
+              my: 1,
               display: 'flex',
               justifyContent: 'center',
               alignItems: 'center',

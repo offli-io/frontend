@@ -6,12 +6,12 @@ import { AuthenticationContext } from 'context/providers/authentication-provider
 import { DrawerContext } from 'context/providers/drawer-provider';
 import ImagePreviewModal from 'components/image-preview-modal/image-preview-modal';
 import Loader from 'components/loader';
-import OffliButton from 'components/offli-button';
 import { useGetApiUrl } from 'hooks/use-get-api-url';
 import React from 'react';
 import InstagramDrawerActions from 'screens/profile-screen/components/instagram-drawer-actions';
 import { toast } from 'sonner';
 import ProfileGalleryImageUploadContent from './components/profile-gallery-image-upload-content';
+import ActionButton from 'components/action-button';
 
 interface IProfileGalleryProps {
   photoUrls?: string[];
@@ -207,13 +207,12 @@ const ProfileGallery: React.FC<IProfileGalleryProps> = ({
             alignItems: 'center',
             justifyContent: 'center'
           }}>
-          <OffliButton
+          <ActionButton
             onClick={openInstagramDrawer}
             // size="small"
-            sx={{ mt: 1, fontSize: 18 }}
-            startIcon={<InstagramIcon sx={{ color: 'inherit', fontSize: '18px !important' }} />}>
-            Connect Instagram
-          </OffliButton>
+            sx={{ mt: 1, fontSize: 20 }}
+            startIcon={<InstagramIcon sx={{ color: 'inherit', fontSize: '24px !important' }} />}
+            text="Connect Instagram"></ActionButton>
           <Typography
             variant="subtitle1"
             sx={{ textAlign: 'center', px: 4, mt: 1, color: 'primary.main' }}>

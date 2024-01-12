@@ -20,6 +20,7 @@ import { DATE_TIME_FORMAT } from 'utils/common-constants';
 import { MobileCarousel } from '../../../components/mobile-carousel';
 import OffliButton from '../../../components/offli-button';
 import { calculateDateUsingDuration } from '../utils/calculate-date-using-duration.util';
+import { DurationLabelMap } from '../utils/duration-label-map';
 import { generateDateSlots } from '../utils/generate-date-slots.util';
 import { generateOptionsOrder } from '../utils/generate-options-order.util';
 
@@ -98,7 +99,6 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
       }));
       const _fromOptions = [...fromOptions, item];
       const addedItemIndex = _fromOptions.findIndex((option) => option.id === item.id);
-
       _fromOptions[addedItemIndex] = {
         ..._fromOptions[addedItemIndex],
         selected: true
@@ -239,17 +239,17 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
               <FormControlLabel
                 value={ActivityDurationTypeEnumDto.MINUTES}
                 control={<Radio />}
-                label={ActivityDurationTypeEnumDto.MINUTES}
+                label={DurationLabelMap[ActivityDurationTypeEnumDto.MINUTES]}
               />
               <FormControlLabel
                 value={ActivityDurationTypeEnumDto.HOURS}
                 control={<Radio color="primary" />}
-                label={ActivityDurationTypeEnumDto.HOURS}
+                label={DurationLabelMap[ActivityDurationTypeEnumDto.HOURS]}
               />
               <FormControlLabel
                 value={ActivityDurationTypeEnumDto.DAYS}
                 control={<Radio color="primary" />}
-                label={ActivityDurationTypeEnumDto.DAYS}
+                label={DurationLabelMap[ActivityDurationTypeEnumDto.DAYS]}
               />
             </RadioGroup>
           )}

@@ -1,5 +1,6 @@
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import MenuIcon from '@mui/icons-material/Menu';
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import HistoryIcon from '@mui/icons-material/History';
 import SettingsIcon from '@mui/icons-material/Settings';
@@ -11,7 +12,7 @@ interface IActivityActionButtonsProps {
   isAlreadyParticipant?: boolean;
   isCreator?: boolean;
   onJoinClick?: () => void;
-  onManageClick?: () => void;
+  onMoreClick?: () => void;
   areActionsLoading?: boolean;
   isPublic?: boolean;
   hasEnded?: boolean;
@@ -23,7 +24,7 @@ const ActivityActionButtons: React.FC<IActivityActionButtonsProps> = ({
   isAlreadyParticipant,
   isCreator,
   onJoinClick,
-  onManageClick,
+  onMoreClick,
   areActionsLoading,
   //TODO just get activity and define all these properties in this component
   isPublic,
@@ -74,15 +75,15 @@ const ActivityActionButtons: React.FC<IActivityActionButtonsProps> = ({
                 bgcolor: 'primary.light'
               }
             }}
-            onClick={onManageClick}
+            onClick={onMoreClick}
             startIcon={
-              <SettingsIcon
+              <MenuIcon
                 sx={{
                   color: 'primary.main'
                 }}
               />
             }>
-            Manage
+            More
           </OffliButton>
         </>
       ) : null}

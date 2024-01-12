@@ -100,7 +100,6 @@ const ActivitiesScreen = () => {
         // scrollButtons="auto"
         sx={{
           mt: 1,
-          mx: 1,
           p: 0,
           '& .MuiTab-root': {
             textTransform: 'capitalize',

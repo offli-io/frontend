@@ -151,7 +151,7 @@ const Map: React.FC<IMapScreenProps> = ({
   const handleMarkerClick = (activityId?: number) => {
     toggleDrawer({
       open: true,
-      content: <MapDrawerDetail activityId={activityId} />
+      content: <MapDrawerDetail activityId={activityId} userLocation={currentLocation} />
     });
   };
 

@@ -1,14 +1,16 @@
-import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
 import NearMeIcon from '@mui/icons-material/NearMe';
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
+import TimelapseIcon from '@mui/icons-material/Timelapse';
 import { Typography } from '@mui/material';
 import { Box, styled } from '@mui/system';
 import React from 'react';
 
 interface IProps {
   participantsNum?: string;
-  dateTime?: string;
+  durationDays?: string;
+  durationHours?: string;
+  durationMinutes?: string;
   distance?: number | null;
   price?: number | null;
 }
@@ -16,29 +18,35 @@ interface IProps {
 const StyledBox = styled(Box)(() => ({
   display: 'flex',
   alignItems: 'center',
-  justifyContent: 'center',
+  justifyContent: 'start',
   flexDirection: 'column',
-  margin: 5,
   padding: '10px !important',
-  width: '100%'
+  width: '70px'
 }));
 
 const StyledText = styled(Typography)(() => ({
-  width: '100%',
-  whiteSpace: 'nowrap',
+  width: '70px',
+  wordWrap: 'break-word',
   overflow: 'hidden',
   display: 'block',
   textOverflow: 'ellipsis',
-  marginTop: 8
+  marginTop: 5
 }));
 
-const ActivityDetailTiles: React.FC<IProps> = ({ participantsNum, dateTime, distance, price }) => {
+const ActivityDetailTiles: React.FC<IProps> = ({
+  participantsNum,
+  durationDays,
+  durationHours,
+  durationMinutes,
+  distance,
+  price
+}) => {
   return (
     <Box
       sx={{
         display: 'flex',
         flexDirection: 'row',
-        alignItems: 'stretch',
+        alignItems: 'top',
         justifyContent: 'space-evenly',
         mb: 1
       }}>
@@ -49,21 +57,37 @@ const ActivityDetailTiles: React.FC<IProps> = ({ participantsNum, dateTime, dist
         </StyledText>
       </StyledBox>
       <StyledBox>
-        <CalendarTodayIcon sx={{ color: 'primary.main' }} />
+        <TimelapseIcon sx={{ color: 'primary.main' }} />
         <StyledText align="center" variant="subtitle1">
-          {dateTime}
+          {durationDays !== undefined && (
+            <>
+              {durationDays}
+              <br />
+            </>
+          )}
+          {durationHours !== undefined && (
+            <>
+              {durationHours}
+              <br />
+            </>
+          )}
+          {durationMinutes !== undefined && <>{durationMinutes}</>}
         </StyledText>
       </StyledBox>
-      <StyledBox>
-        <NearMeIcon sx={{ color: 'primary.main' }} />
-        <StyledText align="center" variant="subtitle1">
-          {distance ? `${distance} km` : '-'}
-        </StyledText>
-      </StyledBox>
+      {!!distance && (
+        <StyledBox>
+          <NearMeIcon sx={{ color: 'primary.main' }} />
+          <StyledText align="center" variant="subtitle1">
+            {distance > 1000
+              ? `${(distance / 1000).toFixed(0)} km\nfrom you`
+              : `${distance} m\nfrom you`}
+          </StyledText>
+        </StyledBox>
+      )}
       <StyledBox>
         <MonetizationOnIcon sx={{ color: 'primary.main' }} />
         <StyledText align="center" variant="subtitle1">
-          {price}
+          {price === 0 ? 'Free' : price}
         </StyledText>
       </StyledBox>
     </Box>
