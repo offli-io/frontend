@@ -2,8 +2,7 @@ import { mdiCrown } from '@mdi/js';
 import Icon from '@mdi/react';
 import LockIcon from '@mui/icons-material/Lock';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
-import MenuIcon from '@mui/icons-material/Menu';
-import { Box, IconButton, Typography, useTheme } from '@mui/material';
+import { Box, Typography, useTheme } from '@mui/material';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { CustomizationContext } from 'assets/theme/customization-provider';
 import { DrawerContext } from 'assets/theme/drawer-provider';
@@ -25,7 +24,6 @@ import {
   changeActivityParticipantStatus,
   removePersonFromActivity
 } from '../../api/activities/requests';
-import { HeaderContext } from '../../app/providers/header-provider';
 import userPlaceholder from '../../assets/img/user-placeholder.svg';
 import { AuthenticationContext } from '../../assets/theme/authentication-provider';
 import { useGetApiUrl } from '../../hooks/use-get-api-url';
@@ -61,7 +59,7 @@ const ActivityDetailsScreen: React.FC<IProps> = () => {
   const shouldOpenInviteDrawer =
     (location?.state as ICustomizedLocationState)?.openInviteDrawer ?? false;
   const { toggleDrawer } = React.useContext(DrawerContext);
-  const { setHeaderRightContent } = React.useContext(HeaderContext);
+  //const { setHeaderRightContent } = React.useContext(HeaderContext);
   const { userInfo } = React.useContext(AuthenticationContext);
   const { sendDismissActivity } = useDismissActivity({
     onSuccess: () => {
@@ -224,6 +222,11 @@ const ActivityDetailsScreen: React.FC<IProps> = () => {
               />
             )
           });
+        case ActivityActionsTypeEnumDto.INVITE:
+          return toggleDrawer({
+            open: true,
+            content: <ActivityInviteDrawerContent />
+          });
         default:
           return;
       }
@@ -242,17 +245,6 @@ const ActivityDetailsScreen: React.FC<IProps> = () => {
   );
 
   React.useEffect(() => {
-    setHeaderRightContent(
-      <IconButton
-        color="primary"
-        data-testid="toggle-activity-menu-btn"
-        onClick={() => handleActivityActionsCLick(activity)}>
-        <MenuIcon />
-      </IconButton>
-    );
-  }, [activity, handleActivityActionsCLick, setHeaderRightContent]);
-
-  React.useEffect(() => {
     if (state) {
       navigate(`${ApplicationLocations.ACTIVITY_DETAIL}/${state?.id}`, {
         state: { from: ApplicationLocations.EXPLORE }
@@ -261,13 +253,14 @@ const ActivityDetailsScreen: React.FC<IProps> = () => {
   }, [state]);
 
   React.useEffect(() => {
+    //invite drawer once you create activity
     if (shouldOpenInviteDrawer) {
       toggleDrawer({
         open: true,
         content: <ActivityInviteDrawerContent activityId={Number(id)} />
       });
     }
-  }, [shouldOpenInviteDrawer, id]);
+  }, [shouldOpenInviteDrawer, id, activity?.title]);
 
   const handleGridClick = React.useCallback(
     (action: IGridAction) => {
@@ -393,6 +386,7 @@ const ActivityDetailsScreen: React.FC<IProps> = () => {
         }}>
         <ActivityActionButtons
           onJoinClick={handleJoinButtonClick}
+          onMoreClick={() => handleActivityActionsCLick(activity)}
           areActionsLoading={areActionsLoading}
           isCreator={isCreator}
           isAlreadyParticipant={isAlreadyParticipant}
@@ -445,12 +439,13 @@ const ActivityDetailsScreen: React.FC<IProps> = () => {
                 size={0.8}
                 style={{
                   position: 'absolute',
-                  left: -4,
-                  top: -7,
+                  left: -8,
+                  top: -8,
                   fontSize: 12,
                   color: palette?.primary?.main,
-                  border: '0.5px solid palette?.background?.default',
+                  border: '1px solid palette?.background?.default',
                   borderRadius: '50%',
+                  padding: 1,
                   backgroundColor: palette?.background?.default
                   // boxShadow: shadows[1],
                 }}

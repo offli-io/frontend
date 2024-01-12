@@ -62,6 +62,7 @@ const CreateActivityScreen = () => {
         //TODO query invalidation doesnt work - activities are not refetched!
         queryClient.invalidateQueries({ queryKey: ['activities'] });
         queryClient.invalidateQueries({ queryKey: ['participant-activities'] });
+        queryClient.invalidateQueries({ queryKey: ['mapview-activities'] });
         setPendingRedirectActivityId(data?.data?.id);
         setActiveStep((activeStep) => activeStep + 1);
       },

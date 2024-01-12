@@ -25,13 +25,13 @@ export const calculateDistance = (
   const radius: number = 6571;
 
   // Haversine equation
-  const distanceInKilometers: number =
+  const distanceInMeters: number =
     Math.acos(
       Math.sin(startingLat) * Math.sin(destinationLat) +
         Math.cos(startingLat) * Math.cos(destinationLat) * Math.cos(startingLong - destinationLong)
     ) * radius;
 
-  return Math.round(Math.floor(distanceInKilometers * 100) / 100);
+  return Math.floor(distanceInMeters * 1000);
 };
 
 // export function calculateDistance(

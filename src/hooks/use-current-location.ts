@@ -1,6 +1,10 @@
+import React from 'react';
+
 export const useCurrentLocation = () => {
-  return navigator.geolocation.getCurrentPosition(function (position) {
-    console.log('Current location', position.coords);
-    return position.coords;
+  const [currentCoords, setCurrentCoords] = React.useState<null | GeolocationCoordinates>(null);
+  navigator.geolocation.getCurrentPosition(function (position) {
+    setCurrentCoords(position.coords);
   });
+
+  return currentCoords;
 };

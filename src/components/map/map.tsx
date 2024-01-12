@@ -133,7 +133,7 @@ const Map: React.FC<ILabeledTileProps> = ({
   const handleMarkerClick = (activityId?: number) => {
     toggleDrawer({
       open: true,
-      content: <MapDrawerDetail activityId={activityId} />
+      content: <MapDrawerDetail activityId={activityId} userLocation={currentLocation} />
     });
   };
 
