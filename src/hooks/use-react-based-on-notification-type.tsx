@@ -6,11 +6,11 @@ import { toast } from 'sonner';
 import { NotificationTypeEnum } from 'types/notifications/notification-type-enum';
 import { NavigateFunction, useNavigate } from 'react-router-dom';
 import { ApplicationLocations } from 'types/common/applications-locations.dto';
-import { DrawerContext, IDrawerData } from 'assets/theme/drawer-provider';
 import FeedbackDrawer from '../screens/notifications-screen/components/feedback-drawer';
 import { ICreatorFeedback } from 'types/users/user-feedback.dto';
 import { AxiosResponse } from 'axios';
 import { sendUserFeedback } from '../api/users/requests';
+import { DrawerContext, IDrawerData } from '../context/providers/drawer-provider';
 
 const reactAfter = (
   notification: INotificationDto,
@@ -65,7 +65,7 @@ const reactAfter = (
         )
       });
     } else {
-      // probably just one case - activity cancelled
+      // probably only one case - activity cancelled
       navigate(
         `${ApplicationLocations.EXPLORE}/request/${notification?.properties?.activity?.id}`,
         {

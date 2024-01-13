@@ -22,7 +22,7 @@ export const calculateDistance = (
   const destinationLong = degreesToRadians(destination.lon ?? 0);
 
   // Radius of the Earth in kilometers
-  const radius: number = 6571;
+  const radius = 6571;
 
   // Haversine equation
   const distanceInMeters: number =
