@@ -62,15 +62,15 @@ const ChooseUsernameGooglePage = () => {
     }
   );
 
-  const handleFormSubmit = React.useCallback((values: IChooseUsernameValues) => {
-    sendUpdateUsername(values);
-  }, []);
-
   React.useEffect(() => {
     if (usernameAlreadyTaken?.data) {
       setError('username', { message: 'Username already in use' });
     }
   }, [usernameAlreadyTaken]);
+
+  const handleFormSubmit = React.useCallback((values: IChooseUsernameValues) => {
+    sendUpdateUsername(values);
+  }, []);
 
   return (
     <form onSubmit={handleSubmit(handleFormSubmit)} style={{ height: '100%' }}>

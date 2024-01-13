@@ -5,6 +5,7 @@ import {
   ISubscriptionDeviceDto,
   ISubscriptionDto
 } from '../../types/notifications/subscription.dto';
+import { ICreatorFeedback } from '../../types/users/user-feedback.dto';
 
 export const getNotifications = (userId: number) => {
   const CancelToken = axios.CancelToken;
@@ -26,20 +27,6 @@ export const markNotificationAsSeen = (notificationId: number) => {
   const promise = axios.patch<INotificationsResponse>(
     `/notifications/${notificationId}`,
     { seen: true },
-    {
-      cancelToken: source?.token
-    }
-  );
-  return promise;
-};
-
-export const sendUserFeedback = (values: ICreatorFeedback) => {
-  const CancelToken = axios.CancelToken;
-  const source = CancelToken.source();
-
-  const promise = axios.post<void>(
-    `/users/${values.user_id}/feedback`,
-    { activity_id: values.activity_id, feedback_value: values.feedback_value },
     {
       cancelToken: source?.token
     }
@@ -99,23 +86,23 @@ const urlBase64ToUint8Array = (base64String: string) => {
 
 // TODO: Handle exceptions within all API call functions below
 
-const getSubscription = async (userId: number): Promise<ISubscriptionDto> => {
-  const url = `/notifications/subscriptions`;
-  let response = await axios.get<ISubscriptionDto>(url, { params: { userId: userId } });
-  return response?.data;
-};
-
-const putSubscription = async (subscription: ISubscriptionDto) => {
-  const url = `/notifications/subscriptions`;
-  await axios.put(url, subscription, { params: { userId: subscription.user_id } });
-};
+// const getSubscription = async (userId: number): Promise<ISubscriptionDto> => {
+//   const url = `/notifications/subscriptions`;
+//   const response = await axios.get<ISubscriptionDto>(url, { params: { userId: userId } });
+//   return response?.data;
+// };
+//
+// const putSubscription = async (subscription: ISubscriptionDto) => {
+//   const url = `/notifications/subscriptions`;
+//   await axios.put(url, subscription, { params: { userId: subscription.user_id } });
+// };
 
 const putSubscriptionDevice = async (userId: number, subscription: ISubscriptionDeviceDto) => {
   const url = `/notifications/subscriptions/devices`;
   await axios.put(url, subscription, { params: { userId: userId } });
 };
 
-const removeSubscriptionDevice = async (userId: number, deviceId: number) => {
-  const url = `/notifications/subscriptions/devices/${deviceId}`;
-  await axios.delete(url, { params: { userId: userId } });
-};
+// const removeSubscriptionDevice = async (userId: number, deviceId: number) => {
+//   const url = `/notifications/subscriptions/devices/${deviceId}`;
+//   await axios.delete(url, { params: { userId: userId } });
+// };

@@ -5,6 +5,8 @@ import { BuddyRequestActionEnum } from '../../types/users/buddy-request-action-e
 import { IBuddyStateResponseDto } from '../../types/users/buddy-state-response.dto';
 import { IUpdateUserRequestDto } from '../../types/users/update-user-request.dto';
 import { IEmailUsernamePassword, IEmailVerificationCode } from '../../types/users/user.dto';
+import { ICreatorFeedback } from '../../types/users/user-feedback.dto';
+import { IUserStatisticsDto } from '../../types/users/user-statistics.dto';
 
 export const preCreateUser = async (values: IEmailUsernamePassword) => {
   const CancelToken = axios.CancelToken;
@@ -222,5 +224,29 @@ export const unlinkInstagram = (userId?: number) => {
   //     source.cancel('Query was cancelled by React Query')
   //   })
 
+  return promise;
+};
+
+export const getUserStats = (userId: number) => {
+  const CancelToken = axios.CancelToken;
+  const source = CancelToken.source();
+
+  const promise = axios.get<IUserStatisticsDto>(`/users/${userId}/stats`, {
+    cancelToken: source?.token
+  });
+  return promise;
+};
+
+export const sendUserFeedback = (values: ICreatorFeedback) => {
+  const CancelToken = axios.CancelToken;
+  const source = CancelToken.source();
+
+  const promise = axios.post<void>(
+    `/users/${values.user_id}/feedback`,
+    { activity_id: values.activity_id, feedback_value: values.feedback_value },
+    {
+      cancelToken: source?.token
+    }
+  );
   return promise;
 };

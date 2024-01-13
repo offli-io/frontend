@@ -1,6 +1,11 @@
 import { IActivity, IPerson } from '../activities/activity.dto';
 import { NotificationTypeEnum } from './notification-type-enum';
 
+interface INotificationChanges {
+  key?: string;
+  old?: string;
+  new?: string;
+}
 export interface INotificationDto {
   id: number;
   user_id: number;
@@ -10,6 +15,7 @@ export interface INotificationDto {
   properties: {
     activity?: IActivity;
     user?: IPerson;
+    changes?: INotificationChanges[];
     // TODO: Activity changes
   };
 }
