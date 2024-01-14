@@ -1,28 +1,14 @@
 import React from 'react';
-import { UseMutateFunction, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { INotificationDto } from 'types/notifications/notification.dto';
 import { markNotificationAsSeen } from 'api/notifications/requests';
 import { toast } from 'sonner';
 import { NotificationTypeEnum } from 'types/notifications/notification-type-enum';
 import { NavigateFunction, useNavigate } from 'react-router-dom';
 import { ApplicationLocations } from 'types/common/applications-locations.dto';
-import FeedbackDrawer from '../screens/notifications-screen/components/feedback-drawer';
-import { ICreatorFeedback } from 'types/users/user-feedback.dto';
-import { AxiosResponse } from 'axios';
-import { sendUserFeedback } from '../api/users/requests';
-import { DrawerContext, IDrawerData } from '../context/providers/drawer-provider';
+import { ActivityStatusEnumDto } from '../types/activities/activity-status-enum.dto';
 
-const reactAfter = (
-  notification: INotificationDto,
-  navigate: NavigateFunction,
-  toggleDrawer: (drawerData: IDrawerData) => void,
-  sendFeedbackOnCreator: UseMutateFunction<
-    AxiosResponse<void, any>,
-    unknown,
-    ICreatorFeedback,
-    unknown
-  >
-) => {
+const reactAfter = (notification: INotificationDto, navigate: NavigateFunction) => {
   const notificationId = notification.id;
 
   if (notification?.type === NotificationTypeEnum.ACTIVITY_INV) {
@@ -41,29 +27,20 @@ const reactAfter = (
     });
   } else if (notification?.type === NotificationTypeEnum.ACTIVITY_CHANGE) {
     if (
-      notification?.properties?.changes?.[0]?.old === 'ongoing' &&
-      notification?.properties?.changes?.[0]?.new === 'completed'
+      notification?.properties?.changes?.[0]?.old === ActivityStatusEnumDto.ONGOING &&
+      notification?.properties?.changes?.[0]?.new === ActivityStatusEnumDto.COMPLETED
     ) {
       // feedback request
-      const user = notification?.properties?.user;
-      const activity = notification?.properties?.activity;
-
-      toggleDrawer({
-        open: true,
-        content: (
-          <FeedbackDrawer
-            creator={user}
-            activity={activity}
-            onFeedbackButtonClick={(value) =>
-              sendFeedbackOnCreator({
-                activity_id: activity?.id,
-                user_id: user?.id,
-                feedback_value: value
-              })
-            }
-          />
-        )
-      });
+      navigate(
+        `${ApplicationLocations.EXPLORE}/request/${notification?.properties?.activity?.id}`,
+        {
+          state: {
+            from: '/notifications',
+            notificationId,
+            openFeedbackDrawer: true
+          }
+        }
+      );
     } else {
       // probably only one case - activity cancelled
       navigate(
@@ -82,7 +59,6 @@ const reactAfter = (
 export const useReactBasedOnNotificationType = () => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
-  const { toggleDrawer } = React.useContext(DrawerContext);
 
   // const abortControllerRef = React.useRef<AbortController | null>(null);
 
@@ -91,24 +67,8 @@ export const useReactBasedOnNotificationType = () => {
     (notification: INotificationDto) => markNotificationAsSeen(notification?.id),
     {
       onSuccess: (data, variables) => {
-        queryClient.invalidateQueries(['notifications']);
-        reactAfter(variables, navigate, toggleDrawer, sendFeedbackOnCreator);
-      },
-      onError: () => {
-        toast.error('Failed to load notification detail');
-      }
-    }
-  );
-
-  const { mutate: sendFeedbackOnCreator } = useMutation(
-    ['user-feedback'],
-    (values: ICreatorFeedback) => sendUserFeedback(values),
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries(['notifications']);
-        toggleDrawer({
-          open: false
-        });
+        queryClient?.invalidateQueries(['notifications']);
+        reactAfter(variables, navigate);
       },
       onError: () => {
         toast.error('Failed to load notification detail');
@@ -117,7 +77,7 @@ export const useReactBasedOnNotificationType = () => {
   );
 
   const reactBasedOnNotificationType = (notification: INotificationDto) => {
-    if (notification?.seen) reactAfter(notification, navigate, toggleDrawer, sendFeedbackOnCreator);
+    if (notification?.seen) reactAfter(notification, navigate);
     else {
       sendMarkNotification(notification);
     }

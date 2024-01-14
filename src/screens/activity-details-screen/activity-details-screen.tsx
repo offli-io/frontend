@@ -43,6 +43,7 @@ import ActivityDetailsGrid, { IGridAction } from './components/activity-details-
 import { ActivityInviteDrawerContent } from './components/activity-invite-drawer-content';
 import ActivityVisibilityDuration from './components/activity-visibility-duration';
 import { convertDateToUTC } from './utils/convert-date-to-utc';
+import FeedbackDrawer from '../notifications-screen/components/feedback-drawer';
 
 interface IProps {
   type: 'detail' | 'request';
@@ -50,6 +51,7 @@ interface IProps {
 
 interface ICustomizedLocationState {
   openInviteDrawer?: boolean;
+  openFeedbackDrawer?: boolean;
 }
 
 const ActivityDetailsScreen: React.FC<IProps> = () => {
@@ -59,6 +61,8 @@ const ActivityDetailsScreen: React.FC<IProps> = () => {
   const location = useLocation();
   const shouldOpenInviteDrawer =
     (location?.state as ICustomizedLocationState)?.openInviteDrawer ?? false;
+  const shouldOpenFeedbackDrawer =
+    (location?.state as ICustomizedLocationState)?.openFeedbackDrawer ?? false;
   const { toggleDrawer } = React.useContext(DrawerContext);
   const { userInfo } = React.useContext(AuthenticationContext);
   const { sendDismissActivity } = useDismissActivity({
@@ -261,6 +265,27 @@ const ActivityDetailsScreen: React.FC<IProps> = () => {
       });
     }
   }, [shouldOpenInviteDrawer, id]);
+
+  React.useEffect(() => {
+    //invite drawer once you create activity
+    if (shouldOpenFeedbackDrawer) {
+      toggleDrawer({
+        open: true,
+        content: (
+          <FeedbackDrawer
+            activity={activity}
+            // onFeedbackButtonClick={(value) =>
+            //   sendFeedbackOnCreator({
+            //     activity_id: activity?.id,
+            //     user_id: user?.id,
+            //     feedback_value: value
+            //   })
+            // }
+          />
+        )
+      });
+    }
+  }, [shouldOpenFeedbackDrawer]);
 
   const handleGridClick = React.useCallback(
     (action: IGridAction) => {

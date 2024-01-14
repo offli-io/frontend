@@ -242,8 +242,8 @@ export const sendUserFeedback = (values: ICreatorFeedback) => {
   const source = CancelToken.source();
 
   const promise = axios.post<void>(
-    `/users/${values.user_id}/feedback`,
-    { activity_id: values.activity_id, feedback_value: values.feedback_value },
+    `/users/${values?.user_id}/feedback`,
+    { activity_id: values?.activity_id, feedback_value: values?.feedback_value },
     {
       cancelToken: source?.token
     }
