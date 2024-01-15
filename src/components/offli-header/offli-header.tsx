@@ -17,6 +17,8 @@ import { ICustomizedLocationStateDto } from '../../types/common/customized-locat
 import { HEADER_HEIGHT } from '../../utils/common-constants';
 import BackHeader from './components/back-header';
 import { mapPathnameToHeaderTitle } from './utils/header-utils';
+import { ThemeOptionsEnumDto } from 'types/settings/theme-options.dto';
+import { CustomizationContext } from 'context/providers/customization-provider';
 
 interface IProps {
   sx?: SxProps;
@@ -28,6 +30,8 @@ const OffliHeader: React.FC<IProps> = ({ sx }) => {
   const navigate = useNavigate();
   const headerRef = React.useRef<HTMLElement | null>(null);
   const { userInfo } = React.useContext(AuthenticationContext);
+  const { theme } = React.useContext(CustomizationContext);
+
   const { palette } = useTheme();
 
   const { data: { data = {} } = {} } = useUser({
@@ -73,7 +77,7 @@ const OffliHeader: React.FC<IProps> = ({ sx }) => {
       ref={headerRef}
       sx={{
         minHeight: HEADER_HEIGHT,
-        boxShadow: '1px 2px 2px #ccc',
+        boxShadow: `1px 2px 2px ${theme === ThemeOptionsEnumDto.LIGHT ? '#ccc' : '#121212'}`,
         position: 'sticky',
         top: 0,
         boxSizing: 'border-box',

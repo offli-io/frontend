@@ -36,7 +36,7 @@ const BottomNavigator: React.FC<IBottomNavigatorProps> = () => {
       }}
       //TODO either Box with boxShadow as sx or Paper with elevation 3 - need to compare
       // sx={sx}
-      elevation={3}>
+      elevation={theme === ThemeOptionsEnumDto.LIGHT ? 3 : 8}>
       <BottomNavigation
         showLabels
         value={mapLocationToNavigatorValue(value)}

@@ -2,12 +2,14 @@ import AddIcon from '@mui/icons-material/Add';
 import MyLocationIcon from '@mui/icons-material/MyLocation';
 import RemoveIcon from '@mui/icons-material/Remove';
 import { Box, Divider, IconButton } from '@mui/material';
+import { useCurrentLocation } from 'hooks/use-current-location';
 import React from 'react';
 import { useMap } from 'react-leaflet';
 import { toast } from 'sonner';
 
 const MapControl: React.FC = () => {
   const map = useMap();
+  const coordinates = useCurrentLocation();
 
   const handleZoomIn = () => {
     map.zoomIn();
@@ -18,11 +20,9 @@ const MapControl: React.FC = () => {
   };
 
   const centerOnLocation = () => {
-    if ('geolocation' in navigator) {
-      navigator.geolocation.getCurrentPosition((position) => {
-        const { latitude, longitude } = position.coords;
-        map.setView([latitude, longitude], 13);
-      });
+    if (coordinates) {
+      const { latitude, longitude } = coordinates;
+      map.setView([latitude, longitude], 13);
     } else {
       toast.error('Geolocation is not available');
     }

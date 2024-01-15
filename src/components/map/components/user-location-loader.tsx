@@ -6,19 +6,19 @@ const UserLocationLoader = ({ isLoading }: { isLoading?: boolean }) => {
     <OffliButton
       sx={{
         position: 'absolute',
-        top: '50%',
-        left: '50%',
+        bottom: '-2%',
+        left: '30%',
         transform: 'translate(-50%, -50%)',
         zIndex: 5000,
         bgcolor: 'primary.light',
-        width: '75%',
         display: 'flex',
-        py: 2
+        py: 2,
+        fontSize: 16
       }}
       size="large">
       <>
-        <CircularProgress size={24} sx={{ mr: 2 }} />
-        <Typography>{`User's location is loading`}</Typography>
+        <CircularProgress size={16} sx={{ mr: 2 }} />
+        <Typography sx={{ fontSize: 12 }}>{`Loading current location`}</Typography>
       </>
     </OffliButton>
   ) : null;

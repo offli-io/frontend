@@ -225,7 +225,7 @@ const ActivityDetailsScreen: React.FC<IProps> = () => {
         case ActivityActionsTypeEnumDto.INVITE:
           return toggleDrawer({
             open: true,
-            content: <ActivityInviteDrawerContent />
+            content: <ActivityInviteDrawerContent activityId={Number(id)} />
           });
         default:
           return;
@@ -260,7 +260,7 @@ const ActivityDetailsScreen: React.FC<IProps> = () => {
         content: <ActivityInviteDrawerContent activityId={Number(id)} />
       });
     }
-  }, [shouldOpenInviteDrawer, id, activity?.title]);
+  }, [shouldOpenInviteDrawer, id]);
 
   const handleGridClick = React.useCallback(
     (action: IGridAction) => {
@@ -360,21 +360,12 @@ const ActivityDetailsScreen: React.FC<IProps> = () => {
           }}>
           <Typography
             variant="h1"
-            align="center"
             sx={{
               ml: 1,
               mr: 1,
               overflow: 'hidden',
               wordWrap: 'break-word',
-              // filter: "invert(100%)",
-              // ...(theme === ThemeOptionsEnumDto.LIGHT ? { filter: 'invert(100%)' } : {}),
-              ...(theme === ThemeOptionsEnumDto.LIGHT
-                ? {
-                    textShadow: ({ palette }) => `1px 1px 1px ${palette?.primary?.light}`
-                  }
-                : {
-                    textShadow: ({ palette }) => `1px 1px 1px ${palette?.primary?.dark}`
-                  })
+              ...(theme === ThemeOptionsEnumDto.LIGHT ? { filter: 'invert(100%)' } : {})
             }}>
             {activity?.title}
           </Typography>

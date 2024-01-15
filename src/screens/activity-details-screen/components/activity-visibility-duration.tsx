@@ -20,7 +20,7 @@ const ActivityVisibilityDuration: React.FC<IProps> = ({
     <>
       <Box
         sx={{
-          mt: 5,
+          mt: 2,
           mb: 1,
           px: 1,
           overflow: 'hidden',

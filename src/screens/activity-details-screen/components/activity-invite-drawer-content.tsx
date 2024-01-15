@@ -2,17 +2,17 @@ import SearchIcon from '@mui/icons-material/Search';
 import { Box, InputAdornment, TextField, Typography } from '@mui/material';
 import { useMutation } from '@tanstack/react-query';
 import Loader from 'components/loader';
+import { useActivity } from 'hooks/use-activity';
 import { useBuddies } from 'hooks/use-buddies';
 import React from 'react';
 import { toast } from 'sonner';
 import { useDebounce } from 'use-debounce';
 import { inviteBuddyToActivity, uninviteBuddy } from '../../../api/activities/requests';
-import { AuthenticationContext } from '../../../context/providers/authentication-provider';
 import BuddyItemInvite from '../../../components/buddy-item-invite';
+import { AuthenticationContext } from '../../../context/providers/authentication-provider';
 import { ActivityInviteStateEnum } from '../../../types/activities/activity-invite-state-enum.dto';
 import { IPerson } from '../../../types/activities/activity.dto';
 import InviteActionButtons from './invite-action-buttons';
-import { useActivity } from 'hooks/use-activity';
 
 interface IActivityTypeFormProps {
   activityId?: number;

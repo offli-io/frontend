@@ -28,7 +28,7 @@ export const useActivity = ({ id, enabled }: IUseActivitiesReturn) => {
     {
       //  onSuccess,
       onError: () => {
-        toast.error(`Failed to load activity'}`);
+        toast.error('Failed to load activity');
       },
       refetchOnMount: true,
       refetchOnWindowFocus: true,

@@ -42,7 +42,7 @@ const createCustomizationTheme = (userTheme: ThemeOptionsEnumDto) => {
         main: '#757575'
       },
       background: {
-        default: userTheme === ThemeOptionsEnumDto.DARK ? '#121212' : 'white'
+        default: userTheme === ThemeOptionsEnumDto.DARK ? '#1E1E1E' : 'white'
       }
     },
     typography: {
