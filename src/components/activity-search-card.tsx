@@ -23,10 +23,10 @@ const ActivitySearchCard: React.FC<IMyActivityCardProps> = ({ activity, onPress,
   const baseUrl = useGetApiUrl();
   const { palette, shadows } = useTheme();
   const { userInfo } = React.useContext(AuthenticationContext);
-  const { data: { data = {} } = {} } = useUser({
+  const { data: { data: { user = {} } = {} } = {} } = useUser({
     id: userInfo?.id
   });
-  const myLocation = data?.location?.coordinates;
+  const myLocation = user?.location?.coordinates;
 
   return (
     <Box

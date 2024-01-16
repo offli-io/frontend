@@ -52,14 +52,14 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
     }
   });
 
-  const { data: { data = {} } = {}, isLoading } = useUser({
+  const { data: { data: { stats = {}, user = {} } = {} } = {}, isLoading } = useUser({
     id: id ? Number(id) : userInfo?.id,
     requestingInfoUserId: id ? userInfo?.id : undefined
   });
 
   const isBuddy = React.useMemo(
-    () => !!data?.buddies?.find(({ id }) => id === userInfo?.id),
-    [data]
+    () => !!user?.buddies?.find(({ id }) => id === userInfo?.id),
+    [user]
   );
 
   const isOtherProfile = React.useMemo(
@@ -147,13 +147,13 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
               boxShadow: shadows[2]
             }}>
             <img
-              src={data?.title_photo ? `${baseUrl}/files/${data?.title_photo}` : userPlaceholder}
+              src={user?.title_photo ? `${baseUrl}/files/${user?.title_photo}` : userPlaceholder}
               alt="title"
               style={{ maxHeight: '100%', width: '100%' }}
-              onClick={() => !!data?.title_photo && setPreviewModalImageUrl(data?.title_photo)}
+              onClick={() => !!user?.title_photo && setPreviewModalImageUrl(user?.title_photo)}
             />
             {type === ProfileEntryTypeEnum.PROFILE && (
-              <BuddyButton buddyCount={data?.buddies_count} />
+              <BuddyButton buddyCount={user?.buddies_count} />
             )}
           </Box>
           <Box
@@ -166,7 +166,7 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
             <Box sx={{ display: 'flex' }}>
               <img
                 src={
-                  data?.profile_photo ? `${baseUrl}/files/${data?.profile_photo}` : userPlaceholder
+                  user?.profile_photo ? `${baseUrl}/files/${user?.profile_photo}` : userPlaceholder
                 }
                 alt="profile"
                 style={{
@@ -178,7 +178,7 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
                 }}
                 data-testid="profile-img"
                 onClick={() =>
-                  !!data?.profile_photo && setPreviewModalImageUrl(data?.profile_photo)
+                  !!user?.profile_photo && setPreviewModalImageUrl(user?.profile_photo)
                 }
               />
               <Box sx={{ display: 'flex', flexDirection: 'column', ml: 1.5 }}>
@@ -198,9 +198,9 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
                       textOverflow: 'ellipsis',
                       width: 250
                     }}>
-                    {data?.username}
+                    {user?.username}
                   </Typography>
-                  {!!data?.location && (
+                  {!!user?.location && (
                     <Box
                       sx={{
                         display: 'flex',
@@ -214,7 +214,7 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
                           textOverflow: 'ellipsis',
                           whiteSpace: 'nowrap'
                         }}>
-                        {data?.location?.name}
+                        {user?.location?.name}
                       </Typography>
                     </Box>
                   )}
@@ -229,7 +229,7 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
                 boxSizing: 'border-box',
                 px: 2
               }}>
-              {data?.about_me}
+              {user?.about_me}
             </Typography>
           </Box>
         </Box>
@@ -279,27 +279,27 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
             This month
           </Typography>
           <ProfileStatistics
-            participatedNum={data?.activities_participated_last_month_count}
+            participatedNum={stats?.activities_participated_last_month_count}
             createdNum={
               isBuddy || [ProfileEntryTypeEnum.PROFILE].includes(type)
-                ? data?.activities_created_last_month_count
+                ? stats?.activities_created_last_month_count
                 : undefined
             }
             metNum={
               isBuddy || [ProfileEntryTypeEnum.PROFILE].includes(type)
-                ? data?.new_buddies_last_month_count
+                ? stats?.new_buddies_last_month_count
                 : undefined
             }
-            user={data}
+            user={user}
             isLoading={isLoading}
           />
         </Box>
 
-        {isOtherProfile && !data?.instagram ? null : (
+        {isOtherProfile && !user?.instagram ? null : (
           <ProfileGallery
             isOtherProfile={isOtherProfile}
-            photoUrls={data?.instagram_photos}
-            instagramUsername={data?.instagram}
+            photoUrls={user?.instagram_photos}
+            instagramUsername={user?.instagram}
           />
         )}
       </PageWrapper>

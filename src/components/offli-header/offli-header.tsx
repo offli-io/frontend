@@ -34,7 +34,7 @@ const OffliHeader: React.FC<IProps> = ({ sx }) => {
 
   const { palette } = useTheme();
 
-  const { data: { data = {} } = {} } = useUser({
+  const { data: { data: { user = {} } = {} } = {} } = useUser({
     id: userInfo?.id
   });
 
@@ -135,8 +135,8 @@ const OffliHeader: React.FC<IProps> = ({ sx }) => {
               >
                 <img
                   src={
-                    data?.profile_photo
-                      ? `${baseUrl}/files/${data?.profile_photo}`
+                    user?.profile_photo
+                      ? `${baseUrl}/files/${user?.profile_photo}`
                       : userPlaceholder
                   }
                   alt="profile"

@@ -16,10 +16,10 @@ import * as yup from 'yup';
 import { getLocationFromQueryFetch, uploadFile } from '../../api/activities/requests';
 import { unlinkInstagram, updateProfileInfo } from '../../api/users/requests';
 import userPlaceholder from '../../assets/img/user-placeholder.svg';
-import { AuthenticationContext } from '../../context/providers/authentication-provider';
-import { DrawerContext } from '../../context/providers/drawer-provider';
 import OffliButton from '../../components/offli-button';
 import { PageWrapper } from '../../components/page-wrapper';
+import { AuthenticationContext } from '../../context/providers/authentication-provider';
+import { DrawerContext } from '../../context/providers/drawer-provider';
 import { useGetApiUrl } from '../../hooks/use-get-api-url';
 import { useUser } from '../../hooks/use-user';
 import { ILocation } from '../../types/activities/location.dto';
@@ -99,7 +99,7 @@ const EditProfileScreen: React.FC = () => {
     }
   );
 
-  const { data: { data = {} } = {} } = useUser({
+  const { data: { data: { user = {} } = {} } = {} } = useUser({
     id: userInfo?.id
   });
 
@@ -174,16 +174,16 @@ const EditProfileScreen: React.FC = () => {
     // alebo setValue ak bude resetu kurovat
 
     reset({
-      username: data?.username ?? '',
-      about_me: data?.about_me ?? '',
-      birthdate: (data?.birthdate as Date) ?? null,
-      location: data?.location ?? null,
+      username: user?.username ?? '',
+      about_me: user?.about_me ?? '',
+      birthdate: (user?.birthdate as Date) ?? null,
+      location: user?.location ?? null,
       // instagram: data?.instagram,
-      profile_photo: data?.profile_photo,
-      title_photo: data?.title_photo
+      profile_photo: user?.profile_photo,
+      title_photo: user?.title_photo
       // background_color: data?.background_color,
     });
-  }, [data]);
+  }, [user]);
 
   const handleFormSubmit = React.useCallback(
     (values: IEditProfile) => {
@@ -330,7 +330,7 @@ const EditProfileScreen: React.FC = () => {
             }}>
             <Box sx={{ height: '100%' }}>
               <img
-                src={data?.title_photo ? `${baseUrl}/files/${data?.title_photo}` : userPlaceholder}
+                src={user?.title_photo ? `${baseUrl}/files/${user?.title_photo}` : userPlaceholder}
                 alt="title"
                 style={{ height: '100%', width: '100%' }}
               />
@@ -361,8 +361,8 @@ const EditProfileScreen: React.FC = () => {
                 }}>
                 <img
                   src={
-                    data?.profile_photo
-                      ? `${baseUrl}/files/${data?.profile_photo}`
+                    user?.profile_photo
+                      ? `${baseUrl}/files/${user?.profile_photo}`
                       : userPlaceholder
                   }
                   alt="profile"
@@ -556,7 +556,7 @@ const EditProfileScreen: React.FC = () => {
                 </OffliButton>
               </Box> */}
 
-              {data?.instagram ? (
+              {user?.instagram ? (
                 <Box
                   sx={{
                     display: 'flex',

@@ -5,13 +5,6 @@ import { ILocation } from './location.dto';
 
 export interface IPerson {
   id?: number;
-  name?: string;
-  username?: string;
-  profile_photo?: string;
-}
-
-export interface IPersonExtended {
-  id?: number;
   username?: string;
   name?: string;
   profile_photo?: string;
@@ -19,10 +12,6 @@ export interface IPersonExtended {
   buddies_count?: number;
   activities?: string[] | null;
   email?: string;
-  enjoyed_together_last_month_count?: number;
-  new_buddies_last_month_count?: number;
-  activities_created_last_month_count?: number;
-  activities_participated_last_month_count?: number;
   about_me?: string | null;
   birthdate?: Date | null;
   location?: ILocation | null;
@@ -30,6 +19,19 @@ export interface IPersonExtended {
   instagram_photos?: string[];
   userPreferredColor?: string | null;
   title_photo?: string | null;
+}
+
+export interface IStatsDto {
+  enjoyed_together_last_month_count?: number;
+  new_buddies_last_month_count?: number;
+  activities_created_last_month_count?: number;
+  activities_participated_last_month_count?: number;
+  creator_feedback?: number;
+}
+
+export interface IPersonExtended {
+  user?: IPerson;
+  stats?: IStatsDto;
 }
 
 export interface IActivityLocation {

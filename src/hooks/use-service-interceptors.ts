@@ -1,13 +1,13 @@
 import { useQueryClient } from '@tanstack/react-query';
 import axios, { AxiosError } from 'axios';
 import React from 'react';
-import { IPersonExtended } from 'types/activities/activity.dto';
+import { IPerson } from 'types/activities/activity.dto';
 import { getAuthToken, setAuthToken } from '../utils/token.util';
 import { useGetApiUrl } from './use-get-api-url';
 
 interface IUseServiceInterceptorsProps {
   setStateToken: React.Dispatch<React.SetStateAction<string | null>>;
-  setUserInfo?: React.Dispatch<React.SetStateAction<IPersonExtended | undefined>>;
+  setUserInfo?: React.Dispatch<React.SetStateAction<IPerson | undefined>>;
   userId?: number;
 }
 

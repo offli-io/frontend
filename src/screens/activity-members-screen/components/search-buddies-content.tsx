@@ -12,12 +12,12 @@ import React from 'react';
 import { toast } from 'sonner';
 import { useDebounce } from 'use-debounce';
 import { getActivityParticipants, inviteBuddyToActivity } from '../../../api/activities/requests';
-import { AuthenticationContext } from '../../../context/providers/authentication-provider';
 import BuddyItem from '../../../components/buddy-item';
 import OffliButton from '../../../components/offli-button';
+import { AuthenticationContext } from '../../../context/providers/authentication-provider';
 import { useBuddies } from '../../../hooks/use-buddies';
 import { ActivityInviteStateEnum } from '../../../types/activities/activity-invite-state-enum.dto';
-import { IPerson, IPersonExtended } from '../../../types/activities/activity.dto';
+import { IPerson } from '../../../types/activities/activity.dto';
 import { isAlreadyParticipant } from '../../../utils/person.util';
 
 interface IAddBuddiesContentProps {
@@ -141,7 +141,7 @@ const SearchBuddiesContent: React.FC<IAddBuddiesContentProps> = ({ activityId })
                 <CircularProgress color="primary" />
               </Box>
             ) : (
-              invitableBuddies?.map((user: IPersonExtended) => (
+              invitableBuddies?.map((user: IPerson) => (
                 <BuddyItem
                   key={user?.id}
                   buddy={user}

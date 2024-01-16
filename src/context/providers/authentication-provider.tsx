@@ -2,14 +2,14 @@ import { subscribeBrowserPush } from 'api/notifications/requests';
 import axios from 'axios';
 import React from 'react';
 import { useServiceInterceptors } from '../../hooks/use-service-interceptors';
-import { IPersonExtended } from '../../types/activities/activity.dto';
+import { IPerson } from '../../types/activities/activity.dto';
 import { setAuthToken } from '../../utils/token.util';
 
 interface IAuthenticationContext {
   stateToken: string | null;
   setStateToken: React.Dispatch<React.SetStateAction<string | null>>;
-  userInfo?: IPersonExtended | undefined;
-  setUserInfo?: React.Dispatch<React.SetStateAction<IPersonExtended | undefined>>;
+  userInfo?: IPerson | undefined;
+  setUserInfo?: React.Dispatch<React.SetStateAction<IPerson | undefined>>;
   isFirstTimeLogin?: boolean;
   setIsFirstTimeLogin?: React.Dispatch<React.SetStateAction<boolean | undefined>>;
   googleTokenClient: any;
@@ -38,7 +38,7 @@ export const AuthenticationContext = React.createContext<IAuthenticationContext>
 
 export const AuthenticationProvider = ({ children }: { children: React.ReactNode }) => {
   const [stateToken, setStateToken] = React.useState<null | string>(null);
-  const [userInfo, setUserInfo] = React.useState<IPersonExtended | undefined>();
+  const [userInfo, setUserInfo] = React.useState<IPerson | undefined>();
   const [googleTokenClient] = React.useState<any>();
   const [instagramCode, setInstagramCode] = React.useState<string | null>(null);
   const [isFirstTimeLogin, setIsFirstTimeLogin] = React.useState<boolean | undefined>(false);

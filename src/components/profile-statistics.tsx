@@ -6,7 +6,7 @@ import { AuthenticationContext } from 'context/providers/authentication-provider
 import { useUser } from 'hooks/use-user';
 import React from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { IPersonExtended } from 'types/activities/activity.dto';
+import { IPerson } from 'types/activities/activity.dto';
 import { ApplicationLocations } from 'types/common/applications-locations.dto';
 import OffliButton from './offli-button';
 
@@ -14,7 +14,7 @@ interface IProps {
   participatedNum?: number;
   createdNum?: number;
   metNum?: number;
-  user?: IPersonExtended;
+  user?: IPerson;
   isLoading?: boolean;
 }
 
@@ -27,12 +27,10 @@ const ProfileStatistics: React.FC<IProps> = ({
   const { id } = useParams();
   const navigate = useNavigate();
   const { userInfo } = React.useContext(AuthenticationContext);
-  const user = useUser({
+  const { data: { data: { user = {} } = {} } = {} } = useUser({
     id: id ? Number(id) : userInfo?.id,
     requestingInfoUserId: id ? userInfo?.id : undefined
   });
-
-  const username = user?.data?.data?.username;
 
   //this was used before when we used picture statistics on other profile
   // <AlternativePicturetatistics
@@ -70,7 +68,7 @@ const ProfileStatistics: React.FC<IProps> = ({
             </IconButton>
             {participatedNum ? (
               <Typography variant="subtitle2" sx={{ ml: 2 }}>
-                {id ? `${username} participated` : 'You participated'} in{' '}
+                {id ? `${user?.username} participated` : 'You participated'} in{' '}
                 <b>
                   {participatedNum} {participatedNum === 1 ? 'activity' : 'activities'}
                 </b>
@@ -115,7 +113,7 @@ const ProfileStatistics: React.FC<IProps> = ({
             </IconButton>
             {createdNum ? (
               <Typography variant="subtitle2" sx={{ ml: 2 }}>
-                {id ? `${username} created` : 'You created'}{' '}
+                {id ? `${user?.username} created` : 'You created'}{' '}
                 <b>
                   {createdNum} {createdNum === 1 ? 'activity' : 'activities'}
                 </b>
@@ -160,7 +158,7 @@ const ProfileStatistics: React.FC<IProps> = ({
             </IconButton>
             {metNum ? (
               <Typography variant="subtitle2">
-                {id ? `${username} has met` : "You've met"}{' '}
+                {id ? `${user?.username} has met` : "You've met"}{' '}
                 <b>
                   {createdNum} {createdNum === 1 ? 'new buddy' : 'new buddies'}
                 </b>
