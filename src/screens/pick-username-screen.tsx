@@ -100,7 +100,7 @@ const PickUsernameScreen = () => {
           googleBearerToken: '',
           username: values?.username,
           auth_code: authCode,
-          redirect_uri: currentUrl
+          redirect_uri: `${currentUrl}/`
         });
       } else {
         sendPresignupUser({
