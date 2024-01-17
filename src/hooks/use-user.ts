@@ -1,9 +1,9 @@
 import { useQuery } from '@tanstack/react-query';
+import { AxiosResponse } from 'axios';
 import { toast } from 'sonner';
+import { IPersonExtended } from 'types/activities/activity.dto';
 import { IUsersParamsDto } from 'types/users';
 import { getUser } from '../api/activities/requests';
-import { AxiosResponse } from 'axios';
-import { IPersonExtended } from 'types/activities/activity.dto';
 
 export const useUser = ({
   id,

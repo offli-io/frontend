@@ -144,7 +144,7 @@ export const PlaceForm: React.FC<IPlaceFormProps> = ({
                     )}
                     data-testid="activity-place-input"
                   />
-                  <IconButton onClick={() => toggleMap?.(true)}>
+                  <IconButton onClick={() => toggleMap?.(true)} sx={{ color: 'transparent' }}>
                     <AddLocationAltIcon
                       sx={{
                         color: ({ palette }) => palette?.primary?.main,

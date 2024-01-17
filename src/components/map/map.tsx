@@ -210,7 +210,7 @@ const Map: React.FC<IMapScreenProps> = ({
             display: 'flex',
             justifyContent: 'center',
             my: 1.5,
-            bgcolor: 'primary.light',
+            bgcolor: theme === ThemeOptionsEnumDto.LIGHT ? 'primary.light' : 'background.default',
             borderRadius: 3,
             '& .MuiAutocomplete-clearIndicator': { display: 'none' },
             '& .MuiSvgIcon-root': { color: 'primary.main' }
@@ -233,7 +233,10 @@ const Map: React.FC<IMapScreenProps> = ({
                   pl: 1
                 },
                 '& fieldset': { border: 'none' },
-                backgroundColor: ({ palette }) => palette?.primary?.light,
+                backgroundColor: ({ palette }) =>
+                  theme === ThemeOptionsEnumDto.LIGHT
+                    ? palette?.primary?.light
+                    : palette?.background?.default,
                 borderRadius: '10px'
               }}
             />

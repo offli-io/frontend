@@ -168,11 +168,7 @@ export const SetLocationContent: React.FC<IPlaceFormProps> = ({
           )}
         />
         <OffliButton
-          startIcon={
-            !isCurrentLocationLoading ? (
-              <NearMeIcon sx={{ color: 'background.default' }} />
-            ) : undefined
-          }
+          startIcon={!isCurrentLocationLoading ? <NearMeIcon sx={{ color: 'white' }} /> : undefined}
           sx={{ width: '80%', my: 4, fontSize: 16, height: 48 }}
           onClick={handleUseCurrentLocation}
           disabled={!coords}

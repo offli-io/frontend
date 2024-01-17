@@ -16,6 +16,7 @@ import OffliBackButton from '../components/offli-back-button';
 import OffliButton from '../components/offli-button';
 import { ApplicationLocations } from '../types/common/applications-locations.dto';
 import { IEmailPassword, IEmailUsernamePassword, IUsername } from '../types/users/user.dto';
+import { useGetApiUrl } from 'hooks/use-get-api-url';
 
 const schema: () => yup.SchemaOf<IUsername> = () =>
   yup.object({
@@ -36,6 +37,7 @@ const PickUsernameScreen = () => {
     resolver: yupResolver(schema()),
     mode: 'onChange'
   });
+  const baseUrl = useGetApiUrl();
 
   const queryClient = useQueryClient();
 
@@ -92,15 +94,15 @@ const PickUsernameScreen = () => {
         'registration-email-password'
       ]);
 
-      if (type === PickUsernameTypeEnum.GOOGLE) {
-        const currentUrl = window.location.href.split('/').slice(0, -1).join('/');
+      const baseUrlEnvironmentDependent = window.location.href.split('/').slice(0, -1).join('/');
 
+      if (type === PickUsernameTypeEnum.GOOGLE) {
         const authCode = queryClient.getQueryData<string | undefined>(['google-token']);
         sendRegisterViaGoogle({
           googleBearerToken: '',
           username: values?.username,
           auth_code: authCode,
-          redirect_uri: currentUrl
+          redirect_uri: `${baseUrlEnvironmentDependent}/register`
         });
       } else {
         sendPresignupUser({
@@ -110,7 +112,7 @@ const PickUsernameScreen = () => {
         });
       }
     },
-    [sendRegisterViaGoogle, sendPresignupUser]
+    [sendRegisterViaGoogle, sendPresignupUser, baseUrl]
   );
 
   React.useEffect(() => {

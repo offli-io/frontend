@@ -53,12 +53,12 @@ export const Layout: React.FC<ILayoutProps> = () => {
   const [displayHeader, setDisplayHeader] = React.useState(true);
   const [displayBottomNavigator, setDisplayBottomNavigator] = React.useState(true);
 
-  const { data: { data } = {} } = useUser({
+  const { data: { data: { user = null } = {} } = {} } = useUser({
     id: userInfo?.id,
     onSuccess: (data) =>
       setUserInfo?.((basicInfo) => ({
         ...basicInfo,
-        email: data?.data?.email
+        email: data?.data?.user?.email
       }))
   });
 
@@ -73,11 +73,11 @@ export const Layout: React.FC<ILayoutProps> = () => {
   }, [location]);
 
   React.useEffect(() => {
-    if (!!data && !data?.location && stateToken) {
+    if (!!user && !user?.location && stateToken) {
       // TODO when on BE will be patch implemented
       navigate(ApplicationLocations.CHOOSE_LOCATION);
     }
-  }, [data, stateToken]);
+  }, [user, stateToken]);
 
   React.useEffect(() => {
     if (

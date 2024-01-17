@@ -18,12 +18,12 @@ import { toast } from 'sonner';
 import { BuddyRequestActionEnum } from 'types/users';
 import { useDebounce } from 'use-debounce';
 import { USERS_LIMIT } from 'utils/common-constants';
+import BuddyItem from '../../../components/buddy-item';
 import { AuthenticationContext } from '../../../context/providers/authentication-provider';
 import { DrawerContext } from '../../../context/providers/drawer-provider';
-import BuddyItem from '../../../components/buddy-item';
 import { useBuddies } from '../../../hooks/use-buddies';
 import { PAGED_USERS_QUERY_KEY, useUsers } from '../../../hooks/use-users';
-import { IPerson, IPersonExtended } from '../../../types/activities/activity.dto';
+import { IPerson } from '../../../types/activities/activity.dto';
 import { ApplicationLocations } from '../../../types/common/applications-locations.dto';
 import { useSendBuddyRequest } from '../../profile-screen/hooks/use-send-buddy-request';
 import { isBuddy } from '../utils/is-buddy.util';
@@ -82,6 +82,7 @@ const AddBuddiesContent: React.FC<IAddBuddiesContentProps> = ({ navigate }) => {
       queryClient.invalidateQueries(['buddy-state']);
       queryClient.invalidateQueries(['buddies']);
       queryClient.invalidateQueries(['users']);
+      queryClient.invalidateQueries(['recommended-buddies']);
     }
   });
 
@@ -102,7 +103,7 @@ const AddBuddiesContent: React.FC<IAddBuddiesContentProps> = ({ navigate }) => {
         queryClient.invalidateQueries(['buddy-state']);
         queryClient.invalidateQueries(['users']);
         queryClient.invalidateQueries(['user']);
-
+        queryClient.invalidateQueries(['recommended-buddies']);
         toast.success('You have successfully confirmed user as your buddy');
       },
       onError: () => {
@@ -160,7 +161,7 @@ const AddBuddiesContent: React.FC<IAddBuddiesContentProps> = ({ navigate }) => {
           // TODO searchbar is scrolling with its content
           position: 'sticky',
           top: 0,
-          bgcolor: 'white',
+          // bgcolor: 'white',
           maxHeight: 50,
           zIndex: 555,
           my: 1
@@ -215,7 +216,7 @@ const AddBuddiesContent: React.FC<IAddBuddiesContentProps> = ({ navigate }) => {
                 <React.Fragment key={index}>
                   {group
                     ?.filter((user) => user?.id !== userInfo?.id && !isBuddy(buddies, user?.id))
-                    ?.map((user: IPersonExtended) => (
+                    ?.map((user: IPerson) => (
                       <BuddyItem
                         key={user?.id}
                         buddy={user}

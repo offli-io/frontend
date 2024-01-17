@@ -45,6 +45,7 @@ const MyBuddiesScreen = () => {
         //TODO invalidate only my data
         queryClient.invalidateQueries(['user']);
         invalidateBuddies();
+        queryClient.invalidateQueries(['recommended-buddies']);
         toast.success('Buddy was successfully deleted');
       },
       onError: () => {

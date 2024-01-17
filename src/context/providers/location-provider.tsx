@@ -18,7 +18,7 @@ export const LocationProvider = ({ children }: { children: React.ReactNode }) =>
   const storageLocation = sessionStorage.getItem(LOCATION_STORAGE_KEY);
   const _storageLocation = storageLocation ? JSON.parse(storageLocation) : null;
 
-  const { data: { data: userData = {} } = {} } = useUser({
+  const { data: { data: { user: userData = {} } = {} } = {} } = useUser({
     id: userInfo?.id
   });
 
