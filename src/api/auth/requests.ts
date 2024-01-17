@@ -27,12 +27,14 @@ export const loginUser = (values: ILoginRequestDto) => {
 export const loginViaGoogle = (googleAuthCode?: string, signal?: AbortSignal) => {
   const CancelToken = axios.CancelToken;
   const source = CancelToken.source();
+  const baseUrlEnvironmentDependent = window.location.href.split('/').slice(0, -1).join('/');
+
   const promise = axios.post<ILoginResponseDto>(
     `/google/authorization`,
     {
       auth_code: googleAuthCode,
       googleBearerToken: '',
-      redirect_uri: 'https://localhost:3000/login'
+      redirect_uri: `${baseUrlEnvironmentDependent}/login`
     },
     {
       cancelToken: source?.token
@@ -68,7 +70,6 @@ export const getBearerToken = (
       code,
       grant_type: 'authorization_code',
       redirect_uri: `${currentUrl}/`
-      // redirect_uri: "https://localhost:3000/activity/detail/9/",
     },
     {
       cancelToken: source?.token
@@ -95,7 +96,6 @@ export const getGoogleAuthCode = (from: GoogleAuthCodeFromEnumDto, state?: any) 
 
   const options = {
     redirect_uri: `${currentUrl}`,
-    // redirect_uri: "https://localhost:3000/activity/detail/9/",
     client_id: CLIENT_ID as string,
     access_type: 'offline',
     response_type: 'code',

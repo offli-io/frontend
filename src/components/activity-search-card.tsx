@@ -76,7 +76,9 @@ const ActivitySearchCard: React.FC<IMyActivityCardProps> = ({ activity, onPress,
             <Typography
               sx={{
                 fontSize: 12,
-                lineHeight: 1.2,
+                lineHeight: '1rem',
+                maxHeight: '2rem',
+                overflow: 'hidden',
                 color: palette?.text?.primary
               }}>
               {activity?.location?.name}
@@ -84,8 +86,9 @@ const ActivitySearchCard: React.FC<IMyActivityCardProps> = ({ activity, onPress,
 
             <Typography
               sx={{
+                mt: 0.25,
                 fontSize: 12,
-                lineHeight: 1.2,
+                lineHeight: '1rem',
                 color: palette?.text?.primary
               }}>
               {format(
