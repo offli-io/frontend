@@ -160,7 +160,7 @@ const AddBuddiesContent: React.FC<IAddBuddiesContentProps> = ({ navigate }) => {
           // TODO searchbar is scrolling with its content
           position: 'sticky',
           top: 0,
-          bgcolor: 'white',
+          // bgcolor: 'white',
           maxHeight: 50,
           zIndex: 555,
           my: 1

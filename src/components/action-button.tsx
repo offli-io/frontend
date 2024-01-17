@@ -2,6 +2,8 @@ import React from 'react';
 
 import { Button, ButtonProps, CircularProgress, SxProps, Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
+import { CustomizationContext } from 'context/providers/customization-provider';
+import { ThemeOptionsEnumDto } from 'types/settings/theme-options.dto';
 
 interface IProps extends ButtonProps {
   type?: 'button' | 'reset' | 'submit' | undefined;
@@ -23,14 +25,17 @@ const ActionButton: React.FC<IProps> = ({
   disabled,
   ...rest
 }) => {
+  const { theme } = React.useContext(CustomizationContext);
+
   return (
     <Button
+      variant="contained"
       sx={{
         ...sx,
         width: '60%',
         borderRadius: '15px',
-        backgroundColor: (theme) =>
-          disabled ? theme?.palette?.inactive?.main : theme.palette.primary.light,
+        backgroundColor: ({ palette }) =>
+          theme === ThemeOptionsEnumDto.LIGHT ? palette.primary.light : undefined,
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -57,7 +62,7 @@ const ActionButton: React.FC<IProps> = ({
         <Typography
           variant="h5"
           sx={{
-            color: 'primary.main',
+            color: theme === ThemeOptionsEnumDto.LIGHT ? 'primary.main' : undefined,
             fontWeight: 'bold'
           }}>
           {text}

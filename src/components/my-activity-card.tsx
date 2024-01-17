@@ -68,8 +68,9 @@ const MyActivityCard: React.FC<IMyActivityCardProps> = ({
         display: 'flex',
         width: 280,
         minWidth: 280,
-        background:
-          'linear-gradient(90deg, rgba(74, 20, 140, 0.18) 0%, rgba(74, 20, 140, 0.18) 44.06%, rgba(255, 255, 255, 0.00) 90.95%)',
+        // background:
+        //   'linear-gradient(90deg, rgba(74, 20, 140, 0.18) 0%, rgba(74, 20, 140, 0.18) 44.06%, rgba(255, 255, 255, 0.00) 90.95%)',
+        bgcolor: 'primary.light',
         m: 1,
         alignItems: 'center',
         justifyContent: 'flex-start',

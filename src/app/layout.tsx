@@ -53,7 +53,7 @@ export const Layout: React.FC<ILayoutProps> = () => {
   const [displayHeader, setDisplayHeader] = React.useState(true);
   const [displayBottomNavigator, setDisplayBottomNavigator] = React.useState(true);
 
-  const { data: { data: { user = {} } = {} } = {} } = useUser({
+  const { data: { data: { user = null } = {} } = {} } = useUser({
     id: userInfo?.id,
     onSuccess: (data) =>
       setUserInfo?.((basicInfo) => ({

@@ -30,7 +30,7 @@ const createCustomizationTheme = (userTheme: ThemeOptionsEnumDto) => {
       mode: userTheme === ThemeOptionsEnumDto.DARK ? 'dark' : 'light',
       primary: {
         main: userTheme === ThemeOptionsEnumDto.LIGHT ? '#4A148C' : '#A763FA',
-        light: '#DED5EA'
+        light: userTheme === ThemeOptionsEnumDto.LIGHT ? '#DED5EA' : '#3d3d3d'
       },
       secondary: {
         main: '#E4E3FF'
@@ -39,7 +39,7 @@ const createCustomizationTheme = (userTheme: ThemeOptionsEnumDto) => {
         main: '#B8B8B8'
       },
       inactiveFont: {
-        main: '#757575'
+        main: userTheme === ThemeOptionsEnumDto.LIGHT ? '#757575' : '#bfbfbf'
       },
       background: {
         default: userTheme === ThemeOptionsEnumDto.DARK ? '#1E1E1E' : 'white'

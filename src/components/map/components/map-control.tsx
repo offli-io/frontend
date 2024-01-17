@@ -2,12 +2,16 @@ import AddIcon from '@mui/icons-material/Add';
 import MyLocationIcon from '@mui/icons-material/MyLocation';
 import RemoveIcon from '@mui/icons-material/Remove';
 import { Box, Divider, IconButton } from '@mui/material';
+import { CustomizationContext } from 'context/providers/customization-provider';
 import { useCurrentLocation } from 'hooks/use-current-location';
 import React from 'react';
 import { useMap } from 'react-leaflet';
 import { toast } from 'sonner';
+import { ThemeOptionsEnumDto } from 'types/settings/theme-options.dto';
 
 const MapControl: React.FC = () => {
+  const { theme } = React.useContext(CustomizationContext);
+
   const map = useMap();
   const coordinates = useCurrentLocation();
 
@@ -44,7 +48,7 @@ const MapControl: React.FC = () => {
           display: 'flex',
           flexDirection: 'column',
           width: 32,
-          bgcolor: 'primary.light',
+          bgcolor: theme === ThemeOptionsEnumDto.LIGHT ? 'primary.light' : 'background.default',
           borderRadius: 3,
           alignItems: 'center'
         }}>
@@ -58,7 +62,7 @@ const MapControl: React.FC = () => {
       </Box>
       <Box
         sx={{
-          bgcolor: 'primary.light',
+          bgcolor: theme === ThemeOptionsEnumDto.LIGHT ? 'primary.light' : 'background.default',
           borderRadius: 10,
           mt: 1.5
         }}>
