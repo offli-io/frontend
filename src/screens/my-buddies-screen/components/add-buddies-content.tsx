@@ -82,6 +82,7 @@ const AddBuddiesContent: React.FC<IAddBuddiesContentProps> = ({ navigate }) => {
       queryClient.invalidateQueries(['buddy-state']);
       queryClient.invalidateQueries(['buddies']);
       queryClient.invalidateQueries(['users']);
+      queryClient.invalidateQueries(['recommended-buddies']);
     }
   });
 
@@ -102,7 +103,7 @@ const AddBuddiesContent: React.FC<IAddBuddiesContentProps> = ({ navigate }) => {
         queryClient.invalidateQueries(['buddy-state']);
         queryClient.invalidateQueries(['users']);
         queryClient.invalidateQueries(['user']);
-
+        queryClient.invalidateQueries(['recommended-buddies']);
         toast.success('You have successfully confirmed user as your buddy');
       },
       onError: () => {
