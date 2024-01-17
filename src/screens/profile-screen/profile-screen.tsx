@@ -55,15 +55,17 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
     }
   });
 
-  const { data: { data: { stats = {}, user = {} } = {} } = {}, isLoading } = useUser({
+  const { data: { data: { user = {} } = {} } = {}, isLoading } = useUser({
     id: id ? Number(id) : userInfo?.id,
     requestingInfoUserId: id ? userInfo?.id : undefined
   });
 
   const {
-    data: { data: userStats = {} as IUserStatisticsDto } = {},
-    isLoading: isUserStatsLoading
+    data: { data: userStats = {} as IUserStatisticsDto } = {}
+    // isLoading: isUserStatsLoading
   } = useUserStats(Number(id));
+
+  console.log(userStats);
 
   const isBuddy = React.useMemo(
     () => !!user?.buddies?.find(({ id }) => id === userInfo?.id),
@@ -278,9 +280,9 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
         ) : null}
         <LastAttendedActivities isBuddy={isBuddy} />
         <CreatorFeedback
-          feedbackNum={userStats?.creatorFeedback}
-          createdActivitiesNum={userStats?.activitiesCreatedLastMonthCount}
-          username={data?.username}
+          creator_feedback={userStats?.creator_feedback}
+          activities_created_last_month_count={userStats?.activities_created_last_month_count}
+          username={user?.username}
         />
 
         <Box
@@ -292,15 +294,15 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
             This month
           </Typography>
           <ProfileStatistics
-            participatedNum={userStats?.activitiesParticipatedLastMonthCount}
+            participatedNum={userStats?.activities_participated_last_month_count}
             createdNum={
               isBuddy || [ProfileEntryTypeEnum.PROFILE].includes(type)
-                ? userStats?.activitiesCreatedLastMonthCount
+                ? userStats?.activities_created_last_month_count
                 : undefined
             }
             metNum={
               isBuddy || [ProfileEntryTypeEnum.PROFILE].includes(type)
-                ? userStats?.newBuddiesLastMonthCount
+                ? userStats?.new_buddies_last_month_count
                 : undefined
             }
             user={user}

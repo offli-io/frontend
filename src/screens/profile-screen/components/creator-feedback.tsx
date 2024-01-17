@@ -2,16 +2,17 @@ import React from 'react';
 import { Box, createTheme, Rating, Typography, useTheme, ThemeProvider } from '@mui/material';
 
 interface IUserFeedbackProps {
-  feedbackNum?: number;
-  createdActivitiesNum?: number;
+  creator_feedback?: number;
+  activities_created_last_month_count?: number;
   username?: string;
 }
 
 const CreatorFeedback: React.FC<IUserFeedbackProps> = ({
-  feedbackNum,
-  createdActivitiesNum,
+  creator_feedback,
+  activities_created_last_month_count,
   username
 }) => {
+  console.log(creator_feedback);
   const { palette } = useTheme();
 
   const theme = createTheme({
@@ -54,7 +55,7 @@ const CreatorFeedback: React.FC<IUserFeedbackProps> = ({
             }}
             name="feedback"
             size="large"
-            value={feedbackNum}
+            value={creator_feedback}
             readOnly={true}
           />
         </ThemeProvider>
@@ -62,7 +63,8 @@ const CreatorFeedback: React.FC<IUserFeedbackProps> = ({
           align="left"
           variant="subtitle2"
           sx={{ fontSize: 10, fontWeight: 'normal', maxWidth: '70vw' }}>
-          based on the feedback from {createdActivitiesNum} activities {username} has created.
+          based on the feedback from {activities_created_last_month_count} activities {username} has
+          created.
         </Typography>
       </Box>
     </Box>

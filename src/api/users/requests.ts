@@ -6,7 +6,10 @@ import { IBuddyStateResponseDto } from '../../types/users/buddy-state-response.d
 import { IUpdateUserRequestDto } from '../../types/users/update-user-request.dto';
 import { IEmailUsernamePassword, IEmailVerificationCode } from '../../types/users/user.dto';
 import { ICreatorFeedback } from '../../types/users/user-feedback.dto';
-import { IUserStatisticsDto } from '../../types/users/user-statistics.dto';
+import {
+  IUserAlreadySentFeedbackDto,
+  IUserStatisticsDto
+} from '../../types/users/user-statistics.dto';
 
 export const preCreateUser = async (values: IEmailUsernamePassword) => {
   const CancelToken = axios.CancelToken;
@@ -244,6 +247,19 @@ export const sendUserFeedback = (values: ICreatorFeedback) => {
   const promise = axios.post<void>(
     `/users/${values?.user_id}/feedback`,
     { activity_id: values?.activity_id, feedback_value: values?.feedback_value },
+    {
+      cancelToken: source?.token
+    }
+  );
+  return promise;
+};
+
+export const getUserAlreadySendFeedback = (userId?: number, activityId?: number) => {
+  const CancelToken = axios.CancelToken;
+  const source = CancelToken.source();
+
+  const promise = axios.get<IUserAlreadySentFeedbackDto>(
+    `/users/${userId}/feedback/${activityId}`,
     {
       cancelToken: source?.token
     }

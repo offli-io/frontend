@@ -94,6 +94,13 @@ const ActivityDetailsScreen: React.FC<IProps> = () => {
       }
     });
 
+  // const {
+  //   data: feedbackAlreadySent = {} as IUserAlreadySentFeedbackDto
+  //   // isLoading: isUserStatsLoading
+  // } = useFeedbackAlreadySent(userInfo?.id, Number(id));
+  //
+  // console.log(feedbackAlreadySent);
+
   const { mutate: sendLeaveActivity, isLoading: isLeavingActivity } = useMutation(
     ['leave-activity'],
     (activityId?: number) => removePersonFromActivity({ activityId, personId: userInfo?.id }),
@@ -243,6 +250,16 @@ const ActivityDetailsScreen: React.FC<IProps> = () => {
       toggleDrawer({
         open: true,
         content: <ActivityActions activity={activity} onActionClick={handleMenuItemClick} />
+      });
+    },
+    [toggleDrawer, handleMenuItemClick]
+  );
+
+  const handleActivityFinishedClick = React.useCallback(
+    (activity?: IActivity) => {
+      toggleDrawer({
+        open: true,
+        content: <FeedbackDrawer activity={activity} />
       });
     },
     [toggleDrawer, handleMenuItemClick]
@@ -404,6 +421,7 @@ const ActivityDetailsScreen: React.FC<IProps> = () => {
         <ActivityActionButtons
           onJoinClick={handleJoinButtonClick}
           onMoreClick={() => handleActivityActionsCLick(activity)}
+          onActivityFinishedClick={() => handleActivityFinishedClick(activity)}
           areActionsLoading={areActionsLoading}
           isCreator={isCreator}
           isAlreadyParticipant={isAlreadyParticipant}

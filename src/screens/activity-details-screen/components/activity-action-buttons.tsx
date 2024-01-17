@@ -12,6 +12,7 @@ interface IActivityActionButtonsProps {
   isCreator?: boolean;
   onJoinClick?: () => void;
   onMoreClick?: () => void;
+  onActivityFinishedClick: () => void;
   areActionsLoading?: boolean;
   isPublic?: boolean;
   hasEnded?: boolean;
@@ -24,6 +25,7 @@ const ActivityActionButtons: React.FC<IActivityActionButtonsProps> = ({
   isCreator,
   onJoinClick,
   onMoreClick,
+  onActivityFinishedClick,
   areActionsLoading,
   //TODO just get activity and define all these properties in this component
   isPublic,
@@ -89,9 +91,18 @@ const ActivityActionButtons: React.FC<IActivityActionButtonsProps> = ({
       {hasEnded ? (
         <OffliButton
           color="secondary"
+          onClick={onActivityFinishedClick}
           startIcon={<HistoryIcon sx={{ color: 'primary.main' }} />}
-          sx={{ width: '80%', color: 'primary.main', fontWeight: 'bold' }}>
-          Activity has finished
+          sx={{
+            width: '80%',
+            color: 'primary.main',
+            fontWeight: 'bold'
+          }}>
+          <>
+            Activity has finished
+            <br />
+            Please provide a feedback
+          </>
         </OffliButton>
       ) : null}
 

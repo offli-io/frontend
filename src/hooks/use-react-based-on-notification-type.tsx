@@ -26,7 +26,7 @@ const reactAfter = (notification: INotificationDto, navigate: NavigateFunction) 
     });
   } else if (notification?.type === NotificationTypeEnum.ACTIVITY_CHANGE) {
     if (
-      notification?.properties?.changes?.[0]?.old === ActivityStatusEnumDto.ONGOING &&
+      // notification?.properties?.changes?.[0]?.old === ActivityStatusEnumDto.ONGOING &&
       notification?.properties?.changes?.[0]?.new === ActivityStatusEnumDto.COMPLETED
     ) {
       // feedback request
