@@ -44,6 +44,7 @@ import { ActivityInviteDrawerContent } from './components/activity-invite-drawer
 import ActivityVisibilityDuration from './components/activity-visibility-duration';
 import { convertDateToUTC } from './utils/convert-date-to-utc';
 import FeedbackDrawer from '../notifications-screen/components/feedback-drawer';
+import { useFeedbackAlreadySentByUser } from '../../hooks/useFeedbackAlreadySentByUser';
 
 interface IProps {
   type: 'detail' | 'request';
@@ -93,13 +94,6 @@ const ActivityDetailsScreen: React.FC<IProps> = () => {
         participantId: userInfo?.id
       }
     });
-
-  // const {
-  //   data: feedbackAlreadySent = {} as IUserAlreadySentFeedbackDto
-  //   // isLoading: isUserStatsLoading
-  // } = useFeedbackAlreadySent(userInfo?.id, Number(id));
-  //
-  // console.log(feedbackAlreadySent);
 
   const { mutate: sendLeaveActivity, isLoading: isLeavingActivity } = useMutation(
     ['leave-activity'],
@@ -283,27 +277,6 @@ const ActivityDetailsScreen: React.FC<IProps> = () => {
     }
   }, [shouldOpenInviteDrawer, id]);
 
-  React.useEffect(() => {
-    //invite drawer once you create activity
-    if (shouldOpenFeedbackDrawer) {
-      toggleDrawer({
-        open: true,
-        content: (
-          <FeedbackDrawer
-            activity={activity}
-            // onFeedbackButtonClick={(value) =>
-            //   sendFeedbackOnCreator({
-            //     activity_id: activity?.id,
-            //     user_id: user?.id,
-            //     feedback_value: value
-            //   })
-            // }
-          />
-        )
-      });
-    }
-  }, [shouldOpenFeedbackDrawer]);
-
   const handleGridClick = React.useCallback(
     (action: IGridAction) => {
       switch (action) {
@@ -338,6 +311,45 @@ const ActivityDetailsScreen: React.FC<IProps> = () => {
   const dateTimeFrom = activity?.datetime_from ? new Date(activity?.datetime_from) : null;
 
   const dateTimeUntil = activity?.datetime_until ? new Date(activity?.datetime_until) : null;
+
+  const {
+    data: feedbackAlreadySent
+    // isLoading: isUserStatsLoading
+  } = useFeedbackAlreadySentByUser({
+    userId: userInfo?.id,
+    activityId: Number(id),
+    enabled: isAlreadyParticipant && isPastActivity && !isCreator
+  });
+
+  React.useEffect(() => {
+    //invite drawer once you create activity
+    if (
+      shouldOpenFeedbackDrawer &&
+      isAlreadyParticipant &&
+      isPastActivity &&
+      !isCreator &&
+      !feedbackAlreadySent?.data?.is_submitted
+    ) {
+      toggleDrawer({
+        open: true,
+        content: <FeedbackDrawer activity={activity} />
+      });
+    }
+  }, [
+    shouldOpenFeedbackDrawer,
+    isAlreadyParticipant,
+    isPastActivity,
+    !isCreator,
+    feedbackAlreadySent
+  ]);
+
+  // TODO: este raz sa vnorit do data
+
+  const isAbleToSendFeedback =
+    isAlreadyParticipant &&
+    isPastActivity &&
+    !isCreator &&
+    !feedbackAlreadySent?.data?.is_submitted;
 
   const {
     durationHours = 0,
@@ -421,6 +433,10 @@ const ActivityDetailsScreen: React.FC<IProps> = () => {
         <ActivityActionButtons
           onJoinClick={handleJoinButtonClick}
           onMoreClick={() => handleActivityActionsCLick(activity)}
+          isAbleToSendFeedback={isAbleToSendFeedback}
+          sentFeedbackValue={
+            feedbackAlreadySent?.data?.feedback?.value && feedbackAlreadySent?.data?.feedback?.value
+          }
           onActivityFinishedClick={() => handleActivityFinishedClick(activity)}
           areActionsLoading={areActionsLoading}
           isCreator={isCreator}

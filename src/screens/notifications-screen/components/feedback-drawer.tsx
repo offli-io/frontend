@@ -11,6 +11,7 @@ import { DrawerContext } from '../../../context/providers/drawer-provider';
 import { format } from 'date-fns';
 import { DATE_TIME_FORMAT } from '../../../utils/common-constants';
 import firstTimeLoginUrl from '../../../assets/img/first-time-login.svg';
+import { AuthenticationContext } from '../../../context/providers/authentication-provider';
 
 const theme = createTheme({
   components: {
@@ -33,6 +34,7 @@ const FeedbackDrawer: React.FC<IFeedbackDrawerProps> = ({ activity }) => {
   const queryClient = useQueryClient();
   const { toggleDrawer } = React.useContext(DrawerContext);
   const { shadows } = useTheme();
+  const { userInfo } = React.useContext(AuthenticationContext);
 
   const [step, setStep] = React.useState(0);
   const [feedbackValue, setFeedbackValue] = React.useState<number | null>(0);
@@ -42,17 +44,15 @@ const FeedbackDrawer: React.FC<IFeedbackDrawerProps> = ({ activity }) => {
     (values: ICreatorFeedback) => sendUserFeedback(values),
     {
       onSuccess: () => {
-        queryClient.invalidateQueries(['notifications']);
+        queryClient.invalidateQueries(['userAlreadySentFeedback', userInfo?.id, activity?.id]);
         setStep(1);
-        toggleDrawer({
-          open: false
-        });
+        // toggleDrawer({
+        //   open: false
+        // });
         // toast.success('Feedback has been sent');
       },
       onError: () => {
         toast.error('Failed to send feedback');
-        // TODO: dat dopice, len na test
-        setStep(1);
       }
     }
   );
@@ -136,7 +136,7 @@ const FeedbackDrawer: React.FC<IFeedbackDrawerProps> = ({ activity }) => {
             onClick={() =>
               sendFeedbackOnCreator({
                 activity_id: activity?.id,
-                user_id: activity?.creator?.id,
+                user_id: userInfo?.id,
                 feedback_value: feedbackValue
               })
             }>
@@ -157,7 +157,7 @@ const FeedbackDrawer: React.FC<IFeedbackDrawerProps> = ({ activity }) => {
               height: 160
             }}
             src={firstTimeLoginUrl}
-            alt="Activity leave"
+            alt="Activity love"
           />
           <OffliButton
             sx={{ width: '70%', mt: 12 }}

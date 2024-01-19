@@ -3,12 +3,14 @@ import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import HistoryIcon from '@mui/icons-material/History';
 import MenuIcon from '@mui/icons-material/Menu';
-import { Box } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import OffliButton from 'components/offli-button';
 import React from 'react';
 
 interface IActivityActionButtonsProps {
   isAlreadyParticipant?: boolean;
+  isAbleToSendFeedback?: boolean;
+  sentFeedbackValue?: number;
   isCreator?: boolean;
   onJoinClick?: () => void;
   onMoreClick?: () => void;
@@ -22,6 +24,8 @@ interface IActivityActionButtonsProps {
 
 const ActivityActionButtons: React.FC<IActivityActionButtonsProps> = ({
   isAlreadyParticipant,
+  isAbleToSendFeedback,
+  sentFeedbackValue,
   isCreator,
   onJoinClick,
   onMoreClick,
@@ -91,18 +95,35 @@ const ActivityActionButtons: React.FC<IActivityActionButtonsProps> = ({
       {hasEnded ? (
         <OffliButton
           color="secondary"
-          onClick={onActivityFinishedClick}
-          startIcon={<HistoryIcon sx={{ color: 'primary.main' }} />}
+          onClick={isAbleToSendFeedback ? () => onActivityFinishedClick() : () => {}}
+          startIcon={<HistoryIcon sx={{ color: 'primary.main', marginLeft: '-2.2rem' }} />}
           sx={{
             width: '80%',
             color: 'primary.main',
-            fontWeight: 'bold'
+            fontWeight: 'bold',
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'center'
           }}>
-          <>
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              marginLeft: '1rem',
+              lineHeight: 1.5
+            }}>
             Activity has finished
-            <br />
-            Please provide a feedback
-          </>
+            {isAbleToSendFeedback && (
+              <Typography variant="subtitle2" sx={{ fontSize: 12 }}>
+                Tap to send a feedback
+              </Typography>
+            )}
+            {sentFeedbackValue && (
+              <Typography variant="subtitle2" sx={{ fontSize: 12 }}>
+                Your feedback: {sentFeedbackValue}/5
+              </Typography>
+            )}
+          </div>
         </OffliButton>
       ) : null}
 

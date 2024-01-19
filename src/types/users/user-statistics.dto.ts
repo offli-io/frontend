@@ -6,8 +6,11 @@ export interface IUserStatisticsDto {
   new_buddies_last_month_count: number;
 }
 
-export interface IUserAlreadySentFeedbackDto {
-  senderId: number;
-  activityId: number;
-  value: number;
+export interface IFeedbackAlreadySentByUserDto {
+  is_submitted: boolean;
+  feedback: {
+    sender_id?: number;
+    activity_id?: number;
+    value?: number;
+  };
 }

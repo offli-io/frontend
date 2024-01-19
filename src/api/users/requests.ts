@@ -7,7 +7,7 @@ import { IUpdateUserRequestDto } from '../../types/users/update-user-request.dto
 import { IEmailUsernamePassword, IEmailVerificationCode } from '../../types/users/user.dto';
 import { ICreatorFeedback } from '../../types/users/user-feedback.dto';
 import {
-  IUserAlreadySentFeedbackDto,
+  IFeedbackAlreadySentByUserDto,
   IUserStatisticsDto
 } from '../../types/users/user-statistics.dto';
 
@@ -254,11 +254,11 @@ export const sendUserFeedback = (values: ICreatorFeedback) => {
   return promise;
 };
 
-export const getUserAlreadySendFeedback = (userId?: number, activityId?: number) => {
+export const getFeedbackAlreadySentByUser = (userId?: number, activityId?: number) => {
   const CancelToken = axios.CancelToken;
   const source = CancelToken.source();
 
-  const promise = axios.get<IUserAlreadySentFeedbackDto>(
+  const promise = axios.get<IFeedbackAlreadySentByUserDto>(
     `/users/${userId}/feedback/${activityId}`,
     {
       cancelToken: source?.token
