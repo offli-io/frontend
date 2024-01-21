@@ -12,6 +12,8 @@ import InstagramDrawerActions from 'screens/profile-screen/components/instagram-
 import { toast } from 'sonner';
 import ProfileGalleryImageUploadContent from './components/profile-gallery-image-upload-content';
 import ActionButton from 'components/action-button';
+import { CustomizationContext } from 'context/providers/customization-provider';
+import { ThemeOptionsEnumDto } from 'types/settings/theme-options.dto';
 
 interface IProfileGalleryProps {
   photoUrls?: string[];
@@ -25,6 +27,7 @@ const ProfileGallery: React.FC<IProfileGalleryProps> = ({
   instagramUsername
 }) => {
   const { userInfo } = React.useContext(AuthenticationContext);
+  const { theme } = React.useContext(CustomizationContext);
   const queryClient = useQueryClient();
   const { shadows, palette } = useTheme();
   const { toggleDrawer } = React.useContext(DrawerContext);
@@ -209,9 +212,18 @@ const ProfileGallery: React.FC<IProfileGalleryProps> = ({
           }}>
           <ActionButton
             onClick={openInstagramDrawer}
-            // size="small"
             sx={{ mt: 1, fontSize: 20 }}
-            startIcon={<InstagramIcon sx={{ color: 'inherit', fontSize: '24px !important' }} />}
+            startIcon={
+              <InstagramIcon
+                sx={{
+                  color:
+                    theme === ThemeOptionsEnumDto.LIGHT
+                      ? palette?.primary?.main
+                      : palette?.primary?.contrastText,
+                  fontSize: '24px !important'
+                }}
+              />
+            }
             text="Connect Instagram"></ActionButton>
           <Typography
             variant="subtitle1"

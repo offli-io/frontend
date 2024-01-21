@@ -30,7 +30,8 @@ const createCustomizationTheme = (userTheme: ThemeOptionsEnumDto) => {
       mode: userTheme === ThemeOptionsEnumDto.DARK ? 'dark' : 'light',
       primary: {
         main: userTheme === ThemeOptionsEnumDto.LIGHT ? '#4A148C' : '#A763FA',
-        light: userTheme === ThemeOptionsEnumDto.LIGHT ? '#DED5EA' : '#3d3d3d'
+        light: userTheme === ThemeOptionsEnumDto.LIGHT ? '#DED5EA' : '#3d3d3d',
+        contrastText: '#ffffff'
       },
       secondary: {
         main: '#E4E3FF'
