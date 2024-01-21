@@ -249,7 +249,7 @@ const ActivityDetailsScreen: React.FC<IProps> = () => {
     [toggleDrawer, handleMenuItemClick]
   );
 
-  const handleActivityFinishedClick = React.useCallback(
+  const handleToggleFeedbackDrawer = React.useCallback(
     (activity?: IActivity) => {
       toggleDrawer({
         open: true,
@@ -434,10 +434,8 @@ const ActivityDetailsScreen: React.FC<IProps> = () => {
           onJoinClick={handleJoinButtonClick}
           onMoreClick={() => handleActivityActionsCLick(activity)}
           isAbleToSendFeedback={isAbleToSendFeedback}
-          sentFeedbackValue={
-            feedbackAlreadySent?.data?.feedback?.value && feedbackAlreadySent?.data?.feedback?.value
-          }
-          onActivityFinishedClick={() => handleActivityFinishedClick(activity)}
+          sentFeedbackValue={feedbackAlreadySent?.data?.feedback?.value}
+          onToggleFeedbackDrawer={() => handleToggleFeedbackDrawer(activity)}
           areActionsLoading={areActionsLoading}
           isCreator={isCreator}
           isAlreadyParticipant={isAlreadyParticipant}

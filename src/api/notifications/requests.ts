@@ -1,9 +1,7 @@
 import axios from 'axios';
 import { INotificationsResponse } from '../../types/notifications/notifications-response.dto';
 import { WEBPUSH_VAPID_PUBLIC_KEY } from 'utils/common-constants';
-import {
-  ISubscriptionDeviceDto
-} from '../../types/notifications/subscription.dto';
+import { ISubscriptionDeviceDto } from '../../types/notifications/subscription.dto';
 
 export const getNotifications = (userId: number) => {
   const CancelToken = axios.CancelToken;

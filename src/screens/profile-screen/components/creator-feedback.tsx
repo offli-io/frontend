@@ -1,5 +1,6 @@
 import React from 'react';
-import { Box, createTheme, Rating, Typography, useTheme, ThemeProvider } from '@mui/material';
+import { Box, Typography, useTheme } from '@mui/material';
+import OffliRating from '../../../components/OffliRating';
 
 interface IUserFeedbackProps {
   creator_feedback?: number;
@@ -12,20 +13,7 @@ const CreatorFeedback: React.FC<IUserFeedbackProps> = ({
   activities_created_last_month_count,
   username
 }) => {
-  console.log(creator_feedback);
   const { palette } = useTheme();
-
-  const theme = createTheme({
-    components: {
-      MuiRating: {
-        styleOverrides: {
-          iconFilled: {
-            color: palette?.primary?.main
-          }
-        }
-      }
-    }
-  });
 
   return (
     <Box
@@ -43,22 +31,7 @@ const CreatorFeedback: React.FC<IUserFeedbackProps> = ({
           justifyContent: 'center',
           flexDirection: 'column'
         }}>
-        <ThemeProvider theme={theme}>
-          <Rating
-            sx={{
-              fontSize: '2rem',
-              '& .MuiRating-icon': {
-                width: '2.5rem'
-              },
-              mt: 1,
-              mb: 1
-            }}
-            name="feedback"
-            size="large"
-            value={creator_feedback}
-            readOnly={true}
-          />
-        </ThemeProvider>
+        <OffliRating ratingValue={creator_feedback} />
         <Typography
           align="left"
           variant="subtitle2"
