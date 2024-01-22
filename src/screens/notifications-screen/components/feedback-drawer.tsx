@@ -9,7 +9,7 @@ import { sendUserFeedback } from '../../../api/users/requests';
 import { toast } from 'sonner';
 import { DrawerContext } from '../../../context/providers/drawer-provider';
 import { format } from 'date-fns';
-import { DATE_TIME_FORMAT } from '../../../utils/common-constants';
+import { ACTIVITY_ASPECT_RATIO, DATE_TIME_FORMAT } from '../../../utils/common-constants';
 import firstTimeLoginUrl from '../../../assets/img/first-time-login.svg';
 import { AuthenticationContext } from '../../../context/providers/authentication-provider';
 
@@ -33,7 +33,7 @@ const FeedbackDrawer: React.FC<IFeedbackDrawerProps> = ({ activity }) => {
   const baseUrl = useGetApiUrl();
   const queryClient = useQueryClient();
   const { toggleDrawer } = React.useContext(DrawerContext);
-  const { shadows } = useTheme();
+  const { shadows, palette } = useTheme();
   const { userInfo } = React.useContext(AuthenticationContext);
 
   const [step, setStep] = React.useState(0);
@@ -79,7 +79,6 @@ const FeedbackDrawer: React.FC<IFeedbackDrawerProps> = ({ activity }) => {
               display: 'flex',
               flexDirection: 'row',
               justifyContent: 'center',
-              aspectRatio: 1,
               marginLeft: '-1rem',
               margin: 5
             }}>
@@ -91,8 +90,10 @@ const FeedbackDrawer: React.FC<IFeedbackDrawerProps> = ({ activity }) => {
                 aspectRatio: 1,
                 borderRadius: '50%',
                 marginRight: '-25px',
-                objectFit: 'contain',
-                zIndex: 10
+                objectFit: 'cover',
+                zIndex: 10,
+                boxShadow: shadows[4],
+                border: `1.5px solid ${palette?.primary?.main}`
               }}
             />
             <img
@@ -100,10 +101,10 @@ const FeedbackDrawer: React.FC<IFeedbackDrawerProps> = ({ activity }) => {
               alt="activity_title_picture"
               style={{
                 height: 190,
-                aspectRatio: 1,
+                aspectRatio: ACTIVITY_ASPECT_RATIO,
                 borderRadius: '10px',
                 margin: 5,
-                objectFit: 'contain',
+                objectFit: 'cover',
                 boxShadow: shadows[4]
               }}
             />
@@ -111,7 +112,7 @@ const FeedbackDrawer: React.FC<IFeedbackDrawerProps> = ({ activity }) => {
           <Typography
             variant="h1"
             align="center"
-            sx={{ mb: 1, color: ({ palette }) => palette.primary.main }}>
+            sx={{ my: 1, color: ({ palette }) => palette.primary.main }}>
             {activity?.title}
           </Typography>
           <Typography
@@ -133,6 +134,7 @@ const FeedbackDrawer: React.FC<IFeedbackDrawerProps> = ({ activity }) => {
           </ThemeProvider>
           <OffliButton
             sx={{ width: '70%', mt: 4 }}
+            disabled={!feedbackValue}
             onClick={() =>
               sendFeedbackOnCreator({
                 activity_id: activity?.id,

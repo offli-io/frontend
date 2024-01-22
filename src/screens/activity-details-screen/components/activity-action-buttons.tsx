@@ -115,7 +115,7 @@ const ActivityActionButtons: React.FC<IActivityActionButtonsProps> = ({
               disabled={areActionsLoading}
               sx={{
                 fontSize: 18,
-                width: '40%',
+                width: '50%',
                 height: 48,
                 bgcolor: 'primary.light',
                 color: 'primary.main'

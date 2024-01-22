@@ -140,6 +140,13 @@ const createCustomizationTheme = (userTheme: ThemeOptionsEnumDto) => {
             // ...(mode === "dark" ? { filter: "invert(100%)" } : {}),
           })
         }
+      },
+      MuiRating: {
+        styleOverrides: {
+          iconFilled: ({ theme }) => ({
+            color: theme?.palette?.primary?.main
+          })
+        }
       }
     }
   });
