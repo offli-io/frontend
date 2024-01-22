@@ -22,7 +22,6 @@ interface IProps {
 }
 
 const StyledBox = styled(Card)(() => ({
-  backgroundColor: '#121212',
   display: 'flex',
   alignItems: 'center',
   flexDirection: 'column',
