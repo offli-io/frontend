@@ -44,6 +44,7 @@ const LoginScreen: React.FC = () => {
     from: GoogleAuthCodeFromEnumDto.LOGIN,
     omitTokenGetting: true
   });
+  const { userInfo } = React.useContext(AuthenticationContext);
   const abortControllerRef = React.useRef<AbortController | null>(null);
 
   const handleClickShowPassword = () => setShowPassword(!showPassword);
@@ -108,6 +109,13 @@ const LoginScreen: React.FC = () => {
       sendLoginViaGoogle(googleAuthCode);
     }
   }, [googleAuthCode]);
+
+  React.useEffect(() => {
+    if (userInfo?.id) {
+      //Hacky way but I dont have any other way to implement it now
+      navigate(ApplicationLocations.EXPLORE);
+    }
+  }, [userInfo?.id]);
 
   return (
     <>

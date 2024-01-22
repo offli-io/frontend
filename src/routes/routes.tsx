@@ -131,7 +131,7 @@ const Routes = () => {
       <Route path={ApplicationLocations.ACCOUNT_SETTINGS} element={<AccountSettingsScreen />} />
 
       <Route
-        path={ApplicationLocations.ACTIVITIES}
+        path={`${ApplicationLocations.ACTIVITIES}/:activeTab`}
         element={userInfo?.id ? <ActivitiesScreen /> : <RegistrationNeededScreen />}
       />
       {/* </Route> */}
