@@ -31,8 +31,6 @@ const LastAttendedActivities: React.FC<ILastAttendedActivitiesProps> = ({ isBudd
   // I am allowed to browse only through buddy last activities or mine
   const allowedToDisplay = id ? isBuddy : true;
 
-  console.log(!allowedToDisplay);
-
   return !allowedToDisplay ||
     (!areLastAttendedActivitiesLoading && [...(lastAttendedActivties ?? [])].length < 1) ? null : (
     <Box

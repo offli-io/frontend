@@ -3,7 +3,7 @@ import { styled } from '@mui/material/styles';
 import React from 'react';
 import { useLocation } from 'react-router-dom';
 
-interface IDrawerData {
+export interface IDrawerData {
   open?: boolean;
   content?: React.ReactElement;
   variant?: 'permanent' | 'persistent' | 'temporary';

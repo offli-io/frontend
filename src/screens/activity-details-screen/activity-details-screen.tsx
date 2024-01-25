@@ -43,6 +43,8 @@ import ActivityDetailsGrid, { IGridAction } from './components/activity-details-
 import { ActivityInviteDrawerContent } from './components/activity-invite-drawer-content';
 import ActivityVisibilityDuration from './components/activity-visibility-duration';
 import { convertDateToUTC } from './utils/convert-date-to-utc';
+import FeedbackDrawer from '../notifications-screen/components/feedback-drawer';
+import { useFeedbackAlreadySentByUser } from '../../hooks/use-feedback-already-sent-by-user';
 
 interface IProps {
   type: 'detail' | 'request';
@@ -50,6 +52,7 @@ interface IProps {
 
 interface ICustomizedLocationState {
   openInviteDrawer?: boolean;
+  openFeedbackDrawer?: boolean;
 }
 
 const ActivityDetailsScreen: React.FC<IProps> = () => {
@@ -59,6 +62,8 @@ const ActivityDetailsScreen: React.FC<IProps> = () => {
   const location = useLocation();
   const shouldOpenInviteDrawer =
     (location?.state as ICustomizedLocationState)?.openInviteDrawer ?? false;
+  const shouldOpenFeedbackDrawer =
+    (location?.state as ICustomizedLocationState)?.openFeedbackDrawer ?? false;
   const { toggleDrawer } = React.useContext(DrawerContext);
   const { userInfo } = React.useContext(AuthenticationContext);
   const { sendDismissActivity } = useDismissActivity({
@@ -244,6 +249,16 @@ const ActivityDetailsScreen: React.FC<IProps> = () => {
     [toggleDrawer, handleMenuItemClick]
   );
 
+  const handleToggleFeedbackDrawer = React.useCallback(
+    (activity?: IActivity) => {
+      toggleDrawer({
+        open: true,
+        content: <FeedbackDrawer activity={activity} />
+      });
+    },
+    [toggleDrawer, handleMenuItemClick]
+  );
+
   React.useEffect(() => {
     if (state) {
       navigate(`${ApplicationLocations.ACTIVITY_DETAIL}/${state?.id}`, {
@@ -296,6 +311,40 @@ const ActivityDetailsScreen: React.FC<IProps> = () => {
   const dateTimeFrom = activity?.datetime_from ? new Date(activity?.datetime_from) : null;
 
   const dateTimeUntil = activity?.datetime_until ? new Date(activity?.datetime_until) : null;
+
+  const {
+    data: { data: feedbackAlreadySent } = {}
+    // isLoading: isUserStatsLoading
+  } = useFeedbackAlreadySentByUser({
+    userId: userInfo?.id,
+    activityId: Number(id),
+    enabled: isAlreadyParticipant && isPastActivity && !isCreator
+  });
+
+  React.useEffect(() => {
+    //invite drawer once you create activity
+    if (
+      shouldOpenFeedbackDrawer &&
+      isAlreadyParticipant &&
+      isPastActivity &&
+      !isCreator &&
+      !feedbackAlreadySent?.is_submitted
+    ) {
+      toggleDrawer({
+        open: true,
+        content: <FeedbackDrawer activity={activity} />
+      });
+    }
+  }, [
+    shouldOpenFeedbackDrawer,
+    isAlreadyParticipant,
+    isPastActivity,
+    !isCreator,
+    feedbackAlreadySent
+  ]);
+
+  const isAbleToSendFeedback =
+    isAlreadyParticipant && isPastActivity && !isCreator && !feedbackAlreadySent?.is_submitted;
 
   const {
     durationHours = 0,
@@ -379,6 +428,9 @@ const ActivityDetailsScreen: React.FC<IProps> = () => {
         <ActivityActionButtons
           onJoinClick={handleJoinButtonClick}
           onMoreClick={() => handleActivityActionsCLick(activity)}
+          isAbleToSendFeedback={isAbleToSendFeedback}
+          sentFeedbackValue={feedbackAlreadySent?.feedback?.value}
+          onToggleFeedbackDrawer={() => handleToggleFeedbackDrawer(activity)}
           areActionsLoading={areActionsLoading}
           isCreator={isCreator}
           isAlreadyParticipant={isAlreadyParticipant}

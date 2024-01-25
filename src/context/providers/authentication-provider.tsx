@@ -50,8 +50,6 @@ export const AuthenticationProvider = ({ children }: { children: React.ReactNode
     }
   }, [userInfo?.id]);
 
-  console.log(userInfo);
-
   useServiceInterceptors({ setStateToken, setUserInfo, userId: userInfo?.id });
   React.useEffect(() => {
     if (stateToken) {
