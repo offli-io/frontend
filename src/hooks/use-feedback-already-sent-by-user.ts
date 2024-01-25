@@ -7,13 +7,16 @@ interface IUseFeedbackAlreadySentByUserReturn {
   activityId?: number;
   enabled?: boolean;
 }
+
+export const FEEDBACK_ALREADY_SENT_BY_USER_QUERY_KEY = 'userAlreadySentFeedback';
+
 export const useFeedbackAlreadySentByUser = ({
   userId,
   activityId,
   enabled
 }: IUseFeedbackAlreadySentByUserReturn) => {
   const { data, isLoading } = useQuery(
-    ['userAlreadySentFeedback', userId, activityId],
+    [FEEDBACK_ALREADY_SENT_BY_USER_QUERY_KEY, userId, activityId],
     () => getFeedbackAlreadySentByUser(userId, activityId),
     {
       enabled: enabled,

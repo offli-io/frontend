@@ -1,4 +1,4 @@
-import { Box, Rating, ThemeProvider, Typography, createTheme, useTheme } from '@mui/material';
+import { Box, Rating, Typography, useTheme } from '@mui/material';
 import OffliButton from 'components/offli-button';
 import React from 'react';
 import { IActivity } from 'types/activities/activity.dto';
@@ -12,18 +12,7 @@ import { format } from 'date-fns';
 import { ACTIVITY_ASPECT_RATIO, DATE_TIME_FORMAT } from '../../../utils/common-constants';
 import firstTimeLoginUrl from '../../../assets/img/first-time-login.svg';
 import { AuthenticationContext } from '../../../context/providers/authentication-provider';
-
-const theme = createTheme({
-  components: {
-    MuiRating: {
-      styleOverrides: {
-        iconFilled: {
-          color: 'primary'
-        }
-      }
-    }
-  }
-});
+import { FEEDBACK_ALREADY_SENT_BY_USER_QUERY_KEY } from '../../../hooks/use-feedback-already-sent-by-user';
 
 export interface IFeedbackDrawerProps {
   activity?: IActivity;
@@ -44,12 +33,12 @@ const FeedbackDrawer: React.FC<IFeedbackDrawerProps> = ({ activity }) => {
     (values: ICreatorFeedback) => sendUserFeedback(values),
     {
       onSuccess: () => {
-        queryClient.invalidateQueries(['userAlreadySentFeedback', userInfo?.id, activity?.id]);
+        queryClient.invalidateQueries([
+          FEEDBACK_ALREADY_SENT_BY_USER_QUERY_KEY,
+          userInfo?.id,
+          activity?.id
+        ]);
         setStep(1);
-        // toggleDrawer({
-        //   open: false
-        // });
-        // toast.success('Feedback has been sent');
       },
       onError: () => {
         toast.error('Failed to send feedback');
@@ -121,17 +110,15 @@ const FeedbackDrawer: React.FC<IFeedbackDrawerProps> = ({ activity }) => {
             sx={{ fontSize: 12, mb: 2, color: ({ palette }) => palette.primary.main }}>
             {activity?.datetime_from && format(new Date(activity?.datetime_from), DATE_TIME_FORMAT)}
           </Typography>
-          <ThemeProvider theme={theme}>
-            <Rating
-              name="feedback"
-              defaultValue={2}
-              size="large"
-              value={feedbackValue}
-              onChange={(event, newValue) => {
-                setFeedbackValue(newValue);
-              }}
-            />
-          </ThemeProvider>
+          <Rating
+            name="feedback"
+            defaultValue={2}
+            size="large"
+            value={feedbackValue}
+            onChange={(event, newValue) => {
+              setFeedbackValue(newValue);
+            }}
+          />
           <OffliButton
             sx={{ width: '70%', mt: 4 }}
             disabled={!feedbackValue}

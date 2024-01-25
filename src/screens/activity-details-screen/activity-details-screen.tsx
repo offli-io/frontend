@@ -44,7 +44,7 @@ import { ActivityInviteDrawerContent } from './components/activity-invite-drawer
 import ActivityVisibilityDuration from './components/activity-visibility-duration';
 import { convertDateToUTC } from './utils/convert-date-to-utc';
 import FeedbackDrawer from '../notifications-screen/components/feedback-drawer';
-import { useFeedbackAlreadySentByUser } from '../../hooks/useFeedbackAlreadySentByUser';
+import { useFeedbackAlreadySentByUser } from '../../hooks/use-feedback-already-sent-by-user';
 
 interface IProps {
   type: 'detail' | 'request';
@@ -342,8 +342,6 @@ const ActivityDetailsScreen: React.FC<IProps> = () => {
     !isCreator,
     feedbackAlreadySent
   ]);
-
-  // TODO: este raz sa vnorit do data
 
   const isAbleToSendFeedback =
     isAlreadyParticipant &&
