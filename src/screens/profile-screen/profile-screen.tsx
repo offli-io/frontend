@@ -63,7 +63,7 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
   const {
     data: { data: userStats = {} as IUserStatisticsDto } = {}
     // isLoading: isUserStatsLoading
-  } = useUserStats(Number(id));
+  } = useUserStats(id ? Number(id) : Number(userInfo?.id));
 
   const isBuddy = React.useMemo(
     () => !!user?.buddies?.find(({ id }) => id === userInfo?.id),

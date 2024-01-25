@@ -313,7 +313,7 @@ const ActivityDetailsScreen: React.FC<IProps> = () => {
   const dateTimeUntil = activity?.datetime_until ? new Date(activity?.datetime_until) : null;
 
   const {
-    data: feedbackAlreadySent
+    data: { data: feedbackAlreadySent } = {}
     // isLoading: isUserStatsLoading
   } = useFeedbackAlreadySentByUser({
     userId: userInfo?.id,
@@ -328,7 +328,7 @@ const ActivityDetailsScreen: React.FC<IProps> = () => {
       isAlreadyParticipant &&
       isPastActivity &&
       !isCreator &&
-      !feedbackAlreadySent?.data?.is_submitted
+      !feedbackAlreadySent?.is_submitted
     ) {
       toggleDrawer({
         open: true,
@@ -344,10 +344,7 @@ const ActivityDetailsScreen: React.FC<IProps> = () => {
   ]);
 
   const isAbleToSendFeedback =
-    isAlreadyParticipant &&
-    isPastActivity &&
-    !isCreator &&
-    !feedbackAlreadySent?.data?.is_submitted;
+    isAlreadyParticipant && isPastActivity && !isCreator && !feedbackAlreadySent?.is_submitted;
 
   const {
     durationHours = 0,
@@ -432,7 +429,7 @@ const ActivityDetailsScreen: React.FC<IProps> = () => {
           onJoinClick={handleJoinButtonClick}
           onMoreClick={() => handleActivityActionsCLick(activity)}
           isAbleToSendFeedback={isAbleToSendFeedback}
-          sentFeedbackValue={feedbackAlreadySent?.data?.feedback?.value}
+          sentFeedbackValue={feedbackAlreadySent?.feedback?.value}
           onToggleFeedbackDrawer={() => handleToggleFeedbackDrawer(activity)}
           areActionsLoading={areActionsLoading}
           isCreator={isCreator}
