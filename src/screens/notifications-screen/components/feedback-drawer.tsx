@@ -130,6 +130,11 @@ const FeedbackDrawer: React.FC<IFeedbackDrawerProps> = ({ activity }) => {
               onChange={(event, newValue) => {
                 setFeedbackValue(newValue);
               }}
+              sx={{
+                '& .MuiRating-iconFilled': {
+                  color: 'red'
+                }
+              }}
             />
           </ThemeProvider>
           <OffliButton
