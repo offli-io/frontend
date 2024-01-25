@@ -13,6 +13,7 @@ import { ACTIVITY_ASPECT_RATIO, DATE_TIME_FORMAT } from '../../../utils/common-c
 import firstTimeLoginUrl from '../../../assets/img/first-time-login.svg';
 import { AuthenticationContext } from '../../../context/providers/authentication-provider';
 import { FEEDBACK_ALREADY_SENT_BY_USER_QUERY_KEY } from '../../../hooks/use-feedback-already-sent-by-user';
+import { USER_STATS_QUERY_KEY } from '../../../hooks/use-user-stats';
 
 export interface IFeedbackDrawerProps {
   activity?: IActivity;
@@ -38,6 +39,7 @@ const FeedbackDrawer: React.FC<IFeedbackDrawerProps> = ({ activity }) => {
           userInfo?.id,
           activity?.id
         ]);
+        queryClient.invalidateQueries([USER_STATS_QUERY_KEY, activity?.creator?.id]);
         setStep(1);
       },
       onError: () => {

@@ -8,7 +8,7 @@ interface IUseFeedbackAlreadySentByUserReturn {
   enabled?: boolean;
 }
 
-export const FEEDBACK_ALREADY_SENT_BY_USER_QUERY_KEY = 'userAlreadySentFeedback';
+export const FEEDBACK_ALREADY_SENT_BY_USER_QUERY_KEY = 'feedback-already-sent-by-user';
 
 export const useFeedbackAlreadySentByUser = ({
   userId,
