@@ -23,6 +23,8 @@ import { ActivitiesTabLabelMap } from './utils/activities-tab-label-map';
 const ActivitiesScreen = () => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
+  const { contentDivRef } = React.useContext(LayoutContext);
+
   const [currentTab, setCurrentTab] = React.useState<TabDefinitionsEnum>(
     TabDefinitionsEnum.UPCOMING
   );
@@ -87,10 +89,9 @@ const ActivitiesScreen = () => {
       getNextPageParam: (lastPage, allPages) => {
         // don't need to add +1 because we are indexing offset from 0 (so length will handle + 1)
         if (lastPage?.length === ACTIVITES_LIMIT) {
-          const nextPage: number = allPages?.length;
+          const nextPage: number = allPages?.length * ACTIVITES_LIMIT;
           return nextPage;
         }
-
         return undefined;
       },
       enabled: !!userInfo?.id
@@ -102,6 +103,10 @@ const ActivitiesScreen = () => {
 
     // setCurrentTab(newValue);
   };
+
+  setTimeout(() => {
+    console.log((contentDivRef as any)?.scrollTop);
+  }, 1000);
 
   return (
     <>
@@ -146,7 +151,7 @@ const ActivitiesScreen = () => {
                   key={activity?.id}
                   activity={activity}
                   onPress={() =>
-                    navigate(`${ApplicationLocations.ACTIVITY_DETAIL}/${activity?.id}`)
+                    navigate(`${ApplicationLocations.ACTIVITY_DETAIL}/${activity?.id}`, {})
                   }
                   // onLongPress={openActivityActions}
                   sx={{ mx: 0, my: 3, width: '100%' }}
