@@ -120,6 +120,11 @@ const FeedbackDrawer: React.FC<IFeedbackDrawerProps> = ({ activity }) => {
             onChange={(event, newValue) => {
               setFeedbackValue(newValue);
             }}
+            sx={{
+              '& .MuiSvgIcon-root': {
+                color: 'inherit'
+              }
+            }}
           />
           <OffliButton
             sx={{ width: '70%', mt: 4 }}
