@@ -31,7 +31,7 @@ const reactAfter = (notification: INotificationDto, navigate: NavigateFunction) 
     ) {
       // feedback request
       navigate(
-        `${ApplicationLocations.EXPLORE}/request/${notification?.properties?.activity?.id}`,
+        `${ApplicationLocations.ACTIVITY_DETAIL}/${notification?.properties?.activity?.id}`,
         {
           state: {
             from: '/notifications',
@@ -43,7 +43,7 @@ const reactAfter = (notification: INotificationDto, navigate: NavigateFunction) 
     } else {
       // probably only one case - activity cancelled
       navigate(
-        `${ApplicationLocations.EXPLORE}/request/${notification?.properties?.activity?.id}`,
+        `${ApplicationLocations.ACTIVITY_DETAIL}/${notification?.properties?.activity?.id}`,
         {
           state: {
             from: '/notifications',

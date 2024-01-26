@@ -27,7 +27,7 @@ export const getNotificationTitle = (notification: INotificationDto): string => 
     case NotificationTypeEnum.ACTIVITY_INV:
       return 'Activity invitation';
     case NotificationTypeEnum.ACTIVITY_CHANGE:
-      return 'Changes in activity';
+      return 'Activity update';
     case NotificationTypeEnum.BUDDY_REQ:
       return 'Buddy request';
     default:
