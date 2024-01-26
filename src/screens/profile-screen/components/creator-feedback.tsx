@@ -35,7 +35,7 @@ const CreatorFeedback: React.FC<IUserFeedbackProps> = ({
         <Typography
           align="left"
           variant="subtitle2"
-          sx={{ fontSize: 10, fontWeight: 'normal', maxWidth: '70vw' }}>
+          sx={{ fontSize: 10, fontWeight: 'normal', maxWidth: '80vw' }}>
           based on the feedback from {activities_created_last_month_count} activities {username} has
           created last month.
         </Typography>
