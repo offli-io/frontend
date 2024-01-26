@@ -38,7 +38,7 @@ const CreatorFeedback: React.FC<IUserFeedbackProps> = ({
           sx={{ fontSize: 10, fontWeight: 'normal', maxWidth: '80vw' }}>
           {/*based on the feedback from {activities_created_last_month_count} activities {username} has*/}
           {/*created last month.*/}
-          based on the feedback from activities {username} has created last month.
+          based on the feedback from activities {username} has created.
         </Typography>
       </Box>
     </Box>
