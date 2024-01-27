@@ -1,6 +1,6 @@
 import axios from 'axios';
-import { WEBPUSH_VAPID_PUBLIC_KEY } from 'utils/common-constants';
 import { INotificationsResponse } from '../../types/notifications/notifications-response.dto';
+import { WEBPUSH_VAPID_PUBLIC_KEY } from 'utils/common-constants';
 import { ISubscriptionDeviceDto } from '../../types/notifications/subscription.dto';
 
 export const getNotifications = (userId: number) => {
@@ -87,7 +87,7 @@ const urlBase64ToUint8Array = (base64String: string) => {
 //   const response = await axios.get<ISubscriptionDto>(url, { params: { userId: userId } });
 //   return response?.data;
 // };
-
+//
 // const putSubscription = async (subscription: ISubscriptionDto) => {
 //   const url = `/notifications/subscriptions`;
 //   await axios.put(url, subscription, { params: { userId: subscription.user_id } });

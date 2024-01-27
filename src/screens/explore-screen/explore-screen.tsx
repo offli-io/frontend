@@ -50,8 +50,6 @@ const ExploreScreen = () => {
 
   const { pages, isFetchingNextPage, fetchNextPage, hasNextPage } = useActivitiesInfiniteQuery();
 
-  console.log(pages);
-
   const { mutate: sendJoinActivity } = useMutation(
     ['join-activity-response'],
     (activityId?: number) => {
@@ -102,6 +100,21 @@ const ExploreScreen = () => {
       }
     }
   );
+
+  React.useEffect(() => {
+    const handlePopstate = () => {
+      // Your logic to handle browser back navigation
+      console.log('Browser back navigation detected!');
+    };
+
+    // Add the event listener when the component mounts
+    window.addEventListener('popstate', handlePopstate);
+
+    // Remove the event listener when the component unmounts
+    return () => {
+      window.removeEventListener('popstate', handlePopstate);
+    };
+  }, []); // Empty dependency array ensures that the effect runs only once on mount
 
   const handleActionClick = React.useCallback(
     (action?: ActivityActionsTypeEnumDto, activityId?: number) => {

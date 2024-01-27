@@ -160,7 +160,7 @@ const ProfileStatistics: React.FC<IProps> = ({
               <Typography variant="subtitle2">
                 {id ? `${user?.username} has met` : "You've met"}{' '}
                 <b>
-                  {createdNum} {createdNum === 1 ? 'new buddy' : 'new buddies'}
+                  {metNum} {metNum === 1 ? 'new buddy' : 'new buddies'}
                 </b>
                 .
               </Typography>

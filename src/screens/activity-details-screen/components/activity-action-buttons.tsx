@@ -1,17 +1,20 @@
+import React from 'react';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
-import HistoryIcon from '@mui/icons-material/History';
 import MenuIcon from '@mui/icons-material/Menu';
-import { Box } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import OffliButton from 'components/offli-button';
-import React from 'react';
+import OffliRating from '../../../components/OffliRating';
 
 interface IActivityActionButtonsProps {
   isAlreadyParticipant?: boolean;
+  isAbleToSendFeedback?: boolean;
+  sentFeedbackValue?: number;
   isCreator?: boolean;
   onJoinClick?: () => void;
   onMoreClick?: () => void;
+  onToggleFeedbackDrawer: () => void;
   areActionsLoading?: boolean;
   isPublic?: boolean;
   hasEnded?: boolean;
@@ -21,9 +24,12 @@ interface IActivityActionButtonsProps {
 
 const ActivityActionButtons: React.FC<IActivityActionButtonsProps> = ({
   isAlreadyParticipant,
+  isAbleToSendFeedback,
+  sentFeedbackValue,
   isCreator,
   onJoinClick,
   onMoreClick,
+  onToggleFeedbackDrawer,
   areActionsLoading,
   //TODO just get activity and define all these properties in this component
   isPublic,
@@ -87,14 +93,52 @@ const ActivityActionButtons: React.FC<IActivityActionButtonsProps> = ({
         </>
       ) : null}
       {hasEnded ? (
-        <OffliButton
-          color="secondary"
-          startIcon={<HistoryIcon sx={{ color: 'primary.main' }} />}
-          sx={{ width: '80%', color: 'primary.main', fontWeight: 'bold' }}>
-          Activity has finished
-        </OffliButton>
+        isAbleToSendFeedback ? (
+          <>
+            <OffliButton
+              size="small"
+              sx={{
+                fontSize: 18,
+                width: '40%',
+                height: 48,
+                color: 'background.default'
+              }}
+              disabled={true}
+              // onClick={onJoinClick}
+              // color={!isAlreadyParticipant ? 'primary' : 'secondary'}
+              // isLoading={areActionsLoading}
+            >
+              Activity ended
+            </OffliButton>
+            <OffliButton
+              size="small"
+              disabled={areActionsLoading}
+              sx={{
+                fontSize: 18,
+                width: '50%',
+                height: 48,
+                bgcolor: 'primary.light',
+                color: 'primary.main'
+              }}
+              onClick={onToggleFeedbackDrawer}>
+              Leave feedback
+            </OffliButton>
+          </>
+        ) : sentFeedbackValue ? (
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              alignItems: 'center'
+            }}>
+            <Typography variant="subtitle2" sx={{ fontSize: 14 }}>
+              Activity ended, your rating:
+            </Typography>
+            <OffliRating ratingValue={sentFeedbackValue} />
+          </Box>
+        ) : null
       ) : null}
-
       {inProgress ? (
         <OffliButton
           color="secondary"

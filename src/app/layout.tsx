@@ -124,8 +124,8 @@ export const Layout: React.FC<ILayoutProps> = () => {
 
   const addContentPadding = React.useMemo(
     () =>
-      [ApplicationLocations.EXPLORE, ApplicationLocations.ACTIVITIES].includes(
-        location?.pathname as ApplicationLocations
+      [ApplicationLocations.EXPLORE, ApplicationLocations.ACTIVITIES].some(
+        (item) => location?.pathname.startsWith(item)
       ),
     [location?.pathname]
   );

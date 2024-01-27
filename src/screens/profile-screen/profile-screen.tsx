@@ -25,6 +25,9 @@ import { useSendBuddyRequest } from './hooks/use-send-buddy-request';
 import { useToggleBuddyRequest } from './hooks/use-toggle-buddy-request';
 import { ProfileEntryTypeEnum } from './types/profile-entry-type';
 import { generateBuddyActionButtonLabel } from './utils/generate-buddy-action-button-label.util';
+import { useUserStats } from '../../hooks/use-user-stats';
+import { IUserStatisticsDto } from '../../types/users/user-statistics.dto';
+import CreatorFeedback from './components/creator-feedback';
 
 interface IProfileScreenProps {
   type: ProfileEntryTypeEnum;
@@ -52,10 +55,15 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
     }
   });
 
-  const { data: { data: { stats = {}, user = {} } = {} } = {}, isLoading } = useUser({
+  const { data: { data: { user = {} } = {} } = {}, isLoading } = useUser({
     id: id ? Number(id) : userInfo?.id,
     requestingInfoUserId: id ? userInfo?.id : undefined
   });
+
+  const {
+    data: { data: userStats = {} as IUserStatisticsDto } = {}
+    // isLoading: isUserStatsLoading
+  } = useUserStats(id ? Number(id) : Number(userInfo?.id));
 
   const isBuddy = React.useMemo(
     () => !!user?.buddies?.find(({ id }) => id === userInfo?.id),
@@ -269,6 +277,11 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
           </Box>
         ) : null}
         <LastAttendedActivities isBuddy={isBuddy} />
+        <CreatorFeedback
+          creator_feedback={userStats?.creator_feedback}
+          // activities_created_last_month_count={userStats?.activities_created_last_month_count}
+          username={user?.username}
+        />
 
         <Box
           sx={{
@@ -279,15 +292,15 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
             This month
           </Typography>
           <ProfileStatistics
-            participatedNum={stats?.activities_participated_last_month_count}
+            participatedNum={userStats?.activities_participated_last_month_count}
             createdNum={
               isBuddy || [ProfileEntryTypeEnum.PROFILE].includes(type)
-                ? stats?.activities_created_last_month_count
+                ? userStats?.activities_created_last_month_count
                 : undefined
             }
             metNum={
               isBuddy || [ProfileEntryTypeEnum.PROFILE].includes(type)
-                ? stats?.new_buddies_last_month_count
+                ? userStats?.new_buddies_last_month_count
                 : undefined
             }
             user={user}

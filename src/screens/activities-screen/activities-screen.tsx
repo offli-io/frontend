@@ -8,7 +8,7 @@ import Loader from 'components/loader';
 import { PAGED_ACTIVITIES_QUERY_KEY } from 'hooks/use-activities-infinite-query';
 import React from 'react';
 import InfiniteScroll from 'react-infinite-scroller';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { ActivitiyParticipantStatusEnum } from 'types/activities/activity-participant-status-enum.dto';
 import {
   ActivitySortColumnEnum,
@@ -18,13 +18,18 @@ import { ACTIVITES_LIMIT } from 'utils/common-constants';
 import { ApplicationLocations } from '../../types/common/applications-locations.dto';
 import { SWIPE_ARRAY_ORDER, detectSwipedTab } from './utils/detect-swiped-tab.util';
 import { TabDefinitionsEnum } from './utils/tab-definitions';
+import { ActivitiesTabLabelMap } from './utils/activities-tab-label-map';
 
 const ActivitiesScreen = () => {
   const navigate = useNavigate();
-  const location = useLocation();
+  const { pathname } = useLocation();
+  const { contentDivRef } = React.useContext(LayoutContext);
+
   const [currentTab, setCurrentTab] = React.useState<TabDefinitionsEnum>(
     TabDefinitionsEnum.UPCOMING
   );
+  const { activeTab } = useParams();
+
   const { userInfo } = React.useContext(AuthenticationContext);
   const { setSwipeHandlers } = React.useContext(LayoutContext);
 
@@ -32,14 +37,21 @@ const ActivitiesScreen = () => {
     setSwipeHandlers?.({
       left: () => {
         const nextTab = detectSwipedTab('left', currentTab);
-        setCurrentTab(nextTab);
+        navigate(`${ApplicationLocations.ACTIVITIES}/${nextTab}`);
+        // setCurrentTab(nextTab);
       },
       right: () => {
         const nextTab = detectSwipedTab('right', currentTab);
-        setCurrentTab(nextTab);
+        navigate(`${ApplicationLocations.ACTIVITIES}/${nextTab}`);
+
+        // setCurrentTab(nextTab);
       }
     });
   }, [currentTab]);
+
+  React.useEffect(() => {
+    setCurrentTab(activeTab as TabDefinitionsEnum);
+  }, [activeTab]);
 
   const cachedTodaysDate = React.useMemo(() => new Date(), []);
 
@@ -50,7 +62,7 @@ const ActivitiesScreen = () => {
     isFetchingNextPage,
     isLoading
   } = useInfiniteQuery(
-    [PAGED_ACTIVITIES_QUERY_KEY, location, currentTab],
+    [PAGED_ACTIVITIES_QUERY_KEY, pathname, currentTab],
     ({ pageParam = 0 }) =>
       getActivitiesPromiseResolved({
         offset: pageParam,
@@ -77,10 +89,9 @@ const ActivitiesScreen = () => {
       getNextPageParam: (lastPage, allPages) => {
         // don't need to add +1 because we are indexing offset from 0 (so length will handle + 1)
         if (lastPage?.length === ACTIVITES_LIMIT) {
-          const nextPage: number = allPages?.length;
+          const nextPage: number = allPages?.length * ACTIVITES_LIMIT;
           return nextPage;
         }
-
         return undefined;
       },
       enabled: !!userInfo?.id
@@ -88,8 +99,14 @@ const ActivitiesScreen = () => {
   );
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: TabDefinitionsEnum) => {
-    setCurrentTab(newValue);
+    navigate(`${ApplicationLocations.ACTIVITIES}/${newValue}`);
+
+    // setCurrentTab(newValue);
   };
+
+  setTimeout(() => {
+    console.log((contentDivRef as any)?.scrollTop);
+  }, 1000);
 
   return (
     <>
@@ -107,7 +124,7 @@ const ActivitiesScreen = () => {
           }
         }}>
         {SWIPE_ARRAY_ORDER.map((item) => (
-          <Tab key={item} label={item} value={item} />
+          <Tab key={item} label={ActivitiesTabLabelMap[item]} value={item} />
         ))}
       </Tabs>
       {isLoading ? <Loader /> : null}
@@ -134,7 +151,7 @@ const ActivitiesScreen = () => {
                   key={activity?.id}
                   activity={activity}
                   onPress={() =>
-                    navigate(`${ApplicationLocations.ACTIVITY_DETAIL}/${activity?.id}`)
+                    navigate(`${ApplicationLocations.ACTIVITY_DETAIL}/${activity?.id}`, {})
                   }
                   // onLongPress={openActivityActions}
                   sx={{ mx: 0, my: 3, width: '100%' }}

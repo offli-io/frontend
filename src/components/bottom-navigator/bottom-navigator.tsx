@@ -13,6 +13,7 @@ import { ApplicationLocations } from '../../types/common/applications-locations.
 import { FOOTER_HEIGHT } from '../../utils/common-constants';
 import { mapLocationToNavigatorValue } from './utils/map-location-to-navigator-value.util';
 import { ThemeOptionsEnumDto } from 'types/settings/theme-options.dto';
+import { TabDefinitionsEnum } from 'screens/activities-screen/utils/tab-definitions';
 
 interface IBottomNavigatorProps {
   sx?: SxProps;
@@ -104,7 +105,7 @@ const BottomNavigator: React.FC<IBottomNavigatorProps> = () => {
           }
           component={Link}
           value={ApplicationLocations.ACTIVITIES}
-          to={ApplicationLocations.ACTIVITIES}
+          to={`${ApplicationLocations.ACTIVITIES}/${TabDefinitionsEnum.UPCOMING}`}
           data-testid="navigator-activities"
           sx={{
             fontSize: value === ApplicationLocations.ACTIVITIES ? 10 : 8,

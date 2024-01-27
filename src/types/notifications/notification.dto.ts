@@ -1,6 +1,11 @@
 import { IActivity, IPerson } from '../activities/activity.dto';
 import { NotificationTypeEnum } from './notification-type-enum';
 
+interface INotificationChanges {
+  key?: string;
+  old?: string;
+  new?: string;
+}
 export interface INotificationDto {
   id: number;
   user_id: number;
@@ -10,6 +15,7 @@ export interface INotificationDto {
   properties: {
     activity?: IActivity;
     user?: IPerson;
+    changes?: INotificationChanges[];
     // TODO: Activity changes
   };
 }
@@ -21,7 +27,10 @@ export const getNotificationTitle = (notification: INotificationDto): string => 
     case NotificationTypeEnum.ACTIVITY_INV:
       return 'Activity invitation';
     case NotificationTypeEnum.ACTIVITY_CHANGE:
-      return 'Changes in activity';
+      if (notification?.properties?.changes?.[0]?.new === 'completed') {
+        return 'Leave a feedback';
+      }
+      return 'Activity update';
     case NotificationTypeEnum.BUDDY_REQ:
       return 'Buddy request';
     default:
