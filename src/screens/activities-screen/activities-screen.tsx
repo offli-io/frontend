@@ -19,6 +19,7 @@ import { ApplicationLocations } from '../../types/common/applications-locations.
 import { SWIPE_ARRAY_ORDER, detectSwipedTab } from './utils/detect-swiped-tab.util';
 import { TabDefinitionsEnum } from './utils/tab-definitions';
 import { ActivitiesTabLabelMap } from './utils/activities-tab-label-map';
+import { getScrollOffset, setScrollOffset } from 'utils/scoll-position-utils';
 
 const ActivitiesScreen = () => {
   const navigate = useNavigate();
@@ -26,23 +27,21 @@ const ActivitiesScreen = () => {
   const [currentTab, setCurrentTab] = React.useState<TabDefinitionsEnum>(
     TabDefinitionsEnum.UPCOMING
   );
+  const scrollOffset = getScrollOffset();
   const { activeTab } = useParams();
 
   const { userInfo } = React.useContext(AuthenticationContext);
-  const { setSwipeHandlers } = React.useContext(LayoutContext);
+  const { setSwipeHandlers, contentDivRef } = React.useContext(LayoutContext);
 
   React.useEffect(() => {
     setSwipeHandlers?.({
       left: () => {
         const nextTab = detectSwipedTab('left', currentTab);
         navigate(`${ApplicationLocations.ACTIVITIES}/${nextTab}`);
-        // setCurrentTab(nextTab);
       },
       right: () => {
         const nextTab = detectSwipedTab('right', currentTab);
         navigate(`${ApplicationLocations.ACTIVITIES}/${nextTab}`);
-
-        // setCurrentTab(nextTab);
       }
     });
   }, [currentTab]);
@@ -103,6 +102,27 @@ const ActivitiesScreen = () => {
     // setCurrentTab(newValue);
   };
 
+  const handleActivityCardClick = React.useCallback(
+    (activityId?: number) => {
+      setScrollOffset(contentDivRef?.current?.scrollTop);
+      navigate(`${ApplicationLocations.ACTIVITY_DETAIL}/${activityId}`);
+    },
+    [contentDivRef?.current]
+  );
+
+  React.useEffect(() => {
+    if (scrollOffset && contentDivRef?.current) {
+      contentDivRef.current.scrollTop = Number(scrollOffset);
+    }
+  }, [scrollOffset, contentDivRef?.current, paginatedActivitiesData]);
+
+  React.useEffect(() => {
+    // isFetchingNextPage is only one variable that I can rely on to reset activites offset
+    if (isFetchingNextPage) {
+      setScrollOffset(null);
+    }
+  }, [isFetchingNextPage]);
+
   return (
     <>
       <Tabs
@@ -145,9 +165,7 @@ const ActivitiesScreen = () => {
                 <ActivityCard
                   key={activity?.id}
                   activity={activity}
-                  onPress={() =>
-                    navigate(`${ApplicationLocations.ACTIVITY_DETAIL}/${activity?.id}`)
-                  }
+                  onPress={() => handleActivityCardClick(activity?.id)}
                   // onLongPress={openActivityActions}
                   sx={{ mx: 0, my: 3, width: '100%' }}
                 />
