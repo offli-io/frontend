@@ -53,7 +53,6 @@ const FileUpload: React.FC<IFileUploadProps> = ({ uploadFunction }) => {
           justifyContent: 'center',
           position: 'relative',
           bgcolor: palette?.primary?.light,
-
           borderRadius: 5,
           border: (theme) => `1px dashed ${theme.palette.primary.main}`
         }}

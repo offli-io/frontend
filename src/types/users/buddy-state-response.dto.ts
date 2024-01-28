@@ -2,6 +2,6 @@ import { BuddyStateEnum } from './buddy-state-enum.dto';
 
 export interface IBuddyStateResponseDto {
   state: BuddyStateEnum;
-  senderId: number;
-  receiverId: number;
+  sender_id: number;
+  receiver_id: number;
 }

@@ -77,7 +77,7 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
   );
 
   const {
-    data: { data: { state: buddyState = null, senderId = null, receiverId = null } = {} } = {},
+    data: { data: { state: buddyState = null, sender_id = null, receiver_id = null } = {} } = {},
     isFetching: isBuddyStateLoading
   } = useQuery(
     ['buddy-state', userInfo?.id, id],
@@ -117,11 +117,11 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
   const actionButtonDisabled = React.useMemo(
     () =>
       // buddy request sent by you
-      (buddyState === BuddyStateEnum.PENDING && senderId === userInfo?.id) ||
+      (buddyState === BuddyStateEnum.PENDING && sender_id === userInfo?.id) ||
       //or declined buddy request
       buddyState === BuddyStateEnum.BLOCKED ||
       buddyState === BuddyStateEnum.CONFIRMED,
-    [buddyState, senderId, userInfo?.id]
+    [buddyState, sender_id, userInfo?.id]
   );
 
   if (isLoading || isBuddyStateLoading) {
@@ -263,9 +263,9 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
               onClick={handleBuddyRequest}
               isLoading={isTogglingBuddyRequest}
               disabled={actionButtonDisabled}>
-              {generateBuddyActionButtonLabel(buddyState, userInfo?.id, senderId)}
+              {generateBuddyActionButtonLabel(buddyState, userInfo?.id, sender_id)}
             </OffliButton>
-            {receiverId === userInfo?.id && buddyState === BuddyStateEnum.PENDING ? (
+            {receiver_id === userInfo?.id && buddyState === BuddyStateEnum.PENDING ? (
               <OffliButton
                 sx={{ fontSize: 14, px: 3 }}
                 variant="outlined"
