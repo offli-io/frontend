@@ -183,7 +183,7 @@ export const connectInstagram = (userId?: number, photoUrls?: string[]) => {
 
   const promise = axios.post(
     `/instagram/${userId}/media`,
-    { instagramMediaUrls: photoUrls },
+    { instagram_media_urls: photoUrls },
     {
       cancelToken: source?.token
     }
@@ -202,7 +202,7 @@ export const fetchInstagramPhotos = (userId?: number, authCode?: string) => {
 
   const promise = axios.post<IFetchInstagramPhotosResponseDto>(
     `/instagram/${userId}/fetch`,
-    { authCode },
+    { auth_code: authCode },
     {
       cancelToken: source?.token
     }
