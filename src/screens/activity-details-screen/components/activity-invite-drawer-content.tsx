@@ -95,7 +95,7 @@ export const ActivityInviteDrawerContent: React.FC<IActivityTypeFormProps> = ({ 
             width: '100%',
             '& input::placeholder': {
               fontSize: 14,
-              color: '#4A148C',
+              color: 'primary.main',
               fontWeight: 400,
               opacity: 1,
               pl: 1
