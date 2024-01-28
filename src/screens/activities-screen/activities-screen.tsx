@@ -98,8 +98,7 @@ const ActivitiesScreen = () => {
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: TabDefinitionsEnum) => {
     navigate(`${ApplicationLocations.ACTIVITIES}/${newValue}`);
-
-    // setCurrentTab(newValue);
+    setScrollOffset(null);
   };
 
   const handleActivityCardClick = React.useCallback(
