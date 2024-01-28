@@ -2,9 +2,9 @@ import { Tab, Tabs, Typography } from '@mui/material';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { getActivitiesPromiseResolved } from 'api/activities/requests';
 import { LayoutContext } from 'app/layout';
-import { AuthenticationContext } from 'context/providers/authentication-provider';
 import ActivityCard from 'components/activity-card';
 import Loader from 'components/loader';
+import { AuthenticationContext } from 'context/providers/authentication-provider';
 import { PAGED_ACTIVITIES_QUERY_KEY } from 'hooks/use-activities-infinite-query';
 import React from 'react';
 import InfiniteScroll from 'react-infinite-scroller';
@@ -15,11 +15,11 @@ import {
   ActivitySortDirectionEnum
 } from 'types/activities/activity-sort-enum.dto';
 import { ACTIVITES_LIMIT } from 'utils/common-constants';
+import { getScrollOffset, setScrollOffset } from 'utils/scoll-position-utils';
 import { ApplicationLocations } from '../../types/common/applications-locations.dto';
+import { ActivitiesTabLabelMap } from './utils/activities-tab-label-map';
 import { SWIPE_ARRAY_ORDER, detectSwipedTab } from './utils/detect-swiped-tab.util';
 import { TabDefinitionsEnum } from './utils/tab-definitions';
-import { ActivitiesTabLabelMap } from './utils/activities-tab-label-map';
-import { getScrollOffset, setScrollOffset } from 'utils/scoll-position-utils';
 
 const ActivitiesScreen = () => {
   const navigate = useNavigate();
@@ -29,7 +29,6 @@ const ActivitiesScreen = () => {
   );
   const scrollOffset = getScrollOffset();
   const { activeTab } = useParams();
-
   const { userInfo } = React.useContext(AuthenticationContext);
   const { setSwipeHandlers, contentDivRef } = React.useContext(LayoutContext);
 
@@ -86,10 +85,9 @@ const ActivitiesScreen = () => {
       getNextPageParam: (lastPage, allPages) => {
         // don't need to add +1 because we are indexing offset from 0 (so length will handle + 1)
         if (lastPage?.length === ACTIVITES_LIMIT) {
-          const nextPage: number = allPages?.length;
+          const nextPage: number = allPages?.length * ACTIVITES_LIMIT;
           return nextPage;
         }
-
         return undefined;
       },
       enabled: !!userInfo?.id

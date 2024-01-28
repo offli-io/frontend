@@ -279,7 +279,7 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
         <LastAttendedActivities isBuddy={isBuddy} />
         <CreatorFeedback
           creator_feedback={userStats?.creator_feedback}
-          activities_created_last_month_count={userStats?.activities_created_last_month_count}
+          // activities_created_last_month_count={userStats?.activities_created_last_month_count}
           username={user?.username}
         />
 

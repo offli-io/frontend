@@ -4,13 +4,13 @@ import OffliRating from '../../../components/OffliRating';
 
 interface IUserFeedbackProps {
   creator_feedback?: number;
-  activities_created_last_month_count?: number;
+  // activities_created_last_month_count?: number;
   username?: string;
 }
 
 const CreatorFeedback: React.FC<IUserFeedbackProps> = ({
   creator_feedback,
-  activities_created_last_month_count,
+  // activities_created_last_month_count,
   username
 }) => {
   const { palette } = useTheme();
@@ -35,9 +35,10 @@ const CreatorFeedback: React.FC<IUserFeedbackProps> = ({
         <Typography
           align="left"
           variant="subtitle2"
-          sx={{ fontSize: 10, fontWeight: 'normal', maxWidth: '70vw' }}>
-          based on the feedback from {activities_created_last_month_count} activities {username} has
-          created last month.
+          sx={{ fontSize: 10, fontWeight: 'normal', maxWidth: '80vw' }}>
+          {/*based on the feedback from {activities_created_last_month_count} activities {username} has*/}
+          {/*created last month.*/}
+          based on the feedback from activities {username} has created.
         </Typography>
       </Box>
     </Box>

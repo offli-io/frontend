@@ -13,6 +13,9 @@ const OffliRating: React.FC<IUserFeedbackProps> = ({ ratingValue }) => {
         '& .MuiRating-icon': {
           width: '2.5rem'
         },
+        '& .MuiSvgIcon-root': {
+          color: 'inherit'
+        },
         mt: 1,
         mb: 1
       }}
