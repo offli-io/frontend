@@ -14,6 +14,7 @@ import { setAuthToken } from '../../utils/token.util';
 import { useToggleTheme } from './hooks/use-toggle-theme';
 import { SettingsItemsObject } from './settings-items-object';
 import { ThemeOptionsEnumDto } from 'types/settings/theme-options.dto';
+import { ABOUT_US_LINK, HELP_SUPPORT_LINK, PRIVACY_POLICY_LINK } from 'utils/common-constants';
 
 const SettingsScreen = () => {
   const { setStateToken, setUserInfo } = React.useContext(AuthenticationContext);
@@ -40,6 +41,10 @@ const SettingsScreen = () => {
       switch (correctType) {
         case SettingsTypeEnumDto.ACCOUNT:
           return navigate(ApplicationLocations.ACCOUNT_SETTINGS);
+        case SettingsTypeEnumDto.TERM_PRIVACY:
+          return window.open(PRIVACY_POLICY_LINK);
+        case SettingsTypeEnumDto.HELP_SUPPORT:
+          return window.open(HELP_SUPPORT_LINK);
         default:
           return;
       }
@@ -90,6 +95,7 @@ const SettingsScreen = () => {
           type={SettingsTypeEnumDto.ABOUT}
           icon={<InfoIcon color="primary" />}
           headerRight={<></>}
+          onMenuItemClick={() => window.open(ABOUT_US_LINK)}
         />
         <MenuItem
           label="Log out"

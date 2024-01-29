@@ -7,6 +7,10 @@ export const CLIENT_ID =
 export const WEBPUSH_VAPID_PUBLIC_KEY =
   'BHyW_LqPjZPWAQ8IHFbOzZyFoq2PQYKDQyS7V5OU0Q4rMHVDVqt-yL_C2R7GDrhH8JZ0_oC0fRT6BK9HQN_7H7Y';
 
+export const PRIVACY_POLICY_LINK = 'https://offli.eu/privacy-policy/';
+export const HELP_SUPPORT_LINK = 'https://offli.eu/contact/';
+export const ABOUT_US_LINK = 'https://offli.eu/';
+
 export const SCOPE = 'https://www.googleapis.com/auth/calendar';
 
 export const MAX_FILE_SIZE = 3_000_000;
