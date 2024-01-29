@@ -55,7 +55,7 @@ const BuddyItemInvite: React.FC<ILabeledDividerProps> = ({
           }}
           alt="profile"
         />
-        <Typography sx={{ ml: 2, color: 'black' }}>{buddy?.username}</Typography>
+        <Typography sx={{ ml: 2 }}>{buddy?.username}</Typography>
       </Box>
       <OffliButton
         sx={{ height: 38, fontSize: 16, mr: 2, width: 90, borderRadius: 4 }}

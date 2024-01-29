@@ -20,7 +20,7 @@ export const userSentYouBuddyRequest = (
   senderId: number
 ) => {
   return !!buddyStates?.find(
-    ({ receiverId: potentialReceiverId }) =>
+    ({ receiver_id: potentialReceiverId }) =>
       potentialReceiverId === receiverId && potentialReceiverId === senderId
   );
 };
@@ -31,7 +31,7 @@ export const isExistingPendingBuddyState = (
   senderId: number
 ) => {
   return !!buddyStates?.find(
-    ({ receiverId: potentialReceiverId, senderId: potentialSenderId, state }) =>
+    ({ receiver_id: potentialReceiverId, sender_id: potentialSenderId, state }) =>
       state === BuddyStateEnum.PENDING &&
       potentialReceiverId === receiverId &&
       potentialSenderId === senderId

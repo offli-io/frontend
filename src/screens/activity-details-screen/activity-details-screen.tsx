@@ -53,6 +53,7 @@ interface IProps {
 interface ICustomizedLocationState {
   openInviteDrawer?: boolean;
   openFeedbackDrawer?: boolean;
+  offset?: number;
 }
 
 const ActivityDetailsScreen: React.FC<IProps> = () => {
