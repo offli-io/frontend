@@ -1,4 +1,5 @@
 import { Box, Chip, CircularProgress, Typography } from '@mui/material';
+import shadows from '@mui/material/styles/shadows';
 import { useGetApiUrl } from 'hooks/use-get-api-url';
 import { usePredefinedPictures } from 'hooks/use-predefined-pictures';
 import * as React from 'react';
@@ -39,7 +40,7 @@ const OffliGallery: React.FC<ITimePickerProps> = ({ tags, onPictureSelect }) => 
               sx={{
                 maxWidth: '100%',
                 m: 0.5,
-                boxShadow: '1px 3px 2px #ccc'
+                boxShadow: shadows[3]
               }}
               onClick={() => name && onPictureSelect(name)}
               key={`predefined_picture_${name}`}

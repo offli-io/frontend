@@ -124,7 +124,7 @@ export const RegistrationScreen: React.FC = () => {
           </Typography>
 
           <OffliButton
-            startIcon={<GoogleIcon sx={{ color: palette?.background?.default }} />}
+            startIcon={<GoogleIcon sx={{ color: 'white' }} />}
             onClick={handleGoogleAuthorization}
             sx={{ mb: 1 }}>
             Sign up with Google

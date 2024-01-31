@@ -259,12 +259,11 @@ export const ActivityMembersScreen: React.FC = () => {
           <TextField
             value={queryString}
             onChange={(e) => setQueryString(e.target.value)}
-            // label="Search among activity members"
             placeholder="Search among activity members"
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
-                  <SearchIcon sx={{ fontSize: '1.5rem', color: '#4A148C' }} />{' '}
+                  <SearchIcon sx={{ fontSize: '1.5rem' }} />{' '}
                 </InputAdornment>
               )
             }}
@@ -272,7 +271,6 @@ export const ActivityMembersScreen: React.FC = () => {
               width: '100%',
               '& input::placeholder': {
                 fontSize: 14,
-                color: '#4A148C',
                 fontWeight: 'bold',
                 opacity: 1,
                 pl: 1

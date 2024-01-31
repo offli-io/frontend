@@ -5,6 +5,7 @@ import React from 'react';
 import { toast } from 'sonner';
 import { ThemeOptionsEnumDto } from 'types/settings/theme-options.dto';
 import { AuthenticationContext } from 'context/providers/authentication-provider';
+import { setThemeToStorage } from 'utils/storage.util';
 
 export const useToggleTheme = () => {
   const { userInfo } = React.useContext(AuthenticationContext);
@@ -14,9 +15,10 @@ export const useToggleTheme = () => {
     ['send-buddy-request'],
     (theme?: ThemeOptionsEnumDto) => changeUserSettings(userInfo?.id, { theme }),
     {
-      onSuccess: () => {
+      onSuccess: (_, theme) => {
         toast.success('Your theme has been changed successfully');
         queryClient.invalidateQueries([USER_SETTINGS_QUERY_KEY]);
+        setThemeToStorage(theme);
       },
       onError: () => {
         toast.error('Failed to toggle theme');

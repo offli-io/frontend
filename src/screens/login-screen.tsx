@@ -32,7 +32,7 @@ const schema: () => yup.SchemaOf<FormValues> = () =>
 
 const LoginScreen: React.FC = () => {
   const [showPassword, setShowPassword] = React.useState(false);
-  const { setUserInfo, setStateToken } = React.useContext(AuthenticationContext);
+  const { setUserInfo, setStateToken, userInfo } = React.useContext(AuthenticationContext);
   const { palette } = useTheme();
   const navigate = useNavigate();
   const {
@@ -44,7 +44,6 @@ const LoginScreen: React.FC = () => {
     from: GoogleAuthCodeFromEnumDto.LOGIN,
     omitTokenGetting: true
   });
-  const { userInfo } = React.useContext(AuthenticationContext);
   const abortControllerRef = React.useRef<AbortController | null>(null);
 
   const handleClickShowPassword = () => setShowPassword(!showPassword);
@@ -140,7 +139,7 @@ const LoginScreen: React.FC = () => {
             alignItems: 'center'
           }}>
           <OffliButton
-            startIcon={<GoogleIcon sx={{ color: palette?.background?.default }} />}
+            startIcon={<GoogleIcon sx={{ color: 'white' }} />}
             onClick={handleGoogleAuthorization}
             sx={{ mb: 1 }}
             disabled={isLoading || isGoogleAuthorizationLoading || isGoogleLoginLoading}>

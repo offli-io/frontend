@@ -2,7 +2,9 @@ import { Box, SxProps } from '@mui/material';
 import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
 import Typography from '@mui/material/Typography';
+import { CustomizationContext } from 'context/providers/customization-provider';
 import React from 'react';
+import { ThemeOptionsEnumDto } from 'types/settings/theme-options.dto';
 
 interface ILabeledTileProps {
   title: string;
@@ -20,10 +22,17 @@ const LabeledTile: React.FC<ILabeledTileProps> = ({
   onClick,
   ...rest
 }) => {
+  const { theme } = React.useContext(CustomizationContext);
   const handleCardClick = React.useCallback(() => {
     onClick(title);
   }, [onClick]);
 
+  const detectOpacityBasedOnTheme = (selected?: boolean) => {
+    if (theme === ThemeOptionsEnumDto.LIGHT) {
+      return selected ? 0.9 : 0.5;
+    }
+    return selected ? 1 : 0.8;
+  };
   return (
     <Card
       sx={{
@@ -52,8 +61,8 @@ const LabeledTile: React.FC<ILabeledTileProps> = ({
             position: 'absolute',
             left: 0,
             top: 0,
-            opacity: selected ? 0.9 : 0.5,
-            objectFit: 'contain'
+            opacity: detectOpacityBasedOnTheme(selected),
+            objectFit: 'cover'
           }}></img>
         <Box
           sx={{
