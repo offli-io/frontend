@@ -46,6 +46,13 @@ const ActivitiesScreen = () => {
   }, [currentTab]);
 
   React.useEffect(() => {
+    return () => {
+      // I need to reset swipe handlers when component is unmounted
+      setSwipeHandlers?.(null);
+    };
+  }, []);
+
+  React.useEffect(() => {
     setCurrentTab(activeTab as TabDefinitionsEnum);
   }, [activeTab]);
 
