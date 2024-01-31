@@ -4,6 +4,7 @@ import { useUserSettings } from 'hooks/use-user-settings';
 import React from 'react';
 import { Toaster } from 'sonner';
 import { ThemeOptionsEnumDto } from 'types/settings/theme-options.dto';
+import { getThemeFromStorage } from 'utils/storage.util';
 
 declare module '@mui/material/styles' {
   // If we would like to declare something on the theme
@@ -167,11 +168,13 @@ interface ICustomizationProviderProps {
 }
 
 export const CustomizationProvider: React.FC<ICustomizationProviderProps> = ({ children }) => {
-  const { data: { data: { theme = ThemeOptionsEnumDto.LIGHT } = {} } = {} } = useUserSettings();
+  const { data: { data: { theme = null } = {} } = {} } = useUserSettings();
+  const themeFromStorage = getThemeFromStorage();
+  const usedTheme = theme ? theme : themeFromStorage ?? ThemeOptionsEnumDto.LIGHT;
 
   return (
-    <CustomizationContext.Provider value={{ theme }}>
-      <ThemeProvider theme={createCustomizationTheme(theme)}>
+    <CustomizationContext.Provider value={{ theme: usedTheme }}>
+      <ThemeProvider theme={createCustomizationTheme(usedTheme)}>
         <Toaster richColors invert={theme === ThemeOptionsEnumDto.DARK} />
         {children}
       </ThemeProvider>

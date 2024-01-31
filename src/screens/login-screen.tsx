@@ -140,7 +140,7 @@ const LoginScreen: React.FC = () => {
             alignItems: 'center'
           }}>
           <OffliButton
-            startIcon={<GoogleIcon sx={{ color: palette?.background?.default }} />}
+            startIcon={<GoogleIcon />}
             onClick={handleGoogleAuthorization}
             sx={{ mb: 1 }}
             disabled={isLoading || isGoogleAuthorizationLoading || isGoogleLoginLoading}>

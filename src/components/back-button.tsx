@@ -22,7 +22,7 @@ const BackButton: React.FC<IBackButtonProps> = ({ href, text, sxOverrides, onCli
       href={href}
       onClick={onClick}>
       <ArrowBackIosNewIcon sx={{ height: '20px' }} />
-      <Typography variant="subtitle2" sx={{ color: 'black', fontSize: 16 }}>
+      <Typography variant="subtitle2" sx={{ fontSize: 16 }}>
         {text}
       </Typography>
     </Button>
