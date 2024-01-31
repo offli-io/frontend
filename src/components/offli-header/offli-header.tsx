@@ -104,7 +104,7 @@ const OffliHeader: React.FC<IProps> = ({ sx }) => {
           <img
             src={logoSrc}
             alt="Offli logo"
-            style={{ height: '40px' }}
+            style={{ maxWidth: 80 }}
             data-testid="offli-logo"
             onClick={() => navigate(ApplicationLocations.EXPLORE)}
           />
