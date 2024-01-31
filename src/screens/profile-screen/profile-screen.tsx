@@ -9,7 +9,6 @@ import { toast } from 'sonner';
 import { getBuddyState } from '../../api/users/requests';
 import userPlaceholder from '../../assets/img/user-placeholder.svg';
 import { AuthenticationContext } from '../../context/providers/authentication-provider';
-import ActionButton from '../../components/action-button';
 import OffliButton from '../../components/offli-button';
 import { PageWrapper } from '../../components/page-wrapper';
 import ProfileStatistics from '../../components/profile-statistics';
@@ -242,11 +241,17 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
           </Box>
         </Box>
         {type === ProfileEntryTypeEnum.PROFILE && (
-          <ActionButton
-            text="Edit profile"
-            sx={{ mt: 2 }}
-            onClick={() => navigate(ApplicationLocations.EDIT_PROFILE)}
-          />
+          <OffliButton
+            sx={{
+              mt: 2,
+              width: '60%',
+              fontSize: 18,
+              bgcolor: 'primary.light',
+              color: 'primary.main'
+            }}
+            onClick={() => navigate(ApplicationLocations.EDIT_PROFILE)}>
+            Edit profile
+          </OffliButton>
         )}
         {[ProfileEntryTypeEnum.REQUEST, ProfileEntryTypeEnum.USER_PROFILE].includes(type) &&
         !isBuddy ? (

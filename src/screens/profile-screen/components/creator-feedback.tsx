@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box, Typography, useTheme } from '@mui/material';
-import OffliRating from '../../../components/OffliRating';
+import OffliRating from '../../../components/offli-rating';
 
 interface IUserFeedbackProps {
   creator_feedback?: number;
