@@ -65,8 +65,6 @@ const SettingsScreen = () => {
       if (!isNotificationPermissionGranted) {
         await Notification.requestPermission();
         setNotificationPermissionGranted(true);
-      } else {
-        Notification.permission === 'denied';
       }
     } catch (error) {
       console.error('Error granting notifications permission', error);
