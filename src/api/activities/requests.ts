@@ -568,6 +568,27 @@ export const kickUserFromActivity = (activityId: number, personId: number) => {
   return promise;
 };
 
+export const promoteToLeader = (activityId: number, personId: number) => {
+  const CancelToken = axios.CancelToken;
+  const source = CancelToken.source();
+
+  const promise = axios.patch<void>(
+    `/activities/${activityId}`,
+    {
+      creator_id: personId
+    },
+    {
+      cancelToken: source?.token
+    }
+  );
+
+  //   queryFunctionContext?.signal?.addEventListener('abort', () => {
+  //     source.cancel('Query was cancelled by React Query')
+  //   })
+
+  return promise;
+};
+
 export const acceptActivityInvitation = (activityId?: number, userId?: number) => {
   const CancelToken = axios.CancelToken;
   const source = CancelToken.source();

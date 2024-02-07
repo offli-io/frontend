@@ -11,8 +11,7 @@ import {
   Tab,
   Tabs,
   TextField,
-  Typography,
-  useTheme
+  Typography
 } from '@mui/material';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { isAfter } from 'date-fns';
@@ -24,12 +23,13 @@ import { useDebounce } from 'use-debounce';
 import {
   getActivityParticipants,
   kickUserFromActivity,
+  promoteToLeader,
   uninviteBuddy
 } from '../../api/activities/requests';
+import BuddyItem from '../../components/buddy-item';
 import { AuthenticationContext } from '../../context/providers/authentication-provider';
 import { DrawerContext } from '../../context/providers/drawer-provider';
-import BuddyItem from '../../components/buddy-item';
-import { useActivities } from '../../hooks/use-activities';
+import { ACTIVITIES_QUERY_KEY, useActivities } from '../../hooks/use-activities';
 import { ActivitiyParticipantStatusEnum } from '../../types/activities/activity-participant-status-enum.dto';
 import { IActivityRestDto } from '../../types/activities/activity-rest.dto';
 import { IParticipantDto } from '../../types/activities/list-participants-response.dto';
@@ -49,7 +49,7 @@ export const ActivityMembersScreen: React.FC = () => {
   const navigate = useNavigate();
   const { toggleDrawer } = React.useContext(DrawerContext);
   const { pathname } = useLocation();
-  const { palette } = useTheme();
+  // const { palette } = useTheme();
   const [activeTab, setActiveTab] = React.useState<ITabs>(ITabs.CONFIRMED);
   const isAuthorizedUser = !!stateToken;
 
@@ -96,10 +96,26 @@ export const ActivityMembersScreen: React.FC = () => {
         toggleDrawer({ open: false });
         toast.success('User has been successfully kicked from activity');
         queryClient.invalidateQueries(['activity-participants', id]);
-        queryClient.invalidateQueries(['activity', id]);
+        queryClient.invalidateQueries([ACTIVITIES_QUERY_KEY]);
       },
       onError: () => {
         toast.error('Failed to kick user');
+      }
+    }
+  );
+
+  const { mutate: sendPromoteToLeader } = useMutation(
+    ['promote-to-leader'],
+    (personId?: number) => promoteToLeader(Number(id), Number(personId)),
+    {
+      onSuccess: () => {
+        toggleDrawer({ open: false });
+        toast.success('User has been successfully promoted as leader of the activity');
+        queryClient.invalidateQueries(['activity-participants', id]);
+        queryClient.invalidateQueries([ACTIVITIES_QUERY_KEY]);
+      },
+      onError: () => {
+        toast.error('Failed to promote user as leader');
       }
     }
   );
@@ -142,7 +158,7 @@ export const ActivityMembersScreen: React.FC = () => {
         case ActivityMembersActionTypeDto.KICK:
           return sendKickPersonFromActivity(userId);
         case ActivityMembersActionTypeDto.PROMOTE:
-          return console.log('call promote with id');
+          return sendPromoteToLeader(userId);
         case ActivityMembersActionTypeDto.UNINVITE:
           return sendUninviteBuddy(userId);
         default:
@@ -160,6 +176,7 @@ export const ActivityMembersScreen: React.FC = () => {
     !!activity?.datetime_until && isAfter(new Date(), new Date(activity.datetime_until));
   const anySearchResults = [...(activityMembers ?? [])]?.length > 0;
 
+  //TODO outsource this
   const renderActionContent = React.useCallback(
     (member: IParticipantDto): React.ReactNode => {
       // if creator is opening "Activity members"
@@ -200,17 +217,7 @@ export const ActivityMembersScreen: React.FC = () => {
               bgcolor: ({ palette }) => palette?.primary?.light,
               color: ({ palette }) => palette?.primary?.main
             }}
-            icon={
-              <Icon
-                path={mdiCrown}
-                size={0.8}
-                style={{
-                  color: palette?.primary?.main
-                  // boxShadow: shadows[1],
-                }}
-              />
-            }
-            // <StarIcon color="primary" sx={{ fontSize: 18 }} />}
+            icon={<Icon path={mdiCrown} size={0.8} />}
           />
         );
       } else {

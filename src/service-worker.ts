@@ -107,22 +107,7 @@ self.addEventListener('push', async (event) => {
       return;
   }
 
-  let actions: NotificationAction[] | undefined;
-  if (
-    notification.type === NotificationTypeEnum.BUDDY_REQ ||
-    notification.type === NotificationTypeEnum.ACTIVITY_INV
-  ) {
-    actions = [
-      {
-        action: 'accept',
-        title: 'accept'
-        // icon: "", // TODO: Add some icon?
-      }
-    ];
-  }
-
   const options: NotificationOptions = {
-    actions: actions,
     body: getNotificationBody(notification, false),
     icon: `https://app.offli.eu/api/files/${getNotificationPicture(notification)}`, // TODO: API URL from env
     badge: `https://app.offli.eu/logo192.png`, // TODO: Base URL from env
@@ -133,7 +118,6 @@ self.addEventListener('push', async (event) => {
 });
 
 self.addEventListener('notificationclick', (event) => {
-  // TODO: Improve + implement actions click handling
   event.notification.close();
   self.clients.openWindow(event.notification.data.url);
 });
