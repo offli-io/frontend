@@ -84,7 +84,7 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
     () => getBuddyState(Number(userInfo?.id), Number(id)),
     {
       onError: () => {
-        toast.error(`Failed to load activit${id ? 'y' : 'ies'}`);
+        toast.error('Failed to load buddy states');
       },
       enabled:
         [ProfileEntryTypeEnum.REQUEST, ProfileEntryTypeEnum.USER_PROFILE].includes(type) && !!id
