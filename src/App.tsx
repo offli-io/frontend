@@ -49,6 +49,14 @@ function App() {
     },
     [notificationsRef]
   );
+
+  React.useEffect(() => {
+    const messageListener = window.addEventListener('message', (nativeEvent) => {
+      console.log(nativeEvent?.data);
+    });
+    return messageListener;
+  }, []);
+
   return (
     <QueryClientProvider client={queryClient} contextSharing={true}>
       <SnackbarProvider
