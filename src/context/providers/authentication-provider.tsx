@@ -47,11 +47,21 @@ export const AuthenticationProvider = ({ children }: { children: React.ReactNode
 
   React.useEffect(() => {
     if (userInfo?.id) {
-      // defaults to iPhone 16.6
-      const deviceType = parser?.getDevice()?.model ?? 'iPhone';
-      const osVersion = parser?.getOS()?.version ?? '16.6';
-      // TODO: moreover IOS requires some user interaction before subscription
-      subscribeBrowserPush(Number(userInfo?.id), `${deviceType} ${osVersion}`);
+      let deviceName = 'Unknown';
+      const device = parser?.getDevice();
+      if (device && (device.vendor || device.model)) {
+        if (device.model) {
+          deviceName = device.vendor ? `${device.vendor} ${device.model}` : device.model;
+        }
+        if (device.type) {
+          deviceName = `${deviceName} ${device.type}`
+        }
+        const deviceOSVersion = parser?.getOS()?.version
+        if (deviceOSVersion) {
+          deviceName = `${deviceName}, OS ${deviceOSVersion}`
+        }
+      }
+      subscribeBrowserPush(Number(userInfo?.id), deviceName);
     }
   }, [userInfo?.id, parser]);
 

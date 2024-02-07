@@ -45,7 +45,7 @@ export const deleteNotification = (notificationId: number, signal: AbortSignal) 
   return promise;
 };
 
-export const subscribeBrowserPush = async (userId: number, userAgent: string) => {
+export const subscribeBrowserPush = async (userId: number, deviceName: string) => {
   if (!('serviceWorker' in navigator)) {
     return;
   }
@@ -61,7 +61,7 @@ export const subscribeBrowserPush = async (userId: number, userAgent: string) =>
 
     const pushSubJson = pushSub?.toJSON();
     const device: ISubscriptionDeviceDto = {
-      name: userAgent,
+      name: deviceName,
       endpoint: `${pushSubJson?.endpoint}`,
       auth: `${pushSubJson?.keys?.auth}`,
       p256dh: `${pushSubJson?.keys?.p256dh}`
