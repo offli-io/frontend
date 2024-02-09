@@ -5,11 +5,11 @@ import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import MenuIcon from '@mui/icons-material/Menu';
 import { Box, Typography } from '@mui/material';
 import OffliButton from 'components/offli-button';
-import OffliRating from '../../../components/OffliRating';
+import OffliRating from '../../../components/offli-rating';
 
 interface IActivityActionButtonsProps {
   isAlreadyParticipant?: boolean;
-  isAbleToSendFeedback?: boolean;
+  isAllowedToSendFeedback?: boolean;
   sentFeedbackValue?: number;
   isCreator?: boolean;
   onJoinClick?: () => void;
@@ -24,7 +24,7 @@ interface IActivityActionButtonsProps {
 
 const ActivityActionButtons: React.FC<IActivityActionButtonsProps> = ({
   isAlreadyParticipant,
-  isAbleToSendFeedback,
+  isAllowedToSendFeedback,
   sentFeedbackValue,
   isCreator,
   onJoinClick,
@@ -93,7 +93,19 @@ const ActivityActionButtons: React.FC<IActivityActionButtonsProps> = ({
         </>
       ) : null}
       {hasEnded ? (
-        isAbleToSendFeedback ? (
+        isCreator ? (
+          <OffliButton
+            size="small"
+            sx={{
+              fontSize: 18,
+              width: '70%',
+              height: 48,
+              color: 'background.default'
+            }}
+            disabled={true}>
+            Activity ended
+          </OffliButton>
+        ) : isAllowedToSendFeedback ? (
           <>
             <OffliButton
               size="small"
@@ -103,11 +115,7 @@ const ActivityActionButtons: React.FC<IActivityActionButtonsProps> = ({
                 height: 48,
                 color: 'background.default'
               }}
-              disabled={true}
-              // onClick={onJoinClick}
-              // color={!isAlreadyParticipant ? 'primary' : 'secondary'}
-              // isLoading={areActionsLoading}
-            >
+              disabled={true}>
               Activity ended
             </OffliButton>
             <OffliButton

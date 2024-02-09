@@ -8,26 +8,25 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'sonner';
 import { getBuddyState } from '../../api/users/requests';
 import userPlaceholder from '../../assets/img/user-placeholder.svg';
-import ActionButton from '../../components/action-button';
+import { AuthenticationContext } from '../../context/providers/authentication-provider';
 import OffliButton from '../../components/offli-button';
 import { PageWrapper } from '../../components/page-wrapper';
 import ProfileStatistics from '../../components/profile-statistics';
-import { AuthenticationContext } from '../../context/providers/authentication-provider';
 import { useGetApiUrl } from '../../hooks/use-get-api-url';
 import { useUser } from '../../hooks/use-user';
-import { useUserStats } from '../../hooks/use-user-stats';
 import { ApplicationLocations } from '../../types/common/applications-locations.dto';
 import { BuddyRequestActionEnum } from '../../types/users/buddy-request-action-enum.dto';
 import { BuddyStateEnum } from '../../types/users/buddy-state-enum.dto';
-import { IUserStatisticsDto } from '../../types/users/user-statistics.dto';
 import BuddyButton from './components/buddies-button';
-import CreatorFeedback from './components/creator-feedback';
 import LastAttendedActivities from './components/last-attended-activites';
 import ProfileGallery from './components/profile-gallery/profile-gallery';
 import { useSendBuddyRequest } from './hooks/use-send-buddy-request';
 import { useToggleBuddyRequest } from './hooks/use-toggle-buddy-request';
 import { ProfileEntryTypeEnum } from './types/profile-entry-type';
 import { generateBuddyActionButtonLabel } from './utils/generate-buddy-action-button-label.util';
+import { useUserStats } from '../../hooks/use-user-stats';
+import { IUserStatisticsDto } from '../../types/users/user-statistics.dto';
+import CreatorFeedback from './components/creator-feedback';
 
 interface IProfileScreenProps {
   type: ProfileEntryTypeEnum;
@@ -40,7 +39,6 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
   const navigate = useNavigate();
   const { id } = useParams();
   const baseUrl = useGetApiUrl();
-  console.log('profile screen');
   const [previewModalImageUrl, setPreviewModalImageUrl] = React.useState<string | null>(null);
 
   const { handleToggleBuddyRequest, isTogglingBuddyRequest } = useToggleBuddyRequest({
@@ -243,11 +241,17 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
           </Box>
         </Box>
         {type === ProfileEntryTypeEnum.PROFILE && (
-          <ActionButton
-            text="Edit profile"
-            sx={{ mt: 2 }}
-            onClick={() => navigate(ApplicationLocations.EDIT_PROFILE)}
-          />
+          <OffliButton
+            sx={{
+              mt: 2,
+              width: '60%',
+              fontSize: 18,
+              bgcolor: 'primary.light',
+              color: 'primary.main'
+            }}
+            onClick={() => navigate(ApplicationLocations.EDIT_PROFILE)}>
+            Edit profile
+          </OffliButton>
         )}
         {[ProfileEntryTypeEnum.REQUEST, ProfileEntryTypeEnum.USER_PROFILE].includes(type) &&
         !isBuddy ? (

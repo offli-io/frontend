@@ -350,7 +350,7 @@ const ActivityDetailsScreen: React.FC<IProps> = () => {
     feedbackAlreadySent
   ]);
 
-  const isAbleToSendFeedback =
+  const isAllowedToSendFeedback =
     isAlreadyParticipant && isPastActivity && !isCreator && !feedbackAlreadySent?.is_submitted;
 
   const {
@@ -435,7 +435,7 @@ const ActivityDetailsScreen: React.FC<IProps> = () => {
         <ActivityActionButtons
           onJoinClick={handleJoinButtonClick}
           onMoreClick={() => handleActivityActionsCLick(activity)}
-          isAbleToSendFeedback={isAbleToSendFeedback}
+          isAllowedToSendFeedback={isAllowedToSendFeedback}
           sentFeedbackValue={feedbackAlreadySent?.feedback?.value}
           onToggleFeedbackDrawer={() => handleToggleFeedbackDrawer(activity)}
           areActionsLoading={areActionsLoading}
