@@ -698,9 +698,17 @@ export const addActivityToCalendar = (
   const CancelToken = axios.CancelToken;
   const source = CancelToken.source();
 
-  const promise = axios.post(`/google/events/${userId}`, values, {
-    cancelToken: source?.token
-  });
+  //transfers to https://localhost:3000/activity/detail (or app.offli.eu base url)
+  const baseUrlEnvironmentDependent = window.location.href.split('/').slice(0, 5).join('/');
+
+  const promise = axios.post(
+    `/google/events/${userId}`,
+    //TODO hardcoded in order to work
+    { ...values, redirect_uri: baseUrlEnvironmentDependent },
+    {
+      cancelToken: source?.token
+    }
+  );
 
   signal?.addEventListener('abort', () => {
     source.cancel('Query was cancelled by React Query');
