@@ -8,7 +8,6 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'sonner';
 import { getBuddyState } from '../../api/users/requests';
 import userPlaceholder from '../../assets/img/user-placeholder.svg';
-import ActionButton from '../../components/action-button';
 import OffliButton from '../../components/offli-button';
 import { PageWrapper } from '../../components/page-wrapper';
 import ProfileStatistics from '../../components/profile-statistics';
