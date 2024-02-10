@@ -71,6 +71,8 @@ const ProfileScreen: React.FC<IProfileScreenProps> = ({ type }) => {
     [user]
   );
 
+  console.log(userStats);
+
   const isOtherProfile = React.useMemo(
     () =>
       isBuddy || [ProfileEntryTypeEnum.REQUEST, ProfileEntryTypeEnum.USER_PROFILE].includes(type),

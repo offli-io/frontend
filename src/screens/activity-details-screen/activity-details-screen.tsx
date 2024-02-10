@@ -164,9 +164,12 @@ const ActivityDetailsScreen: React.FC<IProps> = () => {
     },
     {
       onSuccess: () => {
+        // resets search params
+        window.history.pushState({}, document.title, window.location.pathname);
         toast.success('Activity has been successfully added to your Google calendar');
       },
       onError: () => {
+        window.history.pushState({}, document.title, window.location.pathname);
         toast.error('Failed to add activity into calendar');
       }
     }
