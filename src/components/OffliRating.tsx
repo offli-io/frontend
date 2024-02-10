@@ -14,7 +14,7 @@ const OffliRating: React.FC<IUserFeedbackProps> = ({ ratingValue }) => {
           width: '2.5rem'
         },
         '& .MuiSvgIcon-root': {
-          fill: 'red'
+          color: 'inherit'
         },
         mt: 1,
         mb: 1
