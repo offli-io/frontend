@@ -3,7 +3,7 @@ import { Box, Typography, useTheme } from '@mui/material';
 import OffliRating from '../../../components/offli-rating';
 
 interface IUserFeedbackProps {
-  creator_feedback?: number;
+  creator_feedback: number;
   // activities_created_last_month_count?: number;
   username?: string;
 }
@@ -31,6 +31,9 @@ const CreatorFeedback: React.FC<IUserFeedbackProps> = ({
           justifyContent: 'center',
           flexDirection: 'column'
         }}>
+        <Typography align="left" variant="h2" color="primary" sx={{ mt: 2, fontWeight: 'bold' }}>
+          {`${creator_feedback % 1 !== 0 ? creator_feedback?.toFixed(1) : creator_feedback} of 5`}
+        </Typography>
         <OffliRating ratingValue={creator_feedback} />
         <Typography
           align="left"
