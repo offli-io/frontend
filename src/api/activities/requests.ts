@@ -5,7 +5,11 @@ import { IUsersParamsDto } from 'types/users';
 import { IBuddiesResponseDto } from 'types/users/buddies-response.dto';
 import { IUsersResponseDto } from 'types/users/users-response.dto';
 import { IUsersSearchParamsDto } from 'types/users/users-search-params.dto';
-import { ACTIVITES_LIMIT, BRATISLAVA_CENTER_COORDS_OBJECT } from 'utils/common-constants';
+import {
+  ACTIVITES_LIMIT,
+  BRATISLAVA_CENTER_COORDS_OBJECT,
+  GOOGLE_API_KEY
+} from 'utils/common-constants';
 import { ActivityInviteStateEnum } from '../../types/activities/activity-invite-state-enum.dto';
 import { IActivityInviteValuesDto } from '../../types/activities/activity-invite-values.dto';
 import { IActivityListRestDto } from '../../types/activities/activity-list-rest.dto';
@@ -29,6 +33,7 @@ import {
 import { IPredefinedPictureResponseDto } from '../../types/activities/predefined-picture.dto';
 import { IPredefinedTagDto } from '../../types/activities/predefined-tag.dto';
 import { IUpdateActivityRequestDto } from './../../types/activities/update-activity-request.dto';
+import { IPlacesAutocompleteResponseDto } from 'types/google/places-autocomplete-response.dto';
 
 export const getActivities = async ({
   queryFunctionContext,
@@ -270,6 +275,26 @@ export const getLocationFromQueryFetch = (
   // queryFunctionContext?.signal?.addEventListener('abort', () => {
   //   source.cancel('Query was cancelled by React Query')
   // })
+
+  return promise;
+};
+
+export const getGoogleLocationFromQuery = (
+  queryString: string,
+  location: { lat?: number; lon?: number } = BRATISLAVA_CENTER_COORDS_OBJECT
+) => {
+  // const promise = axios.get<IPlaceExternalApiDto[]>(
+  //   // `https://nominatim.openstreetmap.org/search?q=${queryString}&format=jsonv2`,
+  //   `https://api.geoapify.com/v1/geocode/search?name=${queryString}&limit=10&format=json&apiKey=86a10638b4cf4c339ade6ab08f753b16
+  //   `,
+  //   {
+  //     cancelToken: source?.token,
+  //   }
+  // );
+
+  const promise = axios.get<IPlacesAutocompleteResponseDto>(
+    `https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${queryString}&location=${location?.lat}&${location?.lon}&radius=${500000}&key=${GOOGLE_API_KEY}`
+  );
 
   return promise;
 };
