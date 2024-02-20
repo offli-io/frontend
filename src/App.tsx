@@ -52,7 +52,15 @@ function App() {
 
   React.useEffect(() => {
     const messageListener = window.addEventListener('message', (nativeEvent) => {
+      let storageArray = [];
+      // Parse the serialized data back into an aray of objects
+
       console.log(nativeEvent?.data);
+      const foundArray = localStorage.getItem('rn-app');
+      storageArray = foundArray ? JSON.parse(foundArray) : [];
+      storageArray.unshift(nativeEvent?.data);
+      const sliced = storageArray.slice(0, 10);
+      localStorage.setItem('rn-app', JSON.stringify(sliced));
     });
     return messageListener;
   }, []);

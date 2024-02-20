@@ -38,6 +38,11 @@ const ForgottenPasswordScreen = () => {
     setActiveStep((activeStep) => activeStep - 1);
   }, [activeStep, setActiveStep, navigate]);
 
+  // console.log(JSON.parse(messages!));
+
+  const foundArray = localStorage.getItem('rn-app');
+  const parsed = foundArray ? JSON.parse(foundArray) : [];
+
   return (
     <Box
       sx={{
@@ -59,6 +64,22 @@ const ForgottenPasswordScreen = () => {
       />
 
       {activeStep === 0 && (
+        <div style={{ maxWidth: 300 }}>
+          Logs
+          <div style={{ height: 400, backgroundColor: 'lightblue' }}>
+            {parsed?.map((item: any) => item?.source)}
+          </div>
+          <div>
+            {parsed?.map((item: any, index: any) => <div key={index}>{item?.payload?.event}</div>)}
+          </div>
+          {/* <div>Payload :{parsed?.payload}</div> */}
+          <div style={{ height: 400, backgroundColor: 'lightblue' }}>
+            {parsed?.map((item: any) => (typeof item === 'object' ? 'je objekt' : item))}
+          </div>
+        </div>
+      )}
+
+      {activeStep === 4 && (
         <ResetPasswordForm
           onSuccess={(email: string) => {
             setEmail(email);
