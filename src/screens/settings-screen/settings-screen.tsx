@@ -44,6 +44,7 @@ const SettingsScreen = () => {
 
   const areNotificationsSupported = () =>
     'Notification' in window && 'serviceWorker' in navigator && 'PushManager' in window;
+  const isMobile = !!getPlatfromFromStorage();
 
   const handleMenuItemClick = React.useCallback(
     async (type?: unknown) => {
@@ -56,7 +57,7 @@ const SettingsScreen = () => {
         case SettingsTypeEnumDto.HELP_SUPPORT:
           return window.open(HELP_SUPPORT_LINK);
         case SettingsTypeEnumDto.NOTIFICATIONS:
-          if (areNotificationsSupported()) {
+          if (areNotificationsSupported() && !isMobile) {
             return await Notification.requestPermission();
           }
           return;
@@ -79,8 +80,6 @@ const SettingsScreen = () => {
     }
   }, []);
 
-  const isMobile = !!getPlatfromFromStorage();
-
   return (
     <Box
       sx={{
@@ -101,14 +100,11 @@ const SettingsScreen = () => {
           />
         ))}
 
-        {!isMobile ? (
+        {!isMobile && areNotificationsSupported() ? (
           <MenuItem
             label="Notifications"
             type={SettingsTypeEnumDto.NOTIFICATIONS}
             icon={<NotificationsIcon color="primary" />}
-            // onMenuItemClick={async () => {
-            //   await Notification.requestPermission();
-            // }}
             headerRight={
               <Switch
                 checked={notificationPermissionGranted}
