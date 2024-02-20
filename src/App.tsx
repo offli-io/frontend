@@ -6,6 +6,8 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { SnackbarKey, SnackbarProvider } from 'notistack';
 import React from 'react';
 import { BrowserRouter } from 'react-router-dom';
+import { OffliUserAgent } from 'types/common/offli-user-agent-enum.dto';
+import { setPlatformToStorage } from 'utils/storage.util';
 import './App.css';
 import { AuthenticationProvider } from './context/providers/authentication-provider';
 import { CustomizationProvider } from './context/providers/customization-provider';
@@ -52,15 +54,9 @@ function App() {
 
   React.useEffect(() => {
     const messageListener = window.addEventListener('message', (nativeEvent) => {
-      let storageArray = [];
-      // Parse the serialized data back into an aray of objects
-
-      console.log(nativeEvent?.data);
-      const foundArray = localStorage.getItem('rn-app');
-      storageArray = foundArray ? JSON.parse(foundArray) : [];
-      storageArray.unshift(nativeEvent?.data);
-      const sliced = storageArray.slice(0, 10);
-      localStorage.setItem('rn-app', JSON.stringify(sliced));
+      if ([OffliUserAgent.MobileAndroid, OffliUserAgent.MobileIos].includes(nativeEvent?.data)) {
+        setPlatformToStorage(nativeEvent?.data);
+      }
     });
     return messageListener;
   }, []);

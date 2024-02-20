@@ -2,6 +2,8 @@ import { useQueryClient } from '@tanstack/react-query';
 import axios, { AxiosError } from 'axios';
 import React from 'react';
 import { IPerson } from 'types/activities/activity.dto';
+import { OffliUserAgent } from 'types/common/offli-user-agent-enum.dto';
+import { getPlatfromFromStorage } from 'utils/storage.util';
 import { getAuthToken, setAuthToken } from '../utils/token.util';
 import { useGetApiUrl } from './use-get-api-url';
 
@@ -22,6 +24,7 @@ export const useServiceInterceptors = ({
   axios.interceptors.request.use(
     (config) => {
       const _token = getAuthToken();
+      const platform = getPlatfromFromStorage() ?? OffliUserAgent.Web;
       if (config) {
         if (process.env.NODE_ENV !== 'development') {
           config.baseURL = baseUrl;
@@ -35,6 +38,9 @@ export const useServiceInterceptors = ({
           }
           if (userId) {
             config.headers['user-id'] = userId;
+          }
+          if (platform) {
+            config.headers['Offli-User-Agent'] = platform;
           }
           return config;
         }
