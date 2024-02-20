@@ -42,6 +42,9 @@ const SettingsScreen = () => {
     navigate(ApplicationLocations.LOGIN);
   }, [setStateToken]);
 
+  const areNotificationsSupported = () =>
+    'Notification' in window && 'serviceWorker' in navigator && 'PushManager' in window;
+
   const handleMenuItemClick = React.useCallback(
     async (type?: unknown) => {
       const correctType = type as SettingsTypeEnumDto;
@@ -53,7 +56,10 @@ const SettingsScreen = () => {
         case SettingsTypeEnumDto.HELP_SUPPORT:
           return window.open(HELP_SUPPORT_LINK);
         case SettingsTypeEnumDto.NOTIFICATIONS:
-          return await Notification.requestPermission();
+          if (areNotificationsSupported()) {
+            return await Notification.requestPermission();
+          }
+          return;
         default:
           return;
       }
