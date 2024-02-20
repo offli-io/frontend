@@ -2,10 +2,10 @@ import { Box, Typography } from '@mui/material';
 import Loader from 'components/loader';
 import React from 'react';
 import NotificationRequest from '../../components/notification-request';
-import { useNotifications } from '../../hooks/use-notifications';
-import { INotificationDto } from '../../types/notifications/notification.dto';
-import { useReactBasedOnNotificationType } from '../../hooks/use-react-based-on-notification-type';
 import { AuthenticationContext } from '../../context/providers/authentication-provider';
+import { useNotifications } from '../../hooks/use-notifications';
+import { useReactBasedOnNotificationType } from '../../hooks/use-react-based-on-notification-type';
+import { INotificationDto } from '../../types/notifications/notification.dto';
 
 const NotificationsScreen = () => {
   const { userInfo } = React.useContext(AuthenticationContext);

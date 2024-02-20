@@ -1,6 +1,7 @@
 import DarkModeIcon from '@mui/icons-material/DarkMode';
 import InfoIcon from '@mui/icons-material/Info';
 import LogoutIcon from '@mui/icons-material/Logout';
+import NotificationsIcon from '@mui/icons-material/Notifications';
 import { Box, Switch } from '@mui/material';
 import { useQueryClient } from '@tanstack/react-query';
 import { useUserSettings } from 'hooks/use-user-settings';
@@ -8,6 +9,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ThemeOptionsEnumDto } from 'types/settings/theme-options.dto';
 import { ABOUT_US_LINK, HELP_SUPPORT_LINK, PRIVACY_POLICY_LINK } from 'utils/common-constants';
+import { getPlatfromFromStorage } from 'utils/storage.util';
 import MenuItem from '../../components/menu-item';
 import { AuthenticationContext } from '../../context/providers/authentication-provider';
 import { ApplicationLocations } from '../../types/common/applications-locations.dto';
@@ -71,6 +73,8 @@ const SettingsScreen = () => {
     }
   }, []);
 
+  const isMobile = !!getPlatfromFromStorage();
+
   return (
     <Box
       sx={{
@@ -87,18 +91,27 @@ const SettingsScreen = () => {
             icon={item.icon}
             key={`settings_${item?.type}`}
             onMenuItemClick={handleMenuItemClick}
-            headerRight={
-              item?.type === SettingsTypeEnumDto.NOTIFICATIONS ? (
-                <Switch
-                  checked={notificationPermissionGranted}
-                  onChange={handleNotificationSettingsChange}
-                />
-              ) : (
-                <></>
-              )
-            }
+            headerRight={<></>}
           />
         ))}
+
+        {!isMobile ? (
+          <MenuItem
+            label="Notifications"
+            type={SettingsTypeEnumDto.NOTIFICATIONS}
+            icon={<NotificationsIcon color="primary" />}
+            // onMenuItemClick={async () => {
+            //   await Notification.requestPermission();
+            // }}
+            headerRight={
+              <Switch
+                checked={notificationPermissionGranted}
+                onChange={handleNotificationSettingsChange}
+              />
+            }
+          />
+        ) : null}
+
         <MenuItem
           label="Dark theme"
           type={SettingsTypeEnumDto.DARK_THEME}
