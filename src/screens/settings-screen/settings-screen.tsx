@@ -1,7 +1,6 @@
 import DarkModeIcon from '@mui/icons-material/DarkMode';
 import InfoIcon from '@mui/icons-material/Info';
 import LogoutIcon from '@mui/icons-material/Logout';
-import NotificationsIcon from '@mui/icons-material/Notifications';
 import { Box, Switch } from '@mui/material';
 import { useQueryClient } from '@tanstack/react-query';
 import { useUserSettings } from 'hooks/use-user-settings';
@@ -9,7 +8,6 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ThemeOptionsEnumDto } from 'types/settings/theme-options.dto';
 import { ABOUT_US_LINK, HELP_SUPPORT_LINK, PRIVACY_POLICY_LINK } from 'utils/common-constants';
-import { getPlatfromFromStorage } from 'utils/storage.util';
 import MenuItem from '../../components/menu-item';
 import { AuthenticationContext } from '../../context/providers/authentication-provider';
 import { ApplicationLocations } from '../../types/common/applications-locations.dto';
@@ -19,12 +17,12 @@ import { useToggleTheme } from './hooks/use-toggle-theme';
 import { SettingsItemsObject } from './settings-items-object';
 
 const SettingsScreen = () => {
-  const isNotificationPermissionGranted = Notification.permission === 'granted';
+  // const isNotificationPermissionGranted = Notification.permission === 'granted';
 
   const { setStateToken, setUserInfo } = React.useContext(AuthenticationContext);
-  const [notificationPermissionGranted, setNotificationPermissionGranted] = React.useState(
-    isNotificationPermissionGranted
-  );
+  // const [notificationPermissionGranted, setNotificationPermissionGranted] = React.useState(
+  //   isNotificationPermissionGranted
+  // );
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { data: { data: { theme = ThemeOptionsEnumDto.LIGHT } = {} } = {} } = useUserSettings();
@@ -42,9 +40,9 @@ const SettingsScreen = () => {
     navigate(ApplicationLocations.LOGIN);
   }, [setStateToken]);
 
-  const areNotificationsSupported = () =>
-    'Notification' in window && 'serviceWorker' in navigator && 'PushManager' in window;
-  const isMobile = !!getPlatfromFromStorage();
+  // const areNotificationsSupported = () =>
+  //   'Notification' in window && 'serviceWorker' in navigator && 'PushManager' in window;
+  // const isMobile = !!getPlatfromFromStorage();
 
   const handleMenuItemClick = React.useCallback(
     async (type?: unknown) => {
@@ -56,11 +54,11 @@ const SettingsScreen = () => {
           return window.open(PRIVACY_POLICY_LINK);
         case SettingsTypeEnumDto.HELP_SUPPORT:
           return window.open(HELP_SUPPORT_LINK);
-        case SettingsTypeEnumDto.NOTIFICATIONS:
-          if (areNotificationsSupported() && !isMobile) {
-            return await Notification.requestPermission();
-          }
-          return;
+        // case SettingsTypeEnumDto.NOTIFICATIONS:
+        //   if (areNotificationsSupported() && !isMobile) {
+        //     return await Notification.requestPermission();
+        //   }
+        //   return;
         default:
           return;
       }
@@ -69,16 +67,16 @@ const SettingsScreen = () => {
     [setStateToken]
   );
 
-  const handleNotificationSettingsChange = React.useCallback(async () => {
-    try {
-      if (!isNotificationPermissionGranted) {
-        await Notification.requestPermission();
-        setNotificationPermissionGranted(true);
-      }
-    } catch (error) {
-      console.error('Error granting notifications permission', error);
-    }
-  }, []);
+  // const handleNotificationSettingsChange = React.useCallback(async () => {
+  //   try {
+  //     if (!isNotificationPermissionGranted) {
+  //       await Notification.requestPermission();
+  //       setNotificationPermissionGranted(true);
+  //     }
+  //   } catch (error) {
+  //     console.error('Error granting notifications permission', error);
+  //   }
+  // }, []);
 
   return (
     <Box
@@ -100,7 +98,7 @@ const SettingsScreen = () => {
           />
         ))}
 
-        {!isMobile && areNotificationsSupported() ? (
+        {/* {!isMobile && areNotificationsSupported() ? (
           <MenuItem
             label="Notifications"
             type={SettingsTypeEnumDto.NOTIFICATIONS}
@@ -112,7 +110,7 @@ const SettingsScreen = () => {
               />
             }
           />
-        ) : null}
+        ) : null} */}
 
         <MenuItem
           label="Dark theme"
