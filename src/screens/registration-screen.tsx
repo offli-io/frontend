@@ -2,7 +2,17 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import GoogleIcon from '@mui/icons-material/Google';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
-import { Box, IconButton, InputAdornment, TextField, Typography, useTheme } from '@mui/material';
+import {
+  Box,
+  Checkbox,
+  FormControlLabel,
+  IconButton,
+  InputAdornment,
+  Link,
+  TextField,
+  Typography,
+  useTheme
+} from '@mui/material';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import React from 'react';
 import { Controller, useForm } from 'react-hook-form';
@@ -17,6 +27,7 @@ import { useGoogleAuthorization } from '../hooks/use-google-authorization';
 import { ApplicationLocations } from '../types/common/applications-locations.dto';
 import { GoogleAuthCodeFromEnumDto } from '../types/google/google-auth-code-from-enum.dto';
 import { IEmailPassword } from '../types/users/user.dto';
+import { PRIVACY_POLICY_LINK } from 'utils/common-constants';
 
 const schema: () => yup.SchemaOf<IEmailPassword> = () =>
   yup.object({
@@ -32,7 +43,8 @@ const schema: () => yup.SchemaOf<IEmailPassword> = () =>
       .min(8, 'Password must be at least 8 characters long')
       .max(16, 'Password must be less than 16 characters long')
       .matches(/^(?=.*[A-Z])/, 'Password must contain at least one uppercase')
-      .matches(/^(?=.*[0-9])/, 'Password must contain at least one number')
+      .matches(/^(?=.*[0-9])/, 'Password must contain at least one number'),
+    policiesAgree: yup.bool().oneOf([true], 'Field must be checked')
   });
 
 export const RegistrationScreen: React.FC = () => {
@@ -61,7 +73,8 @@ export const RegistrationScreen: React.FC = () => {
   const { control, handleSubmit, setError, formState } = useForm<IEmailPassword>({
     defaultValues: {
       email: '',
-      password: ''
+      password: '',
+      policiesAgree: false
     },
     resolver: yupResolver(schema()),
     mode: 'onChange'
@@ -124,7 +137,7 @@ export const RegistrationScreen: React.FC = () => {
           </Typography>
 
           <OffliButton
-            startIcon={<GoogleIcon sx={{ color: palette?.background?.default }} />}
+            startIcon={<GoogleIcon sx={{ color: 'white' }} />}
             onClick={handleGoogleAuthorization}
             sx={{ mb: 1 }}>
             Sign up with Google
@@ -187,17 +200,55 @@ export const RegistrationScreen: React.FC = () => {
                 />
               )}
             />
-            <Typography
-              variant="subtitle1"
-              align="center"
-              sx={{
-                color: 'lightgrey',
-                mt: 2,
-                lineHeight: 1.2
-              }}>
-              By signing up, you agree to the terms of the <br />
-              Offli <b>Privacy Policy</b> and <b>Cookie Policy</b>.
-            </Typography>
+
+            <Controller
+              name="policiesAgree"
+              control={control}
+              render={({ field: { value, onChange } }) => (
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={value}
+                      onChange={(e) => {
+                        onChange(e?.target?.checked ? true : false);
+                      }}
+                      data-testid="policies-checkbox"
+                      sx={{
+                        '& .MuiSvgIcon-root': {
+                          color: 'primary.main'
+                        }
+                      }}
+                    />
+                  }
+                  label={
+                    <Typography
+                      variant="subtitle1"
+                      align="center"
+                      sx={{
+                        width: '70%',
+                        lineHeight: 1.2,
+                        display: 'inline'
+                      }}>
+                      I agree to the terms of the Offli{' '}
+                      <Link href={PRIVACY_POLICY_LINK} sx={{ mx: 0.5 }}>
+                        Privacy Policy
+                      </Link>
+                      and
+                      <Link href={PRIVACY_POLICY_LINK} sx={{ mx: 0.5 }}>
+                        Cookie Policy
+                      </Link>
+                    </Typography>
+                  }
+                  sx={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    mt: 2,
+                    color: palette?.text?.primary
+                  }}
+                />
+              )}
+            />
           </Box>
 
           <OffliButton

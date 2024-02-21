@@ -4,6 +4,7 @@ import React from 'react';
 import { useServiceInterceptors } from '../../hooks/use-service-interceptors';
 import { IPerson } from '../../types/activities/activity.dto';
 import { setAuthToken } from '../../utils/token.util';
+import { UAParser } from 'ua-parser-js';
 
 interface IAuthenticationContext {
   stateToken: string | null;
@@ -42,13 +43,27 @@ export const AuthenticationProvider = ({ children }: { children: React.ReactNode
   const [googleTokenClient] = React.useState<any>();
   const [instagramCode, setInstagramCode] = React.useState<string | null>(null);
   const [isFirstTimeLogin, setIsFirstTimeLogin] = React.useState<boolean | undefined>(false);
+  const parser = new UAParser();
 
   React.useEffect(() => {
     if (userInfo?.id) {
-      // TODO: moreover IOS requires some user interaction before subscription
-      subscribeBrowserPush(Number(userInfo?.id));
+      let deviceName = 'Unknown';
+      const device = parser?.getDevice();
+      if (device && (device.vendor || device.model)) {
+        if (device.model) {
+          deviceName = device.vendor ? `${device.vendor} ${device.model}` : device.model;
+        }
+        if (device.type) {
+          deviceName = `${deviceName} ${device.type}`
+        }
+        const deviceOSVersion = parser?.getOS()?.version
+        if (deviceOSVersion) {
+          deviceName = `${deviceName}, OS ${deviceOSVersion}`
+        }
+      }
+      subscribeBrowserPush(Number(userInfo?.id), deviceName);
     }
-  }, [userInfo?.id]);
+  }, [userInfo?.id, parser]);
 
   useServiceInterceptors({ setStateToken, setUserInfo, userId: userInfo?.id });
   React.useEffect(() => {

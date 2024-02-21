@@ -5,6 +5,7 @@ export interface IUsername {
 export interface IEmailPassword {
   email?: string;
   password?: string;
+  policiesAgree?: boolean;
 }
 
 export interface IUsernamePassword {

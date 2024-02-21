@@ -5,7 +5,7 @@ interface IUserFeedbackProps {
   ratingValue?: number;
 }
 
-const OffliRating: React.FC<IUserFeedbackProps> = ({ ratingValue }) => {
+const OffliRating: React.FC<IUserFeedbackProps> = ({ ratingValue = 0 }) => {
   return (
     <Rating
       sx={{

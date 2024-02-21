@@ -2,10 +2,11 @@ import InstagramIcon from '@mui/icons-material/Instagram';
 import { Box, IconButton, Typography, useTheme } from '@mui/material';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { unlinkInstagram } from 'api/users/requests';
-import { AuthenticationContext } from 'context/providers/authentication-provider';
-import { DrawerContext } from 'context/providers/drawer-provider';
 import ImagePreviewModal from 'components/image-preview-modal/image-preview-modal';
 import Loader from 'components/loader';
+import OffliButton from 'components/offli-button';
+import { AuthenticationContext } from 'context/providers/authentication-provider';
+import { DrawerContext } from 'context/providers/drawer-provider';
 import { useGetApiUrl } from 'hooks/use-get-api-url';
 import React from 'react';
 import InstagramDrawerActions from 'screens/profile-screen/components/instagram-drawer-actions';
@@ -120,7 +121,7 @@ const ProfileGallery: React.FC<IProfileGalleryProps> = ({
           justifyContent: instagramUsername ? 'space-between' : 'flex-start',
           mb: 1
         }}>
-        <Box sx={{ mt: 3 }}>
+        <Box>
           <Typography align="left" variant="h5" sx={{ color: palette?.text?.primary }}>
             Photos
           </Typography>
@@ -210,7 +211,7 @@ const ProfileGallery: React.FC<IProfileGalleryProps> = ({
             alignItems: 'center',
             justifyContent: 'center'
           }}>
-          <ActionButton
+          <OffliButton
             onClick={openInstagramDrawer}
             sx={{ mt: 1, fontSize: 20 }}
             startIcon={

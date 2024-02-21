@@ -6,12 +6,14 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { SnackbarKey, SnackbarProvider } from 'notistack';
 import React from 'react';
 import { BrowserRouter } from 'react-router-dom';
+import { OffliUserAgent } from 'types/common/offli-user-agent-enum.dto';
+import { setPlatformToStorage } from 'utils/storage.util';
 import './App.css';
-import { HeaderProvider } from './context/providers/header-provider';
-import { LocationProvider } from './context/providers/location-provider';
 import { AuthenticationProvider } from './context/providers/authentication-provider';
 import { CustomizationProvider } from './context/providers/customization-provider';
 import { DrawerProvider } from './context/providers/drawer-provider';
+import { HeaderProvider } from './context/providers/header-provider';
+import { LocationProvider } from './context/providers/location-provider';
 import Router from './routes/router';
 
 const queryClient = new QueryClient({
@@ -40,6 +42,7 @@ function App() {
       window.scrollTo(0, 1);
     }, 0);
   });
+
   const notificationsRef = React.createRef<any>();
 
   const handleDismiss = React.useCallback(
@@ -48,12 +51,22 @@ function App() {
     },
     [notificationsRef]
   );
+
+  React.useEffect(() => {
+    const messageListener = window.addEventListener('message', (nativeEvent) => {
+      if ([OffliUserAgent.MobileAndroid, OffliUserAgent.MobileIos].includes(nativeEvent?.data)) {
+        setPlatformToStorage(nativeEvent?.data);
+      }
+    });
+    return messageListener;
+  }, []);
+
   return (
     <QueryClientProvider client={queryClient} contextSharing={true}>
       <SnackbarProvider
         ref={notificationsRef}
         maxSnack={1}
-        autoHideDuration={3000}
+        autoHideDuration={2000}
         anchorOrigin={{
           horizontal: 'left',
           vertical: 'bottom'

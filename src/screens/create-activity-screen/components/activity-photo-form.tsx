@@ -1,7 +1,6 @@
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import FilterIcon from '@mui/icons-material/Filter';
 import { Box, IconButton, Typography, useTheme } from '@mui/material';
-import { grey } from '@mui/material/colors';
 import { useMutation } from '@tanstack/react-query';
 import FileUpload from 'components/file-upload/file-upload';
 import React from 'react';
@@ -10,12 +9,13 @@ import 'react-image-crop/dist/ReactCrop.css';
 import { toast } from 'sonner';
 import { uploadFile } from '../../../api/activities/requests';
 import activityPhotoImg from '../../../assets/img/activity-photo.svg';
-import { DrawerContext } from '../../../context/providers/drawer-provider';
 import LabeledDivider from '../../../components/labeled-divider';
 import OffliButton from '../../../components/offli-button';
+import { DrawerContext } from '../../../context/providers/drawer-provider';
 import { useGetApiUrl } from '../../../hooks/use-get-api-url';
 import { ACTIVITY_ASPECT_RATIO } from '../../../utils/common-constants';
 import OffliGallery from './offli-gallery';
+import shadows from '@mui/material/styles/shadows';
 
 interface IActivityPhotoFormProps {
   methods: UseFormReturn;
@@ -112,7 +112,7 @@ export const ActivityPhotoForm: React.FC<IActivityPhotoFormProps> = ({
                 aspectRatio: ACTIVITY_ASPECT_RATIO,
                 border: `1px solid ${palette?.primary.main}`,
                 borderRadius: 15,
-                boxShadow: '2px 3px 3px #ccc'
+                boxShadow: shadows[5]
               }}
             />
             <OffliButton
@@ -120,7 +120,7 @@ export const ActivityPhotoForm: React.FC<IActivityPhotoFormProps> = ({
               sx={{
                 mt: 3,
                 fontSize: 16,
-                bgcolor: palette?.primary?.light,
+                // bgcolor: palette?.primary?.light,
                 p: 1,
                 px: 2
               }}
@@ -163,7 +163,8 @@ export const ActivityPhotoForm: React.FC<IActivityPhotoFormProps> = ({
                   alignItems: 'center',
                   justifyContent: 'center',
                   position: 'relative',
-                  bgcolor: palette?.mode === 'light' ? palette?.primary?.light : grey[200],
+                  bgcolor: palette?.primary?.light,
+                  // bgcolor: palette?.mode === 'light' ? palette?.primary?.light : grey[200],
                   borderRadius: 5,
                   border: (theme) => `1px dashed ${theme.palette.primary.main}`
                 }}

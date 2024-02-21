@@ -7,7 +7,7 @@ import { Paper, SxProps, useTheme } from '@mui/material';
 import BottomNavigation from '@mui/material/BottomNavigation';
 import BottomNavigationAction from '@mui/material/BottomNavigationAction';
 import * as React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { CustomizationContext } from '../../context/providers/customization-provider';
 import { ApplicationLocations } from '../../types/common/applications-locations.dto';
 import { FOOTER_HEIGHT } from '../../utils/common-constants';
@@ -23,6 +23,20 @@ const BottomNavigator: React.FC<IBottomNavigatorProps> = () => {
   const { palette } = useTheme();
   const [value, setValue] = React.useState<ApplicationLocations>(ApplicationLocations.EXPLORE);
   const { theme } = React.useContext(CustomizationContext);
+  const { pathname } = useLocation();
+
+  React.useEffect(() => {
+    switch (pathname) {
+      case ApplicationLocations.EXPLORE:
+        return setValue(ApplicationLocations.EXPLORE);
+      case ApplicationLocations.CREATE:
+        return setValue(ApplicationLocations.CREATE);
+      case ApplicationLocations.ACTIVITIES:
+        return setValue(ApplicationLocations.ACTIVITIES);
+      default:
+        return;
+    }
+  }, [pathname]);
 
   return (
     <Paper

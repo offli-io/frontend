@@ -7,15 +7,15 @@ import { Controller, ControllerRenderProps, UseFormReturn } from 'react-hook-for
 import SetOnMapScreen from 'screens/set-on-map-screen/set-on-map-screen';
 import { ILocation } from 'types/activities/location.dto';
 import { useDebounce } from 'use-debounce';
+import {
+  getHistorySearchesFromStorage,
+  pushSearchResultIntoStorage
+} from 'utils/search-history-utils';
 import { getLocationFromQueryFetch } from '../../../api/activities/requests';
 import activityLocation from '../../../assets/img/activity-location.svg';
 import OffliButton from '../../../components/offli-button';
 import { mapExternalApiOptions } from '../../../utils/map-location-value.util';
 import { FormValues } from '../utils/validation-schema';
-import {
-  getHistorySearchesFromStorage,
-  pushSearchResultIntoStorage
-} from 'utils/search-history-utils';
 
 interface IPlaceFormProps {
   onNextClicked: () => void;

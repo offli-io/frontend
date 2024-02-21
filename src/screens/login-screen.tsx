@@ -10,11 +10,11 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import * as yup from 'yup';
 import { loginUser, loginViaGoogle } from '../api/auth/requests';
-import { AuthenticationContext } from '../context/providers/authentication-provider';
 import LabeledDivider from '../components/labeled-divider';
 import Logo from '../components/logo';
 import OffliBackButton from '../components/offli-back-button';
 import OffliButton from '../components/offli-button';
+import { AuthenticationContext } from '../context/providers/authentication-provider';
 import { useGoogleAuthorization } from '../hooks/use-google-authorization';
 import { ApplicationLocations } from '../types/common/applications-locations.dto';
 import { GoogleAuthCodeFromEnumDto } from '../types/google/google-auth-code-from-enum.dto';
@@ -32,7 +32,7 @@ const schema: () => yup.SchemaOf<FormValues> = () =>
 
 const LoginScreen: React.FC = () => {
   const [showPassword, setShowPassword] = React.useState(false);
-  const { setUserInfo, setStateToken } = React.useContext(AuthenticationContext);
+  const { setUserInfo, setStateToken, userInfo } = React.useContext(AuthenticationContext);
   const { palette } = useTheme();
   const navigate = useNavigate();
   const {
@@ -44,7 +44,6 @@ const LoginScreen: React.FC = () => {
     from: GoogleAuthCodeFromEnumDto.LOGIN,
     omitTokenGetting: true
   });
-  const { userInfo } = React.useContext(AuthenticationContext);
   const abortControllerRef = React.useRef<AbortController | null>(null);
 
   const handleClickShowPassword = () => setShowPassword(!showPassword);
@@ -140,7 +139,7 @@ const LoginScreen: React.FC = () => {
             alignItems: 'center'
           }}>
           <OffliButton
-            startIcon={<GoogleIcon sx={{ color: palette?.background?.default }} />}
+            startIcon={<GoogleIcon sx={{ color: 'white' }} />}
             onClick={handleGoogleAuthorization}
             sx={{ mb: 1 }}
             disabled={isLoading || isGoogleAuthorizationLoading || isGoogleLoginLoading}>

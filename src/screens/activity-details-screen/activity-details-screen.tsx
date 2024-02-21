@@ -53,6 +53,7 @@ interface IProps {
 interface ICustomizedLocationState {
   openInviteDrawer?: boolean;
   openFeedbackDrawer?: boolean;
+  offset?: number;
 }
 
 const ActivityDetailsScreen: React.FC<IProps> = () => {
@@ -82,9 +83,10 @@ const ActivityDetailsScreen: React.FC<IProps> = () => {
   const { palette } = useTheme();
   const [imagePreviewModalOpen, setImagePreviewModalOpen] = React.useState(false);
 
-  const { googleToken, handleGoogleAuthorization, state } = useGoogleAuthorization({
+  const { googleAuthCode, handleGoogleAuthorization, state } = useGoogleAuthorization({
     from: GoogleAuthCodeFromEnumDto.ACTIVITY_DETAIL,
-    state: JSON.stringify({ id })
+    state: JSON.stringify({ id }),
+    omitTokenGetting: true
   });
 
   const { data: { data: { activity = undefined } = {} } = {}, isLoading } =
@@ -143,7 +145,7 @@ const ActivityDetailsScreen: React.FC<IProps> = () => {
 
   const { mutate: sendAddActivityToCalendar } = useMutation(
     ['add-event-to-calendar'],
-    (token: string) => {
+    (googleAuthCode: string) => {
       abortControllerRef.current = new AbortController();
 
       const start = convertDateToUTC(activity?.datetime_from as string);
@@ -155,26 +157,29 @@ const ActivityDetailsScreen: React.FC<IProps> = () => {
           name: activity?.title as string,
           start,
           end,
-          token: token as string
+          auth_code: googleAuthCode
         },
         abortControllerRef?.current?.signal
       );
     },
     {
       onSuccess: () => {
+        // resets search params
+        window.history.pushState({}, document.title, window.location.pathname);
         toast.success('Activity has been successfully added to your Google calendar');
       },
       onError: () => {
-        toast.error('Failed to join activity');
+        window.history.pushState({}, document.title, window.location.pathname);
+        toast.error('Failed to add activity into calendar');
       }
     }
   );
 
   React.useEffect(() => {
-    if (googleToken && activity) {
-      sendAddActivityToCalendar(googleToken);
+    if (googleAuthCode && activity) {
+      sendAddActivityToCalendar(googleAuthCode);
     }
-  }, [googleToken, activity]);
+  }, [googleAuthCode, activity]);
 
   const hideDrawer = React.useCallback(() => {
     return toggleDrawer({
@@ -260,8 +265,13 @@ const ActivityDetailsScreen: React.FC<IProps> = () => {
   );
 
   React.useEffect(() => {
-    if (state) {
-      navigate(`${ApplicationLocations.ACTIVITY_DETAIL}/${state?.id}`, {
+    const queryParameters = new URLSearchParams(window.location.search);
+    const authorizationCode = queryParameters.get('code');
+    if (state && authorizationCode) {
+      // const activityURLWithCode = new URL(`${ApplicationLocations.ACTIVITY_DETAIL}/${state?.id}/`);
+      // activityURLWithCode.searchParams.append('code', authorizationCode);
+      //TODO construct this url nicer with code param
+      navigate(`${ApplicationLocations.ACTIVITY_DETAIL}/${state?.id}?code=${authorizationCode}`, {
         state: { from: ApplicationLocations.EXPLORE }
       });
     }
@@ -343,7 +353,7 @@ const ActivityDetailsScreen: React.FC<IProps> = () => {
     feedbackAlreadySent
   ]);
 
-  const isAbleToSendFeedback =
+  const isAllowedToSendFeedback =
     isAlreadyParticipant && isPastActivity && !isCreator && !feedbackAlreadySent?.is_submitted;
 
   const {
@@ -428,7 +438,7 @@ const ActivityDetailsScreen: React.FC<IProps> = () => {
         <ActivityActionButtons
           onJoinClick={handleJoinButtonClick}
           onMoreClick={() => handleActivityActionsCLick(activity)}
-          isAbleToSendFeedback={isAbleToSendFeedback}
+          isAllowedToSendFeedback={isAllowedToSendFeedback}
           sentFeedbackValue={feedbackAlreadySent?.feedback?.value}
           onToggleFeedbackDrawer={() => handleToggleFeedbackDrawer(activity)}
           areActionsLoading={areActionsLoading}
