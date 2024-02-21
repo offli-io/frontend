@@ -12,7 +12,6 @@ import React from 'react';
 import InstagramDrawerActions from 'screens/profile-screen/components/instagram-drawer-actions';
 import { toast } from 'sonner';
 import ProfileGalleryImageUploadContent from './components/profile-gallery-image-upload-content';
-import ActionButton from 'components/action-button';
 import { CustomizationContext } from 'context/providers/customization-provider';
 import { ThemeOptionsEnumDto } from 'types/settings/theme-options.dto';
 
@@ -224,8 +223,9 @@ const ProfileGallery: React.FC<IProfileGalleryProps> = ({
                   fontSize: '24px !important'
                 }}
               />
-            }
-            text="Connect Instagram"></ActionButton>
+            }>
+            Connect Instagram
+          </OffliButton>
           <Typography
             variant="subtitle1"
             sx={{ textAlign: 'center', px: 4, mt: 1, color: 'primary.main' }}>
