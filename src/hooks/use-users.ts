@@ -14,7 +14,7 @@ export const useUsers = ({
   params: { username, ...restParams } = {},
   queryOptions
 }: IUseUsersParams) => {
-  const { data: { data: { users = [], buddieStates = [] } = {} } = {}, isFetching } = useQuery(
+  const { data: { data: { users = [], buddie_states = [] } = {} } = {}, isFetching } = useQuery(
     ['users', username],
     () => getUsers({ username, ...restParams }),
     {
@@ -26,5 +26,5 @@ export const useUsers = ({
     }
   );
 
-  return { users, buddieStates, isLoading: isFetching };
+  return { users, buddieStates: buddie_states, isLoading: isFetching };
 };

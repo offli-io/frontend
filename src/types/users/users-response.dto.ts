@@ -4,5 +4,5 @@ import { IBuddyStateDto } from './buddy-state.dto';
 export interface IUsersResponseDto {
   users: IPerson[];
   count: number;
-  buddieStates: IBuddyStateDto[];
+  buddie_states: IBuddyStateDto[];
 }

@@ -394,7 +394,7 @@ export const getUsersPromiseResolved = async ({ username, ...params }: IUsersSea
     // cancelToken: source?.token,
   });
 
-  return promise?.data?.users;
+  return { users: promise?.data?.users, buddieStates: promise?.data?.buddie_states };
 };
 
 export const getUser = ({ id, requestingInfoUserId }: IUsersParamsDto) => {
