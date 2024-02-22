@@ -6,6 +6,8 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { SnackbarKey, SnackbarProvider } from 'notistack';
 import React from 'react';
 import { BrowserRouter } from 'react-router-dom';
+import { OffliUserAgent } from 'types/common/offli-user-agent-enum.dto';
+import { setPlatformToStorage } from 'utils/storage.util';
 import './App.css';
 import { AuthenticationProvider } from './context/providers/authentication-provider';
 import { CustomizationProvider } from './context/providers/customization-provider';
@@ -52,7 +54,9 @@ function App() {
 
   React.useEffect(() => {
     const messageListener = window.addEventListener('message', (nativeEvent) => {
-      console.log(nativeEvent?.data);
+      if ([OffliUserAgent.MobileAndroid, OffliUserAgent.MobileIos].includes(nativeEvent?.data)) {
+        setPlatformToStorage(nativeEvent?.data);
+      }
     });
     return messageListener;
   }, []);

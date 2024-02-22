@@ -1,6 +1,5 @@
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import HelpIcon from '@mui/icons-material/Help';
-import NotificationsIcon from '@mui/icons-material/Notifications';
 import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
 import { SettingsTypeEnumDto } from '../../types/common/settings-type-enum.dto';
 
@@ -25,10 +24,5 @@ export const SettingsItemsObject: ISettingsItemsObject[] = [
     type: SettingsTypeEnumDto.HELP_SUPPORT,
     label: 'Help and support',
     icon: <HelpIcon color="primary" />
-  },
-  {
-    type: SettingsTypeEnumDto.NOTIFICATIONS,
-    label: 'Notifications',
-    icon: <NotificationsIcon color="primary" />
   }
 ];

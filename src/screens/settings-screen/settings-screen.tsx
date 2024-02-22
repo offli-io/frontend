@@ -17,12 +17,12 @@ import { useToggleTheme } from './hooks/use-toggle-theme';
 import { SettingsItemsObject } from './settings-items-object';
 
 const SettingsScreen = () => {
-  const isNotificationPermissionGranted = Notification.permission === 'granted';
+  // const isNotificationPermissionGranted = Notification.permission === 'granted';
 
   const { setStateToken, setUserInfo } = React.useContext(AuthenticationContext);
-  const [notificationPermissionGranted, setNotificationPermissionGranted] = React.useState(
-    isNotificationPermissionGranted
-  );
+  // const [notificationPermissionGranted, setNotificationPermissionGranted] = React.useState(
+  //   isNotificationPermissionGranted
+  // );
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { data: { data: { theme = ThemeOptionsEnumDto.LIGHT } = {} } = {} } = useUserSettings();
@@ -40,6 +40,10 @@ const SettingsScreen = () => {
     navigate(ApplicationLocations.LOGIN);
   }, [setStateToken]);
 
+  // const areNotificationsSupported = () =>
+  //   'Notification' in window && 'serviceWorker' in navigator && 'PushManager' in window;
+  // const isMobile = !!getPlatfromFromStorage();
+
   const handleMenuItemClick = React.useCallback(
     async (type?: unknown) => {
       const correctType = type as SettingsTypeEnumDto;
@@ -50,8 +54,11 @@ const SettingsScreen = () => {
           return window.open(PRIVACY_POLICY_LINK);
         case SettingsTypeEnumDto.HELP_SUPPORT:
           return window.open(HELP_SUPPORT_LINK);
-        case SettingsTypeEnumDto.NOTIFICATIONS:
-          return await Notification.requestPermission();
+        // case SettingsTypeEnumDto.NOTIFICATIONS:
+        //   if (areNotificationsSupported() && !isMobile) {
+        //     return await Notification.requestPermission();
+        //   }
+        //   return;
         default:
           return;
       }
@@ -60,16 +67,16 @@ const SettingsScreen = () => {
     [setStateToken]
   );
 
-  const handleNotificationSettingsChange = React.useCallback(async () => {
-    try {
-      if (!isNotificationPermissionGranted) {
-        await Notification.requestPermission();
-        setNotificationPermissionGranted(true);
-      }
-    } catch (error) {
-      console.error('Error granting notifications permission', error);
-    }
-  }, []);
+  // const handleNotificationSettingsChange = React.useCallback(async () => {
+  //   try {
+  //     if (!isNotificationPermissionGranted) {
+  //       await Notification.requestPermission();
+  //       setNotificationPermissionGranted(true);
+  //     }
+  //   } catch (error) {
+  //     console.error('Error granting notifications permission', error);
+  //   }
+  // }, []);
 
   return (
     <Box
@@ -87,18 +94,24 @@ const SettingsScreen = () => {
             icon={item.icon}
             key={`settings_${item?.type}`}
             onMenuItemClick={handleMenuItemClick}
-            headerRight={
-              item?.type === SettingsTypeEnumDto.NOTIFICATIONS ? (
-                <Switch
-                  checked={notificationPermissionGranted}
-                  onChange={handleNotificationSettingsChange}
-                />
-              ) : (
-                <></>
-              )
-            }
+            headerRight={<></>}
           />
         ))}
+
+        {/* {!isMobile && areNotificationsSupported() ? (
+          <MenuItem
+            label="Notifications"
+            type={SettingsTypeEnumDto.NOTIFICATIONS}
+            icon={<NotificationsIcon color="primary" />}
+            headerRight={
+              <Switch
+                checked={notificationPermissionGranted}
+                onChange={handleNotificationSettingsChange}
+              />
+            }
+          />
+        ) : null} */}
+
         <MenuItem
           label="Dark theme"
           type={SettingsTypeEnumDto.DARK_THEME}
