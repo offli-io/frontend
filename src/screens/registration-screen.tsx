@@ -28,6 +28,7 @@ import { ApplicationLocations } from '../types/common/applications-locations.dto
 import { GoogleAuthCodeFromEnumDto } from '../types/google/google-auth-code-from-enum.dto';
 import { IEmailPassword } from '../types/users/user.dto';
 import { PRIVACY_POLICY_LINK } from 'utils/common-constants';
+import { useGoogleClientID } from 'hooks/use-google-client-id';
 
 const schema: () => yup.SchemaOf<IEmailPassword> = () =>
   yup.object({
@@ -51,10 +52,12 @@ export const RegistrationScreen: React.FC = () => {
   const [showPassword, setShowPassword] = React.useState(false);
   const [email, setEmail] = React.useState<string | undefined>();
   const { palette } = useTheme();
+  const { data: { data: { client_id = null } = {} } = {} } = useGoogleClientID();
 
   const { googleAuthCode, handleGoogleAuthorization } = useGoogleAuthorization({
     from: GoogleAuthCodeFromEnumDto.REGISTER,
-    omitTokenGetting: true
+    omitTokenGetting: true,
+    clientID: client_id
   });
 
   const queryClient = useQueryClient();
@@ -139,6 +142,7 @@ export const RegistrationScreen: React.FC = () => {
           <OffliButton
             startIcon={<GoogleIcon sx={{ color: 'white' }} />}
             onClick={handleGoogleAuthorization}
+            disabled={!client_id}
             sx={{ mb: 1 }}>
             Sign up with Google
           </OffliButton>

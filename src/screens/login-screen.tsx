@@ -36,6 +36,8 @@ const LoginScreen: React.FC = () => {
   const { setUserInfo, setStateToken, userInfo } = React.useContext(AuthenticationContext);
   const { palette } = useTheme();
   const navigate = useNavigate();
+  const { data: { data: { client_id = null } = {} } = {} } = useGoogleClientID();
+
   const {
     // googleToken,
     googleAuthCode,
@@ -43,12 +45,10 @@ const LoginScreen: React.FC = () => {
     isLoading: isGoogleAuthorizationLoading
   } = useGoogleAuthorization({
     from: GoogleAuthCodeFromEnumDto.LOGIN,
-    omitTokenGetting: true
+    omitTokenGetting: true,
+    clientID: client_id
   });
 
-  const { data: { data } = {} } = useGoogleClientID();
-
-  console.log(data);
   const abortControllerRef = React.useRef<AbortController | null>(null);
 
   const handleClickShowPassword = () => setShowPassword(!showPassword);
@@ -147,7 +147,9 @@ const LoginScreen: React.FC = () => {
             startIcon={<GoogleIcon sx={{ color: 'white' }} />}
             onClick={handleGoogleAuthorization}
             sx={{ mb: 1 }}
-            disabled={isLoading || isGoogleAuthorizationLoading || isGoogleLoginLoading}>
+            disabled={
+              isLoading || isGoogleAuthorizationLoading || isGoogleLoginLoading || !client_id
+            }>
             Log in with Google
           </OffliButton>
 

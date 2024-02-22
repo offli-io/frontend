@@ -45,6 +45,7 @@ import ActivityVisibilityDuration from './components/activity-visibility-duratio
 import { convertDateToUTC } from './utils/convert-date-to-utc';
 import FeedbackDrawer from '../notifications-screen/components/feedback-drawer';
 import { useFeedbackAlreadySentByUser } from '../../hooks/use-feedback-already-sent-by-user';
+import { useGoogleClientID } from 'hooks/use-google-client-id';
 
 interface IProps {
   type: 'detail' | 'request';
@@ -82,11 +83,13 @@ const ActivityDetailsScreen: React.FC<IProps> = () => {
   const abortControllerRef = React.useRef<AbortController | null>(null);
   const { palette } = useTheme();
   const [imagePreviewModalOpen, setImagePreviewModalOpen] = React.useState(false);
+  const { data: { data: { client_id = null } = {} } = {} } = useGoogleClientID();
 
   const { googleAuthCode, handleGoogleAuthorization, state } = useGoogleAuthorization({
     from: GoogleAuthCodeFromEnumDto.ACTIVITY_DETAIL,
     state: JSON.stringify({ id }),
-    omitTokenGetting: true
+    omitTokenGetting: true,
+    clientID: client_id
   });
 
   const { data: { data: { activity = undefined } = {} } = {}, isLoading } =

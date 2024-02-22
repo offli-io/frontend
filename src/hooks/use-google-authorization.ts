@@ -7,12 +7,14 @@ import { GoogleAuthCodeFromEnumDto } from '../types/google/google-auth-code-from
 interface IUseGoogleAuthorizationProps {
   from: GoogleAuthCodeFromEnumDto;
   state?: any;
+  clientID?: string | null;
   omitTokenGetting?: boolean;
 }
 
 export const useGoogleAuthorization = ({
   from,
   state,
+  clientID,
   omitTokenGetting = false
 }: IUseGoogleAuthorizationProps) => {
   const [googleToken, setGoogleToken] = React.useState<string | null>(null);
@@ -40,7 +42,10 @@ export const useGoogleAuthorization = ({
   const paramsStateParsed = paramsState ? JSON.parse(paramsState) : null;
 
   const handleGoogleAuthorization = React.useCallback(() => {
-    window.location.href = getGoogleAuthCode(from, state);
+    if (!clientID) {
+      return;
+    }
+    window.location.href = getGoogleAuthCode(from, clientID, state);
   }, []);
 
   React.useEffect(() => {

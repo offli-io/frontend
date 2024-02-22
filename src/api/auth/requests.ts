@@ -83,7 +83,11 @@ export const getBearerToken = (
   return promise;
 };
 
-export const getGoogleAuthCode = (from: GoogleAuthCodeFromEnumDto, state?: any) => {
+export const getGoogleAuthCode = (
+  from: GoogleAuthCodeFromEnumDto,
+  clientID: string,
+  state?: any
+) => {
   const rootUrl = `https://accounts.google.com/o/oauth2/v2/auth`;
   // for now there is not change in current url only when activity detail ->
   // we need to add state to google request
@@ -96,7 +100,7 @@ export const getGoogleAuthCode = (from: GoogleAuthCodeFromEnumDto, state?: any) 
 
   const options = {
     redirect_uri: `${currentUrl}`,
-    client_id: CLIENT_ID as string,
+    client_id: clientID,
     access_type: 'offline',
     response_type: 'code',
     prompt: 'consent',
