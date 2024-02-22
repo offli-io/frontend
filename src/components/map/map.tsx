@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { getLocationFromQueryFetch, getPlaceFromCoordinates } from 'api/activities/requests';
 import { useActivities } from 'hooks/use-activities';
 import L, { LatLngTuple } from 'leaflet';
-import React from 'react';
+import React, { useState } from 'react';
 import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
 import MarkerClusterGroup from 'react-leaflet-cluster';
 import { IActivityRestDto } from 'types/activities/activity-rest.dto';
@@ -177,6 +177,16 @@ const Map: React.FC<IMapScreenProps> = ({
     [data?.results]
   );
 
+  const [isFocused, setIsFocused] = useState(false);
+
+  const clearPlaceholder = () => {
+    setIsFocused(true);
+  };
+
+  const handleBlur = () => {
+    setIsFocused(false);
+  };
+
   return (
     <MapContainer
       center={latLonTuple ?? position}
@@ -222,8 +232,10 @@ const Map: React.FC<IMapScreenProps> = ({
           renderInput={(params) => (
             <TextField
               {...params}
-              placeholder={'Search places'}
+              placeholder={isFocused ? '' : 'Search places'}
               onChange={(e) => setPlaceQuery(e.target.value)}
+              onClick={clearPlaceholder}
+              onBlur={handleBlur}
               sx={{
                 '& input::placeholder': {
                   fontSize: 16,

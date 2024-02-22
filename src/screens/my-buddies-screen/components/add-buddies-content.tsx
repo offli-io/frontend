@@ -1,17 +1,10 @@
 import SearchIcon from '@mui/icons-material/Search';
-import {
-  Box,
-  InputAdornment,
-  LinearProgress,
-  TextField,
-  Typography,
-  useTheme
-} from '@mui/material';
+import { Box, InputAdornment, LinearProgress, TextField, Typography } from '@mui/material';
 import { useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { getUsersPromiseResolved } from 'api/activities/requests';
 import { toggleBuddyInvitation } from 'api/users/requests';
 import Loader from 'components/loader';
-import React from 'react';
+import React, { useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroller';
 import { NavigateFunction } from 'react-router-dom';
 import { toast } from 'sonner';
@@ -36,7 +29,6 @@ interface IAddBuddiesContentProps {
 const AddBuddiesContent: React.FC<IAddBuddiesContentProps> = ({ navigate }) => {
   const [username, setUsername] = React.useState('');
   const { userInfo } = React.useContext(AuthenticationContext);
-  const { shadows } = useTheme();
   const [usernameDebounced] = useDebounce(username, 150);
   const abortControllerRef = React.useRef<AbortController | null>(null);
   const usersContentDivRef = React.useRef<HTMLDivElement | null>(null);
@@ -142,40 +134,50 @@ const AddBuddiesContent: React.FC<IAddBuddiesContentProps> = ({ navigate }) => {
     [handleSendBuddyRequest]
   );
 
-  console.log(paginatedUsersData?.pages);
+  const [isFocused, setIsFocused] = useState(false);
+
+  const clearPlaceholder = () => {
+    setIsFocused(true);
+  };
+
+  const handleBlur = () => {
+    setIsFocused(false);
+  };
 
   return (
     <Box sx={{ mx: 1.5, maxHeight: 500, position: 'relative', overflow: 'hidden' }}>
       <TextField
         sx={{
-          width: '100%',
+          width: '95%',
           display: 'flex',
           justifyContent: 'center',
+          my: 2,
           '& .MuiOutlinedInput-root': {
-            pr: 0,
-            boxShadow: shadows[1]
+            pr: 0
           },
           '& input::placeholder': {
-            fontSize: 14
+            fontSize: 14,
+            color: 'primary.main',
+            fontWeight: 400,
+            opacity: 1,
+            pl: 1
           },
-          // TODO searchbar is scrolling with its content
-          position: 'sticky',
-          top: 0,
-          // bgcolor: 'white',
-          maxHeight: 50,
-          zIndex: 555,
-          my: 1
+          '& fieldset': { border: 'none' },
+          backgroundColor: ({ palette }) => palette?.primary?.light,
+          borderRadius: '10px'
         }}
         value={username}
-        placeholder="Search among users"
+        placeholder={isFocused ? '' : 'Search among users'}
         InputProps={{
           startAdornment: (
             <InputAdornment position="start">
-              <SearchIcon sx={{ fontSize: '1.2rem' }} />
+              <SearchIcon sx={{ fontSize: 20, color: 'primary.main' }} />
             </InputAdornment>
           )
         }}
         onChange={(e) => setUsername(e.target.value)}
+        onClick={clearPlaceholder}
+        onBlur={handleBlur}
       />
       {isFetching || isFetchingNextPage ? (
         <Box sx={{ width: '100%', mb: 1.5 }}>

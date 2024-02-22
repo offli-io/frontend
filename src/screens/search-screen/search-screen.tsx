@@ -11,7 +11,7 @@ import {
   Typography
 } from '@mui/material';
 import { LocationContext } from 'context/providers/location-provider';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { useDebounce } from 'use-debounce';
 import { HeaderContext } from '../../context/providers/header-provider';
@@ -143,21 +143,22 @@ const SearchScreen = () => {
     currentTab === SearchTabDefinitionsEnum.USERS && setHeaderRightContent(undefined);
   }, [currentTab]);
 
-  const [isFocused, setIsFocused] = useState(false);
-
   const handleTabChange = (event: React.SyntheticEvent, newValue: SearchTabDefinitionsEnum) => {
     setCurrentTab(newValue);
   };
 
-  const handleResetSearch = React.useCallback(() => setCurrentSearch(''), []);
+  const [isFocused, setIsFocused] = useState(false);
+  const [showClearButton, setShowClearButton] = useState(false);
 
-  const clearPlaceholder = () => {
-    setIsFocused(true);
-  };
-
-  const handleBlur = () => {
+  const handleClearButtonClick = () => {
+    setCurrentSearch('');
+    setShowClearButton(true);
     setIsFocused(false);
   };
+
+  useEffect(() => {
+    setShowClearButton(!!currentSearch);
+  }, [currentSearch]);
 
   return (
     <Box>
@@ -204,16 +205,14 @@ const SearchScreen = () => {
                 <SearchIcon sx={{ fontSize: 24, color: 'primary.main' }} />
               </InputAdornment>
             ),
-            endAdornment: isFocused && (
+            endAdornment: showClearButton && (
               <InputAdornment position="end">
-                <IconButton onClick={handleResetSearch}>
+                <IconButton onClick={handleClearButtonClick}>
                   <ClearIcon sx={{ fontSize: 24 }} />
                 </IconButton>
               </InputAdornment>
             )
           }}
-          onClick={clearPlaceholder}
-          onBlur={handleBlur}
           onChange={(e) => setCurrentSearch(e.target.value)}
           data-testid="search-activities-input"
         />
