@@ -11,7 +11,7 @@ import {
   Typography
 } from '@mui/material';
 import { LocationContext } from 'context/providers/location-provider';
-import React from 'react';
+import React, { useState } from 'react';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { useDebounce } from 'use-debounce';
 import { HeaderContext } from '../../context/providers/header-provider';
@@ -143,11 +143,21 @@ const SearchScreen = () => {
     currentTab === SearchTabDefinitionsEnum.USERS && setHeaderRightContent(undefined);
   }, [currentTab]);
 
+  const [isFocused, setIsFocused] = useState(false);
+
   const handleTabChange = (event: React.SyntheticEvent, newValue: SearchTabDefinitionsEnum) => {
     setCurrentTab(newValue);
   };
 
   const handleResetSearch = React.useCallback(() => setCurrentSearch(''), []);
+
+  const clearPlaceholder = () => {
+    setIsFocused(true);
+  };
+
+  const handleBlur = () => {
+    setIsFocused(false);
+  };
 
   return (
     <Box>
@@ -182,24 +192,28 @@ const SearchScreen = () => {
           }}
           value={currentSearch}
           placeholder={
-            currentTab === SearchTabDefinitionsEnum.ACTIVITIES
-              ? 'Search by text in activity'
-              : 'Search by username'
+            isFocused
+              ? ''
+              : currentTab === SearchTabDefinitionsEnum.ACTIVITIES
+                ? 'Search by text in activity'
+                : 'Search by username'
           }
           InputProps={{
             startAdornment: (
               <InputAdornment position="start">
-                <SearchIcon sx={{ fontSize: '1.4rem', color: 'primary.main' }} />
+                <SearchIcon sx={{ fontSize: 24, color: 'primary.main' }} />
               </InputAdornment>
             ),
-            endAdornment: (
+            endAdornment: isFocused && (
               <InputAdornment position="end">
                 <IconButton onClick={handleResetSearch}>
-                  <ClearIcon sx={{ fontSize: 18 }} />
+                  <ClearIcon sx={{ fontSize: 24 }} />
                 </IconButton>
               </InputAdornment>
             )
           }}
+          onClick={clearPlaceholder}
+          onBlur={handleBlur}
           onChange={(e) => setCurrentSearch(e.target.value)}
           data-testid="search-activities-input"
         />

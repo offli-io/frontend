@@ -212,7 +212,6 @@ const ProfileGallery: React.FC<IProfileGalleryProps> = ({
           }}>
           <OffliButton
             onClick={openInstagramDrawer}
-            sx={{ mt: 1, fontSize: 20 }}
             startIcon={
               <InstagramIcon
                 sx={{
