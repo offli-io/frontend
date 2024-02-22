@@ -30,3 +30,9 @@ export const addEventToCalendar = (calendarId?: string, event?: any) => {
     console.error(err);
   }
 };
+
+export const getGoogleClientID = () => {
+  const promise = axios.get<any>('/google/client-id');
+
+  return promise;
+};

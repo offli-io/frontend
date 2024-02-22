@@ -18,6 +18,7 @@ import OffliButton from '../components/offli-button';
 import { useGoogleAuthorization } from '../hooks/use-google-authorization';
 import { ApplicationLocations } from '../types/common/applications-locations.dto';
 import { GoogleAuthCodeFromEnumDto } from '../types/google/google-auth-code-from-enum.dto';
+import { useGoogleClientID } from 'hooks/use-google-client-id';
 
 export interface FormValues {
   username: string;
@@ -44,6 +45,10 @@ const LoginScreen: React.FC = () => {
     from: GoogleAuthCodeFromEnumDto.LOGIN,
     omitTokenGetting: true
   });
+
+  const { data: { data } = {} } = useGoogleClientID();
+
+  console.log(data);
   const abortControllerRef = React.useRef<AbortController | null>(null);
 
   const handleClickShowPassword = () => setShowPassword(!showPassword);
