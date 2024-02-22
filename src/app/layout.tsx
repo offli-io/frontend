@@ -140,6 +140,7 @@ export const Layout: React.FC<ILayoutProps> = () => {
         ApplicationLocations.PICK_USERNAME,
         ApplicationLocations.AUTHENTICATION_METHOD,
         ApplicationLocations.LOADING,
+        ApplicationLocations.VERIFY,
         ApplicationLocations.FORGOTTEN_PASSWORD
       ].some((route) => matchPath({ path: route }, pathname)),
     [pathname]

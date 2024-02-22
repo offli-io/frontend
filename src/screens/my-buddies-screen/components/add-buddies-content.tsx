@@ -61,6 +61,7 @@ const AddBuddiesContent: React.FC<IAddBuddiesContentProps> = ({ navigate }) => {
   } = useInfiniteQuery(
     [PAGED_USERS_QUERY_KEY, usernameDebounced],
     ({ pageParam = 0 }) =>
+      //TODO maybe add buddy states also from this hook - but can't be paged
       getUsersPromiseResolved({
         limit: USERS_LIMIT,
         offset: pageParam,
@@ -71,7 +72,7 @@ const AddBuddiesContent: React.FC<IAddBuddiesContentProps> = ({ navigate }) => {
       getNextPageParam: (lastPage, allPages) => {
         const nextPage: number = allPages?.length;
         // only return next page when this page has full array (20 items)
-        return lastPage?.length >= USERS_LIMIT ? nextPage * USERS_LIMIT : undefined;
+        return lastPage?.users?.length >= USERS_LIMIT ? nextPage * USERS_LIMIT : undefined;
       },
       enabled: !!usernameDebounced
     }
@@ -83,6 +84,7 @@ const AddBuddiesContent: React.FC<IAddBuddiesContentProps> = ({ navigate }) => {
       queryClient.invalidateQueries(['buddies']);
       queryClient.invalidateQueries(['users']);
       queryClient.invalidateQueries(['recommended-buddies']);
+      queryClient.invalidateQueries([PAGED_USERS_QUERY_KEY]);
     }
   });
 
@@ -142,8 +144,6 @@ const AddBuddiesContent: React.FC<IAddBuddiesContentProps> = ({ navigate }) => {
     [handleSendBuddyRequest]
   );
 
-  console.log(paginatedUsersData?.pages);
-
   return (
     <Box sx={{ mx: 1.5, maxHeight: 500, position: 'relative', overflow: 'hidden' }}>
       <TextField
@@ -184,7 +184,7 @@ const AddBuddiesContent: React.FC<IAddBuddiesContentProps> = ({ navigate }) => {
       ) : null}
 
       <Box ref={usersContentDivRef} sx={{ overflowY: 'auto' }} id="scrolik">
-        {[...(paginatedUsersData?.pages?.[0] ?? [])]?.length < 1 && !isFetchingNextPage ? (
+        {[...(paginatedUsersData?.pages?.[0]?.users ?? [])]?.length < 1 && !isFetchingNextPage ? (
           <Box
             sx={{
               height: 100,
@@ -214,7 +214,7 @@ const AddBuddiesContent: React.FC<IAddBuddiesContentProps> = ({ navigate }) => {
               getScrollParent={() => document.getElementById('scrolik')}>
               {paginatedUsersData?.pages?.map((group, index) => (
                 <React.Fragment key={index}>
-                  {group
+                  {group?.users
                     ?.filter((user) => user?.id !== userInfo?.id && !isBuddy(buddies, user?.id))
                     ?.map((user: IPerson) => (
                       <BuddyItem
