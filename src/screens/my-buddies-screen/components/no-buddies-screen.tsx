@@ -18,7 +18,9 @@ const NoBuddiesScreen: React.FC<INoBuddiesScreenProps> = ({ onAddBuddiesClick })
         justifyContent: 'center'
       }}>
       <img src={addFriends} alt="authentication method" style={{ height: 150 }} />
-      <Typography sx={{ my: 2 }}>You have no buddies yet</Typography>
+      <Typography sx={{ my: 4 }} variant="subtitle2">
+        You have no buddies yet
+      </Typography>
       <Box
         sx={{
           display: 'flex',

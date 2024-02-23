@@ -1,8 +1,7 @@
-import LoadingButton from '@mui/lab/LoadingButton';
-import { ButtonProps } from '@mui/material';
+import LoadingButton, { LoadingButtonProps } from '@mui/lab/LoadingButton';
 import React from 'react';
 
-interface IOffliButtonProps extends ButtonProps {
+interface IOffliButtonProps extends LoadingButtonProps {
   disabled?: boolean;
   isLoading?: boolean;
   onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;

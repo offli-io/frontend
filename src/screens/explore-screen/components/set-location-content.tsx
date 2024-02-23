@@ -187,11 +187,12 @@ export const SetLocationContent: React.FC<IPlaceFormProps> = ({
           )}
         />
         <OffliButton
-          startIcon={!isCurrentLocationLoading ? <NearMeIcon sx={{ color: 'white' }} /> : undefined}
+          startIcon={<NearMeIcon sx={{ color: 'white' }} />}
           sx={{ width: '80%', my: 4, fontSize: 16, height: 48 }}
           onClick={handleUseCurrentLocation}
           disabled={!coords}
-          isLoading={!coords && isGeolocationAvailable && isGeolocationEnabled}>
+          isLoading={isCurrentLocationLoading}
+          loadingPosition="start">
           Use my current location
         </OffliButton>
       </Box>
