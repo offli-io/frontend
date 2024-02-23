@@ -25,26 +25,24 @@ export const useServiceInterceptors = ({
     (config) => {
       const _token = getAuthToken();
       const platform = getPlatfromFromStorage() ?? OffliUserAgent.Web;
-      if (config) {
-        if (process.env.NODE_ENV !== 'development') {
-          config.baseURL = baseUrl;
+      if (process.env.NODE_ENV !== 'development') {
+        config.baseURL = baseUrl;
+      }
+      if (config?.headers) {
+        //const newConfig = { ...config }
+        //config.headers['Content-Type'] = 'application/json'
+        const explicitToken = config.headers['Authorization'];
+        if (_token && !explicitToken) {
+          config.headers['Authorization'] = 'Bearer ' + _token;
         }
-        if (config?.headers) {
-          //const newConfig = { ...config }
-          //config.headers['Content-Type'] = 'application/json'
-          const explicitToken = config.headers['Authorization'];
-          if (_token && !explicitToken) {
-            config.headers['Authorization'] = 'Bearer ' + _token;
-          }
-          if (userId) {
-            config.headers['user-id'] = userId;
-          }
-          if (platform) {
-            config.headers['Offli-User-Agent'] = platform;
-          }
-          return config;
+        if (userId) {
+          config.headers['user-id'] = userId;
+        }
+        if (platform) {
+          config.headers['Offli-User-Agent'] = platform;
         }
       }
+      return config;
     },
     (error) => {
       Promise.reject(error);
