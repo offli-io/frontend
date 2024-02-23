@@ -12,6 +12,8 @@ import React from 'react';
 import InstagramDrawerActions from 'screens/profile-screen/components/instagram-drawer-actions';
 import { toast } from 'sonner';
 import ProfileGalleryImageUploadContent from './components/profile-gallery-image-upload-content';
+import { CustomizationContext } from 'context/providers/customization-provider';
+import { ThemeOptionsEnumDto } from 'types/settings/theme-options.dto';
 
 interface IProfileGalleryProps {
   photoUrls?: string[];
@@ -25,6 +27,7 @@ const ProfileGallery: React.FC<IProfileGalleryProps> = ({
   instagramUsername
 }) => {
   const { userInfo } = React.useContext(AuthenticationContext);
+  const { theme } = React.useContext(CustomizationContext);
   const queryClient = useQueryClient();
   const { shadows, palette } = useTheme();
   const { toggleDrawer } = React.useContext(DrawerContext);
@@ -209,9 +212,16 @@ const ProfileGallery: React.FC<IProfileGalleryProps> = ({
           }}>
           <OffliButton
             onClick={openInstagramDrawer}
-            sx={{ mt: 1, fontSize: 18, bgcolor: 'primary.light', color: 'primary.main' }}
             startIcon={
-              <InstagramIcon sx={{ color: 'primary.main', fontSize: '22px !important' }} />
+              <InstagramIcon
+                sx={{
+                  color:
+                    theme === ThemeOptionsEnumDto.LIGHT
+                      ? palette?.primary?.main
+                      : palette?.primary?.contrastText,
+                  fontSize: '24px !important'
+                }}
+              />
             }>
             Connect Instagram
           </OffliButton>

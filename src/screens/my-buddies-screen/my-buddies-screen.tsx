@@ -10,7 +10,7 @@ import {
   Typography
 } from '@mui/material';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { deleteBuddy } from '../../api/users/requests';
@@ -25,6 +25,7 @@ import AddBuddiesContent from './components/add-buddies-content';
 import BuddyActions from './components/buddy-actions';
 import NoBuddiesScreen from './components/no-buddies-screen';
 import RecommendedBuddiesContent from './components/recommended-buddies-content';
+import ClearIcon from '@mui/icons-material/Clear';
 
 const MyBuddiesScreen = () => {
   const navigate = useNavigate();
@@ -93,6 +94,19 @@ const MyBuddiesScreen = () => {
 
   const userHasNoBuddies = !buddies || (buddies?.length === 0 && currentSearch?.length === 0);
 
+  const [isFocused, setIsFocused] = useState(false);
+  const [showClearButton, setShowClearButton] = useState(false);
+
+  const handleClearButtonClick = () => {
+    setCurrentSearch('');
+    setShowClearButton(true);
+    setIsFocused(false);
+  };
+
+  useEffect(() => {
+    setShowClearButton(!!currentSearch);
+  }, [currentSearch]);
+
   return (
     <>
       <Box sx={{ mx: 1.5, height: userHasNoBuddies ? '100%' : 'auto' }}>
@@ -120,23 +134,37 @@ const MyBuddiesScreen = () => {
               }}>
               <TextField
                 sx={{
-                  width: '100%',
+                  width: '95%',
                   display: 'flex',
                   justifyContent: 'center',
-                  my: 1.5,
+                  my: 2,
                   '& .MuiOutlinedInput-root': {
                     pr: 0
                   },
                   '& input::placeholder': {
-                    fontSize: 14
-                  }
+                    fontSize: 14,
+                    color: 'primary.main',
+                    fontWeight: 400,
+                    opacity: 1,
+                    pl: 1
+                  },
+                  '& fieldset': { border: 'none' },
+                  backgroundColor: ({ palette }) => palette?.primary?.light,
+                  borderRadius: '10px'
                 }}
                 value={currentSearch}
-                placeholder="Search among your buddies"
+                placeholder={isFocused ? '' : 'Search among your buddies'}
                 InputProps={{
                   startAdornment: (
                     <InputAdornment position="start">
-                      <SearchIcon sx={{ fontSize: '1.2rem' }} />
+                      <SearchIcon sx={{ fontSize: 20, color: 'primary.main' }} />
+                    </InputAdornment>
+                  ),
+                  endAdornment: showClearButton && (
+                    <InputAdornment position="end">
+                      <IconButton onClick={handleClearButtonClick}>
+                        <ClearIcon sx={{ fontSize: 24 }} />
+                      </IconButton>
                     </InputAdornment>
                   )
                 }}
