@@ -54,11 +54,11 @@ export const AuthenticationProvider = ({ children }: { children: React.ReactNode
           deviceName = device.vendor ? `${device.vendor} ${device.model}` : device.model;
         }
         if (device.type) {
-          deviceName = `${deviceName} ${device.type}`
+          deviceName = `${deviceName} ${device.type}`;
         }
-        const deviceOSVersion = parser?.getOS()?.version
+        const deviceOSVersion = parser?.getOS()?.version;
         if (deviceOSVersion) {
-          deviceName = `${deviceName}, OS ${deviceOSVersion}`
+          deviceName = `${deviceName}, OS ${deviceOSVersion}`;
         }
       }
       subscribeBrowserPush(Number(userInfo?.id), deviceName);
