@@ -423,7 +423,7 @@ const EditActivityScreen: React.FC = () => {
                       onChange={(e, collectedTags) => {
                         field.onChange(collectedTags);
                       }}
-                      defaultValue={[]}
+                      value={field.value || []}
                       sx={{
                         minWidth: '100%',
                         '& .MuiOutlinedInput-root': {
