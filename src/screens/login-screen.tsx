@@ -4,7 +4,10 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import { Box, IconButton, InputAdornment, TextField, Typography, useTheme } from '@mui/material';
 import { useMutation } from '@tanstack/react-query';
+import { useGoogleClientID } from 'hooks/use-google-client-id';
 import React from 'react';
+import AppleLogin from 'react-apple-login';
+import { useLogin } from 'react-facebook';
 import { Controller, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
@@ -18,8 +21,6 @@ import { AuthenticationContext } from '../context/providers/authentication-provi
 import { useGoogleAuthorization } from '../hooks/use-google-authorization';
 import { ApplicationLocations } from '../types/common/applications-locations.dto';
 import { GoogleAuthCodeFromEnumDto } from '../types/google/google-auth-code-from-enum.dto';
-import { useGoogleClientID } from 'hooks/use-google-client-id';
-
 export interface FormValues {
   username: string;
   password: string;
@@ -37,6 +38,12 @@ const LoginScreen: React.FC = () => {
   const { palette } = useTheme();
   const navigate = useNavigate();
   const { data: { data: { client_id = null } = {} } = {} } = useGoogleClientID();
+  const {
+    login: loginViaFacebook
+    // status,
+    // isLoading: isFacebookLoginLoading,
+    // error: facebookLoginError
+  } = useLogin();
 
   const {
     // googleToken,
@@ -121,6 +128,18 @@ const LoginScreen: React.FC = () => {
     }
   }, [userInfo?.id]);
 
+  const facebookLogin = async () => {
+    try {
+      const response = await loginViaFacebook({
+        scope: 'email'
+      });
+
+      console.log(response);
+    } catch (error: any) {
+      console.log(error.message);
+    }
+  };
+
   return (
     <>
       <OffliBackButton
@@ -151,6 +170,42 @@ const LoginScreen: React.FC = () => {
               isLoading || isGoogleAuthorizationLoading || isGoogleLoginLoading || !client_id
             }>
             Log in with Google
+          </OffliButton>
+
+          <AppleLogin
+            clientId="YOUR_CLIENT_ID"
+            redirectURI="YOUR_REDIRECT_URL"
+            usePopup={true}
+            callback={(res: any) => console.log(res)} // Catch the response
+            scope="email name"
+            responseMode="query"
+            render={(
+              renderProps //Custom Apple Sign in Button
+            ) => (
+              <button
+                onClick={renderProps.onClick}
+                style={{
+                  backgroundColor: 'white',
+                  padding: 10,
+                  border: '1px solid black',
+                  fontFamily: 'none',
+                  lineHeight: '25px',
+                  fontSize: '25px'
+                }}>
+                <i className="fa-brands fa-apple px-2 "></i>
+                Continue with Apple
+              </button>
+            )}
+          />
+
+          <OffliButton
+            startIcon={<GoogleIcon sx={{ color: 'white' }} />}
+            onClick={facebookLogin}
+            sx={{ mb: 1 }}
+            disabled={
+              isLoading || isGoogleAuthorizationLoading || isGoogleLoginLoading || !client_id
+            }>
+            Log in with Facebook
           </OffliButton>
 
           <LabeledDivider sx={{ my: 1 }}>

@@ -5,6 +5,8 @@ import { useServiceInterceptors } from '../../hooks/use-service-interceptors';
 import { IPerson } from '../../types/activities/activity.dto';
 import { setAuthToken } from '../../utils/token.util';
 import { UAParser } from 'ua-parser-js';
+import { FacebookProvider } from 'react-facebook';
+import { FB_APP_ID } from 'utils/common-constants';
 
 interface IAuthenticationContext {
   stateToken: string | null;
@@ -54,11 +56,11 @@ export const AuthenticationProvider = ({ children }: { children: React.ReactNode
           deviceName = device.vendor ? `${device.vendor} ${device.model}` : device.model;
         }
         if (device.type) {
-          deviceName = `${deviceName} ${device.type}`
+          deviceName = `${deviceName} ${device.type}`;
         }
-        const deviceOSVersion = parser?.getOS()?.version
+        const deviceOSVersion = parser?.getOS()?.version;
         if (deviceOSVersion) {
-          deviceName = `${deviceName}, OS ${deviceOSVersion}`
+          deviceName = `${deviceName}, OS ${deviceOSVersion}`;
         }
       }
       subscribeBrowserPush(Number(userInfo?.id), deviceName);
@@ -103,7 +105,7 @@ export const AuthenticationProvider = ({ children }: { children: React.ReactNode
         isFirstTimeLogin,
         setIsFirstTimeLogin
       }}>
-      {children}
+      <FacebookProvider appId={FB_APP_ID}>{children}</FacebookProvider>
     </AuthenticationContext.Provider>
   );
 };
