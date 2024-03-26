@@ -54,7 +54,9 @@ const BuddySuggestCard: React.FC<ILabeledDividerProps> = ({
           fontSize: 14,
           m: 1,
           width: '100%',
-          wordWrap: 'break-word',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          whiteSpace: 'nowrap',
           textAlign: 'center'
         }}>
         {buddy?.username}
