@@ -1,7 +1,6 @@
 import MapIcon from '@mui/icons-material/Map';
 import PlaceIcon from '@mui/icons-material/Place';
-import SearchIcon from '@mui/icons-material/Search';
-import { Autocomplete, Box, InputAdornment, TextField, Typography } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import Loader from 'components/loader';
 import {
@@ -33,6 +32,7 @@ import ActivityActions from './components/activity-actions';
 import ActivityLeaveConfirmation from './components/activity-leave-confirmation';
 import FirstTimeLoginContent from './components/first-time-login-content';
 import { SetLocationContent } from './components/set-location-content';
+import Searchbar from './components/searchbar';
 
 const ExploreScreen = () => {
   const { userInfo, isFirstTimeLogin, setIsFirstTimeLogin } =
@@ -229,49 +229,7 @@ const ExploreScreen = () => {
           </Typography>
         </OffliButton>
       </Box>
-      {/* {TODO Outsource autocomplete} */}
-      <Autocomplete
-        options={[]}
-        forcePopupIcon={false}
-        sx={{
-          width: '100%',
-          display: 'flex',
-          justifyContent: 'center',
-          mb: 1,
-          '& .MuiOutlinedInput-root': {
-            pr: 0
-          }
-        }}
-        onFocus={() => navigate(ApplicationLocations.SEARCH)}
-        renderInput={(params) => (
-          <TextField
-            {...params}
-            placeholder="What activity or user are you looking for?"
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon sx={{ fontSize: '1.5rem', color: 'primary.main' }} />{' '}
-                </InputAdornment>
-              )
-            }}
-            sx={{
-              '& input::placeholder': {
-                fontSize: 14,
-                color: 'primary.main',
-                fontWeight: 400,
-                opacity: 1,
-                pl: 1
-              },
-              '& fieldset': { border: 'none' },
-              backgroundColor: ({ palette }) => palette?.primary?.light,
-              borderRadius: '10px'
-            }}
-            data-testid="activities-search-input"
-            // onChange={(e) => setValue("placeQuery", e.target.value)}
-          />
-        )}
-      />
-
+      <Searchbar />
       <>
         <Box
           sx={{
