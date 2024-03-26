@@ -5,7 +5,7 @@ import {
   FormControlLabel,
   IconButton,
   InputAdornment,
-  MenuItem,
+  //MenuItem,
   Radio,
   RadioGroup,
   TextField,
@@ -13,7 +13,7 @@ import {
   useTheme
 } from '@mui/material';
 import { format } from 'date-fns';
-import React from 'react';
+import React, { useState } from 'react';
 import { Controller, UseFormReturn } from 'react-hook-form';
 import { ActivityDurationTypeEnumDto } from 'types/activities/activity-duration-type-enum.dto';
 import { DATE_TIME_FORMAT } from 'utils/common-constants';
@@ -22,8 +22,8 @@ import OffliButton from '../../../components/offli-button';
 import { calculateDateUsingDuration } from '../utils/calculate-date-using-duration.util';
 import { DurationLabelMap } from '../utils/duration-label-map';
 import { generateDateSlots } from '../utils/generate-date-slots.util';
-import { generateOptionsOrder } from '../utils/generate-options-order.util';
-
+//import { generateOptionsOrder } from '../utils/generate-options-order.util';
+import { MobileTimePicker } from '@mui/x-date-pickers';
 interface IDateTimeForm {
   onNextClicked: () => void;
 
@@ -114,6 +114,7 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
   //TODO why duration isn't caught by validation error with yup?
   const duration = watch('duration');
   const durationType = watch('durationType');
+  const [timeValue, setTimeValue] = useState(new Date('2024-04-25T17:00'));
 
   const isTimeSelected = !!fromTimeValue && fromTimeValue !== '';
 
@@ -160,41 +161,65 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
           name="timeFrom"
           control={control}
           render={({ field, fieldState: { error } }) => (
-            <TextField
+            // <TextField
+            //   {...field}
+            //   id="outlined-select-currency"
+            //   select
+            //   sx={{ width: '100%', mb: 1 }}
+            //   variant="outlined"
+            //   data-testid="activitiy-from-time-picker"
+            //   error={!!error}
+            //   helperText={!!error && 'Activity start time is required'}
+            //   SelectProps={{
+            //     MenuProps: {
+            //       anchorOrigin: {
+            //         vertical: 'bottom',
+            //         horizontal: 'right'
+            //       },
+            //       transformOrigin: {
+            //         vertical: 'top',
+            //         horizontal: 'right'
+            //       },
+            //       style: { height: '40%' }
+            //     }
+            //   }}
+            //   InputProps={{
+            //     startAdornment: (
+            //       <InputAdornment position="end">
+            //         <AccessTimeIcon sx={{ mr: 2 }} />
+            //       </InputAdornment>
+            //     )
+            //   }}>
+            //   {generateOptionsOrder()?.map((option) => (
+            //     <MenuItem key={option} value={option} divider>
+            //       {option}
+            //     </MenuItem>
+            //   ))}
+            // </TextField>
+
+            //TODO doesn't work properly, needs further fixing (probably wrong format of the Time)
+            <MobileTimePicker
               {...field}
-              id="outlined-select-currency"
-              select
-              sx={{ width: '100%', mb: 1 }}
-              variant="outlined"
-              data-testid="activitiy-from-time-picker"
-              error={!!error}
-              helperText={!!error && 'Activity start time is required'}
-              SelectProps={{
-                MenuProps: {
-                  anchorOrigin: {
-                    vertical: 'bottom',
-                    horizontal: 'right'
-                  },
-                  transformOrigin: {
-                    vertical: 'top',
-                    horizontal: 'right'
-                  },
-                  style: { height: '40%' }
-                }
+              ampm={false}
+              value={timeValue}
+              onChange={(timeValue) => {
+                if (timeValue !== null) setTimeValue(timeValue);
               }}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="end">
-                    <AccessTimeIcon sx={{ mr: 2 }} />
-                  </InputAdornment>
-                )
-              }}>
-              {generateOptionsOrder()?.map((option) => (
-                <MenuItem key={option} value={option} divider>
-                  {option}
-                </MenuItem>
-              ))}
-            </TextField>
+              renderInput={(props) => (
+                <TextField
+                  {...props}
+                  error={!!error}
+                  helperText={!!error && 'Activity start time is required'}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="end">
+                        <AccessTimeIcon sx={{ mr: 2 }} />
+                      </InputAdornment>
+                    )
+                  }}
+                />
+              )}
+            />
           )}
         />
 
@@ -217,7 +242,6 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
             />
           )}
         />
-
         <Controller
           name="durationType"
           control={control}
