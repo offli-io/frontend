@@ -222,7 +222,7 @@ const LoginScreen: React.FC = () => {
           <OffliButton
             startIcon={<FacebookIcon sx={{ color: 'white' }} />}
             onClick={handleFacebookAuthorization}
-            sx={{ mb: 1, width: '80%' }}
+            sx={{ mb: 1, width: '80%', bgcolor: palette?.facebook?.main }}
             disabled={
               isLoading || isGoogleAuthorizationLoading || isGoogleLoginLoading || !client_id
             }>

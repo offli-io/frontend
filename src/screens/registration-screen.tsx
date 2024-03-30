@@ -22,7 +22,7 @@ import { Controller, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { PickUsernameTypeEnum } from 'types/common/pick-username-type-enum.dto';
 import { FacebookAuthCodeFromEnumDto } from 'types/facebook/facebook-auth-code-from-enum.dto';
-import { FB_STATE_PARAM, PRIVACY_POLICY_LINK } from 'utils/common-constants';
+import { FB_CLIENT_ID, FB_STATE_PARAM, PRIVACY_POLICY_LINK } from 'utils/common-constants';
 import * as yup from 'yup';
 import { checkIfEmailAlreadyTaken } from '../api/users/requests';
 import LabeledDivider from '../components/labeled-divider';
@@ -74,7 +74,7 @@ export const RegistrationScreen: React.FC = () => {
     // isLoading: isGoogleAuthorizationLoading
   } = useFacebookAuthorization({
     from: FacebookAuthCodeFromEnumDto.REGISTER,
-    clientID: client_id,
+    clientID: FB_CLIENT_ID,
     registrationFlow: true
   });
 
@@ -181,7 +181,7 @@ export const RegistrationScreen: React.FC = () => {
           <OffliButton
             startIcon={<FacebookIcon sx={{ color: 'white' }} />}
             onClick={handleFacebookAuthorization}
-            sx={{ mb: 1, width: '80%' }}
+            sx={{ mb: 1, width: '80%', bgcolor: palette?.facebook?.main }}
             // disabled={
             //   isLoading || isGoogleAuthorizationLoading || isGoogleLoginLoading || !client_id
             // }>

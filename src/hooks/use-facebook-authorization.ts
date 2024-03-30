@@ -21,7 +21,6 @@ export const useFacebookAuthorization = ({
   clientID = FB_CLIENT_ID,
   registrationFlow
 }: IUseGoogleAuthorizationProps) => {
-  //   const [googleToken, setGoogleToken] = React.useState<string | null>(null);
   const abortControllerRef = React.useRef<AbortController | null>(null);
   const { setUserInfo, setStateToken } = React.useContext(AuthenticationContext);
   const navigate = useNavigate();
@@ -29,7 +28,7 @@ export const useFacebookAuthorization = ({
   const { pathname } = useLocation();
 
   console.log(location);
-  const { mutate: sendAuthorizeViaFacebook } = useMutation(
+  const { mutate: sendAuthorizeViaFacebook, isLoading } = useMutation(
     ['facebook-authorization'],
     (values: IFacebookAuthorizeRequestDto) => {
       abortControllerRef.current = new AbortController();
@@ -45,7 +44,11 @@ export const useFacebookAuthorization = ({
         navigate(ApplicationLocations.EXPLORE);
       },
       onError: () => {
-        toast.error('Failed to authorize via Facebook');
+        toast.error(
+          registrationFlow
+            ? 'Failed to create account via Facebook'
+            : 'Failed to login via Facebook'
+        );
       }
     }
   );
@@ -54,6 +57,7 @@ export const useFacebookAuthorization = ({
   const authorizationCode = queryParameters.get('code');
   const paramsState = queryParameters.get('state');
   const paramsStateParsed = paramsState ? JSON.parse(paramsState) : null;
+  const baseUrlEnvironmentDependent = window.location.href.split('/').slice(0, -1).join('/');
 
   const redirectUrl = React.useMemo(() => `${window.location.origin}${pathname}`, [pathname]);
 
@@ -67,20 +71,22 @@ export const useFacebookAuthorization = ({
   }, [authorizationCode, redirectUrl]);
 
   const handleFacebookAuthorization = React.useCallback(() => {
-    // if (!clientID) {
-    //   return;
-    // }
-    // window.location.href = getGoogleAuthCode(from, clientID, state);
-    //TODO make it dynamic
     const facebookState = JSON.stringify(FB_STATE_PARAM);
     window.location.href = `https://www.facebook.com/v19.0/dialog/oauth?client_id=${clientID}&state=${facebookState}&scope=email&redirect_uri=${redirectUrl}`;
   }, [clientID, redirectUrl]);
 
+  const registerViaFacebook = React.useCallback(
+    (values: IFacebookAuthorizeRequestDto) => {
+      if (values) sendAuthorizeViaFacebook(values);
+    },
+    [authorizationCode, baseUrlEnvironmentDependent]
+  );
+
   return {
     facebookAuthCode: authorizationCode,
-    // googleToken,
     handleFacebookAuthorization,
-    state: paramsStateParsed
-    // isLoading
+    state: paramsStateParsed,
+    isLoading,
+    registerViaFacebook
   };
 };
