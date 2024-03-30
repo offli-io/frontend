@@ -3,20 +3,23 @@ import { Box, TextField, Typography } from '@mui/material';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { registerViaGoogle } from 'api/auth/requests';
 import { AuthenticationContext } from 'context/providers/authentication-provider';
+import { useFacebookAuthorization } from 'hooks/use-facebook-authorization';
+import { useGetApiUrl } from 'hooks/use-get-api-url';
 import React from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { PickUsernameTypeEnum } from 'types/common/pick-username-type-enum.dto';
+import { FacebookAuthCodeFromEnumDto } from 'types/facebook/facebook-auth-code-from-enum.dto';
 import { IGoogleRegisterUserValuesDto } from 'types/google/google-register-user-values.dto';
 import { useDebounce } from 'use-debounce';
+import { FB_CLIENT_ID } from 'utils/common-constants';
 import * as yup from 'yup';
 import { checkIfUsernameAlreadyTaken, preCreateUser } from '../api/users/requests';
 import OffliBackButton from '../components/offli-back-button';
 import OffliButton from '../components/offli-button';
 import { ApplicationLocations } from '../types/common/applications-locations.dto';
 import { IEmailPassword, IEmailUsernamePassword, IUsername } from '../types/users/user.dto';
-import { useGetApiUrl } from 'hooks/use-get-api-url';
 
 const schema: () => yup.SchemaOf<IUsername> = () =>
   yup.object({
@@ -50,6 +53,17 @@ const PickUsernameScreen = () => {
       enabled: !!queryString
     }
   );
+
+  const {
+    // googleToken,
+    // googleAuthCode,
+    registerViaFacebook
+    // isLoading: isGoogleAuthorizationLoading
+  } = useFacebookAuthorization({
+    from: FacebookAuthCodeFromEnumDto.REGISTER,
+    clientID: FB_CLIENT_ID,
+    registrationFlow: true
+  });
 
   const isUsernameInUse = Object.keys(formState?.errors)?.length !== 0;
 
@@ -102,6 +116,15 @@ const PickUsernameScreen = () => {
           googleBearerToken: '',
           username: values?.username,
           auth_code: authCode,
+          redirect_uri: `${baseUrlEnvironmentDependent}/register`
+        });
+      }
+
+      if (type === PickUsernameTypeEnum.FACEBOOK) {
+        const authCode = queryClient.getQueryData<string | undefined>(['facebook-auth-code']);
+        registerViaFacebook({
+          username: values?.username,
+          auth_code: String(authCode),
           redirect_uri: `${baseUrlEnvironmentDependent}/register`
         });
       } else {

@@ -4,14 +4,15 @@ import LockIcon from '@mui/icons-material/Lock';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
 import { Box, Typography, useTheme } from '@mui/material';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { CustomizationContext } from 'context/providers/customization-provider';
-import { DrawerContext } from 'context/providers/drawer-provider';
 import ImagePreviewModal from 'components/image-preview-modal/image-preview-modal';
 import Loader from 'components/loader';
+import { CustomizationContext } from 'context/providers/customization-provider';
+import { DrawerContext } from 'context/providers/drawer-provider';
 import { format, isAfter, isWithinInterval } from 'date-fns';
 import { ACTIVITIES_QUERY_KEY, useActivities } from 'hooks/use-activities';
 import { PAGED_ACTIVITIES_QUERY_KEY } from 'hooks/use-activities-infinite-query';
 import { useDismissActivity } from 'hooks/use-dismiss-activity';
+import { useGoogleClientID } from 'hooks/use-google-client-id';
 import { PARTICIPANT_ACTIVITIES_QUERY_KEY } from 'hooks/use-participant-activities';
 import React from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
@@ -27,6 +28,7 @@ import {
 } from '../../api/activities/requests';
 import userPlaceholder from '../../assets/img/user-placeholder.svg';
 import { AuthenticationContext } from '../../context/providers/authentication-provider';
+import { useFeedbackAlreadySentByUser } from '../../hooks/use-feedback-already-sent-by-user';
 import { useGetApiUrl } from '../../hooks/use-get-api-url';
 import { useGoogleAuthorization } from '../../hooks/use-google-authorization';
 import { ActivityInviteStateEnum } from '../../types/activities/activity-invite-state-enum.dto';
@@ -38,13 +40,12 @@ import { ApplicationLocations } from '../../types/common/applications-locations.
 import { GoogleAuthCodeFromEnumDto } from '../../types/google/google-auth-code-from-enum.dto';
 import { DATE_TIME_FORMAT } from '../../utils/common-constants';
 import { getTimeDifference } from '../map-screen/utils/get-time-difference';
+import FeedbackDrawer from '../notifications-screen/components/feedback-drawer';
 import ActivityActionButtons from './components/activity-action-buttons';
 import ActivityDetailsGrid, { IGridAction } from './components/activity-details-grid';
 import { ActivityInviteDrawerContent } from './components/activity-invite-drawer-content';
 import ActivityVisibilityDuration from './components/activity-visibility-duration';
 import { convertDateToUTC } from './utils/convert-date-to-utc';
-import FeedbackDrawer from '../notifications-screen/components/feedback-drawer';
-import { useFeedbackAlreadySentByUser } from '../../hooks/use-feedback-already-sent-by-user';
 
 interface IProps {
   type: 'detail' | 'request';
@@ -82,11 +83,17 @@ const ActivityDetailsScreen: React.FC<IProps> = () => {
   const abortControllerRef = React.useRef<AbortController | null>(null);
   const { palette } = useTheme();
   const [imagePreviewModalOpen, setImagePreviewModalOpen] = React.useState(false);
+  const { data: { data: { client_id = null } = {} } = {} } = useGoogleClientID();
 
-  const { googleAuthCode, handleGoogleAuthorization, state } = useGoogleAuthorization({
+  const {
+    authorizationCode: googleAuthCode,
+    handleGoogleAuthorization,
+    state
+  } = useGoogleAuthorization({
     from: GoogleAuthCodeFromEnumDto.ACTIVITY_DETAIL,
     state: JSON.stringify({ id }),
-    omitTokenGetting: true
+    omitTokenGetting: true,
+    clientID: client_id
   });
 
   const { data: { data: { activity = undefined } = {} } = {}, isLoading } =

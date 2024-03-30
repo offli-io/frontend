@@ -1,4 +1,5 @@
 import { yupResolver } from '@hookform/resolvers/yup';
+import FacebookIcon from '@mui/icons-material/Facebook';
 import GoogleIcon from '@mui/icons-material/Google';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
@@ -14,10 +15,14 @@ import {
   useTheme
 } from '@mui/material';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useFacebookAuthorization } from 'hooks/use-facebook-authorization';
+import { useGoogleClientID } from 'hooks/use-google-client-id';
 import React from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { PickUsernameTypeEnum } from 'types/common/pick-username-type-enum.dto';
+import { FacebookAuthCodeFromEnumDto } from 'types/facebook/facebook-auth-code-from-enum.dto';
+import { FB_CLIENT_ID, FB_STATE_PARAM, PRIVACY_POLICY_LINK } from 'utils/common-constants';
 import * as yup from 'yup';
 import { checkIfEmailAlreadyTaken } from '../api/users/requests';
 import LabeledDivider from '../components/labeled-divider';
@@ -27,7 +32,6 @@ import { useGoogleAuthorization } from '../hooks/use-google-authorization';
 import { ApplicationLocations } from '../types/common/applications-locations.dto';
 import { GoogleAuthCodeFromEnumDto } from '../types/google/google-auth-code-from-enum.dto';
 import { IEmailPassword } from '../types/users/user.dto';
-import { PRIVACY_POLICY_LINK } from 'utils/common-constants';
 
 const schema: () => yup.SchemaOf<IEmailPassword> = () =>
   yup.object({
@@ -51,10 +55,27 @@ export const RegistrationScreen: React.FC = () => {
   const [showPassword, setShowPassword] = React.useState(false);
   const [email, setEmail] = React.useState<string | undefined>();
   const { palette } = useTheme();
+  const { data: { data: { client_id = null } = {} } = {} } = useGoogleClientID();
 
-  const { googleAuthCode, handleGoogleAuthorization } = useGoogleAuthorization({
+  const { authorizationCode, handleGoogleAuthorization } = useGoogleAuthorization({
     from: GoogleAuthCodeFromEnumDto.REGISTER,
-    omitTokenGetting: true
+    omitTokenGetting: true,
+    clientID: client_id
+  });
+
+  const queryParameters = new URLSearchParams(window.location.search);
+  const paramsState = queryParameters.get('state');
+  const paramsStateParsed = paramsState ? JSON.parse(paramsState) : null;
+
+  const {
+    // googleToken,
+    // googleAuthCode,
+    handleFacebookAuthorization
+    // isLoading: isGoogleAuthorizationLoading
+  } = useFacebookAuthorization({
+    from: FacebookAuthCodeFromEnumDto.REGISTER,
+    clientID: FB_CLIENT_ID,
+    registrationFlow: true
   });
 
   const queryClient = useQueryClient();
@@ -80,18 +101,28 @@ export const RegistrationScreen: React.FC = () => {
     mode: 'onChange'
   });
 
-  // console.log(formState?.errors)
-
   React.useEffect(() => {
-    if (googleAuthCode) {
-      queryClient.setQueryData(['google-token'], googleAuthCode);
+    if (authorizationCode && paramsStateParsed !== FB_STATE_PARAM) {
+      queryClient.setQueryData(['google-token'], authorizationCode);
       navigate(ApplicationLocations.PICK_USERNAME, {
         state: {
           type: PickUsernameTypeEnum.GOOGLE
         }
       });
     }
-  }, [googleAuthCode]);
+  }, [authorizationCode, paramsStateParsed]);
+
+  React.useEffect(() => {
+    // coming from FB AUTH
+    if (authorizationCode && paramsStateParsed == FB_STATE_PARAM) {
+      queryClient.setQueryData(['facebook-auth-code'], authorizationCode);
+      navigate(ApplicationLocations.PICK_USERNAME, {
+        state: {
+          type: PickUsernameTypeEnum.FACEBOOK
+        }
+      });
+    }
+  }, [authorizationCode, paramsStateParsed]);
 
   const isEmailInUse = Object.keys(formState?.errors)?.length !== 0;
 
@@ -139,8 +170,20 @@ export const RegistrationScreen: React.FC = () => {
           <OffliButton
             startIcon={<GoogleIcon sx={{ color: 'white' }} />}
             onClick={handleGoogleAuthorization}
-            sx={{ mb: 1 }}>
+            disabled={!client_id}
+            sx={{ mb: 1, width: '80%' }}>
             Sign up with Google
+          </OffliButton>
+
+          <OffliButton
+            startIcon={<FacebookIcon sx={{ color: 'white' }} />}
+            onClick={handleFacebookAuthorization}
+            sx={{ mb: 1, width: '80%', bgcolor: palette?.facebook?.main }}
+            // disabled={
+            //   isLoading || isGoogleAuthorizationLoading || isGoogleLoginLoading || !client_id
+            // }>
+          >
+            Sign up with Facebook
           </OffliButton>
 
           <LabeledDivider sx={{ my: 1 }}>
