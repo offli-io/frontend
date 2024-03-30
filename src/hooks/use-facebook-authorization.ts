@@ -27,7 +27,6 @@ export const useFacebookAuthorization = ({
 
   const { pathname } = useLocation();
 
-  console.log(location);
   const { mutate: sendAuthorizeViaFacebook, isLoading } = useMutation(
     ['facebook-authorization'],
     (values: IFacebookAuthorizeRequestDto) => {

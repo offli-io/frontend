@@ -101,10 +101,7 @@ export const RegistrationScreen: React.FC = () => {
     mode: 'onChange'
   });
 
-  // console.log(formState?.errors)
-
   React.useEffect(() => {
-    console.log(paramsStateParsed);
     if (authorizationCode && paramsStateParsed !== FB_STATE_PARAM) {
       queryClient.setQueryData(['google-token'], authorizationCode);
       navigate(ApplicationLocations.PICK_USERNAME, {
