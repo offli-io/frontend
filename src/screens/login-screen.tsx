@@ -1,20 +1,21 @@
 import { yupResolver } from '@hookform/resolvers/yup';
+import FacebookIcon from '@mui/icons-material/Facebook';
 import GoogleIcon from '@mui/icons-material/Google';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import { Box, IconButton, InputAdornment, TextField, Typography, useTheme } from '@mui/material';
 import { useMutation } from '@tanstack/react-query';
+import { useFacebookAuthorization } from 'hooks/use-facebook-authorization';
 import { useGoogleClientID } from 'hooks/use-google-client-id';
 import React from 'react';
-import AppleLogin from 'react-apple-login';
-import { useLogin } from 'react-facebook';
 import { Controller, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
+import { FacebookAuthCodeFromEnumDto } from 'types/facebook/facebook-auth-code-from-enum.dto';
+import { FB_CLIENT_ID, FB_STATE_PARAM } from 'utils/common-constants';
 import * as yup from 'yup';
 import { loginUser, loginViaGoogle } from '../api/auth/requests';
 import LabeledDivider from '../components/labeled-divider';
-import Logo from '../components/logo';
 import OffliBackButton from '../components/offli-back-button';
 import OffliButton from '../components/offli-button';
 import { AuthenticationContext } from '../context/providers/authentication-provider';
@@ -38,16 +39,18 @@ const LoginScreen: React.FC = () => {
   const { palette } = useTheme();
   const navigate = useNavigate();
   const { data: { data: { client_id = null } = {} } = {} } = useGoogleClientID();
-  const {
-    login: loginViaFacebook
-    // status,
-    // isLoading: isFacebookLoginLoading,
-    // error: facebookLoginError
-  } = useLogin();
+  const queryParameters = new URLSearchParams(window.location.search);
+
+  // const {
+  //   login: loginViaFacebook
+  //   // status,
+  //   // isLoading: isFacebookLoginLoading,
+  //   // error: facebookLoginError
+  // } = useLogin();
 
   const {
     // googleToken,
-    googleAuthCode,
+    authorizationCode: googleAuthCode,
     handleGoogleAuthorization,
     isLoading: isGoogleAuthorizationLoading
   } = useGoogleAuthorization({
@@ -56,6 +59,15 @@ const LoginScreen: React.FC = () => {
     clientID: client_id
   });
 
+  const {
+    // googleToken,
+    // googleAuthCode,
+    handleFacebookAuthorization
+    // isLoading: isGoogleAuthorizationLoading
+  } = useFacebookAuthorization({
+    from: FacebookAuthCodeFromEnumDto.LOGIN,
+    clientID: FB_CLIENT_ID
+  });
   const abortControllerRef = React.useRef<AbortController | null>(null);
 
   const handleClickShowPassword = () => setShowPassword(!showPassword);
@@ -116,10 +128,13 @@ const LoginScreen: React.FC = () => {
   );
 
   React.useEffect(() => {
-    if (googleAuthCode) {
+    const paramsState = queryParameters.get('state');
+    const paramsStateParsed = paramsState ? JSON.parse(paramsState) : null;
+
+    if (googleAuthCode && paramsStateParsed !== FB_STATE_PARAM) {
       sendLoginViaGoogle(googleAuthCode);
     }
-  }, [googleAuthCode]);
+  }, [googleAuthCode, queryParameters]);
 
   React.useEffect(() => {
     if (userInfo?.id) {
@@ -127,18 +142,6 @@ const LoginScreen: React.FC = () => {
       navigate(ApplicationLocations.EXPLORE);
     }
   }, [userInfo?.id]);
-
-  const facebookLogin = async () => {
-    try {
-      const response = await loginViaFacebook({
-        scope: 'email'
-      });
-
-      console.log(response);
-    } catch (error: any) {
-      console.log(error.message);
-    }
-  };
 
   return (
     <>
@@ -154,25 +157,26 @@ const LoginScreen: React.FC = () => {
           flexDirection: 'column',
           alignItems: 'center'
         }}>
-        <Logo sx={{ mb: 5, mt: 2 }} />
+        {/* <Logo sx={{ mb: 5, mt: 2 }} /> */}
         <Box
           sx={{
             display: 'flex',
             flexDirection: 'column',
             width: '100%',
-            alignItems: 'center'
+            alignItems: 'center',
+            mt: 6
           }}>
           <OffliButton
             startIcon={<GoogleIcon sx={{ color: 'white' }} />}
             onClick={handleGoogleAuthorization}
-            sx={{ mb: 1 }}
+            sx={{ mb: 1, width: '80%' }}
             disabled={
               isLoading || isGoogleAuthorizationLoading || isGoogleLoginLoading || !client_id
             }>
             Log in with Google
           </OffliButton>
 
-          <AppleLogin
+          {/* <AppleLogin
             clientId="YOUR_CLIENT_ID"
             redirectURI="YOUR_REDIRECT_URL"
             usePopup={true}
@@ -196,12 +200,29 @@ const LoginScreen: React.FC = () => {
                 Continue with Apple
               </button>
             )}
-          />
+          /> */}
+          {/* <OffliButton
+            onClick={() => {
+              (window as any).AppleID.auth.init({
+                clientId: 'com.offli.service.id',
+                scope: 'name email',
+                redirectURI: 'https://app.offli.eu/login',
+                // state: '[STATE]',
+                // nonce: '[NONCE]',
+                usePopup: true
+              });
+            }}>
+            Sign in with apple
+          </OffliButton>
+
+          <div id="appleid-signin" data-color="black" data-border="true" data-type="sign in">
+            Sign in
+          </div> */}
 
           <OffliButton
-            startIcon={<GoogleIcon sx={{ color: 'white' }} />}
-            onClick={facebookLogin}
-            sx={{ mb: 1 }}
+            startIcon={<FacebookIcon sx={{ color: 'white' }} />}
+            onClick={handleFacebookAuthorization}
+            sx={{ mb: 1, width: '80%' }}
             disabled={
               isLoading || isGoogleAuthorizationLoading || isGoogleLoginLoading || !client_id
             }>

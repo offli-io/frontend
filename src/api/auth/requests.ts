@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { IChangePasswordRequestDto } from 'types/auth/change-password-request.dto';
+import { IFacebookAuthorizationParamsDto } from 'types/facebook/facebook-authorization-params.dto';
 import { IGoogleRegisterUserValuesDto } from 'types/google/google-register-user-values.dto';
 import { ICheckResetPasswordVerificationCodeRequest } from '../../types/auth/check-reset-password-verification-code-request.dto';
 import { IConfirmResetPasswordDto } from '../../types/auth/confirm-reset-password.dto';
@@ -125,6 +126,21 @@ export const registerViaGoogle = async (
   const source = CancelToken.source();
 
   const promise = axios.post<ILoginResponseDto>(`/google/authorization`, values, {
+    cancelToken: source?.token
+  });
+
+  signal?.addEventListener('abort', () => {
+    source.cancel('Query was cancelled by React Query');
+  });
+
+  return promise;
+};
+
+export const facebookAuthorization = ({ values, signal }: IFacebookAuthorizationParamsDto) => {
+  const CancelToken = axios.CancelToken;
+  const source = CancelToken.source();
+
+  const promise = axios.post<ILoginResponseDto>(`/Facebook/authorization`, values, {
     cancelToken: source?.token
   });
 

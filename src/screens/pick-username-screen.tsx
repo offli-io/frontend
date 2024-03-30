@@ -3,6 +3,7 @@ import { Box, TextField, Typography } from '@mui/material';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { registerViaGoogle } from 'api/auth/requests';
 import { AuthenticationContext } from 'context/providers/authentication-provider';
+import { useGetApiUrl } from 'hooks/use-get-api-url';
 import React from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -16,7 +17,6 @@ import OffliBackButton from '../components/offli-back-button';
 import OffliButton from '../components/offli-button';
 import { ApplicationLocations } from '../types/common/applications-locations.dto';
 import { IEmailPassword, IEmailUsernamePassword, IUsername } from '../types/users/user.dto';
-import { useGetApiUrl } from 'hooks/use-get-api-url';
 
 const schema: () => yup.SchemaOf<IUsername> = () =>
   yup.object({
@@ -98,6 +98,16 @@ const PickUsernameScreen = () => {
 
       if (type === PickUsernameTypeEnum.GOOGLE) {
         const authCode = queryClient.getQueryData<string | undefined>(['google-token']);
+        sendRegisterViaGoogle({
+          googleBearerToken: '',
+          username: values?.username,
+          auth_code: authCode,
+          redirect_uri: `${baseUrlEnvironmentDependent}/register`
+        });
+      }
+
+      if (type === PickUsernameTypeEnum.FACEBOOK) {
+        const authCode = queryClient.getQueryData<string | undefined>(['facebook-auth-code']);
         sendRegisterViaGoogle({
           googleBearerToken: '',
           username: values?.username,

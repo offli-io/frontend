@@ -55,7 +55,7 @@ export const useGoogleAuthorization = ({
   }, [authorizationCode]);
 
   return {
-    googleAuthCode: authorizationCode,
+    authorizationCode,
     googleToken,
     handleGoogleAuthorization,
     state: paramsStateParsed,
