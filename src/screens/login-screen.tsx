@@ -143,6 +143,17 @@ const LoginScreen: React.FC = () => {
     }
   }, [userInfo?.id]);
 
+  document.addEventListener('AppleIDSignInOnSuccess', (event: any) => {
+    // Handle successful response.
+    console.log(event.detail.data);
+  });
+
+  // Listen for authorization failures.
+  document.addEventListener('AppleIDSignInOnFailure', (event: any) => {
+    // Handle error.
+    console.log(event.detail.error);
+  });
+
   return (
     <>
       <OffliBackButton
