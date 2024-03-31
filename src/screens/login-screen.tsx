@@ -62,8 +62,8 @@ const LoginScreen: React.FC = () => {
   const {
     // googleToken,
     // googleAuthCode,
-    handleFacebookAuthorization
-    // isLoading: isGoogleAuthorizationLoading
+    handleFacebookAuthorization,
+    isLoading: isFacebookAuthorizationLoading
   } = useFacebookAuthorization({
     from: FacebookAuthCodeFromEnumDto.LOGIN,
     clientID: FB_CLIENT_ID
@@ -201,7 +201,7 @@ const LoginScreen: React.FC = () => {
               </button>
             )}
           /> */}
-          {/* <OffliButton
+          <OffliButton
             onClick={() => {
               (window as any).AppleID.auth.init({
                 clientId: 'com.offli.service.id',
@@ -217,14 +217,14 @@ const LoginScreen: React.FC = () => {
 
           <div id="appleid-signin" data-color="black" data-border="true" data-type="sign in">
             Sign in
-          </div> */}
+          </div>
 
           <OffliButton
             startIcon={<FacebookIcon sx={{ color: 'white' }} />}
             onClick={handleFacebookAuthorization}
             sx={{ mb: 1, width: '80%', bgcolor: palette?.facebook?.main }}
             disabled={
-              isLoading || isGoogleAuthorizationLoading || isGoogleLoginLoading || !client_id
+              isLoading || isFacebookAuthorizationLoading || isGoogleLoginLoading || !client_id
             }>
             Log in with Facebook
           </OffliButton>
