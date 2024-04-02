@@ -80,7 +80,7 @@ export const useAppleAuthorization = ({
   document.addEventListener('AppleIDSignInOnSuccess', (event: any) => {
     // Handle successful response.
     console.log(event.detail?.authorization);
-    const code = event.detail?.authorization?.code;
+    const code = event.detail?.authorization?.id_token;
     if (code)
       if (from === AppleAuthCodeFromEnum.REGISTER) {
         queryClient.setQueryData(['apple-auth-code'], code);
