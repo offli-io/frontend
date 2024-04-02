@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { IAppleAuthorizationParamsDto } from 'types/apple/apple-authorization-params.dto';
 import { IChangePasswordRequestDto } from 'types/auth/change-password-request.dto';
 import { IFacebookAuthorizationParamsDto } from 'types/facebook/facebook-authorization-params.dto';
 import { IGoogleRegisterUserValuesDto } from 'types/google/google-register-user-values.dto';
@@ -141,6 +142,21 @@ export const facebookAuthorization = ({ values, signal }: IFacebookAuthorization
   const source = CancelToken.source();
 
   const promise = axios.post<ILoginResponseDto>(`/Facebook/authorization`, values, {
+    cancelToken: source?.token
+  });
+
+  signal?.addEventListener('abort', () => {
+    source.cancel('Query was cancelled by React Query');
+  });
+
+  return promise;
+};
+
+export const appleAuthorization = ({ values, signal }: IAppleAuthorizationParamsDto) => {
+  const CancelToken = axios.CancelToken;
+  const source = CancelToken.source();
+
+  const promise = axios.post<ILoginResponseDto>(`/Apple/authorization`, values, {
     cancelToken: source?.token
   });
 

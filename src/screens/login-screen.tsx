@@ -5,14 +5,16 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import { Box, IconButton, InputAdornment, TextField, Typography, useTheme } from '@mui/material';
 import { useMutation } from '@tanstack/react-query';
+import { useAppleAuthorization } from 'hooks/use-apple-authorization';
 import { useFacebookAuthorization } from 'hooks/use-facebook-authorization';
 import { useGoogleClientID } from 'hooks/use-google-client-id';
 import React from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
+import { AppleAuthCodeFromEnum } from 'types/apple/apple-auth-code-from-enum.dto';
 import { FacebookAuthCodeFromEnumDto } from 'types/facebook/facebook-auth-code-from-enum.dto';
-import { FB_CLIENT_ID, FB_STATE_PARAM } from 'utils/common-constants';
+import { APPLE_CLIENT_ID, FB_CLIENT_ID, FB_STATE_PARAM } from 'utils/common-constants';
 import * as yup from 'yup';
 import { loginUser, loginViaGoogle } from '../api/auth/requests';
 import LabeledDivider from '../components/labeled-divider';
@@ -67,6 +69,16 @@ const LoginScreen: React.FC = () => {
   } = useFacebookAuthorization({
     from: FacebookAuthCodeFromEnumDto.LOGIN,
     clientID: FB_CLIENT_ID
+  });
+
+  const {
+    // googleToken,
+    // googleAuthCode,
+    // handleFacebookAuthorization,
+    isLoading: isAppleAuthorizationLoading
+  } = useAppleAuthorization({
+    from: AppleAuthCodeFromEnum.LOGIN,
+    clientID: APPLE_CLIENT_ID
   });
   const abortControllerRef = React.useRef<AbortController | null>(null);
 
@@ -143,17 +155,6 @@ const LoginScreen: React.FC = () => {
     }
   }, [userInfo?.id]);
 
-  document.addEventListener('AppleIDSignInOnSuccess', (event: any) => {
-    // Handle successful response.
-    console.log(event.detail.data);
-  });
-
-  // Listen for authorization failures.
-  document.addEventListener('AppleIDSignInOnFailure', (event: any) => {
-    // Handle error.
-    console.log(event.detail.error);
-  });
-
   return (
     <>
       <OffliBackButton
@@ -182,51 +183,20 @@ const LoginScreen: React.FC = () => {
             onClick={handleGoogleAuthorization}
             sx={{ mb: 1, width: '80%' }}
             disabled={
-              isLoading || isGoogleAuthorizationLoading || isGoogleLoginLoading || !client_id
+              isLoading ||
+              isGoogleAuthorizationLoading ||
+              isGoogleLoginLoading ||
+              !client_id ||
+              isAppleAuthorizationLoading
             }>
-            Log in with Google
+            Sign in with Google
           </OffliButton>
-
-          {/* <AppleLogin
-            clientId="YOUR_CLIENT_ID"
-            redirectURI="YOUR_REDIRECT_URL"
-            usePopup={true}
-            callback={(res: any) => console.log(res)} // Catch the response
-            scope="email name"
-            responseMode="query"
-            render={(
-              renderProps //Custom Apple Sign in Button
-            ) => (
-              <button
-                onClick={renderProps.onClick}
-                style={{
-                  backgroundColor: 'white',
-                  padding: 10,
-                  border: '1px solid black',
-                  fontFamily: 'none',
-                  lineHeight: '25px',
-                  fontSize: '25px'
-                }}>
-                <i className="fa-brands fa-apple px-2 "></i>
-                Continue with Apple
-              </button>
-            )}
-          /> */}
-          <OffliButton
-            onClick={() => {
-              (window as any).AppleID.auth.init({
-                clientId: 'com.offli.service.id',
-                scope: 'name email',
-                redirectURI: 'https://app.offli.eu/login',
-                // state: '[STATE]',
-                // nonce: '[NONCE]',
-                usePopup: true
-              });
-            }}>
-            Sign in with apple
-          </OffliButton>
-
-          <div id="appleid-signin" data-color="black" data-border="true" data-type="sign in">
+          <div
+            id="appleid-signin"
+            data-color="black"
+            data-border="true"
+            data-type="sign in"
+            style={{ height: 47, borderRadius: 12, marginBottom: 8 }}>
             Sign in
           </div>
 
@@ -237,7 +207,7 @@ const LoginScreen: React.FC = () => {
             disabled={
               isLoading || isFacebookAuthorizationLoading || isGoogleLoginLoading || !client_id
             }>
-            Log in with Facebook
+            Sign in with Facebook
           </OffliButton>
 
           <LabeledDivider sx={{ my: 1 }}>

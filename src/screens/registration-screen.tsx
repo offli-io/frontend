@@ -15,14 +15,21 @@ import {
   useTheme
 } from '@mui/material';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useAppleAuthorization } from 'hooks/use-apple-authorization';
 import { useFacebookAuthorization } from 'hooks/use-facebook-authorization';
 import { useGoogleClientID } from 'hooks/use-google-client-id';
 import React from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
+import { AppleAuthCodeFromEnum } from 'types/apple/apple-auth-code-from-enum.dto';
 import { PickUsernameTypeEnum } from 'types/common/pick-username-type-enum.dto';
 import { FacebookAuthCodeFromEnumDto } from 'types/facebook/facebook-auth-code-from-enum.dto';
-import { FB_CLIENT_ID, FB_STATE_PARAM, PRIVACY_POLICY_LINK } from 'utils/common-constants';
+import {
+  APPLE_CLIENT_ID,
+  FB_CLIENT_ID,
+  FB_STATE_PARAM,
+  PRIVACY_POLICY_LINK
+} from 'utils/common-constants';
 import * as yup from 'yup';
 import { checkIfEmailAlreadyTaken } from '../api/users/requests';
 import LabeledDivider from '../components/labeled-divider';
@@ -75,6 +82,17 @@ export const RegistrationScreen: React.FC = () => {
   } = useFacebookAuthorization({
     from: FacebookAuthCodeFromEnumDto.REGISTER,
     clientID: FB_CLIENT_ID,
+    registrationFlow: true
+  });
+
+  const {
+    // googleToken,
+    // googleAuthCode,
+    // handleFacebookAuthorization,
+    isLoading: isAppleAuthorizationLoading
+  } = useAppleAuthorization({
+    from: AppleAuthCodeFromEnum.REGISTER,
+    clientID: APPLE_CLIENT_ID,
     registrationFlow: true
   });
 
@@ -160,7 +178,7 @@ export const RegistrationScreen: React.FC = () => {
             variant="h1"
             gutterBottom
             sx={{
-              my: 5,
+              my: 2,
               display: 'flex',
               color: ({ palette }) => palette?.text?.primary
             }}>
@@ -174,6 +192,16 @@ export const RegistrationScreen: React.FC = () => {
             sx={{ mb: 1, width: '80%' }}>
             Sign up with Google
           </OffliButton>
+
+          <div
+            id="appleid-signin"
+            data-color="black"
+            data-border="true"
+            data-type="sign in"
+            style={{ height: 47, borderRadius: 12, marginBottom: 8 }}
+            aria-disabled={isAppleAuthorizationLoading}>
+            Sign in
+          </div>
 
           <OffliButton
             startIcon={<FacebookIcon sx={{ color: 'white' }} />}

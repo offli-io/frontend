@@ -3,17 +3,19 @@ import { Box, TextField, Typography } from '@mui/material';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { registerViaGoogle } from 'api/auth/requests';
 import { AuthenticationContext } from 'context/providers/authentication-provider';
+import { useAppleAuthorization } from 'hooks/use-apple-authorization';
 import { useFacebookAuthorization } from 'hooks/use-facebook-authorization';
 import { useGetApiUrl } from 'hooks/use-get-api-url';
 import React from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
+import { AppleAuthCodeFromEnum } from 'types/apple/apple-auth-code-from-enum.dto';
 import { PickUsernameTypeEnum } from 'types/common/pick-username-type-enum.dto';
 import { FacebookAuthCodeFromEnumDto } from 'types/facebook/facebook-auth-code-from-enum.dto';
 import { IGoogleRegisterUserValuesDto } from 'types/google/google-register-user-values.dto';
 import { useDebounce } from 'use-debounce';
-import { FB_CLIENT_ID } from 'utils/common-constants';
+import { APPLE_CLIENT_ID, FB_CLIENT_ID } from 'utils/common-constants';
 import * as yup from 'yup';
 import { checkIfUsernameAlreadyTaken, preCreateUser } from '../api/users/requests';
 import OffliBackButton from '../components/offli-back-button';
@@ -65,6 +67,18 @@ const PickUsernameScreen = () => {
     registrationFlow: true
   });
 
+  const {
+    // googleToken,
+    // googleAuthCode,
+    // handleFacebookAuthorization,
+    registerViaApple
+    // isLoading: isAppleAuthorizationLoading
+  } = useAppleAuthorization({
+    from: AppleAuthCodeFromEnum.REGISTER,
+    clientID: APPLE_CLIENT_ID,
+    registrationFlow: true
+  });
+
   const isUsernameInUse = Object.keys(formState?.errors)?.length !== 0;
 
   const { mutate: sendPresignupUser, isLoading } = useMutation(
@@ -109,6 +123,14 @@ const PickUsernameScreen = () => {
       ]);
 
       const baseUrlEnvironmentDependent = window.location.href.split('/').slice(0, -1).join('/');
+
+      if (type === PickUsernameTypeEnum.APPLE) {
+        const authCode = queryClient.getQueryData<string | undefined>(['apple-auth-code']);
+        registerViaApple({
+          username: values?.username,
+          auth_code: String(authCode)
+        });
+      }
 
       if (type === PickUsernameTypeEnum.GOOGLE) {
         const authCode = queryClient.getQueryData<string | undefined>(['google-token']);
