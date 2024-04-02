@@ -11,6 +11,8 @@ export const GOOGLE_API_KEY = 'AIzaSyB-r3P4u-VVFZpJZf1xD6zahjTjazeKKPE';
 export const FB_APP_ID = '1211540146235995';
 export const FB_CLIENT_ID = '1317539042184854';
 
+export const APPLE_CLIENT_ID = 'com.offli.service.id';
+
 export const FB_STATE_PARAM = 'facebook_auth';
 
 export const PRIVACY_POLICY_LINK = 'https://offli.eu/privacy-policy/';
