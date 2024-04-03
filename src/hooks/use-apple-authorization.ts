@@ -52,10 +52,6 @@ export const useAppleAuthorization = ({
     }
   );
 
-  //   const queryParameters = new URLSearchParams(window.location.search);
-  //   const authorizationCode = queryParameters.get('code');
-  //   const paramsState = queryParameters.get('state');
-  //   const paramsStateParsed = paramsState ? JSON.parse(paramsState) : null;
   const baseUrlEnvironmentDependent = window.location.href.split('/').slice(0, -1).join('/');
 
   React.useEffect(() => {
@@ -66,8 +62,6 @@ export const useAppleAuthorization = ({
         redirectURI: `${baseUrlEnvironmentDependent}/${
           from === AppleAuthCodeFromEnum.REGISTER ? 'registration' : 'login'
         }`,
-        // state: '[STATE]',
-        // nonce: '[NONCE]',
         usePopup: true
       });
     }
@@ -79,7 +73,6 @@ export const useAppleAuthorization = ({
 
   document.addEventListener('AppleIDSignInOnSuccess', (event: any) => {
     // Handle successful response.
-    console.log(event.detail?.authorization);
     const code = event.detail?.authorization?.id_token;
     if (code)
       if (from === AppleAuthCodeFromEnum.REGISTER) {
@@ -99,15 +92,13 @@ export const useAppleAuthorization = ({
   // Listen for authorization failures.
   document.addEventListener('AppleIDSignInOnFailure', (event: any) => {
     // Handle error.
-    console.log(event.detail.error);
+    console.error(event.detail.error);
     toast.error(
       registrationFlow ? 'Registration via Apple failed' : 'Failed to sign in with Apple'
     );
   });
 
   return {
-    // facebookAuthCode: authorizationCode,
-    // state: paramsStateParsed,
     isLoading,
     registerViaApple
   };

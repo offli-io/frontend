@@ -174,7 +174,7 @@ export const RegistrationScreen: React.FC = () => {
             alignItems: 'center'
             //   justifyContent: 'center',
           }}>
-          <Typography
+          {/* <Typography
             variant="h1"
             gutterBottom
             sx={{
@@ -183,13 +183,13 @@ export const RegistrationScreen: React.FC = () => {
               color: ({ palette }) => palette?.text?.primary
             }}>
             Your offline life.
-          </Typography>
+          </Typography> */}
 
           <OffliButton
             startIcon={<GoogleIcon sx={{ color: 'white' }} />}
             onClick={handleGoogleAuthorization}
             disabled={!client_id}
-            sx={{ mb: 1, width: '80%' }}>
+            sx={{ mb: 1, mt: 2, width: '80%', borderRadius: 2 }}>
             Sign up with Google
           </OffliButton>
 
@@ -198,7 +198,7 @@ export const RegistrationScreen: React.FC = () => {
             data-color="black"
             data-border="true"
             data-type="sign in"
-            style={{ height: 47, borderRadius: 12, marginBottom: 8 }}
+            style={{ height: 47, marginBottom: 8, width: '80%' }}
             aria-disabled={isAppleAuthorizationLoading}>
             Sign in
           </div>
@@ -206,7 +206,7 @@ export const RegistrationScreen: React.FC = () => {
           <OffliButton
             startIcon={<FacebookIcon sx={{ color: 'white' }} />}
             onClick={handleFacebookAuthorization}
-            sx={{ mb: 1, width: '80%', bgcolor: palette?.facebook?.main }}
+            sx={{ mb: 1, width: '80%', bgcolor: palette?.facebook?.main, borderRadius: 2 }}
             // disabled={
             //   isLoading || isGoogleAuthorizationLoading || isGoogleLoginLoading || !client_id
             // }>
