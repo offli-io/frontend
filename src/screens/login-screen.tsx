@@ -43,15 +43,7 @@ const LoginScreen: React.FC = () => {
   const { data: { data: { client_id = null } = {} } = {} } = useGoogleClientID();
   const queryParameters = new URLSearchParams(window.location.search);
 
-  // const {
-  //   login: loginViaFacebook
-  //   // status,
-  //   // isLoading: isFacebookLoginLoading,
-  //   // error: facebookLoginError
-  // } = useLogin();
-
   const {
-    // googleToken,
     authorizationCode: googleAuthCode,
     handleGoogleAuthorization,
     isLoading: isGoogleAuthorizationLoading
@@ -61,22 +53,13 @@ const LoginScreen: React.FC = () => {
     clientID: client_id
   });
 
-  const {
-    // googleToken,
-    // googleAuthCode,
-    handleFacebookAuthorization,
-    isLoading: isFacebookAuthorizationLoading
-  } = useFacebookAuthorization({
-    from: FacebookAuthCodeFromEnumDto.LOGIN,
-    clientID: FB_CLIENT_ID
-  });
+  const { handleFacebookAuthorization, isLoading: isFacebookAuthorizationLoading } =
+    useFacebookAuthorization({
+      from: FacebookAuthCodeFromEnumDto.LOGIN,
+      clientID: FB_CLIENT_ID
+    });
 
-  const {
-    // googleToken,
-    // googleAuthCode,
-    // handleFacebookAuthorization,
-    isLoading: isAppleAuthorizationLoading
-  } = useAppleAuthorization({
+  const { isLoading: isAppleAuthorizationLoading } = useAppleAuthorization({
     from: AppleAuthCodeFromEnum.LOGIN,
     clientID: APPLE_CLIENT_ID
   });
@@ -169,7 +152,6 @@ const LoginScreen: React.FC = () => {
           flexDirection: 'column',
           alignItems: 'center'
         }}>
-        {/* <Logo sx={{ mb: 5, mt: 2 }} /> */}
         <Box
           sx={{
             display: 'flex',
@@ -181,7 +163,7 @@ const LoginScreen: React.FC = () => {
           <OffliButton
             startIcon={<GoogleIcon sx={{ color: 'white' }} />}
             onClick={handleGoogleAuthorization}
-            sx={{ mb: 1, width: '80%' }}
+            sx={{ mb: 1, width: '80%', borderRadius: 2 }}
             disabled={
               isLoading ||
               isGoogleAuthorizationLoading ||
@@ -196,14 +178,14 @@ const LoginScreen: React.FC = () => {
             data-color="black"
             data-border="true"
             data-type="sign in"
-            style={{ height: 47, borderRadius: 12, marginBottom: 8 }}>
+            style={{ height: 47, marginBottom: 8, width: '80%' }}>
             Sign in
           </div>
 
           <OffliButton
             startIcon={<FacebookIcon sx={{ color: 'white' }} />}
             onClick={handleFacebookAuthorization}
-            sx={{ mb: 1, width: '80%', bgcolor: palette?.facebook?.main }}
+            sx={{ mb: 1, width: '80%', bgcolor: palette?.facebook?.main, borderRadius: 2 }}
             disabled={
               isLoading || isFacebookAuthorizationLoading || isGoogleLoginLoading || !client_id
             }>

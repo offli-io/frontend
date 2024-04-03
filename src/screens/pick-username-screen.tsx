@@ -56,24 +56,13 @@ const PickUsernameScreen = () => {
     }
   );
 
-  const {
-    // googleToken,
-    // googleAuthCode,
-    registerViaFacebook
-    // isLoading: isGoogleAuthorizationLoading
-  } = useFacebookAuthorization({
+  const { registerViaFacebook } = useFacebookAuthorization({
     from: FacebookAuthCodeFromEnumDto.REGISTER,
     clientID: FB_CLIENT_ID,
     registrationFlow: true
   });
 
-  const {
-    // googleToken,
-    // googleAuthCode,
-    // handleFacebookAuthorization,
-    registerViaApple
-    // isLoading: isAppleAuthorizationLoading
-  } = useAppleAuthorization({
+  const { registerViaApple } = useAppleAuthorization({
     from: AppleAuthCodeFromEnum.REGISTER,
     clientID: APPLE_CLIENT_ID,
     registrationFlow: true
@@ -126,7 +115,7 @@ const PickUsernameScreen = () => {
 
       if (type === PickUsernameTypeEnum.APPLE) {
         const authCode = queryClient.getQueryData<string | undefined>(['apple-auth-code']);
-        registerViaApple({
+        return registerViaApple({
           username: values?.username,
           auth_code: String(authCode)
         });
@@ -134,7 +123,7 @@ const PickUsernameScreen = () => {
 
       if (type === PickUsernameTypeEnum.GOOGLE) {
         const authCode = queryClient.getQueryData<string | undefined>(['google-token']);
-        sendRegisterViaGoogle({
+        return sendRegisterViaGoogle({
           googleBearerToken: '',
           username: values?.username,
           auth_code: authCode,
@@ -144,13 +133,13 @@ const PickUsernameScreen = () => {
 
       if (type === PickUsernameTypeEnum.FACEBOOK) {
         const authCode = queryClient.getQueryData<string | undefined>(['facebook-auth-code']);
-        registerViaFacebook({
+        return registerViaFacebook({
           username: values?.username,
           auth_code: String(authCode),
           redirect_uri: `${baseUrlEnvironmentDependent}/register`
         });
       } else {
-        sendPresignupUser({
+        return sendPresignupUser({
           email: registrationEmailPassword?.email,
           username: values?.username,
           password: registrationEmailPassword?.password
