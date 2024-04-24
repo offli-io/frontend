@@ -241,7 +241,7 @@ export const removeAccount = (values: IRemoveAccountRequestDto, signal?: AbortSi
   const CancelToken = axios.CancelToken;
   const source = CancelToken.source();
 
-  const promise = axios.post<ILoginResponseDto>(`/registration/change-password`, values, {
+  const promise = axios.delete<void>(`/admin/${values?.email}`, {
     cancelToken: source?.token
   });
 
