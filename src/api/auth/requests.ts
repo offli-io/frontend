@@ -10,6 +10,7 @@ import { ILoginResponseDto } from '../../types/auth/login-response.dto';
 import { IVerifyEmailRequestDto } from '../../types/auth/verify-email-request.dto';
 import { GoogleAuthCodeFromEnumDto } from '../../types/google/google-auth-code-from-enum.dto';
 import { CLIENT_ID } from '../../utils/common-constants';
+import { IRemoveAccountRequestDto } from 'types/auth/remove-account-request.dto';
 
 export const refreshTokenSetup = (res: any) => {
   const refreshTiming = (res.tokenObj.expires_in || 3600 - 5 * 60) * 1000;
@@ -227,6 +228,20 @@ export const changePassword = (values: IChangePasswordRequestDto, signal?: Abort
   const source = CancelToken.source();
 
   const promise = axios.post<ILoginResponseDto>(`/registration/change-password`, values, {
+    cancelToken: source?.token
+  });
+
+  signal?.addEventListener('abort', () => {
+    source.cancel('Query was cancelled by React Query');
+  });
+  return promise;
+};
+
+export const removeAccount = (values: IRemoveAccountRequestDto, signal?: AbortSignal) => {
+  const CancelToken = axios.CancelToken;
+  const source = CancelToken.source();
+
+  const promise = axios.delete<void>(`/admin/${values?.email}`, {
     cancelToken: source?.token
   });
 
