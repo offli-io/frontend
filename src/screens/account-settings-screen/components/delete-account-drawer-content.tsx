@@ -3,15 +3,19 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { removeAccount } from 'api/auth/requests';
 import OffliButton from 'components/offli-button';
 import { AuthenticationContext } from 'context/providers/authentication-provider';
+import { useUserSettings } from 'hooks/use-user-settings';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { ApplicationLocations } from 'types/common/applications-locations.dto';
+import { ThemeOptionsEnumDto } from 'types/settings/theme-options.dto';
+import { setThemeToStorage } from 'utils/storage.util';
 import { setAuthToken } from 'utils/token.util';
 
 const DeleteAccountDrawerContent = () => {
   const navigate = useNavigate();
   const { userInfo, setStateToken, setUserInfo } = React.useContext(AuthenticationContext);
+  const { data: { data: { theme = ThemeOptionsEnumDto.LIGHT } = {} } = {} } = useUserSettings();
   const queryClient = useQueryClient();
 
   //   const [password, setPassword] = React.useState('');
@@ -37,6 +41,9 @@ const DeleteAccountDrawerContent = () => {
         setUserInfo?.({ username: undefined, id: undefined });
         queryClient.invalidateQueries();
         queryClient.removeQueries();
+        if (theme === ThemeOptionsEnumDto.LIGHT) {
+          setThemeToStorage(ThemeOptionsEnumDto.LIGHT);
+        }
         localStorage.removeItem('token');
         localStorage.removeItem('userId');
         navigate(ApplicationLocations.LOGIN);
