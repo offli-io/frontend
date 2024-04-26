@@ -3,11 +3,12 @@ import InfoIcon from '@mui/icons-material/Info';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { Box, Switch } from '@mui/material';
 import { useQueryClient } from '@tanstack/react-query';
-import { useUserSettings } from 'hooks/use-user-settings';
+import { CustomizationContext } from 'context/providers/customization-provider';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ThemeOptionsEnumDto } from 'types/settings/theme-options.dto';
 import { ABOUT_US_LINK, HELP_SUPPORT_LINK, PRIVACY_POLICY_LINK } from 'utils/common-constants';
+import { setThemeToStorage } from 'utils/storage.util';
 import MenuItem from '../../components/menu-item';
 import { AuthenticationContext } from '../../context/providers/authentication-provider';
 import { ApplicationLocations } from '../../types/common/applications-locations.dto';
@@ -25,7 +26,7 @@ const SettingsScreen = () => {
   // );
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const { data: { data: { theme = ThemeOptionsEnumDto.LIGHT } = {} } = {} } = useUserSettings();
+  const { theme } = React.useContext(CustomizationContext);
   const { handleToggleTheme } = useToggleTheme();
 
   const handleLogout = React.useCallback(() => {
@@ -35,10 +36,13 @@ const SettingsScreen = () => {
     setUserInfo?.({ username: undefined, id: undefined });
     queryClient.invalidateQueries();
     queryClient.removeQueries();
+    if (theme === ThemeOptionsEnumDto.LIGHT) {
+      setThemeToStorage(ThemeOptionsEnumDto.LIGHT);
+    }
     localStorage.removeItem('token');
     localStorage.removeItem('userId');
     navigate(ApplicationLocations.LOGIN);
-  }, [setStateToken]);
+  }, [setStateToken, theme]);
 
   // const areNotificationsSupported = () =>
   //   'Notification' in window && 'serviceWorker' in navigator && 'PushManager' in window;
