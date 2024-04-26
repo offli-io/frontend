@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { IAppleAuthorizationParamsDto } from 'types/apple/apple-authorization-params.dto';
 import { IChangePasswordRequestDto } from 'types/auth/change-password-request.dto';
+import { IRemoveAccountRequestDto } from 'types/auth/remove-account-request.dto';
 import { IFacebookAuthorizationParamsDto } from 'types/facebook/facebook-authorization-params.dto';
 import { IGoogleRegisterUserValuesDto } from 'types/google/google-register-user-values.dto';
 import { ICheckResetPasswordVerificationCodeRequest } from '../../types/auth/check-reset-password-verification-code-request.dto';
@@ -10,7 +11,6 @@ import { ILoginResponseDto } from '../../types/auth/login-response.dto';
 import { IVerifyEmailRequestDto } from '../../types/auth/verify-email-request.dto';
 import { GoogleAuthCodeFromEnumDto } from '../../types/google/google-auth-code-from-enum.dto';
 import { CLIENT_ID } from '../../utils/common-constants';
-import { IRemoveAccountRequestDto } from 'types/auth/remove-account-request.dto';
 
 export const refreshTokenSetup = (res: any) => {
   const refreshTiming = (res.tokenObj.expires_in || 3600 - 5 * 60) * 1000;
@@ -241,7 +241,7 @@ export const removeAccount = (values: IRemoveAccountRequestDto, signal?: AbortSi
   const CancelToken = axios.CancelToken;
   const source = CancelToken.source();
 
-  const promise = axios.delete<void>(`/admin/${values?.email}`, {
+  const promise = axios.delete<void>(`/users/${values?.id}`, {
     cancelToken: source?.token
   });
 

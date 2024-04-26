@@ -1,9 +1,9 @@
-import React from 'react';
 import { Box, Typography } from '@mui/material';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { removeAccount } from 'api/auth/requests';
 import OffliButton from 'components/offli-button';
 import { AuthenticationContext } from 'context/providers/authentication-provider';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { ApplicationLocations } from 'types/common/applications-locations.dto';
@@ -24,7 +24,7 @@ const DeleteAccountDrawerContent = () => {
       abortControllerRef.current = new AbortController();
       return removeAccount(
         {
-          email: String(userInfo?.email)
+          id: userInfo?.id
         },
         abortControllerRef?.current?.signal
       );
