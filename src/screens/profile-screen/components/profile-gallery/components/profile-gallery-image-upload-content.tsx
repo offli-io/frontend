@@ -3,10 +3,10 @@ import { Box, useTheme } from '@mui/material';
 import shadows from '@mui/material/styles/shadows';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { connectInstagram, fetchInstagramPhotos } from 'api/users/requests';
-import { AuthenticationContext } from 'context/providers/authentication-provider';
-import { DrawerContext } from 'context/providers/drawer-provider';
 import Loader from 'components/loader';
 import OffliButton from 'components/offli-button';
+import { AuthenticationContext } from 'context/providers/authentication-provider';
+import { DrawerContext } from 'context/providers/drawer-provider';
 import * as React from 'react';
 import { toast } from 'sonner';
 
@@ -103,14 +103,14 @@ const ProfileGalleryImageUploadContent: React.FC<IProfileGalleryImageUploadConte
             my: 2
           }}>
           {instagramPhotos?.map((photoUrl) => (
-            <Box key={photoUrl} sx={{ position: 'relative' }}>
+            <Box key={photoUrl} sx={{ position: 'relative', maxWidth: 100, height: '100%' }}>
               <img
                 src={photoUrl}
                 alt="gallery"
                 style={{
                   maxWidth: 100,
                   //TODO if we don't want to crop the photos
-                  height: '100%',
+                  height: 100,
                   objectFit: 'cover',
                   alignSelf: 'center',
                   boxShadow: isImageSelected(photoUrl) ? shadows[5] : shadows[0],
