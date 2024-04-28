@@ -8,6 +8,7 @@ import OffliButton from 'components/offli-button';
 import { AuthenticationContext } from 'context/providers/authentication-provider';
 import { DrawerContext } from 'context/providers/drawer-provider';
 import * as React from 'react';
+import { useLocation } from 'react-router-dom';
 import { toast } from 'sonner';
 
 interface IProfileGalleryImageUploadContentProps {
@@ -24,8 +25,10 @@ const ProfileGalleryImageUploadContent: React.FC<IProfileGalleryImageUploadConte
   const { palette } = useTheme();
   const { toggleDrawer } = React.useContext(DrawerContext);
   const queryClient = useQueryClient();
+  const { pathname } = useLocation();
 
   const { userInfo } = React.useContext(AuthenticationContext);
+  const redirectUrl = `${window.location.origin}${pathname}`;
 
   const {
     data: { data: { media: instagramPhotos = [] } = {} } = {},
@@ -33,11 +36,11 @@ const ProfileGalleryImageUploadContent: React.FC<IProfileGalleryImageUploadConte
     mutate: sendFetchInstagramPhotos
   } = useMutation(
     ['instagram-photos'],
-    (code?: string) => fetchInstagramPhotos(Number(userInfo?.id), String(code)),
+    (code?: string) => fetchInstagramPhotos(Number(userInfo?.id), String(code), redirectUrl),
     {
       onError: () => {
         toast.error('Failed to fetch instagram photos');
-        toggleDrawer({ open: false });
+        // toggleDrawer({ open: false });
       }
     }
   );
@@ -55,12 +58,6 @@ const ProfileGalleryImageUploadContent: React.FC<IProfileGalleryImageUploadConte
       },
       onError: () => {
         toast.error('Failed to upload instagram photos');
-        // toggleDrawer({ open: false });
-        // window.history.pushState(
-        //   {},
-        //   document.title,
-        //   window.location.pathname
-        // );
       }
     }
   );
@@ -70,6 +67,14 @@ const ProfileGalleryImageUploadContent: React.FC<IProfileGalleryImageUploadConte
       sendFetchInstagramPhotos(instagramCode);
     }
   }, [instagramCode]);
+
+  React.useEffect(() => {
+    // cleanup refetch instagram photos if user has not selected any photos yet -> use all of his IG photos
+    return () => {
+      window.history.pushState({}, document.title, window.location.pathname);
+      queryClient.invalidateQueries(['user']);
+    };
+  }, []);
 
   const handlePhotoSelect = React.useCallback(
     (image: string) => {
