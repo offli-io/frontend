@@ -42,9 +42,11 @@ const BackHeader: React.FC<IBackHeaderProps> = ({
     if (pathname?.startsWith(ApplicationLocations.MAP) && !activityId) {
       return navigate(ApplicationLocations.EXPLORE);
     }
-    if (pathname?.startsWith(ApplicationLocations.ACTIVITY_DETAIL) && activityMapId) {
+    if (pathname?.startsWith(ApplicationLocations.ACTIVITY_DETAIL)) {
       //cant do navigate(-1) with params hence hacky
-      return navigate(ApplicationLocations.MAP, { state: { activityMapId } });
+      if (activityMapId) {
+        return navigate(ApplicationLocations.MAP, { state: { activityMapId } });
+      } else return navigate(ApplicationLocations.EXPLORE);
     }
     return navigate(-1);
 
