@@ -4,7 +4,6 @@ import { Routes as BaseRoutes, Route } from 'react-router-dom';
 import AccountSettingsScreen from 'screens/account-settings-screen/account-settings-screen';
 import ChangePasswordScreen from 'screens/account-settings-screen/components/change-password-screen';
 import ActivitiesScreen from 'screens/activities-screen/activities-screen';
-import LoginOrRegisterScreen from 'screens/login-or-register';
 import RegistrationNeededScreen from 'screens/static-screens/registration-needed-screen';
 import { getAuthToken } from 'utils/token.util';
 import ActivityDetailsScreen from '../screens/activity-details-screen/activity-details-screen';
@@ -62,7 +61,6 @@ const Routes = () => {
       <Route path={ApplicationLocations.LOGIN} element={<LoginScreen />} />
 
       <Route path={ApplicationLocations.FORGOTTEN_PASSWORD} element={<ForgottenPasswordScreen />} />
-      <Route path={ApplicationLocations.LOGIN_OR_REGISTER} element={<LoginOrRegisterScreen />} />
       <Route
         path={ApplicationLocations.AUTHENTICATION_METHOD}
         element={<AuthenticationMethodScreen />}

@@ -46,7 +46,7 @@ export const useGoogleAuthorization = ({
       return;
     }
     window.location.href = getGoogleAuthCode(from, clientID, state);
-  }, []);
+  }, [clientID, from, state]);
 
   React.useEffect(() => {
     if (authorizationCode && !omitTokenGetting) {

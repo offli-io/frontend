@@ -141,7 +141,7 @@ const LoginScreen: React.FC = () => {
   return (
     <>
       <OffliBackButton
-        onClick={() => navigate(ApplicationLocations.LOGIN_OR_REGISTER)}
+        onClick={() => navigate(ApplicationLocations.AUTHENTICATION_METHOD)}
         sx={{ alignSelf: 'flex-start', m: 1, color: palette?.primary?.main }}>
         Back
       </OffliBackButton>
