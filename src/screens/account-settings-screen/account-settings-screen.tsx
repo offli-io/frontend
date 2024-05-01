@@ -23,7 +23,7 @@ const AccountSettingsScreen = () => {
   }, []);
 
   return (
-    <PageWrapper sxOverrides={{ alignItems: 'flex-start', px: 1, boxSizing: 'border-box' }}>
+    <PageWrapper sxOverrides={{ alignItems: 'flex-start', boxSizing: 'border-box' }}>
       <MenuItem
         label="Change password"
         type={AccountSettingsScreenTypeEnum.CHANGE_PASSWORD}

@@ -12,6 +12,7 @@ import OffliButton from 'components/offli-button';
 import { AuthenticationContext } from 'context/providers/authentication-provider';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
+import { PageWrapper } from 'components/page-wrapper';
 
 export interface FormValues {
   oldPassword: string;
@@ -68,73 +69,75 @@ const ChangePasswordScreen = () => {
   }, []);
 
   return (
-    <form onSubmit={handleSubmit(handleFormSubmit)}>
-      <Typography align="left" variant="h5" sx={{ mb: 3, mt: 1 }}>
-        Password change
-      </Typography>
-      <Controller
-        name="oldPassword"
-        control={control}
-        render={({ field, fieldState: { error } }) => (
-          <TextField
-            {...field}
-            data-testid="password-input"
-            label="Current password"
-            type={visiblePassword === 1 ? 'text' : 'password'}
-            error={!!error}
-            sx={{ width: '100%', mb: 2 }}
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  <IconButton
-                    onClick={() =>
-                      setVisiblePassword((visiblePassword) => (visiblePassword === 1 ? null : 1))
-                    }>
-                    {visiblePassword === 1 ? <VisibilityIcon /> : <VisibilityOffIcon />}
-                  </IconButton>
-                </InputAdornment>
-              )
-            }}
-          />
-        )}
-      />
-      <Controller
-        name="newPassword"
-        control={control}
-        render={({ field, fieldState: { error } }) => (
-          <TextField
-            {...field}
-            data-testid="password-input"
-            label="New password"
-            type={visiblePassword === 2 ? 'text' : 'password'}
-            error={!!error}
-            sx={{ width: '100%' }}
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  <IconButton
-                    onClick={() =>
-                      setVisiblePassword((visiblePassword) => (visiblePassword === 2 ? null : 2))
-                    }>
-                    {visiblePassword === 2 ? <VisibilityIcon /> : <VisibilityOffIcon />}
-                  </IconButton>
-                </InputAdornment>
-              )
-            }}
-          />
-        )}
-      />
-      <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-        <OffliButton
-          data-testid="change-password-btn"
-          sx={{ px: 4, mt: 4, fontSize: 18 }}
-          type="submit"
-          isLoading={isChangingPassword}
-          disabled={!formState?.isValid}>
-          Change password
-        </OffliButton>
-      </Box>
-    </form>
+    <PageWrapper sxOverrides={{ alignItems: 'flex-start', px: 1, boxSizing: 'border-box' }}>
+      <form onSubmit={handleSubmit(handleFormSubmit)}>
+        <Typography align="left" variant="h5" sx={{ mb: 3, mt: 1 }}>
+          Password change
+        </Typography>
+        <Controller
+          name="oldPassword"
+          control={control}
+          render={({ field, fieldState: { error } }) => (
+            <TextField
+              {...field}
+              data-testid="password-input"
+              label="Current password"
+              type={visiblePassword === 1 ? 'text' : 'password'}
+              error={!!error}
+              sx={{ width: '100%', mb: 2 }}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      onClick={() =>
+                        setVisiblePassword((visiblePassword) => (visiblePassword === 1 ? null : 1))
+                      }>
+                      {visiblePassword === 1 ? <VisibilityIcon /> : <VisibilityOffIcon />}
+                    </IconButton>
+                  </InputAdornment>
+                )
+              }}
+            />
+          )}
+        />
+        <Controller
+          name="newPassword"
+          control={control}
+          render={({ field, fieldState: { error } }) => (
+            <TextField
+              {...field}
+              data-testid="password-input"
+              label="New password"
+              type={visiblePassword === 2 ? 'text' : 'password'}
+              error={!!error}
+              sx={{ width: '100%' }}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      onClick={() =>
+                        setVisiblePassword((visiblePassword) => (visiblePassword === 2 ? null : 2))
+                      }>
+                      {visiblePassword === 2 ? <VisibilityIcon /> : <VisibilityOffIcon />}
+                    </IconButton>
+                  </InputAdornment>
+                )
+              }}
+            />
+          )}
+        />
+        <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+          <OffliButton
+            data-testid="change-password-btn"
+            sx={{ px: 4, mt: 4, fontSize: 18 }}
+            type="submit"
+            isLoading={isChangingPassword}
+            disabled={!formState?.isValid}>
+            Change password
+          </OffliButton>
+        </Box>
+      </form>
+    </PageWrapper>
   );
 };
 

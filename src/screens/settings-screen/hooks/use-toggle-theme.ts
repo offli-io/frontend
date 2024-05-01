@@ -19,9 +19,7 @@ export const useToggleTheme = () => {
         toast.success('Your theme has been changed successfully');
         queryClient.invalidateQueries([USER_SETTINGS_QUERY_KEY]);
         setThemeToStorage(theme);
-        if ((window as any)?.ReactNativeWebView) {
-          (window as any).ReactNativeWebView.postMessage(theme);
-        }
+        (window as any)?.ReactNativeWebView?.postMessage(theme);
       },
       onError: () => {
         toast.error('Failed to toggle theme');

@@ -161,7 +161,7 @@ export const RegistrationScreen: React.FC = () => {
   return (
     <>
       <OffliBackButton
-        onClick={() => navigate(ApplicationLocations.LOGIN_OR_REGISTER)}
+        onClick={() => navigate(ApplicationLocations.AUTHENTICATION_METHOD)}
         sx={{ alignSelf: 'flex-start', m: 1, color: palette?.primary?.main }}>
         Back
       </OffliBackButton>
@@ -171,7 +171,8 @@ export const RegistrationScreen: React.FC = () => {
             width: '100%',
             display: 'flex',
             flexDirection: 'column',
-            alignItems: 'center'
+            alignItems: 'center',
+            mt: 4
             //   justifyContent: 'center',
           }}>
           {/* <Typography
