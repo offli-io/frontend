@@ -11,7 +11,7 @@ import {
   Typography
 } from '@mui/material';
 import { LocationContext } from 'context/providers/location-provider';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { useDebounce } from 'use-debounce';
 import { HeaderContext } from '../../context/providers/header-provider';
@@ -147,7 +147,18 @@ const SearchScreen = () => {
     setCurrentTab(newValue);
   };
 
-  const handleResetSearch = React.useCallback(() => setCurrentSearch(''), []);
+  const [isFocused, setIsFocused] = useState(false);
+  const [showClearButton, setShowClearButton] = useState(false);
+
+  const handleClearButtonClick = () => {
+    setCurrentSearch('');
+    setShowClearButton(true);
+    setIsFocused(false);
+  };
+
+  useEffect(() => {
+    setShowClearButton(!!currentSearch);
+  }, [currentSearch]);
 
   return (
     <Box>
@@ -182,20 +193,22 @@ const SearchScreen = () => {
           }}
           value={currentSearch}
           placeholder={
-            currentTab === SearchTabDefinitionsEnum.ACTIVITIES
-              ? 'Search by text in activity'
-              : 'Search by username'
+            isFocused
+              ? ''
+              : currentTab === SearchTabDefinitionsEnum.ACTIVITIES
+                ? 'Search by text in activity'
+                : 'Search by username'
           }
           InputProps={{
             startAdornment: (
               <InputAdornment position="start">
-                <SearchIcon sx={{ fontSize: '1.4rem', color: 'primary.main' }} />
+                <SearchIcon sx={{ fontSize: 24, color: 'primary.main' }} />
               </InputAdornment>
             ),
-            endAdornment: (
+            endAdornment: showClearButton && (
               <InputAdornment position="end">
-                <IconButton onClick={handleResetSearch}>
-                  <ClearIcon sx={{ fontSize: 18 }} />
+                <IconButton onClick={handleClearButtonClick}>
+                  <ClearIcon sx={{ fontSize: 24 }} />
                 </IconButton>
               </InputAdornment>
             )

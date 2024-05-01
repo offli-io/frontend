@@ -15,7 +15,7 @@ import {
 } from '@mui/material';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { isAfter } from 'date-fns';
-import React from 'react';
+import React, { useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useSwipeable } from 'react-swipeable';
 import { toast } from 'sonner';
@@ -239,6 +239,16 @@ export const ActivityMembersScreen: React.FC = () => {
     setActiveTab(newValue);
   };
 
+  const [isFocused, setIsFocused] = useState(false);
+
+  const clearPlaceholder = () => {
+    setIsFocused(true);
+  };
+
+  const handleBlur = () => {
+    setIsFocused(false);
+  };
+
   return (
     <Box sx={{ px: 2 }} {...handlers}>
       <Box
@@ -266,19 +276,27 @@ export const ActivityMembersScreen: React.FC = () => {
           <TextField
             value={queryString}
             onChange={(e) => setQueryString(e.target.value)}
-            placeholder="Search among activity members"
+            onClick={clearPlaceholder}
+            onBlur={handleBlur}
+            placeholder={isFocused ? '' : 'Search among activity members'}
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
-                  <SearchIcon sx={{ fontSize: '1.5rem' }} />{' '}
+                  <SearchIcon sx={{ fontSize: 24, color: 'primary.main' }} />{' '}
                 </InputAdornment>
               )
             }}
             sx={{
-              width: '100%',
+              width: '95%',
+              display: 'flex',
+              justifyContent: 'center',
+              '& .MuiOutlinedInput-root': {
+                pr: 0
+              },
               '& input::placeholder': {
                 fontSize: 14,
-                fontWeight: 'bold',
+                color: 'primary.main',
+                fontWeight: 400,
                 opacity: 1,
                 pl: 1
               },

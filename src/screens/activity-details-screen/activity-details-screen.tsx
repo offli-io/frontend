@@ -329,18 +329,17 @@ const ActivityDetailsScreen: React.FC<IProps> = () => {
 
   const dateTimeUntil = activity?.datetime_until ? new Date(activity?.datetime_until) : null;
 
-  const {
-    data: { data: feedbackAlreadySent } = {}
-    // isLoading: isUserStatsLoading
-  } = useFeedbackAlreadySentByUser({
-    userId: userInfo?.id,
-    activityId: Number(id),
-    enabled: isAlreadyParticipant && isPastActivity && !isCreator
-  });
+  const { data: { data: feedbackAlreadySent } = {}, isLoading: isFeedbackLoading } =
+    useFeedbackAlreadySentByUser({
+      userId: userInfo?.id,
+      activityId: Number(id),
+      enabled: isAlreadyParticipant && isPastActivity && !isCreator
+    });
 
   React.useEffect(() => {
     //invite drawer once you create activity
     if (
+      !isFeedbackLoading &&
       shouldOpenFeedbackDrawer &&
       isAlreadyParticipant &&
       isPastActivity &&
@@ -353,6 +352,7 @@ const ActivityDetailsScreen: React.FC<IProps> = () => {
       });
     }
   }, [
+    isFeedbackLoading,
     shouldOpenFeedbackDrawer,
     isAlreadyParticipant,
     isPastActivity,

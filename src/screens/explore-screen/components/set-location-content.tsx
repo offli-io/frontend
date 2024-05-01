@@ -1,7 +1,7 @@
 import NearMeIcon from '@mui/icons-material/NearMe';
 import { Autocomplete, Box, TextField, Typography } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
-import React from 'react';
+import React, { useState } from 'react';
 import { useGeolocated } from 'react-geolocated';
 import { useDebounce } from 'use-debounce';
 import {
@@ -89,6 +89,16 @@ export const SetLocationContent: React.FC<IPlaceFormProps> = ({
 
   const isCurrentLocationLoading = !coords && isGeolocationAvailable && isGeolocationEnabled;
 
+  const [isFocused, setIsFocused] = useState(false);
+
+  const clearPlaceholder = () => {
+    setIsFocused(true);
+  };
+
+  const handleBlur = () => {
+    setIsFocused(false);
+  };
+
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
       <Box
@@ -123,7 +133,7 @@ export const SetLocationContent: React.FC<IPlaceFormProps> = ({
           flexDirection: 'column',
           width: '100%',
           alignItems: 'center',
-          mt: 2,
+          mt: 3,
           px: 2,
           boxSizing: 'border-box'
           //   mb: 30,
@@ -132,10 +142,10 @@ export const SetLocationContent: React.FC<IPlaceFormProps> = ({
           value={selectedLocation}
           options={data?.results ?? []}
           sx={{
-            width: '100%',
             display: 'flex',
+            alignItems: 'center',
             justifyContent: 'center',
-            alignItems: 'center'
+            width: '100%'
           }}
           loading={isLoading}
           onChange={(e, locationObject) =>
@@ -151,11 +161,20 @@ export const SetLocationContent: React.FC<IPlaceFormProps> = ({
           renderInput={(params) => (
             <TextField
               {...params}
-              placeholder={externalLocation?.name ?? 'Search places'}
+              placeholder={isFocused ? '' : externalLocation?.name ?? 'Search places'}
               onChange={(e) => setPlaceQuery(e.target.value)}
+              onClick={clearPlaceholder}
+              onBlur={handleBlur}
               sx={{
+                display: 'flex',
+                justifyContent: 'center',
+                my: 1,
+                '& .MuiOutlinedInput-root': {
+                  pr: 0
+                },
                 '& input::placeholder': {
-                  fontSize: 14,
+                  fontSize: 16,
+                  fontWeight: 500,
                   color: 'primary.main',
                   opacity: 1,
                   pl: 1

@@ -4,7 +4,7 @@ import { useMutation } from '@tanstack/react-query';
 import Loader from 'components/loader';
 import { useActivity } from 'hooks/use-activity';
 import { useBuddies } from 'hooks/use-buddies';
-import React from 'react';
+import React, { useState } from 'react';
 import { toast } from 'sonner';
 import { useDebounce } from 'use-debounce';
 import { inviteBuddyToActivity, uninviteBuddy } from '../../../api/activities/requests';
@@ -74,11 +74,21 @@ export const ActivityInviteDrawerContent: React.FC<IActivityTypeFormProps> = ({ 
     [invitedBuddies, sendInviteBuddy, sendUninviteBuddy]
   );
 
+  const [isFocused, setIsFocused] = useState(false);
+
+  const clearPlaceholder = () => {
+    setIsFocused(true);
+  };
+
+  const handleBlur = () => {
+    setIsFocused(false);
+  };
+
   return (
     <Box sx={{ height: 450, overflow: 'auto', px: 1.5 }}>
       <Box sx={{ display: 'flex', mb: 3, mt: 2 }}>
         <Typography sx={{ fontWeight: 'bold' }} variant="h4">
-          Send invites to your buddies
+          Invite your buddies
         </Typography>
       </Box>
       <Box
@@ -91,8 +101,15 @@ export const ActivityInviteDrawerContent: React.FC<IActivityTypeFormProps> = ({ 
         <TextField
           value={queryString}
           onChange={(e) => setQueryString(e.target.value)}
+          onClick={clearPlaceholder}
+          onBlur={handleBlur}
           sx={{
-            width: '100%',
+            width: '95%',
+            display: 'flex',
+            justifyContent: 'center',
+            '& .MuiOutlinedInput-root': {
+              pr: 0
+            },
             '& input::placeholder': {
               fontSize: 14,
               color: 'primary.main',
@@ -111,7 +128,7 @@ export const ActivityInviteDrawerContent: React.FC<IActivityTypeFormProps> = ({ 
               </InputAdornment>
             )
           }}
-          placeholder="Type buddy username"
+          placeholder={isFocused ? '' : 'Type buddy username'}
           data-testid="activity-invite-buddies-input"
         />
         <InviteActionButtons

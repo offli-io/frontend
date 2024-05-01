@@ -41,12 +41,10 @@ const OffliHeader: React.FC<IProps> = ({ sx }) => {
   const baseUrl = useGetApiUrl();
   const { data: notificationsData } = useNotifications(userInfo?.id);
 
-  //TODO add component non-depending logic like styles outside the components
-  const iconStyle = { height: '24px', mr: -1 };
   const badgeStyle = {
     '& .MuiBadge-badge': {
       transform: 'scale(0.8)',
-      right: -14,
+      right: -10,
       top: -10
     }
   };
@@ -123,10 +121,7 @@ const OffliHeader: React.FC<IProps> = ({ sx }) => {
                   });
                 }}
                 data-testid="settings-btn">
-                <SettingsIcon
-                  sx={{ iconStyle, ml: 0.5 }}
-                  // sx={{ color: 'primary.main' }}
-                />
+                <SettingsIcon sx={{ height: '24px' }} />
               </IconButton>
             ) : (
               <IconButton
@@ -162,13 +157,11 @@ const OffliHeader: React.FC<IProps> = ({ sx }) => {
               }}
               data-testid="notifications-btn">
               <Badge badgeContent={notificationsData?.data?.unseen} color="primary" sx={badgeStyle}>
-                {location?.pathname === ApplicationLocations.NOTIFICATIONS ? (
-                  <NotificationsIcon sx={iconStyle} />
+                {notificationsData?.data?.unseen !== undefined &&
+                notificationsData?.data?.unseen > 0 ? (
+                  <NotificationsIcon sx={{ height: '24px' }} />
                 ) : (
-                  <NotificationsNoneOutlinedIcon
-                    sx={iconStyle}
-                    // sx={{ color: 'primary.main' }}
-                  />
+                  <NotificationsNoneOutlinedIcon sx={{ height: '24px' }} />
                 )}
               </Badge>
             </IconButton>
