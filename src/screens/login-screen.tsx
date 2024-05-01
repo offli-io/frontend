@@ -42,9 +42,12 @@ const LoginScreen: React.FC = () => {
   const navigate = useNavigate();
   const { data: { data: { client_id = null } = {} } = {} } = useGoogleClientID();
   const queryParameters = new URLSearchParams(window.location.search);
+  const googleAuthCode = queryParameters.get('code');
+  const paramsState = queryParameters.get('state');
+  const paramsStateParsed = paramsState ? JSON.parse(paramsState) : null;
 
   const {
-    authorizationCode: googleAuthCode,
+    // authorizationCode: googleAuthCode,
     handleGoogleAuthorization,
     isLoading: isGoogleAuthorizationLoading
   } = useGoogleAuthorization({
@@ -123,13 +126,10 @@ const LoginScreen: React.FC = () => {
   );
 
   React.useEffect(() => {
-    const paramsState = queryParameters.get('state');
-    const paramsStateParsed = paramsState ? JSON.parse(paramsState) : null;
-
     if (googleAuthCode && paramsStateParsed !== FB_STATE_PARAM) {
       sendLoginViaGoogle(googleAuthCode);
     }
-  }, [googleAuthCode, queryParameters]);
+  }, [googleAuthCode, paramsStateParsed]);
 
   React.useEffect(() => {
     if (userInfo?.id) {

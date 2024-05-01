@@ -57,11 +57,12 @@ export const useFacebookAuthorization = ({
   const paramsState = queryParameters.get('state');
   const paramsStateParsed = paramsState ? JSON.parse(paramsState) : null;
   const baseUrlEnvironmentDependent = window.location.href.split('/').slice(0, -1).join('/');
+  const facebookState = React.useMemo(() => JSON.stringify(FB_STATE_PARAM), []);
 
   const redirectUrl = React.useMemo(() => `${window.location.origin}${pathname}`, [pathname]);
 
   React.useEffect(() => {
-    if (authorizationCode && !registrationFlow) {
+    if (authorizationCode && !registrationFlow && paramsStateParsed === facebookState) {
       sendAuthorizeViaFacebook({
         auth_code: authorizationCode,
         redirect_uri: redirectUrl
@@ -70,7 +71,6 @@ export const useFacebookAuthorization = ({
   }, [authorizationCode, redirectUrl]);
 
   const handleFacebookAuthorization = React.useCallback(() => {
-    const facebookState = JSON.stringify(FB_STATE_PARAM);
     window.location.href = `https://www.facebook.com/v19.0/dialog/oauth?client_id=${clientID}&state=${facebookState}&scope=email&redirect_uri=${redirectUrl}`;
   }, [clientID, redirectUrl]);
 
