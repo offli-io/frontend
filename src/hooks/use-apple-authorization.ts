@@ -44,9 +44,7 @@ export const useAppleAuthorization = ({
       },
       onError: () => {
         toast.error(
-          registrationFlow
-            ? 'Failed to create account via Facebook'
-            : 'Failed to login via Facebook'
+          registrationFlow ? 'Failed to create account via Apple' : 'Failed to login via Apple'
         );
       }
     }

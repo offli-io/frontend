@@ -1,12 +1,12 @@
 import { subscribeBrowserPush } from 'api/notifications/requests';
 import axios from 'axios';
 import React from 'react';
+import { FacebookProvider } from 'react-facebook';
+import { UAParser } from 'ua-parser-js';
+import { FB_APP_ID } from 'utils/common-constants';
 import { useServiceInterceptors } from '../../hooks/use-service-interceptors';
 import { IPerson } from '../../types/activities/activity.dto';
 import { setAuthToken } from '../../utils/token.util';
-import { UAParser } from 'ua-parser-js';
-import { FacebookProvider } from 'react-facebook';
-import { FB_APP_ID } from 'utils/common-constants';
 
 interface IAuthenticationContext {
   stateToken: string | null;
@@ -41,7 +41,10 @@ export const AuthenticationContext = React.createContext<IAuthenticationContext>
 
 export const AuthenticationProvider = ({ children }: { children: React.ReactNode }) => {
   const [stateToken, setStateToken] = React.useState<null | string>(null);
-  const [userInfo, setUserInfo] = React.useState<IPerson | undefined>();
+  const userIdFromStorage = localStorage.getItem('userId');
+  const [userInfo, setUserInfo] = React.useState<IPerson | undefined>(
+    userIdFromStorage ? { id: Number(userIdFromStorage) } : undefined
+  );
   const [googleTokenClient] = React.useState<any>();
   const [instagramCode, setInstagramCode] = React.useState<string | null>(null);
   const [isFirstTimeLogin, setIsFirstTimeLogin] = React.useState<boolean | undefined>(false);
