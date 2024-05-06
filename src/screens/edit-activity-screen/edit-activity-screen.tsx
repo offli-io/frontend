@@ -13,10 +13,11 @@ import {
 import { DateTimePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { AuthenticationContext } from 'context/providers/authentication-provider';
 import FileUploadModal from 'components/file-upload/components/file-upload-modal';
 import OffliButton from 'components/offli-button';
+import { AuthenticationContext } from 'context/providers/authentication-provider';
 import 'dayjs/locale/sk';
+import { PAGED_ACTIVITIES_QUERY_KEY } from 'hooks/use-activities-infinite-query';
 import React, { useEffect } from 'react';
 import { Controller, ControllerRenderProps, FieldValues, useForm } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -24,8 +25,13 @@ import SetOnMapScreen from 'screens/set-on-map-screen/set-on-map-screen';
 import { toast } from 'sonner';
 import { IActivity } from 'types/activities/activity.dto';
 import { ILocation } from 'types/activities/location.dto';
+import { IPlaceExternalApiResultDto } from 'types/activities/place-external-api.dto';
 import { useDebounce } from 'use-debounce';
 import { ACTIVITY_ASPECT_RATIO, ALLOWED_PHOTO_EXTENSIONS } from 'utils/common-constants';
+import {
+  getHistorySearchesFromStorage,
+  pushSearchResultIntoStorage
+} from 'utils/search-history-utils';
 import {
   getLocationFromQueryFetch,
   updateActivity,
@@ -40,11 +46,6 @@ import { ActivityVisibilityEnum } from '../../types/activities/activity-visibili
 import { ApplicationLocations } from '../../types/common/applications-locations.dto';
 import { mapLocationValue } from '../../utils/map-location-value.util';
 import { IAdditionalHelperActivityInterface, validationSchema } from './utils/validation-schema';
-import { IPlaceExternalApiResultDto } from 'types/activities/place-external-api.dto';
-import {
-  getHistorySearchesFromStorage,
-  pushSearchResultIntoStorage
-} from 'utils/search-history-utils';
 
 const EditActivityScreen: React.FC = () => {
   const [localFile, setLocalFile] = React.useState<any>();
@@ -123,12 +124,13 @@ const EditActivityScreen: React.FC = () => {
   }, [activity]);
 
   const { mutate: sendUpdateActivity, isLoading: isUpdatingActivity } = useMutation(
-    ['update-profile-info'],
+    ['update-activity'],
     (values: IActivity) => updateActivity(Number(id), values),
     {
       onSuccess: () => {
         !!localFile && setLocalFile(null);
         queryClient.invalidateQueries([ACTIVITIES_QUERY_KEY]);
+        queryClient.invalidateQueries([PAGED_ACTIVITIES_QUERY_KEY]);
         queryClient.invalidateQueries(['activity-participants']);
         toast.success('Activity information was successfully updated');
         navigate(`${ApplicationLocations.ACTIVITY_DETAIL}/${id}`, {
