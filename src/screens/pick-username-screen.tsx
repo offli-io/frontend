@@ -156,7 +156,7 @@ const PickUsernameScreen = () => {
   }, [usernameAlreadyTaken]);
 
   return (
-    <form onSubmit={handleSubmit(handleFormSubmit)} style={{ height: '100%' }}>
+    <form onSubmit={handleSubmit(handleFormSubmit)}>
       <OffliBackButton
         onClick={() => navigate(ApplicationLocations.REGISTER)}
         sx={{ alignSelf: 'flex-start', m: 1 }}>
@@ -164,8 +164,6 @@ const PickUsernameScreen = () => {
       </OffliBackButton>
       <Box
         sx={{
-          height: '100vh',
-          width: '100vw',
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center'
