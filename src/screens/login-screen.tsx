@@ -161,9 +161,9 @@ const LoginScreen: React.FC = () => {
             mt: 6
           }}>
           <OffliButton
-            startIcon={<GoogleIcon sx={{ color: 'white' }} />}
+            startIcon={<GoogleIcon sx={{ color: 'white', height: 12, marginRight: -1 }} />}
             onClick={handleGoogleAuthorization}
-            sx={{ mb: 1, width: '80%', borderRadius: 2 }}
+            sx={{ height: 47, mb: 1, width: '80%', borderRadius: 2, fontSize: 15 }}
             disabled={
               isLoading ||
               isGoogleAuthorizationLoading ||
@@ -173,19 +173,42 @@ const LoginScreen: React.FC = () => {
             }>
             Sign in with Google
           </OffliButton>
-          <div
+          <OffliButton
             id="appleid-signin"
             data-color="black"
             data-border="true"
             data-type="sign in"
-            style={{ height: 47, marginBottom: 8, width: '80%' }}>
+            sx={{
+              height: 47,
+              marginBottom: 1,
+              width: '80%',
+              borderRadius: 2,
+              backgroundColor: 'black',
+              '&:hover': {
+                backgroundColor: 'black'
+              }
+            }}>
             Sign in
-          </div>
-
+          </OffliButton>
+          {/*<div*/}
+          {/*  id="appleid-signin"*/}
+          {/*  data-color="black"*/}
+          {/*  data-border="true"*/}
+          {/*  data-type="sign in"*/}
+          {/*  style={{ height: 47, marginBottom: 8 }}>*/}
+          {/*  Sign in*/}
+          {/*</div>*/}
           <OffliButton
-            startIcon={<FacebookIcon sx={{ color: 'white' }} />}
+            startIcon={<FacebookIcon sx={{ color: 'white', height: 12, marginRight: -1 }} />}
             onClick={handleFacebookAuthorization}
-            sx={{ mb: 1, width: '80%', bgcolor: palette?.facebook?.main, borderRadius: 2 }}
+            sx={{
+              height: 47,
+              mb: 1,
+              width: '80%',
+              bgcolor: palette?.facebook?.main,
+              borderRadius: 2,
+              fontSize: 15
+            }}
             disabled={
               isLoading || isFacebookAuthorizationLoading || isGoogleLoginLoading || !client_id
             }>
