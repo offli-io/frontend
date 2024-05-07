@@ -187,27 +187,52 @@ export const RegistrationScreen: React.FC = () => {
           </Typography> */}
 
           <OffliButton
-            startIcon={<GoogleIcon sx={{ color: 'white' }} />}
+            startIcon={<GoogleIcon sx={{ color: 'white', height: 12, marginRight: -1 }} />}
             onClick={handleGoogleAuthorization}
             disabled={!client_id}
-            sx={{ mb: 1, mt: 2, width: '80%', borderRadius: 2 }}>
+            sx={{ mb: 1, mt: 2, width: '80%', borderRadius: 2, fontSize: 15 }}>
             Sign up with Google
           </OffliButton>
 
-          <div
+          {/*<div*/}
+          {/*  id="appleid-signin"*/}
+          {/*  data-color="black"*/}
+          {/*  data-border="true"*/}
+          {/*  data-type="sign in"*/}
+          {/*  style={{ height: 47, marginBottom: 8, width: '80%' }}*/}
+          {/*  aria-disabled={isAppleAuthorizationLoading}>*/}
+          {/*  Sign in*/}
+          {/*</div>*/}
+          <OffliButton
             id="appleid-signin"
             data-color="black"
             data-border="true"
             data-type="sign in"
-            style={{ height: 47, marginBottom: 8, width: '80%' }}
-            aria-disabled={isAppleAuthorizationLoading}>
+            aria-disabled={isAppleAuthorizationLoading}
+            sx={{
+              height: 47,
+              marginBottom: 1,
+              width: '80%',
+              borderRadius: 2,
+              backgroundColor: 'black',
+              '&:hover': {
+                backgroundColor: 'black'
+              }
+            }}>
             Sign in
-          </div>
+          </OffliButton>
 
           <OffliButton
-            startIcon={<FacebookIcon sx={{ color: 'white' }} />}
+            startIcon={<FacebookIcon sx={{ color: 'white', height: 12, marginRight: -1 }} />}
             onClick={handleFacebookAuthorization}
-            sx={{ mb: 1, width: '80%', bgcolor: palette?.facebook?.main, borderRadius: 2 }}
+            sx={{
+              height: 47,
+              mb: 1,
+              width: '80%',
+              bgcolor: palette?.facebook?.main,
+              borderRadius: 2,
+              fontSize: 15
+            }}
             // disabled={
             //   isLoading || isGoogleAuthorizationLoading || isGoogleLoginLoading || !client_id
             // }>
