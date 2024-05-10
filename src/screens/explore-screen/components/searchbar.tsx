@@ -13,9 +13,6 @@ const Searchbar = () => {
       forcePopupIcon={false}
       sx={{
         width: '100%',
-        position: 'sticky',
-        top: 10,
-        zIndex: 1,
         '& .MuiOutlinedInput-root': {
           pr: 0
         }
