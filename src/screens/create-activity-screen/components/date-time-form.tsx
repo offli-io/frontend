@@ -13,7 +13,7 @@ import {
   useTheme
 } from '@mui/material';
 import { format } from 'date-fns';
-import React, { useState } from 'react';
+import React from 'react';
 import { Controller, UseFormReturn } from 'react-hook-form';
 import { ActivityDurationTypeEnumDto } from 'types/activities/activity-duration-type-enum.dto';
 import { DATE_TIME_FORMAT } from 'utils/common-constants';
