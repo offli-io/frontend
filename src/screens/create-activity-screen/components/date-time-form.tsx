@@ -5,7 +5,6 @@ import {
   FormControlLabel,
   IconButton,
   InputAdornment,
-  //MenuItem,
   Radio,
   RadioGroup,
   TextField,
@@ -22,9 +21,7 @@ import OffliButton from '../../../components/offli-button';
 import { calculateDateUsingDuration } from '../utils/calculate-date-using-duration.util';
 import { DurationLabelMap } from '../utils/duration-label-map';
 import { generateDateSlots } from '../utils/generate-date-slots.util';
-//import { generateOptionsOrder } from '../utils/generate-options-order.util';
 import { MobileTimePicker } from '@mui/x-date-pickers';
-//import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 
 interface IDateTimeForm {
   onNextClicked: () => void;
@@ -116,7 +113,6 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
   //TODO why duration isn't caught by validation error with yup?
   const duration = watch('duration');
   const durationType = watch('durationType');
-  //const [timeValue, setTimeValue] = useState(new Date('2024-04-25T17:00'));
 
   const isTimeSelected = !!fromTimeValue && fromTimeValue !== '';
 
@@ -166,13 +162,15 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
             <MobileTimePicker
               {...field}
               value={field.value || new Date().setHours(17, 0)}
-              onChange={(newValue) => field.onChange(newValue)} // Ensure proper binding to form state
+              onChange={(newValue) => field.onChange(newValue)}
+              ampm={false}
               renderInput={(params) => (
                 <TextField
                   {...params}
                   error={!!error}
                   helperText={!!error && 'Activity start time is required'}
                   variant="outlined"
+                  sx={{}}
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position="end">
@@ -182,8 +180,7 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
                   }}
                 />
               )}
-              inputFormat="HH:mm" // Set the input format
-              //adapter={AdapterDateFns} // Set the appropriate adapter
+              inputFormat="HH:mm"
             />
           )}
         />
