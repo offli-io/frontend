@@ -272,8 +272,9 @@ const SearchScreen = () => {
         </Box>
       ) : (
         <Box sx={{ ml: 1.5, boxSizing: 'border-box' }}>
+          <Box sx={{ padding: 1 }} />
           {areUsersLoading ? (
-            <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+            <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
               <CircularProgress color="primary" />
             </Box>
           ) : users?.length > 0 ? (
