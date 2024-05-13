@@ -19,6 +19,7 @@ export const calculateDateUsingDuration = ({
 
   // Parse timeFrom string to get hour and minute values
   if (typeof timeFrom === 'string') {
+    //TODO this is dirty quick fix -> use something better reliable
     const timeString = timeFrom.split(' ')[4]; // Extracting the time part
     if (timeString) {
       const [hourStr, minuteStr] = timeString.split(':');
