@@ -19,10 +19,11 @@ export const calculateDateUsingDuration = ({
 
   // Parse timeFrom string to get hour and minute values
   if (typeof timeFrom === 'string') {
-    const timeParts = timeFrom.match(/^(\d{1,2}):(\d{2})$/);
-    if (timeParts) {
-      hour = parseInt(timeParts[1], 10);
-      minute = parseInt(timeParts[2], 10);
+    const timeString = timeFrom.split(' ')[4]; // Extracting the time part
+    if (timeString) {
+      const [hourStr, minuteStr] = timeString.split(':');
+      hour = parseInt(hourStr, 10);
+      minute = parseInt(minuteStr, 10);
     }
   }
 
