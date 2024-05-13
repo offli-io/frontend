@@ -16,14 +16,14 @@ import { AppleAuthCodeFromEnum } from 'types/apple/apple-auth-code-from-enum.dto
 import { FacebookAuthCodeFromEnumDto } from 'types/facebook/facebook-auth-code-from-enum.dto';
 import { APPLE_CLIENT_ID, FB_CLIENT_ID, FB_STATE_PARAM } from 'utils/common-constants';
 import * as yup from 'yup';
-import { loginUser, loginViaGoogle } from '../api/auth/requests';
-import LabeledDivider from '../components/labeled-divider';
-import OffliBackButton from '../components/offli-back-button';
-import OffliButton from '../components/offli-button';
-import { AuthenticationContext } from '../context/providers/authentication-provider';
-import { useGoogleAuthorization } from '../hooks/use-google-authorization';
-import { ApplicationLocations } from '../types/common/applications-locations.dto';
-import { GoogleAuthCodeFromEnumDto } from '../types/google/google-auth-code-from-enum.dto';
+import { loginUser, loginViaGoogle } from '../../api/auth/requests';
+import LabeledDivider from '../../components/labeled-divider';
+import OffliBackButton from '../../components/offli-back-button';
+import OffliButton from '../../components/offli-button';
+import { AuthenticationContext } from '../../context/providers/authentication-provider';
+import { useGoogleAuthorization } from '../../hooks/use-google-authorization';
+import { ApplicationLocations } from '../../types/common/applications-locations.dto';
+import { GoogleAuthCodeFromEnumDto } from '../../types/google/google-auth-code-from-enum.dto';
 export interface FormValues {
   username: string;
   password: string;
@@ -35,7 +35,7 @@ const schema: () => yup.SchemaOf<FormValues> = () =>
     password: yup.string().defined().required()
   });
 
-const LoginScreen: React.FC = () => {
+const LoginScreenWithSocialsV2: React.FC = () => {
   const [showPassword, setShowPassword] = React.useState(false);
   const { setUserInfo, setStateToken, userInfo } = React.useContext(AuthenticationContext);
   const { palette } = useTheme();
@@ -277,4 +277,4 @@ const LoginScreen: React.FC = () => {
   );
 };
 
-export default LoginScreen;
+export default LoginScreenWithSocialsV2;
