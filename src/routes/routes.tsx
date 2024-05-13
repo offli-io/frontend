@@ -16,14 +16,14 @@ import EditActivityScreen from '../screens/edit-activity-screen/edit-activity-sc
 import EditProfileScreen from '../screens/edit-profile-screen/edit-profile-screen';
 import ExploreScreen from '../screens/explore-screen/explore-screen';
 import ForgottenPasswordScreen from '../screens/forgotten-password-screen/forgotten-password-screen';
-import LoginScreen from '../screens/login-screen';
+import LoginScreen from '../screens/login-screen/login-screen';
 import MapScreen from '../screens/map-screen';
 import MyBuddiesScreen from '../screens/my-buddies-screen/my-buddies-screen';
 import NotificationsScreen from '../screens/notifications-screen/notifications-screen';
 import PickUsernameScreen from '../screens/pick-username-screen';
 import ProfileScreen from '../screens/profile-screen/profile-screen';
 import { ProfileEntryTypeEnum } from '../screens/profile-screen/types/profile-entry-type';
-import RegistrationScreen from '../screens/registration-screen';
+import RegistrationScreen from '../screens/registration-screen/registration-screen';
 import ResetPasswordScreen from '../screens/reset-password-screen';
 import SearchScreen from '../screens/search-screen/search-screen';
 import SettingsScreen from '../screens/settings-screen/settings-screen';
