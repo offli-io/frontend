@@ -124,7 +124,7 @@ const NotificationRequest: React.FC<INotificationRequestProps> = ({ notification
                       overflow: 'hidden',
                       textOverflow: 'ellipsis',
                       whiteSpace: 'nowrap',
-                      maxWidth: 200
+                      maxWidth: 230
                     }}
                     text={generateNotificationMessage()}
                   />
