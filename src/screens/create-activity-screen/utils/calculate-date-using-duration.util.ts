@@ -27,6 +27,13 @@ export const calculateDateUsingDuration = ({
     }
   }
 
+  const datetimeFro =
+    timeFrom && typeof timeFrom === 'string' ? new Date(Date.parse(timeFrom)) : undefined;
+  if (datetimeFro && !isNaN(datetimeFro.getTime())) {
+    hour = datetimeFro.getHours();
+    minute = datetimeFro.getMinutes();
+  }
+
   const _datetimeFrom = datetimeFrom ? setMinutes(setHours(datetimeFrom, hour), minute) : undefined;
 
   const datetimeUntil = add(_datetimeFrom as Date, {
