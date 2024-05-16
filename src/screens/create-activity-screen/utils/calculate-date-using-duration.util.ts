@@ -14,32 +14,16 @@ export const calculateDateUsingDuration = ({
   durationType,
   timeFrom
 }: ICalculateDateUsingDurationProps) => {
-  let hour = 0;
-  let minute = 0;
+  if (timeFrom) {
+    const time = new Date(timeFrom);
+    const _datetimeFrom = datetimeFrom
+      ? setMinutes(setHours(datetimeFrom, time.getHours()), time.getMinutes())
+      : undefined;
+    const datetimeUntil = add(_datetimeFrom as Date, {
+      [durationType as string]: duration
+    });
 
-  // Parse timeFrom string to get hour and minute values
-  if (typeof timeFrom === 'string') {
-    //TODO this is dirty quick fix -> use something better reliable
-    const timeString = timeFrom.split(' ')[4]; // Extracting the time part
-    if (timeString) {
-      const [hourStr, minuteStr] = timeString.split(':');
-      hour = parseInt(hourStr, 10);
-      minute = parseInt(minuteStr, 10);
-    }
+    return { dateTimeFrom: _datetimeFrom, datetimeUntil };
   }
-
-  const datetimeFro =
-    timeFrom && typeof timeFrom === 'string' ? new Date(Date.parse(timeFrom)) : undefined;
-  if (datetimeFro && !isNaN(datetimeFro.getTime())) {
-    hour = datetimeFro.getHours();
-    minute = datetimeFro.getMinutes();
-  }
-
-  const _datetimeFrom = datetimeFrom ? setMinutes(setHours(datetimeFrom, hour), minute) : undefined;
-
-  const datetimeUntil = add(_datetimeFrom as Date, {
-    [durationType as string]: duration
-  });
-
-  return { dateTimeFrom: _datetimeFrom, datetimeUntil };
+  return {};
 };

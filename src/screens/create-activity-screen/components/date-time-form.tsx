@@ -11,7 +11,6 @@ import {
   Typography,
   useTheme
 } from '@mui/material';
-import { MobileTimePicker } from '@mui/x-date-pickers';
 import { format } from 'date-fns';
 import React from 'react';
 import { Controller, UseFormReturn } from 'react-hook-form';
@@ -22,6 +21,7 @@ import OffliButton from '../../../components/offli-button';
 import { calculateDateUsingDuration } from '../utils/calculate-date-using-duration.util';
 import { DurationLabelMap } from '../utils/duration-label-map';
 import { generateDateSlots } from '../utils/generate-date-slots.util';
+import { MobileTimePicker } from '@mui/x-date-pickers';
 
 interface IDateTimeForm {
   onNextClicked: () => void;
@@ -41,8 +41,6 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
     fromOptions: generateDateSlots(),
     untilOptions: generateDateSlots()
   });
-
-  console.log(watch('timeFrom'));
 
   const isFormValid = !!watch('datetime_from');
 
@@ -163,7 +161,7 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
           render={({ field, fieldState: { error } }) => (
             <MobileTimePicker
               {...field}
-              value={field.value || new Date().setHours(17, 0)}
+              value={field.value}
               onChange={(newValue) => field.onChange(newValue)}
               ampm={false}
               renderInput={(params) => (
@@ -242,7 +240,7 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
             </RadioGroup>
           )}
         />
-        {displayEndingTime ? (
+        {displayEndingTime && datetimeUntil ? (
           <Typography
             variant="subtitle2"
             sx={{
