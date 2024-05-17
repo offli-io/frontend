@@ -94,8 +94,8 @@ const OffliHeader: React.FC<IProps> = ({ sx }) => {
       ) : (
         <Box
           sx={{
-            width: '90%',
-            margin: 'auto',
+            width: '100%',
+            marginX: '3%',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between'

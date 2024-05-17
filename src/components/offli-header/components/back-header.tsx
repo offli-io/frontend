@@ -99,12 +99,10 @@ const BackHeader: React.FC<IBackHeaderProps> = ({
     <Box
       sx={{
         width: '100%',
-        // borderBottom: '1px solid lightgrey',
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
         position: 'relative',
-        // pt: 1,
         boxSizing: 'border-box',
         height: '100%'
       }}>
@@ -112,12 +110,9 @@ const BackHeader: React.FC<IBackHeaderProps> = ({
         onClick={handleBackNavigation}
         color="primary"
         sx={{
-          flex: 1,
           position: 'absolute',
           left: 0,
-          textTransform: 'none',
-          p: 0,
-          pl: 1
+          textTransform: 'none'
         }}>
         <ArrowBackIosNewIcon sx={{ color: 'primary.main' }} />
       </IconButton>

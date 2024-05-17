@@ -5,7 +5,6 @@ import {
   FormControlLabel,
   IconButton,
   InputAdornment,
-  MenuItem,
   Radio,
   RadioGroup,
   TextField,
@@ -22,7 +21,7 @@ import OffliButton from '../../../components/offli-button';
 import { calculateDateUsingDuration } from '../utils/calculate-date-using-duration.util';
 import { DurationLabelMap } from '../utils/duration-label-map';
 import { generateDateSlots } from '../utils/generate-date-slots.util';
-import { generateOptionsOrder } from '../utils/generate-options-order.util';
+import { MobileTimePicker } from '@mui/x-date-pickers';
 
 interface IDateTimeForm {
   onNextClicked: () => void;
@@ -160,41 +159,29 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
           name="timeFrom"
           control={control}
           render={({ field, fieldState: { error } }) => (
-            <TextField
+            <MobileTimePicker
               {...field}
-              id="outlined-select-currency"
-              select
-              sx={{ width: '100%', mb: 1 }}
-              variant="outlined"
-              data-testid="activitiy-from-time-picker"
-              error={!!error}
-              helperText={!!error && 'Activity start time is required'}
-              SelectProps={{
-                MenuProps: {
-                  anchorOrigin: {
-                    vertical: 'bottom',
-                    horizontal: 'right'
-                  },
-                  transformOrigin: {
-                    vertical: 'top',
-                    horizontal: 'right'
-                  },
-                  style: { height: '40%' }
-                }
-              }}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="end">
-                    <AccessTimeIcon sx={{ mr: 2 }} />
-                  </InputAdornment>
-                )
-              }}>
-              {generateOptionsOrder()?.map((option) => (
-                <MenuItem key={option} value={option} divider>
-                  {option}
-                </MenuItem>
-              ))}
-            </TextField>
+              value={field.value}
+              onChange={(newValue) => field.onChange(newValue)}
+              ampm={false}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  error={!!error}
+                  helperText={!!error && 'Activity start time is required'}
+                  variant="outlined"
+                  sx={{}}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="end">
+                        <AccessTimeIcon sx={{ mr: 2 }} />
+                      </InputAdornment>
+                    )
+                  }}
+                />
+              )}
+              inputFormat="HH:mm"
+            />
           )}
         />
 
@@ -217,7 +204,6 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
             />
           )}
         />
-
         <Controller
           name="durationType"
           control={control}
@@ -254,7 +240,7 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
             </RadioGroup>
           )}
         />
-        {displayEndingTime ? (
+        {displayEndingTime && datetimeUntil ? (
           <Typography
             variant="subtitle2"
             sx={{

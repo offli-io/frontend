@@ -1,4 +1,4 @@
-import { Tab, Tabs, Typography } from '@mui/material';
+import { Box, Tab, Tabs, Typography } from '@mui/material';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { getActivitiesPromiseResolved } from 'api/activities/requests';
 import { LayoutContext } from 'app/layout';
@@ -135,17 +135,24 @@ const ActivitiesScreen = () => {
         variant="scrollable"
         // scrollButtons="auto"
         sx={{
-          mt: 1,
+          zIndex: 2,
           p: 0,
+          ml: -1,
+          width: '100%',
+          maxWidth: 430,
+          position: 'fixed',
+          bgcolor: 'background.default',
           '& .MuiTab-root': {
             textTransform: 'capitalize',
             fontSize: 16
           }
-        }}>
+        }}
+        style={{ padding: 0 }}>
         {SWIPE_ARRAY_ORDER.map((item) => (
           <Tab key={item} label={ActivitiesTabLabelMap[item]} value={item} />
         ))}
       </Tabs>
+      <Box sx={{ pt: 4 }} />
       {isLoading ? <Loader /> : null}
       {!isLoading && paginatedActivitiesData?.pages?.[0]?.length === 0 ? (
         <Typography variant="subtitle2" sx={{ mt: 4, textAlign: 'center' }}>

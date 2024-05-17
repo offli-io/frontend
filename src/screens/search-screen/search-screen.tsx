@@ -164,79 +164,85 @@ const SearchScreen = () => {
     <Box>
       <Box
         sx={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
           width: '100%',
-          position: 'sticky',
+          maxWidth: 430,
+          position: 'fixed',
+          zIndex: 2,
           backgroundColor: ({ palette }) => palette?.background?.default
         }}>
-        <TextField
+        <Box
           sx={{
-            width: '95%',
             display: 'flex',
+            alignItems: 'center',
             justifyContent: 'center',
-            my: 1,
-            '& .MuiOutlinedInput-root': {
-              pr: 0
-            },
-            '& input::placeholder': {
-              fontSize: 14,
-              color: 'primary.main',
-              fontWeight: 500,
-              opacity: 1,
-              pl: 1
-            },
-            '& fieldset': { border: 'none' },
-            backgroundColor: ({ palette }) => palette?.primary?.light,
-            borderRadius: '10px'
+            width: '100%'
+          }}>
+          <TextField
+            sx={{
+              width: '95%',
+              display: 'flex',
+              justifyContent: 'center',
+              my: 1,
+              '& .MuiOutlinedInput-root': {
+                pr: 0
+              },
+              '& input::placeholder': {
+                fontSize: 14,
+                color: 'primary.main',
+                fontWeight: 500,
+                opacity: 1,
+                pl: 1
+              },
+              '& fieldset': { border: 'none' },
+              backgroundColor: ({ palette }) => palette?.primary?.light,
+              borderRadius: '10px'
+            }}
+            value={currentSearch}
+            placeholder={
+              isFocused
+                ? ''
+                : currentTab === SearchTabDefinitionsEnum.ACTIVITIES
+                  ? 'Search by text in activity'
+                  : 'Search by username'
+            }
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon sx={{ fontSize: 24, color: 'primary.main' }} />
+                </InputAdornment>
+              ),
+              endAdornment: showClearButton && (
+                <InputAdornment position="end">
+                  <IconButton onClick={handleClearButtonClick}>
+                    <ClearIcon sx={{ fontSize: 24 }} />
+                  </IconButton>
+                </InputAdornment>
+              )
+            }}
+            onChange={(e) => setCurrentSearch(e.target.value)}
+            data-testid="search-activities-input"
+          />
+        </Box>
+        <Tabs
+          value={currentTab}
+          onChange={handleTabChange}
+          variant="fullWidth"
+          sx={{
+            '& .MuiTab-root': {
+              textTransform: 'capitalize',
+              fontSize: 16
+            }
           }}
-          value={currentSearch}
-          placeholder={
-            isFocused
-              ? ''
-              : currentTab === SearchTabDefinitionsEnum.ACTIVITIES
-                ? 'Search by text in activity'
-                : 'Search by username'
-          }
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <SearchIcon sx={{ fontSize: 24, color: 'primary.main' }} />
-              </InputAdornment>
-            ),
-            endAdornment: showClearButton && (
-              <InputAdornment position="end">
-                <IconButton onClick={handleClearButtonClick}>
-                  <ClearIcon sx={{ fontSize: 24 }} />
-                </IconButton>
-              </InputAdornment>
-            )
-          }}
-          onChange={(e) => setCurrentSearch(e.target.value)}
-          data-testid="search-activities-input"
-        />
+          // allowScrollButtonsMobile
+          // scrollButtons="auto"
+        >
+          <Tab
+            label={SearchTabDefinitionsEnum.ACTIVITIES}
+            value={SearchTabDefinitionsEnum.ACTIVITIES}></Tab>
+          <Tab label={SearchTabDefinitionsEnum.USERS} value={SearchTabDefinitionsEnum.USERS}></Tab>
+        </Tabs>
       </Box>
-      <Tabs
-        value={currentTab}
-        onChange={handleTabChange}
-        variant="fullWidth"
-        sx={{
-          '& .MuiTab-root': {
-            textTransform: 'capitalize',
-            fontSize: 16
-          },
-          px: 1,
-          mb: 1
-        }}
-        // allowScrollButtonsMobile
-        // scrollButtons="auto"
-      >
-        <Tab
-          label={SearchTabDefinitionsEnum.ACTIVITIES}
-          value={SearchTabDefinitionsEnum.ACTIVITIES}></Tab>
-        <Tab label={SearchTabDefinitionsEnum.USERS} value={SearchTabDefinitionsEnum.USERS}></Tab>
-      </Tabs>
+      <Box sx={{ padding: 1 }} />
       {currentTab === SearchTabDefinitionsEnum.ACTIVITIES ? (
         <Box sx={{ ml: 1.5, boxSizing: 'border-box' }}>
           {areActivitiesLoading ? (
@@ -266,8 +272,9 @@ const SearchScreen = () => {
         </Box>
       ) : (
         <Box sx={{ ml: 1.5, boxSizing: 'border-box' }}>
+          <Box sx={{ padding: 1 }} />
           {areUsersLoading ? (
-            <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+            <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
               <CircularProgress color="primary" />
             </Box>
           ) : users?.length > 0 ? (
