@@ -1,24 +1,29 @@
 import { yupResolver } from '@hookform/resolvers/yup';
+import FacebookIcon from '@mui/icons-material/Facebook';
 import GoogleIcon from '@mui/icons-material/Google';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import { Box, IconButton, InputAdornment, TextField, Typography, useTheme } from '@mui/material';
 import { useMutation } from '@tanstack/react-query';
+import { useAppleAuthorization } from 'hooks/use-apple-authorization';
+import { useFacebookAuthorization } from 'hooks/use-facebook-authorization';
+import { useGoogleClientID } from 'hooks/use-google-client-id';
 import React from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
+import { AppleAuthCodeFromEnum } from 'types/apple/apple-auth-code-from-enum.dto';
+import { FacebookAuthCodeFromEnumDto } from 'types/facebook/facebook-auth-code-from-enum.dto';
+import { APPLE_CLIENT_ID, FB_CLIENT_ID, FB_STATE_PARAM } from 'utils/common-constants';
 import * as yup from 'yup';
 import { loginUser, loginViaGoogle } from '../api/auth/requests';
 import LabeledDivider from '../components/labeled-divider';
-import Logo from '../components/logo';
 import OffliBackButton from '../components/offli-back-button';
 import OffliButton from '../components/offli-button';
 import { AuthenticationContext } from '../context/providers/authentication-provider';
 import { useGoogleAuthorization } from '../hooks/use-google-authorization';
 import { ApplicationLocations } from '../types/common/applications-locations.dto';
 import { GoogleAuthCodeFromEnumDto } from '../types/google/google-auth-code-from-enum.dto';
-
 export interface FormValues {
   username: string;
   password: string;
@@ -35,14 +40,31 @@ const LoginScreen: React.FC = () => {
   const { setUserInfo, setStateToken, userInfo } = React.useContext(AuthenticationContext);
   const { palette } = useTheme();
   const navigate = useNavigate();
+  const { data: { data: { client_id = null } = {} } = {} } = useGoogleClientID();
+  const queryParameters = new URLSearchParams(window.location.search);
+  const googleAuthCode = queryParameters.get('code');
+  const paramsState = queryParameters.get('state');
+  const paramsStateParsed = paramsState ? JSON.parse(paramsState) : null;
+
   const {
-    // googleToken,
-    googleAuthCode,
+    // authorizationCode: googleAuthCode,
     handleGoogleAuthorization,
     isLoading: isGoogleAuthorizationLoading
   } = useGoogleAuthorization({
     from: GoogleAuthCodeFromEnumDto.LOGIN,
-    omitTokenGetting: true
+    omitTokenGetting: true,
+    clientID: client_id
+  });
+
+  const { handleFacebookAuthorization, isLoading: isFacebookAuthorizationLoading } =
+    useFacebookAuthorization({
+      from: FacebookAuthCodeFromEnumDto.LOGIN,
+      clientID: FB_CLIENT_ID
+    });
+
+  const { isLoading: isAppleAuthorizationLoading } = useAppleAuthorization({
+    from: AppleAuthCodeFromEnum.LOGIN,
+    clientID: APPLE_CLIENT_ID
   });
   const abortControllerRef = React.useRef<AbortController | null>(null);
 
@@ -104,10 +126,10 @@ const LoginScreen: React.FC = () => {
   );
 
   React.useEffect(() => {
-    if (googleAuthCode) {
+    if (googleAuthCode && paramsStateParsed !== FB_STATE_PARAM) {
       sendLoginViaGoogle(googleAuthCode);
     }
-  }, [googleAuthCode]);
+  }, [googleAuthCode, paramsStateParsed]);
 
   React.useEffect(() => {
     if (userInfo?.id) {
@@ -119,7 +141,7 @@ const LoginScreen: React.FC = () => {
   return (
     <>
       <OffliBackButton
-        onClick={() => navigate(ApplicationLocations.LOGIN_OR_REGISTER)}
+        onClick={() => navigate(ApplicationLocations.AUTHENTICATION_METHOD)}
         sx={{ alignSelf: 'flex-start', m: 1, color: palette?.primary?.main }}>
         Back
       </OffliBackButton>
@@ -130,20 +152,67 @@ const LoginScreen: React.FC = () => {
           flexDirection: 'column',
           alignItems: 'center'
         }}>
-        <Logo sx={{ mb: 5, mt: 2 }} />
         <Box
           sx={{
             display: 'flex',
             flexDirection: 'column',
             width: '100%',
-            alignItems: 'center'
+            alignItems: 'center',
+            mt: 6
           }}>
           <OffliButton
-            startIcon={<GoogleIcon sx={{ color: 'white' }} />}
+            startIcon={<GoogleIcon sx={{ color: 'white', height: 12, marginRight: -1 }} />}
             onClick={handleGoogleAuthorization}
-            sx={{ mb: 1 }}
-            disabled={isLoading || isGoogleAuthorizationLoading || isGoogleLoginLoading}>
-            Log in with Google
+            sx={{ height: 47, mb: 1, width: '80%', borderRadius: 2, fontSize: 15 }}
+            disabled={
+              isLoading ||
+              isGoogleAuthorizationLoading ||
+              isGoogleLoginLoading ||
+              !client_id ||
+              isAppleAuthorizationLoading
+            }>
+            Sign in with Google
+          </OffliButton>
+          <OffliButton
+            id="appleid-signin"
+            data-color="black"
+            data-border="true"
+            data-type="sign in"
+            sx={{
+              height: 47,
+              marginBottom: 1,
+              width: '80%',
+              borderRadius: 2,
+              backgroundColor: 'black',
+              '&:hover': {
+                backgroundColor: 'black'
+              }
+            }}>
+            Sign in
+          </OffliButton>
+          {/*<div*/}
+          {/*  id="appleid-signin"*/}
+          {/*  data-color="black"*/}
+          {/*  data-border="true"*/}
+          {/*  data-type="sign in"*/}
+          {/*  style={{ height: 47, marginBottom: 8 }}>*/}
+          {/*  Sign in*/}
+          {/*</div>*/}
+          <OffliButton
+            startIcon={<FacebookIcon sx={{ color: 'white', height: 12, marginRight: -1 }} />}
+            onClick={handleFacebookAuthorization}
+            sx={{
+              height: 47,
+              mb: 1,
+              width: '80%',
+              bgcolor: palette?.facebook?.main,
+              borderRadius: 2,
+              fontSize: 15
+            }}
+            disabled={
+              isLoading || isFacebookAuthorizationLoading || isGoogleLoginLoading || !client_id
+            }>
+            Sign in with Facebook
           </OffliButton>
 
           <LabeledDivider sx={{ my: 1 }}>

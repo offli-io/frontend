@@ -1,5 +1,8 @@
 import axios from 'axios';
+import { IAppleAuthorizationParamsDto } from 'types/apple/apple-authorization-params.dto';
 import { IChangePasswordRequestDto } from 'types/auth/change-password-request.dto';
+import { IRemoveAccountRequestDto } from 'types/auth/remove-account-request.dto';
+import { IFacebookAuthorizationParamsDto } from 'types/facebook/facebook-authorization-params.dto';
 import { IGoogleRegisterUserValuesDto } from 'types/google/google-register-user-values.dto';
 import { ICheckResetPasswordVerificationCodeRequest } from '../../types/auth/check-reset-password-verification-code-request.dto';
 import { IConfirmResetPasswordDto } from '../../types/auth/confirm-reset-password.dto';
@@ -83,7 +86,11 @@ export const getBearerToken = (
   return promise;
 };
 
-export const getGoogleAuthCode = (from: GoogleAuthCodeFromEnumDto, state?: any) => {
+export const getGoogleAuthCode = (
+  from: GoogleAuthCodeFromEnumDto,
+  clientID: string,
+  state?: any
+) => {
   const rootUrl = `https://accounts.google.com/o/oauth2/v2/auth`;
   // for now there is not change in current url only when activity detail ->
   // we need to add state to google request
@@ -96,7 +103,7 @@ export const getGoogleAuthCode = (from: GoogleAuthCodeFromEnumDto, state?: any) 
 
   const options = {
     redirect_uri: `${currentUrl}`,
-    client_id: CLIENT_ID as string,
+    client_id: clientID,
     access_type: 'offline',
     response_type: 'code',
     prompt: 'consent',
@@ -121,6 +128,36 @@ export const registerViaGoogle = async (
   const source = CancelToken.source();
 
   const promise = axios.post<ILoginResponseDto>(`/google/authorization`, values, {
+    cancelToken: source?.token
+  });
+
+  signal?.addEventListener('abort', () => {
+    source.cancel('Query was cancelled by React Query');
+  });
+
+  return promise;
+};
+
+export const facebookAuthorization = ({ values, signal }: IFacebookAuthorizationParamsDto) => {
+  const CancelToken = axios.CancelToken;
+  const source = CancelToken.source();
+
+  const promise = axios.post<ILoginResponseDto>(`/Facebook/authorization`, values, {
+    cancelToken: source?.token
+  });
+
+  signal?.addEventListener('abort', () => {
+    source.cancel('Query was cancelled by React Query');
+  });
+
+  return promise;
+};
+
+export const appleAuthorization = ({ values, signal }: IAppleAuthorizationParamsDto) => {
+  const CancelToken = axios.CancelToken;
+  const source = CancelToken.source();
+
+  const promise = axios.post<ILoginResponseDto>(`/Apple/authorization`, values, {
     cancelToken: source?.token
   });
 
@@ -191,6 +228,20 @@ export const changePassword = (values: IChangePasswordRequestDto, signal?: Abort
   const source = CancelToken.source();
 
   const promise = axios.post<ILoginResponseDto>(`/registration/change-password`, values, {
+    cancelToken: source?.token
+  });
+
+  signal?.addEventListener('abort', () => {
+    source.cancel('Query was cancelled by React Query');
+  });
+  return promise;
+};
+
+export const removeAccount = (values: IRemoveAccountRequestDto, signal?: AbortSignal) => {
+  const CancelToken = axios.CancelToken;
+  const source = CancelToken.source();
+
+  const promise = axios.delete<void>(`/users/${values?.id}`, {
     cancelToken: source?.token
   });
 

@@ -8,6 +8,12 @@ export const WEBPUSH_VAPID_PUBLIC_KEY =
   'BHyW_LqPjZPWAQ8IHFbOzZyFoq2PQYKDQyS7V5OU0Q4rMHVDVqt-yL_C2R7GDrhH8JZ0_oC0fRT6BK9HQN_7H7Y';
 
 export const GOOGLE_API_KEY = 'AIzaSyB-r3P4u-VVFZpJZf1xD6zahjTjazeKKPE';
+export const FB_APP_ID = '1211540146235995';
+export const FB_CLIENT_ID = '1317539042184854';
+
+export const APPLE_CLIENT_ID = 'com.offli.service.id';
+
+export const FB_STATE_PARAM = 'facebook_auth';
 
 export const PRIVACY_POLICY_LINK = 'https://offli.eu/privacy-policy/';
 export const HELP_SUPPORT_LINK = 'https://offli.eu/contact/';

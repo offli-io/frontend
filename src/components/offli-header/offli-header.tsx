@@ -2,10 +2,12 @@ import NotificationsIcon from '@mui/icons-material/Notifications';
 import NotificationsNoneOutlinedIcon from '@mui/icons-material/NotificationsNoneOutlined';
 import SettingsIcon from '@mui/icons-material/Settings';
 import { Badge, Box, IconButton, SxProps, useTheme } from '@mui/material';
+import { CustomizationContext } from 'context/providers/customization-provider';
 import { useGetApiUrl } from 'hooks/use-get-api-url';
 import { useUser } from 'hooks/use-user';
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { ThemeOptionsEnumDto } from 'types/settings/theme-options.dto';
 import { NOT_EXACT_UNALLOWED_URLS } from '../../app/layout';
 import offliLogoDark from '../../assets/img/offli-logo-dark.svg';
 import offliLogoLight from '../../assets/img/offli-logo-light.png';
@@ -17,8 +19,6 @@ import { ICustomizedLocationStateDto } from '../../types/common/customized-locat
 import { HEADER_HEIGHT } from '../../utils/common-constants';
 import BackHeader from './components/back-header';
 import { mapPathnameToHeaderTitle } from './utils/header-utils';
-import { ThemeOptionsEnumDto } from 'types/settings/theme-options.dto';
-import { CustomizationContext } from 'context/providers/customization-provider';
 
 interface IProps {
   sx?: SxProps;
@@ -59,7 +59,8 @@ const OffliHeader: React.FC<IProps> = ({ sx }) => {
         ApplicationLocations.BUDDIES,
         ApplicationLocations.SEARCH,
         ApplicationLocations.NOTIFICATIONS,
-        ApplicationLocations.ACCOUNT_SETTINGS
+        ApplicationLocations.ACCOUNT_SETTINGS,
+        ApplicationLocations.CHANGE_PASSWORD
       ].includes(location?.pathname as ApplicationLocations) ||
       NOT_EXACT_UNALLOWED_URLS?.some((item) => location?.pathname.includes(item)) ||
       location.pathname.includes(ApplicationLocations.ACTIVITY_DETAIL) ||

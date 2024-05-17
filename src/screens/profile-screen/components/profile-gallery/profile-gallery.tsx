@@ -143,7 +143,6 @@ const ProfileGallery: React.FC<IProfileGalleryProps> = ({
                 variant="subtitle1"
                 sx={{
                   ml: 0.5,
-                  mt: 3,
                   color: 'primary.main',
                   fontWeight: 'bold'
                 }}>

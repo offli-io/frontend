@@ -19,6 +19,7 @@ const BackHeader: React.FC<IBackHeaderProps> = ({
   const location = useLocation();
   const pathname = location?.pathname;
   const activityMapId = (location?.state as any)?.id;
+  const locationFrom = (location?.state as any)?.from;
   const navigate = useNavigate();
   const { activityId } = useParams();
   const { headerRightContent } = React.useContext(HeaderContext);
@@ -45,6 +46,9 @@ const BackHeader: React.FC<IBackHeaderProps> = ({
     if (pathname?.startsWith(ApplicationLocations.ACTIVITY_DETAIL) && activityMapId) {
       //cant do navigate(-1) with params hence hacky
       return navigate(ApplicationLocations.MAP, { state: { activityMapId } });
+    }
+    if (pathname?.startsWith(ApplicationLocations.ACTIVITY_DETAIL) && locationFrom) {
+      return navigate(locationFrom);
     }
     return navigate(-1);
 

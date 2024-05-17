@@ -5,6 +5,7 @@ import { ProfilePhotoActionsEnum } from '../screens/edit-profile-screen/componen
 import { ActivityActionsTypeEnumDto } from '../types/common/activity-actions-type-enum.dto';
 import { BuddyActionTypeEnum } from '../types/common/buddy-actions-type-enum.dto';
 import { SettingsTypeEnumDto } from '../types/common/settings-type-enum.dto';
+import { AccountSettingsScreenTypeEnum } from 'screens/account-settings-screen/utils/account-settings-screen-type-enum.dto';
 
 interface ILabeledDividerProps {
   label?: string;
@@ -14,12 +15,14 @@ interface ILabeledDividerProps {
       | ActivityActionsTypeEnumDto
       | BuddyActionTypeEnum
       | ProfilePhotoActionsEnum
+      | AccountSettingsScreenTypeEnum
   ) => void;
   type?:
     | SettingsTypeEnumDto
     | ActivityActionsTypeEnumDto
     | BuddyActionTypeEnum
-    | ProfilePhotoActionsEnum;
+    | ProfilePhotoActionsEnum
+    | AccountSettingsScreenTypeEnum;
   icon?: React.ReactElement;
   headerRight?: React.ReactElement;
   contrastText?: boolean;

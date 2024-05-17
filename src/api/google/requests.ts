@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { CLIENT_ID, SCOPE } from '../../utils/common-constants';
+import { IGoogleClientIDResponse } from 'types/google/google-client-id-response.dto';
 
 //TODO add interface for google event
 export const addEventToCalendar = (calendarId?: string, event?: any) => {
@@ -29,4 +30,9 @@ export const addEventToCalendar = (calendarId?: string, event?: any) => {
   } catch (err) {
     console.error(err);
   }
+};
+
+export const getGoogleClientID = () => {
+  const promise = axios.get<IGoogleClientIDResponse>('/google/client-id');
+  return promise;
 };

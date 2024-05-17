@@ -4,12 +4,12 @@ import { BuddyStateEnum } from 'types/users';
 import { BuddyRequestActionEnum } from '../../types/users/buddy-request-action-enum.dto';
 import { IBuddyStateResponseDto } from '../../types/users/buddy-state-response.dto';
 import { IUpdateUserRequestDto } from '../../types/users/update-user-request.dto';
-import { IEmailUsernamePassword, IEmailVerificationCode } from '../../types/users/user.dto';
 import { ICreatorFeedback } from '../../types/users/user-feedback.dto';
 import {
   IFeedbackAlreadySentByUserDto,
   IUserStatisticsDto
 } from '../../types/users/user-statistics.dto';
+import { IEmailUsernamePassword, IEmailVerificationCode } from '../../types/users/user.dto';
 
 export const preCreateUser = async (values: IEmailUsernamePassword) => {
   const CancelToken = axios.CancelToken;
@@ -196,13 +196,13 @@ export const connectInstagram = (userId?: number, photoUrls?: string[]) => {
   return promise;
 };
 
-export const fetchInstagramPhotos = (userId?: number, authCode?: string) => {
+export const fetchInstagramPhotos = (userId?: number, authCode?: string, redirectUrl?: string) => {
   const CancelToken = axios.CancelToken;
   const source = CancelToken.source();
 
   const promise = axios.post<IFetchInstagramPhotosResponseDto>(
     `/instagram/${userId}/fetch`,
-    { auth_code: authCode },
+    { auth_code: authCode, redirect_uri: redirectUrl },
     {
       cancelToken: source?.token
     }

@@ -17,10 +17,12 @@ declare module '@mui/material/styles' {
   // }
   interface Palette {
     inactive: Palette['primary'];
+    facebook: { main?: string };
     inactiveFont: Palette['primary'];
   }
   interface PaletteOptions {
     inactive: PaletteOptions['primary'];
+    facebook: { main?: string };
     inactiveFont: PaletteOptions['primary'];
   }
 }
@@ -39,6 +41,9 @@ const createCustomizationTheme = (userTheme: ThemeOptionsEnumDto) => {
       },
       inactive: {
         main: '#B8B8B8'
+      },
+      facebook: {
+        main: '#3B5998'
       },
       inactiveFont: {
         main: userTheme === ThemeOptionsEnumDto.LIGHT ? '#757575' : '#bfbfbf'

@@ -246,36 +246,46 @@ const EditProfileScreen: React.FC = () => {
 
   const handleProfilePictureUpload = React.useCallback(
     async (e: React.ChangeEvent<HTMLInputElement>) => {
-      const file = e?.target?.files?.[0];
-      if (!file) {
-        return;
-      }
+      try {
+        const file = e?.target?.files?.[0];
+        if (!file) {
+          return;
+        }
 
-      // check file format
-      const fileExtension = file.name.split('.').pop();
-      if (fileExtension && !ALLOWED_PHOTO_EXTENSIONS.includes(fileExtension)) {
-        toast.error('Unsupported file format');
-        return;
+        // check file format
+        const fileExtension = file.name.split('.').pop();
+        if (fileExtension && !ALLOWED_PHOTO_EXTENSIONS.includes(fileExtension)) {
+          toast.error('Unsupported file format');
+          return;
+        }
+        setLocalProfileImageFile(URL.createObjectURL(file));
+      } catch (e: any) {
+        toast.error('Failed to upload profile picture');
+        console.error(e?.message);
       }
-      setLocalProfileImageFile(URL.createObjectURL(file));
     },
     []
   );
 
   const handleTitlePictureUpload = React.useCallback(
     async (e: React.ChangeEvent<HTMLInputElement>) => {
-      const file = e?.target?.files?.[0];
-      if (!file) {
-        return;
-      }
+      try {
+        const file = e?.target?.files?.[0];
+        if (!file) {
+          return;
+        }
 
-      // check file format
-      const fileExtension = file.name.split('.').pop();
-      if (fileExtension && !ALLOWED_PHOTO_EXTENSIONS.includes(fileExtension)) {
-        toast.error('Unsupported file format');
-        return;
+        // check file format
+        const fileExtension = file.name.split('.').pop();
+        if (fileExtension && !ALLOWED_PHOTO_EXTENSIONS.includes(fileExtension)) {
+          toast.error('Unsupported file format');
+          return;
+        }
+        setLocalTitleImageFile(URL.createObjectURL(file));
+      } catch (e: any) {
+        toast.error('Failed to upload title picture');
+        console.error(e?.message);
       }
-      setLocalTitleImageFile(URL.createObjectURL(file));
     },
     []
   );

@@ -2,8 +2,8 @@ import { AuthenticationContext } from 'context/providers/authentication-provider
 import React from 'react';
 import { Routes as BaseRoutes, Route } from 'react-router-dom';
 import AccountSettingsScreen from 'screens/account-settings-screen/account-settings-screen';
+import ChangePasswordScreen from 'screens/account-settings-screen/components/change-password-screen';
 import ActivitiesScreen from 'screens/activities-screen/activities-screen';
-import LoginOrRegisterScreen from 'screens/login-or-register';
 import RegistrationNeededScreen from 'screens/static-screens/registration-needed-screen';
 import { getAuthToken } from 'utils/token.util';
 import ActivityDetailsScreen from '../screens/activity-details-screen/activity-details-screen';
@@ -19,7 +19,6 @@ import ForgottenPasswordScreen from '../screens/forgotten-password-screen/forgot
 import LoginScreen from '../screens/login-screen';
 import MapScreen from '../screens/map-screen';
 import MyBuddiesScreen from '../screens/my-buddies-screen/my-buddies-screen';
-import NewPasswordScreen from '../screens/new-password-screen';
 import NotificationsScreen from '../screens/notifications-screen/notifications-screen';
 import PickUsernameScreen from '../screens/pick-username-screen';
 import ProfileScreen from '../screens/profile-screen/profile-screen';
@@ -62,7 +61,6 @@ const Routes = () => {
       <Route path={ApplicationLocations.LOGIN} element={<LoginScreen />} />
 
       <Route path={ApplicationLocations.FORGOTTEN_PASSWORD} element={<ForgottenPasswordScreen />} />
-      <Route path={ApplicationLocations.LOGIN_OR_REGISTER} element={<LoginOrRegisterScreen />} />
       <Route
         path={ApplicationLocations.AUTHENTICATION_METHOD}
         element={<AuthenticationMethodScreen />}
@@ -89,7 +87,6 @@ const Routes = () => {
       <Route path={ApplicationLocations.EDIT_PROFILE} element={<EditProfileScreen />} />
       <Route path={ApplicationLocations.RESET_PASSWORD} element={<ResetPasswordScreen />} />
 
-      <Route path={ApplicationLocations.NEW_PASSWORD} element={<NewPasswordScreen />} />
       <Route path={ApplicationLocations.EXPLORE} element={<ExploreScreen />} />
       <Route path={ApplicationLocations.CHOOSE_LOCATION} element={<ChooseLocationScreen />} />
       <Route
@@ -129,6 +126,7 @@ const Routes = () => {
       <Route path={ApplicationLocations.BUDDIES} element={<MyBuddiesScreen />} />
 
       <Route path={ApplicationLocations.ACCOUNT_SETTINGS} element={<AccountSettingsScreen />} />
+      <Route path={ApplicationLocations.CHANGE_PASSWORD} element={<ChangePasswordScreen />} />
 
       <Route
         path={`${ApplicationLocations.ACTIVITIES}/:activeTab`}

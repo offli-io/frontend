@@ -3,20 +3,25 @@ import { Box, TextField, Typography } from '@mui/material';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { registerViaGoogle } from 'api/auth/requests';
 import { AuthenticationContext } from 'context/providers/authentication-provider';
+import { useAppleAuthorization } from 'hooks/use-apple-authorization';
+import { useFacebookAuthorization } from 'hooks/use-facebook-authorization';
+import { useGetApiUrl } from 'hooks/use-get-api-url';
 import React from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
+import { AppleAuthCodeFromEnum } from 'types/apple/apple-auth-code-from-enum.dto';
 import { PickUsernameTypeEnum } from 'types/common/pick-username-type-enum.dto';
+import { FacebookAuthCodeFromEnumDto } from 'types/facebook/facebook-auth-code-from-enum.dto';
 import { IGoogleRegisterUserValuesDto } from 'types/google/google-register-user-values.dto';
 import { useDebounce } from 'use-debounce';
+import { APPLE_CLIENT_ID, FB_CLIENT_ID } from 'utils/common-constants';
 import * as yup from 'yup';
 import { checkIfUsernameAlreadyTaken, preCreateUser } from '../api/users/requests';
 import OffliBackButton from '../components/offli-back-button';
 import OffliButton from '../components/offli-button';
 import { ApplicationLocations } from '../types/common/applications-locations.dto';
 import { IEmailPassword, IEmailUsernamePassword, IUsername } from '../types/users/user.dto';
-import { useGetApiUrl } from 'hooks/use-get-api-url';
 
 const schema: () => yup.SchemaOf<IUsername> = () =>
   yup.object({
@@ -50,6 +55,18 @@ const PickUsernameScreen = () => {
       enabled: !!queryString
     }
   );
+
+  const { registerViaFacebook } = useFacebookAuthorization({
+    from: FacebookAuthCodeFromEnumDto.REGISTER,
+    clientID: FB_CLIENT_ID,
+    registrationFlow: true
+  });
+
+  const { registerViaApple } = useAppleAuthorization({
+    from: AppleAuthCodeFromEnum.REGISTER,
+    clientID: APPLE_CLIENT_ID,
+    registrationFlow: true
+  });
 
   const isUsernameInUse = Object.keys(formState?.errors)?.length !== 0;
 
@@ -96,16 +113,33 @@ const PickUsernameScreen = () => {
 
       const baseUrlEnvironmentDependent = window.location.href.split('/').slice(0, -1).join('/');
 
+      if (type === PickUsernameTypeEnum.APPLE) {
+        const authCode = queryClient.getQueryData<string | undefined>(['apple-auth-code']);
+        return registerViaApple({
+          username: values?.username,
+          auth_code: String(authCode)
+        });
+      }
+
       if (type === PickUsernameTypeEnum.GOOGLE) {
         const authCode = queryClient.getQueryData<string | undefined>(['google-token']);
-        sendRegisterViaGoogle({
+        return sendRegisterViaGoogle({
           googleBearerToken: '',
           username: values?.username,
           auth_code: authCode,
           redirect_uri: `${baseUrlEnvironmentDependent}/register`
         });
+      }
+
+      if (type === PickUsernameTypeEnum.FACEBOOK) {
+        const authCode = queryClient.getQueryData<string | undefined>(['facebook-auth-code']);
+        return registerViaFacebook({
+          username: values?.username,
+          auth_code: String(authCode),
+          redirect_uri: `${baseUrlEnvironmentDependent}/register`
+        });
       } else {
-        sendPresignupUser({
+        return sendPresignupUser({
           email: registrationEmailPassword?.email,
           username: values?.username,
           password: registrationEmailPassword?.password
@@ -122,7 +156,7 @@ const PickUsernameScreen = () => {
   }, [usernameAlreadyTaken]);
 
   return (
-    <form onSubmit={handleSubmit(handleFormSubmit)} style={{ height: '100%' }}>
+    <form onSubmit={handleSubmit(handleFormSubmit)}>
       <OffliBackButton
         onClick={() => navigate(ApplicationLocations.REGISTER)}
         sx={{ alignSelf: 'flex-start', m: 1 }}>
@@ -130,8 +164,6 @@ const PickUsernameScreen = () => {
       </OffliBackButton>
       <Box
         sx={{
-          height: '100vh',
-          width: '100vw',
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center'
