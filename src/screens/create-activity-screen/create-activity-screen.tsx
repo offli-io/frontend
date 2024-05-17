@@ -86,7 +86,7 @@ const CreateActivityScreen = () => {
         durationType: data?.durationType,
         datetimeFrom: data?.datetime_from,
         timeFrom: data?.timeFrom
-      });
+      }) as { dateTimeFrom: Date | undefined; datetimeUntil: Date };
 
       sendCreateActivity({
         ...restValues,
