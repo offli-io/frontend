@@ -31,14 +31,14 @@ import {
   PRIVACY_POLICY_LINK
 } from 'utils/common-constants';
 import * as yup from 'yup';
-import { checkIfEmailAlreadyTaken } from '../api/users/requests';
-import LabeledDivider from '../components/labeled-divider';
-import OffliBackButton from '../components/offli-back-button';
-import OffliButton from '../components/offli-button';
-import { useGoogleAuthorization } from '../hooks/use-google-authorization';
-import { ApplicationLocations } from '../types/common/applications-locations.dto';
-import { GoogleAuthCodeFromEnumDto } from '../types/google/google-auth-code-from-enum.dto';
-import { IEmailPassword } from '../types/users/user.dto';
+import { checkIfEmailAlreadyTaken } from '../../api/users/requests';
+import LabeledDivider from '../../components/labeled-divider';
+import OffliBackButton from '../../components/offli-back-button';
+import OffliButton from '../../components/offli-button';
+import { useGoogleAuthorization } from '../../hooks/use-google-authorization';
+import { ApplicationLocations } from '../../types/common/applications-locations.dto';
+import { GoogleAuthCodeFromEnumDto } from '../../types/google/google-auth-code-from-enum.dto';
+import { IEmailPassword } from '../../types/users/user.dto';
 
 const schema: () => yup.SchemaOf<IEmailPassword> = () =>
   yup.object({

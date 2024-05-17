@@ -1,5 +1,6 @@
 import { IActivity, IPerson } from '../activities/activity.dto';
 import { NotificationTypeEnum } from './notification-type-enum';
+import { ActivityStatusEnumDto } from '../activities/activity-status-enum.dto';
 
 interface INotificationChanges {
   key?: string;
@@ -49,7 +50,11 @@ export const getNotificationBody = (
         htmlEnhance
       )}`;
     case NotificationTypeEnum.ACTIVITY_CHANGE:
-      return `There have been some changes in ${makeActivityTitle(notification, htmlEnhance)}`;
+      if (notification?.properties?.changes?.[0]?.new === ActivityStatusEnumDto.COMPLETED) {
+        // leave feedback
+        return `Activity ended, time for feedback!`;
+      } else
+        return `There have been some changes in ${makeActivityTitle(notification, htmlEnhance)}`;
     case NotificationTypeEnum.BUDDY_REQ:
       return `${notification?.properties?.user?.username} sent you a buddy request`;
     default:

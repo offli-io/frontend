@@ -4,7 +4,7 @@ import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 import RoomIcon from '@mui/icons-material/Room';
 import { Box, Card, IconButton, Typography, styled } from '@mui/material';
 import { AuthenticationContext } from 'context/providers/authentication-provider';
-import { format, isAfter } from 'date-fns';
+import { format } from 'date-fns';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import OffliButton from '../../../components/offli-button';
@@ -46,8 +46,8 @@ const StyledText = styled(Typography)(() => ({
 const ActivityDetailsGrid: React.FC<IProps> = ({ activity, onActionClick }) => {
   const { stateToken } = React.useContext(AuthenticationContext);
   const navigate = useNavigate();
-  const isPastActivity =
-    !!activity?.datetime_until && isAfter(new Date(), new Date(activity.datetime_until));
+  // const isPastActivity =
+  //   !!activity?.datetime_until && isAfter(new Date(), new Date(activity.datetime_until));
 
   const isAuthorizedUser = !!stateToken;
 
@@ -96,7 +96,9 @@ const ActivityDetailsGrid: React.FC<IProps> = ({ activity, onActionClick }) => {
             fontSize: 15,
             mt: 0.5
           }}
-          disabled={isPastActivity}>
+          //for v1 calendar is disabled
+          // disabled={isPastActivity}
+          disabled={true}>
           Add to calendar
         </OffliButton>
 
