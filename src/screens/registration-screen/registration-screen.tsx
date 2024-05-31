@@ -101,7 +101,8 @@ export const RegistrationScreen: React.FC = () => {
             flexDirection: 'column',
             alignItems: 'center',
             mt: 4
-          }}>
+          }}
+          data-testid="registration-inputs">
           <Logo />
           <Box sx={{ display: 'flex', my: 2 }}>
             <Typography variant="h2">Your</Typography>

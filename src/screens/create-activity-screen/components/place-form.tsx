@@ -153,6 +153,7 @@ export const PlaceForm: React.FC<IPlaceFormProps> = ({
                         borderRadius: '10px',
                         p: 1.75
                       }}
+                      data-testid="choose-location-on-map"
                     />
                   </IconButton>
                 </Box>

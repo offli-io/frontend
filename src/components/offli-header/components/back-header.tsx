@@ -114,7 +114,7 @@ const BackHeader: React.FC<IBackHeaderProps> = ({
           left: 0,
           textTransform: 'none'
         }}>
-        <ArrowBackIosNewIcon sx={{ color: 'primary.main' }} />
+        <ArrowBackIosNewIcon sx={{ color: 'primary.main' }} data-testid="navigate-back-button" />
       </IconButton>
       <Box>
         <Typography variant="h4" sx={{ color: ({ palette }) => palette?.text.primary }}>

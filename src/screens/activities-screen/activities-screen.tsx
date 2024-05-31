@@ -148,8 +148,13 @@ const ActivitiesScreen = () => {
           }
         }}
         style={{ padding: 0 }}>
-        {SWIPE_ARRAY_ORDER.map((item) => (
-          <Tab key={item} label={ActivitiesTabLabelMap[item]} value={item} />
+        {SWIPE_ARRAY_ORDER.map((item, index) => (
+          <Tab
+            data-testid={`my-activities-tab-${index}`}
+            key={item}
+            label={ActivitiesTabLabelMap[item]}
+            value={item}
+          />
         ))}
       </Tabs>
       <Box sx={{ pt: 4 }} />

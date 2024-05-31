@@ -58,6 +58,7 @@ const ActivityActionButtons: React.FC<IActivityActionButtonsProps> = ({
             onClick={onJoinClick}
             color={!isAlreadyParticipant ? 'primary' : 'secondary'}
             isLoading={areActionsLoading}
+            data-testid="activity-action-button-primary"
             startIcon={
               isAlreadyParticipant ? (
                 <CheckCircleIcon sx={{ color: 'primary.main' }} />

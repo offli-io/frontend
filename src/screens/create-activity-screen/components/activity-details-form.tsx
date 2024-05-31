@@ -110,11 +110,13 @@ export const ActivityDetailsForm: React.FC<IPlaceFormProps> = ({
                     value={ActivityVisibilityEnum.public}
                     control={<Radio />}
                     label="Anyone"
+                    data-testid="public-activity-radio"
                   />
                   <FormControlLabel
                     value={ActivityVisibilityEnum.private}
                     control={<Radio color="primary" />}
                     label="Invited users only"
+                    data-testid="private-activity-radio"
                   />
                 </RadioGroup>
                 {/* <Box sx={{ display: "flex", alignItems: "center" }}>
@@ -217,7 +219,7 @@ export const ActivityDetailsForm: React.FC<IPlaceFormProps> = ({
                 />
               </Box>
 
-              {/* 
+              {/*
               TODO FOR v2 maybe
               <Controller
                 name="repeated"

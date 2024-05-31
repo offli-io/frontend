@@ -23,6 +23,7 @@ const SaveButton = ({
         color: ({ palette }) => palette?.background?.default,
         borderRadius: '15px'
       }}
+      data-testid="save-button"
       onClick={() => onClick?.(map.getCenter())}
       startIcon={<WhereToVoteIcon sx={{ color: 'background.default' }} />}
       isLoading={isLoading}>

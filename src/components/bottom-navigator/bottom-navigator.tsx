@@ -76,7 +76,7 @@ const BottomNavigator: React.FC<IBottomNavigatorProps> = () => {
           component={Link}
           value={ApplicationLocations.EXPLORE}
           to={ApplicationLocations.EXPLORE}
-          data-testid="navigator-activities"
+          data-testid="navigator-explore"
           sx={{
             fontSize: value === ApplicationLocations.EXPLORE ? 10 : 8,
             ...(theme === ThemeOptionsEnumDto.DARK ? { color: palette?.text?.primary } : {})

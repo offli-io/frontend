@@ -167,6 +167,7 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
               renderInput={(params) => (
                 <TextField
                   {...params}
+                  data-testid="start-time-input"
                   error={!!error}
                   helperText={!!error && 'Activity start time is required'}
                   variant="outlined"
@@ -200,7 +201,7 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
               // label="Duration"
               placeholder="Enter activity duration"
               helperText={!!error && 'Activity duration is required'}
-              data-testid="activity-name-input"
+              data-testid="duration-input"
             />
           )}
         />
@@ -243,6 +244,7 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
         {displayEndingTime && datetimeUntil ? (
           <Typography
             variant="subtitle2"
+            data-testid="ending-text"
             sx={{
               textAlign: 'center',
               fontSize: 14,
