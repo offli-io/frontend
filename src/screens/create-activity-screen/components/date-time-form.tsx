@@ -123,9 +123,9 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
     datetimeFrom,
     duration,
     durationType
-  }) as { dateTimeFrom: Date | undefined; datetimeUntil: Date };
-  let datetimeUntil;
-  if (dateResult) datetimeUntil = dateResult.datetimeUntil;
+  });
+
+  const datetimeUntil = dateResult?.datetimeUntil;
 
   return (
     <Box
