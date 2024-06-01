@@ -135,7 +135,7 @@ const ActivitiesScreen = () => {
         variant="scrollable"
         // scrollButtons="auto"
         sx={{
-          zIndex: 2,
+          zIndex: 10,
           p: 0,
           ml: -1,
           width: '100%',

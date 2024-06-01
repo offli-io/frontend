@@ -118,12 +118,14 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
 
   const displayEndingTime = isTimeSelected && !!datetimeFrom && !!duration;
 
-  const { datetimeUntil } = calculateDateUsingDuration({
+  const dateResult = calculateDateUsingDuration({
     timeFrom: fromTimeValue,
     datetimeFrom,
     duration,
     durationType
   });
+
+  const datetimeUntil = dateResult?.datetimeUntil;
 
   return (
     <Box

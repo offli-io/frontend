@@ -25,5 +25,5 @@ export const calculateDateUsingDuration = ({
 
     return { dateTimeFrom: _datetimeFrom, datetimeUntil };
   }
-  return {};
+  return null;
 };
