@@ -1,5 +1,5 @@
 import NearMeIcon from '@mui/icons-material/NearMe';
-import { Autocomplete, Box, TextField, Typography } from '@mui/material';
+import { Autocomplete, Box, Typography } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import React, { useState } from 'react';
 import { useGeolocated } from 'react-geolocated';
@@ -10,6 +10,7 @@ import {
 } from '../../../api/activities/requests';
 import activityLocation from '../../../assets/img/activity-location.svg';
 import OffliButton from '../../../components/offli-button';
+import OffliTextField from '../../../components/offli-text-field';
 import { ILocation } from '../../../types/activities/location.dto';
 import { IPlaceExternalApiResultDto } from '../../../types/activities/place-external-api.dto';
 
@@ -159,7 +160,7 @@ export const SetLocationContent: React.FC<IPlaceFormProps> = ({
           }
           getOptionLabel={(option) => String(option?.formatted)}
           renderInput={(params) => (
-            <TextField
+            <OffliTextField
               {...params}
               placeholder={isFocused ? '' : externalLocation?.name ?? 'Search places'}
               onChange={(e) => setPlaceQuery(e.target.value)}
@@ -183,6 +184,7 @@ export const SetLocationContent: React.FC<IPlaceFormProps> = ({
                 backgroundColor: ({ palette }) => palette?.primary?.light,
                 borderRadius: '10px'
               }}
+              autoCapitalize="on"
             />
           )}
         />

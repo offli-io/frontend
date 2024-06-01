@@ -2,9 +2,9 @@ import React from 'react';
 // import ErrorIcon from '@mui/icons-material/Error'
 import LockIcon from '@mui/icons-material/Lock';
 import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
+import { DrawerContext } from 'components/context/providers/drawer-provider';
 import MenuItem from 'components/menu-item';
 import { PageWrapper } from 'components/page-wrapper';
-import { DrawerContext } from 'context/providers/drawer-provider';
 import { useNavigate } from 'react-router-dom';
 import { ApplicationLocations } from 'types/common/applications-locations.dto';
 import DeleteAccountDrawerContent from './components/delete-account-drawer-content';

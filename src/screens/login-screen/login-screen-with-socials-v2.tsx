@@ -3,7 +3,7 @@ import FacebookIcon from '@mui/icons-material/Facebook';
 import GoogleIcon from '@mui/icons-material/Google';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
-import { Box, IconButton, InputAdornment, TextField, Typography, useTheme } from '@mui/material';
+import { Box, IconButton, InputAdornment, Typography, useTheme } from '@mui/material';
 import { useMutation } from '@tanstack/react-query';
 import { useAppleAuthorization } from 'hooks/use-apple-authorization';
 import { useFacebookAuthorization } from 'hooks/use-facebook-authorization';
@@ -17,10 +17,11 @@ import { FacebookAuthCodeFromEnumDto } from 'types/facebook/facebook-auth-code-f
 import { APPLE_CLIENT_ID, FB_CLIENT_ID, FB_STATE_PARAM } from 'utils/common-constants';
 import * as yup from 'yup';
 import { loginUser, loginViaGoogle } from '../../api/auth/requests';
+import { AuthenticationContext } from '../../components/context/providers/authentication-provider';
 import LabeledDivider from '../../components/labeled-divider';
 import OffliBackButton from '../../components/offli-back-button';
 import OffliButton from '../../components/offli-button';
-import { AuthenticationContext } from '../../context/providers/authentication-provider';
+import OffliTextField from '../../components/offli-text-field';
 import { useGoogleAuthorization } from '../../hooks/use-google-authorization';
 import { ApplicationLocations } from '../../types/common/applications-locations.dto';
 import { GoogleAuthCodeFromEnumDto } from '../../types/google/google-auth-code-from-enum.dto';
@@ -222,7 +223,7 @@ const LoginScreenWithSocialsV2: React.FC = () => {
             name="username"
             control={control}
             render={({ field, fieldState: { error } }) => (
-              <TextField
+              <OffliTextField
                 {...field}
                 data-testid="username-input"
                 label="Email or username"
@@ -235,7 +236,7 @@ const LoginScreenWithSocialsV2: React.FC = () => {
             name="password"
             control={control}
             render={({ field, fieldState: { error } }) => (
-              <TextField
+              <OffliTextField
                 {...field}
                 data-testid="password-input"
                 label="Password"

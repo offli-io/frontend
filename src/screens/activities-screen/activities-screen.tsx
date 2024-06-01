@@ -3,8 +3,8 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 import { getActivitiesPromiseResolved } from 'api/activities/requests';
 import { LayoutContext } from 'app/layout';
 import ActivityCard from 'components/activity-card';
+import { AuthenticationContext } from 'components/context/providers/authentication-provider';
 import Loader from 'components/loader';
-import { AuthenticationContext } from 'context/providers/authentication-provider';
 import { PAGED_ACTIVITIES_QUERY_KEY } from 'hooks/use-activities-infinite-query';
 import React from 'react';
 import InfiniteScroll from 'react-infinite-scroller';
@@ -148,8 +148,13 @@ const ActivitiesScreen = () => {
           }
         }}
         style={{ padding: 0 }}>
-        {SWIPE_ARRAY_ORDER.map((item) => (
-          <Tab key={item} label={ActivitiesTabLabelMap[item]} value={item} />
+        {SWIPE_ARRAY_ORDER.map((item, index) => (
+          <Tab
+            data-testid={`my-activities-tab-${index}`}
+            key={item}
+            label={ActivitiesTabLabelMap[item]}
+            value={item}
+          />
         ))}
       </Tabs>
       <Box sx={{ pt: 4 }} />

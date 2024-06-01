@@ -1,5 +1,5 @@
 import NearMeIcon from '@mui/icons-material/NearMe';
-import { Autocomplete, Box, TextField, Typography } from '@mui/material';
+import { Autocomplete, Box, Typography } from '@mui/material';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import React from 'react';
 import { useGeolocated } from 'react-geolocated';
@@ -8,10 +8,11 @@ import { toast } from 'sonner';
 import { useDebounce } from 'use-debounce';
 import { getLocationFromQueryFetch, getPlaceFromCoordinates } from '../api/activities/requests';
 import { updateProfileInfo } from '../api/users/requests';
-import { LocationContext } from '../context/providers/location-provider';
 import chooseLocationUrl from '../assets/img/choose-location.svg';
-import { AuthenticationContext } from '../context/providers/authentication-provider';
+import { AuthenticationContext } from '../components/context/providers/authentication-provider';
+import { LocationContext } from '../components/context/providers/location-provider';
 import OffliButton from '../components/offli-button';
+import OffliTextField from '../components/offli-text-field';
 import { ILocation } from '../types/activities/location.dto';
 import { IPlaceExternalApiResultDto } from '../types/activities/place-external-api.dto';
 import { ApplicationLocations } from '../types/common/applications-locations.dto';
@@ -145,10 +146,11 @@ const ChooseLocationScreen: React.FC = () => {
         onChange={handleLocationSelect}
         getOptionLabel={(option) => String(option?.formatted)}
         renderInput={(params) => (
-          <TextField
+          <OffliTextField
             {...params}
             label="Search place"
             onChange={(e) => setPlaceQuery(e.target.value)}
+            autoCapitalize="sentences"
           />
         )}
       />

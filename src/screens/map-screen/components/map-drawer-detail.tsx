@@ -12,7 +12,7 @@ import { toast } from 'sonner';
 import { ActivityInviteStateEnum } from 'types/activities/activity-invite-state-enum.dto';
 import { ActivityVisibilityEnum } from 'types/activities/activity-visibility-enum.dto';
 import { ApplicationLocations } from 'types/common/applications-locations.dto';
-import { AuthenticationContext } from '../../../context/providers/authentication-provider';
+import { AuthenticationContext } from '../../../components/context/providers/authentication-provider';
 import { ACTIVITIES_QUERY_KEY, useActivities } from '../../../hooks/use-activities';
 import { useGetApiUrl } from '../../../hooks/use-get-api-url';
 import { ActivitiyParticipantStatusEnum as ActivityParticipantStatusEnum } from '../../../types/activities/activity-participant-status-enum.dto';

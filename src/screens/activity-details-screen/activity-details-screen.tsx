@@ -4,10 +4,10 @@ import LockIcon from '@mui/icons-material/Lock';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
 import { Box, Typography, useTheme } from '@mui/material';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { CustomizationContext } from 'components/context/providers/customization-provider';
+import { DrawerContext } from 'components/context/providers/drawer-provider';
 import ImagePreviewModal from 'components/image-preview-modal/image-preview-modal';
 import Loader from 'components/loader';
-import { CustomizationContext } from 'context/providers/customization-provider';
-import { DrawerContext } from 'context/providers/drawer-provider';
 import { format, isAfter, isWithinInterval } from 'date-fns';
 import { ACTIVITIES_QUERY_KEY, useActivities } from 'hooks/use-activities';
 import { PAGED_ACTIVITIES_QUERY_KEY } from 'hooks/use-activities-infinite-query';
@@ -27,7 +27,7 @@ import {
   removePersonFromActivity
 } from '../../api/activities/requests';
 import userPlaceholder from '../../assets/img/user-placeholder.svg';
-import { AuthenticationContext } from '../../context/providers/authentication-provider';
+import { AuthenticationContext } from '../../components/context/providers/authentication-provider';
 import { useFeedbackAlreadySentByUser } from '../../hooks/use-feedback-already-sent-by-user';
 import { useGetApiUrl } from '../../hooks/use-get-api-url';
 import { useGoogleAuthorization } from '../../hooks/use-google-authorization';
@@ -426,6 +426,7 @@ const ActivityDetailsScreen: React.FC<IProps> = () => {
           }}>
           <Typography
             variant="h1"
+            data-testid="activity-title"
             sx={{
               ml: 1,
               mr: 1,

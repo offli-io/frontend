@@ -4,7 +4,7 @@ import React from 'react';
 import { toast } from 'sonner';
 import { IBuddiesResponseDto } from 'types/users/buddies-response.dto';
 import { getBuddies } from '../api/activities/requests';
-import { AuthenticationContext } from '../context/providers/authentication-provider';
+import { AuthenticationContext } from '../components/context/providers/authentication-provider';
 
 export interface IUseBuddiesProps {
   text?: string;

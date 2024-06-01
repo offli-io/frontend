@@ -7,15 +7,14 @@ import {
   IconButton,
   Radio,
   RadioGroup,
-  TextField,
   Typography
 } from '@mui/material';
 import { DateTimePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { AuthenticationContext } from 'components/context/providers/authentication-provider';
 import FileUploadModal from 'components/file-upload/components/file-upload-modal';
 import OffliButton from 'components/offli-button';
-import { AuthenticationContext } from 'context/providers/authentication-provider';
 import 'dayjs/locale/sk';
 import { PAGED_ACTIVITIES_QUERY_KEY } from 'hooks/use-activities-infinite-query';
 import React, { useEffect } from 'react';
@@ -37,6 +36,7 @@ import {
   updateActivity,
   uploadFile
 } from '../../api/activities/requests';
+import OffliTextField from '../../components/offli-text-field';
 import { PageWrapper } from '../../components/page-wrapper';
 import { ACTIVITIES_QUERY_KEY, useActivities } from '../../hooks/use-activities';
 import { useGetApiUrl } from '../../hooks/use-get-api-url';
@@ -297,13 +297,12 @@ const EditActivityScreen: React.FC = () => {
                       mt: 3
                     }}>
                     <Typography variant="h4">General information</Typography>
-                    <TextField
+                    <OffliTextField
                       {...field}
                       label="Title"
-                      variant="outlined"
                       error={!!error}
                       helperText={error?.message}
-                      //disabled={methodSelectionDisabled}
+                      autoCapitalize="sentences"
                       sx={{ width: '100%', mt: 3, mb: 2 }}
                     />
                   </Box>
@@ -337,7 +336,7 @@ const EditActivityScreen: React.FC = () => {
                       getOptionLabel={(option) => String(option?.formatted)}
                       // inputValue={inputValue ?? ""}
                       renderInput={(params) => (
-                        <TextField
+                        <OffliTextField
                           {...params}
                           label="Search place"
                           onChange={(e) => setValue('placeQuery', e.target.value)}
@@ -371,9 +370,8 @@ const EditActivityScreen: React.FC = () => {
                       label="Start date"
                       onChange={(e) => onChange(e)}
                       renderInput={(params) => (
-                        <TextField
+                        <OffliTextField
                           {...params}
-                          variant="outlined"
                           error={!!error}
                           helperText={error?.message}
                           sx={{
@@ -396,9 +394,8 @@ const EditActivityScreen: React.FC = () => {
                       disablePast
                       onChange={(e) => onChange(e)}
                       renderInput={(params) => (
-                        <TextField
+                        <OffliTextField
                           {...params}
-                          variant="outlined"
                           error={!!error}
                           helperText={error?.message}
                           sx={{
@@ -434,7 +431,7 @@ const EditActivityScreen: React.FC = () => {
                         mt: 2
                       }}
                       renderInput={(params) => (
-                        <TextField
+                        <OffliTextField
                           {...params}
                           // variant="outlined"
                           label="Select categories"
@@ -456,11 +453,10 @@ const EditActivityScreen: React.FC = () => {
                   name="limit"
                   control={control}
                   render={({ field, fieldState: { error } }) => (
-                    <TextField
+                    <OffliTextField
                       {...field}
                       type="number"
                       label="Maximum attendance"
-                      variant="outlined"
                       error={!!error}
                       helperText={error?.message}
                       InputLabelProps={{ shrink: true }}
@@ -473,11 +469,10 @@ const EditActivityScreen: React.FC = () => {
                   name="price"
                   control={control}
                   render={({ field, fieldState: { error } }) => (
-                    <TextField
+                    <OffliTextField
                       type="number"
                       {...field}
                       label="Price"
-                      variant="outlined"
                       error={!!error}
                       helperText={error?.message}
                       InputLabelProps={{ shrink: true }}
@@ -535,7 +530,7 @@ const EditActivityScreen: React.FC = () => {
                 name="description"
                 control={control}
                 render={({ field, fieldState: { error } }) => (
-                  <TextField
+                  <OffliTextField
                     {...field}
                     multiline
                     rows={3}
@@ -551,6 +546,7 @@ const EditActivityScreen: React.FC = () => {
                     }}
                     inputProps={{ maxLength: 200 }}
                     helperText={`${field?.value?.length ?? 0}/200`}
+                    autoCapitalize="sentences"
                     data-testid="description-input"
                   />
                 )}

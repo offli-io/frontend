@@ -1,4 +1,4 @@
-import { Autocomplete, Box, SxProps, TextField } from '@mui/material';
+import { Autocomplete, Box, SxProps } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import { getLocationFromQueryFetch, getPlaceFromCoordinates } from 'api/activities/requests';
 import { useActivities } from 'hooks/use-activities';
@@ -11,22 +11,23 @@ import { ILocation } from 'types/activities/location.dto';
 import { ThemeOptionsEnumDto } from 'types/settings/theme-options.dto';
 import { useDebounce } from 'use-debounce';
 import { mapExternalApiOptions } from 'utils/map-location-value.util';
+import {
+  getHistorySearchesFromStorage,
+  pushSearchResultIntoStorage
+} from 'utils/search-history-utils';
 import markerIcon from '../../assets/img/location-marker.svg';
 import wavePeople from '../../assets/img/your-location.svg';
-import { CustomizationContext } from '../../context/providers/customization-provider';
-import { DrawerContext } from '../../context/providers/drawer-provider';
 import MapDrawerDetail from '../../screens/map-screen/components/map-drawer-detail';
 import { IActivity } from '../../types/activities/activity.dto';
 import { IMapViewActivityDto } from '../../types/activities/mapview-activities.dto';
+import { CustomizationContext } from '../context/providers/customization-provider';
+import { DrawerContext } from '../context/providers/drawer-provider';
+import OffliTextField from '../offli-text-field';
 import BackButton from './components/back-button';
 import MapControl from './components/map-control';
 import RecenterAutomatically from './components/recenter-automatically';
 import SaveButton from './components/save-button';
 import UserLocationLoader from './components/user-location-loader';
-import {
-  getHistorySearchesFromStorage,
-  pushSearchResultIntoStorage
-} from 'utils/search-history-utils';
 
 // bratislava position
 const position = [48.1486, 17.1077] as LatLngTuple;
@@ -230,7 +231,7 @@ const Map: React.FC<IMapScreenProps> = ({
           inputValue={selectedLocation?.name}
           getOptionLabel={(option) => String(option?.name)}
           renderInput={(params) => (
-            <TextField
+            <OffliTextField
               {...params}
               placeholder={isFocused ? '' : 'Search places'}
               onChange={(e) => setPlaceQuery(e.target.value)}

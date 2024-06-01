@@ -3,7 +3,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { sendBuddyRequest } from '../../../api/activities/requests';
-import { AuthenticationContext } from '../../../context/providers/authentication-provider';
+import { AuthenticationContext } from '../../../components/context/providers/authentication-provider';
 
 interface IUseSendBuddyRequestProps {
   onSuccess?: () => void;

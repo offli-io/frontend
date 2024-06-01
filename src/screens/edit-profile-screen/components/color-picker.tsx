@@ -1,8 +1,9 @@
-import { Box, TextField, Typography } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import OffliButton from 'components/offli-button';
 import React from 'react';
 import { HexColorPicker } from 'react-colorful';
 import { useDebouncedCallback } from 'use-debounce';
+import OffliTextField from '../../../components/offli-text-field';
 
 export interface IColorProps {
   color: string;
@@ -49,7 +50,7 @@ const ColorPicker: React.FC<IColorProps> = ({ onColorChange, color }) => {
         onChange={handleTemporaryColorChange}
         style={{ width: '80%' }}
       />
-      <TextField
+      <OffliTextField
         sx={{ width: '60%', mt: 2 }}
         InputProps={{
           style: { textAlign: 'center' },

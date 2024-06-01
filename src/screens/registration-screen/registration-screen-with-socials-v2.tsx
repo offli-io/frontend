@@ -10,7 +10,6 @@ import {
   IconButton,
   InputAdornment,
   Link,
-  TextField,
   Typography,
   useTheme
 } from '@mui/material';
@@ -35,6 +34,7 @@ import { checkIfEmailAlreadyTaken } from '../../api/users/requests';
 import LabeledDivider from '../../components/labeled-divider';
 import OffliBackButton from '../../components/offli-back-button';
 import OffliButton from '../../components/offli-button';
+import OffliTextField from '../../components/offli-text-field';
 import { useGoogleAuthorization } from '../../hooks/use-google-authorization';
 import { ApplicationLocations } from '../../types/common/applications-locations.dto';
 import { GoogleAuthCodeFromEnumDto } from '../../types/google/google-auth-code-from-enum.dto';
@@ -255,13 +255,11 @@ export const RegistrationScreen: React.FC = () => {
               name="email"
               control={control}
               render={({ field, fieldState: { error } }) => (
-                <TextField
+                <OffliTextField
                   {...field}
-                  //   label="Username"
                   placeholder="Email"
                   error={!!error}
                   helperText={error?.message}
-                  //disabled={methodSelectionDisabled}
                   sx={{ width: '80%', mb: 2 }}
                   onBlur={(event) => setEmail(event.target.value)}
                 />
@@ -271,15 +269,12 @@ export const RegistrationScreen: React.FC = () => {
               name="password"
               control={control}
               render={({ field, fieldState: { error } }) => (
-                <TextField
+                <OffliTextField
                   {...field}
-                  //label="Username"
                   placeholder="Password"
                   type={showPassword ? 'text' : 'password'}
-                  // variant="filled"
                   error={!!error}
                   helperText={error?.message}
-                  //disabled={methodSelectionDisabled}
                   sx={{ width: '80%' }}
                   InputProps={{
                     endAdornment: (

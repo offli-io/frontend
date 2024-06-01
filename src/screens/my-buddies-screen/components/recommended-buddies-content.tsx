@@ -1,8 +1,8 @@
 import { Box, Typography } from '@mui/material';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { getRecommendedBuddies } from 'api/activities/requests';
-import { AuthenticationContext } from 'context/providers/authentication-provider';
 import BuddySuggestCard from 'components/buddy-suggest-card';
+import { AuthenticationContext } from 'components/context/providers/authentication-provider';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSendBuddyRequest } from 'screens/profile-screen/hooks/use-send-buddy-request';

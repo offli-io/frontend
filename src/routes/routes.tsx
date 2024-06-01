@@ -1,4 +1,4 @@
-import { AuthenticationContext } from 'context/providers/authentication-provider';
+import { AuthenticationContext } from 'components/context/providers/authentication-provider';
 import React from 'react';
 import { Routes as BaseRoutes, Route } from 'react-router-dom';
 import AccountSettingsScreen from 'screens/account-settings-screen/account-settings-screen';

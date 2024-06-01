@@ -1,19 +1,19 @@
 import { Box, Rating, Typography, useTheme } from '@mui/material';
-import OffliButton from 'components/offli-button';
-import React from 'react';
-import { IActivity } from 'types/activities/activity.dto';
-import { useGetApiUrl } from 'hooks/use-get-api-url';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { ICreatorFeedback } from '../../../types/users/user-feedback.dto';
-import { sendUserFeedback } from '../../../api/users/requests';
-import { toast } from 'sonner';
-import { DrawerContext } from '../../../context/providers/drawer-provider';
+import OffliButton from 'components/offli-button';
 import { format } from 'date-fns';
-import { ACTIVITY_ASPECT_RATIO, DATE_TIME_FORMAT } from '../../../utils/common-constants';
+import { useGetApiUrl } from 'hooks/use-get-api-url';
+import React from 'react';
+import { toast } from 'sonner';
+import { IActivity } from 'types/activities/activity.dto';
+import { sendUserFeedback } from '../../../api/users/requests';
 import firstTimeLoginUrl from '../../../assets/img/first-time-login.svg';
-import { AuthenticationContext } from '../../../context/providers/authentication-provider';
+import { AuthenticationContext } from '../../../components/context/providers/authentication-provider';
+import { DrawerContext } from '../../../components/context/providers/drawer-provider';
 import { FEEDBACK_ALREADY_SENT_BY_USER_QUERY_KEY } from '../../../hooks/use-feedback-already-sent-by-user';
 import { USER_STATS_QUERY_KEY } from '../../../hooks/use-user-stats';
+import { ICreatorFeedback } from '../../../types/users/user-feedback.dto';
+import { ACTIVITY_ASPECT_RATIO, DATE_TIME_FORMAT } from '../../../utils/common-constants';
 
 export interface IFeedbackDrawerProps {
   activity?: IActivity;

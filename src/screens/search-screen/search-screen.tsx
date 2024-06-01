@@ -1,3 +1,4 @@
+import ClearIcon from '@mui/icons-material/Clear';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import SearchIcon from '@mui/icons-material/Search';
 import {
@@ -7,27 +8,26 @@ import {
   InputAdornment,
   Tab,
   Tabs,
-  TextField,
   Typography
 } from '@mui/material';
-import { LocationContext } from 'context/providers/location-provider';
+import { LayoutContext } from 'app/layout';
+import BuddyItem from 'components/buddy-item';
+import { LocationContext } from 'components/context/providers/location-provider';
+import { useUsers } from 'hooks/use-users';
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { useDebounce } from 'use-debounce';
-import { HeaderContext } from '../../context/providers/header-provider';
-import { DrawerContext } from '../../context/providers/drawer-provider';
 import ActivitySearchCard from '../../components/activity-search-card';
+import { DrawerContext } from '../../components/context/providers/drawer-provider';
+import { HeaderContext } from '../../components/context/providers/header-provider';
+import OffliTextField from '../../components/offli-text-field';
 import { useActivities } from '../../hooks/use-activities';
 import { IActivityListRestDto } from '../../types/activities/activity-list-rest.dto';
 import { ApplicationLocations } from '../../types/common/applications-locations.dto';
 import FiltersDrawerContent from './components/filters-drawer-content';
 import { IFiltersDto } from './types/filters.dto';
-import { generateSortValue } from './utils/generate-sort-value.util';
 import { SearchTabDefinitionsEnum } from './types/search-tab-definitions-enum.dto';
-import { LayoutContext } from 'app/layout';
-import { useUsers } from 'hooks/use-users';
-import BuddyItem from 'components/buddy-item';
-import ClearIcon from '@mui/icons-material/Clear';
+import { generateSortValue } from './utils/generate-sort-value.util';
 
 const SearchScreen = () => {
   const navigate = useNavigate();
@@ -177,7 +177,7 @@ const SearchScreen = () => {
             justifyContent: 'center',
             width: '100%'
           }}>
-          <TextField
+          <OffliTextField
             sx={{
               width: '95%',
               display: 'flex',

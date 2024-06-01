@@ -1,7 +1,7 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import EditIcon from '@mui/icons-material/Edit';
 import InstagramIcon from '@mui/icons-material/Instagram';
-import { Autocomplete, Box, IconButton, TextField, Typography, useTheme } from '@mui/material';
+import { Autocomplete, Box, IconButton, Typography, useTheme } from '@mui/material';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -16,10 +16,11 @@ import * as yup from 'yup';
 import { getLocationFromQueryFetch, uploadFile } from '../../api/activities/requests';
 import { unlinkInstagram, updateProfileInfo } from '../../api/users/requests';
 import userPlaceholder from '../../assets/img/user-placeholder.svg';
+import { AuthenticationContext } from '../../components/context/providers/authentication-provider';
+import { DrawerContext } from '../../components/context/providers/drawer-provider';
 import OffliButton from '../../components/offli-button';
+import OffliTextField from '../../components/offli-text-field';
 import { PageWrapper } from '../../components/page-wrapper';
-import { AuthenticationContext } from '../../context/providers/authentication-provider';
-import { DrawerContext } from '../../context/providers/drawer-provider';
 import { useGetApiUrl } from '../../hooks/use-get-api-url';
 import { useUser } from '../../hooks/use-user';
 import { ILocation } from '../../types/activities/location.dto';
@@ -416,13 +417,12 @@ const EditProfileScreen: React.FC = () => {
                 render={({ field, fieldState: { error } }) => (
                   <>
                     <Typography variant="h5">Username</Typography>
-                    <TextField
+                    <OffliTextField
                       {...field}
                       error={!!error}
                       helperText={error?.message}
                       sx={{ width: '100%', my: 1.5 }}
                       data-testid="name-input"
-                      // label="Name"
                     />
                   </>
                 )}
@@ -446,7 +446,7 @@ const EditProfileScreen: React.FC = () => {
                         maxDate={new Date()}
                         data-testid="birthdate-date-picker"
                         renderInput={(params) => (
-                          <TextField
+                          <OffliTextField
                             {...params}
                             sx={{ width: '100%', my: 1.5 }}
                             error={!!error}
@@ -490,12 +490,12 @@ const EditProfileScreen: React.FC = () => {
                       inputValue={field?.value?.name}
                       getOptionLabel={(option) => String(option?.name)}
                       renderInput={(params) => (
-                        <TextField
+                        <OffliTextField
                           {...params}
-                          // label="Location"
                           onChange={(e) => setValue('placeQuery', e.target.value)}
                           error={!!error}
                           helperText={!!error && 'Location is required'}
+                          autoCapitalize="sentences"
                         />
                       )}
                       data-testid="activity-place-input"
@@ -511,7 +511,7 @@ const EditProfileScreen: React.FC = () => {
                     <Typography variant="h5" sx={{ mt: 2 }}>
                       About me
                     </Typography>
-                    <TextField
+                    <OffliTextField
                       {...field}
                       multiline
                       rows={3}
@@ -526,6 +526,7 @@ const EditProfileScreen: React.FC = () => {
                       helperText={`${field?.value?.length ?? 0}/200`}
                       inputProps={{ maxLength: 200 }}
                       data-testid="about-me-input"
+                      autoCapitalize="sentences"
                     />
                   </>
                 )}

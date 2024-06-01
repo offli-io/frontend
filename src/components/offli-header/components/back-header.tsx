@@ -3,7 +3,7 @@ import { Box, IconButton, SxProps, Typography } from '@mui/material';
 import React from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { ApplicationLocations } from 'types/common/applications-locations.dto';
-import { HeaderContext } from '../../../context/providers/header-provider';
+import { HeaderContext } from '../../context/providers/header-provider';
 
 interface IBackHeaderProps {
   title?: string;
@@ -114,7 +114,7 @@ const BackHeader: React.FC<IBackHeaderProps> = ({
           left: 0,
           textTransform: 'none'
         }}>
-        <ArrowBackIosNewIcon sx={{ color: 'primary.main' }} />
+        <ArrowBackIosNewIcon sx={{ color: 'primary.main' }} data-testid="navigate-back-button" />
       </IconButton>
       <Box>
         <Typography variant="h4" sx={{ color: ({ palette }) => palette?.text.primary }}>

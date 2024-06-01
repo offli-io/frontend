@@ -8,12 +8,12 @@ import BottomNavigation from '@mui/material/BottomNavigation';
 import BottomNavigationAction from '@mui/material/BottomNavigationAction';
 import * as React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { CustomizationContext } from '../../context/providers/customization-provider';
+import { TabDefinitionsEnum } from 'screens/activities-screen/utils/tab-definitions';
+import { ThemeOptionsEnumDto } from 'types/settings/theme-options.dto';
 import { ApplicationLocations } from '../../types/common/applications-locations.dto';
 import { FOOTER_HEIGHT } from '../../utils/common-constants';
+import { CustomizationContext } from '../context/providers/customization-provider';
 import { mapLocationToNavigatorValue } from './utils/map-location-to-navigator-value.util';
-import { ThemeOptionsEnumDto } from 'types/settings/theme-options.dto';
-import { TabDefinitionsEnum } from 'screens/activities-screen/utils/tab-definitions';
 
 interface IBottomNavigatorProps {
   sx?: SxProps;
@@ -76,7 +76,7 @@ const BottomNavigator: React.FC<IBottomNavigatorProps> = () => {
           component={Link}
           value={ApplicationLocations.EXPLORE}
           to={ApplicationLocations.EXPLORE}
-          data-testid="navigator-activities"
+          data-testid="navigator-explore"
           sx={{
             fontSize: value === ApplicationLocations.EXPLORE ? 10 : 8,
             ...(theme === ThemeOptionsEnumDto.DARK ? { color: palette?.text?.primary } : {})

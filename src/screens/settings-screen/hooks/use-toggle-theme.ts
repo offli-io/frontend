@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { changeUserSettings } from 'api/settings/requests';
-import { AuthenticationContext } from 'context/providers/authentication-provider';
+import { AuthenticationContext } from 'components/context/providers/authentication-provider';
 import { USER_SETTINGS_QUERY_KEY } from 'hooks/use-user-settings';
 import React from 'react';
 import { toast } from 'sonner';

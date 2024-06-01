@@ -9,11 +9,11 @@ import { BrowserRouter } from 'react-router-dom';
 import { OffliUserAgent } from 'types/common/offli-user-agent-enum.dto';
 import { setPlatformToStorage } from 'utils/storage.util';
 import './App.css';
-import { AuthenticationProvider } from './context/providers/authentication-provider';
-import { CustomizationProvider } from './context/providers/customization-provider';
-import { DrawerProvider } from './context/providers/drawer-provider';
-import { HeaderProvider } from './context/providers/header-provider';
-import { LocationProvider } from './context/providers/location-provider';
+import { AuthenticationProvider } from './components/context/providers/authentication-provider';
+import { CustomizationProvider } from './components/context/providers/customization-provider';
+import { DrawerProvider } from './components/context/providers/drawer-provider';
+import { HeaderProvider } from './components/context/providers/header-provider';
+import { LocationProvider } from './components/context/providers/location-provider';
 import Router from './routes/router';
 
 const queryClient = new QueryClient({

@@ -3,8 +3,8 @@ import {
   getActivitiesPromiseResolved,
   getActivitiesPromiseResolvedAnonymous
 } from 'api/activities/requests';
-import { AuthenticationContext } from 'context/providers/authentication-provider';
-import { LocationContext } from 'context/providers/location-provider';
+import { AuthenticationContext } from 'components/context/providers/authentication-provider';
+import { LocationContext } from 'components/context/providers/location-provider';
 import React from 'react';
 import { IActivitiesParamsDto } from 'types/activities/activities-params.dto';
 import { ActivitySortColumnEnum } from 'types/activities/activity-sort-enum.dto';

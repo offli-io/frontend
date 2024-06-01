@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { ActivityDurationTypeEnumDto } from 'types/activities/activity-duration-type-enum.dto';
 import { createActivity } from '../../api/activities/requests';
-import { AuthenticationContext } from '../../context/providers/authentication-provider';
+import { AuthenticationContext } from '../../components/context/providers/authentication-provider';
 import { PageWrapper } from '../../components/page-wrapper';
 import DotsMobileStepper from '../../components/stepper';
 import { useUser } from '../../hooks/use-user';

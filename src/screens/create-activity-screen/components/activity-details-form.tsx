@@ -6,13 +6,13 @@ import {
   IconButton,
   Radio,
   RadioGroup,
-  TextField,
   Typography,
   useTheme
 } from '@mui/material';
 import React from 'react';
 import { Controller, UseFormReturn } from 'react-hook-form';
 import OffliButton from '../../../components/offli-button';
+import OffliTextField from '../../../components/offli-text-field';
 import { ActivityVisibilityEnum } from '../../../types/activities/activity-visibility-enum.dto';
 
 interface IPlaceFormProps {
@@ -73,7 +73,7 @@ export const ActivityDetailsForm: React.FC<IPlaceFormProps> = ({
                 name="limit"
                 control={control}
                 render={({ field, fieldState: { error } }) => (
-                  <TextField
+                  <OffliTextField
                     {...field}
                     type="number"
                     error={!!error}
@@ -110,38 +110,15 @@ export const ActivityDetailsForm: React.FC<IPlaceFormProps> = ({
                     value={ActivityVisibilityEnum.public}
                     control={<Radio />}
                     label="Anyone"
+                    data-testid="public-activity-radio"
                   />
                   <FormControlLabel
                     value={ActivityVisibilityEnum.private}
                     control={<Radio color="primary" />}
                     label="Invited users only"
+                    data-testid="private-activity-radio"
                   />
                 </RadioGroup>
-                {/* <Box sx={{ display: "flex", alignItems: "center" }}>
-                    <Switch
-                      sx={{ mx: 1 }}
-                      value={
-                        field?.value === ActivityVisibilityEnum.private
-                          ? false
-                          : true
-                      }
-                      checked={
-                        field?.value === ActivityVisibilityEnum.private
-                          ? false
-                          : true
-                      }
-                      onChange={(e) => {
-                        field.onChange(
-                          e.target.checked
-                            ? ActivityVisibilityEnum.public
-                            : ActivityVisibilityEnum.private
-                        );
-                      }}
-                      color="primary"
-                      data-testid="accessibility-switch"
-                    />
-                    <FormLabel>{field.value === ActivityVisibilityEnum.public ? "Anyone" : "Only invited users"}</FormLabel>
-                  </Box> */}
               </Box>
               <Typography variant="h4" sx={{ mb: 3, mt: 3 }}>
                 Fees & description
@@ -157,7 +134,7 @@ export const ActivityDetailsForm: React.FC<IPlaceFormProps> = ({
                   name="price"
                   control={control}
                   render={({ field, fieldState: { error } }) => (
-                    <TextField
+                    <OffliTextField
                       {...field}
                       id="outlined-select-currency"
                       // sx={{ width: "100%", mb: 5 }}
@@ -216,31 +193,6 @@ export const ActivityDetailsForm: React.FC<IPlaceFormProps> = ({
                   )}
                 />
               </Box>
-
-              {/* 
-              TODO FOR v2 maybe
-              <Controller
-                name="repeated"
-                control={control}
-                render={({ field, fieldState: { error } }) => (
-                  <TextField
-                    {...field}
-                    id="outlined-select-currency"
-                    select
-                    label="Does activity repeat?"
-                    sx={{ width: '100%', mb: 5 }}
-                    // helperText="Please select your currency"
-                  >
-                    {Object.values(ActivityRepetitionOptionsEnum).map(
-                      option => (
-                        <MenuItem key={option} value={option}>
-                          {option}
-                        </MenuItem>
-                      )
-                    )}
-                  </TextField>
-                )}
-              /> */}
             </Box>
           )}
         />
@@ -249,7 +201,7 @@ export const ActivityDetailsForm: React.FC<IPlaceFormProps> = ({
           name="description"
           control={control}
           render={({ field, fieldState: { error } }) => (
-            <TextField
+            <OffliTextField
               {...field}
               multiline
               rows={3}
@@ -265,6 +217,7 @@ export const ActivityDetailsForm: React.FC<IPlaceFormProps> = ({
               }}
               inputProps={{ maxLength: 200 }}
               helperText={`${field?.value?.length ?? 0}/200`}
+              autoCapitalize="sentences"
               data-testid="description-input"
             />
           )}

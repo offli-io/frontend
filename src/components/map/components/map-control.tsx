@@ -2,7 +2,7 @@ import AddIcon from '@mui/icons-material/Add';
 import MyLocationIcon from '@mui/icons-material/MyLocation';
 import RemoveIcon from '@mui/icons-material/Remove';
 import { Box, Divider, IconButton } from '@mui/material';
-import { CustomizationContext } from 'context/providers/customization-provider';
+import { CustomizationContext } from 'components/context/providers/customization-provider';
 import { useCurrentLocation } from 'hooks/use-current-location';
 import React from 'react';
 import { useMap } from 'react-leaflet';

@@ -1,8 +1,9 @@
-import { Box, TextField, Typography, useTheme } from '@mui/material';
+import { Box, Typography, useTheme } from '@mui/material';
 import React from 'react';
 import { Controller, UseFormReturn } from 'react-hook-form';
-import OffliButton from '../../../components/offli-button';
 import createActivityImg from '../../../assets/img/create-activity.svg';
+import OffliButton from '../../../components/offli-button';
+import OffliTextField from '../../../components/offli-text-field';
 import { FormValues } from '../utils/validation-schema';
 
 interface INameFormProps {
@@ -43,13 +44,14 @@ export const NameForm: React.FC<INameFormProps> = ({ onNextClicked, methods }) =
           name="title"
           control={control}
           render={({ field, fieldState: { error } }) => (
-            <TextField
+            <OffliTextField
               {...field}
               error={!!error}
               sx={{ width: '100%' }}
               label="Activity name"
               placeholder="Type activity name"
               helperText={!!error && 'Activity name is required'}
+              autoCapitalize="sentences"
               data-testid="activity-name-input"
             />
           )}

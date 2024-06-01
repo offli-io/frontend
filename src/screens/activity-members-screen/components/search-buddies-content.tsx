@@ -1,20 +1,14 @@
 import SearchIcon from '@mui/icons-material/Search';
-import {
-  Box,
-  CircularProgress,
-  InputAdornment,
-  TextField,
-  Typography,
-  useTheme
-} from '@mui/material';
+import { Box, CircularProgress, InputAdornment, Typography, useTheme } from '@mui/material';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import React from 'react';
 import { toast } from 'sonner';
 import { useDebounce } from 'use-debounce';
 import { getActivityParticipants, inviteBuddyToActivity } from '../../../api/activities/requests';
 import BuddyItem from '../../../components/buddy-item';
+import { AuthenticationContext } from '../../../components/context/providers/authentication-provider';
 import OffliButton from '../../../components/offli-button';
-import { AuthenticationContext } from '../../../context/providers/authentication-provider';
+import OffliTextField from '../../../components/offli-text-field';
 import { useBuddies } from '../../../hooks/use-buddies';
 import { ActivityInviteStateEnum } from '../../../types/activities/activity-invite-state-enum.dto';
 import { IPerson } from '../../../types/activities/activity.dto';
@@ -83,7 +77,7 @@ const SearchBuddiesContent: React.FC<IAddBuddiesContentProps> = ({ activityId })
 
   return (
     <Box sx={{ height: 450, position: 'relative', overflow: 'hidden' }}>
-      <TextField
+      <OffliTextField
         sx={{
           width: '100%',
           display: 'flex',
