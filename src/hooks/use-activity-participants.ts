@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
-import { AuthenticationContext } from 'context/providers/authentication-provider';
 import { AxiosResponse } from 'axios';
+import { AuthenticationContext } from 'components/context/providers/authentication-provider';
 import React from 'react';
 import { toast } from 'sonner';
 import {

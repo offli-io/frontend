@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import React from 'react';
 import { toast } from 'sonner';
 import { toggleBuddyInvitation } from '../../../api/users/requests';
-import { AuthenticationContext } from '../../../context/providers/authentication-provider';
+import { AuthenticationContext } from '../../../components/context/providers/authentication-provider';
 import { BuddyRequestActionEnum } from '../../../types/users/buddy-request-action-enum.dto';
 
 interface IToggleBuddyRequestValues {

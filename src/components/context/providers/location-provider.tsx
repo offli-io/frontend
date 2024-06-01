@@ -1,8 +1,8 @@
 import React from 'react';
 
+import { useUser } from '../../../hooks/use-user';
+import { ILocation } from '../../../types/activities/location.dto';
 import { AuthenticationContext } from './authentication-provider';
-import { useUser } from '../../hooks/use-user';
-import { ILocation } from '../../types/activities/location.dto';
 
 interface ILocationContext {
   location?: ILocation | null;

@@ -1,7 +1,7 @@
-import { Outlet, Navigate } from 'react-router-dom';
-import { AuthenticationContext } from '../context/providers/authentication-provider';
 import React from 'react';
+import { Navigate, Outlet } from 'react-router-dom';
 import { getAuthToken } from '../utils/token.util';
+import { AuthenticationContext } from './context/providers/authentication-provider';
 
 export const PrivateRoutes = () => {
   const { stateToken, setStateToken, setUserInfo, userInfo } =

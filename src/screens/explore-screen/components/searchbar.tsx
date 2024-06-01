@@ -1,7 +1,7 @@
-import React from 'react';
-import { Autocomplete, InputAdornment, TextField } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
+import { Autocomplete, InputAdornment } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import OffliTextField from '../../../components/offli-text-field';
 import { ApplicationLocations } from '../../../types/common/applications-locations.dto';
 
 const Searchbar = () => {
@@ -19,7 +19,7 @@ const Searchbar = () => {
       }}
       onFocus={() => navigate(ApplicationLocations.SEARCH)}
       renderInput={(params) => (
-        <TextField
+        <OffliTextField
           {...params}
           placeholder="What activity or user are you looking for?"
           InputProps={{
@@ -41,6 +41,7 @@ const Searchbar = () => {
             backgroundColor: ({ palette }) => palette?.primary?.light,
             borderRadius: '10px'
           }}
+          autoCapitalize="on"
           data-testid="activities-search-input"
         />
       )}

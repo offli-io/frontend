@@ -1,10 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
 import { AxiosResponse } from 'axios';
+import { AuthenticationContext } from 'components/context/providers/authentication-provider';
+import React from 'react';
 import { toast } from 'sonner';
 import { IActivitiesParamsDto } from 'types/activities/activities-params.dto';
 import { getActivity, getActivityAnonymous } from '../api/activities/requests';
-import { AuthenticationContext } from 'context/providers/authentication-provider';
-import React from 'react';
 
 export const ACTIVITIES_QUERY_KEY = 'activities';
 

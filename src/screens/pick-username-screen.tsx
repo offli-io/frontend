@@ -1,8 +1,8 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Box, TextField, Typography } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { registerViaGoogle } from 'api/auth/requests';
-import { AuthenticationContext } from 'context/providers/authentication-provider';
+import { AuthenticationContext } from 'components/context/providers/authentication-provider';
 import { useAppleAuthorization } from 'hooks/use-apple-authorization';
 import { useFacebookAuthorization } from 'hooks/use-facebook-authorization';
 import { useGetApiUrl } from 'hooks/use-get-api-url';
@@ -20,6 +20,7 @@ import * as yup from 'yup';
 import { checkIfUsernameAlreadyTaken, preCreateUser } from '../api/users/requests';
 import OffliBackButton from '../components/offli-back-button';
 import OffliButton from '../components/offli-button';
+import OffliTextField from '../components/offli-text-field';
 import { ApplicationLocations } from '../types/common/applications-locations.dto';
 import { IEmailPassword, IEmailUsernamePassword, IUsername } from '../types/users/user.dto';
 
@@ -176,7 +177,7 @@ const PickUsernameScreen = () => {
           name="username"
           control={control}
           render={({ field, fieldState: { error } }) => (
-            <TextField
+            <OffliTextField
               {...field}
               placeholder="Username"
               error={!!error}

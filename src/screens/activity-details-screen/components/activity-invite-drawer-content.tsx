@@ -1,5 +1,5 @@
 import SearchIcon from '@mui/icons-material/Search';
-import { Box, InputAdornment, TextField, Typography } from '@mui/material';
+import { Box, InputAdornment, Typography } from '@mui/material';
 import { useMutation } from '@tanstack/react-query';
 import Loader from 'components/loader';
 import { useActivity } from 'hooks/use-activity';
@@ -9,7 +9,8 @@ import { toast } from 'sonner';
 import { useDebounce } from 'use-debounce';
 import { inviteBuddyToActivity, uninviteBuddy } from '../../../api/activities/requests';
 import BuddyItemInvite from '../../../components/buddy-item-invite';
-import { AuthenticationContext } from '../../../context/providers/authentication-provider';
+import { AuthenticationContext } from '../../../components/context/providers/authentication-provider';
+import OffliTextField from '../../../components/offli-text-field';
 import { ActivityInviteStateEnum } from '../../../types/activities/activity-invite-state-enum.dto';
 import { IPerson } from '../../../types/activities/activity.dto';
 import InviteActionButtons from './invite-action-buttons';
@@ -98,7 +99,7 @@ export const ActivityInviteDrawerContent: React.FC<IActivityTypeFormProps> = ({ 
           justifyContent: 'space-between',
           width: '100%'
         }}>
-        <TextField
+        <OffliTextField
           value={queryString}
           onChange={(e) => setQueryString(e.target.value)}
           onClick={clearPlaceholder}

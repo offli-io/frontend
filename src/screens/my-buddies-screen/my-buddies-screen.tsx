@@ -1,22 +1,17 @@
+import ClearIcon from '@mui/icons-material/Clear';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import SearchIcon from '@mui/icons-material/Search';
-import {
-  Box,
-  CircularProgress,
-  IconButton,
-  InputAdornment,
-  TextField,
-  Typography
-} from '@mui/material';
+import { Box, CircularProgress, IconButton, InputAdornment, Typography } from '@mui/material';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { deleteBuddy } from '../../api/users/requests';
-import { AuthenticationContext } from '../../context/providers/authentication-provider';
-import { DrawerContext } from '../../context/providers/drawer-provider';
 import BuddyItem from '../../components/buddy-item';
+import { AuthenticationContext } from '../../components/context/providers/authentication-provider';
+import { DrawerContext } from '../../components/context/providers/drawer-provider';
+import OffliTextField from '../../components/offli-text-field';
 import { useBuddies } from '../../hooks/use-buddies';
 import { IPerson } from '../../types/activities/activity.dto';
 import { ApplicationLocations } from '../../types/common/applications-locations.dto';
@@ -25,7 +20,6 @@ import AddBuddiesContent from './components/add-buddies-content';
 import BuddyActions from './components/buddy-actions';
 import NoBuddiesScreen from './components/no-buddies-screen';
 import RecommendedBuddiesContent from './components/recommended-buddies-content';
-import ClearIcon from '@mui/icons-material/Clear';
 
 const MyBuddiesScreen = () => {
   const navigate = useNavigate();
@@ -132,7 +126,7 @@ const MyBuddiesScreen = () => {
                 zIndex: 20,
                 bgcolor: ({ palette }) => palette?.background?.default
               }}>
-              <TextField
+              <OffliTextField
                 sx={{
                   width: '95%',
                   display: 'flex',

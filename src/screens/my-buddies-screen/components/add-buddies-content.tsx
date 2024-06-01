@@ -1,5 +1,5 @@
 import SearchIcon from '@mui/icons-material/Search';
-import { Box, InputAdornment, LinearProgress, TextField, Typography } from '@mui/material';
+import { Box, InputAdornment, LinearProgress, Typography } from '@mui/material';
 import { useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { getUsersPromiseResolved } from 'api/activities/requests';
 import { toggleBuddyInvitation } from 'api/users/requests';
@@ -12,8 +12,9 @@ import { BuddyRequestActionEnum } from 'types/users';
 import { useDebounce } from 'use-debounce';
 import { USERS_LIMIT } from 'utils/common-constants';
 import BuddyItem from '../../../components/buddy-item';
-import { AuthenticationContext } from '../../../context/providers/authentication-provider';
-import { DrawerContext } from '../../../context/providers/drawer-provider';
+import { AuthenticationContext } from '../../../components/context/providers/authentication-provider';
+import { DrawerContext } from '../../../components/context/providers/drawer-provider';
+import OffliTextField from '../../../components/offli-text-field';
 import { useBuddies } from '../../../hooks/use-buddies';
 import { PAGED_USERS_QUERY_KEY, useUsers } from '../../../hooks/use-users';
 import { IPerson } from '../../../types/activities/activity.dto';
@@ -148,7 +149,7 @@ const AddBuddiesContent: React.FC<IAddBuddiesContentProps> = ({ navigate }) => {
 
   return (
     <Box sx={{ mx: 1.5, maxHeight: 500, position: 'relative', overflow: 'hidden' }}>
-      <TextField
+      <OffliTextField
         sx={{
           width: '95%',
           display: 'flex',

@@ -1,7 +1,7 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
-import { Box, IconButton, InputAdornment, TextField, Typography, useTheme } from '@mui/material';
+import { Box, IconButton, InputAdornment, Typography, useTheme } from '@mui/material';
 import { useMutation } from '@tanstack/react-query';
 import Logo from 'components/logo';
 import React from 'react';
@@ -10,9 +10,10 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import * as yup from 'yup';
 import { loginUser } from '../../api/auth/requests';
+import { AuthenticationContext } from '../../components/context/providers/authentication-provider';
 import OffliBackButton from '../../components/offli-back-button';
 import OffliButton from '../../components/offli-button';
-import { AuthenticationContext } from '../../context/providers/authentication-provider';
+import OffliTextField from '../../components/offli-text-field';
 import { ApplicationLocations } from '../../types/common/applications-locations.dto';
 export interface FormValues {
   username: string;
@@ -108,7 +109,7 @@ const LoginScreen: React.FC = () => {
             name="username"
             control={control}
             render={({ field, fieldState: { error } }) => (
-              <TextField
+              <OffliTextField
                 {...field}
                 data-testid="username-input"
                 label="Email or username"
@@ -121,7 +122,7 @@ const LoginScreen: React.FC = () => {
             name="password"
             control={control}
             render={({ field, fieldState: { error } }) => (
-              <TextField
+              <OffliTextField
                 {...field}
                 data-testid="password-input"
                 label="Password"

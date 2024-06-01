@@ -1,7 +1,7 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
-import { Box, IconButton, InputAdornment, TextField, Typography } from '@mui/material';
+import { Box, IconButton, InputAdornment, Typography } from '@mui/material';
 import { useMutation } from '@tanstack/react-query';
 import React from 'react';
 import { Controller, useForm } from 'react-hook-form';
@@ -9,6 +9,7 @@ import { toast } from 'sonner';
 import * as yup from 'yup';
 import { confirmResetPassword } from '../../../api/auth/requests';
 import OffliButton from '../../../components/offli-button';
+import OffliTextField from '../../../components/offli-text-field';
 
 export interface FormValues {
   password: string;
@@ -115,7 +116,7 @@ const NewPasswordForm: React.FC<INewPasswordFormProps> = ({
         name="password"
         control={control}
         render={({ field, fieldState: { error } }) => (
-          <TextField
+          <OffliTextField
             {...field}
             type={showPassword ? 'text' : 'password'}
             label="New password"
@@ -139,7 +140,7 @@ const NewPasswordForm: React.FC<INewPasswordFormProps> = ({
         name="repeated_password"
         control={control}
         render={({ field, fieldState: { error } }) => (
-          <TextField
+          <OffliTextField
             {...field}
             type={showPassword ? 'text' : 'password'}
             label="Repeat password"

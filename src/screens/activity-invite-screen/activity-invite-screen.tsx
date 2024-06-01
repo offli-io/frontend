@@ -1,4 +1,4 @@
-import { Box, CircularProgress, TextField, Typography } from '@mui/material';
+import { Box, CircularProgress, Typography } from '@mui/material';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useBuddies } from 'hooks/use-buddies';
 import React from 'react';
@@ -10,8 +10,9 @@ import {
   inviteBuddyToActivity,
   uninviteBuddy
 } from '../../api/activities/requests';
-import { AuthenticationContext } from '../../context/providers/authentication-provider';
 import BuddyItemInvite from '../../components/buddy-item-invite';
+import { AuthenticationContext } from '../../components/context/providers/authentication-provider';
+import OffliTextField from '../../components/offli-text-field';
 import { ActivityInviteStateEnum } from '../../types/activities/activity-invite-state-enum.dto';
 import { ActivitiyParticipantStatusEnum } from '../../types/activities/activity-participant-status-enum.dto';
 import { IPerson } from '../../types/activities/activity.dto';
@@ -99,7 +100,7 @@ export const ActivityInviteScreen: React.FC = () => {
         boxSizing: 'border-box',
         p: 2
       }}>
-      <TextField
+      <OffliTextField
         value={queryString}
         onChange={(e) => setQueryString(e.target.value)}
         sx={{ width: '100%' }}

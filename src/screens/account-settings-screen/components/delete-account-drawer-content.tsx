@@ -1,8 +1,8 @@
 import { Box, Typography } from '@mui/material';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { removeAccount } from 'api/auth/requests';
+import { AuthenticationContext } from 'components/context/providers/authentication-provider';
 import OffliButton from 'components/offli-button';
-import { AuthenticationContext } from 'context/providers/authentication-provider';
 import { useUserSettings } from 'hooks/use-user-settings';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -62,24 +62,6 @@ const DeleteAccountDrawerContent = () => {
       <Typography sx={{ textAlign: 'center' }}>
         This action will be permanent and you will loose full access to Offli
       </Typography>
-      {/* <TextField
-        value={password}
-        onChange={(e) => setPassword(e?.target?.value)}
-        data-testid="password-input"
-        label="Password"
-        type={showPassword ? 'text' : 'password'}
-        sx={{ width: '90%' }}
-        InputProps={{
-          endAdornment: (
-            <InputAdornment position="end">
-              <IconButton onClick={handleClickShowPassword}>
-                {showPassword ? <VisibilityIcon /> : <VisibilityOffIcon />}
-              </IconButton>
-            </InputAdornment>
-          )
-        }}
-      /> */}
-
       <OffliButton
         data-testid="submit-btn"
         sx={{ my: 4, width: '70%' }}

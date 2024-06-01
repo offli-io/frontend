@@ -1,5 +1,5 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Box, TextField, Typography } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import { useMutation } from '@tanstack/react-query';
 import React from 'react';
 import { Controller, useForm } from 'react-hook-form';
@@ -7,6 +7,7 @@ import { toast } from 'sonner';
 import * as yup from 'yup';
 import { resetPassword } from '../../../api/auth/requests';
 import OffliButton from '../../../components/offli-button';
+import OffliTextField from '../../../components/offli-text-field';
 
 interface IResetPasswordFormProps {
   onSuccess: (email: string) => void;
@@ -80,8 +81,7 @@ const ResetPasswordForm: React.FC<IResetPasswordFormProps> = ({ onSuccess }) => 
         name="email"
         control={control}
         render={({ field, fieldState: { error } }) => (
-          <TextField
-            // autoFocus
+          <OffliTextField
             {...field}
             data-testid="email-input"
             placeholder="Email"

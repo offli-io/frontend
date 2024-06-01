@@ -1,9 +1,10 @@
 import InfoIcon from '@mui/icons-material/Info';
-import { Box, TextField, Typography } from '@mui/material';
+import { Box, Typography } from '@mui/material';
+import LabeledDivider from 'components/labeled-divider';
 import OffliButton from 'components/offli-button';
 import React from 'react';
 import connectInstagramPhoto from '../../../assets/img/connect-instagram.svg';
-import LabeledDivider from 'components/labeled-divider';
+import OffliTextField from '../../../components/offli-text-field';
 
 export interface IActivityActionsProps {
   instagramUsername?: string | null;
@@ -35,7 +36,7 @@ const InstagramDrawerActions: React.FC<IActivityActionsProps> = ({
       <img src={connectInstagramPhoto} alt="connect_instagram" style={{ height: 80, margin: 20 }} />
       {instagramUsername ? (
         <>
-          <TextField
+          <OffliTextField
             value={`@${instagramUsername}`}
             disabled
             sx={{

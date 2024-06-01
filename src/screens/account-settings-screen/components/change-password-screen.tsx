@@ -1,5 +1,5 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Box, IconButton, InputAdornment, TextField, Typography } from '@mui/material';
+import { Box, IconButton, InputAdornment, Typography } from '@mui/material';
 import React from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import * as yup from 'yup';
@@ -8,11 +8,12 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import { useMutation } from '@tanstack/react-query';
 import { changePassword } from 'api/auth/requests';
+import { AuthenticationContext } from 'components/context/providers/authentication-provider';
 import OffliButton from 'components/offli-button';
-import { AuthenticationContext } from 'context/providers/authentication-provider';
+import { PageWrapper } from 'components/page-wrapper';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
-import { PageWrapper } from 'components/page-wrapper';
+import OffliTextField from '../../../components/offli-text-field';
 
 export interface FormValues {
   oldPassword: string;
@@ -78,7 +79,7 @@ const ChangePasswordScreen = () => {
           name="oldPassword"
           control={control}
           render={({ field, fieldState: { error } }) => (
-            <TextField
+            <OffliTextField
               {...field}
               data-testid="password-input"
               label="Current password"
@@ -104,7 +105,7 @@ const ChangePasswordScreen = () => {
           name="newPassword"
           control={control}
           render={({ field, fieldState: { error } }) => (
-            <TextField
+            <OffliTextField
               {...field}
               data-testid="password-input"
               label="New password"

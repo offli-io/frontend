@@ -2,7 +2,7 @@ import AddRoundedIcon from '@mui/icons-material/AddRounded';
 import OfflineBoltIcon from '@mui/icons-material/OfflineBolt';
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 import { Box, CircularProgress, IconButton, Typography } from '@mui/material';
-import { AuthenticationContext } from 'context/providers/authentication-provider';
+import { AuthenticationContext } from 'components/context/providers/authentication-provider';
 import { useUser } from 'hooks/use-user';
 import React from 'react';
 import { useNavigate, useParams } from 'react-router-dom';

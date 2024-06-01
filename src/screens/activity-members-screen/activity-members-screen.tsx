@@ -10,7 +10,6 @@ import {
   InputAdornment,
   Tab,
   Tabs,
-  TextField,
   Typography
 } from '@mui/material';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -27,8 +26,9 @@ import {
   uninviteBuddy
 } from '../../api/activities/requests';
 import BuddyItem from '../../components/buddy-item';
-import { AuthenticationContext } from '../../context/providers/authentication-provider';
-import { DrawerContext } from '../../context/providers/drawer-provider';
+import { AuthenticationContext } from '../../components/context/providers/authentication-provider';
+import { DrawerContext } from '../../components/context/providers/drawer-provider';
+import OffliTextField from '../../components/offli-text-field';
 import { ACTIVITIES_QUERY_KEY, useActivities } from '../../hooks/use-activities';
 import { ActivitiyParticipantStatusEnum } from '../../types/activities/activity-participant-status-enum.dto';
 import { IActivityRestDto } from '../../types/activities/activity-rest.dto';
@@ -273,7 +273,7 @@ export const ActivityMembersScreen: React.FC = () => {
             py: 1.5,
             zIndex: 555
           }}>
-          <TextField
+          <OffliTextField
             value={queryString}
             onChange={(e) => setQueryString(e.target.value)}
             onClick={clearPlaceholder}

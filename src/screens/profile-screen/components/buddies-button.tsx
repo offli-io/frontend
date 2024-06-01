@@ -1,7 +1,7 @@
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 import shadows from '@mui/material/styles/shadows';
+import { CustomizationContext } from 'components/context/providers/customization-provider';
 import OffliButton from 'components/offli-button';
-import { CustomizationContext } from 'context/providers/customization-provider';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ApplicationLocations } from 'types/common/applications-locations.dto';

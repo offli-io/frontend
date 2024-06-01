@@ -2,18 +2,18 @@ import InstagramIcon from '@mui/icons-material/Instagram';
 import { Box, IconButton, Typography, useTheme } from '@mui/material';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { unlinkInstagram } from 'api/users/requests';
+import { AuthenticationContext } from 'components/context/providers/authentication-provider';
+import { CustomizationContext } from 'components/context/providers/customization-provider';
+import { DrawerContext } from 'components/context/providers/drawer-provider';
 import ImagePreviewModal from 'components/image-preview-modal/image-preview-modal';
 import Loader from 'components/loader';
 import OffliButton from 'components/offli-button';
-import { AuthenticationContext } from 'context/providers/authentication-provider';
-import { DrawerContext } from 'context/providers/drawer-provider';
 import { useGetApiUrl } from 'hooks/use-get-api-url';
 import React from 'react';
 import InstagramDrawerActions from 'screens/profile-screen/components/instagram-drawer-actions';
 import { toast } from 'sonner';
-import ProfileGalleryImageUploadContent from './components/profile-gallery-image-upload-content';
-import { CustomizationContext } from 'context/providers/customization-provider';
 import { ThemeOptionsEnumDto } from 'types/settings/theme-options.dto';
+import ProfileGalleryImageUploadContent from './components/profile-gallery-image-upload-content';
 
 interface IProfileGalleryProps {
   photoUrls?: string[];

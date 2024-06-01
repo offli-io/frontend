@@ -1,9 +1,9 @@
 import { Box, SxProps } from '@mui/material';
+import { CustomizationContext } from 'components/context/providers/customization-provider';
 import React from 'react';
+import { ThemeOptionsEnumDto } from 'types/settings/theme-options.dto';
 import offliLogoDark from '../assets/img/offli-logo-dark.svg';
 import offliLogoLight from '../assets/img/offli-logo-light.png';
-import { CustomizationContext } from 'context/providers/customization-provider';
-import { ThemeOptionsEnumDto } from 'types/settings/theme-options.dto';
 
 interface ILogoProps {
   sx?: SxProps;

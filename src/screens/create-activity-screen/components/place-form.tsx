@@ -1,6 +1,6 @@
 import AddLocationAltIcon from '@mui/icons-material/AddLocationAlt';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
-import { Autocomplete, Box, IconButton, TextField, Typography, useTheme } from '@mui/material';
+import { Autocomplete, Box, IconButton, Typography, useTheme } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import React, { SetStateAction } from 'react';
 import { Controller, ControllerRenderProps, UseFormReturn } from 'react-hook-form';
@@ -14,6 +14,7 @@ import {
 import { getLocationFromQueryFetch } from '../../../api/activities/requests';
 import activityLocation from '../../../assets/img/activity-location.svg';
 import OffliButton from '../../../components/offli-button';
+import OffliTextField from '../../../components/offli-text-field';
 import { mapExternalApiOptions } from '../../../utils/map-location-value.util';
 import { FormValues } from '../utils/validation-schema';
 
@@ -136,10 +137,11 @@ export const PlaceForm: React.FC<IPlaceFormProps> = ({
                     inputValue={field?.value?.name}
                     // inputValue={inputValue ?? ""}
                     renderInput={(params) => (
-                      <TextField
+                      <OffliTextField
                         {...params}
                         label="Search place"
                         onChange={(e) => setValue('placeQuery', e.target.value)}
+                        autoCapitalize="sentences"
                       />
                     )}
                     data-testid="activity-place-input"

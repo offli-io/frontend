@@ -2,7 +2,7 @@ import { Box, SxProps } from '@mui/material';
 import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
 import Typography from '@mui/material/Typography';
-import { CustomizationContext } from 'context/providers/customization-provider';
+import { CustomizationContext } from 'components/context/providers/customization-provider';
 import React from 'react';
 import { ThemeOptionsEnumDto } from 'types/settings/theme-options.dto';
 

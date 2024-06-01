@@ -1,7 +1,7 @@
 import { SxProps } from '@mui/material';
 import Autocomplete from '@mui/material/Autocomplete';
-import TextField from '@mui/material/TextField';
 import * as React from 'react';
+import OffliTextField from './offli-text-field';
 
 interface ITimePickerProps {
   label: string;
@@ -32,7 +32,7 @@ const TimePicker: React.FC<ITimePickerProps> = ({
       sx={sx}
       getOptionDisabled={getOptionDisabled}
       onChange={(event: React.SyntheticEvent, value: string | null) => onChange(value)}
-      renderInput={(params) => <TextField {...params} label={label} />}
+      renderInput={(params) => <OffliTextField {...params} label={label} />}
       value={value}
       data-testid="activity-time-picker"
       {...rest}

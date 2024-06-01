@@ -16,10 +16,10 @@ import {
   changeActivityParticipantStatus,
   removePersonFromActivity
 } from '../../api/activities/requests';
-import { LocationContext } from '../../context/providers/location-provider';
-import { AuthenticationContext } from '../../context/providers/authentication-provider';
-import { DrawerContext } from '../../context/providers/drawer-provider';
 import ActivityCard from '../../components/activity-card';
+import { AuthenticationContext } from '../../components/context/providers/authentication-provider';
+import { DrawerContext } from '../../components/context/providers/drawer-provider';
+import { LocationContext } from '../../components/context/providers/location-provider';
 import OffliButton from '../../components/offli-button';
 import { ACTIVITIES_QUERY_KEY } from '../../hooks/use-activities';
 import { PARTICIPANT_ACTIVITIES_QUERY_KEY } from '../../hooks/use-participant-activities';
@@ -31,8 +31,8 @@ import { ApplicationLocations } from '../../types/common/applications-locations.
 import ActivityActions from './components/activity-actions';
 import ActivityLeaveConfirmation from './components/activity-leave-confirmation';
 import FirstTimeLoginContent from './components/first-time-login-content';
-import { SetLocationContent } from './components/set-location-content';
 import Searchbar from './components/searchbar';
+import { SetLocationContent } from './components/set-location-content';
 
 const ExploreScreen = () => {
   const { userInfo, isFirstTimeLogin, setIsFirstTimeLogin } =

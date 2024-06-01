@@ -1,5 +1,5 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Box, TextField, Typography } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import { useMutation } from '@tanstack/react-query';
 import React from 'react';
 import { Controller, useForm } from 'react-hook-form';
@@ -8,6 +8,7 @@ import * as yup from 'yup';
 import { resetPassword } from '../api/auth/requests';
 import BackButton from '../components/back-button';
 import OffliButton from '../components/offli-button';
+import OffliTextField from '../components/offli-text-field';
 import { ApplicationLocations } from '../types/common/applications-locations.dto';
 
 export interface FormValues {
@@ -70,7 +71,7 @@ const ResetPasswordScreen = () => {
           name="email"
           control={control}
           render={({ field, fieldState: { error } }) => (
-            <TextField
+            <OffliTextField
               {...field}
               placeholder="Email alebo mobil"
               error={!!error}

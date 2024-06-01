@@ -7,10 +7,10 @@ import {
   InputAdornment,
   Radio,
   RadioGroup,
-  TextField,
   Typography,
   useTheme
 } from '@mui/material';
+import { MobileTimePicker } from '@mui/x-date-pickers';
 import { format } from 'date-fns';
 import React from 'react';
 import { Controller, UseFormReturn } from 'react-hook-form';
@@ -18,10 +18,10 @@ import { ActivityDurationTypeEnumDto } from 'types/activities/activity-duration-
 import { DATE_TIME_FORMAT } from 'utils/common-constants';
 import { MobileCarousel } from '../../../components/mobile-carousel';
 import OffliButton from '../../../components/offli-button';
+import OffliTextField from '../../../components/offli-text-field';
 import { calculateDateUsingDuration } from '../utils/calculate-date-using-duration.util';
 import { DurationLabelMap } from '../utils/duration-label-map';
 import { generateDateSlots } from '../utils/generate-date-slots.util';
-import { MobileTimePicker } from '@mui/x-date-pickers';
 
 interface IDateTimeForm {
   onNextClicked: () => void;
@@ -165,13 +165,11 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
               onChange={(newValue) => field.onChange(newValue)}
               ampm={false}
               renderInput={(params) => (
-                <TextField
+                <OffliTextField
                   {...params}
                   data-testid="start-time-input"
                   error={!!error}
                   helperText={!!error && 'Activity start time is required'}
-                  variant="outlined"
-                  sx={{}}
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position="end">
@@ -193,7 +191,7 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
           name="duration"
           control={control}
           render={({ field, fieldState: { error } }) => (
-            <TextField
+            <OffliTextField
               {...field}
               error={!!error}
               type="number"

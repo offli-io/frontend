@@ -1,7 +1,7 @@
-import React from 'react';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
+import { CustomizationContext } from 'components/context/providers/customization-provider';
 import OffliButton from 'components/offli-button';
-import { CustomizationContext } from 'context/providers/customization-provider';
+import React from 'react';
 import { ThemeOptionsEnumDto } from 'types/settings/theme-options.dto';
 
 const BackButton = ({ onClick }: { onClick?: () => void }) => {

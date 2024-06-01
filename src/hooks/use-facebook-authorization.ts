@@ -1,6 +1,6 @@
 import { useMutation } from '@tanstack/react-query';
 import { facebookAuthorization } from 'api/auth/requests';
-import { AuthenticationContext } from 'context/providers/authentication-provider';
+import { AuthenticationContext } from 'components/context/providers/authentication-provider';
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
