@@ -10,16 +10,17 @@
 
 import { clientsClaim } from 'workbox-core';
 import { ExpirationPlugin } from 'workbox-expiration';
-import { precacheAndRoute, createHandlerBoundToURL } from 'workbox-precaching';
+import { createHandlerBoundToURL, precacheAndRoute } from 'workbox-precaching';
 import { registerRoute } from 'workbox-routing';
 import { StaleWhileRevalidate } from 'workbox-strategies';
+import { BASE_ENV_URL, DEFAULT_DEV_URL } from './assets/config';
+import { NotificationTypeEnum } from './types/notifications/notification-type-enum';
 import {
+  INotificationDto,
   getNotificationBody,
   getNotificationPicture,
-  getNotificationTitle,
-  INotificationDto
+  getNotificationTitle
 } from './types/notifications/notification.dto';
-import { NotificationTypeEnum } from './types/notifications/notification-type-enum';
 
 declare const self: ServiceWorkerGlobalScope;
 
@@ -97,11 +98,12 @@ self.addEventListener('push', async (event) => {
   switch (notification.type) {
     case NotificationTypeEnum.ACTIVITY_INV || NotificationTypeEnum.ACTIVITY_CHANGE:
       data = {
-        url: `https://app.offli.eu/activity/detail/${notification.properties?.activity?.id}`
+        //TODO check notification on new env
+        url: `${BASE_ENV_URL}/activity/detail/${notification.properties?.activity?.id}`
       };
       break;
     case NotificationTypeEnum.BUDDY_REQ:
-      data = { url: `https://app.offli.eu/profile/user/${notification.properties?.user?.id}` };
+      data = { url: `${BASE_ENV_URL}/profile/user/${notification.properties?.user?.id}` };
       break;
     default:
       return;
@@ -109,8 +111,9 @@ self.addEventListener('push', async (event) => {
 
   const options: NotificationOptions = {
     body: getNotificationBody(notification, false),
-    icon: `https://app.offli.eu/api/files/${getNotificationPicture(notification)}`, // TODO: API URL from env
-    badge: `https://app.offli.eu/logo192.png`, // TODO: Base URL from env
+    //TODO check icon on new env
+    icon: `${DEFAULT_DEV_URL}/files/${getNotificationPicture(notification)}`, // TODO: API URL from env
+    badge: `${BASE_ENV_URL}/logo192.png`, // TODO: Base URL from env
     data: data
   };
 
