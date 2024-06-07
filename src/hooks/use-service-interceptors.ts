@@ -1,9 +1,11 @@
 import { useQueryClient } from '@tanstack/react-query';
 import axios, { AxiosError } from 'axios';
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { IPerson } from 'types/activities/activity.dto';
 import { OffliUserAgent } from 'types/common/offli-user-agent-enum.dto';
 import { getPlatfromFromStorage } from 'utils/storage.util';
+import { ApplicationLocations } from '../types/common/applications-locations.dto';
 import { getAuthToken, setAuthToken } from '../utils/token.util';
 import { useGetApiUrl } from './use-get-api-url';
 
@@ -20,6 +22,7 @@ export const useServiceInterceptors = ({
 }: IUseServiceInterceptorsProps) => {
   const baseUrl = useGetApiUrl();
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
 
   axios.interceptors.request.use(
     (config) => {
@@ -63,7 +66,8 @@ export const useServiceInterceptors = ({
         queryClient.removeQueries();
         localStorage.removeItem('token');
         localStorage.removeItem('userId');
-        // navigate(ApplicationLocations.LOGIN);
+        // toast.error('Your token has expired - you will be redirected to login page');
+        navigate(ApplicationLocations.LOGIN);
       }
       //TODO uncomment
       // const originalConfig = err.config;
