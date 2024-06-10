@@ -1,5 +1,6 @@
 import { useQueryClient } from '@tanstack/react-query';
 import axios, { AxiosError } from 'axios';
+import jwtDecode, { JwtPayload } from 'jwt-decode';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { IPerson } from 'types/activities/activity.dto';
@@ -31,9 +32,19 @@ export const useServiceInterceptors = ({
       if (process.env.NODE_ENV !== 'development') {
         config.baseURL = baseUrl;
       }
+
+      if (!_token) {
+        throw new Error('Token not present');
+      }
+
+      const decodedToken: JwtPayload = jwtDecode(_token);
+      const tokenExpiration = (decodedToken?.exp ?? 0) * 1000;
+      //if token is expired
+      if (Date.now() >= tokenExpiration) {
+        navigate(ApplicationLocations.LOGIN);
+      }
+
       if (config?.headers) {
-        //const newConfig = { ...config }
-        //config.headers['Content-Type'] = 'application/json'
         const explicitToken = config.headers['Authorization'];
         if (_token && !explicitToken) {
           config.headers['Authorization'] = 'Bearer ' + _token;
