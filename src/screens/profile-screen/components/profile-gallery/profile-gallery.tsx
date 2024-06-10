@@ -3,7 +3,6 @@ import { Box, IconButton, Typography, useTheme } from '@mui/material';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { unlinkInstagram } from 'api/users/requests';
 import { AuthenticationContext } from 'components/context/providers/authentication-provider';
-import { CustomizationContext } from 'components/context/providers/customization-provider';
 import { DrawerContext } from 'components/context/providers/drawer-provider';
 import ImagePreviewModal from 'components/image-preview-modal/image-preview-modal';
 import Loader from 'components/loader';
@@ -12,7 +11,6 @@ import { useGetApiUrl } from 'hooks/use-get-api-url';
 import React from 'react';
 import InstagramDrawerActions from 'screens/profile-screen/components/instagram-drawer-actions';
 import { toast } from 'sonner';
-import { ThemeOptionsEnumDto } from 'types/settings/theme-options.dto';
 import ProfileGalleryImageUploadContent from './components/profile-gallery-image-upload-content';
 
 interface IProfileGalleryProps {
@@ -27,7 +25,6 @@ const ProfileGallery: React.FC<IProfileGalleryProps> = ({
   instagramUsername
 }) => {
   const { userInfo } = React.useContext(AuthenticationContext);
-  const { theme } = React.useContext(CustomizationContext);
   const queryClient = useQueryClient();
   const { shadows, palette } = useTheme();
   const { toggleDrawer } = React.useContext(DrawerContext);
@@ -214,10 +211,7 @@ const ProfileGallery: React.FC<IProfileGalleryProps> = ({
             startIcon={
               <InstagramIcon
                 sx={{
-                  color:
-                    theme === ThemeOptionsEnumDto.LIGHT
-                      ? palette?.primary?.main
-                      : palette?.primary?.contrastText,
+                  color: 'inherit',
                   fontSize: '24px !important'
                 }}
               />
