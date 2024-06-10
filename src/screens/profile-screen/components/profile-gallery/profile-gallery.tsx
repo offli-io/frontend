@@ -204,7 +204,8 @@ const ProfileGallery: React.FC<IProfileGalleryProps> = ({
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
-            justifyContent: 'center'
+            justifyContent: 'center',
+            mt: 3
           }}>
           <OffliButton
             onClick={openInstagramDrawer}

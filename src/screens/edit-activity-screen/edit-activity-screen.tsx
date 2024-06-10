@@ -201,7 +201,7 @@ const EditActivityScreen: React.FC = () => {
         field.onChange(
           locationObject
             ? {
-                name: locationObject?.formatted,
+                name: locationObject?.formatted ?? locationObject?.name,
                 coordinates: {
                   lat: locationObject?.lat,
                   lon: locationObject?.lon
@@ -209,7 +209,12 @@ const EditActivityScreen: React.FC = () => {
               }
             : null
         );
-        if (locationObject && placeQuery?.data?.results) {
+        if (
+          locationObject &&
+          // it needs to either have name or formatted in order to display it properly
+          (locationObject?.formatted || locationObject?.name) &&
+          placeQuery?.data?.results
+        ) {
           pushSearchResultIntoStorage(locationObject);
         }
       },
@@ -333,7 +338,7 @@ const EditActivityScreen: React.FC = () => {
                       }}
                       loading={placeQuery?.isLoading}
                       onChange={handleLocationSelect(field)}
-                      getOptionLabel={(option) => String(option?.formatted)}
+                      getOptionLabel={(option) => String(option?.formatted ?? option?.name)}
                       // inputValue={inputValue ?? ""}
                       renderInput={(params) => (
                         <OffliTextField
@@ -476,7 +481,6 @@ const EditActivityScreen: React.FC = () => {
                       error={!!error}
                       helperText={error?.message}
                       InputLabelProps={{ shrink: true }}
-                      //disabled={methodSelectionDisabled}
                       sx={{ width: '40%', mt: 3 }}
                     />
                   )}
