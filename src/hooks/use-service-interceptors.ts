@@ -33,17 +33,23 @@ export const useServiceInterceptors = ({
         config.baseURL = baseUrl;
       }
 
-      if (!_token) {
-        throw new Error('Token not present');
+      if (_token) {
+        const decodedToken: JwtPayload = jwtDecode(_token);
+        const tokenExpiration = (decodedToken?.exp ?? 0) * 1000;
+        const timeInMsNow = Date.now();
+        //if token is expired
+        //watch out when token expiration is less than 1 minute, token expiration from BE comes in seconds
+        if (timeInMsNow >= tokenExpiration) {
+          setStateToken(null);
+          setAuthToken(undefined);
+          setUserInfo?.({ username: undefined, id: undefined });
+          queryClient.invalidateQueries();
+          queryClient.removeQueries();
+          localStorage.removeItem('token');
+          localStorage.removeItem('userId');
+          navigate(ApplicationLocations.LOGIN);
+        }
       }
-
-      const decodedToken: JwtPayload = jwtDecode(_token);
-      const tokenExpiration = (decodedToken?.exp ?? 0) * 1000;
-      //if token is expired
-      if (Date.now() >= tokenExpiration) {
-        navigate(ApplicationLocations.LOGIN);
-      }
-
       if (config?.headers) {
         const explicitToken = config.headers['Authorization'];
         if (_token && !explicitToken) {
