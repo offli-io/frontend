@@ -443,20 +443,23 @@ const ActivityDetailsScreen: React.FC<IProps> = () => {
           width: '93%',
           margin: 'auto'
         }}>
-        <ActivityActionButtons
-          onJoinClick={handleJoinButtonClick}
-          onMoreClick={() => handleActivityActionsCLick(activity)}
-          isAllowedToSendFeedback={isAllowedToSendFeedback}
-          sentFeedbackValue={feedbackAlreadySent?.feedback?.value}
-          onToggleFeedbackDrawer={() => handleToggleFeedbackDrawer(activity)}
-          areActionsLoading={areActionsLoading}
-          isCreator={isCreator}
-          isAlreadyParticipant={isAlreadyParticipant}
-          isPublic={activity?.visibility === ActivityVisibilityEnum.public}
-          hasEnded={isPastActivity}
-          inProgress={isInProgress}
-          privateUninvitedActivity={privateUninvitedActivity}
-        />
+        {userInfo?.id ? (
+          <ActivityActionButtons
+            onJoinClick={handleJoinButtonClick}
+            onMoreClick={() => handleActivityActionsCLick(activity)}
+            isAllowedToSendFeedback={isAllowedToSendFeedback}
+            sentFeedbackValue={feedbackAlreadySent?.feedback?.value}
+            onToggleFeedbackDrawer={() => handleToggleFeedbackDrawer(activity)}
+            areActionsLoading={areActionsLoading}
+            isCreator={isCreator}
+            isAlreadyParticipant={isAlreadyParticipant}
+            isPublic={activity?.visibility === ActivityVisibilityEnum.public}
+            hasEnded={isPastActivity}
+            inProgress={isInProgress}
+            privateUninvitedActivity={privateUninvitedActivity}
+          />
+        ) : null}
+
         <Box
           sx={{
             display: 'flex',

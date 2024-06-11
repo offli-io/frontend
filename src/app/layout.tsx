@@ -130,6 +130,8 @@ export const Layout: React.FC<ILayoutProps> = () => {
     [location?.pathname]
   );
 
+  console.log(location?.pathname);
+
   const isNotAuthorizedRoute = React.useMemo(
     () =>
       [

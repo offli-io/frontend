@@ -166,6 +166,7 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
               value={field.value}
               onChange={(newValue) => field.onChange(newValue)}
               ampm={false}
+              // disablePast={true}
               renderInput={(params) => (
                 <OffliTextField
                   {...params}

@@ -57,7 +57,6 @@ const LastAttendedActivities: React.FC<ILastAttendedActivitiesProps> = ({ isBudd
               <MyActivityCard
                 key={activity?.id}
                 activity={activity}
-                type="profile"
                 onPress={() => navigate(`${ApplicationLocations.ACTIVITY_DETAIL}/${activity?.id}`)}
               />
             );
