@@ -180,6 +180,7 @@ const PickUsernameScreen = () => {
             <OffliTextField
               {...field}
               placeholder="Username"
+              data-testid="pick-username-input"
               error={!!error}
               helperText={error?.message}
               sx={{ width: '80%', mt: 4, mb: 8 }}
@@ -189,6 +190,7 @@ const PickUsernameScreen = () => {
         <OffliButton
           variant="contained"
           type="submit"
+          data-testid="next-button"
           sx={{ width: '80%', mb: 5 }}
           disabled={isUsernameInUse}
           isLoading={isLoading}>
