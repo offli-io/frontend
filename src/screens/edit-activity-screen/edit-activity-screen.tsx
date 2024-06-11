@@ -133,11 +133,11 @@ const EditActivityScreen: React.FC = () => {
         queryClient.invalidateQueries([PAGED_ACTIVITIES_QUERY_KEY]);
         queryClient.invalidateQueries(['activity-participants']);
         toast.success('Activity information was successfully updated');
-        navigate(`${ApplicationLocations.ACTIVITY_DETAIL}/${id}`, {
-          state: {
-            from: ApplicationLocations.EDIT_ACTIVITY
-          }
-        });
+        navigate(
+          `${ApplicationLocations.ACTIVITY_DETAIL}/${id}`
+          //TODO navigation is broken here
+          // { replace: true }
+        );
       },
       onError: () => {
         !!localFile && setLocalFile(null);

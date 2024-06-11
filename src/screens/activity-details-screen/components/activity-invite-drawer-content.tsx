@@ -24,7 +24,10 @@ export const ActivityInviteDrawerContent: React.FC<IActivityTypeFormProps> = ({ 
   const [invitedBuddies, setInvitedBuddies] = React.useState<number[]>([]);
   const [queryString, setQueryString] = React.useState<string | undefined>();
   const [queryStringDebounced] = useDebounce(queryString, 1000);
-  const { data: { data: activityData = {} } = {}, isLoading: isActivityLoading } = useActivity({
+  const {
+    data: { data: { activity: activityData = {} } = {} } = {},
+    isLoading: isActivityLoading
+  } = useActivity({
     id: Number(activityId)
   });
 

@@ -4,6 +4,7 @@ import React from 'react';
 import { toast } from 'sonner';
 import { IActivity } from 'types/activities/activity.dto';
 import { getActivity, getActivityAnonymous } from '../api/activities/requests';
+import { IBackendResponse } from '../types/common/backend-response.dto';
 
 export const ACTIVITY_QUERY_KEY = 'activity';
 
@@ -13,16 +14,20 @@ export interface IUseActivitiesReturn {
   enabled?: boolean;
 }
 
+export interface IUseActivity extends IBackendResponse {
+  activity: IActivity;
+}
+
 export const useActivity = ({ id, enabled }: IUseActivitiesReturn) => {
   const { userInfo: { id: userId = null } = {} } = React.useContext(AuthenticationContext);
   return useQuery(
     [ACTIVITY_QUERY_KEY, id],
     () =>
       userId
-        ? getActivity<IActivity>({
+        ? getActivity<IUseActivity>({
             id
           })
-        : getActivityAnonymous<IActivity>({
+        : getActivityAnonymous<IUseActivity>({
             id
           }),
     {

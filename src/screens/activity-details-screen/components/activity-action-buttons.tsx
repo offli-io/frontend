@@ -1,42 +1,64 @@
-import React from 'react';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import MenuIcon from '@mui/icons-material/Menu';
 import { Box, Typography } from '@mui/material';
 import OffliButton from 'components/offli-button';
+import { isWithinInterval } from 'date-fns';
+import React from 'react';
+import { useParams } from 'react-router-dom';
+import { AuthenticationContext } from '../../../components/context/providers/authentication-provider';
 import OffliRating from '../../../components/offli-rating';
+import { useActivity } from '../../../hooks/use-activity';
+import { ActivityVisibilityEnum } from '../../../types/activities/activity-visibility-enum.dto';
 
 interface IActivityActionButtonsProps {
   isAlreadyParticipant?: boolean;
   isAllowedToSendFeedback?: boolean;
   sentFeedbackValue?: number;
-  isCreator?: boolean;
   onJoinClick?: () => void;
   onMoreClick?: () => void;
   onToggleFeedbackDrawer: () => void;
   areActionsLoading?: boolean;
-  isPublic?: boolean;
   hasEnded?: boolean;
-  inProgress?: boolean;
-  privateUninvitedActivity?: boolean;
 }
 
 const ActivityActionButtons: React.FC<IActivityActionButtonsProps> = ({
   isAlreadyParticipant,
   isAllowedToSendFeedback,
   sentFeedbackValue,
-  isCreator,
   onJoinClick,
   onMoreClick,
   onToggleFeedbackDrawer,
   areActionsLoading,
   //TODO just get activity and define all these properties in this component
-  isPublic,
-  hasEnded,
-  inProgress = false,
-  privateUninvitedActivity
+  hasEnded
 }) => {
+  const { id } = useParams();
+  const { userInfo } = React.useContext(AuthenticationContext);
+
+  const { data: { data: { activity = {} } = {} } = {} } = useActivity({
+    id: Number(id)
+  });
+
+  const inProgress =
+    !!activity?.datetime_from &&
+    !!activity?.datetime_until &&
+    isWithinInterval(new Date(), {
+      start: new Date(activity?.datetime_from),
+      end: new Date(activity?.datetime_until)
+    });
+
+  console.log(activity);
+
+  const privateUninvitedActivity =
+    activity?.visibility === ActivityVisibilityEnum.private && !activity?.participant_status;
+
+  const isPublic = activity?.visibility === ActivityVisibilityEnum.public;
+  const isCreator = activity?.creator?.id === userInfo?.id;
+  const isFull = activity?.count_confirmed === activity?.limit;
+  const cantJoinBecauseOfCapacity = !isAlreadyParticipant && isFull;
+
   return (
     <Box
       sx={{
@@ -58,12 +80,17 @@ const ActivityActionButtons: React.FC<IActivityActionButtonsProps> = ({
             onClick={onJoinClick}
             color={!isAlreadyParticipant ? 'primary' : 'secondary'}
             isLoading={areActionsLoading}
+            disabled={cantJoinBecauseOfCapacity}
             data-testid="activity-action-button-primary"
             startIcon={
               isAlreadyParticipant ? (
-                <CheckCircleIcon sx={{ color: 'primary.main' }} />
+                <CheckCircleIcon
+                  sx={{ color: cantJoinBecauseOfCapacity ? 'inherit' : 'primary.main' }}
+                />
               ) : (
-                <CheckCircleOutlineIcon sx={{ color: 'background.default' }} />
+                <CheckCircleOutlineIcon
+                  sx={{ color: cantJoinBecauseOfCapacity ? 'inherit' : 'background.default' }}
+                />
               )
             }>
             {isAlreadyParticipant ? (isCreator ? 'Dismiss' : 'Joined') : 'Join'}
