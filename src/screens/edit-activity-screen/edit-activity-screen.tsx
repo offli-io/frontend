@@ -9,7 +9,7 @@ import {
   RadioGroup,
   Typography
 } from '@mui/material';
-import { DateTimePicker, LocalizationProvider } from '@mui/x-date-pickers';
+import { DateTimePicker, LocalizationProvider, renderTimeViewClock } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { AuthenticationContext } from 'components/context/providers/authentication-provider';
@@ -46,6 +46,7 @@ import { ActivityVisibilityEnum } from '../../types/activities/activity-visibili
 import { ApplicationLocations } from '../../types/common/applications-locations.dto';
 import { mapLocationValue } from '../../utils/map-location-value.util';
 import { IAdditionalHelperActivityInterface, validationSchema } from './utils/validation-schema';
+import dayjs from 'dayjs';
 
 const EditActivityScreen: React.FC = () => {
   const [localFile, setLocalFile] = React.useState<any>();
@@ -362,48 +363,67 @@ const EditActivityScreen: React.FC = () => {
                 <Controller
                   name="datetime_from"
                   control={control}
-                  render={({ field: { onChange, ...field }, fieldState: { error } }) => (
+                  render={({ field: { value, onChange, ...field }, fieldState: { error } }) => (
                     <DateTimePicker
                       {...field}
-                      disablePast
-                      maxDate={dateUntil}
                       label="Start date"
+                      value={dayjs(value)}
                       onChange={(e) => onChange(e)}
-                      renderInput={(params) => (
-                        <OffliTextField
-                          {...params}
-                          error={!!error}
-                          helperText={error?.message}
-                          sx={{
-                            width: '100%',
-                            mt: 3
-                          }}
-                        />
-                      )}
+                      sx={{ width: '100%', mt: 3 }}
+                      disablePast
+                      maxDateTime={dayjs(dateUntil)}
+                      viewRenderers={{
+                        hours: renderTimeViewClock,
+                        minutes: renderTimeViewClock,
+                        seconds: renderTimeViewClock
+                      }}
+                      desktopModeMediaQuery="'@media (pointer: fine)'"
+                      slotProps={{
+                        textField: {
+                          error: !!error,
+                          helperText: error?.message
+                        }
+                      }}
+                      // slots={{
+                      //   textField: (params) => (
+                      //     <OffliTextField
+                      //       {...params}
+                      //       error={!!error}
+                      //       helperText={error?.message}
+                      //       sx={{
+                      //         width: '100%',
+                      //         mt: 3
+                      //       }}
+                      //     />
+                      //   )
+                      // }}
                     />
                   )}
                 />
                 <Controller
                   name="datetime_until"
                   control={control}
-                  render={({ field: { onChange, ...field }, fieldState: { error } }) => (
+                  render={({ field: { value, onChange, ...field }, fieldState: { error } }) => (
                     <DateTimePicker
                       {...field}
                       label="End date"
-                      minDate={dateFrom}
-                      disablePast
+                      value={dayjs(value)}
                       onChange={(e) => onChange(e)}
-                      renderInput={(params) => (
-                        <OffliTextField
-                          {...params}
-                          error={!!error}
-                          helperText={error?.message}
-                          sx={{
-                            width: '100%',
-                            mt: 3
-                          }}
-                        />
-                      )}
+                      sx={{ width: '100%', mt: 3 }}
+                      disablePast
+                      minDateTime={dayjs(dateFrom)}
+                      viewRenderers={{
+                        hours: renderTimeViewClock,
+                        minutes: renderTimeViewClock,
+                        seconds: renderTimeViewClock
+                      }}
+                      desktopModeMediaQuery="'@media (pointer: fine)'"
+                      slotProps={{
+                        textField: {
+                          error: !!error,
+                          helperText: error?.message
+                        }
+                      }}
                     />
                   )}
                 />

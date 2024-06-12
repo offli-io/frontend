@@ -10,7 +10,7 @@ import {
   Typography,
   useTheme
 } from '@mui/material';
-import { MobileTimePicker } from '@mui/x-date-pickers';
+import { TimePicker } from '@mui/x-date-pickers';
 import { format } from 'date-fns';
 import React from 'react';
 import { Controller, UseFormReturn } from 'react-hook-form';
@@ -22,6 +22,7 @@ import OffliTextField from '../../../components/offli-text-field';
 import { calculateDateUsingDuration } from '../utils/calculate-date-using-duration.util';
 import { DurationLabelMap } from '../utils/duration-label-map';
 import { generateDateSlots } from '../utils/generate-date-slots.util';
+import dayjs from 'dayjs';
 
 interface IDateTimeForm {
   onNextClicked: () => void;
@@ -160,28 +161,31 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
         <Controller
           name="timeFrom"
           control={control}
-          render={({ field, fieldState: { error } }) => (
-            <MobileTimePicker
+          render={({ field: { value, onChange, ...field }, fieldState: { error } }) => (
+            <TimePicker
               {...field}
-              value={field.value}
-              onChange={(newValue) => field.onChange(newValue)}
               ampm={false}
-              renderInput={(params) => (
-                <OffliTextField
-                  {...params}
-                  data-testid="start-time-input"
-                  error={!!error}
-                  helperText={!!error && 'Activity start time is required'}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="end">
-                        <AccessTimeIcon sx={{ mr: 2 }} />
-                      </InputAdornment>
-                    )
-                  }}
-                />
-              )}
-              inputFormat="HH:mm"
+              format="HH:mm"
+              value={dayjs(value)}
+              onChange={(e) => onChange(e)}
+              desktopModeMediaQuery="'@media (pointer: fine)'"
+              slots={{
+                textField: (params) => (
+                  <OffliTextField
+                    {...params}
+                    data-testid="start-time-input"
+                    error={!!error}
+                    helperText={!!error && 'Activity start time is required'}
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="end">
+                          <AccessTimeIcon sx={{ mr: 2 }} />
+                        </InputAdornment>
+                      )
+                    }}
+                  />
+                )
+              }}
             />
           )}
         />
