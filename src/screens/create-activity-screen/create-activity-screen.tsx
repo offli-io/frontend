@@ -15,7 +15,6 @@ import { ActivityVisibilityEnum } from '../../types/activities/activity-visibili
 import { calculateDateUsingDuration } from './utils/calculate-date-using-duration.util';
 import { renderProperForm } from './utils/render-proper-form.util';
 import { FormValues, validationSchema } from './utils/validation-schema';
-import AnimationDiv from '../../components/animation-div';
 
 const CreateActivityScreen = () => {
   const { palette } = useTheme();
@@ -131,41 +130,39 @@ const CreateActivityScreen = () => {
   }, []);
 
   return (
-    <AnimationDiv>
-      <Box ref={wrapper} sx={isMap ? { height: '100%' } : undefined}>
-        {activeStep <= 5 && <DotsMobileStepper activeStep={activeStep} containerSx={{ p: 0 }} />}
-        <PageWrapper
-          sxOverrides={{
-            alignItems: 'center',
-            px: isMap ? 0 : 3,
-            bgcolor: palette.background.default,
-            ...(isMap ? { mt: 0, height: '100%' } : {})
-          }}>
-          <form
-            style={{
-              display: 'flex',
-              alignItems: 'flex-start',
-              justifyContent: getFormLayout(),
-              flexDirection: 'column',
-              height: isMap ? '100%' : '78vh',
-              width: '100%'
-              //TODO in the future maybe include navigation height in the PageWrapper component for now pb: 12 is enough
-              // paddingBottom: theme.spacing(20),
-            }}
-            onSubmit={handleSubmit(handleFormSubmit, handleFormError)}>
-            {renderProperForm({
-              activeStep,
-              setActiveStep,
-              methods,
-              isMap,
-              toggleMap,
-              navigate,
-              pendingRedirectActivityId
-            })}
-          </form>
-        </PageWrapper>
-      </Box>
-    </AnimationDiv>
+    <Box ref={wrapper} sx={isMap ? { height: '100%' } : undefined}>
+      {activeStep <= 5 && <DotsMobileStepper activeStep={activeStep} containerSx={{ p: 0 }} />}
+      <PageWrapper
+        sxOverrides={{
+          alignItems: 'center',
+          px: isMap ? 0 : 3,
+          bgcolor: palette.background.default,
+          ...(isMap ? { mt: 0, height: '100%' } : {})
+        }}>
+        <form
+          style={{
+            display: 'flex',
+            alignItems: 'flex-start',
+            justifyContent: getFormLayout(),
+            flexDirection: 'column',
+            height: isMap ? '100%' : '78vh',
+            width: '100%'
+            //TODO in the future maybe include navigation height in the PageWrapper component for now pb: 12 is enough
+            // paddingBottom: theme.spacing(20),
+          }}
+          onSubmit={handleSubmit(handleFormSubmit, handleFormError)}>
+          {renderProperForm({
+            activeStep,
+            setActiveStep,
+            methods,
+            isMap,
+            toggleMap,
+            navigate,
+            pendingRedirectActivityId
+          })}
+        </form>
+      </PageWrapper>
+    </Box>
   );
 };
 

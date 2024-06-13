@@ -5,6 +5,7 @@ import createActivityImg from '../../../assets/img/create-activity.svg';
 import OffliButton from '../../../components/offli-button';
 import OffliTextField from '../../../components/offli-text-field';
 import { FormValues } from '../utils/validation-schema';
+import AnimationDiv from '../../../components/animation-div';
 
 interface INameFormProps {
   onNextClicked: () => void;
@@ -19,7 +20,7 @@ export const NameForm: React.FC<INameFormProps> = ({ onNextClicked, methods }) =
   const isFormValid = Object.keys(errors)?.length === 0 && (watch('title') ?? '')?.length > 0;
 
   return (
-    <>
+    <AnimationDiv style={{ width: '100%' }}>
       <Box sx={{ display: 'flex', width: '100%', alignItems: 'flex-end' }}>
         <Box
           sx={{
@@ -73,6 +74,6 @@ export const NameForm: React.FC<INameFormProps> = ({ onNextClicked, methods }) =
           Next
         </OffliButton>
       </Box>
-    </>
+    </AnimationDiv>
   );
 };
