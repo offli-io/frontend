@@ -5,6 +5,7 @@ import Map from '../components/map/map';
 import { useActivities } from '../hooks/use-activities';
 import { IActivityRestDto } from '../types/activities/activity-rest.dto';
 
+export const MAPVIEW_ACTIVITIES_QUERY_KEY = 'mapview-activities';
 //TODO fix this eslint disable
 //eslint-disable-next-line
 const MapScreen = <T extends unknown>() => {
@@ -21,7 +22,7 @@ const MapScreen = <T extends unknown>() => {
   });
 
   const { data: { data: mapViewData } = {} } = useQuery(
-    ['mapview-activities'],
+    [MAPVIEW_ACTIVITIES_QUERY_KEY],
     () => getMapviewActivities(),
     {
       enabled: !activityId

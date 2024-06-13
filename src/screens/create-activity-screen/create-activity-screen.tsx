@@ -12,8 +12,10 @@ import { PageWrapper } from '../../components/page-wrapper';
 import DotsMobileStepper from '../../components/stepper';
 import { ACTIVITIES_QUERY_KEY } from '../../hooks/use-activities';
 import { PAGED_ACTIVITIES_QUERY_KEY } from '../../hooks/use-activities-infinite-query';
+import { PARTICIPANT_ACTIVITIES_QUERY_KEY } from '../../hooks/use-participant-activities';
 import { useUser } from '../../hooks/use-user';
 import { ActivityVisibilityEnum } from '../../types/activities/activity-visibility-enum.dto';
+import { MAPVIEW_ACTIVITIES_QUERY_KEY } from '../map-screen';
 import { calculateDateUsingDuration } from './utils/calculate-date-using-duration.util';
 import { renderProperForm } from './utils/render-proper-form.util';
 import { FormValues, validationSchema } from './utils/validation-schema';
@@ -62,8 +64,8 @@ const CreateActivityScreen = () => {
         queryClient.setQueryData(['created-activity-data'], data?.data);
         queryClient.invalidateQueries(['user-info']);
         //TODO query invalidation doesnt work - activities are not refetched!
-        queryClient.invalidateQueries({ queryKey: ['participant-activities'] });
-        queryClient.invalidateQueries({ queryKey: ['mapview-activities'] });
+        queryClient.invalidateQueries([PARTICIPANT_ACTIVITIES_QUERY_KEY]);
+        queryClient.invalidateQueries([MAPVIEW_ACTIVITIES_QUERY_KEY]);
         queryClient.invalidateQueries([ACTIVITIES_QUERY_KEY]);
         queryClient.invalidateQueries([PAGED_ACTIVITIES_QUERY_KEY]);
         setPendingRedirectActivityId(data?.data?.id);
