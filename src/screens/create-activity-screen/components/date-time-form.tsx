@@ -10,7 +10,7 @@ import {
   Typography,
   useTheme
 } from '@mui/material';
-import { TimePicker } from '@mui/x-date-pickers';
+import { MobileTimePicker } from '@mui/x-date-pickers';
 import { format } from 'date-fns';
 import React from 'react';
 import { Controller, UseFormReturn } from 'react-hook-form';
@@ -22,7 +22,6 @@ import OffliTextField from '../../../components/offli-text-field';
 import { calculateDateUsingDuration } from '../utils/calculate-date-using-duration.util';
 import { DurationLabelMap } from '../utils/duration-label-map';
 import { generateDateSlots } from '../utils/generate-date-slots.util';
-import dayjs from 'dayjs';
 
 interface IDateTimeForm {
   onNextClicked: () => void;
@@ -42,6 +41,7 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
     fromOptions: generateDateSlots(),
     untilOptions: generateDateSlots()
   });
+  const [timePickerMinTime, setTimePickerMinTime] = React.useState<Date | null>(null);
 
   const isFormValid = !!watch('datetime_from');
 
@@ -49,6 +49,12 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
     const selectedDate = date?.fromOptions?.find((item) => item.selected);
     if (selectedDate) {
       setValue('datetime_from', selectedDate?.dateValue);
+      if (
+        selectedDate.dateValue &&
+        selectedDate.dateValue.toDateString() === new Date().toDateString()
+      )
+        setTimePickerMinTime(new Date());
+      else setTimePickerMinTime(null);
     }
   }, [date?.fromOptions]);
 
@@ -162,13 +168,13 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
           name="timeFrom"
           control={control}
           render={({ field: { value, onChange, ...field }, fieldState: { error } }) => (
-            <TimePicker
+            <MobileTimePicker
               {...field}
               ampm={false}
               format="HH:mm"
-              value={dayjs(value)}
+              value={value}
+              minTime={timePickerMinTime}
               onChange={(e) => onChange(e)}
-              desktopModeMediaQuery="'@media (pointer: fine)'"
               slots={{
                 textField: (params) => (
                   <OffliTextField
