@@ -20,6 +20,7 @@ import { ApplicationLocations } from '../../types/common/applications-locations.
 import { ActivitiesTabLabelMap } from './utils/activities-tab-label-map';
 import { SWIPE_ARRAY_ORDER, detectSwipedTab } from './utils/detect-swiped-tab.util';
 import { TabDefinitionsEnum } from './utils/tab-definitions';
+import AnimationDiv from '../../components/animation-div';
 
 const ActivitiesScreen = () => {
   const navigate = useNavigate();
@@ -128,7 +129,7 @@ const ActivitiesScreen = () => {
   }, [isFetchingNextPage]);
 
   return (
-    <>
+    <AnimationDiv>
       <Tabs
         value={currentTab}
         onChange={handleTabChange}
@@ -190,7 +191,7 @@ const ActivitiesScreen = () => {
           ))}
         </>
       </InfiniteScroll>
-    </>
+    </AnimationDiv>
   );
 };
 

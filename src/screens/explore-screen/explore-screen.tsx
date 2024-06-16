@@ -33,6 +33,7 @@ import ActivityLeaveConfirmation from './components/activity-leave-confirmation'
 import FirstTimeLoginContent from './components/first-time-login-content';
 import Searchbar from './components/searchbar';
 import { SetLocationContent } from './components/set-location-content';
+import AnimationDiv from '../../components/animation-div';
 
 const ExploreScreen = () => {
   const { userInfo, isFirstTimeLogin, setIsFirstTimeLogin } =
@@ -197,7 +198,7 @@ const ExploreScreen = () => {
   }, [isFirstTimeLogin, toggleDrawer]);
 
   return (
-    <>
+    <AnimationDiv>
       <Box
         sx={{
           display: 'flex',
@@ -283,7 +284,7 @@ const ExploreScreen = () => {
           </Typography>
         )}
       </>
-    </>
+    </AnimationDiv>
   );
 };
 

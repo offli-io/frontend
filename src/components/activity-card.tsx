@@ -10,6 +10,7 @@ import { IActivity } from '../types/activities/activity.dto';
 import { TIME_FORMAT } from '../utils/common-constants';
 import { CustomizationContext } from './context/providers/customization-provider';
 import OffliButton from './offli-button';
+import { motion as m } from 'framer-motion';
 
 interface IProps {
   activity?: IActivity;
@@ -34,178 +35,180 @@ const ActivityCard: React.FC<IProps> = ({ activity, onPress, onLongPress, sx, ..
   const startDate = activity?.datetime_from ? new Date(activity?.datetime_from) : null;
 
   return (
-    <OffliButton
-      sx={{
-        width: '96%',
-        height: 240,
-        borderRadius: '10px',
-        backgroundImage: `url(${baseUrl}/files/${activity?.title_picture})`,
-        // backgroundImage: `url(${activity?.title_picture})`,
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat',
-        backgroundSize: 'cover',
-        display: 'flex',
-        alignItems: 'flex-end',
-        color: 'white',
-        boxShadow: shadows[4],
-        p: 0,
-        ...sx
-      }}
-      data-testid="activity-card"
-      {...handlers}
-      onClick={() => onPress?.(activity)}
-      color="inherit"
-      {...rest}>
-      <Box
+    <m.div initial={{ opacity: 0.5, y: 15 }} whileInView={{ opacity: 1, y: 0 }}>
+      <OffliButton
         sx={{
-          width: '100%',
+          width: '96%',
+          height: 240,
+          borderRadius: '10px',
+          backgroundImage: `url(${baseUrl}/files/${activity?.title_picture})`,
+          // backgroundImage: `url(${activity?.title_picture})`,
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+          backgroundSize: 'cover',
           display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          padding: '3%',
-          borderBottomLeftRadius: '10px',
-          borderBottomRightRadius: '10px',
-          // this was before useing background gradient -> maybe use it for that if decided
-          // backgroundColor: "rgba(0,0,0,.5)",
-          // backdropFilter: "blur(0.7px)", // position: 'absolute',
-          background: 'linear-gradient(to top, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0))',
-          boxSizing: 'border-box'
-        }}>
+          alignItems: 'flex-end',
+          color: 'white',
+          boxShadow: shadows[4],
+          p: 0,
+          ...sx
+        }}
+        data-testid="activity-card"
+        {...handlers}
+        onClick={() => onPress?.(activity)}
+        color="inherit"
+        {...rest}>
         <Box
           sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'flex-start',
             width: '100%',
-            whiteSpace: 'nowrap',
-            overflow: 'hidden'
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            padding: '3%',
+            borderBottomLeftRadius: '10px',
+            borderBottomRightRadius: '10px',
+            // this was before useing background gradient -> maybe use it for that if decided
+            // backgroundColor: "rgba(0,0,0,.5)",
+            // backdropFilter: "blur(0.7px)", // position: 'absolute',
+            background: 'linear-gradient(to top, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0))',
+            boxSizing: 'border-box'
           }}>
-          <Typography
-            variant="h2"
-            sx={{
-              width: 280,
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              whiteSpace: 'nowrap',
-              textAlign: 'start',
-              ...(theme === ThemeOptionsEnumDto.LIGHT ? { filter: 'invert(100%)' } : {})
-            }}>
-            {activity?.title}
-          </Typography>
-          <Typography
-            variant="subtitle1"
-            sx={{
-              width: 270,
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              whiteSpace: 'nowrap',
-              textAlign: 'start',
-              ...(theme === ThemeOptionsEnumDto.LIGHT ? { filter: 'invert(100%)' } : {})
-            }}>
-            {activity?.location?.name}
-          </Typography>
           <Box
             sx={{
               display: 'flex',
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'flex-start',
-              mt: 0.4
+              flexDirection: 'column',
+              alignItems: 'flex-start',
+              width: '100%',
+              whiteSpace: 'nowrap',
+              overflow: 'hidden'
             }}>
-            <PeopleAltIcon
+            <Typography
+              variant="h2"
               sx={{
-                fontSize: 14,
-                ml: 0.5,
-                mr: 0.5,
+                width: 280,
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
+                textAlign: 'start',
                 ...(theme === ThemeOptionsEnumDto.LIGHT ? { filter: 'invert(100%)' } : {})
-              }}
-            />
-            {activity?.limit ? (
-              <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+              }}>
+              {activity?.title}
+            </Typography>
+            <Typography
+              variant="subtitle1"
+              sx={{
+                width: 270,
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
+                textAlign: 'start',
+                ...(theme === ThemeOptionsEnumDto.LIGHT ? { filter: 'invert(100%)' } : {})
+              }}>
+              {activity?.location?.name}
+            </Typography>
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'flex-start',
+                mt: 0.4
+              }}>
+              <PeopleAltIcon
+                sx={{
+                  fontSize: 14,
+                  ml: 0.5,
+                  mr: 0.5,
+                  ...(theme === ThemeOptionsEnumDto.LIGHT ? { filter: 'invert(100%)' } : {})
+                }}
+              />
+              {activity?.limit ? (
+                <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                  <Typography
+                    variant="subtitle1"
+                    sx={{
+                      lineHeight: 1,
+                      ...(theme === ThemeOptionsEnumDto.LIGHT ? { filter: 'invert(100%)' } : {})
+                    }}>
+                    {activity?.count_confirmed}/{activity?.limit}{' '}
+                  </Typography>
+                  {[...(activity?.participants_thumb ?? [])]?.length > 0 ? (
+                    <Box sx={{ position: 'relative', display: 'flex' }}>
+                      {[...(activity?.participants_thumb ?? [])].map((participant, index) => (
+                        <img
+                          key={participant?.profile_photo}
+                          src={`${baseUrl}/files/${participant?.profile_photo}`}
+                          alt="profile"
+                          style={{
+                            position: 'absolute',
+                            left: 10 * (index + 1),
+                            height: 15,
+                            aspectRatio: 1,
+                            borderRadius: '50%',
+                            zIndex: index + 1
+                          }}
+                        />
+                      ))}
+                    </Box>
+                  ) : null}
+                </Box>
+              ) : (
                 <Typography
-                  variant="subtitle1"
                   sx={{
-                    lineHeight: 1,
-                    ...(theme === ThemeOptionsEnumDto.LIGHT ? { filter: 'invert(100%)' } : {})
+                    fontSize: 16,
+                    ...(theme === ThemeOptionsEnumDto.LIGHT ? { filter: 'invert(100%)' } : {}),
+                    lineHeight: 1
                   }}>
-                  {activity?.count_confirmed}/{activity?.limit}{' '}
+                  {activity?.count_confirmed} 0
                 </Typography>
-                {[...(activity?.participants_thumb ?? [])]?.length > 0 ? (
-                  <Box sx={{ position: 'relative', display: 'flex' }}>
-                    {[...(activity?.participants_thumb ?? [])].map((participant, index) => (
-                      <img
-                        key={participant?.profile_photo}
-                        src={`${baseUrl}/files/${participant?.profile_photo}`}
-                        alt="profile"
-                        style={{
-                          position: 'absolute',
-                          left: 10 * (index + 1),
-                          height: 15,
-                          aspectRatio: 1,
-                          borderRadius: '50%',
-                          zIndex: index + 1
-                        }}
-                      />
-                    ))}
-                  </Box>
-                ) : null}
-              </Box>
-            ) : (
+              )}
+            </Box>
+          </Box>
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center'
+            }}>
+            <Box>
               <Typography
                 sx={{
-                  fontSize: 16,
-                  ...(theme === ThemeOptionsEnumDto.LIGHT ? { filter: 'invert(100%)' } : {}),
-                  lineHeight: 1
+                  fontSize: 22,
+                  lineHeight: 1,
+                  fontWeight: 'bold',
+                  ...(theme === ThemeOptionsEnumDto.LIGHT ? { filter: 'invert(100%)' } : {})
                 }}>
-                {activity?.count_confirmed} 0
+                {startDate ? format(startDate, 'dd') : '-'}
               </Typography>
-            )}
+            </Box>
+            <Box>
+              <Typography
+                sx={{
+                  lineHeight: 1,
+                  fontSize: 12,
+                  letterSpacing: 0,
+                  fontWeight: 'bold',
+                  my: 0.5,
+                  ...(theme === ThemeOptionsEnumDto.LIGHT ? { filter: 'invert(100%)' } : {})
+                }}>
+                {startDate ? format(startDate, 'MMMM') : '-'}
+              </Typography>
+            </Box>
+            <Box>
+              <Typography
+                sx={{
+                  fontSize: 22,
+                  lineHeight: 1,
+                  fontWeight: 'semi-bold',
+                  ...(theme === ThemeOptionsEnumDto.LIGHT ? { filter: 'invert(100%)' } : {})
+                }}>
+                {startDate ? format(startDate, TIME_FORMAT) : '-'}
+              </Typography>
+            </Box>
           </Box>
         </Box>
-        <Box
-          sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center'
-          }}>
-          <Box>
-            <Typography
-              sx={{
-                fontSize: 22,
-                lineHeight: 1,
-                fontWeight: 'bold',
-                ...(theme === ThemeOptionsEnumDto.LIGHT ? { filter: 'invert(100%)' } : {})
-              }}>
-              {startDate ? format(startDate, 'dd') : '-'}
-            </Typography>
-          </Box>
-          <Box>
-            <Typography
-              sx={{
-                lineHeight: 1,
-                fontSize: 12,
-                letterSpacing: 0,
-                fontWeight: 'bold',
-                my: 0.5,
-                ...(theme === ThemeOptionsEnumDto.LIGHT ? { filter: 'invert(100%)' } : {})
-              }}>
-              {startDate ? format(startDate, 'MMMM') : '-'}
-            </Typography>
-          </Box>
-          <Box>
-            <Typography
-              sx={{
-                fontSize: 22,
-                lineHeight: 1,
-                fontWeight: 'semi-bold',
-                ...(theme === ThemeOptionsEnumDto.LIGHT ? { filter: 'invert(100%)' } : {})
-              }}>
-              {startDate ? format(startDate, TIME_FORMAT) : '-'}
-            </Typography>
-          </Box>
-        </Box>
-      </Box>
-    </OffliButton>
+      </OffliButton>
+    </m.div>
   );
 };
 
