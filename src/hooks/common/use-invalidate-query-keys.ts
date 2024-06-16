@@ -17,12 +17,12 @@ export interface IUseBuddiesProps {
 export const useInvalidateQueryKeys = () => {
   const queryClient = useQueryClient();
 
-  const activityCreatedOrEdited = () => {
+  const activityCreatedOrEditedInvalidation = () => {
     queryClient.invalidateQueries([ACTIVITIES_QUERY_KEY]);
     queryClient.invalidateQueries([PAGED_ACTIVITIES_QUERY_KEY]);
     queryClient.invalidateQueries([MAPVIEW_ACTIVITIES_QUERY_KEY]);
     queryClient.invalidateQueries([PARTICIPANT_ACTIVITIES_QUERY_KEY]);
   };
 
-  return { activityCreatedOrEdited };
+  return { activityCreatedOrEditedInvalidation };
 };

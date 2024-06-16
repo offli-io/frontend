@@ -10,12 +10,9 @@ import { createActivity } from '../../api/activities/requests';
 import { AuthenticationContext } from '../../components/context/providers/authentication-provider';
 import { PageWrapper } from '../../components/page-wrapper';
 import DotsMobileStepper from '../../components/stepper';
-import { ACTIVITIES_QUERY_KEY } from '../../hooks/use-activities';
-import { PAGED_ACTIVITIES_QUERY_KEY } from '../../hooks/use-activities-infinite-query';
-import { PARTICIPANT_ACTIVITIES_QUERY_KEY } from '../../hooks/use-participant-activities';
+import { useInvalidateQueryKeys } from '../../hooks/common/use-invalidate-query-keys';
 import { useUser } from '../../hooks/use-user';
 import { ActivityVisibilityEnum } from '../../types/activities/activity-visibility-enum.dto';
-import { MAPVIEW_ACTIVITIES_QUERY_KEY } from '../map-screen';
 import { calculateDateUsingDuration } from './utils/calculate-date-using-duration.util';
 import { renderProperForm } from './utils/render-proper-form.util';
 import { FormValues, validationSchema } from './utils/validation-schema';
@@ -28,6 +25,7 @@ const CreateActivityScreen = () => {
     number | undefined
   >();
   const [isMap, toggleMap] = React.useState(false);
+  const { activityCreatedOrEditedInvalidation } = useInvalidateQueryKeys();
 
   const navigate = useNavigate();
   const { userInfo } = React.useContext(AuthenticationContext);
@@ -60,14 +58,9 @@ const CreateActivityScreen = () => {
     (formValues: FormValues & { creator_id?: number }) => createActivity(formValues),
     {
       onSuccess: (data) => {
-        //invalidate user activites
         queryClient.setQueryData(['created-activity-data'], data?.data);
         queryClient.invalidateQueries(['user-info']);
-        //TODO query invalidation doesnt work - activities are not refetched!
-        queryClient.invalidateQueries([PARTICIPANT_ACTIVITIES_QUERY_KEY]);
-        queryClient.invalidateQueries([MAPVIEW_ACTIVITIES_QUERY_KEY]);
-        queryClient.invalidateQueries([ACTIVITIES_QUERY_KEY]);
-        queryClient.invalidateQueries([PAGED_ACTIVITIES_QUERY_KEY]);
+        activityCreatedOrEditedInvalidation();
         setPendingRedirectActivityId(data?.data?.id);
         setActiveStep((activeStep) => activeStep + 1);
       },
