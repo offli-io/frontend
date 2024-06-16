@@ -122,14 +122,6 @@ export const Layout: React.FC<ILayoutProps> = () => {
     contentDivRef.current = el;
   };
 
-  const addContentPadding = React.useMemo(
-    () =>
-      [ApplicationLocations.EXPLORE, ApplicationLocations.ACTIVITIES].some(
-        (item) => location?.pathname.startsWith(item)
-      ),
-    [location?.pathname]
-  );
-
   const isNotAuthorizedRoute = React.useMemo(
     () =>
       [
@@ -165,19 +157,15 @@ export const Layout: React.FC<ILayoutProps> = () => {
           overflow: 'hidden'
         }}
         className="layout-parent">
-        {/* TODO backHeader and diusplayheader better naming */}
+        {/* TODO backHeader and displayheader better naming */}
         {stateToken && displayHeader && <OffliHeader sx={{ width: '100%' }} />}
         <Box
-          // onScroll={onscroll}
-          // onScrollEnd={() => console.log("scroll end")}
           sx={{
             width: '100%',
             height: '100%',
             overflow: 'auto',
             bgcolor: palette.background.default,
-            boxSizing: 'border-box',
-            px: addContentPadding ? 1 : 0
-            // ...layoutStyle,
+            boxSizing: 'border-box'
           }}
           {...restHandlers}
           ref={refPassthrough}>

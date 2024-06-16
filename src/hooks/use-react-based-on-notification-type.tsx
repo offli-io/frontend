@@ -1,17 +1,17 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { INotificationDto } from 'types/notifications/notification.dto';
 import { markNotificationAsSeen } from 'api/notifications/requests';
-import { toast } from 'sonner';
-import { NotificationTypeEnum } from 'types/notifications/notification-type-enum';
 import { NavigateFunction, useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
 import { ApplicationLocations } from 'types/common/applications-locations.dto';
+import { NotificationTypeEnum } from 'types/notifications/notification-type-enum';
+import { INotificationDto } from 'types/notifications/notification.dto';
 import { ActivityStatusEnumDto } from '../types/activities/activity-status-enum.dto';
 
 const reactAfter = (notification: INotificationDto, navigate: NavigateFunction) => {
   const notificationId = notification.id;
 
   if (notification?.type === NotificationTypeEnum.ACTIVITY_INV) {
-    navigate(`${ApplicationLocations.EXPLORE}/request/${notification?.properties?.activity?.id}`, {
+    navigate(`${ApplicationLocations.ACTIVITY_INVITE}/${notification?.properties?.activity?.id}`, {
       state: {
         from: '/notifications',
         notificationId

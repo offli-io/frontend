@@ -98,7 +98,7 @@ const Routes = () => {
         element={<ActivityDetailsScreen type="detail" />}
       />
       <Route
-        path={`${ApplicationLocations.EXPLORE}/request/:id`}
+        path={`${ApplicationLocations.ACTIVITY_INVITE}/:id`}
         element={<ActivityDetailsScreen type="request" />}
       />
       <Route
