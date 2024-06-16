@@ -1,6 +1,5 @@
-import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import { Box, Card, IconButton, SxProps, Typography, useTheme } from '@mui/material';
-import { MobileDatePicker } from '@mui/x-date-pickers';
+import { CalendarIcon, MobileDatePicker } from '@mui/x-date-pickers';
 import { format } from 'date-fns';
 import * as React from 'react';
 
@@ -144,19 +143,18 @@ export const MobileCarousel: React.FC<IMobileCarouselProps> = ({
           <MobileDatePicker
             onChange={handleDatePick}
             closeOnSelect
-            // componentProps={{
-            //   actionBar: undefined,
-            // }}
             value={new Date()}
             minDate={new Date()}
             label="Date"
-            inputFormat="dd.MM.yyyy"
-            renderInput={(params: any) => (
-              <IconButton {...params}>
-                <CalendarMonthIcon color="primary" />
-              </IconButton>
-            )}
+            format="dd.MM.yyyy"
             data-testid="mobile-date-picker"
+            slots={{
+              textField: (params) => (
+                <IconButton {...params}>
+                  <CalendarIcon color="primary" />
+                </IconButton>
+              )
+            }}
           />
         </Card>
       </Box>

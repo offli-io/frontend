@@ -218,6 +218,7 @@ const OTPInput = ({
         alignItems: 'center',
         width: '75%'
       }}
+      data-testid="otp-input"
       // style={Object.assign(
       //   { display: "flex", alignItems: "center" },
       //   isStyleObject(containerStyle) && containerStyle

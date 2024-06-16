@@ -41,6 +41,7 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
     fromOptions: generateDateSlots(),
     untilOptions: generateDateSlots()
   });
+  const [timePickerMinTime, setTimePickerMinTime] = React.useState<Date | null>(null);
 
   const isFormValid = !!watch('datetime_from');
 
@@ -48,6 +49,12 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
     const selectedDate = date?.fromOptions?.find((item) => item.selected);
     if (selectedDate) {
       setValue('datetime_from', selectedDate?.dateValue);
+      if (
+        selectedDate.dateValue &&
+        selectedDate.dateValue.toDateString() === new Date().toDateString()
+      )
+        setTimePickerMinTime(new Date());
+      else setTimePickerMinTime(null);
     }
   }, [date?.fromOptions]);
 
@@ -160,29 +167,31 @@ export const DateTimeForm: React.FC<IDateTimeForm> = ({
         <Controller
           name="timeFrom"
           control={control}
-          render={({ field, fieldState: { error } }) => (
+          render={({ field: { value, onChange, ...field }, fieldState: { error } }) => (
             <MobileTimePicker
               {...field}
-              value={field.value}
-              onChange={(newValue) => field.onChange(newValue)}
               ampm={false}
-              // disablePast={true}
-              renderInput={(params) => (
-                <OffliTextField
-                  {...params}
-                  data-testid="start-time-input"
-                  error={!!error}
-                  helperText={!!error && 'Activity start time is required'}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="end">
-                        <AccessTimeIcon sx={{ mr: 2 }} />
-                      </InputAdornment>
-                    )
-                  }}
-                />
-              )}
-              inputFormat="HH:mm"
+              format="HH:mm"
+              value={value}
+              minTime={timePickerMinTime}
+              onChange={(e) => onChange(e)}
+              slots={{
+                textField: (params) => (
+                  <OffliTextField
+                    {...params}
+                    data-testid="start-time-input"
+                    error={!!error}
+                    helperText={!!error && 'Activity start time is required'}
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="end">
+                          <AccessTimeIcon sx={{ mr: 2 }} />
+                        </InputAdornment>
+                      )
+                    }}
+                  />
+                )
+              }}
             />
           )}
         />

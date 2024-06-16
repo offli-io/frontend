@@ -213,6 +213,7 @@ export const RegistrationScreen: React.FC = () => {
 
           <OffliButton
             type="submit"
+            data-testid="register-button"
             sx={{ width: '70%', mb: 5 }}
             disabled={!formState?.isValid || isEmailInUse || isLoading}>
             Register

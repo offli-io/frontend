@@ -1,7 +1,7 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import EditIcon from '@mui/icons-material/Edit';
 import InstagramIcon from '@mui/icons-material/Instagram';
-import { Autocomplete, Box, IconButton, Typography, useTheme } from '@mui/material';
+import { Autocomplete, Box, IconButton, useTheme } from '@mui/material';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -29,6 +29,7 @@ import { ALLOWED_PHOTO_EXTENSIONS } from '../../utils/common-constants';
 import { mapExternalApiOptions } from '../../utils/map-location-value.util';
 import ProfilePhotoActions, { ProfilePhotoActionsEnum } from './components/profile-photo-actions';
 import { getMatchingProperties } from './utils/get-matching-properties.util';
+import dayjs from 'dayjs';
 
 export interface IEditProfile {
   username?: string;
@@ -172,8 +173,6 @@ const EditProfileScreen: React.FC = () => {
   );
 
   useEffect(() => {
-    // alebo setValue ak bude resetu kurovat
-
     reset({
       username: user?.username ?? '',
       about_me: user?.about_me ?? '',
@@ -415,47 +414,44 @@ const EditProfileScreen: React.FC = () => {
                 name="username"
                 control={control}
                 render={({ field, fieldState: { error } }) => (
-                  <>
-                    <Typography variant="h5">Username</Typography>
-                    <OffliTextField
-                      {...field}
-                      error={!!error}
-                      helperText={error?.message}
-                      sx={{ width: '100%', my: 1.5 }}
-                      data-testid="name-input"
-                    />
-                  </>
+                  <OffliTextField
+                    {...field}
+                    label="Username"
+                    error={!!error}
+                    helperText={error?.message}
+                    sx={{ width: '100%', my: 2 }}
+                    data-testid="name-input"
+                  />
                 )}
               />
               <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <Controller
                   name="birthdate"
                   control={control}
-                  render={({ field: { onChange, value }, fieldState: { error } }) => (
-                    <>
-                      <Typography variant="h5" sx={{ mt: 1 }}>
-                        Birthdate
-                      </Typography>
-                      <DatePicker
-                        openTo="year"
-                        inputFormat="DD/MM/YYYY"
-                        value={value}
-                        disableFuture
-                        // closeOnSelect
-                        onChange={onChange}
-                        maxDate={new Date()}
-                        data-testid="birthdate-date-picker"
-                        renderInput={(params) => (
+                  render={({ field: { value, onChange, ...field }, fieldState: { error } }) => (
+                    <DatePicker
+                      {...field}
+                      label="Birth date"
+                      openTo="year"
+                      format="DD/MM/YYYY"
+                      value={dayjs(value)}
+                      disableFuture
+                      // closeOnSelect
+                      onChange={(e) => onChange(e)}
+                      maxDate={dayjs()}
+                      data-testid="birthdate-date-picker"
+                      desktopModeMediaQuery="'@media (pointer: fine)'"
+                      slots={{
+                        textField: (params) => (
                           <OffliTextField
                             {...params}
-                            sx={{ width: '100%', my: 1.5 }}
+                            sx={{ width: '100%', my: 2 }}
                             error={!!error}
                             helperText={error?.message}
-                            // label="Birthdate"
                           />
-                        )}
-                      />
-                    </>
+                        )
+                      }}
+                    />
                   )}
                 />
               </LocalizationProvider>
@@ -463,72 +459,63 @@ const EditProfileScreen: React.FC = () => {
                 name="location"
                 control={control}
                 render={({ field, fieldState: { error } }) => (
-                  <>
-                    <Typography variant="h5" sx={{ mt: 1 }}>
-                      Location
-                    </Typography>
-                    {/* // We have completely different approach handling location here and in place-form
+                  // We have completely different approach handling location here and in place-form
                   // TODO we should map options to our ILocation object as it is here
-                   */}
-                    <Autocomplete
-                      {...field}
-                      options={mapExternalApiOptions(placeQuery?.data?.results)}
-                      value={field?.value}
-                      sx={{
-                        width: '100%',
-                        display: 'flex',
-                        justifyContentw: 'center',
-                        my: 1.5
-                      }}
-                      loading={placeQuery?.isLoading}
-                      onChange={(e, locationObject) => {
-                        field.onChange({
-                          name: locationObject?.name ?? '',
-                          coordinates: locationObject?.coordinates
-                        });
-                      }}
-                      inputValue={field?.value?.name}
-                      getOptionLabel={(option) => String(option?.name)}
-                      renderInput={(params) => (
-                        <OffliTextField
-                          {...params}
-                          onChange={(e) => setValue('placeQuery', e.target.value)}
-                          error={!!error}
-                          helperText={!!error && 'Location is required'}
-                          autoCapitalize="sentences"
-                        />
-                      )}
-                      data-testid="activity-place-input"
-                    />
-                  </>
+                  <Autocomplete
+                    {...field}
+                    options={mapExternalApiOptions(placeQuery?.data?.results)}
+                    value={field?.value}
+                    sx={{
+                      width: '100%',
+                      display: 'flex',
+                      justifyContentw: 'center',
+                      my: 2
+                    }}
+                    loading={placeQuery?.isLoading}
+                    onChange={(e, locationObject) => {
+                      field.onChange({
+                        name: locationObject?.name ?? '',
+                        coordinates: locationObject?.coordinates
+                      });
+                    }}
+                    inputValue={field?.value?.name}
+                    getOptionLabel={(option) => String(option?.name)}
+                    renderInput={(params) => (
+                      <OffliTextField
+                        {...params}
+                        label="Location"
+                        onChange={(e) => setValue('placeQuery', e.target.value)}
+                        error={!!error}
+                        helperText={!!error && 'Location is required'}
+                        autoCapitalize="sentences"
+                      />
+                    )}
+                    data-testid="activity-place-input"
+                  />
                 )}
               />
               <Controller
                 name="about_me"
                 control={control}
                 render={({ field }) => (
-                  <>
-                    <Typography variant="h5" sx={{ mt: 2 }}>
-                      About me
-                    </Typography>
-                    <OffliTextField
-                      {...field}
-                      multiline
-                      rows={3}
-                      placeholder="Type something about you"
-                      sx={{
-                        width: '100%',
-                        '& .MuiOutlinedInput-root': {
-                          height: 'unset'
-                        },
-                        my: 1.5
-                      }}
-                      helperText={`${field?.value?.length ?? 0}/200`}
-                      inputProps={{ maxLength: 200 }}
-                      data-testid="about-me-input"
-                      autoCapitalize="sentences"
-                    />
-                  </>
+                  <OffliTextField
+                    {...field}
+                    label="About me"
+                    multiline
+                    rows={3}
+                    placeholder="Type something about you"
+                    sx={{
+                      width: '100%',
+                      '& .MuiOutlinedInput-root': {
+                        height: 'unset'
+                      },
+                      my: 2
+                    }}
+                    helperText={`${field?.value?.length ?? 0}/200`}
+                    inputProps={{ maxLength: 200 }}
+                    data-testid="about-me-input"
+                    autoCapitalize="sentences"
+                  />
                 )}
               />
 

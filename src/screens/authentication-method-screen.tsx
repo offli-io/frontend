@@ -28,7 +28,7 @@ const AuthenticationMethodScreen: React.FC = () => {
           alignItems: 'center'
         }}>
         <OffliButton
-          data-testid="loginBtn"
+          data-testid="login-button"
           sx={{ width: '80%', mb: 2 }}
           onClick={() => navigate(ApplicationLocations.LOGIN)}>
           Login
@@ -36,7 +36,7 @@ const AuthenticationMethodScreen: React.FC = () => {
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
           <Typography>Are you new?</Typography>
           <OffliButton
-            data-testid="joinNowBtn"
+            data-testid="join-now-button"
             color="primary"
             variant="text"
             sx={{ fontSize: '1rem' }}
