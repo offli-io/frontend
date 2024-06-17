@@ -65,7 +65,8 @@ const OffliHeader: React.FC<IProps> = ({ sx }) => {
       NOT_EXACT_UNALLOWED_URLS?.some((item) => location?.pathname.includes(item)) ||
       location.pathname.includes(ApplicationLocations.ACTIVITY_DETAIL) ||
       location.pathname.includes(ApplicationLocations.ACTIVITY_MEMBERS) ||
-      location.pathname.includes(ApplicationLocations.ACTIVITY_INVITE_MEMBERS),
+      location.pathname.includes(ApplicationLocations.ACTIVITY_INVITE_MEMBERS) ||
+      location.pathname.includes(ApplicationLocations.EDIT_ACTIVITY),
     [location]
   );
 

@@ -9,7 +9,6 @@ import {
 } from '../api/activities/requests';
 
 export const ACTIVITY_PARTICIPANTS_QUERY_KEY = 'activity-participants';
-export const PAGED_ACTIVITIES_QUERY_KEY = 'paged-activities';
 
 export interface IUseActivityParticipantsReturn {
   params?: { id?: number | string };

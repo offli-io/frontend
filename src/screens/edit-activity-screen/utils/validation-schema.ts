@@ -1,7 +1,7 @@
+import { isBefore } from 'date-fns';
 import { ActivityDurationTypeEnumDto } from 'types/activities/activity-duration-type-enum.dto';
 import { ActivityVisibilityEnum } from 'types/activities/activity-visibility-enum.dto';
 import * as yup from 'yup';
-import { isBefore } from 'date-fns';
 
 export interface IAdditionalHelperActivityInterface {
   placeQuery?: string;
@@ -38,6 +38,7 @@ export const validationSchema = () =>
       }),
     price: yup
       .number()
+      .min(0)
       .when('isActivityFree', {
         is: (isActivityFree?: boolean) => !!isActivityFree,
         then: (schema) => schema.notRequired(),
@@ -46,6 +47,7 @@ export const validationSchema = () =>
       .typeError("Price must be filled. Type '0' for free price"),
     limit: yup
       .number()
+      .min(0)
       .required()
       .defined()
       .typeError('Activity maximal attendance must be filled'),

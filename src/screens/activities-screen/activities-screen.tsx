@@ -16,11 +16,11 @@ import {
 } from 'types/activities/activity-sort-enum.dto';
 import { ACTIVITES_LIMIT } from 'utils/common-constants';
 import { getScrollOffset, setScrollOffset } from 'utils/scoll-position-utils';
+import AnimationDiv from '../../components/animation-div';
 import { ApplicationLocations } from '../../types/common/applications-locations.dto';
 import { ActivitiesTabLabelMap } from './utils/activities-tab-label-map';
 import { SWIPE_ARRAY_ORDER, detectSwipedTab } from './utils/detect-swiped-tab.util';
 import { TabDefinitionsEnum } from './utils/tab-definitions';
-import AnimationDiv from '../../components/animation-div';
 
 const ActivitiesScreen = () => {
   const navigate = useNavigate();
@@ -129,7 +129,7 @@ const ActivitiesScreen = () => {
   }, [isFetchingNextPage]);
 
   return (
-    <AnimationDiv>
+    <AnimationDiv style={{ paddingInline: 6 }}>
       <Tabs
         value={currentTab}
         onChange={handleTabChange}

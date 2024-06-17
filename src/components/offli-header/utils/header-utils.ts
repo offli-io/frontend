@@ -31,6 +31,10 @@ export const mapPathnameToHeaderTitle = (pathname?: ApplicationLocations) => {
     return 'Invite buddies';
   }
 
+  if (pathname?.startsWith(ApplicationLocations.EDIT_ACTIVITY)) {
+    return 'Edit activity';
+  }
+
   // assuming there is ID behind the slash TODO in the future better handling of these paths
   if (pathname?.startsWith(`${ApplicationLocations.MAP}/`)) {
     return 'Activity location';

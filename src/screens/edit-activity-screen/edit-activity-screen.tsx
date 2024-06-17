@@ -11,12 +11,12 @@ import {
 } from '@mui/material';
 import { DateTimePicker, LocalizationProvider, renderTimeViewClock } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { AuthenticationContext } from 'components/context/providers/authentication-provider';
 import FileUploadModal from 'components/file-upload/components/file-upload-modal';
 import OffliButton from 'components/offli-button';
+import dayjs from 'dayjs';
 import 'dayjs/locale/sk';
-import { PAGED_ACTIVITIES_QUERY_KEY } from 'hooks/use-activities-infinite-query';
 import React, { useEffect } from 'react';
 import { Controller, ControllerRenderProps, FieldValues, useForm } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -38,21 +38,20 @@ import {
 } from '../../api/activities/requests';
 import OffliTextField from '../../components/offli-text-field';
 import { PageWrapper } from '../../components/page-wrapper';
-import { ACTIVITIES_QUERY_KEY, useActivities } from '../../hooks/use-activities';
+import { useInvalidateQueryKeys } from '../../hooks/common/use-invalidate-query-keys';
+import { useActivities } from '../../hooks/use-activities';
 import { useGetApiUrl } from '../../hooks/use-get-api-url';
 import { useTags } from '../../hooks/use-tags';
 import { IActivityRestDto } from '../../types/activities/activity-rest.dto';
 import { ActivityVisibilityEnum } from '../../types/activities/activity-visibility-enum.dto';
-import { ApplicationLocations } from '../../types/common/applications-locations.dto';
 import { mapLocationValue } from '../../utils/map-location-value.util';
 import { IAdditionalHelperActivityInterface, validationSchema } from './utils/validation-schema';
-import dayjs from 'dayjs';
 
 const EditActivityScreen: React.FC = () => {
   const [localFile, setLocalFile] = React.useState<any>();
   const hiddenFileInput = React.useRef<HTMLInputElement | null>(null);
   const { id } = useParams();
-  const queryClient = useQueryClient();
+  const { activityCreatedOrEditedInvalidation } = useInvalidateQueryKeys();
   const navigate = useNavigate();
   const baseUrl = useGetApiUrl();
   const { userInfo } = React.useContext(AuthenticationContext);
@@ -130,15 +129,16 @@ const EditActivityScreen: React.FC = () => {
     {
       onSuccess: () => {
         !!localFile && setLocalFile(null);
-        queryClient.invalidateQueries([ACTIVITIES_QUERY_KEY]);
-        queryClient.invalidateQueries([PAGED_ACTIVITIES_QUERY_KEY]);
-        queryClient.invalidateQueries(['activity-participants']);
+        activityCreatedOrEditedInvalidation();
+
         toast.success('Activity information was successfully updated');
-        navigate(`${ApplicationLocations.ACTIVITY_DETAIL}/${id}`, {
-          state: {
-            from: ApplicationLocations.EDIT_ACTIVITY
-          }
-        });
+        // navigate(
+        //   `${ApplicationLocations.ACTIVITY_DETAIL}/${id}`
+        //   //TODO navigation is broken here
+        //   // { replace: true }
+        // );
+        // navigation back actually resolves the issue
+        navigate(-1);
       },
       onError: () => {
         !!localFile && setLocalFile(null);
@@ -159,7 +159,6 @@ const EditActivityScreen: React.FC = () => {
           title_picture: data?.data?.filename
         });
         setValue('title_picture', data?.data?.filename);
-        // setLocalFile(null);
       },
       onError: () => {
         setLocalFile(null);
@@ -183,11 +182,6 @@ const EditActivityScreen: React.FC = () => {
 
   const handleFormSubmit = React.useCallback(
     (values: IActivity) => {
-      // let newValues = {};
-      // Object.keys(dirtyFields).forEach((field: string) => {
-      //   newValues = { ...newValues, [field]: (values as any)?.[field] };
-      // });
-      // newValues = { ...newValues, tags: }
       sendUpdateActivity({ ...values, creator_id: Number(userInfo?.id) });
     },
     [dirtyFields]
@@ -202,7 +196,7 @@ const EditActivityScreen: React.FC = () => {
         field.onChange(
           locationObject
             ? {
-                name: locationObject?.formatted,
+                name: locationObject?.formatted ?? locationObject?.name,
                 coordinates: {
                   lat: locationObject?.lat,
                   lon: locationObject?.lon
@@ -210,7 +204,12 @@ const EditActivityScreen: React.FC = () => {
               }
             : null
         );
-        if (locationObject && placeQuery?.data?.results) {
+        if (
+          locationObject &&
+          // it needs to either have name or formatted in order to display it properly
+          (locationObject?.formatted || locationObject?.name) &&
+          placeQuery?.data?.results
+        ) {
           pushSearchResultIntoStorage(locationObject);
         }
       },
@@ -334,7 +333,7 @@ const EditActivityScreen: React.FC = () => {
                       }}
                       loading={placeQuery?.isLoading}
                       onChange={handleLocationSelect(field)}
-                      getOptionLabel={(option) => String(option?.formatted)}
+                      getOptionLabel={(option) => String(option?.formatted ?? option?.name)}
                       // inputValue={inputValue ?? ""}
                       renderInput={(params) => (
                         <OffliTextField
@@ -384,19 +383,6 @@ const EditActivityScreen: React.FC = () => {
                           helperText: error?.message
                         }
                       }}
-                      // slots={{
-                      //   textField: (params) => (
-                      //     <OffliTextField
-                      //       {...params}
-                      //       error={!!error}
-                      //       helperText={error?.message}
-                      //       sx={{
-                      //         width: '100%',
-                      //         mt: 3
-                      //       }}
-                      //     />
-                      //   )
-                      // }}
                     />
                   )}
                 />
@@ -496,7 +482,6 @@ const EditActivityScreen: React.FC = () => {
                       error={!!error}
                       helperText={error?.message}
                       InputLabelProps={{ shrink: true }}
-                      //disabled={methodSelectionDisabled}
                       sx={{ width: '40%', mt: 3 }}
                     />
                   )}

@@ -5,11 +5,14 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ApplicationLocations } from 'types/common/applications-locations.dto';
 import registrationNeededImg from '../../assets/img/registration-needed.svg';
+import { OffliUserAgent } from '../../types/common/offli-user-agent-enum.dto';
+import { getPlatfromFromStorage } from '../../utils/storage.util';
 
 interface IRegistrationNeededScreenProps {}
 
 const RegistrationNeededScreen: React.FC<IRegistrationNeededScreenProps> = () => {
   const navigate = useNavigate();
+  const platform = getPlatfromFromStorage() ?? OffliUserAgent.Web;
 
   return (
     <Box
@@ -30,7 +33,8 @@ const RegistrationNeededScreen: React.FC<IRegistrationNeededScreenProps> = () =>
       <OffliButton
         //TODO navigate to app store / google store
         // onClick={() => navigate(ApplicationLocations.REGISTER)}
-        sx={{ mt: 4, width: '60%' }}>
+        disabled={[OffliUserAgent.MobileAndroid, OffliUserAgent.MobileIos].includes(platform)}
+        sx={{ mt: 4, width: 250 }}>
         Download App
       </OffliButton>
 
@@ -38,7 +42,7 @@ const RegistrationNeededScreen: React.FC<IRegistrationNeededScreenProps> = () =>
         <Typography variant="subtitle1">or</Typography>
       </LabeledDivider>
       <OffliButton
-        onClick={() => navigate(ApplicationLocations.REGISTER)}
+        onClick={() => navigate(ApplicationLocations.LOGIN)}
         sx={{ width: '60%' }}
         variant="text">
         Sign up or Log in

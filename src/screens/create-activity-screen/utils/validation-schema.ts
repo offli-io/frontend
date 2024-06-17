@@ -61,6 +61,7 @@ export const validationSchema: (activeStep: number) => yup.SchemaOf<FormValues> 
       activeStep === 4
         ? yup
             .number()
+            .min(0)
             .when('isActivityFree', {
               is: (isActivityFree?: boolean) => !!isActivityFree,
               then: (schema) => schema.notRequired(),
@@ -68,7 +69,7 @@ export const validationSchema: (activeStep: number) => yup.SchemaOf<FormValues> 
             })
             .typeError("Price must be a number. Check 'free' or leave empty for free price")
         : yup.number().notRequired().nullable(true),
-    limit: activeStep === 4 ? yup.number().required().defined() : yup.number().notRequired(),
+    limit: activeStep === 4 ? yup.number().min(0).required().defined() : yup.number().notRequired(),
     title_picture: yup.string().notRequired(),
     placeQuery: yup.string().notRequired(),
     description: yup.string().notRequired(),

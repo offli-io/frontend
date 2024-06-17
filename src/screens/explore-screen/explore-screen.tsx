@@ -17,6 +17,7 @@ import {
   removePersonFromActivity
 } from '../../api/activities/requests';
 import ActivityCard from '../../components/activity-card';
+import AnimationDiv from '../../components/animation-div';
 import { AuthenticationContext } from '../../components/context/providers/authentication-provider';
 import { DrawerContext } from '../../components/context/providers/drawer-provider';
 import { LocationContext } from '../../components/context/providers/location-provider';
@@ -33,7 +34,6 @@ import ActivityLeaveConfirmation from './components/activity-leave-confirmation'
 import FirstTimeLoginContent from './components/first-time-login-content';
 import Searchbar from './components/searchbar';
 import { SetLocationContent } from './components/set-location-content';
-import AnimationDiv from '../../components/animation-div';
 
 const ExploreScreen = () => {
   const { userInfo, isFirstTimeLogin, setIsFirstTimeLogin } =
@@ -198,7 +198,7 @@ const ExploreScreen = () => {
   }, [isFirstTimeLogin, toggleDrawer]);
 
   return (
-    <AnimationDiv>
+    <AnimationDiv style={{ paddingInline: 6 }}>
       <Box
         sx={{
           display: 'flex',

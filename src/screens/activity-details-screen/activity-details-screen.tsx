@@ -8,7 +8,7 @@ import { CustomizationContext } from 'components/context/providers/customization
 import { DrawerContext } from 'components/context/providers/drawer-provider';
 import ImagePreviewModal from 'components/image-preview-modal/image-preview-modal';
 import Loader from 'components/loader';
-import { format, isAfter, isWithinInterval } from 'date-fns';
+import { format, isAfter } from 'date-fns';
 import { ACTIVITIES_QUERY_KEY, useActivities } from 'hooks/use-activities';
 import { PAGED_ACTIVITIES_QUERY_KEY } from 'hooks/use-activities-infinite-query';
 import { useDismissActivity } from 'hooks/use-dismiss-activity';
@@ -210,9 +210,7 @@ const ActivityDetailsScreen: React.FC<IProps> = () => {
           return sendJoinActivity();
         case ActivityActionsTypeEnumDto.EDIT:
           //TODO EditActivityScreen pass id?
-          return navigate(`${ApplicationLocations.EDIT_ACTIVITY}/${id}`, {
-            state: undefined
-          });
+          return navigate(`${ApplicationLocations.EDIT_ACTIVITY}/${id}`);
         case ActivityActionsTypeEnumDto.LEAVE:
           //TODO EditActivityScreen pass id?
           return toggleDrawer({
@@ -315,14 +313,6 @@ const ActivityDetailsScreen: React.FC<IProps> = () => {
   const isPastActivity =
     !!activity?.datetime_until && isAfter(new Date(), new Date(activity.datetime_until));
 
-  const isInProgress =
-    !!activity?.datetime_from &&
-    !!activity?.datetime_until &&
-    isWithinInterval(new Date(), {
-      start: new Date(activity?.datetime_from),
-      end: new Date(activity?.datetime_until)
-    });
-
   const isCreator = activity?.creator?.id === userInfo?.id;
 
   const dateTimeFrom = activity?.datetime_from ? new Date(activity?.datetime_from) : null;
@@ -368,9 +358,6 @@ const ActivityDetailsScreen: React.FC<IProps> = () => {
     durationMinutes = 0,
     durationDays = 0
   } = getTimeDifference(dateTimeFrom, dateTimeUntil) ?? {}; // useMemo??
-
-  const privateUninvitedActivity =
-    activity?.visibility === ActivityVisibilityEnum.private && !activity?.participant_status;
 
   const handleJoinButtonClick = React.useCallback(() => {
     isAlreadyParticipant
@@ -443,20 +430,19 @@ const ActivityDetailsScreen: React.FC<IProps> = () => {
           width: '93%',
           margin: 'auto'
         }}>
-        <ActivityActionButtons
-          onJoinClick={handleJoinButtonClick}
-          onMoreClick={() => handleActivityActionsCLick(activity)}
-          isAllowedToSendFeedback={isAllowedToSendFeedback}
-          sentFeedbackValue={feedbackAlreadySent?.feedback?.value}
-          onToggleFeedbackDrawer={() => handleToggleFeedbackDrawer(activity)}
-          areActionsLoading={areActionsLoading}
-          isCreator={isCreator}
-          isAlreadyParticipant={isAlreadyParticipant}
-          isPublic={activity?.visibility === ActivityVisibilityEnum.public}
-          hasEnded={isPastActivity}
-          inProgress={isInProgress}
-          privateUninvitedActivity={privateUninvitedActivity}
-        />
+        {userInfo?.id ? (
+          <ActivityActionButtons
+            onJoinClick={handleJoinButtonClick}
+            onMoreClick={() => handleActivityActionsCLick(activity)}
+            isAllowedToSendFeedback={isAllowedToSendFeedback}
+            sentFeedbackValue={feedbackAlreadySent?.feedback?.value}
+            onToggleFeedbackDrawer={() => handleToggleFeedbackDrawer(activity)}
+            areActionsLoading={areActionsLoading}
+            isAlreadyParticipant={isAlreadyParticipant}
+            hasEnded={isPastActivity}
+          />
+        ) : null}
+
         <Box
           sx={{
             display: 'flex',

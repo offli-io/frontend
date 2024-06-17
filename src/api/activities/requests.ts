@@ -1,6 +1,7 @@
 import axios from 'axios';
 import qs from 'qs';
 import { IActivitiesParamsDto } from 'types/activities/activities-params.dto';
+import { IPlacesAutocompleteResponseDto } from 'types/google/places-autocomplete-response.dto';
 import { IUsersParamsDto } from 'types/users';
 import { IBuddiesResponseDto } from 'types/users/buddies-response.dto';
 import { IUsersResponseDto } from 'types/users/users-response.dto';
@@ -33,7 +34,6 @@ import {
 import { IPredefinedPictureResponseDto } from '../../types/activities/predefined-picture.dto';
 import { IPredefinedTagDto } from '../../types/activities/predefined-tag.dto';
 import { IUpdateActivityRequestDto } from './../../types/activities/update-activity-request.dto';
-import { IPlacesAutocompleteResponseDto } from 'types/google/places-autocomplete-response.dto';
 
 export const getActivities = async ({
   queryFunctionContext,

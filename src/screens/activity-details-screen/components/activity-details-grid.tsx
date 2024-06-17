@@ -137,7 +137,6 @@ const ActivityDetailsGrid: React.FC<IProps> = ({ activity, onActionClick }) => {
           <MonetizationOnIcon sx={{ fontSize: 26, color: 'primary.main' }} />
         </IconButton>
         <OffliButton
-          onClick={() => console.log('show on map')}
           variant="text"
           size="small"
           sx={{

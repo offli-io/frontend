@@ -10,6 +10,7 @@ import { createActivity } from '../../api/activities/requests';
 import { AuthenticationContext } from '../../components/context/providers/authentication-provider';
 import { PageWrapper } from '../../components/page-wrapper';
 import DotsMobileStepper from '../../components/stepper';
+import { useInvalidateQueryKeys } from '../../hooks/common/use-invalidate-query-keys';
 import { useUser } from '../../hooks/use-user';
 import { ActivityVisibilityEnum } from '../../types/activities/activity-visibility-enum.dto';
 import { calculateDateUsingDuration } from './utils/calculate-date-using-duration.util';
@@ -24,6 +25,7 @@ const CreateActivityScreen = () => {
     number | undefined
   >();
   const [isMap, toggleMap] = React.useState(false);
+  const { activityCreatedOrEditedInvalidation } = useInvalidateQueryKeys();
 
   const navigate = useNavigate();
   const { userInfo } = React.useContext(AuthenticationContext);
@@ -56,13 +58,9 @@ const CreateActivityScreen = () => {
     (formValues: FormValues & { creator_id?: number }) => createActivity(formValues),
     {
       onSuccess: (data) => {
-        //invalidate user activites
         queryClient.setQueryData(['created-activity-data'], data?.data);
         queryClient.invalidateQueries(['user-info']);
-        //TODO query invalidation doesnt work - activities are not refetched!
-        queryClient.invalidateQueries({ queryKey: ['activities'] });
-        queryClient.invalidateQueries({ queryKey: ['participant-activities'] });
-        queryClient.invalidateQueries({ queryKey: ['mapview-activities'] });
+        activityCreatedOrEditedInvalidation();
         setPendingRedirectActivityId(data?.data?.id);
         setActiveStep((activeStep) => activeStep + 1);
       },

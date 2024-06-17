@@ -8,18 +8,6 @@ interface IProps {
 }
 
 const ActivityTags: React.FC<IProps> = ({ tags, sx }) => {
-  const [selected, setSelected] = React.useState<string[]>([]);
-
-  const handleChipClick = React.useCallback(
-    (tag: string) => {
-      if (selected?.includes(tag)) {
-        setSelected((selected) => selected?.filter((_tag) => _tag !== tag));
-      } else {
-        setSelected((selected) => [tag, ...selected]);
-      }
-    },
-    [selected]
-  );
   return (
     <Box
       sx={{
@@ -29,12 +17,11 @@ const ActivityTags: React.FC<IProps> = ({ tags, sx }) => {
         justifyContent: 'space-evenly',
         flexWrap: 'wrap',
         ...sx
-        // overflowWrap: "wrap",
       }}>
       {tags?.map((tag, index) => (
         <Chip
           label={tag}
-          variant={selected?.includes(tag) ? 'filled' : 'outlined'}
+          variant="outlined"
           key={index}
           sx={{
             p: 2,
@@ -47,7 +34,6 @@ const ActivityTags: React.FC<IProps> = ({ tags, sx }) => {
             textTransform: 'capitalize'
           }}
           color="primary"
-          onClick={() => handleChipClick(tag)}
         />
       ))}
     </Box>
