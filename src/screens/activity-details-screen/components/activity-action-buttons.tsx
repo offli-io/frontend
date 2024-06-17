@@ -49,8 +49,6 @@ const ActivityActionButtons: React.FC<IActivityActionButtonsProps> = ({
       end: new Date(activity?.datetime_until)
     });
 
-  console.log(activity);
-
   const privateUninvitedActivity =
     activity?.visibility === ActivityVisibilityEnum.private && !activity?.participant_status;
 
