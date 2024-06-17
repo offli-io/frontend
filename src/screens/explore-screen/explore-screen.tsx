@@ -198,13 +198,15 @@ const ExploreScreen = () => {
   }, [isFirstTimeLogin, toggleDrawer]);
 
   return (
-    <AnimationDiv style={{ paddingInline: 6 }}>
+    <AnimationDiv>
       <Box
         sx={{
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
-          my: 1
+          my: 1,
+          pl: 1,
+          pr: 1
         }}>
         <Typography variant="h4">Explore</Typography>
         <OffliButton
@@ -237,9 +239,8 @@ const ExploreScreen = () => {
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
-            width: '100%',
-            mt: 2,
-            mb: 1
+            my: 1,
+            pl: 1
           }}>
           <Typography variant="h4">Near you</Typography>
           <OffliButton
@@ -252,32 +253,37 @@ const ExploreScreen = () => {
           </OffliButton>
         </Box>
         {[...(pages?.[0] ?? [])].length > 0 ? (
-          <InfiniteScroll
-            pageStart={0}
-            loadMore={() =>
-              !isFetchingNextPage && [...(pages?.[0] ?? [])].length > 8 && fetchNextPage()
-            }
-            hasMore={hasNextPage}
-            loader={<Loader key={'loader'} />}
-            useWindow={false}>
-            <>
-              {pages?.map((group, i) => (
-                <React.Fragment key={i}>
-                  {group?.map((activity) => (
-                    <ActivityCard
-                      key={activity?.id}
-                      activity={activity}
-                      onPress={() =>
-                        navigate(`${ApplicationLocations.ACTIVITY_DETAIL}/${activity?.id}`)
-                      }
-                      onLongPress={openActivityActions}
-                      sx={{ mx: 0, mb: 3, width: '100%' }}
-                    />
-                  ))}
-                </React.Fragment>
-              ))}
-            </>
-          </InfiniteScroll>
+          <Box
+            sx={{
+              px: 1
+            }}>
+            <InfiniteScroll
+              pageStart={0}
+              loadMore={() =>
+                !isFetchingNextPage && [...(pages?.[0] ?? [])].length > 8 && fetchNextPage()
+              }
+              hasMore={hasNextPage}
+              loader={<Loader key={'loader'} />}
+              useWindow={false}>
+              <>
+                {pages?.map((group, i) => (
+                  <React.Fragment key={i}>
+                    {group?.map((activity) => (
+                      <ActivityCard
+                        key={activity?.id}
+                        activity={activity}
+                        onPress={() =>
+                          navigate(`${ApplicationLocations.ACTIVITY_DETAIL}/${activity?.id}`)
+                        }
+                        onLongPress={openActivityActions}
+                        sx={{ mx: 0, mb: 3, width: '100%' }}
+                      />
+                    ))}
+                  </React.Fragment>
+                ))}
+              </>
+            </InfiniteScroll>
+          </Box>
         ) : (
           <Typography sx={{ textAlign: 'center', mt: 4 }} variant="subtitle2">
             No new activities near you
