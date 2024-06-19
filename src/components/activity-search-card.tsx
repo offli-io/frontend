@@ -6,10 +6,8 @@ import { format } from 'date-fns';
 import React from 'react';
 import activityPlaceholderImage from '../assets/img/activity-placeholder-image.svg';
 import { useGetApiUrl } from '../hooks/use-get-api-url';
-import { useUser } from '../hooks/use-user';
 import { IActivity } from '../types/activities/activity.dto';
 import { calculateDistance } from '../utils/calculate-distance.util';
-import { AuthenticationContext } from './context/providers/authentication-provider';
 
 interface IMyActivityCardProps {
   activity?: IActivity;
@@ -22,11 +20,21 @@ const ActivitySearchCard: React.FC<IMyActivityCardProps> = ({ activity, onPress,
   //TODO maybe in later use also need some refactoring
   const baseUrl = useGetApiUrl();
   const { palette, shadows } = useTheme();
-  const { userInfo } = React.useContext(AuthenticationContext);
-  const { data: { data: { user = {} } = {} } = {} } = useUser({
-    id: userInfo?.id
+
+  const [currentLocation, setCurrentLocation] = React.useState<
+    GeolocationCoordinates | undefined
+  >();
+
+  React.useEffect(() => {
+    navigator.geolocation.getCurrentPosition(function (position) {
+      setCurrentLocation(position.coords);
+    });
+  }, []);
+
+  const distance = calculateDistance(activity?.location?.coordinates, {
+    lat: currentLocation?.latitude,
+    lon: currentLocation?.longitude
   });
-  const myLocation = user?.location?.coordinates;
 
   return (
     <Box
@@ -99,12 +107,16 @@ const ActivitySearchCard: React.FC<IMyActivityCardProps> = ({ activity, onPress,
           </Box>
         </Box>
         <Box sx={{ display: 'flex', gap: 2, mt: 1 }}>
-          <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            <NearMeIcon sx={{ fontSize: 18, mr: 0.5, color: palette?.text?.primary }} />
-            <Typography sx={{ fontSize: 12, color: palette?.text?.primary }}>
-              {`${calculateDistance(activity?.location?.coordinates, myLocation)} km`}
-            </Typography>
-          </Box>
+          {!!distance && (
+            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+              <NearMeIcon sx={{ fontSize: 18, mr: 0.5, color: palette?.text?.primary }} />
+              <Typography sx={{ fontSize: 12, color: palette?.text?.primary }}>
+                {distance > 1
+                  ? `${distance.toFixed(0)} km\nfrom you`
+                  : `${(distance * 1000).toFixed(0)} m\nfrom you`}
+              </Typography>
+            </Box>
+          )}
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <PeopleAltIcon sx={{ fontSize: 18, mr: 0.5, color: palette?.text?.primary }} />
             <Typography sx={{ fontSize: 12, color: palette?.text?.primary }}>
