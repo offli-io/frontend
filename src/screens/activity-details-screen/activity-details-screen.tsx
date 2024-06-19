@@ -46,6 +46,8 @@ import ActivityDetailsGrid, { IGridAction } from './components/activity-details-
 import { ActivityInviteDrawerContent } from './components/activity-invite-drawer-content';
 import ActivityVisibilityDuration from './components/activity-visibility-duration';
 import { convertDateToUTC } from './utils/convert-date-to-utc';
+import { useInvalidateQueryKeys } from 'hooks/common/use-invalidate-query-keys';
+import { ACTIVITY_PARTICIPANTS_QUERY_KEY } from 'hooks/use-activity-participants';
 
 interface IProps {
   type: 'detail' | 'request';
@@ -62,6 +64,7 @@ const ActivityDetailsScreen: React.FC<IProps> = () => {
   const { theme } = React.useContext(CustomizationContext);
   const navigate = useNavigate();
   const location = useLocation();
+  const { activityCreatedOrEditedInvalidation } = useInvalidateQueryKeys();
   const shouldOpenInviteDrawer =
     (location?.state as ICustomizedLocationState)?.openInviteDrawer ?? false;
   const shouldOpenFeedbackDrawer =
@@ -70,11 +73,8 @@ const ActivityDetailsScreen: React.FC<IProps> = () => {
   const { userInfo } = React.useContext(AuthenticationContext);
   const { sendDismissActivity } = useDismissActivity({
     onSuccess: () => {
-      queryClient.invalidateQueries(['paged-activities']);
-      queryClient.invalidateQueries(['activity', id]);
-      queryClient.invalidateQueries(['activity-participants', id]);
-      queryClient.invalidateQueries([ACTIVITIES_QUERY_KEY]);
-      queryClient.invalidateQueries([PARTICIPANT_ACTIVITIES_QUERY_KEY]);
+      queryClient.invalidateQueries([ACTIVITY_PARTICIPANTS_QUERY_KEY, id]);
+      activityCreatedOrEditedInvalidation(Number(id));
       navigate(ApplicationLocations.EXPLORE);
     }
   });
@@ -109,16 +109,10 @@ const ActivityDetailsScreen: React.FC<IProps> = () => {
     (activityId?: number) => removePersonFromActivity({ activityId, personId: userInfo?.id }),
     {
       onSuccess: (data, activityId) => {
-        hideDrawer();
-        //TODO add generic jnaming for activites / activity
-        queryClient.invalidateQueries(['activity', activityId]);
-        queryClient.invalidateQueries([ACTIVITIES_QUERY_KEY]);
-        queryClient.invalidateQueries([PAGED_ACTIVITIES_QUERY_KEY]);
-        queryClient.invalidateQueries([PARTICIPANT_ACTIVITIES_QUERY_KEY]);
-
+        //TODO add generic naming for activites / activity
+        activityCreatedOrEditedInvalidation(activityId);
         toast.success('You have successfully left the activity');
-        //invalidate queries
-        //TODO display success notification?
+        hideDrawer();
       },
       onError: () => {
         toast.error('Failed to leave activity');
@@ -134,15 +128,10 @@ const ActivityDetailsScreen: React.FC<IProps> = () => {
       }),
     {
       onSuccess: () => {
+        activityCreatedOrEditedInvalidation(Number(id));
+        queryClient.invalidateQueries([ACTIVITY_PARTICIPANTS_QUERY_KEY, id]);
         toast.success('You have successfully joined the activity');
         hideDrawer();
-        queryClient.invalidateQueries(['paged-activities']);
-        queryClient.invalidateQueries(['activity', id]);
-        queryClient.invalidateQueries(['activity-participants', id]);
-        queryClient.invalidateQueries([ACTIVITIES_QUERY_KEY]);
-        queryClient.invalidateQueries([PARTICIPANT_ACTIVITIES_QUERY_KEY]);
-
-        // setInvitedBuddies([...invitedBuddies, Number(buddy?.id)]);
       },
       onError: () => {
         toast.error('Failed to join activity');
