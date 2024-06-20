@@ -25,6 +25,7 @@ const ActivitySearchCard: React.FC<IMyActivityCardProps> = ({ activity, onPress,
     GeolocationCoordinates | undefined
   >();
 
+  //TODO outsource this functionality into separate hook - we are using it regularly throghout the app
   React.useEffect(() => {
     navigator.geolocation.getCurrentPosition(function (position) {
       setCurrentLocation(position.coords);
