@@ -205,8 +205,7 @@ const ExploreScreen = () => {
           justifyContent: 'space-between',
           alignItems: 'center',
           my: 1,
-          pl: 1,
-          pr: 1
+          px: 1
         }}>
         <Typography variant="h4">Explore</Typography>
         <OffliButton
@@ -240,7 +239,7 @@ const ExploreScreen = () => {
             justifyContent: 'space-between',
             alignItems: 'center',
             my: 1,
-            pl: 1
+            px: 1
           }}>
           <Typography variant="h4">Near you</Typography>
           <OffliButton
