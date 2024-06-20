@@ -165,9 +165,9 @@ const SearchScreen = () => {
       <Box
         sx={{
           width: '100%',
-          maxWidth: 430,
-          position: 'fixed',
-          zIndex: 2,
+          position: 'sticky',
+          top: 1,
+          zIndex: 10,
           backgroundColor: ({ palette }) => palette?.background?.default
         }}>
         <Box
