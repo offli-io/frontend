@@ -129,7 +129,7 @@ const ActivitiesScreen = () => {
   }, [isFetchingNextPage]);
 
   return (
-    <AnimationDiv style={{ paddingInline: 6 }}>
+    <AnimationDiv>
       <Tabs
         value={currentTab}
         onChange={handleTabChange}
@@ -137,11 +137,8 @@ const ActivitiesScreen = () => {
         // scrollButtons="auto"
         sx={{
           zIndex: 10,
-          p: 0,
-          ml: -1,
-          width: '100%',
-          maxWidth: 430,
-          position: 'fixed',
+          position: 'sticky',
+          top: 1,
           bgcolor: 'background.default',
           '& .MuiTab-root': {
             textTransform: 'capitalize',
@@ -158,39 +155,41 @@ const ActivitiesScreen = () => {
           />
         ))}
       </Tabs>
-      <Box sx={{ pt: 4 }} />
+      <Box />
       {isLoading ? <Loader /> : null}
       {!isLoading && paginatedActivitiesData?.pages?.[0]?.length === 0 ? (
         <Typography variant="subtitle2" sx={{ mt: 4, textAlign: 'center' }}>
           There are no activities
         </Typography>
       ) : null}
-      <InfiniteScroll
-        pageStart={0}
-        loadMore={() =>
-          !isFetchingNextPage &&
-          [...(paginatedActivitiesData?.pages?.[0] ?? [])].length > 8 &&
-          fetchNextPage()
-        }
-        hasMore={hasNextPage}
-        loader={<Loader key={'loader'} />}
-        useWindow={false}>
-        <>
-          {paginatedActivitiesData?.pages?.map((group, i) => (
-            <React.Fragment key={i}>
-              {group?.map((activity) => (
-                <ActivityCard
-                  key={activity?.id}
-                  activity={activity}
-                  onPress={() => handleActivityCardClick(activity?.id)}
-                  // onLongPress={openActivityActions}
-                  sx={{ mx: 0, my: 3, width: '100%' }}
-                />
-              ))}
-            </React.Fragment>
-          ))}
-        </>
-      </InfiniteScroll>
+      <Box sx={{ px: 1 }}>
+        <InfiniteScroll
+          pageStart={0}
+          loadMore={() =>
+            !isFetchingNextPage &&
+            [...(paginatedActivitiesData?.pages?.[0] ?? [])].length > 8 &&
+            fetchNextPage()
+          }
+          hasMore={hasNextPage}
+          loader={<Loader key={'loader'} />}
+          useWindow={false}>
+          <>
+            {paginatedActivitiesData?.pages?.map((group, i) => (
+              <React.Fragment key={i}>
+                {group?.map((activity) => (
+                  <ActivityCard
+                    key={activity?.id}
+                    activity={activity}
+                    onPress={() => handleActivityCardClick(activity?.id)}
+                    // onLongPress={openActivityActions}
+                    sx={{ mx: 0, my: 3, width: '100%' }}
+                  />
+                ))}
+              </React.Fragment>
+            ))}
+          </>
+        </InfiniteScroll>
+      </Box>
     </AnimationDiv>
   );
 };
