@@ -98,7 +98,7 @@ const LoginScreen: React.FC = () => {
             mt: 6
           }}>
           <Logo />
-          <Box sx={{ display: 'flex', my: 2 }}>
+          <Box sx={{ display: 'flex', mb: 3 }}>
             <Typography variant="h2">Your</Typography>
             <Typography variant="h2" sx={{ mx: 0.75, color: 'primary.main' }}>
               offline

@@ -13,14 +13,12 @@ const reactAfter = (notification: INotificationDto, navigate: NavigateFunction) 
   if (notification?.type === NotificationTypeEnum.ACTIVITY_INV) {
     navigate(`${ApplicationLocations.ACTIVITY_INVITE}/${notification?.properties?.activity?.id}`, {
       state: {
-        from: '/notifications',
         notificationId
       }
     });
   } else if (notification?.type === NotificationTypeEnum.BUDDY_REQ) {
     navigate(`${ApplicationLocations.PROFILE}/request/${notification?.properties?.user?.id}`, {
       state: {
-        from: '/notifications',
         notificationId
       }
     });
@@ -34,7 +32,6 @@ const reactAfter = (notification: INotificationDto, navigate: NavigateFunction) 
         `${ApplicationLocations.ACTIVITY_DETAIL}/${notification?.properties?.activity?.id}`,
         {
           state: {
-            from: '/notifications',
             notificationId,
             openFeedbackDrawer: true
           }
@@ -46,7 +43,6 @@ const reactAfter = (notification: INotificationDto, navigate: NavigateFunction) 
         `${ApplicationLocations.ACTIVITY_DETAIL}/${notification?.properties?.activity?.id}`,
         {
           state: {
-            from: '/notifications',
             notificationId
           }
         }
