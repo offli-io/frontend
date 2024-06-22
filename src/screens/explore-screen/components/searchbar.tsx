@@ -13,7 +13,6 @@ const Searchbar = () => {
         position: 'sticky',
         top: 1,
         zIndex: 10,
-        bgcolor: 'white',
         p: 1
       }}>
       <Autocomplete

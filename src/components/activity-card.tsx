@@ -1,5 +1,5 @@
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
-import { Box, SxProps, Typography, useTheme } from '@mui/material';
+import { Box, SxProps, Typography } from '@mui/material';
 import { LayoutContext } from 'app/layout';
 import { format } from 'date-fns';
 import useLongPress from 'hooks/use-long-press';
@@ -21,7 +21,6 @@ interface IProps {
 
 const ActivityCard: React.FC<IProps> = ({ activity, onPress, onLongPress, sx, ...rest }) => {
   //TODO maybe in later use also need some refactoring
-  const { shadows } = useTheme();
   const { theme } = React.useContext(CustomizationContext);
   const baseUrl = useGetApiUrl();
 
@@ -42,14 +41,11 @@ const ActivityCard: React.FC<IProps> = ({ activity, onPress, onLongPress, sx, ..
           height: 240,
           borderRadius: '10px',
           backgroundImage: `url(${baseUrl}/files/${activity?.title_picture})`,
-          // backgroundImage: `url(${activity?.title_picture})`,
           backgroundPosition: 'center',
           backgroundRepeat: 'no-repeat',
           backgroundSize: 'cover',
           display: 'flex',
           alignItems: 'flex-end',
-          color: 'white',
-          boxShadow: shadows[4],
           p: 0,
           ...sx
         }}

@@ -83,8 +83,8 @@ const ActivityDetailsGrid: React.FC<IProps> = ({ activity, onActionClick }) => {
         </StyledText>
       </StyledBox>
       <StyledBox sx={{ borderColor: 'primary.light' }}>
-        <IconButton color="primary" sx={{ p: 0 }}>
-          <CalendarTodayIcon sx={{ fontSize: 26, color: 'primary.main' }} />
+        <IconButton sx={{ p: 0 }} disabled={true}>
+          <CalendarTodayIcon sx={{ fontSize: 26, color: 'primary.light' }} />
         </IconButton>
 
         <OffliButton
@@ -133,7 +133,7 @@ const ActivityDetailsGrid: React.FC<IProps> = ({ activity, onActionClick }) => {
         </StyledText>
       </StyledBox>
       <StyledBox sx={{ borderColor: 'primary.light' }}>
-        <IconButton color="primary" sx={{ p: 0 }}>
+        <IconButton sx={{ p: 0 }} disabled={true}>
           <MonetizationOnIcon sx={{ fontSize: 26, color: 'primary.main' }} />
         </IconButton>
         <OffliButton
@@ -142,7 +142,8 @@ const ActivityDetailsGrid: React.FC<IProps> = ({ activity, onActionClick }) => {
           sx={{
             textDecoration: 'none',
             fontSize: 15,
-            mt: 0.5
+            mt: 0.5,
+            color: 'primary.main'
           }}>
           Initial price
         </OffliButton>
