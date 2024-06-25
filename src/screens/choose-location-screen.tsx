@@ -59,11 +59,8 @@ const ChooseLocationScreen: React.FC = () => {
     (location: ILocation) => updateProfileInfo(userInfo?.id, { location }),
     {
       onSuccess: (data, location) => {
-        //TODO what to invalidate, and where to navigate after success
         setLocation?.(location);
         queryClient.invalidateQueries(['user']);
-        //TODO display snackbar for first login? Idk too many windows (Welcome screen and snackbar)
-
         navigate(ApplicationLocations.EXPLORE);
       },
       onError: () => {
@@ -92,9 +89,7 @@ const ChooseLocationScreen: React.FC = () => {
   }, [selectedLocation, sendUpdateProfile]);
 
   const handleUseCurrentLocation = React.useCallback(() => {
-    // queryClient.setQueryData(["current-location"], { coords });
     setLatLonBrowserTuple({ lat: coords?.latitude, lon: coords?.longitude });
-    // onLocationSelect({ name: null, coordinates: });
   }, [coords]);
 
   React.useEffect(() => {
@@ -108,6 +103,8 @@ const ChooseLocationScreen: React.FC = () => {
       });
     }
   }, [placeFromCoordinatesData?.results]);
+
+  const isLocationLoading = isGeolocationAvailable && isGeolocationEnabled && !coords;
 
   return (
     <Box
@@ -156,12 +153,13 @@ const ChooseLocationScreen: React.FC = () => {
       />
 
       <OffliButton
-        startIcon={<NearMeIcon />}
-        sx={{ width: '100%', my: 2, fontSize: 16 }}
+        startIcon={!isLocationLoading ? <NearMeIcon sx={{ color: 'inherit' }} /> : undefined}
+        sx={{ width: '80%', my: 2, fontSize: 16 }}
         onClick={handleUseCurrentLocation}
         disabled={!coords}
-        isLoading={isGeolocationAvailable && isGeolocationEnabled && !coords}
-        variant="text">
+        isLoading={isLocationLoading}
+        variant="text"
+        loadingPosition="start">
         Use my current location
       </OffliButton>
 

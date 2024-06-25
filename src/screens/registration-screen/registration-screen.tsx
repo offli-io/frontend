@@ -38,7 +38,6 @@ const schema: () => yup.SchemaOf<IEmailPassword> = () =>
       .defined()
       .required('Please enter your password')
       .min(8, 'Password must be at least 8 characters long')
-      .max(16, 'Password must be less than 16 characters long')
       .matches(/^(?=.*[A-Z])/, 'Password must contain at least one uppercase')
       .matches(/^(?=.*[0-9])/, 'Password must contain at least one number'),
     policiesAgree: yup.bool().oneOf([true], 'Field must be checked')
@@ -104,7 +103,7 @@ export const RegistrationScreen: React.FC = () => {
           }}
           data-testid="registration-inputs">
           <Logo />
-          <Box sx={{ display: 'flex', my: 2 }}>
+          <Box sx={{ display: 'flex', mb: 3 }}>
             <Typography variant="h2">Your</Typography>
             <Typography variant="h2" sx={{ mx: 0.75, color: 'primary.main' }}>
               offline

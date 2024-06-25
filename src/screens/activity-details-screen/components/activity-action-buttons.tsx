@@ -175,7 +175,6 @@ const ActivityActionButtons: React.FC<IActivityActionButtonsProps> = ({
       ) : null}
       {inProgress ? (
         <OffliButton
-          color="secondary"
           startIcon={
             <FiberManualRecordIcon
               sx={{
@@ -198,6 +197,7 @@ const ActivityActionButtons: React.FC<IActivityActionButtonsProps> = ({
           sx={{
             width: '80%',
             color: 'primary.main',
+            bgcolor: 'primary.light',
             fontWeight: 'bold'
           }}>
           Activity is in progress

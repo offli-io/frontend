@@ -78,9 +78,9 @@ const ActivityDetailTiles: React.FC<IProps> = ({
         <StyledBox>
           <NearMeIcon sx={{ color: 'primary.main' }} />
           <StyledText align="center" variant="subtitle1">
-            {distance > 1000
-              ? `${(distance / 1000).toFixed(0)} km\nfrom you`
-              : `${distance} m\nfrom you`}
+            {distance > 1
+              ? `${distance.toFixed(0)} km\nfrom you`
+              : `${(distance * 1000).toFixed(0)} m\nfrom you`}
           </StyledText>
         </StyledBox>
       )}
