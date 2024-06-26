@@ -4,6 +4,7 @@ import { useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-q
 import { getUsersPromiseResolved } from 'api/activities/requests';
 import { toggleBuddyInvitation } from 'api/users/requests';
 import Loader from 'components/loader';
+import { USER_QUERY_KEY } from 'hooks/users/use-user';
 import React, { useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroller';
 import { NavigateFunction } from 'react-router-dom';
@@ -15,8 +16,8 @@ import BuddyItem from '../../../components/buddy-item';
 import { AuthenticationContext } from '../../../components/context/providers/authentication-provider';
 import { DrawerContext } from '../../../components/context/providers/drawer-provider';
 import OffliTextField from '../../../components/offli-text-field';
-import { useBuddies } from '../../../hooks/use-buddies';
-import { PAGED_USERS_QUERY_KEY, useUsers } from '../../../hooks/use-users';
+import { useBuddies } from '../../../hooks/users/use-buddies';
+import { PAGED_USERS_QUERY_KEY, useUsers } from '../../../hooks/users/use-users';
 import { IPerson } from '../../../types/activities/activity.dto';
 import { ApplicationLocations } from '../../../types/common/applications-locations.dto';
 import { useSendBuddyRequest } from '../../profile-screen/hooks/use-send-buddy-request';
@@ -36,8 +37,6 @@ const AddBuddiesContent: React.FC<IAddBuddiesContentProps> = ({ navigate }) => {
   const queryClient = useQueryClient();
 
   const { toggleDrawer } = React.useContext(DrawerContext);
-
-  //TODO polish this avoid erorrs that cause whole application down
   const { buddieStates } = useUsers({
     params: {
       username: usernameDebounced,
@@ -85,19 +84,14 @@ const AddBuddiesContent: React.FC<IAddBuddiesContentProps> = ({ navigate }) => {
     (buddyToBeId?: number) => {
       abortControllerRef.current = new AbortController();
 
-      return toggleBuddyInvitation(
-        userInfo?.id,
-        buddyToBeId,
-        BuddyRequestActionEnum.CONFIRM
-        //   abortControllerRef.current.signal
-      );
+      return toggleBuddyInvitation(userInfo?.id, buddyToBeId, BuddyRequestActionEnum.CONFIRM);
     },
     {
       onSuccess: () => {
         queryClient.invalidateQueries(['buddies']);
         queryClient.invalidateQueries(['buddy-state']);
         queryClient.invalidateQueries(['users']);
-        queryClient.invalidateQueries(['user']);
+        queryClient.invalidateQueries([USER_QUERY_KEY]);
         queryClient.invalidateQueries(['recommended-buddies']);
         toast.success('You have successfully confirmed user as your buddy');
       },

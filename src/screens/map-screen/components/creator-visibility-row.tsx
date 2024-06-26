@@ -5,14 +5,14 @@ import LockOpenIcon from '@mui/icons-material/LockOpen';
 import { Typography, useTheme } from '@mui/material';
 import { Box } from '@mui/system';
 import { AuthenticationContext } from 'components/context/providers/authentication-provider';
-import { useActivities } from 'hooks/use-activities';
+import { useActivities } from 'hooks/activities/use-activities';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { IActivityRestDto } from 'types/activities/activity-rest.dto';
 import { ActivityVisibilityEnum } from 'types/activities/activity-visibility-enum.dto';
 import { ApplicationLocations } from 'types/common/applications-locations.dto';
 import userPlaceholder from '../../../assets/img/user-placeholder.svg';
-import { useGetApiUrl } from '../../../hooks/use-get-api-url';
+import { useGetApiUrl } from '../../../hooks/utils/use-get-api-url';
 import { IPerson } from '../../../types/activities/activity.dto';
 
 interface IProps {

@@ -5,7 +5,7 @@ import { LayoutContext } from 'app/layout';
 import ActivityCard from 'components/activity-card';
 import { AuthenticationContext } from 'components/context/providers/authentication-provider';
 import Loader from 'components/loader';
-import { PAGED_ACTIVITIES_QUERY_KEY } from 'hooks/use-activities-infinite-query';
+import { PAGED_ACTIVITIES_QUERY_KEY } from 'hooks/activities/use-activities-infinite-query';
 import React from 'react';
 import InfiniteScroll from 'react-infinite-scroller';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';

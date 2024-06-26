@@ -4,7 +4,6 @@ import MenuItem from '../../../components/menu-item';
 import { IPerson } from '../../../types/activities/activity.dto';
 import { BuddyActionTypeEnum } from '../../../types/common/buddy-actions-type-enum.dto';
 import { useBuddyActions } from '../hooks/use-buddy-actions';
-// import { useActivityMenuItems } from "../hooks/use-activity-menu-items";
 
 export interface IBuddyActionsProps {
   onBuddyActionClick?: (type?: BuddyActionTypeEnum, userId?: number) => void;

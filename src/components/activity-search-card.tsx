@@ -5,7 +5,7 @@ import { Box, SxProps, Typography, useTheme } from '@mui/material';
 import { format } from 'date-fns';
 import React from 'react';
 import activityPlaceholderImage from '../assets/img/activity-placeholder-image.svg';
-import { useGetApiUrl } from '../hooks/use-get-api-url';
+import { useGetApiUrl } from '../hooks/utils/use-get-api-url';
 import { IActivity } from '../types/activities/activity.dto';
 import { calculateDistance } from '../utils/calculate-distance.util';
 

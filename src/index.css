@@ -55,6 +55,29 @@ code {
   font-weight: bolder !important;
 }
 
+.pull-indicator {
+  position: absolute;
+  top: 50px;
+  left: 0;
+  width: 100%;
+  height: 50px;
+  background-color: green;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: green;
+  transition: transform 0.2s ease-in-out;
+  z-index: 100000;
+}
+
+.pull-indicator i {
+  transition: transform 0.2s ease-in-out;
+}
+
+.pull-indicator.flip i {
+  transform: rotate(180deg);
+}
+
 @font-face {
   font-family: 'Proxima';
   src:

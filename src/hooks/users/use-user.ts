@@ -3,7 +3,9 @@ import { AxiosResponse } from 'axios';
 import { toast } from 'sonner';
 import { IPersonExtended } from 'types/activities/activity.dto';
 import { IUsersParamsDto } from 'types/users';
-import { getUser } from '../api/activities/requests';
+import { getUser } from '../../api/activities/requests';
+
+export const USER_QUERY_KEY = 'user';
 
 export const useUser = ({
   id,
@@ -13,7 +15,7 @@ export const useUser = ({
   onSuccess?: (data?: AxiosResponse<IPersonExtended, any>) => void;
 }) => {
   const { data, isLoading, isFetching } = useQuery(
-    ['user', id, requestingInfoUserId],
+    [USER_QUERY_KEY, id, requestingInfoUserId],
     () => getUser({ id, requestingInfoUserId }),
     {
       onError: () => {

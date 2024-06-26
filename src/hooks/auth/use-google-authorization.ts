@@ -1,8 +1,8 @@
 import { useMutation } from '@tanstack/react-query';
 import React from 'react';
 import { toast } from 'sonner';
-import { getBearerToken, getGoogleAuthCode } from '../api/auth/requests';
-import { GoogleAuthCodeFromEnumDto } from '../types/google/google-auth-code-from-enum.dto';
+import { getBearerToken, getGoogleAuthCode } from '../../api/auth/requests';
+import { GoogleAuthCodeFromEnumDto } from '../../types/google/google-auth-code-from-enum.dto';
 
 interface IUseGoogleAuthorizationProps {
   from: GoogleAuthCodeFromEnumDto;

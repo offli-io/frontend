@@ -3,7 +3,7 @@ import MyLocationIcon from '@mui/icons-material/MyLocation';
 import RemoveIcon from '@mui/icons-material/Remove';
 import { Box, Divider, IconButton } from '@mui/material';
 import { CustomizationContext } from 'components/context/providers/customization-provider';
-import { useCurrentLocation } from 'hooks/use-current-location';
+import { useCurrentLocation } from 'hooks/utils/use-current-location';
 import React from 'react';
 import { useMap } from 'react-leaflet';
 import { toast } from 'sonner';

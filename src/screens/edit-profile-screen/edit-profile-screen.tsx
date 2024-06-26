@@ -6,12 +6,12 @@ import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import FileUploadModal from 'components/file-upload/components/file-upload-modal';
+import dayjs from 'dayjs';
 import React, { useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { useDebounce } from 'use-debounce';
-
 import * as yup from 'yup';
 import { getLocationFromQueryFetch, uploadFile } from '../../api/activities/requests';
 import { unlinkInstagram, updateProfileInfo } from '../../api/users/requests';
@@ -21,22 +21,20 @@ import { DrawerContext } from '../../components/context/providers/drawer-provide
 import OffliButton from '../../components/offli-button';
 import OffliTextField from '../../components/offli-text-field';
 import { PageWrapper } from '../../components/page-wrapper';
-import { useGetApiUrl } from '../../hooks/use-get-api-url';
-import { useUser } from '../../hooks/use-user';
+import { useGetApiUrl } from '../../hooks/utils/use-get-api-url';
+import { USER_QUERY_KEY, useUser } from '../../hooks/users/use-user';
 import { ILocation } from '../../types/activities/location.dto';
 import { ApplicationLocations } from '../../types/common/applications-locations.dto';
 import { ALLOWED_PHOTO_EXTENSIONS } from '../../utils/common-constants';
 import { mapExternalApiOptions } from '../../utils/map-location-value.util';
 import ProfilePhotoActions, { ProfilePhotoActionsEnum } from './components/profile-photo-actions';
 import { getMatchingProperties } from './utils/get-matching-properties.util';
-import dayjs from 'dayjs';
 
 export interface IEditProfile {
   username?: string;
   about_me?: string;
   location?: ILocation | null;
   birthdate?: Date | null;
-  // instagram?: string | null;
   placeQuery?: string;
   profile_photo?: string | null;
   title_photo?: string | null;
@@ -90,10 +88,9 @@ const EditProfileScreen: React.FC = () => {
           open: false,
           content: undefined
         });
-        queryClient.invalidateQueries(['user']);
+        queryClient.invalidateQueries([USER_QUERY_KEY]);
         toast.success('Your personal information was successfully updated');
         navigate(-1);
-        // navigate(ApplicationLocations.PROFILE);
       },
       onError: () => {
         toast.error('Failed to update your personal info');
@@ -120,14 +117,12 @@ const EditProfileScreen: React.FC = () => {
       about_me: '',
       birthdate: null,
       location: null
-      // instagram: "",
     },
     resolver: yupResolver(schema()),
     mode: 'onChange'
   });
 
   const [queryString] = useDebounce(watch('placeQuery'), 1000);
-  // const selectedColor = watch("background_color") ?? palette?.primary?.light;
 
   const placeQuery = useQuery(
     ['locations', queryString],
@@ -149,7 +144,7 @@ const EditProfileScreen: React.FC = () => {
           ...(localProfileImageFile ? { profile_photo: data?.data?.filename } : {}),
           ...(localTitleImageFile ? { title_photo: data?.data?.filename } : {})
         });
-        queryClient.invalidateQueries(['user']);
+        queryClient.invalidateQueries([USER_QUERY_KEY]);
         navigate(ApplicationLocations.PROFILE);
       },
       onError: () => {
@@ -164,7 +159,7 @@ const EditProfileScreen: React.FC = () => {
     {
       onSuccess: () => {
         toast.success('Your instagram account has been successfully unlinked');
-        queryClient.invalidateQueries(['user']);
+        queryClient.invalidateQueries([USER_QUERY_KEY]);
       },
       onError: () => {
         toast.error('Failed unlinking your instagram account');
@@ -178,10 +173,8 @@ const EditProfileScreen: React.FC = () => {
       about_me: user?.about_me ?? '',
       birthdate: (user?.birthdate as Date) ?? null,
       location: user?.location ?? null,
-      // instagram: data?.instagram,
       profile_photo: user?.profile_photo,
       title_photo: user?.title_photo
-      // background_color: data?.background_color,
     });
   }, [user]);
 
@@ -211,26 +204,6 @@ const EditProfileScreen: React.FC = () => {
     },
     [profilePictureFileInput, titlePictureFileInput]
   );
-
-  // const openColorPicker = React.useCallback(() => {
-  //   toggleDrawer({
-  //     open: true,
-  //     content: (
-  //       <ColorPicker
-  //         color={selectedColor}
-  //         onColorChange={(selectedColor) => {
-  //           if (selectedColor === null) {
-  //             return;
-  //           }
-  //           setValue("background_color", selectedColor, {
-  //             shouldDirty: true,
-  //           });
-  //           toggleDrawer({ open: false });
-  //         }}
-  //       />
-  //     ),
-  //   });
-  // }, [selectedColor]);
 
   const handlePictureClick = React.useCallback(
     (type: 'profile' | 'title') => {
@@ -518,42 +491,6 @@ const EditProfileScreen: React.FC = () => {
                   />
                 )}
               />
-
-              {/* TODO outsource this on the Contexes and Adapters level in the App */}
-              {/* <Box>
-                <Typography variant="h5">Profile background color</Typography>
-                <OffliButton
-                  size="small"
-                  variant="contained"
-                  onClick={openColorPicker}
-                  endIcon={
-                    <Box
-                      sx={{
-                        ml: 4,
-                        width: 32,
-                        height: 32,
-                        bgcolor: `${selectedColor}`,
-                        border: "1px solid black",
-                        borderRadius: 2,
-                      }}
-                    ></Box>
-                  }
-                  sx={{
-                    bgcolor: palette?.primary?.light,
-                    width: "100%",
-                    height: 50,
-                    mt: 2,
-                    color: palette?.primary?.main,
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    textAlign: "center",
-                  }}
-                >
-                  {selectedColor}
-                </OffliButton>
-              </Box> */}
-
               {user?.instagram ? (
                 <Box
                   sx={{

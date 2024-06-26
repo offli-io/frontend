@@ -1,6 +1,6 @@
 import { Box, CircularProgress, Typography } from '@mui/material';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useBuddies } from 'hooks/use-buddies';
+import { useBuddies } from 'hooks/users/use-buddies';
 import React from 'react';
 import { useParams } from 'react-router-dom';
 import { toast } from 'sonner';
@@ -16,6 +16,7 @@ import OffliTextField from '../../components/offli-text-field';
 import { ActivityInviteStateEnum } from '../../types/activities/activity-invite-state-enum.dto';
 import { ActivitiyParticipantStatusEnum } from '../../types/activities/activity-participant-status-enum.dto';
 import { IPerson } from '../../types/activities/activity.dto';
+import { ACTIVITY_PARTICIPANTS_QUERY_KEY } from 'hooks/activities/use-activity-participants';
 
 export const ActivityInviteScreen: React.FC = () => {
   const { userInfo } = React.useContext(AuthenticationContext);
@@ -45,8 +46,7 @@ export const ActivityInviteScreen: React.FC = () => {
       }),
     {
       onSuccess: () => {
-        queryClient.invalidateQueries(['activity-participants']);
-        // setInvitedBuddies([...invitedBuddies, Number(buddy?.id)]);
+        queryClient.invalidateQueries([ACTIVITY_PARTICIPANTS_QUERY_KEY]);
       },
       onError: () => {
         toast.error('Failed to invite user');
@@ -59,9 +59,7 @@ export const ActivityInviteScreen: React.FC = () => {
     (buddyId?: number) => uninviteBuddy(Number(id), Number(buddyId)),
     {
       onSuccess: () => {
-        queryClient.invalidateQueries(['activity-participants']);
-        // const _buddies = invitedBuddies?.filter((buddy) => buddy !== buddyId);
-        // setInvitedBuddies(_buddies);
+        queryClient.invalidateQueries([ACTIVITY_PARTICIPANTS_QUERY_KEY]);
       },
       onError: () => {
         toast.error('Failed to cancel invite for user');

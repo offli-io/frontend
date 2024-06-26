@@ -1,7 +1,7 @@
 import { Autocomplete, Box, SxProps } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import { getLocationFromQueryFetch, getPlaceFromCoordinates } from 'api/activities/requests';
-import { useActivities } from 'hooks/use-activities';
+import { useActivities } from 'hooks/activities/use-activities';
 import L, { LatLngTuple } from 'leaflet';
 import React, { useState } from 'react';
 import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';

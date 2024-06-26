@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useLocation, useParams } from 'react-router-dom';
 import { getMapviewActivities } from '../api/activities/requests';
 import Map from '../components/map/map';
-import { useActivities } from '../hooks/use-activities';
+import { useActivities } from '../hooks/activities/use-activities';
 import { IActivityRestDto } from '../types/activities/activity-rest.dto';
 
 export const MAPVIEW_ACTIVITIES_QUERY_KEY = 'mapview-activities';

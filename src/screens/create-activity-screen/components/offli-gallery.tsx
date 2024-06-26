@@ -1,7 +1,7 @@
 import { Box, Chip, CircularProgress, Typography } from '@mui/material';
 import shadows from '@mui/material/styles/shadows';
-import { useGetApiUrl } from 'hooks/use-get-api-url';
-import { usePredefinedPictures } from 'hooks/use-predefined-pictures';
+import { useGetApiUrl } from 'hooks/utils/use-get-api-url';
+import { usePredefinedPictures } from 'hooks/activities/use-predefined-pictures';
 import * as React from 'react';
 
 interface ITimePickerProps {

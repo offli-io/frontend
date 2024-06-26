@@ -9,7 +9,7 @@ import React from 'react';
 import { useParams } from 'react-router-dom';
 import { AuthenticationContext } from '../../../components/context/providers/authentication-provider';
 import OffliRating from '../../../components/offli-rating';
-import { useActivity } from '../../../hooks/use-activity';
+import { useActivity } from '../../../hooks/activities/use-activity';
 import { ActivityVisibilityEnum } from '../../../types/activities/activity-visibility-enum.dto';
 
 interface IActivityActionButtonsProps {

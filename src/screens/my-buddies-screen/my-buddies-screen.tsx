@@ -12,7 +12,7 @@ import BuddyItem from '../../components/buddy-item';
 import { AuthenticationContext } from '../../components/context/providers/authentication-provider';
 import { DrawerContext } from '../../components/context/providers/drawer-provider';
 import OffliTextField from '../../components/offli-text-field';
-import { useBuddies } from '../../hooks/use-buddies';
+import { useBuddies } from '../../hooks/users/use-buddies';
 import { IPerson } from '../../types/activities/activity.dto';
 import { ApplicationLocations } from '../../types/common/applications-locations.dto';
 import { BuddyActionTypeEnum } from '../../types/common/buddy-actions-type-enum.dto';
@@ -20,6 +20,7 @@ import AddBuddiesContent from './components/add-buddies-content';
 import BuddyActions from './components/buddy-actions';
 import NoBuddiesScreen from './components/no-buddies-screen';
 import RecommendedBuddiesContent from './components/recommended-buddies-content';
+import { USER_QUERY_KEY } from 'hooks/users/use-user';
 
 const MyBuddiesScreen = () => {
   const navigate = useNavigate();
@@ -38,7 +39,7 @@ const MyBuddiesScreen = () => {
       onSuccess: () => {
         toggleDrawer({ open: false, content: undefined });
         //TODO invalidate only my data
-        queryClient.invalidateQueries(['user']);
+        queryClient.invalidateQueries([USER_QUERY_KEY]);
         invalidateBuddies();
         queryClient.invalidateQueries(['recommended-buddies']);
         toast.success('Buddy was successfully deleted');

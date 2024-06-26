@@ -1,11 +1,10 @@
 import { CircularProgress, Typography } from '@mui/material';
 import { Box, styled } from '@mui/system';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import { changeActivityParticipantStatus, removePersonFromActivity } from 'api/activities/requests';
 import { format } from 'date-fns';
 import { sk } from 'date-fns/esm/locale';
-import { PAGED_ACTIVITIES_QUERY_KEY } from 'hooks/use-activities-infinite-query';
-import { PARTICIPANT_ACTIVITIES_QUERY_KEY } from 'hooks/use-participant-activities';
+import { useInvalidateQueryKeys } from 'hooks/utils/use-invalidate-query-keys';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
@@ -13,8 +12,8 @@ import { ActivityInviteStateEnum } from 'types/activities/activity-invite-state-
 import { ActivityVisibilityEnum } from 'types/activities/activity-visibility-enum.dto';
 import { ApplicationLocations } from 'types/common/applications-locations.dto';
 import { AuthenticationContext } from '../../../components/context/providers/authentication-provider';
-import { ACTIVITIES_QUERY_KEY, useActivities } from '../../../hooks/use-activities';
-import { useGetApiUrl } from '../../../hooks/use-get-api-url';
+import { useActivities } from '../../../hooks/activities/use-activities';
+import { useGetApiUrl } from '../../../hooks/utils/use-get-api-url';
 import { ActivitiyParticipantStatusEnum as ActivityParticipantStatusEnum } from '../../../types/activities/activity-participant-status-enum.dto';
 import { IActivityRestDto } from '../../../types/activities/activity-rest.dto';
 import { calculateDistance } from '../../../utils/calculate-distance.util';
@@ -50,9 +49,9 @@ const MapDrawerDetail: React.FC<IProps> = ({ activityId, userLocation }) => {
         id: activityId
       }
     });
+  const { activityCreatedOrEditedInvalidation } = useInvalidateQueryKeys();
 
   const baseUrl = useGetApiUrl();
-  const queryClient = useQueryClient();
   const navigate = useNavigate();
 
   const participantsNum =
@@ -73,15 +72,8 @@ const MapDrawerDetail: React.FC<IProps> = ({ activityId, userLocation }) => {
     (activityId?: number) => removePersonFromActivity({ activityId, personId: userInfo?.id }),
     {
       onSuccess: (data, activityId) => {
-        //TODO add generic jnaming for activites / activity
-        queryClient.invalidateQueries(['activity', activityId]);
-        queryClient.invalidateQueries([ACTIVITIES_QUERY_KEY]);
-        queryClient.invalidateQueries([PAGED_ACTIVITIES_QUERY_KEY]);
-        queryClient.invalidateQueries([PARTICIPANT_ACTIVITIES_QUERY_KEY]);
-
+        activityCreatedOrEditedInvalidation(activityId);
         toast.success('You have successfully left the activity');
-        //invalidate queries
-        //TODO display success notification?
       },
       onError: () => {
         toast.error('Failed to leave activity');
@@ -98,14 +90,8 @@ const MapDrawerDetail: React.FC<IProps> = ({ activityId, userLocation }) => {
     {
       onSuccess: () => {
         toast.success('You have successfully joined the activity');
-        queryClient.invalidateQueries(['paged-activities']);
-        queryClient.invalidateQueries(['activity', activityId]);
-        queryClient.invalidateQueries(['activity-participants', activityId]);
-        queryClient.invalidateQueries([ACTIVITIES_QUERY_KEY]);
-        queryClient.invalidateQueries([PARTICIPANT_ACTIVITIES_QUERY_KEY]);
+        activityCreatedOrEditedInvalidation(activityId);
         navigate(`${ApplicationLocations.ACTIVITY_DETAIL}/${activityId}`);
-
-        // setInvitedBuddies([...invitedBuddies, Number(buddy?.id)]);
       },
       onError: () => {
         toast.error('Failed to join activity');

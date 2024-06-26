@@ -5,7 +5,7 @@ import { toast } from 'sonner';
 import { ApplicationLocations } from 'types/common/applications-locations.dto';
 import { NotificationTypeEnum } from 'types/notifications/notification-type-enum';
 import { INotificationDto } from 'types/notifications/notification.dto';
-import { ActivityStatusEnumDto } from '../types/activities/activity-status-enum.dto';
+import { ActivityStatusEnumDto } from '../../types/activities/activity-status-enum.dto';
 
 const reactAfter = (notification: INotificationDto, navigate: NavigateFunction) => {
   const notificationId = notification.id;

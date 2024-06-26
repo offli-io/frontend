@@ -1,7 +1,7 @@
 import { UseQueryOptions, useQuery } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { IUsersSearchParamsDto } from 'types/users/users-search-params.dto';
-import { getUsers } from '../api/activities/requests';
+import { getUsers } from '../../api/activities/requests';
 
 export interface IUseUsersParams {
   params?: IUsersSearchParamsDto;

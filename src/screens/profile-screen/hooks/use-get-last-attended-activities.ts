@@ -1,4 +1,4 @@
-import { useActivities } from 'hooks/use-activities';
+import { useActivities } from 'hooks/activities/use-activities';
 import React from 'react';
 import { IActivitiesParamsDto } from 'types/activities/activities-params.dto';
 import { IActivityListRestDto } from 'types/activities/activity-list-rest.dto';

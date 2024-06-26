@@ -5,7 +5,7 @@ import React from 'react';
 import { IBuddyStateDto } from 'types/users/buddy-state.dto';
 import { isExistingPendingBuddyState } from 'utils/person.util';
 import { AuthenticationContext } from '../../../components/context/providers/authentication-provider';
-import { useBuddies } from '../../../hooks/use-buddies';
+import { useBuddies } from '../../../hooks/users/use-buddies';
 import { isBuddy } from '../utils/is-buddy.util';
 
 interface IAddBuddiesActionContentProps {

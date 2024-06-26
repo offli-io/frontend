@@ -13,7 +13,7 @@ import activityPhotoImg from '../../../assets/img/activity-photo.svg';
 import { DrawerContext } from '../../../components/context/providers/drawer-provider';
 import LabeledDivider from '../../../components/labeled-divider';
 import OffliButton from '../../../components/offli-button';
-import { useGetApiUrl } from '../../../hooks/use-get-api-url';
+import { useGetApiUrl } from '../../../hooks/utils/use-get-api-url';
 import { ACTIVITY_ASPECT_RATIO } from '../../../utils/common-constants';
 import OffliGallery from './offli-gallery';
 

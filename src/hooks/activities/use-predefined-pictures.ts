@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { toast } from 'sonner';
-import { getPredefinedPhotos } from '../api/activities/requests';
+import { getPredefinedPhotos } from '../../api/activities/requests';
 
 export interface IUsePredefinedPicturesReturn {
   tags?: string[];

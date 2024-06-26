@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { changeUserSettings } from 'api/settings/requests';
 import { AuthenticationContext } from 'components/context/providers/authentication-provider';
-import { USER_SETTINGS_QUERY_KEY } from 'hooks/use-user-settings';
+import { USER_SETTINGS_QUERY_KEY } from 'hooks/users/use-user-settings';
 import React from 'react';
 import { toast } from 'sonner';
 import { ThemeOptionsEnumDto } from 'types/settings/theme-options.dto';

@@ -1,7 +1,7 @@
 import { Box, styled, Typography } from '@mui/material';
 import React from 'react';
 import personPlaceholderImage from '../assets/img/user-placeholder.svg';
-import { useGetApiUrl } from '../hooks/use-get-api-url';
+import { useGetApiUrl } from '../hooks/utils/use-get-api-url';
 import { IPerson } from '../types/activities/activity.dto';
 import OffliButton from './offli-button';
 

@@ -1,1 +1,1 @@
-export * from './use-long-press';
+export * from './utils/use-long-press';

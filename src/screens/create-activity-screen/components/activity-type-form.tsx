@@ -6,7 +6,7 @@ import { UseFormReturn } from 'react-hook-form';
 import { getPredefinedTags } from '../../../api/activities/requests';
 import LabeledTile from '../../../components/labeled-tile';
 import OffliButton from '../../../components/offli-button';
-import { useGetApiUrl } from '../../../hooks/use-get-api-url';
+import { useGetApiUrl } from '../../../hooks/utils/use-get-api-url';
 
 interface IActivityTypeFormProps {
   onNextClicked: () => void;

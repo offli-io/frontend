@@ -1,7 +1,7 @@
 import { Box, Typography, useTheme } from '@mui/material';
 import { differenceInHours } from 'date-fns';
 import React from 'react';
-import { useGetApiUrl } from '../hooks/use-get-api-url';
+import { useGetApiUrl } from '../hooks/utils/use-get-api-url';
 import {
   INotificationDto,
   getNotificationBody,

@@ -1,8 +1,8 @@
 import { Box, CircularProgress, Typography, useTheme } from '@mui/material';
-import { useGetApiUrl } from 'hooks/use-get-api-url';
+import { useGetApiUrl } from 'hooks/utils/use-get-api-url';
 import React from 'react';
 import OffliButton from '../../../components/offli-button';
-import { useActivities } from '../../../hooks/use-activities';
+import { useActivities } from '../../../hooks/activities/use-activities';
 import { IActivityRestDto } from '../../../types/activities/activity-rest.dto';
 
 export interface IActivityActionsProps {

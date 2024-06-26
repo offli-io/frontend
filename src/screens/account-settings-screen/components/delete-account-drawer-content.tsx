@@ -3,7 +3,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { removeAccount } from 'api/auth/requests';
 import { AuthenticationContext } from 'components/context/providers/authentication-provider';
 import OffliButton from 'components/offli-button';
-import { useUserSettings } from 'hooks/use-user-settings';
+import { useUserSettings } from 'hooks/users/use-user-settings';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';

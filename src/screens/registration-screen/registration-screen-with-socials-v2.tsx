@@ -14,9 +14,9 @@ import {
   useTheme
 } from '@mui/material';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { useAppleAuthorization } from 'hooks/use-apple-authorization';
-import { useFacebookAuthorization } from 'hooks/use-facebook-authorization';
-import { useGoogleClientID } from 'hooks/use-google-client-id';
+import { useAppleAuthorization } from 'hooks/auth/use-apple-authorization';
+import { useFacebookAuthorization } from 'hooks/auth/use-facebook-authorization';
+import { useGoogleClientID } from 'hooks/auth/use-google-client-id';
 import React from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
@@ -35,7 +35,7 @@ import LabeledDivider from '../../components/labeled-divider';
 import OffliBackButton from '../../components/offli-back-button';
 import OffliButton from '../../components/offli-button';
 import OffliTextField from '../../components/offli-text-field';
-import { useGoogleAuthorization } from '../../hooks/use-google-authorization';
+import { useGoogleAuthorization } from '../../hooks/auth/use-google-authorization';
 import { ApplicationLocations } from '../../types/common/applications-locations.dto';
 import { GoogleAuthCodeFromEnumDto } from '../../types/google/google-auth-code-from-enum.dto';
 import { IEmailPassword } from '../../types/users/user.dto';
