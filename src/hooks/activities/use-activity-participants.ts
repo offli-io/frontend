@@ -6,7 +6,7 @@ import { toast } from 'sonner';
 import {
   getActivityParticipants,
   getActivityParticipantsAnonymous
-} from '../api/activities/requests';
+} from '../../api/activities/requests';
 
 export const ACTIVITY_PARTICIPANTS_QUERY_KEY = 'activity-participants';
 

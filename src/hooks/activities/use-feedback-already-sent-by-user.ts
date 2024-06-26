@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { toast } from 'sonner';
-import { getFeedbackAlreadySentByUser } from '../api/users/requests';
+import { getFeedbackAlreadySentByUser } from '../../api/users/requests';
 
 interface IUseFeedbackAlreadySentByUserReturn {
   userId?: number;

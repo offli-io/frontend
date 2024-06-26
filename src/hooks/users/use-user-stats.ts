@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { toast } from 'sonner';
-import { getUserStats } from '../api/users/requests';
+import { getUserStats } from '../../api/users/requests';
 
 export const USER_STATS_QUERY_KEY = 'user-stats';
 export const useUserStats = (userId: number) => {

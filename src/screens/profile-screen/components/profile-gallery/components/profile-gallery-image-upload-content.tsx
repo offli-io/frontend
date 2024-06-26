@@ -7,12 +7,12 @@ import { AuthenticationContext } from 'components/context/providers/authenticati
 import { DrawerContext } from 'components/context/providers/drawer-provider';
 import Loader from 'components/loader';
 import OffliButton from 'components/offli-button';
+import { USER_QUERY_KEY } from 'hooks/users/use-user';
 import * as React from 'react';
 import { useLocation } from 'react-router-dom';
 import { toast } from 'sonner';
 
 interface IProfileGalleryImageUploadContentProps {
-  //   imageUrls?: string[];
   instagramCode?: string;
   tags?: string[];
 }
@@ -40,7 +40,6 @@ const ProfileGalleryImageUploadContent: React.FC<IProfileGalleryImageUploadConte
     {
       onError: () => {
         toast.error('Failed to fetch instagram photos');
-        // toggleDrawer({ open: false });
       }
     }
   );
@@ -52,7 +51,7 @@ const ProfileGalleryImageUploadContent: React.FC<IProfileGalleryImageUploadConte
       onSuccess: () => {
         toggleDrawer({ open: false });
         toast.success('Your instagram account has been successfully connected');
-        queryClient.invalidateQueries(['user']);
+        queryClient.invalidateQueries([USER_QUERY_KEY]);
         //didnt even notice the refresh -> this might work
         window.history.pushState({}, document.title, window.location.pathname);
       },
@@ -72,7 +71,7 @@ const ProfileGalleryImageUploadContent: React.FC<IProfileGalleryImageUploadConte
     // cleanup refetch instagram photos if user has not selected any photos yet -> use all of his IG photos
     return () => {
       window.history.pushState({}, document.title, window.location.pathname);
-      queryClient.invalidateQueries(['user']);
+      queryClient.invalidateQueries([USER_QUERY_KEY]);
     };
   }, []);
 

@@ -3,7 +3,7 @@ import OfflineBoltIcon from '@mui/icons-material/OfflineBolt';
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 import { Box, CircularProgress, IconButton, Typography } from '@mui/material';
 import { AuthenticationContext } from 'components/context/providers/authentication-provider';
-import { useUser } from 'hooks/use-user';
+import { useUser } from 'hooks/users/use-user';
 import React from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { IPerson } from 'types/activities/activity.dto';

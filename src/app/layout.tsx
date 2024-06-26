@@ -6,7 +6,7 @@ import BottomNavigator from '../components/bottom-navigator/bottom-navigator';
 import { AuthenticationContext } from '../components/context/providers/authentication-provider';
 import { HeaderContext } from '../components/context/providers/header-provider';
 import OffliHeader from '../components/offli-header/offli-header';
-import { useUser } from '../hooks/use-user';
+import { useUser } from '../hooks/users/use-user';
 import Routes from '../routes/routes';
 import { ApplicationLocations } from '../types/common/applications-locations.dto';
 import { getAuthToken } from '../utils/token.util';
@@ -117,7 +117,6 @@ export const Layout: React.FC<ILayoutProps> = () => {
   const refPassthrough = (el?: any) => {
     // call useSwipeable ref prop with el
     ref(el);
-
     // set myRef el so you can access it yourself
     contentDivRef.current = el;
   };
@@ -142,13 +141,10 @@ export const Layout: React.FC<ILayoutProps> = () => {
       value={{
         contentDivRef,
         setSwipeHandlers
-        // layoutStyle
       }}>
       <Box
         sx={{
           width: '100%',
-          // height: isIOSSafari ? `calc(100vh - 20px)` : "100vh",
-          // height: isIOSSafari ? "98vh" : "100vh",
           height: '100vh',
           display: 'flex',
           flexDirection: 'column',
@@ -157,7 +153,6 @@ export const Layout: React.FC<ILayoutProps> = () => {
           overflow: 'hidden'
         }}
         className="layout-parent">
-        {/* TODO backHeader and displayheader better naming */}
         {stateToken && displayHeader && <OffliHeader sx={{ width: '100%' }} />}
         <Box
           sx={{

@@ -13,7 +13,7 @@ import {
 import { LayoutContext } from 'app/layout';
 import BuddyItem from 'components/buddy-item';
 import { LocationContext } from 'components/context/providers/location-provider';
-import { useUsers } from 'hooks/use-users';
+import { useUsers } from 'hooks/users/use-users';
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { useDebounce } from 'use-debounce';
@@ -21,7 +21,7 @@ import ActivitySearchCard from '../../components/activity-search-card';
 import { DrawerContext } from '../../components/context/providers/drawer-provider';
 import { HeaderContext } from '../../components/context/providers/header-provider';
 import OffliTextField from '../../components/offli-text-field';
-import { useActivities } from '../../hooks/use-activities';
+import { useActivities } from '../../hooks/activities/use-activities';
 import { IActivityListRestDto } from '../../types/activities/activity-list-rest.dto';
 import { ApplicationLocations } from '../../types/common/applications-locations.dto';
 import FiltersDrawerContent from './components/filters-drawer-content';

@@ -2,10 +2,10 @@ import { useQueryClient } from '@tanstack/react-query';
 import { AxiosResponse } from 'axios';
 import { IBuddiesResponseDto } from 'types/users/buddies-response.dto';
 import { MAPVIEW_ACTIVITIES_QUERY_KEY } from '../../screens/map-screen';
-import { ACTIVITIES_QUERY_KEY } from '../use-activities';
-import { PAGED_ACTIVITIES_QUERY_KEY } from '../use-activities-infinite-query';
-import { PARTICIPANT_ACTIVITIES_QUERY_KEY } from '../use-participant-activities';
-import { ACTIVITY_QUERY_KEY } from 'hooks/use-activity';
+import { ACTIVITIES_QUERY_KEY } from '../activities/use-activities';
+import { PAGED_ACTIVITIES_QUERY_KEY } from '../activities/use-activities-infinite-query';
+import { PARTICIPANT_ACTIVITIES_QUERY_KEY } from '../activities/use-participant-activities';
+import { ACTIVITY_QUERY_KEY } from 'hooks/activities/use-activity';
 
 export interface IUseBuddiesProps {
   text?: string;

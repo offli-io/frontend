@@ -1,7 +1,7 @@
 import { Box, SxProps, Typography } from '@mui/material';
-import { useGetApiUrl } from 'hooks/use-get-api-url';
+import { useGetApiUrl } from 'hooks/utils/use-get-api-url';
 import React from 'react';
-import useLongPress from '../hooks/use-long-press';
+import useLongPress from '../hooks/utils/use-long-press';
 import { IActivity } from '../types/activities/activity.dto';
 import OffliButton from './offli-button';
 

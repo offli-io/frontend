@@ -7,11 +7,12 @@ import { DrawerContext } from 'components/context/providers/drawer-provider';
 import ImagePreviewModal from 'components/image-preview-modal/image-preview-modal';
 import Loader from 'components/loader';
 import OffliButton from 'components/offli-button';
-import { useGetApiUrl } from 'hooks/use-get-api-url';
+import { useGetApiUrl } from 'hooks/utils/use-get-api-url';
 import React from 'react';
 import InstagramDrawerActions from 'screens/profile-screen/components/instagram-drawer-actions';
 import { toast } from 'sonner';
 import ProfileGalleryImageUploadContent from './components/profile-gallery-image-upload-content';
+import { USER_QUERY_KEY } from 'hooks/users/use-user';
 
 interface IProfileGalleryProps {
   photoUrls?: string[];
@@ -58,7 +59,7 @@ const ProfileGallery: React.FC<IProfileGalleryProps> = ({
     {
       onSuccess: () => {
         toast.success('Your instagram account has been successfully unlinked');
-        queryClient.invalidateQueries(['user']);
+        queryClient.invalidateQueries([USER_QUERY_KEY]);
         toggleDrawer({ open: false });
       },
       onError: () => {

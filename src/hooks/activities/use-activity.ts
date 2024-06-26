@@ -3,8 +3,8 @@ import { AuthenticationContext } from 'components/context/providers/authenticati
 import React from 'react';
 import { toast } from 'sonner';
 import { IActivity } from 'types/activities/activity.dto';
-import { getActivity, getActivityAnonymous } from '../api/activities/requests';
-import { IBackendResponse } from '../types/common/backend-response.dto';
+import { getActivity, getActivityAnonymous } from '../../api/activities/requests';
+import { IBackendResponse } from '../../types/common/backend-response.dto';
 
 export const ACTIVITY_QUERY_KEY = 'activity';
 

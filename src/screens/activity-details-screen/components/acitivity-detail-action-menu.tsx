@@ -1,5 +1,5 @@
 import React from 'react';
-import { useActivities } from '../../../hooks/use-activities';
+import { useActivities } from '../../../hooks/activities/use-activities';
 import { IActivityRestDto } from '../../../types/activities/activity-rest.dto';
 import { ActivityActionsTypeEnumDto } from '../../../types/common/activity-actions-type-enum.dto';
 import ActivityActions from '../../explore-screen/components/activity-actions';

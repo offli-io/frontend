@@ -6,9 +6,9 @@ import { useNavigate } from 'react-router-dom';
 import { IPerson } from 'types/activities/activity.dto';
 import { OffliUserAgent } from 'types/common/offli-user-agent-enum.dto';
 import { getPlatfromFromStorage } from 'utils/storage.util';
-import { ApplicationLocations } from '../types/common/applications-locations.dto';
-import { getAuthToken, setAuthToken } from '../utils/token.util';
-import { useGetApiUrl } from './use-get-api-url';
+import { ApplicationLocations } from '../../types/common/applications-locations.dto';
+import { getAuthToken, setAuthToken } from '../../utils/token.util';
+import { useGetApiUrl } from 'hooks/utils/use-get-api-url';
 
 interface IUseServiceInterceptorsProps {
   setStateToken: React.Dispatch<React.SetStateAction<string | null>>;

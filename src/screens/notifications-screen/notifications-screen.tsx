@@ -3,8 +3,8 @@ import Loader from 'components/loader';
 import React from 'react';
 import { AuthenticationContext } from '../../components/context/providers/authentication-provider';
 import NotificationRequest from '../../components/notification-request';
-import { useNotifications } from '../../hooks/use-notifications';
-import { useReactBasedOnNotificationType } from '../../hooks/use-react-based-on-notification-type';
+import { useNotifications } from '../../hooks/notifications/use-notifications';
+import { useReactBasedOnNotificationType } from '../../hooks/notifications/use-react-based-on-notification-type';
 import { INotificationDto } from '../../types/notifications/notification.dto';
 
 const NotificationsScreen = () => {

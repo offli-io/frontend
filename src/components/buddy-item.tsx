@@ -1,7 +1,7 @@
 import { Box, SxProps, Typography, useTheme } from '@mui/material';
 import React from 'react';
 import userPlaceholder from '../assets/img/user-placeholder.svg';
-import { useGetApiUrl } from '../hooks/use-get-api-url';
+import { useGetApiUrl } from '../hooks/utils/use-get-api-url';
 import { IPerson } from '../types/activities/activity.dto';
 
 interface IBuddyItemProps {

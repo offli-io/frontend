@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { toast } from 'sonner';
-import { getNotifications } from '../api/notifications/requests';
+import { getNotifications } from '../../api/notifications/requests';
 
 export const useNotifications = (userId?: number) => {
   const { data, isLoading } = useQuery(

@@ -38,10 +38,10 @@ import {
 } from '../../api/activities/requests';
 import OffliTextField from '../../components/offli-text-field';
 import { PageWrapper } from '../../components/page-wrapper';
-import { useInvalidateQueryKeys } from '../../hooks/common/use-invalidate-query-keys';
-import { useActivities } from '../../hooks/use-activities';
-import { useGetApiUrl } from '../../hooks/use-get-api-url';
-import { useTags } from '../../hooks/use-tags';
+import { useInvalidateQueryKeys } from '../../hooks/utils/use-invalidate-query-keys';
+import { useActivities } from '../../hooks/activities/use-activities';
+import { useGetApiUrl } from '../../hooks/utils/use-get-api-url';
+import { useTags } from '../../hooks/activities/use-tags';
 import { IActivityRestDto } from '../../types/activities/activity-rest.dto';
 import { ActivityVisibilityEnum } from '../../types/activities/activity-visibility-enum.dto';
 import { mapLocationValue } from '../../utils/map-location-value.util';

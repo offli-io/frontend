@@ -4,7 +4,7 @@ import React from 'react';
 import { FacebookProvider } from 'react-facebook';
 import { UAParser } from 'ua-parser-js';
 import { FB_APP_ID } from 'utils/common-constants';
-import { useServiceInterceptors } from '../../../hooks/use-service-interceptors';
+import { useServiceInterceptors } from '../../../hooks/auth/use-service-interceptors';
 import { IPerson } from '../../../types/activities/activity.dto';
 import { setAuthToken } from '../../../utils/token.util';
 

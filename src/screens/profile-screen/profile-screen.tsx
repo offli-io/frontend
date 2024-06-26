@@ -12,9 +12,9 @@ import { AuthenticationContext } from '../../components/context/providers/authen
 import OffliButton from '../../components/offli-button';
 import { PageWrapper } from '../../components/page-wrapper';
 import ProfileStatistics from '../../components/profile-statistics';
-import { useGetApiUrl } from '../../hooks/use-get-api-url';
-import { useUser } from '../../hooks/use-user';
-import { useUserStats } from '../../hooks/use-user-stats';
+import { useGetApiUrl } from '../../hooks/utils/use-get-api-url';
+import { useUser } from '../../hooks/users/use-user';
+import { useUserStats } from '../../hooks/users/use-user-stats';
 import { ApplicationLocations } from '../../types/common/applications-locations.dto';
 import { BuddyRequestActionEnum } from '../../types/users/buddy-request-action-enum.dto';
 import { BuddyStateEnum } from '../../types/users/buddy-state-enum.dto';

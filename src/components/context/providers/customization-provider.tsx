@@ -1,6 +1,6 @@
 import { ThemeProvider } from '@mui/material';
 import { createTheme } from '@mui/material/styles';
-import { useUserSettings } from 'hooks/use-user-settings';
+import { useUserSettings } from 'hooks/users/use-user-settings';
 import React from 'react';
 import { Toaster } from 'sonner';
 import { ThemeOptionsEnumDto } from 'types/settings/theme-options.dto';

@@ -1,4 +1,4 @@
-import { DEFAULT_DEV_URL } from '../assets/config';
+import { DEFAULT_DEV_URL } from '../../assets/config';
 
 export const useGetApiUrl = () => {
   const backendAttachedURL = window?.env?.API_URL;

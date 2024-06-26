@@ -9,11 +9,11 @@ import { DrawerContext } from 'components/context/providers/drawer-provider';
 import ImagePreviewModal from 'components/image-preview-modal/image-preview-modal';
 import Loader from 'components/loader';
 import { format, isAfter } from 'date-fns';
-import { ACTIVITIES_QUERY_KEY, useActivities } from 'hooks/use-activities';
-import { PAGED_ACTIVITIES_QUERY_KEY } from 'hooks/use-activities-infinite-query';
-import { useDismissActivity } from 'hooks/use-dismiss-activity';
-import { useGoogleClientID } from 'hooks/use-google-client-id';
-import { PARTICIPANT_ACTIVITIES_QUERY_KEY } from 'hooks/use-participant-activities';
+import { useInvalidateQueryKeys } from 'hooks/utils/use-invalidate-query-keys';
+import { useActivities } from 'hooks/activities/use-activities';
+import { ACTIVITY_PARTICIPANTS_QUERY_KEY } from 'hooks/activities/use-activity-participants';
+import { useDismissActivity } from 'hooks/activities/use-dismiss-activity';
+import { useGoogleClientID } from 'hooks/auth/use-google-client-id';
 import React from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import ActivityActions from 'screens/explore-screen/components/activity-actions';
@@ -28,9 +28,9 @@ import {
 } from '../../api/activities/requests';
 import userPlaceholder from '../../assets/img/user-placeholder.svg';
 import { AuthenticationContext } from '../../components/context/providers/authentication-provider';
-import { useFeedbackAlreadySentByUser } from '../../hooks/use-feedback-already-sent-by-user';
-import { useGetApiUrl } from '../../hooks/use-get-api-url';
-import { useGoogleAuthorization } from '../../hooks/use-google-authorization';
+import { useFeedbackAlreadySentByUser } from '../../hooks/activities/use-feedback-already-sent-by-user';
+import { useGetApiUrl } from '../../hooks/utils/use-get-api-url';
+import { useGoogleAuthorization } from '../../hooks/auth/use-google-authorization';
 import { ActivityInviteStateEnum } from '../../types/activities/activity-invite-state-enum.dto';
 import { ActivitiyParticipantStatusEnum as ActivityParticipantStatusEnum } from '../../types/activities/activity-participant-status-enum.dto';
 import { IActivityRestDto } from '../../types/activities/activity-rest.dto';
@@ -46,8 +46,6 @@ import ActivityDetailsGrid, { IGridAction } from './components/activity-details-
 import { ActivityInviteDrawerContent } from './components/activity-invite-drawer-content';
 import ActivityVisibilityDuration from './components/activity-visibility-duration';
 import { convertDateToUTC } from './utils/convert-date-to-utc';
-import { useInvalidateQueryKeys } from 'hooks/common/use-invalidate-query-keys';
-import { ACTIVITY_PARTICIPANTS_QUERY_KEY } from 'hooks/use-activity-participants';
 
 interface IProps {
   type: 'detail' | 'request';

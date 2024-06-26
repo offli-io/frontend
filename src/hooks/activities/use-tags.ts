@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { toast } from 'sonner';
-import { getPredefinedTags } from '../api/activities/requests';
+import { getPredefinedTags } from '../../api/activities/requests';
 
 export const useTags = () => {
   const { data, isLoading } = useQuery(['predefined-tags'], () => getPredefinedTags(), {

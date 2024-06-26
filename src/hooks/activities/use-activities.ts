@@ -4,7 +4,7 @@ import { AuthenticationContext } from 'components/context/providers/authenticati
 import React from 'react';
 import { toast } from 'sonner';
 import { IActivitiesParamsDto } from 'types/activities/activities-params.dto';
-import { getActivity, getActivityAnonymous } from '../api/activities/requests';
+import { getActivity, getActivityAnonymous } from '../../api/activities/requests';
 
 export const ACTIVITIES_QUERY_KEY = 'activities';
 

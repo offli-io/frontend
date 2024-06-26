@@ -16,6 +16,7 @@ import OffliTextField from '../components/offli-text-field';
 import { ILocation } from '../types/activities/location.dto';
 import { IPlaceExternalApiResultDto } from '../types/activities/place-external-api.dto';
 import { ApplicationLocations } from '../types/common/applications-locations.dto';
+import { USER_QUERY_KEY } from 'hooks/users/use-user';
 
 const ChooseLocationScreen: React.FC = () => {
   const [placeQuery, setPlaceQuery] = React.useState('');
@@ -60,7 +61,7 @@ const ChooseLocationScreen: React.FC = () => {
     {
       onSuccess: (data, location) => {
         setLocation?.(location);
-        queryClient.invalidateQueries(['user']);
+        queryClient.invalidateQueries([USER_QUERY_KEY]);
         navigate(ApplicationLocations.EXPLORE);
       },
       onError: () => {

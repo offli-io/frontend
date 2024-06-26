@@ -1,13 +1,11 @@
 import MapIcon from '@mui/icons-material/Map';
 import PlaceIcon from '@mui/icons-material/Place';
 import { Box, Typography } from '@mui/material';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import Loader from 'components/loader';
-import {
-  PAGED_ACTIVITIES_QUERY_KEY,
-  useActivitiesInfiniteQuery
-} from 'hooks/use-activities-infinite-query';
-import { useDismissActivity } from 'hooks/use-dismiss-activity';
+import { useActivitiesInfiniteQuery } from 'hooks/activities/use-activities-infinite-query';
+import { useDismissActivity } from 'hooks/activities/use-dismiss-activity';
+import { useInvalidateQueryKeys } from 'hooks/utils/use-invalidate-query-keys';
 import React from 'react';
 import InfiniteScroll from 'react-infinite-scroller';
 import { useNavigate } from 'react-router-dom';
@@ -22,9 +20,7 @@ import { AuthenticationContext } from '../../components/context/providers/authen
 import { DrawerContext } from '../../components/context/providers/drawer-provider';
 import { LocationContext } from '../../components/context/providers/location-provider';
 import OffliButton from '../../components/offli-button';
-import { ACTIVITIES_QUERY_KEY } from '../../hooks/use-activities';
-import { PARTICIPANT_ACTIVITIES_QUERY_KEY } from '../../hooks/use-participant-activities';
-import { useUser } from '../../hooks/use-user';
+import { useUser } from '../../hooks/users/use-user';
 import { ActivityInviteStateEnum } from '../../types/activities/activity-invite-state-enum.dto';
 import { IActivity } from '../../types/activities/activity.dto';
 import { ActivityActionsTypeEnumDto } from '../../types/common/activity-actions-type-enum.dto';
@@ -41,13 +37,13 @@ const ExploreScreen = () => {
   const { location, setLocation } = React.useContext(LocationContext);
   const { toggleDrawer } = React.useContext(DrawerContext);
   const navigate = useNavigate();
-  const queryClient = useQueryClient();
   const { sendDismissActivity, isLoading: isDismissingActivity } = useDismissActivity();
 
   //TODO either call it like this or set user info once useUsers request in layout.tsx got Promise resolved
   const { data: { data: userData = {} } = {} } = useUser({
     id: userInfo?.id
   });
+  const { activityCreatedOrEditedInvalidation } = useInvalidateQueryKeys();
 
   const { pages, isFetchingNextPage, fetchNextPage, hasNextPage } = useActivitiesInfiniteQuery();
 
@@ -63,9 +59,7 @@ const ExploreScreen = () => {
     {
       onSuccess: () => {
         toast.success('You have successfully joined the activity');
-        queryClient.invalidateQueries([PARTICIPANT_ACTIVITIES_QUERY_KEY]);
-        queryClient.invalidateQueries(['activities']);
-
+        activityCreatedOrEditedInvalidation();
         hideDrawer();
       },
       onError: () => {
@@ -87,14 +81,7 @@ const ExploreScreen = () => {
     {
       onSuccess: (data, activityId) => {
         hideDrawer();
-        //TODO add generic jnaming for activites / activity
-        queryClient.invalidateQueries(['activity', activityId]);
-        queryClient.invalidateQueries([ACTIVITIES_QUERY_KEY]);
-        queryClient.invalidateQueries([PAGED_ACTIVITIES_QUERY_KEY]);
-        queryClient.invalidateQueries([PARTICIPANT_ACTIVITIES_QUERY_KEY]);
-
-        //invalidate queries
-        //TODO display success notification?
+        activityCreatedOrEditedInvalidation(activityId);
       },
       onError: () => {
         toast.error('Failed to leave activity');

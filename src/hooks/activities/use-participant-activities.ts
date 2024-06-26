@@ -1,7 +1,7 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { ActivitySortColumnEnum } from 'types/activities/activity-sort-enum.dto';
-import { getParticipantActivities } from '../api/activities/requests';
+import { getParticipantActivities } from 'api/activities/requests';
 
 export const PARTICIPANT_ACTIVITIES_QUERY_KEY = 'participant-activities';
 

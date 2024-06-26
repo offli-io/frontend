@@ -14,6 +14,7 @@ import {
 } from '@mui/material';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { isAfter } from 'date-fns';
+import { ACTIVITY_PARTICIPANTS_QUERY_KEY } from 'hooks/activities/use-activity-participants';
 import React, { useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useSwipeable } from 'react-swipeable';
@@ -29,7 +30,7 @@ import BuddyItem from '../../components/buddy-item';
 import { AuthenticationContext } from '../../components/context/providers/authentication-provider';
 import { DrawerContext } from '../../components/context/providers/drawer-provider';
 import OffliTextField from '../../components/offli-text-field';
-import { ACTIVITIES_QUERY_KEY, useActivities } from '../../hooks/use-activities';
+import { ACTIVITIES_QUERY_KEY, useActivities } from '../../hooks/activities/use-activities';
 import { ActivitiyParticipantStatusEnum } from '../../types/activities/activity-participant-status-enum.dto';
 import { IActivityRestDto } from '../../types/activities/activity-rest.dto';
 import { IParticipantDto } from '../../types/activities/list-participants-response.dto';
@@ -95,7 +96,7 @@ export const ActivityMembersScreen: React.FC = () => {
       onSuccess: () => {
         toggleDrawer({ open: false });
         toast.success('User has been successfully kicked from activity');
-        queryClient.invalidateQueries(['activity-participants', id]);
+        queryClient.invalidateQueries([ACTIVITY_PARTICIPANTS_QUERY_KEY, id]);
         queryClient.invalidateQueries([ACTIVITIES_QUERY_KEY]);
       },
       onError: () => {
@@ -111,7 +112,7 @@ export const ActivityMembersScreen: React.FC = () => {
       onSuccess: () => {
         toggleDrawer({ open: false });
         toast.success('User has been successfully promoted as leader of the activity');
-        queryClient.invalidateQueries(['activity-participants', id]);
+        queryClient.invalidateQueries([ACTIVITY_PARTICIPANTS_QUERY_KEY, id]);
         queryClient.invalidateQueries([ACTIVITIES_QUERY_KEY]);
       },
       onError: () => {
@@ -126,10 +127,7 @@ export const ActivityMembersScreen: React.FC = () => {
     {
       onSuccess: () => {
         toggleDrawer({ open: false });
-
-        queryClient.invalidateQueries(['activity-participants']);
-        // const _buddies = invitedBuddies?.filter((buddy) => buddy !== buddyId);
-        // setInvitedBuddies(_buddies);
+        queryClient.invalidateQueries([ACTIVITY_PARTICIPANTS_QUERY_KEY]);
       },
       onError: () => {
         toast.error('Failed to cancel invite for user');
@@ -268,8 +266,6 @@ export const ActivityMembersScreen: React.FC = () => {
             position: 'sticky',
             bgcolor: ({ palette }) => palette?.background?.default,
             top: 2,
-            // pt: 2,
-            // pt: 4,
             py: 1.5,
             zIndex: 555
           }}>
@@ -341,8 +337,6 @@ export const ActivityMembersScreen: React.FC = () => {
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center'
-                // borderTop: "1px solid lightgrey",
-                // borderBottom: "1px solid lightgrey",
               }}>
               <Typography sx={{ color: (theme) => theme.palette.inactive.main }}>
                 No activity members
@@ -356,10 +350,6 @@ export const ActivityMembersScreen: React.FC = () => {
                 overflowX: 'hidden',
                 mt: 1,
                 pb: 3
-                // borderTop: "1px solid lightgrey",
-                // borderBottom: anySearchResults
-                //   ? "1px solid lightgrey"
-                //   : "unset",
               }}>
               {isLoading ? (
                 <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
@@ -383,11 +373,9 @@ export const ActivityMembersScreen: React.FC = () => {
                   />
                 ))
               ) : (
-                // <Box sx={{ display: 'flex', alignItems: 'center'}}>
                 <Typography variant="subtitle2" sx={{ textAlign: 'center', my: 4 }}>
                   No members found
                 </Typography>
-                // </Box>
               )}
             </Box>
           )}
