@@ -1,4 +1,5 @@
-import { Box, SxProps, useTheme } from '@mui/material';
+import { Box, LinearProgress, SxProps, useTheme } from '@mui/material';
+import { usePullToRefresh } from 'hooks/utils/use-pull-to-refresh';
 import React from 'react';
 import { matchPath, useLocation, useNavigate } from 'react-router-dom';
 import { useSwipeable } from 'react-swipeable';
@@ -10,6 +11,7 @@ import { useUser } from '../hooks/users/use-user';
 import Routes from '../routes/routes';
 import { ApplicationLocations } from '../types/common/applications-locations.dto';
 import { getAuthToken } from '../utils/token.util';
+import { useInvalidateQueryKeys } from 'hooks/utils/use-invalidate-query-keys';
 
 interface ILayoutProps {
   children?: React.ReactNode;
@@ -39,6 +41,8 @@ export const Layout: React.FC<ILayoutProps> = () => {
   const userIdFromStorage = localStorage.getItem('userId');
   const { setHeaderRightContent } = React.useContext(HeaderContext);
   const contentDivRef = React.useRef<HTMLDivElement | null>(null);
+  const loaderRef = React.useRef<HTMLDivElement | null>(null);
+
   const [swipeHandlers, setSwipeHandlers] = React.useState<ISwipeHandlers | null>(null);
 
   const location = useLocation();
@@ -49,6 +53,17 @@ export const Layout: React.FC<ILayoutProps> = () => {
     onSwipedRight: swipeHandlers?.right,
     onSwipedLeft: swipeHandlers?.left
   });
+
+  const refPassthrough = (el?: any) => {
+    // call useSwipeable ref prop with el
+    ref(el);
+    // set myRef el so you can access it yourself
+    contentDivRef.current = el;
+  };
+
+  const { activityCreatedOrEditedInvalidation } = useInvalidateQueryKeys();
+
+  usePullToRefresh(contentDivRef, () => activityCreatedOrEditedInvalidation(), loaderRef);
 
   const [displayHeader, setDisplayHeader] = React.useState(true);
   const [displayBottomNavigator, setDisplayBottomNavigator] = React.useState(true);
@@ -114,13 +129,6 @@ export const Layout: React.FC<ILayoutProps> = () => {
     }
   }, [token]);
 
-  const refPassthrough = (el?: any) => {
-    // call useSwipeable ref prop with el
-    ref(el);
-    // set myRef el so you can access it yourself
-    contentDivRef.current = el;
-  };
-
   const isNotAuthorizedRoute = React.useMemo(
     () =>
       [
@@ -164,6 +172,7 @@ export const Layout: React.FC<ILayoutProps> = () => {
           }}
           {...restHandlers}
           ref={refPassthrough}>
+          <LinearProgress ref={loaderRef} style={{ display: 'none' }} />
           <Routes />
         </Box>
         {!isNotAuthorizedRoute && displayBottomNavigator && !isBuddyRequest && !isUserProfile && (

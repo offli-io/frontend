@@ -1,11 +1,11 @@
-import { Box, CircularProgress, SxProps } from '@mui/material';
+import { Box, CircularProgress, CircularProgressProps, SxProps } from '@mui/material';
 import React from 'react';
 
-interface ILoaderProps {
+interface ILoaderProps extends CircularProgressProps {
   containerSx?: SxProps;
 }
 
-const Loader: React.FC<ILoaderProps> = ({ containerSx }) => {
+const Loader: React.FC<ILoaderProps> = ({ containerSx, ...rest }) => {
   return (
     <Box
       sx={{
@@ -15,7 +15,7 @@ const Loader: React.FC<ILoaderProps> = ({ containerSx }) => {
         my: 2,
         ...containerSx
       }}>
-      <CircularProgress size={30} />
+      <CircularProgress size={30} {...rest} />
     </Box>
   );
 };

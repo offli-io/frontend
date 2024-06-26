@@ -47,6 +47,8 @@ const ExploreScreen = () => {
 
   const { pages, isFetchingNextPage, fetchNextPage, hasNextPage } = useActivitiesInfiniteQuery();
 
+  console.log(pages);
+
   const { mutate: sendJoinActivity } = useMutation(
     ['join-activity-response'],
     (activityId?: number) => {
