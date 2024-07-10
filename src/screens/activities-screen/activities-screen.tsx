@@ -156,7 +156,7 @@ const ActivitiesScreen = () => {
         ))}
       </Tabs>
       <Box />
-      {isLoading ? <Loader /> : null}
+      {isLoading ? <Loader containerSx={{ my: 5 }} /> : null}
       {!isLoading && paginatedActivitiesData?.pages?.[0]?.length === 0 ? (
         <Typography variant="subtitle2" sx={{ mt: 4, textAlign: 'center' }}>
           There are no activities

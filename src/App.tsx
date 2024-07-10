@@ -19,7 +19,12 @@ import Router from './routes/router';
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      retry: false,
+      retry: (_, err: any) => {
+        if (err?.response?.status === 401) {
+          return true; // do not retry, trigger error
+        }
+        return false;
+      },
       refetchOnMount: true,
       refetchOnWindowFocus: true,
       refetchOnReconnect: true,

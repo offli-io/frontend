@@ -6,11 +6,13 @@ import { UAParser } from 'ua-parser-js';
 import { FB_APP_ID } from 'utils/common-constants';
 import { useServiceInterceptors } from '../../../hooks/auth/use-service-interceptors';
 import { IPerson } from '../../../types/activities/activity.dto';
-import { setAuthToken } from '../../../utils/token.util';
+import { setAuthToken, setRefreshTokenToStorage } from '../../../utils/token.util';
 
 interface IAuthenticationContext {
   stateToken: string | null;
   setStateToken: React.Dispatch<React.SetStateAction<string | null>>;
+  refreshToken: string | null;
+  setRefreshToken: React.Dispatch<React.SetStateAction<string | null>>;
   userInfo?: IPerson | undefined;
   setUserInfo?: React.Dispatch<React.SetStateAction<IPerson | undefined>>;
   isFirstTimeLogin?: boolean;
@@ -41,6 +43,8 @@ export const AuthenticationContext = React.createContext<IAuthenticationContext>
 
 export const AuthenticationProvider = ({ children }: { children: React.ReactNode }) => {
   const [stateToken, setStateToken] = React.useState<null | string>(null);
+  const [refreshToken, setRefreshToken] = React.useState<null | string>(null);
+
   const userIdFromStorage = localStorage.getItem('userId');
   const [userInfo, setUserInfo] = React.useState<IPerson | undefined>(
     userIdFromStorage ? { id: Number(userIdFromStorage) } : undefined
@@ -70,12 +74,18 @@ export const AuthenticationProvider = ({ children }: { children: React.ReactNode
     }
   }, [userInfo?.id, parser]);
 
-  useServiceInterceptors({ setStateToken, setUserInfo, userId: userInfo?.id });
+  useServiceInterceptors();
   React.useEffect(() => {
     if (stateToken) {
       setAuthToken(stateToken);
     }
   }, [stateToken]);
+
+  React.useEffect(() => {
+    if (refreshToken) {
+      setRefreshTokenToStorage(refreshToken);
+    }
+  }, [refreshToken]);
 
   React.useEffect(() => {
     // if I get instagram code, exchange it for access token
@@ -100,6 +110,8 @@ export const AuthenticationProvider = ({ children }: { children: React.ReactNode
       value={{
         stateToken,
         setStateToken,
+        refreshToken,
+        setRefreshToken,
         userInfo,
         setUserInfo,
         googleTokenClient,

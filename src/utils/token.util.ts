@@ -6,10 +6,10 @@ export const setAuthToken = (token?: string) => {
   !!token && localStorage.setItem('token', token);
 };
 
-export const getRefreshToken = (): string | null => {
+export const getRefreshTokenFromStorage = (): string | null => {
   return localStorage.getItem('refresh_token');
 };
 
-export const setRefreshToken = (refreshToken?: string) => {
+export const setRefreshTokenToStorage = (refreshToken?: string) => {
   !!refreshToken && localStorage.setItem('refresh_token', refreshToken);
 };

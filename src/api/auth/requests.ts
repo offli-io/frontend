@@ -250,3 +250,17 @@ export const removeAccount = (values: IRemoveAccountRequestDto, signal?: AbortSi
   });
   return promise;
 };
+
+export const refreshToken = (refreshToken: string) => {
+  const CancelToken = axios.CancelToken;
+  const source = CancelToken.source();
+
+  const promise = axios.post<ILoginResponseDto>(
+    `/refresh`,
+    { refresh_token: refreshToken },
+    {
+      cancelToken: source?.token
+    }
+  );
+  return promise;
+};

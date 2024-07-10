@@ -36,3 +36,5 @@ export const ACTIVITES_LIMIT = 20;
 
 export const BRATISLAVA_CENTER_COORDS_ARRAY = [48.1486, 17.1077];
 export const BRATISLAVA_CENTER_COORDS_OBJECT = { lat: 48.1486, lon: 17.1077 };
+
+export const TOKEN_EXPIRED_MESSAGE = 'Token expired';

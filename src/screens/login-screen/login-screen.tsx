@@ -28,7 +28,8 @@ const schema: () => yup.SchemaOf<FormValues> = () =>
 
 const LoginScreen: React.FC = () => {
   const [showPassword, setShowPassword] = React.useState(false);
-  const { setUserInfo, setStateToken, userInfo } = React.useContext(AuthenticationContext);
+  const { setUserInfo, setStateToken, setRefreshToken, userInfo } =
+    React.useContext(AuthenticationContext);
   const { palette } = useTheme();
   const navigate = useNavigate();
   const handleClickShowPassword = () => setShowPassword(!showPassword);
@@ -48,13 +49,16 @@ const LoginScreen: React.FC = () => {
       return loginUser(formValues);
     },
     {
-      onSuccess: (data, params) => {
+      onSuccess: ({ data }, params) => {
         // setAuthToken(data?.data?.access_token)
         // setRefreshToken(data?.data?.refresh_token)
         //TODO refresh user Id after refresh
-        setStateToken(data?.data?.token?.access_token ?? null);
-        setUserInfo?.({ username: params?.username, id: data?.data?.user_id });
-        localStorage.setItem('userId', String(data?.data?.user_id));
+
+        //TODO set refresh token
+        setStateToken(data?.token?.access_token ?? null);
+        setRefreshToken(data?.token?.refresh_token ?? null);
+        setUserInfo?.({ username: params?.username, id: data?.user_id });
+        localStorage.setItem('userId', String(data?.user_id));
         navigate(ApplicationLocations.EXPLORE);
       },
       onError: () => {
