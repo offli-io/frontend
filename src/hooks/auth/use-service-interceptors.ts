@@ -7,11 +7,10 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { OffliUserAgent } from 'types/common/offli-user-agent-enum.dto';
 import { getPlatfromFromStorage } from 'utils/storage.util';
+import { refreshToken } from '../../api/auth/requests';
+import { AuthenticationContext } from '../../components/context/providers/authentication-provider';
 import { ApplicationLocations } from '../../types/common/applications-locations.dto';
-import { getAuthToken, setAuthToken } from '../../utils/token.util';
-import { refreshToken } from '../api/auth/requests';
-import { AuthenticationContext } from '../components/context/providers/authentication-provider';
-import { getRefreshTokenFromStorage } from '../utils/token.util';
+import { getAuthToken, getRefreshTokenFromStorage, setAuthToken } from '../../utils/token.util';
 
 let isRefreshing = false;
 let failedQueue: ((error: AxiosError | null, token?: string | null) => void)[] = [];
