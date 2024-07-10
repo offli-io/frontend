@@ -1,32 +1,87 @@
-import { useQueryClient } from '@tanstack/react-query';
-import axios, { AxiosError } from 'axios';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import axios, { AxiosError, AxiosRequestConfig } from 'axios';
+import { useGetApiUrl } from 'hooks/utils/use-get-api-url';
 import jwtDecode, { JwtPayload } from 'jwt-decode';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { IPerson } from 'types/activities/activity.dto';
+import { toast } from 'sonner';
 import { OffliUserAgent } from 'types/common/offli-user-agent-enum.dto';
 import { getPlatfromFromStorage } from 'utils/storage.util';
 import { ApplicationLocations } from '../../types/common/applications-locations.dto';
 import { getAuthToken, setAuthToken } from '../../utils/token.util';
-import { useGetApiUrl } from 'hooks/utils/use-get-api-url';
+import { refreshToken } from '../api/auth/requests';
+import { AuthenticationContext } from '../components/context/providers/authentication-provider';
+import { getRefreshTokenFromStorage } from '../utils/token.util';
 
-interface IUseServiceInterceptorsProps {
-  setStateToken: React.Dispatch<React.SetStateAction<string | null>>;
-  setUserInfo?: React.Dispatch<React.SetStateAction<IPerson | undefined>>;
-  userId?: number;
-}
+let isRefreshing = false;
+let failedQueue: ((error: AxiosError | null, token?: string | null) => void)[] = [];
 
-export const useServiceInterceptors = ({
-  setStateToken,
-  setUserInfo,
-  userId
-}: IUseServiceInterceptorsProps) => {
+const processQueue = (error: AxiosError | null, token: string | null = null) => {
+  failedQueue.forEach((prom) => {
+    if (error) {
+      prom(error);
+    } else {
+      prom(null, token);
+    }
+  });
+
+  failedQueue = [];
+};
+
+export const useServiceInterceptors = () => {
+  const { setUserInfo, setStateToken, setRefreshToken, userInfo } =
+    React.useContext(AuthenticationContext);
   const baseUrl = useGetApiUrl();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
 
+  const refreshAuthLogic = async (failedRequest: AxiosRequestConfig) => {
+    const refreshToken = getRefreshTokenFromStorage();
+    if (refreshToken) {
+      try {
+        const { data } = await sendRefreshToken(refreshToken);
+        setAuthToken(data?.token?.access_token);
+
+        if (failedRequest?.headers)
+          failedRequest.headers['Authorization'] = 'Bearer ' + data?.token?.access_token;
+        return Promise.resolve();
+      } catch (error) {
+        return Promise.reject(error);
+      }
+    } else {
+      return Promise.reject(new Error('No refresh token available'));
+    }
+  };
+
+  const { mutateAsync: sendRefreshToken } = useMutation(
+    ['refresh-token'],
+    (token: string) => {
+      return refreshToken(token);
+    },
+    {
+      onSuccess: ({ data }) => {
+        setStateToken?.(data?.token?.access_token ?? null);
+        setRefreshToken?.(data?.token?.refresh_token ?? null);
+        // localStorage.setItem('userId', String(data?.user_id));
+        // navigate(ApplicationLocations.EXPLORE);
+      },
+      onError: (error) => {
+        processQueue(error as AxiosError, null);
+        setStateToken?.(null);
+        setAuthToken(undefined);
+        setUserInfo?.({ username: undefined, id: undefined });
+        queryClient.invalidateQueries();
+        queryClient.removeQueries();
+        localStorage.removeItem('token');
+        localStorage.removeItem('userId');
+        toast.error('Failed to log in');
+        navigate(ApplicationLocations.LOGIN);
+      }
+    }
+  );
+
   axios.interceptors.request.use(
-    (config) => {
+    async (config) => {
       const _token = getAuthToken();
       const platform = getPlatfromFromStorage() ?? OffliUserAgent.Web;
       if (process.env.NODE_ENV !== 'development') {
@@ -38,16 +93,15 @@ export const useServiceInterceptors = ({
         const tokenExpiration = (decodedToken?.exp ?? 0) * 1000;
         const timeInMsNow = Date.now();
         //if token is expired
-        //watch out when token expiration is less than 1 minute, token expiration from BE comes in seconds
-        if (timeInMsNow >= tokenExpiration) {
-          setStateToken(null);
-          setAuthToken(undefined);
-          setUserInfo?.({ username: undefined, id: undefined });
-          queryClient.invalidateQueries();
-          queryClient.removeQueries();
-          localStorage.removeItem('token');
-          localStorage.removeItem('userId');
-          navigate(ApplicationLocations.LOGIN);
+        if (timeInMsNow >= tokenExpiration && !isRefreshing) {
+          isRefreshing = true;
+          try {
+            await refreshAuthLogic(config);
+            isRefreshing = false;
+          } catch (error) {
+            isRefreshing = false;
+            return Promise.reject(error);
+          }
         }
       }
       if (config?.headers) {
@@ -55,8 +109,8 @@ export const useServiceInterceptors = ({
         if (_token && !explicitToken) {
           config.headers['Authorization'] = 'Bearer ' + _token;
         }
-        if (userId) {
-          config.headers['user-id'] = userId;
+        if (userInfo?.id) {
+          config.headers['user-id'] = userInfo.id;
         }
         if (platform) {
           config.headers['Offli-User-Agent'] = platform;
@@ -74,31 +128,54 @@ export const useServiceInterceptors = ({
       return res;
     },
     async (error: AxiosError) => {
-      // if token has expired
+      const originalRequest: any = error.config;
       if (error?.response?.status === 401) {
-        setStateToken(null);
-        setAuthToken(undefined);
-        setUserInfo?.({ username: undefined, id: undefined });
-        queryClient.invalidateQueries();
-        queryClient.removeQueries();
-        localStorage.removeItem('token');
-        localStorage.removeItem('userId');
-        // toast.error('Your token has expired - you will be redirected to login page');
-        navigate(ApplicationLocations.LOGIN);
+        originalRequest._retry = true;
+
+        if (isRefreshing) {
+          return new Promise((resolve, reject) => {
+            failedQueue.push((err, token) => {
+              if (err) {
+                reject(err);
+              } else {
+                originalRequest.headers['Authorization'] = 'Bearer ' + token;
+                resolve(axios(originalRequest));
+              }
+            });
+          });
+        }
+
+        isRefreshing = true;
+        return new Promise((resolve, reject) => {
+          refreshAuthLogic(originalRequest)
+            .then(() => {
+              isRefreshing = false;
+              resolve(axios(originalRequest));
+            })
+            .catch((err) => {
+              isRefreshing = false;
+              reject(err);
+            });
+        });
       }
-      //TODO uncomment
-      // const originalConfig = err.config;
-      // if (err?.response?.status === 401) {
-      //   console.error('Token expired')
-      //   // call refresh token
-      //   try {
-      //     mut.mutate()
-      //   } catch (error: any) {
-      //     console.log(error)
-      //   }
-      // }
 
       return Promise.reject(error);
     }
+    //   // if token has expired
+    //   if (error?.response?.status === 401) {
+    //     //TODO exchange refresh token
+    //     setStateToken?.(null);
+    //     setAuthToken(undefined);
+    //     setUserInfo?.({ username: undefined, id: undefined });
+    //     queryClient.invalidateQueries();
+    //     queryClient.removeQueries();
+    //     localStorage.removeItem('token');
+    //     localStorage.removeItem('userId');
+    //     // toast.error('Your token has expired - you will be redirected to login page');
+    //     navigate(ApplicationLocations.LOGIN);
+    //   }
+
+    //   return Promise.reject(error);
+    // }
   );
 };
